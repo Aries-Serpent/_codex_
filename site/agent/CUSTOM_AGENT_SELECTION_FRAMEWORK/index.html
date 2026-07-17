@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/CUSTOM_AGENT_SELECTION_FRAMEWORK/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Custom Agent Selection Framework - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2618,10 +2618,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Document:</strong> Custom Agent Selection &amp; Decision Framework<br/>
-<strong>Version:</strong> 1.0.0<br/>
-<strong>Generated:</strong> 2026-06-26<br/>
-<strong>Purpose:</strong> Provide systematic methodology for selecting and activating appropriate custom agents for specific tasks  </p>
+<p><strong>Document:</strong> Custom Agent Selection &amp; Decision Framework
+<strong>Version:</strong> 1.0.0
+<strong>Generated:</strong> 2026-06-26
+<strong>Purpose:</strong> Provide systematic methodology for selecting and activating appropriate custom agents for specific tasks</p>
 </blockquote>
 <hr/>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2696,11 +2696,11 @@
 - <strong>ci-emergency-response-agent</strong> — Handle blocking CI incidents
 - <strong>workflow-ci-fixer</strong> — Fix GitHub Actions syntax and job failures</p>
 <p><strong>Selection Logic:</strong>
-- Syntax/YAML error → <code>workflow-ci-fixer</code>
-- Test/build failure with known patterns → <code>ci-auto-healer-agent</code>
-- Blocking incident requiring rapid response → <code>ci-emergency-response-agent</code>
-- Complex multi-failure scenario → <code>ci-testing-agent</code> first (diagnosis), then specialists</p>
-<p><strong>Parallel Potential:</strong>  HIGH (delegate 2-3 agents per category)</p>
+- Syntax/YAML error <code>workflow-ci-fixer</code>
+- Test/build failure with known patterns <code>ci-auto-healer-agent</code>
+- Blocking incident requiring rapid response <code>ci-emergency-response-agent</code>
+- Complex multi-failure scenario <code>ci-testing-agent</code> first (diagnosis), then specialists</p>
+<p><strong>Parallel Potential:</strong> HIGH (delegate 2-3 agents per category)</p>
 <hr/>
 <h3 id="testing-quality-domain">Testing &amp; Quality Domain<a class="headerlink" href="#testing-quality-domain" title="Permanent link">¶</a></h3>
 <p><strong>Primary Agents:</strong>
@@ -2711,12 +2711,12 @@
 - <strong>test-enhancement-agent</strong> — Add edge cases and deepen test coverage
 - <strong>mutation-testing-agent</strong> — Assess test suite effectiveness</p>
 <p><strong>Selection Logic:</strong>
-- Failing tests → <code>autonomous-test-healer-agent</code> (parallel with coverage analysis)
-- Flaky/intermittent tests → <code>fragile-test-guardian</code>
-- Coverage gap → <code>unified-coverage-agent</code>
-- Post-API-change alignment → <code>test-alignment-fixer</code>
-- Test quality improvement → <code>test-enhancement-agent</code></p>
-<p><strong>Parallel Potential:</strong>  VERY HIGH (delegate 3-5 agents per cycle)</p>
+- Failing tests <code>autonomous-test-healer-agent</code> (parallel with coverage analysis)
+- Flaky/intermittent tests <code>fragile-test-guardian</code>
+- Coverage gap <code>unified-coverage-agent</code>
+- Post-API-change alignment <code>test-alignment-fixer</code>
+- Test quality improvement <code>test-enhancement-agent</code></p>
+<p><strong>Parallel Potential:</strong> VERY HIGH (delegate 3-5 agents per cycle)</p>
 <hr/>
 <h3 id="documentation-domain">Documentation Domain<a class="headerlink" href="#documentation-domain" title="Permanent link">¶</a></h3>
 <p><strong>Primary Agents:</strong>
@@ -2726,12 +2726,12 @@
 - <strong>terminology-consistency-agent</strong> — Enforce consistent terminology
 - <strong>post-merge-doc-alignment-agent</strong> — Align GitHub Pages with codebase after merges</p>
 <p><strong>Selection Logic:</strong>
-- Consolidation/structural work → <code>unified-doc-agent</code>
-- Freshness/accuracy validation → <code>doc-freshness-checker</code>
-- Link validation → <code>link-validator-agent</code>
-- Terminology audit → <code>terminology-consistency-agent</code>
-- Post-merge alignment → <code>post-merge-doc-alignment-agent</code></p>
-<p><strong>Parallel Potential:</strong>  MODERATE (2-3 agents for comprehensive doc audit)</p>
+- Consolidation/structural work <code>unified-doc-agent</code>
+- Freshness/accuracy validation <code>doc-freshness-checker</code>
+- Link validation <code>link-validator-agent</code>
+- Terminology audit <code>terminology-consistency-agent</code>
+- Post-merge alignment <code>post-merge-doc-alignment-agent</code></p>
+<p><strong>Parallel Potential:</strong> MODERATE (2-3 agents for comprehensive doc audit)</p>
 <hr/>
 <h3 id="security-compliance-domain">Security &amp; Compliance Domain<a class="headerlink" href="#security-compliance-domain" title="Permanent link">¶</a></h3>
 <p><strong>Primary Agents:</strong>
@@ -2742,12 +2742,12 @@
 - <strong>security-alert-verification-agent</strong> — Verify and propose fixes
 - <strong>secret-detection-agent</strong> — Find accidentally committed secrets</p>
 <p><strong>Selection Logic:</strong>
-- Comprehensive security audit → <code>unified-security-scanner</code>
-- Specific CodeQL alert → <code>codeql-alert-resolution-agent</code>
-- Dependency vulnerability → <code>dependency-vulnerability-scanner</code>
-- Secret detection → <code>secret-detection-agent</code>
-- Code scanning findings → <code>code-scanning-remediation-agent</code></p>
-<p><strong>Parallel Potential:</strong>  HIGH (delegate all 3-4 for full audit)</p>
+- Comprehensive security audit <code>unified-security-scanner</code>
+- Specific CodeQL alert <code>codeql-alert-resolution-agent</code>
+- Dependency vulnerability <code>dependency-vulnerability-scanner</code>
+- Secret detection <code>secret-detection-agent</code>
+- Code scanning findings <code>code-scanning-remediation-agent</code></p>
+<p><strong>Parallel Potential:</strong> HIGH (delegate all 3-4 for full audit)</p>
 <hr/>
 <h3 id="configuration-platform-domain">Configuration &amp; Platform Domain<a class="headerlink" href="#configuration-platform-domain" title="Permanent link">¶</a></h3>
 <p><strong>Primary Agents:</strong>
@@ -2757,11 +2757,11 @@
 - <strong>cross-platform-filename-validator</strong> — Windows-safe filenames
 - <strong>rust-config-validator</strong> — Validate Cargo configuration</p>
 <p><strong>Selection Logic:</strong>
-- Config file validation → <code>config-validator</code>
-- Legacy → modern migration → <code>config-migration-assistant</code>
-- PyTorch model issues → <code>meta-tensor-validator</code>
-- Filename cross-platform check → <code>cross-platform-filename-validator</code></p>
-<p><strong>Parallel Potential:</strong>  MODERATE (2-3 per platform update cycle)</p>
+- Config file validation <code>config-validator</code>
+- Legacy modern migration <code>config-migration-assistant</code>
+- PyTorch model issues <code>meta-tensor-validator</code>
+- Filename cross-platform check <code>cross-platform-filename-validator</code></p>
+<p><strong>Parallel Potential:</strong> MODERATE (2-3 per platform update cycle)</p>
 <hr/>
 <h3 id="session-knowledge-domain">Session &amp; Knowledge Domain<a class="headerlink" href="#session-knowledge-domain" title="Permanent link">¶</a></h3>
 <p><strong>Primary Agents:</strong>
@@ -2770,50 +2770,50 @@
 - <strong>session-analysis-agent</strong> — Analyze sessions and completion patterns
 - <strong>session-log-retrieval-agent</strong> — Recover prior sessions</p>
 <p><strong>Selection Logic:</strong>
-- Multi-agent coordination needed → <code>agent-orchestrator</code>
-- Skill maintenance/scoring → <code>skills-master-agent</code>
-- Session post-mortem → <code>session-analysis-agent</code>
-- Context recovery → <code>session-log-retrieval-agent</code></p>
-<p><strong>Parallel Potential:</strong> ️ LOW (orchestration requires sequential coordination)</p>
+- Multi-agent coordination needed <code>agent-orchestrator</code>
+- Skill maintenance/scoring <code>skills-master-agent</code>
+- Session post-mortem <code>session-analysis-agent</code>
+- Context recovery <code>session-log-retrieval-agent</code></p>
+<p><strong>Parallel Potential:</strong> LOW (orchestration requires sequential coordination)</p>
 <hr/>
 <h2 id="selection-algorithm">Selection Algorithm<a class="headerlink" href="#selection-algorithm" title="Permanent link">¶</a></h2>
 <h3 id="step-1-classify-task-domain">Step 1: Classify Task Domain<a class="headerlink" href="#step-1-classify-task-domain" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Input: Task description, problem statement
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>↓
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>Match to: CI/CD, Testing, Docs, Security, Config, RAG, Platform, Session
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>↓
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>Output: Primary domain (may be secondary)
 </code></pre></div>
 <h3 id="step-2-assess-complexity-scope">Step 2: Assess Complexity &amp; Scope<a class="headerlink" href="#step-2-assess-complexity-scope" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Simple (single module, &lt;100 loc)
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>  → Specialist agent preferred
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> Specialist agent preferred
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>Moderate (multiple modules, &lt;1000 loc)
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>  → Specialist + optional helper
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> Specialist + optional helper
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>Complex (major refactor, &gt;1000 loc)
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>  → Unified entry point + specialists
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> Unified entry point + specialists
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>Multi-phase (staged delivery)
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>  → Orchestrator + specialists in sequence/parallel
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> Orchestrator + specialists in sequence/parallel
 </code></pre></div>
 <h3 id="step-3-check-parallelization-viability">Step 3: Check Parallelization Viability<a class="headerlink" href="#step-3-check-parallelization-viability" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Independent tasks
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>  → Delegate to 2-4 agents in parallel
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> Delegate to 2-4 agents in parallel
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>Sequential dependencies
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>  → Chain: Agent A → output → Agent B input
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> Chain: Agent A output Agent B input
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>Blocking operations
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>  → Single agent until unblock
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> Single agent until unblock
 </code></pre></div>
 <h3 id="step-4-verify-capability-alignment">Step 4: Verify Capability Alignment<a class="headerlink" href="#step-4-verify-capability-alignment" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Does agent's declared capabilities
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>  match task requirements?
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> match task requirements?
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>YES → Select agent
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>NO  → Try next candidate
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>     or escalate to orchestrator
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>YES Select agent
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>NO Try next candidate
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> or escalate to orchestrator
 </code></pre></div>
 <h3 id="step-5-apply-preference-ordering">Step 5: Apply Preference Ordering<a class="headerlink" href="#step-5-apply-preference-ordering" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>1. Specialist agent (narrowly focused)
@@ -2988,14 +2988,14 @@
 <hr/>
 <h3 id="pitfall-2-sequential-when-parallel-viable">Pitfall 2: Sequential When Parallel Viable<a class="headerlink" href="#pitfall-2-sequential-when-parallel-viable" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>WRONG:
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>delegate → ci-testing-agent (wait for complete)
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>→ fragile-test-guardian (wait)
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>→ unified-coverage-agent (wait)
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>delegate ci-testing-agent (wait for complete)
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> fragile-test-guardian (wait)
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> unified-coverage-agent (wait)
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>Total time: 3x
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>CORRECT:
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>delegate → [ci-testing-agent, fragile-test-guardian,
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>            unified-coverage-agent] (parallel)
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>delegate [ci-testing-agent, fragile-test-guardian,
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> unified-coverage-agent] (parallel)
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>Total time: 1x + coordination overhead
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
 <a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>Use case: Multi-aspect testing audit
@@ -3011,25 +3011,25 @@
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>CORRECT:
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>Task: Fix failing tests
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>Precondition check:
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>  - Is build succeeding? YES
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>  - Is config valid? YES
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>  - Environment stable? YES
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> - Is build succeeding? YES
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> - Is config valid? YES
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> - Environment stable? YES
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>Selection: autonomous-test-healer-agent
 </code></pre></div>
 <p><strong>Rule:</strong> Verify prerequisites before delegating to avoid agent thrashing.</p>
 <hr/>
 <h3 id="pitfall-4-overloading-single-agent">Pitfall 4: Overloading Single Agent<a class="headerlink" href="#pitfall-4-overloading-single-agent" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>WRONG:
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>"Fix all CI/CD issues" → ci-auto-healer-agent
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>"Fix all CI/CD issues" ci-auto-healer-agent
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>(tries to handle workflow syntax, test failures,
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> config errors, dependency issues in one pass)
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>CORRECT:
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>"Fix all CI/CD issues" → decompose to:
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>  - workflow-ci-fixer (syntax)
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>  - ci-auto-healer-agent (patterns)
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>  - dependency-conflict-agent (versions)
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>  - config-validator (config)
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>"Fix all CI/CD issues" decompose to:
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> - workflow-ci-fixer (syntax)
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> - ci-auto-healer-agent (patterns)
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> - dependency-conflict-agent (versions)
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> - config-validator (config)
 <a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>(delegate in parallel/sequence)
 </code></pre></div>
 <p><strong>Rule:</strong> Decompose large tasks into agent-sized chunks.</p>
@@ -3086,7 +3086,7 @@
 <td>Platform</td>
 <td>cross-platform-filename-validator</td>
 <td>3 available</td>
-<td>️ Partial</td>
+<td>Partial</td>
 </tr>
 <tr>
 <td>Session</td>
@@ -3173,35 +3173,35 @@
 <hr/>
 <h2 id="decision-tree-flowchart">Decision Tree Flowchart<a class="headerlink" href="#decision-tree-flowchart" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>TASK RECEIVED
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    ↓
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>[Classify Domain] → CI/CD | Testing | Docs | Security | Config | Other
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    ↓
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>[Assess Complexity] → Simple | Moderate | Complex
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    ↓
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>[Check Parallelization] → Independent Tasks | Sequential | Blocking
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    ↓
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>[Classify Domain] CI/CD | Testing | Docs | Security | Config | Other
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>[Assess Complexity] Simple | Moderate | Complex
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>[Check Parallelization] Independent Tasks | Sequential | Blocking
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>[Domain-Specific Routing]
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    ├→ CI/CD:     [Syntax?] → workflow-ci-fixer
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    │             [Patterns?] → ci-auto-healer-agent
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    │             [Blocking?] → ci-emergency-response-agent
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    ├→ Testing:   [Coverage?] → unified-coverage-agent
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    │             [Flaky?] → fragile-test-guardian
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    │             [Failing?] → autonomous-test-healer-agent
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>    ├→ Docs:      [Structure?] → unified-doc-agent
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>    │             [Links?] → link-validator-agent
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>    │             [Freshness?] → doc-freshness-checker
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>    ├→ Security:  [CodeQL?] → codeql-alert-resolution-agent
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>    │             [Secrets?] → secret-detection-agent
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>    │             [Audit?] → unified-security-scanner
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>    └→ Config:    [Validation?] → config-validator
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>                  [Migration?] → config-migration-assistant
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>    ↓
-<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>[Select Primary + Helpers] → Agent(s)
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>    ↓
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a>[Delegate] → Execute in [Sequential | Parallel]
-<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a>    ↓
-<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a>[Collect Results] → Validation
-<a href="#__codelineno-9-30" id="__codelineno-9-30" name="__codelineno-9-30"></a>    ↓
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> CI/CD: [Syntax?] workflow-ci-fixer
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> [Patterns?] ci-auto-healer-agent
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> [Blocking?] ci-emergency-response-agent
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> Testing: [Coverage?] unified-coverage-agent
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> [Flaky?] fragile-test-guardian
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> [Failing?] autonomous-test-healer-agent
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> Docs: [Structure?] unified-doc-agent
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> [Links?] link-validator-agent
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> [Freshness?] doc-freshness-checker
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> Security: [CodeQL?] codeql-alert-resolution-agent
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> [Secrets?] secret-detection-agent
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> [Audit?] unified-security-scanner
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> Config: [Validation?] config-validator
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> [Migration?] config-migration-assistant
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>[Select Primary + Helpers] Agent(s)
+<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>
+<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a>[Delegate] Execute in [Sequential | Parallel]
+<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a>
+<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a>[Collect Results] Validation
+<a href="#__codelineno-9-30" id="__codelineno-9-30" name="__codelineno-9-30"></a>
 <a href="#__codelineno-9-31" id="__codelineno-9-31" name="__codelineno-9-31"></a>TASK COMPLETE
 </code></pre></div>
 <hr/>
@@ -3211,7 +3211,7 @@
 <li><strong>id</strong>: Unique identifier</li>
 <li><strong>name</strong>: Human-readable name</li>
 <li><strong>capability_tags</strong>: List of specialized capabilities</li>
-<li><strong>autonomy_model</strong>: (E)Advisory → (D)Capable → (C)Approval → (B)Escalation → (A)Autonomous</li>
+<li><strong>autonomy_model</strong>: (E)Advisory (D)Capable (C)Approval (B)Escalation (A)Autonomous</li>
 <li><strong>maturity</strong>: development | testing | production</li>
 <li><strong>description</strong>: What the agent does</li>
 </ul>
@@ -3258,6 +3258,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

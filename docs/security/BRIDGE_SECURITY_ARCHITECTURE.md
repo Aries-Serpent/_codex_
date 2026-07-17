@@ -1,10 +1,10 @@
 # Bridge Security Architecture (PS-02)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Document Version:** 1.0  
-**Created:** 2026-01-09  
-**Planset:** PS-02 - IPC Bridge Hardening  
+**Document Version:** 1.0
+**Created:** 2026-01-09
+**Planset:** PS-02 - IPC Bridge Hardening
 **Status:** Production Ready
 
 ---
@@ -51,7 +51,7 @@ os.chmod(self.bridge_dir, 0o700)
 ```text
 # Direct constant-time comparison (no hashing to avoid timing variations)
 if not secrets.compare_digest(self.auth_token, message.auth_token):
-    return False
+ return False
 ```
 
 **Token Generation:**
@@ -101,15 +101,15 @@ fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 **Audit Log Format:**
 ```json
 {
-  "timestamp": "2026-01-09T10:30:15.123456+00:00",
-  "event": "AUTH_FAILURE",
-  "pid": 12345,
-  "uid": 1000,
-  "details": {
-    "reason": "invalid_token",
-    "source": "suspicious_client",
-    "message_type": "context_update"
-  }
+ "timestamp": "2026-01-09T10:30:15.123456+00:00",
+ "event": "AUTH_FAILURE",
+ "pid": 12345,
+ "uid": 1000,
+ "details": {
+ "reason": "invalid_token",
+ "source": "suspicious_client",
+ "message_type": "context_update"
+ }
 }
 ```
 
@@ -120,51 +120,51 @@ fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 ### Threats Mitigated
 
 1. **Local Privilege Escalation (HIGH)**
-   - **Attack:** Malicious local process attempts to read/write bridge
-   - **Mitigation:** Owner-only permissions (0o600), process isolation
-   - **Status:**  Mitigated
+ - **Attack:** Malicious local process attempts to read/write bridge
+ - **Mitigation:** Owner-only permissions (0o600), process isolation
+ - **Status:** Mitigated
 
 2. **Authentication Bypass (HIGH)**
-   - **Attack:** Unauthorized process sends messages without valid token
-   - **Mitigation:** Token validation with constant-time comparison
-   - **Status:**  Mitigated
+ - **Attack:** Unauthorized process sends messages without valid token
+ - **Mitigation:** Token validation with constant-time comparison
+ - **Status:** Mitigated
 
 3. **Timing Attacks (MEDIUM)**
-   - **Attack:** Attacker infers token validity through response timing
-   - **Mitigation:** `secrets.compare_digest()` for constant-time comparison
-   - **Status:**  Mitigated
+ - **Attack:** Attacker infers token validity through response timing
+ - **Mitigation:** `secrets.compare_digest()` for constant-time comparison
+ - **Status:** Mitigated
 
 4. **Race Conditions (MEDIUM)**
-   - **Attack:** Concurrent access corrupts message data
-   - **Mitigation:** fcntl-based exclusive locking
-   - **Status:**  Mitigated
+ - **Attack:** Concurrent access corrupts message data
+ - **Mitigation:** fcntl-based exclusive locking
+ - **Status:** Mitigated
 
 5. **Message Injection (HIGH)**
-   - **Attack:** Malicious process injects fake messages
-   - **Mitigation:** Authentication + permissions + audit logging
-   - **Status:**  Mitigated
+ - **Attack:** Malicious process injects fake messages
+ - **Mitigation:** Authentication + permissions + audit logging
+ - **Status:** Mitigated
 
 6. **Data Leakage (MEDIUM)**
-   - **Attack:** Unauthorized process reads sensitive context data
-   - **Mitigation:** Owner-only permissions, no network exposure
-   - **Status:**  Mitigated
+ - **Attack:** Unauthorized process reads sensitive context data
+ - **Mitigation:** Owner-only permissions, no network exposure
+ - **Status:** Mitigated
 
 ### Residual Risks
 
 1. **Root/Sudo Privilege Escalation (LOW)**
-   - **Description:** Root user can bypass file permissions
-   - **Mitigation:** OS-level security, audit logging
-   - **Acceptability:** Acceptable - root access implies system compromise
+ - **Description:** Root user can bypass file permissions
+ - **Mitigation:** OS-level security, audit logging
+ - **Acceptability:** Acceptable - root access implies system compromise
 
 2. **Physical Access (LOW)**
-   - **Description:** Physical access allows direct filesystem manipulation
-   - **Mitigation:** Physical security controls (out of scope)
-   - **Acceptability:** Acceptable - physical security responsibility
+ - **Description:** Physical access allows direct filesystem manipulation
+ - **Mitigation:** Physical security controls (out of scope)
+ - **Acceptability:** Acceptable - physical security responsibility
 
 3. **Memory Dump Analysis (LOW)**
-   - **Description:** Process memory may contain tokens
-   - **Mitigation:** Token rotation, short-lived processes
-   - **Acceptability:** Acceptable - requires elevated privileges
+ - **Description:** Process memory may contain tokens
+ - **Mitigation:** Token rotation, short-lived processes
+ - **Acceptability:** Acceptable - requires elevated privileges
 
 ---
 
@@ -174,11 +174,11 @@ fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
 ```python
 bridge = BridgeManager(
-    bridge_dir=None,  # Use secure temp directory
-    mode=BridgeMode.NAMED_PIPE,  # More secure than sockets
-    owner_only=True,  # Enforce 0o600 permissions
-    require_auth=True,  # Require authentication tokens
-    audit_file=None  # Use default audit log location
+ bridge_dir=None, # Use secure temp directory
+ mode=BridgeMode.NAMED_PIPE, # More secure than sockets
+ owner_only=True, # Enforce 0o600 permissions
+ require_auth=True, # Require authentication tokens
+ audit_file=None # Use default audit log location
 )
 ```
 
@@ -195,14 +195,14 @@ export CODEX_BRIDGE_DIR="/secure/path/to/bridge"
 
 ```python
 bridge = BridgeManager(
-    bridge_dir=Path("/tmp/dev_bridge"),
-    mode=BridgeMode.NAMED_PIPE,
-    owner_only=True,
-    require_auth=False,  # ️ Disabled for testing
+ bridge_dir=Path("/tmp/dev_bridge"),
+ mode=BridgeMode.NAMED_PIPE,
+ owner_only=True,
+ require_auth=False, # Disabled for testing
 )
 ```
 
-**️ Warning:** Only use `require_auth=False` in isolated development environments.
+** Warning:** Only use `require_auth=False` in isolated development environments.
 
 ---
 
@@ -227,10 +227,10 @@ python -c "import keyring; keyring.set_password('codex', 'bridge_token', '$TOKEN
 5. Archive old token securely
 
 **Token Storage:**
--  Environment variables (ephemeral)
--  Secure credential managers (keyring, vault)
--  Configuration files (risk of accidental commit)
--  Source code (security violation)
+- Environment variables (ephemeral)
+- Secure credential managers (keyring, vault)
+- Configuration files (risk of accidental commit)
+- Source code (security violation)
 
 ## Audit Log Monitoring
 
@@ -255,18 +255,18 @@ import json
 from pathlib import Path
 
 def check_suspicious_activity(audit_file: Path, threshold: int = 5):
-    """Alert if authentication failures exceed threshold."""
-    failures = 0
-    with open(audit_file, 'r') as f:
-        for line in f:
-            entry = json.loads(line)
-            if entry["event"] == "AUTH_FAILURE":
-                failures += 1
+ """Alert if authentication failures exceed threshold."""
+ failures = 0
+ with open(audit_file, 'r') as f:
+ for line in f:
+ entry = json.loads(line)
+ if entry["event"] == "AUTH_FAILURE":
+ failures += 1
 
-    if failures > threshold:
-        print(f"️  ALERT: {failures} authentication failures detected!")
-        return True
-    return False
+ if failures > threshold:
+ print(f" ALERT: {failures} authentication failures detected!")
+ return True
+ return False
 ```
 
 ## Incident Response
@@ -275,9 +275,9 @@ def check_suspicious_activity(audit_file: Path, threshold: int = 5):
 1. Review audit log for source and timestamp
 2. Check if source is authorized process
 3. If unauthorized:
-   - Rotate bridge token immediately
-   - Investigate process origin
-   - Review system logs for compromise indicators
+ - Rotate bridge token immediately
+ - Investigate process origin
+ - Review system logs for compromise indicators
 4. Document incident
 
 **Unauthorized Access:**
@@ -294,10 +294,10 @@ def check_suspicious_activity(audit_file: Path, threshold: int = 5):
 ### Security Test Coverage
 
 **Test Suite:** `tests/test_bridge_authentication.py`
--  13 authentication tests
--  8 audit trail tests
--  Timing attack prevention tests
--  Token validation tests
+- 13 authentication tests
+- 8 audit trail tests
+- Timing attack prevention tests
+- Token validation tests
 
 **Run Security Tests:**
 ```bash
@@ -335,11 +335,11 @@ export CODEX_BRIDGE_TOKEN="test_token_123"
 
 # Test with valid token (should succeed)
 python -c "from src.bridge_manager import share_context_with_copilot; \
-           share_context_with_copilot({'test': 'data'})"
+ share_context_with_copilot({'test': 'data'})"
 
 # Test with invalid token (should fail)
 CODEX_BRIDGE_TOKEN="wrong" python -c "from src.bridge_manager import share_context_with_copilot; \
-           share_context_with_copilot({'test': 'data'})"
+ share_context_with_copilot({'test': 'data'})"
 ```
 
 ---
@@ -361,28 +361,28 @@ from src.bridge_manager import BridgeManager, ContextMessage, BridgeMode
 from datetime import datetime, UTC
 
 def benchmark_write_latency(iterations=1000):
-    bridge = BridgeManager(mode=BridgeMode.NAMED_PIPE, require_auth=False)
+ bridge = BridgeManager(mode=BridgeMode.NAMED_PIPE, require_auth=False)
 
-    latencies = []
-    for _ in range(iterations):
-        message = ContextMessage(
-            timestamp=datetime.now(UTC).isoformat(),
-            source="benchmark",
-            message_type="test",
-            context={"data": "test"}
-        )
+ latencies = []
+ for _ in range(iterations):
+ message = ContextMessage(
+ timestamp=datetime.now(UTC).isoformat(),
+ source="benchmark",
+ message_type="test",
+ context={"data": "test"}
+ )
 
-        start = time.perf_counter()
-        bridge.write_message(message)
-        end = time.perf_counter()
+ start = time.perf_counter()
+ bridge.write_message(message)
+ end = time.perf_counter()
 
-        latencies.append((end - start) * 1000)  # Convert to ms
+ latencies.append((end - start) * 1000) # Convert to ms
 
-    print(f"Avg: {sum(latencies)/len(latencies):.2f}ms")
-    print(f"P95: {sorted(latencies)[int(0.95 * len(latencies))]:.2f}ms")
-    print(f"Max: {max(latencies):.2f}ms")
+ print(f"Avg: {sum(latencies)/len(latencies):.2f}ms")
+ print(f"P95: {sorted(latencies)[int(0.95 * len(latencies))]:.2f}ms")
+ print(f"Max: {max(latencies):.2f}ms")
 
-    bridge.cleanup()
+ bridge.cleanup()
 ```
 
 ---
@@ -391,20 +391,20 @@ def benchmark_write_latency(iterations=1000):
 
 ### Security Standards Met
 
--  **CWE-732:** Incorrect Permission Assignment for Critical Resource
--  **CWE-367:** Time-of-check Time-of-use (TOCTOU) Race Condition
--  **CWE-208:** Observable Timing Discrepancy
--  **CWE-287:** Improper Authentication
--  **CWE-778:** Insufficient Logging
+- **CWE-732:** Incorrect Permission Assignment for Critical Resource
+- **CWE-367:** Time-of-check Time-of-use (TOCTOU) Race Condition
+- **CWE-208:** Observable Timing Discrepancy
+- **CWE-287:** Improper Authentication
+- **CWE-778:** Insufficient Logging
 
 ### Best Practices Followed
 
--  Principle of Least Privilege (owner-only permissions)
--  Defense in Depth (permissions + authentication + audit)
--  Secure by Default (authentication enabled by default)
--  Fail-Safe Defaults (authentication disabled if token missing)
--  Complete Mediation (all operations authenticated)
--  Audit Trail (comprehensive security logging)
+- Principle of Least Privilege (owner-only permissions)
+- Defense in Depth (permissions + authentication + audit)
+- Secure by Default (authentication enabled by default)
+- Fail-Safe Defaults (authentication disabled if token missing)
+- Complete Mediation (all operations authenticated)
+- Audit Trail (comprehensive security logging)
 
 ---
 
@@ -416,7 +416,7 @@ def benchmark_write_latency(iterations=1000):
 ```python
 # Old fragile bridge at temp/bridge_codex_copilot_bridge
 with open("temp/bridge_codex_copilot_bridge/context.json", "w") as f:
-    json.dump(context, f)
+ json.dump(context, f)
 ```
 
 **After (Secure):**
@@ -437,12 +437,12 @@ share_context_with_copilot(context)
 USE_SECURE_BRIDGE = os.getenv("CODEX_USE_SECURE_BRIDGE", "true").lower() == "true"
 
 if USE_SECURE_BRIDGE:
-    from src.bridge_manager import share_context_with_copilot
-    share_context_with_copilot(context)
+ from src.bridge_manager import share_context_with_copilot
+ share_context_with_copilot(context)
 else:
-    # Legacy fallback
-    with open("temp/bridge/context.json", "w") as f:
-        json.dump(context, f)
+ # Legacy fallback
+ with open("temp/bridge/context.json", "w") as f:
+ json.dump(context, f)
 ```
 
 ---
@@ -452,24 +452,24 @@ else:
 ### Planned (PS-03 and beyond)
 
 1. **Encrypted Message Payloads**
-   - Encrypt context data with AES-256
-   - Key derivation from auth token
-   - Target: Q1 2026
+ - Encrypt context data with AES-256
+ - Key derivation from auth token
+ - Target: Q1 2026
 
 2. **Certificate-Based Authentication**
-   - Replace shared secrets with X.509 certificates
-   - Mutual TLS for Unix sockets
-   - Target: Q2 2026
+ - Replace shared secrets with X.509 certificates
+ - Mutual TLS for Unix sockets
+ - Target: Q2 2026
 
 3. **Rate Limiting**
-   - Prevent DoS attacks
-   - Configurable message rate limits
-   - Target: Q2 2026
+ - Prevent DoS attacks
+ - Configurable message rate limits
+ - Target: Q2 2026
 
 4. **Remote Bridge Support**
-   - TLS-encrypted TCP sockets for remote scenarios
-   - Certificate pinning
-   - Target: Q3 2026 (if needed)
+ - TLS-encrypted TCP sockets for remote scenarios
+ - Certificate pinning
+ - Target: Q3 2026 (if needed)
 
 ---
 
@@ -488,6 +488,6 @@ else:
 
 ---
 
-**Document Maintainer:** GitHub Copilot (PS-02)  
+**Document Maintainer:** GitHub Copilot (PS-02)
 **Last Updated: 2026-07-11
 **Next Review:** After PS-02 completion

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_4_EMBEDDINGS_INTEGRATION_REPORT/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 4: Faiss Embeddings Integration Report - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2438,8 +2438,8 @@
 <h1 id="phase-4-faiss-embeddings-integration-report">Phase 4: Faiss Embeddings Integration Report<a class="headerlink" href="#phase-4-faiss-embeddings-integration-report" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Date:</strong> 2026-06-23T03:08:34.829399<br/>
-<strong>Status:</strong>  COMPLETE - Ready for Production</p>
+<p><strong>Date:</strong> 2026-06-23T03:08:34.829399
+<strong>Status:</strong> COMPLETE - Ready for Production</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Phase 4 successfully integrates Faiss embeddings for semantic session search across 10 Copilot sessions.</p>
@@ -2529,27 +2529,27 @@
 - Can be upgraded to GPU version if needed</p>
 <h3 id="3-data-pipeline">3. Data Pipeline<a class="headerlink" href="#3-data-pipeline" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Session Metadata
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├─ session_id: "S001"
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─ summary: "Cache management optimization"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├─ agent_name: "cache-management-agent"
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>└─ created_at: "2026-06-23T02:51:09Z"
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        ↓
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> session_id: "S001"
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> summary: "Cache management optimization"
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> agent_name: "cache-management-agent"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> created_at: "2026-06-23T02:51:09Z"
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>Text Combination
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├─ Combined: "Cache management optimization cache-management-agent"
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├─ Normalized: lowercase, whitespace trimmed
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└─ Validated: non-empty
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        ↓
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Combined: "Cache management optimization cache-management-agent"
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Normalized: lowercase, whitespace trimmed
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> Validated: non-empty
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
 <a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>Embedding Generation
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>├─ Model: sentence-transformers/all-MiniLM-L6-v2
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>├─ Input: combined text
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>├─ Output: 384-dim float32 vector
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└─ Storage: Faiss IVFFlat + JSON metadata
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        ↓
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Model: sentence-transformers/all-MiniLM-L6-v2
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> Input: combined text
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> Output: 384-dim float32 vector
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> Storage: Faiss IVFFlat + JSON metadata
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
 <a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>Search &amp; Retrieval
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>├─ Query text → embedding
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>├─ Find top-k similar sessions (L2 distance)
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>├─ Return (session_id, similarity_score) tuples
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>└─ Similarity: normalized to [0, 1]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> Query text embedding
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> Find top-k similar sessions (L2 distance)
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> Return (session_id, similarity_score) tuples
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> Similarity: normalized to [0, 1]
 </code></pre></div>
 <h3 id="4-session-coverage">4. Session Coverage<a class="headerlink" href="#4-session-coverage" title="Permanent link">¶</a></h3>
 <table>
@@ -2585,12 +2585,12 @@
 </table>
 <h3 id="5-performance-results">5. Performance Results<a class="headerlink" href="#5-performance-results" title="Permanent link">¶</a></h3>
 <p><strong>Search Latency:</strong>
-- Cold start: 0.03ms (target: &lt;100ms) 
-- Warm cache: 0.02ms (target: &lt;50ms) 
-- Batch (10 queries): 0.37ms (target: &lt;200ms) </p>
+- Cold start: 0.03ms (target: &lt;100ms)
+- Warm cache: 0.02ms (target: &lt;50ms)
+- Batch (10 queries): 0.37ms (target: &lt;200ms)</p>
 <p><strong>Memory Footprint:</strong>
 - Index size: 0.03 MB
-- Target: &lt;50 MB </p>
+- Target: &lt;50 MB</p>
 <hr/>
 <h2 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">¶</a></h2>
 <h3 id="sessionembeddings-api">SessionEmbeddings API<a class="headerlink" href="#sessionembeddings-api" title="Permanent link">¶</a></h3>
@@ -2603,10 +2603,10 @@
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1"># Add session</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="n">embeddings</span><span class="o">.</span><span class="n">add_session</span><span class="p">(</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="n">session_id</span><span class="o">=</span><span class="s2">"S293"</span><span class="p">,</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="n">summary</span><span class="o">=</span><span class="s2">"Query filtering optimization"</span><span class="p">,</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">patterns</span><span class="o">=</span><span class="p">[</span><span class="s2">"P-001"</span><span class="p">],</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"database"</span><span class="p">]</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="n">session_id</span><span class="o">=</span><span class="s2">"S293"</span><span class="p">,</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> <span class="n">summary</span><span class="o">=</span><span class="s2">"Query filtering optimization"</span><span class="p">,</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> <span class="n">patterns</span><span class="o">=</span><span class="p">[</span><span class="s2">"P-001"</span><span class="p">],</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"database"</span><span class="p">]</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="p">)</span>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="c1"># Search by session</span>
@@ -2632,13 +2632,13 @@
 <h4 id="index-statistics">Index Statistics<a class="headerlink" href="#index-statistics" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># {</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1">#     'total_sessions': 10,</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1">#     'dimension': 384,</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1">#     'model': 'sentence-transformers/all-MiniLM-L6-v2',</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="c1">#     'has_faiss': True,</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="c1">#     'has_model': True,</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="c1">#     'embeddings_path': '.codex/session_embeddings.faiss',</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="c1">#     'metadata_path': '.codex/session_embeddings_metadata.json'</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1"># 'total_sessions': 10,</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># 'dimension': 384,</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># 'model': 'sentence-transformers/all-MiniLM-L6-v2',</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="c1"># 'has_faiss': True,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="c1"># 'has_model': True,</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="c1"># 'embeddings_path': '.codex/session_embeddings.faiss',</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="c1"># 'metadata_path': '.codex/session_embeddings_metadata.json'</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># }</span>
 </code></pre></div>
 <h3 id="file-storage">File Storage<a class="headerlink" href="#file-storage" title="Permanent link">¶</a></h3>
@@ -2698,16 +2698,16 @@
 <h2 id="auto-approval-status">Auto-Approval Status<a class="headerlink" href="#auto-approval-status" title="Permanent link">¶</a></h2>
 <p><strong>APPROVED FOR MERGE</strong></p>
 <p>All deliverables complete:
-1.  Faiss index initialized
-2.  10 sessions embedded
-3.  Semantic search validated
-4.  Performance within targets
-5.  Integration tests passing
-6.  Documentation complete
-7.  Ready for Phase 4.3 (API Integration)</p>
+1. Faiss index initialized
+2. 10 sessions embedded
+3. Semantic search validated
+4. Performance within targets
+5. Integration tests passing
+6. Documentation complete
+7. Ready for Phase 4.3 (API Integration)</p>
 <hr/>
-<p><strong>Generated by</strong>: phase4-embeddings-fast-integrator agent<br/>
-<strong>Session</strong>: Phase 4 Implementation<br/>
+<p><strong>Generated by</strong>: phase4-embeddings-fast-integrator agent
+<strong>Session</strong>: Phase 4 Implementation
 <strong>Status</strong>: Phase 4.1-4.2 COMPLETE - Proceeding to Phase 4.3</p>
 </article>
 </div>
@@ -2738,6 +2738,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

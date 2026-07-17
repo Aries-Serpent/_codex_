@@ -1,6 +1,6 @@
 # SOP (Local/Self-hosted): How ChatGPT Codex proposes PRs here
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 

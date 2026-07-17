@@ -1,7 +1,7 @@
 <!-- BEGIN: CODEX_DOCS_DYNAMICAL_SYSTEM -->
 # Codex Dynamics: a quantum-operational model for single-shot repo runs
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -92,7 +92,7 @@ Public-API (re)exports are encoded as commuting constraints `E_s = 1` for each e
 
 # 5) Canonicalization triad (merge/rename/delete)
 
-For each duplicate family 𝔽 (e.g., `tokenizer.py0, .py1, .py00 → tokenizer.py`) define idempotent operators:
+For each duplicate family 𝔽 (e.g., `tokenizer.py0, .py1, .py00 tokenizer.py`) define idempotent operators:
 
 ```text
 𝕄_𝔽  (merge) ,   ℜ_𝔽  (rename) ,   𝔇_𝔽  (delete)
@@ -173,7 +173,7 @@ Conditioning on success collapses onto the “green build” manifold; otherwise
 
 **Invariants.**
 
-* No-Actions invariant: `[H(t), Π_noGH] = 0` ⇒ forbidden files cannot be created/activated.
+* No-Actions invariant: `[H(t), Π_noGH] = 0` forbidden files cannot be created/activated.
 * Canonicalization decreases a Lyapunov potential `Φ = ∑_𝔽 N_suffix,𝔽`, and
 
 ```text
@@ -194,7 +194,7 @@ Interpretation: no pending edits, no error channels active, all gates passing.
 Consider one family 𝔽 = {`x.py0`, `x.py1`} with target `x.py`.
 Occupancies `(n0, n1, n)` are eigenvalues of `{N_0, N_1, N}`.
 
-Start with `|ψ₀⟩ = |1,1,0⟩`. Apply merge→rename→delete:
+Start with `|ψ₀⟩ = |1,1,0⟩`. Apply mergerenamedelete:
 
 ```text
 |ψ₁⟩ = 𝕄_𝔽 |1,1,0⟩ = |0,0,1⟩         (content union landed in canonical)

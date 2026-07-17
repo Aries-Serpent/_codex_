@@ -1,9 +1,9 @@
 # [Process]: Agent Session Closing Notes (Handoff Protocol)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## Protocol (Mandatory)
 At the end of every agent iteration:
@@ -13,7 +13,7 @@ At the end of every agent iteration:
 4) Next 3 actions with owners
 5) Copy-paste command block for resuming work
 6) Archival Policy reminder:
-   - ADR → Tombstone → Evidence → CHANGELOG → Pointer (conditional) → Manifest verify
+ - ADR Tombstone Evidence CHANGELOG Pointer (conditional) Manifest verify
 7) Links: PR #, CI run URL, ADR doc(s)
 
 ## PR Template Hook

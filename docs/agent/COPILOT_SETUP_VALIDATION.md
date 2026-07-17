@@ -1,6 +1,6 @@
 # Copilot Setup Steps Validation Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -36,8 +36,8 @@ The copilot-setup-steps.yml validation system ensures the critical GitHub Action
 **Purpose:** Ensure the workflow file is syntactically valid YAML.
 
 **Tests:**
--  YAML syntax parse (Python yaml.safe_load)
--  Proper indentation (2-space standard)
+- YAML syntax parse (Python yaml.safe_load)
+- Proper indentation (2-space standard)
 
 **Run individually:**
 ```bash
@@ -78,8 +78,8 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Protect critical sections of the workflow from being accidentally broken.
 
 **Tests:**
--  Session preload uses block scalar syntax (`run: |`)
--  Protected sections not removed (lines 99-101, 132-137)
+- Session preload uses block scalar syntax (`run: |`)
+- Protected sections not removed (lines 99-101, 132-137)
 
 **Protected sections:**
 - Lines 99-101: CCA variables definitions
@@ -137,9 +137,9 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Prevent security issues like hardcoded secrets and invalid token references.
 
 **Tests:**
--  Hardcoded secrets scan (pattern matching for token formats)
--  Token reference validation (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)
--  YAML injection prevention (special character escaping)
+- Hardcoded secrets scan (pattern matching for token formats)
+- Token reference validation (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)
+- YAML injection prevention (special character escaping)
 
 **What triggers failures:**
 - Hardcoded GitHub tokens (ghp_, ghu_, ghs_, ghe_ patterns)
@@ -156,20 +156,20 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Detect unexpected file size growth, complexity increases, or configuration drift.
 
 **Tests:**
--  File size regression (baseline: 673 lines, tolerance: ±5%)
--  Complexity analysis (job/step count)
--  LFS configuration (verify not corrupted)
+- File size regression (baseline: 673 lines, tolerance: ±5%)
+- Complexity analysis (job/step count)
+- LFS configuration (verify not corrupted)
 
 **Thresholds:**
-- ️ Warning: 750+ lines (might indicate bloat)
--  Failure: 1000+ lines (too large, merge blocked)
--  Acceptable: 640-700 lines (±5% tolerance)
+- Warning: 750+ lines (might indicate bloat)
+- Failure: 1000+ lines (too large, merge blocked)
+- Acceptable: 640-700 lines (±5% tolerance)
 
 **Complexity baseline:**
 - 2 jobs (expected)
 - 27 steps (expected)
-- ️ Warning if >30 steps (might indicate bloat)
--  Failure if >50 steps (too complex)
+- Warning if >30 steps (might indicate bloat)
+- Failure if >50 steps (too complex)
 
 **Failure actions:** BLOCKS MERGE if >1000 lines; WARNING if >750 lines
 
@@ -429,7 +429,7 @@ If tests fail and you're unsure how to fix:
 
 The PR can only be merged when ALL of the following are true:
 
-### Automated Requirements 
+### Automated Requirements
 - [ ] **All 6 CI job test suites pass** (0 failures)
 - [ ] **All 3 CCA variables present & correct** (validated)
 - [ ] **All 5 dependent workflows validate** (exist and valid YAML)
@@ -437,7 +437,7 @@ The PR can only be merged when ALL of the following are true:
 - [ ] **Security/secrets tests pass** (0 security issues)
 - [ ] **File size within range** (<1000 lines, <750 warning)
 
-### Human Requirements 
+### Human Requirements
 - [ ] **At least 1 human code review** (using COPILOT_SETUP_REVIEW_CHECKLIST.md)
 - [ ] **Reviewer approves the diff**
 - [ ] **All commit messages are clear**
@@ -447,14 +447,14 @@ The PR can only be merged when ALL of the following are true:
 - [ ] Multi-turn session smoke test passes
 - [ ] All documentation updated
 
-### Blocking Conditions 🛑
--  Any automated test fails
--  CCA variables removed or incorrect
--  Session preload converted to flow-scalar
--  Hardcoded secrets detected
--  File size >1000 lines
--  Dependent workflows broken
--  No human review
+### Blocking Conditions
+- Any automated test fails
+- CCA variables removed or incorrect
+- Session preload converted to flow-scalar
+- Hardcoded secrets detected
+- File size >1000 lines
+- Dependent workflows broken
+- No human review
 
 ---
 

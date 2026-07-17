@@ -1,10 +1,10 @@
 # Production Deployment Troubleshooting Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.0  
-**Audience**: DevOps engineers, operations teams, support engineers  
+**Last Updated**: 2026-07-08
+**Version**: 1.0
+**Audience**: DevOps engineers, operations teams, support engineers
 **Tier**: Production-Ready
 
 ---
@@ -57,52 +57,52 @@ kubectl get pod <pod-name> -n <namespace> -o yaml | grep -A 20 "env:"
 **Common Root Causes**:
 
 1. **Missing Environment Variables**
-   ```bash
-   # Check application startup logs
-   # Look for: "ERROR: Missing environment variable X"
-   
-   # Solution: Add missing environment variable
-   # For Docker
-   docker run -e DATABASE_URL=... -e API_KEY=...
-   
-   # For Kubernetes
-   kubectl set env deployment/codex-ml DATABASE_URL=... API_KEY=...
-   ```
+ ```bash
+ # Check application startup logs
+ # Look for: "ERROR: Missing environment variable X"
+ 
+ # Solution: Add missing environment variable
+ # For Docker
+ docker run -e DATABASE_URL=... -e API_KEY=...
+ 
+ # For Kubernetes
+ kubectl set env deployment/codex-ml DATABASE_URL=... API_KEY=...
+ ```
 
 2. **Port Already in Use**
-   ```bash
-   # Check if port is in use
-   lsof -i :8000
-   netstat -tlnp | grep 8000
-   
-   # Solution: Use different port or kill conflicting process
-   kill -9 <pid>
-   ```
+ ```bash
+ # Check if port is in use
+ lsof -i :8000
+ netstat -tlnp | grep 8000
+ 
+ # Solution: Use different port or kill conflicting process
+ kill -9 <pid>
+ ```
 
 3. **Insufficient Disk Space**
-   ```bash
-   # Check disk usage
-   df -h
-   docker system df
-   
-   # Solution: Clean up unused containers/images
-   docker system prune -a
-   docker image prune
-   ```
+ ```bash
+ # Check disk usage
+ df -h
+ docker system df
+ 
+ # Solution: Clean up unused containers/images
+ docker system prune -a
+ docker image prune
+ ```
 
 4. **Memory Issues**
-   ```bash
-   # Check memory limits
-   docker stats <container-id>
-   
-   # Solution: Increase memory limit
-   docker run -m 4g <image>
-   
-   # For Kubernetes
-   kubectl set resources deployment codex-ml \
-     --limits=memory=4Gi,cpu=2 \
-     --requests=memory=2Gi,cpu=1
-   ```
+ ```bash
+ # Check memory limits
+ docker stats <container-id>
+ 
+ # Solution: Increase memory limit
+ docker run -m 4g <image>
+ 
+ # For Kubernetes
+ kubectl set resources deployment codex-ml \
+ --limits=memory=4Gi,cpu=2 \
+ --requests=memory=2Gi,cpu=1
+ ```
 
 ### Issue: Service Not Responding
 
@@ -156,8 +156,8 @@ docker logs --timestamps --tail 100 <container-id>
 ```bash
 # 1. Monitor memory over time
 while true; do
-  docker stats --no-stream <container-id> | tail -1
-  sleep 5
+ docker stats --no-stream <container-id> | tail -1
+ sleep 5
 done
 
 # 2. Identify memory leaks in logs
@@ -177,8 +177,8 @@ docker update --memory 4g <container-id>
 
 # For Kubernetes
 kubectl set resources deployment codex-ml \
-  --limits=memory=4Gi \
-  --requests=memory=2Gi -n <namespace>
+ --limits=memory=4Gi \
+ --requests=memory=2Gi -n <namespace>
 
 # Enable memory swap
 docker run --memory 4g --memory-swap 8g <image>
@@ -281,7 +281,7 @@ psql -U postgres -d codex -c "SELECT count(*) FROM pg_stat_activity;"
 
 # 2. Identify idle connections
 psql -U postgres -d codex -c \
-  "SELECT pid, usename, state FROM pg_stat_activity WHERE state = 'idle';"
+ "SELECT pid, usename, state FROM pg_stat_activity WHERE state = 'idle';"
 
 # 3. Check connection limits
 psql -U postgres -d codex -c "SHOW max_connections;"
@@ -325,7 +325,7 @@ default_pool_size = 25
 ```bash
 # 1. Check replication lag
 psql -U postgres -d codex -c \
-  "SELECT client_addr, state, sync_state, write_lag FROM pg_stat_replication;"
+ "SELECT client_addr, state, sync_state, write_lag FROM pg_stat_replication;"
 
 # 2. Monitor WAL positions
 psql -U postgres -d codex -c "SELECT pg_current_wal_lsn();"
@@ -364,7 +364,7 @@ MONITOR: Watch write_lag and flush_lag in pg_stat_replication
 # 1. Enable query logging
 ALTER SYSTEM SET log_statement = 'all';
 ALTER SYSTEM SET log_duration = true;
-ALTER SYSTEM SET log_min_duration_statement = 1000;  # Log queries > 1s
+ALTER SYSTEM SET log_min_duration_statement = 1000; # Log queries > 1s
 SELECT pg_reload_conf();
 
 # 2. Analyze slow query
@@ -398,7 +398,7 @@ CREATE INDEX idx_orders_customer_date ON orders(customer_id, created_at);
 
 SELECT o.* FROM orders o 
 WHERE o.customer_id IN (
-  SELECT id FROM customers WHERE country = 'US'
+ SELECT id FROM customers WHERE country = 'US'
 ) AND o.created_at > '2026-01-01';
 ```
 
@@ -448,7 +448,7 @@ kubectl label nodes <node-name> <label-key>=<label-value>
 
 # Solution 3: Resource request too high
 kubectl set resources deployment <deployment> \
-  --requests=memory=1Gi,cpu=500m
+ --requests=memory=1Gi,cpu=500m
 ```
 
 ### Issue: Network Connectivity Problems
@@ -459,11 +459,11 @@ kubectl set resources deployment <deployment> \
 ```bash
 # 1. Test DNS resolution
 kubectl run -it --rm debug --image=busybox --restart=Never -- \
-  nslookup kubernetes.default
+ nslookup kubernetes.default
 
 # 2. Test connectivity to service
 kubectl run -it --rm debug --image=busybox --restart=Never -- \
-  wget -O- http://codex-ml-service:80
+ wget -O- http://codex-ml-service:80
 
 # 3. Check network policies
 kubectl get networkpolicies -A
@@ -481,7 +481,7 @@ kubectl rollout restart deployment/coredns -n kube-system
 
 # Clear DNS cache
 kubectl run -it --rm debug --image=busybox --restart=Never -- \
-  sh -c "cat /etc/resolv.conf"
+ sh -c "cat /etc/resolv.conf"
 
 # Solution 2: Network policy blocking traffic
 kubectl get networkpolicy -A
@@ -504,30 +504,30 @@ kubectl describe svc <service-name> -n <namespace>
 ```bash
 # 1. Check ALB/CLB metrics
 aws cloudwatch get-metric-statistics \
-  --namespace AWS/ApplicationELB \
-  --metric-name TargetResponseTime \
-  --dimensions Name=LoadBalancer,Value=<alb-name> \
-  --start-time 2026-07-08T00:00:00Z \
-  --end-time 2026-07-08T01:00:00Z \
-  --period 300 \
-  --statistics Average
+ --namespace AWS/ApplicationELB \
+ --metric-name TargetResponseTime \
+ --dimensions Name=LoadBalancer,Value=<alb-name> \
+ --start-time 2026-07-08T00:00:00Z \
+ --end-time 2026-07-08T01:00:00Z \
+ --period 300 \
+ --statistics Average
 
 # 2. Check target health
 aws elbv2 describe-target-health \
-  --target-group-arn <target-group-arn>
+ --target-group-arn <target-group-arn>
 
 # 3. Check active connections
 aws cloudwatch get-metric-statistics \
-  --namespace AWS/ApplicationELB \
-  --metric-name ActiveConnectionCount
+ --namespace AWS/ApplicationELB \
+ --metric-name ActiveConnectionCount
 ```
 
 **Solutions**:
 ```bash
 # Scale targets
 aws autoscaling set-desired-capacity \
-  --auto-scaling-group-name <asg-name> \
-  --desired-capacity 10
+ --auto-scaling-group-name <asg-name> \
+ --desired-capacity 10
 
 # Optimize target
 # - Reduce response time in application
@@ -536,8 +536,8 @@ aws autoscaling set-desired-capacity \
 
 # Check for connection draining issues
 aws elbv2 modify-target-group-attributes \
-  --target-group-arn <target-group-arn> \
-  --attributes Key=deregistration_delay.timeout_seconds,Value=30
+ --target-group-arn <target-group-arn> \
+ --attributes Key=deregistration_delay.timeout_seconds,Value=30
 ```
 
 ---
@@ -554,7 +554,7 @@ aws elbv2 modify-target-group-attributes \
 grep "401\|403\|Unauthorized" /var/log/application.log
 
 # 2. Verify JWT token
-jwt.io  # Paste token for inspection
+jwt.io # Paste token for inspection
 
 # 3. Check API key validity
 curl -H "Authorization: ******" http://api/endpoint
@@ -606,19 +606,19 @@ certbot renew --force-renewal
 
 # Update certificate in load balancer
 aws acm-pca issue-certificate \
-  --certificate-authority-arn <ca-arn> \
-  --csr fileb://csr.pem
+ --certificate-authority-arn <ca-arn> \
+ --csr fileb://csr.pem
 
 # Or create new certificate
 aws acm request-certificate \
-  --domain-name example.com \
-  --validation-method DNS
+ --domain-name example.com \
+ --validation-method DNS
 
 # Update certificate in service
 kubectl create secret tls tls-secret \
-  --cert=path/to/cert.crt \
-  --key=path/to/key.key \
-  --dry-run=client -o yaml | kubectl apply -f -
+ --cert=path/to/cert.crt \
+ --key=path/to/key.key \
+ --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 ---
@@ -629,17 +629,17 @@ kubectl create secret tls tls-secret \
 
 ```
 Automated Failover Workflow
-├─ Detect Primary Failure (Health check timeout)
-├─ Validate Secondary Health
-├─ Update DNS Records (Route 53)
-├─ Promote Secondary Database
-├─ Scale Up Secondary Application
-├─ Run Post-Failover Validation
-│  ├─ Test API endpoints
-│  ├─ Verify database connectivity
-│  ├─ Check application metrics
-│  └─ Confirm data consistency
-└─ Notify Operations Team
+ Detect Primary Failure (Health check timeout)
+ Validate Secondary Health
+ Update DNS Records (Route 53)
+ Promote Secondary Database
+ Scale Up Secondary Application
+ Run Post-Failover Validation
+ Test API endpoints
+ Verify database connectivity
+ Check application metrics
+ Confirm data consistency
+ Notify Operations Team
 
 Manual Failover Steps
 1. Assess primary region status
@@ -658,8 +658,8 @@ aws s3 ls s3://backup-bucket/postgres/
 
 # 2. Create recovery instance
 aws rds create-db-instance-from-db-snapshot \
-  --db-instance-identifier recovered-db \
-  --db-snapshot-identifier <snapshot-id>
+ --db-instance-identifier recovered-db \
+ --db-snapshot-identifier <snapshot-id>
 
 # 3. Verify recovery
 psql -h <recovered-db-endpoint> -U admin -d codex

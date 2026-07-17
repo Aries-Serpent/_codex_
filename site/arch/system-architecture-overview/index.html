@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/system-architecture-overview/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>System Architecture Overview - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2549,8 +2549,8 @@
 <h1 id="system-architecture-overview">System Architecture Overview<a class="headerlink" href="#system-architecture-overview" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Production Ready<br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Status:</strong> Production Ready
+<strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-08
 </strong>Author:** Phase 12 WS3 Documentation Team</p>
 <hr/>
@@ -2583,55 +2583,53 @@
 <hr/>
 <h2 id="high-level-architecture">High-Level Architecture<a class="headerlink" href="#high-level-architecture" title="Permanent link">¶</a></h2>
 <h3 id="system-overview">System Overview<a class="headerlink" href="#system-overview" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│                    Client Layer                             │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│  │ Web Console  │  │ CLI Tool     │  │ API Client   │      │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│  └──────────────┘  └──────────────┘  └──────────────┘      │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>└─────────────────────────────────────────────────────────────┘
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>           │                    │                  │
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>           └────────────────────┼──────────────────┘
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>                                │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>                   HTTPS / TLS 1.3
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>                                │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>┌─────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│                  API Gateway Layer                          │
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│  ┌──────────────────────────────────────────────────────┐  │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│  │ Load Balancer (AWS ELB / Google LB)                  │  │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│  │ - SSL/TLS termination                               │  │
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│  │ - Rate limiting                                     │  │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│  │ - DDoS protection (CDN)                             │  │
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>│  └──────────────────────────────────────────────────────┘  │
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>└─────────────────────────────────────────────────────────────┘
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>           │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>           │ REST API / gRPC
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>           │
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>┌─────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>│               Authentication &amp; Authorization                │
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>│  ┌──────────────────────────────────────────────────────┐  │
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>│  │ OAuth 2.0 Gateway                                    │  │
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>│  │ - GitHub OAuth integration                          │  │
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>│  │ - MFA provider                                      │  │
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>│  │ - Token management                                  │  │
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>│  └──────────────────────────────────────────────────────┘  │
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>└─────────────────────────────────────────────────────────────┘
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>           │
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>┌─────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>│              Microservices Layer                            │
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>│  │ Agent Service│  │ Workflow Svc │  │  RBAC Svc    │      │
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>│  └──────────────┘  └──────────────┘  └──────────────┘      │
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>│  │Approval Svc  │  │  Audit Svc   │  │ Secrets Svc  │      │
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>│  └──────────────┘  └──────────────┘  └──────────────┘      │
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>└─────────────────────────────────────────────────────────────┘
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>           │
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>           ├─────────┬─────────┬──────────┐
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>           │         │         │          │
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>┌──────────▼─┐ ┌──────▼────┐ ┌▼────────┐ ┌▼──────────┐
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>│   SQLite   │ │ PostgreSQL│ │  Redis  │ │   S3/GCS  │
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>│ (metadata) │ │  (audit)  │ │(cache)  │ │ (archive) │
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>└────────────┘ └───────────┘ └─────────┘ └───────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Client Layer 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> Web Console CLI Tool API Client 
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> HTTPS / TLS 1.3
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> API Gateway Layer 
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> Load Balancer (AWS ELB / Google LB) 
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> - SSL/TLS termination 
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> - Rate limiting 
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> - DDoS protection (CDN) 
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> REST API / gRPC
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> Authentication &amp; Authorization 
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> OAuth 2.0 Gateway 
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> - GitHub OAuth integration 
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> - MFA provider 
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> - Token management 
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> Microservices Layer 
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> Agent Service Workflow Svc RBAC Svc 
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> Approval Svc Audit Svc Secrets Svc 
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a> SQLite PostgreSQL Redis S3/GCS 
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> (metadata) (audit) (cache) (archive) 
 </code></pre></div>
 <h3 id="architectural-layers">Architectural Layers<a class="headerlink" href="#architectural-layers" title="Permanent link">¶</a></h3>
 <ol>
@@ -2657,14 +2655,14 @@
 - RBAC Service (authorization)
 - Audit Service (logging)</p>
 <p><strong>API Endpoints:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>GET    /api/v1/agents                    # List agents
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>POST   /api/v1/agents                    # Create agent
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>GET    /api/v1/agents/{id}               # Get agent
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>PUT    /api/v1/agents/{id}               # Update agent
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>DELETE /api/v1/agents/{id}               # Delete agent
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>POST   /api/v1/agents/{id}/execute       # Execute agent
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>GET    /api/v1/agents/{id}/versions      # List versions
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>POST   /api/v1/agents/{id}/rollback      # Rollback version
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>GET /api/v1/agents # List agents
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>POST /api/v1/agents # Create agent
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>GET /api/v1/agents/{id} # Get agent
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>PUT /api/v1/agents/{id} # Update agent
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>DELETE /api/v1/agents/{id} # Delete agent
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>POST /api/v1/agents/{id}/execute # Execute agent
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>GET /api/v1/agents/{id}/versions # List versions
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>POST /api/v1/agents/{id}/rollback # Rollback version
 </code></pre></div></p>
 <h4 id="workflow-service">Workflow Service<a class="headerlink" href="#workflow-service" title="Permanent link">¶</a></h4>
 <p><strong>Responsibilities:</strong>
@@ -2746,145 +2744,143 @@
 <h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">¶</a></h2>
 <h3 id="authentication-flow">Authentication Flow<a class="headerlink" href="#authentication-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>User Login
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    ↓
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>[GitHub OAuth Flow]
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    ├─ Redirect to GitHub
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    ├─ User grants permission
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    └─ GitHub redirects with code
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    ↓
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> Redirect to GitHub
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> User grants permission
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> GitHub redirects with code
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>[Exchange Code for Tokens]
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    ├─ OAuth Manager validates code
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    ├─ GitHub returns access token
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    └─ Codex creates session
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    ↓
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> OAuth Manager validates code
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> GitHub returns access token
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> Codex creates session
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>[MFA (if enabled)]
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    ├─ User enters TOTP code
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    └─ MFA Provider validates
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    ↓
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> User enters TOTP code
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> MFA Provider validates
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
 <a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>[Token Issuance]
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    ├─ Access Token (15 min)
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    ├─ Refresh Token (30 days)
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    └─ Session Token (24 hours)
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    ↓
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> Access Token (15 min)
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> Refresh Token (30 days)
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> Session Token (24 hours)
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>User Authenticated
 </code></pre></div>
 <h3 id="authorization-flow">Authorization Flow<a class="headerlink" href="#authorization-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>API Request
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    ↓
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>[Extract Token from Header]
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    ├─ Authorization: ******
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    └─ Validate signature (RS256)
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    ↓
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> Authorization: ******
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> Validate signature (RS256)
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>[Load User from Token]
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    ├─ Get user_id
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    ├─ Get roles
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    └─ Get scopes
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    ↓
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> Get user_id
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> Get roles
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> Get scopes
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>[Check RBAC]
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    ├─ RBAC Service validates permission
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    ├─ (role, action, resource) → permission matrix
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    └─ If denied: return 403
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    ↓
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> RBAC Service validates permission
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> (role, action, resource) permission matrix
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> If denied: return 403
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>[Check Scopes]
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    ├─ Token scopes match required scope?
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    └─ If denied: return 403
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    ↓
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> Token scopes match required scope?
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> If denied: return 403
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
 <a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>[Audit Log]
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    ├─ Record access attempt
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    ├─ Include user, resource, result
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    └─ Forward to Audit Service
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>    ↓
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> Record access attempt
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> Include user, resource, result
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> Forward to Audit Service
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>
 <a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>Request Proceeds / Request Denied
 </code></pre></div>
 <h3 id="approval-workflow-flow">Approval Workflow Flow<a class="headerlink" href="#approval-workflow-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Sensitive Operation Requested
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    ↓
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>[Create Approval Request]
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    ├─ Policy Code: AGENT_DEPLOY_PROD
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    ├─ Requester: alice@company.com
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    ├─ Resource: agent_prod_001
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    └─ Context: {agent_name, version, risk_level}
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    ↓
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> Policy Code: AGENT_DEPLOY_PROD
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> Requester: alice@company.com
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> Resource: agent_prod_001
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> Context: {agent_name, version, risk_level}
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>[Check RBAC Auto-Approval]
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    ├─ Requester has required role?
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    ├─ Policy allows auto-approval?
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    ├─ Operation is destructive?
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    └─ If all yes: AUTO-APPROVED → proceed
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    └─ If any no: PENDING → wait for approval
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    ↓
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> Requester has required role?
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> Policy allows auto-approval?
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> Operation is destructive?
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> If all yes: AUTO-APPROVED proceed
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> If any no: PENDING wait for approval
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>[Get Approvers]
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    ├─ Policy defines required roles
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    ├─ RBAC lists users with roles
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    └─ Notify approvers
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    ↓
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> Policy defines required roles
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> RBAC lists users with roles
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> Notify approvers
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
 <a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>[Wait for Decisions]
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>    ├─ SLA: 4 hours
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>    ├─ Approver submits decision (approve/reject)
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    └─ Audit logs decision
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    ↓
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> SLA: 4 hours
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> Approver submits decision (approve/reject)
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a> Audit logs decision
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>
 <a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>[Check Quorum]
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>    ├─ All required approvers approved?
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>    ├─ Status: APPROVED → proceed
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>    ├─ Any rejected?
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>    ├─ Status: REJECTED → blocked
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>    └─ SLA expired?
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>    └─ Escalate to L2 approvers
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>    ↓
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> All required approvers approved?
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> Status: APPROVED proceed
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> Any rejected?
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> Status: REJECTED blocked
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a> SLA expired?
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a> Escalate to L2 approvers
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>
 <a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>Operation Proceeds / Blocked
 </code></pre></div>
 <hr/>
 <h2 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">¶</a></h2>
 <h3 id="infrastructure-topology">Infrastructure Topology<a class="headerlink" href="#infrastructure-topology" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>┌──────────────────────────────────────────────────────────┐
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>│                  Internet                                │
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>└──────────────────────────────────────────────────────────┘
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>                         │
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>                    [CDN / WAF]
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>                    CloudFront/Akamai
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>                         │
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>┌──────────────────────────────────────────────────────────┐
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>│             AWS Region / Google Cloud Region             │
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>├──────────────────────────────────────────────────────────┤
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>│  Load Balancer (NLB / LB)                                │
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>│  - Port 443 (HTTPS)                                      │
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>│  - Health checks to backend                             │
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>│  - Auto-scaling                                         │
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>└──────────────────────────────────────────────────────────┘
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>                         │
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>        ┌────────────────┼────────────────┐
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>        │                │                │
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>┌───────▼───────┐ ┌──────▼──────┐ ┌──────▼──────┐
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>│ K8s Cluster   │ │ K8s Cluster │ │ K8s Cluster │
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>│ Zone A (us-a) │ │ Zone B (us-b)│ │ Zone C (us-c)│
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>├───────────────┤ ├─────────────┤ ├─────────────┤
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>│ Pods:         │ │ Pods:       │ │ Pods:       │
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>│ - API Svc     │ │ - API Svc   │ │ - API Svc   │
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>│ - Agent Svc   │ │ - Agent Svc │ │ - Agent Svc │
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>│ - Auth Svc    │ │ - Auth Svc  │ │ - Auth Svc  │
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>│ - Audit Svc   │ │ - Audit Svc │ │ - Audit Svc │
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>└───────┬───────┘ └──────┬──────┘ └──────┬──────┘
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>        │                │                │
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a>        └────────────────┼────────────────┘
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a>                         │
-<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>        ┌────────────────┼────────────────┐
-<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>        │                │                │
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>┌───────▼────────┐ ┌────▼────────┐ ┌────▼─────┐
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>│ PostgreSQL     │ │ SQLite      │ │ Redis    │
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a>│ (RDS)          │ │ (Local)     │ │(Elasticache)
-<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a>│ - Agents       │ │ - RBAC      │ │ - Cache  │
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>│ - Workflows    │ │ - Approval  │ │ - Sessions
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>│ - Audit Logs   │ │             │ │ - Tokens
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>└────────────────┘ └─────────────┘ └──────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a> Internet 
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> [CDN / WAF]
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> CloudFront/Akamai
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> AWS Region / Google Cloud Region 
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> Load Balancer (NLB / LB) 
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> - Port 443 (HTTPS) 
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> - Health checks to backend 
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> - Auto-scaling 
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> K8s Cluster K8s Cluster K8s Cluster 
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> Zone A (us-a) Zone B (us-b) Zone C (us-c)
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> Pods: Pods: Pods: 
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> - API Svc - API Svc - API Svc 
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> - Agent Svc - Agent Svc - Agent Svc 
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> - Auth Svc - Auth Svc - Auth Svc 
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> - Audit Svc - Audit Svc - Audit Svc 
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a> PostgreSQL SQLite Redis 
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a> (RDS) (Local) (Elasticache)
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a> - Agents - RBAC - Cache 
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a> - Workflows - Approval - Sessions
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a> - Audit Logs - Tokens
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>
 <a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a>
-<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a>        ┌────────────────┬────────────────┐
-<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a>        │                │
-<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a>┌───────▼──────────┐ ┌──▼────────────────┐
-<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a>│ S3 / GCS         │ │ Secrets Manager    │
-<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a>│ (Object Storage) │ │ (KMS Encryption)   │
-<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a>│ - Agent Code     │ │ - Master Keys      │
-<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a>│ - Agent Logs     │ │ - API Keys         │
-<a href="#__codelineno-5-49" id="__codelineno-5-49" name="__codelineno-5-49"></a>│ - Archived Audit │ │ - DB Passwords     │
-<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a>└──────────────────┘ └────────────────────┘
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a>
+<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a>
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a> S3 / GCS Secrets Manager 
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a> (Object Storage) (KMS Encryption) 
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a> - Agent Code - Master Keys 
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a> - Agent Logs - API Keys 
+<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a> - Archived Audit - DB Passwords 
 </code></pre></div>
 <h3 id="service-deployment">Service Deployment<a class="headerlink" href="#service-deployment" title="Permanent link">¶</a></h3>
 <p><strong>API Service:</strong> 3-5 replicas across zones
@@ -3152,7 +3148,7 @@
 </ul>
 <hr/>
 <p><strong>Last Updated: 2026-07-08
-</strong>Version:<strong> 1.0.0<br/>
+</strong>Version:<strong> 1.0.0
 </strong>Status:** Production Ready</p>
 </article>
 </div>
@@ -3183,6 +3179,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

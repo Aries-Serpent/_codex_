@@ -1,0 +1,172 @@
+env:
+  name: ubuntu
+  shell: /bin/bash
+  tmp_dir: /tmp/codex
+  os: linux
+seed: 1337
+data:
+  path: ${oc.env:DATA_DIR, data/processed}
+  raw_dir: ${oc.env:DATA_RAW_DIR, data/raw}
+  processed_dir: ${data.path}
+  models_dir: data/models
+  cache_dir: .cache
+  catalog: {}
+  ingest:
+    input_path: ${data.raw_dir}/input.csv
+  clean:
+    output_path: ${data.processed_dir}/clean.csv
+    drop_na: true
+    required_columns:
+    - id
+    - value
+    value_minmax:
+    - 0
+    - 2
+  features:
+    output_path: ${data.processed_dir}/features.csv
+    even_flag: true
+    passthrough:
+    - id
+    - value
+model:
+  type: hf_causal_lm
+  pretrained: sshleifer/tiny-gpt2
+  tokenizer: sshleifer/tiny-gpt2
+  dtype: float32
+  trust_remote_code: false
+  low_cpu_mem_usage: true
+  attn_impl: eager
+  peft:
+    enable: true
+    lora_r: 8
+    lora_alpha: 16
+    lora_dropout: 0.05
+train:
+  enable: false
+  epochs: 1
+  batch_size: 4
+  lr: 0.0005
+  weight_decay: 0.0
+  grad_accum: 1
+  max_steps: 5
+  save_dir: ${data.models_dir}/baseline
+  save_adapters: true
+  freeze_base: true
+  text_column: null
+  id_column: id
+  value_column: value
+  log_every_n: 1
+  log_ndjson: true
+  seed: ${seed}
+peft:
+  enable: true
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+serve:
+  enabled: false
+  host: 127.0.0.1
+  port: 8000
+  route_prefix: /
+  num_replicas: 1
+  timeout_s: 30
+  batching:
+    enabled: true
+    max_batch_size: 8
+    timeout_ms: 20
+  model:
+    source: adapters
+    adapters_dir: ${data.models_dir}/baseline
+    pretrained: ${model.pretrained}
+  generate:
+    max_new_tokens: 32
+    do_sample: false
+    temperature: 0.7
+    top_p: 0.95
+    top_k: null
+  logging:
+    enable_request_log: true
+    metrics_dir: .codex/metrics
+    filename_prefix: serve
+monitor:
+  tracking:
+    allow_remote: false
+  metrics_dir: .codex/metrics
+  reports_dir: .codex/reports
+  tags:
+    project: hhg_logistics
+    env: ${env.name}
+  data:
+    enable: true
+    reference_csv: data/sample/clean.csv
+    current_csv: ${pipeline.clean.output_path}
+    report_dir: ${monitor.reports_dir}
+    report_html: ${monitor.data.report_dir}/data_drift.html
+    report_json: ${monitor.data.report_dir}/data_drift.json
+    thresholds:
+      drift_share_critical: 0.5
+      p_value_critical: 0.05
+    abort_on_critical: false
+    tracked_columns:
+    - value
+  serve:
+    enable: true
+    reference_csv: ${monitor.metrics_dir}/serve-ref.csv
+    current_src: ${monitor.metrics_dir}
+    report_dir: ${monitor.reports_dir}
+    report_html: ${monitor.serve.report_dir}/serve_drift.html
+    report_json: ${monitor.serve.report_dir}/serve_drift.json
+    ensure_reference_if_missing: true
+    thresholds:
+      latency_p95_increase_pct_critical: 50.0
+      gen_len_drop_pct_critical: 50.0
+    abort_on_critical: false
+hooks:
+  enable: true
+  ema:
+    enable: false
+    decay: 0.999
+  checkpoint:
+    enable: false
+    every_steps: 10
+    out_dir: ${data.models_dir}/checkpoints
+  ndjson_log:
+    enable: true
+    file: .codex/metrics/train.ndjson
+plugins:
+  enable: true
+  modules:
+  - hhg_logistics.plugins.example_plugin
+pipeline:
+  ingest:
+    input_path: ${data.raw_dir}/input.csv
+    csv: {}
+  clean:
+    output_path: ${data.processed_dir}/clean.csv
+    drop_na: true
+    required_columns:
+    - id
+    - value
+    value_minmax:
+    - 0
+    - 2
+  features:
+    output_path: ${data.processed_dir}/features.csv
+    even_flag: true
+    passthrough:
+    - id
+    - value
+eval:
+  enable: false
+  tasks:
+  - hellaswag:10
+  - arc_easy:10
+  batch_size: auto
+  num_fewshot: null
+  output_dir: .codex/reports
+  output_json: ${eval.output_dir}/eval.json
+  model_args:
+    use_accelerate: true
+    dtype: float32
+  system_prompt: null
+  limit: 100

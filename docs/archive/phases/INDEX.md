@@ -1,6 +1,6 @@
 # Phase Completion Reports Archive
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This directory contains historical phase completion reports from the Cognitive Brain development and implementation project.
 

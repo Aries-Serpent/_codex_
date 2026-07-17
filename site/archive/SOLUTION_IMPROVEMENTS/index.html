@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/SOLUTION_IMPROVEMENTS/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Solution Improvements - PR Checks Workflow Optimization - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2503,8 +2503,8 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <p><strong>Date:2026-07-13
-</strong>Related Issue:<strong> PR #2513 - CI/Build Failures<br/>
-</strong>Commits:** <code>fafc211</code> → <code>0f4a022</code></p>
+</strong>Related Issue:<strong> PR #2513 - CI/Build Failures
+</strong>Commits:** <code>fafc211</code> <code>0f4a022</code></p>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
 <p>After fixing the initial <code>ModuleNotFoundError: No module named 'fastapi'</code> issue in the PR Checks workflow, we identified opportunities to improve the solution for better performance, maintainability, and consistency.</p>
 <h2 id="evolution-of-solutions">Evolution of Solutions<a class="headerlink" href="#evolution-of-solutions" title="Permanent link">¶</a></h2>
@@ -2520,10 +2520,10 @@
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="no">uv pip install --system -r requirements-test.txt</span>
 </code></pre></div>
 <p><strong>Issues with V1:</strong>
--  Duplicate dependency installation (once from pyproject.toml, once from requirements-test.txt)
--  Cache key only tracked requirements files, not pyproject.toml
--  Potential version conflicts between two sources
--  Less efficient than necessary</p>
+- Duplicate dependency installation (once from pyproject.toml, once from requirements-test.txt)
+- Cache key only tracked requirements files, not pyproject.toml
+- Potential version conflicts between two sources
+- Less efficient than necessary</p>
 <h3 id="solution-v2-final-commit-0f4a022">Solution V2 - FINAL (Commit <code>0f4a022</code>)<a class="headerlink" href="#solution-v2-final-commit-0f4a022" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Restore cache from main (read-only)</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache/restore@v4</span>
@@ -2615,21 +2615,21 @@
 <h2 id="dependencies-satisfied">Dependencies Satisfied<a class="headerlink" href="#dependencies-satisfied" title="Permanent link">¶</a></h2>
 <p>The <code>[dev]</code> extras provide everything needed for PR checks:</p>
 <p><strong>Core Dependencies</strong> (from main package):
-- fastapi&gt;=0.110 
-- transformers&gt;=4.41 
-- torch&gt;=2.1 
-- pandas&gt;=2.1 
-- numpy&gt;=1.26 
+- fastapi&gt;=0.110
+- transformers&gt;=4.41
+- torch&gt;=2.1
+- pandas&gt;=2.1
+- numpy&gt;=1.26
 - ... (all core deps)</p>
 <p><strong>Test Dependencies</strong> (from dev extras):
-- pytest&gt;=7.4 
-- pytest-cov&gt;=4.1 
-- pytest-randomly&gt;=3.15 
-- hypothesis&gt;=6.100 </p>
+- pytest&gt;=7.4
+- pytest-cov&gt;=4.1
+- pytest-randomly&gt;=3.15
+- hypothesis&gt;=6.100</p>
 <p><strong>Linting Tools</strong> (from dev extras):
-- ruff&gt;=0.4 
-- black&gt;=24.8 
-- isort&gt;=5.13 </p>
+- ruff&gt;=0.4
+- black&gt;=24.8
+- isort&gt;=5.13</p>
 <h2 id="migration-path-for-other-workflows">Migration Path for Other Workflows<a class="headerlink" href="#migration-path-for-other-workflows" title="Permanent link">¶</a></h2>
 <p>This pattern can be applied to other workflows:</p>
 <p><strong>Before:</strong>
@@ -2692,6 +2692,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

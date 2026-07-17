@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/COPILOT_PR_TEMPLATE_USAGE_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Copilot PR Template Usage Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2359,8 +2359,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Version:</strong> 1.0.0<br/>
-<strong>Generated:</strong> 2025-11-17<br/>
+<p><strong>Version:</strong> 1.0.0
+<strong>Generated:</strong> 2025-11-17
 <strong>Purpose:</strong> Guide for Copilot agents on using PR_TEMPLATE_COMPREHENSIVE.md when creating/updating PR descriptions</p>
 </blockquote>
 <hr/>
@@ -2429,25 +2429,25 @@
 <p>For each section included:</p>
 <ol class="task-list">
 <li><strong>Mark Completed Items</strong> with <code>[x]</code>:
-   ```markdown</li>
+ ```markdown</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> ModelConfig class with env var support</li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multi-backend support (stub, HuggingFace, ONNX)
-   ```</p>
+ ```</p>
 </li>
 <li>
 <p><strong>Mark Pending Items</strong> with <code>[ ]</code>:
-   ```markdown</p>
+ ```markdown</p>
 </li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> GPU acceleration (planned for Phase D2)</li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Distributed inference (future work)
-   ```</p>
+ ```</p>
 </li>
 <li>
 <p><strong>Omit Irrelevant Items</strong> entirely:
-   <code>markdown
-   # Don't include unrelated items - just remove them</code></p>
+ <code>markdown
+ # Don't include unrelated items - just remove them</code></p>
 </li>
 </ol>
 <h3 id="step-4-provide-summary-statistics">Step 4: Provide Summary Statistics<a class="headerlink" href="#step-4-provide-summary-statistics" title="Permanent link">¶</a></h3>
@@ -2458,7 +2458,7 @@
 - Files created/modified
 - Acceptance criteria status (X/Y met)</p>
 <hr/>
-<h2 id="example-updating-pr-description">🎬 EXAMPLE: UPDATING PR DESCRIPTION<a class="headerlink" href="#example-updating-pr-description" title="Permanent link">¶</a></h2>
+<h2 id="example-updating-pr-description">EXAMPLE: UPDATING PR DESCRIPTION<a class="headerlink" href="#example-updating-pr-description" title="Permanent link">¶</a></h2>
 <h3 id="scenario-phase-completion">Scenario: Phase Completion<a class="headerlink" href="#scenario-phase-completion" title="Permanent link">¶</a></h3>
 <p>After completing "Phase D1: Request Batching", update the PR description:</p>
 <p>```markdown</p>
@@ -2489,7 +2489,7 @@
 - <strong>Tests:</strong> 11 comprehensive tests
 - <strong>Files Created:</strong> src/codex_ml/serving/batching.py, tests/codex_ml/test_batching.py
 - <strong>Code:</strong> 544 lines</p>
-<h3 id="d2-response-caching-next">🔜 D2: Response Caching (NEXT)<a class="headerlink" href="#d2-response-caching-next" title="Permanent link">¶</a></h3>
+<h3 id="d2-response-caching-next">D2: Response Caching (NEXT)<a class="headerlink" href="#d2-response-caching-next" title="Permanent link">¶</a></h3>
 <p><strong>Capability Section D) Performance Optimizations - Response Caching:</strong>
 - [ ] LRU cache with TTL support
 - [ ] Content-based cache keys
@@ -2501,16 +2501,16 @@
 <h2 id="critical-rules">CRITICAL RULES<a class="headerlink" href="#critical-rules" title="Permanent link">¶</a></h2>
 <h3 id="before-finishing-a-session">Before Finishing a Session<a class="headerlink" href="#before-finishing-a-session" title="Permanent link">¶</a></h3>
 <p><strong>MUST DO:</strong>
-1.  <strong>Review PR_TEMPLATE_COMPREHENSIVE.md</strong> - Understand which checkboxes apply
-2.  <strong>Update PR Description</strong> - Fill out relevant template sections with current state
-3.  <strong>Verify Checkboxes Match Implementation</strong> - Ensure accuracy
-4.  <strong>Include Summary Statistics</strong> - Provide commit count, test count, file counts
-5.  <strong>Document Remaining Work</strong> - mark unchecked items that are planned</p>
+1. <strong>Review PR_TEMPLATE_COMPREHENSIVE.md</strong> - Understand which checkboxes apply
+2. <strong>Update PR Description</strong> - Fill out relevant template sections with current state
+3. <strong>Verify Checkboxes Match Implementation</strong> - Ensure accuracy
+4. <strong>Include Summary Statistics</strong> - Provide commit count, test count, file counts
+5. <strong>Document Remaining Work</strong> - mark unchecked items that are planned</p>
 <p><strong>MUST NOT DO:</strong>
-1.  <strong>Leave PR description with generic/freeform text</strong> - Always use template structure
-2.  <strong>Mark items as complete when they're not</strong> - Be accurate
-3.  <strong>Include ALL checkboxes</strong> - Only include relevant capability sections
-4.  <strong>Forget to update after each phase</strong> - Keep PR description current</p>
+1. <strong>Leave PR description with generic/freeform text</strong> - Always use template structure
+2. <strong>Mark items as complete when they're not</strong> - Be accurate
+3. <strong>Include ALL checkboxes</strong> - Only include relevant capability sections
+4. <strong>Forget to update after each phase</strong> - Keep PR description current</p>
 <h3 id="when-another-copilot-resumes">When Another Copilot Resumes<a class="headerlink" href="#when-another-copilot-resumes" title="Permanent link">¶</a></h3>
 <p>The next Copilot agent can quickly:
 1. Read the checkbox-based PR description
@@ -2592,33 +2592,48 @@
 </ul>
 <hr/>
 <h2 id="quick-reference-pr-update-workflow">QUICK REFERENCE: PR UPDATE WORKFLOW<a class="headerlink" href="#quick-reference-pr-update-workflow" title="Permanent link">¶</a></h2>
-<p><code>text
-1. START SESSION
-   ↓
-2. LOAD PR_TEMPLATE_COMPREHENSIVE.md
-   ↓
-3. IDENTIFY RELEVANT SECTIONS (A-K)
-   ↓
-4. MAKE CODE CHANGES
-   ↓
-5. UPDATE PR DESCRIPTION
-   - Check completed items [x]
-   - Leave pending items [ ]
-   - Omit irrelevant sections
-   - Update statistics
-   ↓
-6. COMMIT CHANGES with report_progress
-   ↓
-7. REPEAT STEPS 4-6 FOR EACH PHASE
-   ↓
-8. BEFORE FINISHING SESSION
-   - Verify all checkboxes accurate
-   - Document remaining work
-   - Update summary statistics
-   ↓
-9. END SESSION</code>text</p>
+<p>```text
+1. START SESSION</p>
+<ol>
+<li>
+<p>LOAD PR_TEMPLATE_COMPREHENSIVE.md</p>
+</li>
+<li>
+<p>IDENTIFY RELEVANT SECTIONS (A-K)</p>
+</li>
+<li>
+<p>MAKE CODE CHANGES</p>
+</li>
+<li>
+<p>UPDATE PR DESCRIPTION</p>
+</li>
+<li>Check completed items [x]</li>
+<li>Leave pending items [ ]</li>
+<li>Omit irrelevant sections</li>
+<li>
+<p>Update statistics</p>
+</li>
+<li>
+<p>COMMIT CHANGES with report_progress</p>
+</li>
+<li>
+<p>REPEAT STEPS 4-6 FOR EACH PHASE</p>
+</li>
+<li>
+<p>BEFORE FINISHING SESSION</p>
+</li>
+<li>Verify all checkboxes accurate</li>
+<li>Document remaining work</li>
+<li>
+<p>Update summary statistics</p>
+</li>
+<li>
+<p>END SESSION
+```text</p>
+</li>
+</ol>
 <hr/>
-<h2 id="example-complete-pr-description-structure">🎓 EXAMPLE: COMPLETE PR DESCRIPTION STRUCTURE<a class="headerlink" href="#example-complete-pr-description-structure" title="Permanent link">¶</a></h2>
+<h2 id="example-complete-pr-description-structure">EXAMPLE: COMPLETE PR DESCRIPTION STRUCTURE<a class="headerlink" href="#example-complete-pr-description-structure" title="Permanent link">¶</a></h2>
 <p>```markdown</p>
 <h1 id="comprehensive-ml-platform-enhancement-feature-names">Comprehensive ML Platform Enhancement: [Feature Names]<a class="headerlink" href="#comprehensive-ml-platform-enhancement-feature-names" title="Permanent link">¶</a></h1>
 <blockquote>
@@ -2630,7 +2645,7 @@
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>PR Title</strong>: Comprehensive ML Platform Enhancement</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Linked Issue(s)</strong>: Relates to #2264</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>PR Type</strong>:  New Feature,  Performance Improvement</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>PR Type</strong>: New Feature, Performance Improvement</li>
 </ul>
 <h3 id="scope-summary">Scope Summary<a class="headerlink" href="#scope-summary" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -2639,7 +2654,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Impact Assessment</strong>: High (new capabilities), Medium (performance), Low (breaking changes: none)</li>
 </ul>
 <hr/>
-<h2 id="required-safety-confirmations">️ REQUIRED SAFETY CONFIRMATIONS<a class="headerlink" href="#required-safety-confirmations" title="Permanent link">¶</a></h2>
+<h2 id="required-safety-confirmations">REQUIRED SAFETY CONFIRMATIONS<a class="headerlink" href="#required-safety-confirmations" title="Permanent link">¶</a></h2>
 <h3 id="network-security">Network &amp; Security<a class="headerlink" href="#network-security" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Network Safety Acknowledgment</strong> - NO network operations performed</li>
@@ -2660,7 +2675,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>No Debug Code</strong> - No debug code remains</li>
 </ul>
 <hr/>
-<h2 id="testing-requirements">🧪 TESTING REQUIREMENTS<a class="headerlink" href="#testing-requirements" title="Permanent link">¶</a></h2>
+<h2 id="testing-requirements">TESTING REQUIREMENTS<a class="headerlink" href="#testing-requirements" title="Permanent link">¶</a></h2>
 <h3 id="test-coverage">Test Coverage<a class="headerlink" href="#test-coverage" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Unit Tests Added</strong> - 188 new unit tests</li>
@@ -2794,11 +2809,11 @@
 - <strong>Files Modified:</strong> 7
 - <strong>Acceptance Criteria:</strong> 26/26 (100%)</p>
 <p><strong>Quality Metrics:</strong>
-- <strong>Security Scan:</strong>  0 vulnerabilities (CodeQL)
-- <strong>Test Pass Rate:</strong>  100%
-- <strong>Code Coverage:</strong>  &gt;90%
-- <strong>Breaking Changes:</strong>  None
-- <strong>Documentation:</strong>  Complete</p>
+- <strong>Security Scan:</strong> 0 vulnerabilities (CodeQL)
+- <strong>Test Pass Rate:</strong> 100%
+- <strong>Code Coverage:</strong> &gt;90%
+- <strong>Breaking Changes:</strong> None
+- <strong>Documentation:</strong> Complete</p>
 <hr/>
 <h2 id="acceptance-criteria">ACCEPTANCE CRITERIA<a class="headerlink" href="#acceptance-criteria" title="Permanent link">¶</a></h2>
 <p>All acceptance criteria met across all phases:
@@ -2811,11 +2826,11 @@
 <p><strong>Total: 26/26 (100%)</strong></p>
 <hr/>
 <h2 id="ready-for-review">READY FOR REVIEW<a class="headerlink" href="#ready-for-review" title="Permanent link">¶</a></h2>
-<p>All planned work complete<br/>
- All tests passing<br/>
- All documentation complete<br/>
- Zero security issues<br/>
- Zero breaking changes<br/>
+<p>All planned work complete 
+ All tests passing 
+ All documentation complete 
+ Zero security issues 
+ Zero breaking changes 
  Template-based PR description complete</p>
 <p><strong>Status:</strong> READY FOR FINAL REVIEW AND MERGE
 ```text</p>
@@ -2832,19 +2847,19 @@
 <li><strong>Summarize Well</strong> - Good summary statistics help reviewers understand scope</li>
 </ol>
 <hr/>
-<h2 id="questions">📞 QUESTIONS?<a class="headerlink" href="#questions" title="Permanent link">¶</a></h2>
+<h2 id="questions">QUESTIONS?<a class="headerlink" href="#questions" title="Permanent link">¶</a></h2>
 <p>If unsure about:
-- <strong>Which sections to include</strong> → Include sections for work you actually did
-- <strong>How to mark partial completion</strong> → Use sub-bullets: <code>[x]</code> parent, <code>[ ]</code> child
-- <strong>Whether to update PR description</strong> → When in doubt, update it
-- <strong>Template is too long</strong> → Omit irrelevant sections; only keep what applies</p>
+- <strong>Which sections to include</strong> Include sections for work you actually did
+- <strong>How to mark partial completion</strong> Use sub-bullets: <code>[x]</code> parent, <code>[ ]</code> child
+- <strong>Whether to update PR description</strong> When in doubt, update it
+- <strong>Template is too long</strong> Omit irrelevant sections; only keep what applies</p>
 <hr/>
 <h2 id="version-history">VERSION HISTORY<a class="headerlink" href="#version-history" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>v0.2.1</strong> (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage</li>
 </ul>
 <hr/>
-<p><strong>Remember:</strong> The template exists to help Copilot agents communicate state and efficiently. Use it well, and future sessions will thank you! </p>
+<p><strong>Remember:</strong> The template exists to help Copilot agents communicate state and efficiently. Use it well, and future sessions will thank you!</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2874,6 +2889,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

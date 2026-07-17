@@ -1,12 +1,12 @@
 # Solution Improvements - PR Checks Workflow Optimization
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
 **Date:2026-07-13
-**Related Issue:** PR #2513 - CI/Build Failures  
-**Commits:** `fafc211` → `0f4a022`
+**Related Issue:** PR #2513 - CI/Build Failures
+**Commits:** `fafc211` `0f4a022`
 
 ## Context
 
@@ -29,10 +29,10 @@ PR Checks workflow was failing because it only installed test dependencies from 
 ```
 
 **Issues with V1:**
--  Duplicate dependency installation (once from pyproject.toml, once from requirements-test.txt)
--  Cache key only tracked requirements files, not pyproject.toml
--  Potential version conflicts between two sources
--  Less efficient than necessary
+- Duplicate dependency installation (once from pyproject.toml, once from requirements-test.txt)
+- Cache key only tracked requirements files, not pyproject.toml
+- Potential version conflicts between two sources
+- Less efficient than necessary
 
 ### Solution V2 - FINAL (Commit `0f4a022`)
 ```yaml
@@ -57,25 +57,25 @@ PR Checks workflow was failing because it only installed test dependencies from 
 ## Why Solution V2 is Superior
 
 ### 1. Single Source of Truth
--  All dependencies defined in `pyproject.toml` under `[project.optional-dependencies.dev]`
--  No need to maintain parallel requirements files
--  Eliminates version conflicts between sources
+- All dependencies defined in `pyproject.toml` under `[project.optional-dependencies.dev]`
+- No need to maintain parallel requirements files
+- Eliminates version conflicts between sources
 
 ### 2. Better Caching
--  Cache key includes both `requirements*.txt` AND `pyproject.toml`
--  Cache properly invalidates when dependencies change
--  More reliable cache hits
+- Cache key includes both `requirements*.txt` AND `pyproject.toml`
+- Cache properly invalidates when dependencies change
+- More reliable cache hits
 
 ### 3. Consistency
--  Matches main test suite pattern: `pip install -e .[dev]`
--  Same environment across all CI workflows
--  Easier to debug - what works locally works in CI
+- Matches main test suite pattern: `pip install -e .[dev]`
+- Same environment across all CI workflows
+- Easier to debug - what works locally works in CI
 
 ### 4. Efficiency
--  Single install command instead of two
--  No duplicate dependency resolution
--  Faster with `uv` package manager
--  Reduced workflow execution time
+- Single install command instead of two
+- No duplicate dependency resolution
+- Faster with `uv` package manager
+- Reduced workflow execution time
 
 ### 5. Completeness
 The `[dev]` extras include all necessary tools:
@@ -96,9 +96,9 @@ dev = [
 ```
 
 ### 6. Maintainability
--  One place to update dependencies
--  Less prone to drift between environments
--  Clearer intent in workflow code
+- One place to update dependencies
+- Less prone to drift between environments
+- Clearer intent in workflow code
 
 ## Performance Comparison
 
@@ -138,23 +138,23 @@ Both workflows now follow the same pattern, with PR Checks using `uv` for speed.
 The `[dev]` extras provide everything needed for PR checks:
 
 **Core Dependencies** (from main package):
-- fastapi>=0.110 
-- transformers>=4.41 
-- torch>=2.1 
-- pandas>=2.1 
-- numpy>=1.26 
+- fastapi>=0.110
+- transformers>=4.41
+- torch>=2.1
+- pandas>=2.1
+- numpy>=1.26
 - ... (all core deps)
 
 **Test Dependencies** (from dev extras):
-- pytest>=7.4 
-- pytest-cov>=4.1 
-- pytest-randomly>=3.15 
-- hypothesis>=6.100 
+- pytest>=7.4
+- pytest-cov>=4.1
+- pytest-randomly>=3.15
+- hypothesis>=6.100
 
 **Linting Tools** (from dev extras):
-- ruff>=0.4 
-- black>=24.8 
-- isort>=5.13 
+- ruff>=0.4
+- black>=24.8
+- isort>=5.13
 
 ## Migration Path for Other Workflows
 

@@ -1,6 +1,6 @@
 # Research Note 11 — Counter-Balance Required to Maintain Continuous Energy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -75,19 +75,32 @@ E_cont(t) ≥ E_min_margin for all critical time windows
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing P_in, Positive side'}}%%
+
 flowchart LR
-    In[P_in] --> Positive[Positive side]
-    Storage[P_storage] --> Positive
-    Recovery[P_recovery] --> Positive
-    Load[P_load] --> Negative[Negative side]
-    Loss[P_loss] --> Negative
-    Safety[P_safety] --> Negative
-    Degradation[P_degradation] --> Negative
-    Positive --> Balance[E_cont]
-    Negative --> Balance
-    Balance --> Margin{E_cont >= E_min_margin?}
-    Margin -->|yes| Continue[continuous useful energy]
-    Margin -->|no| Correct[shape demand / switch source / shed load]
+
+ In[P_in] --> Positive[Positive side]
+
+ Storage[P_storage] --> Positive
+
+ Recovery[P_recovery] --> Positive
+
+ Load[P_load] --> Negative[Negative side]
+
+ Loss[P_loss] --> Negative
+
+ Safety[P_safety] --> Negative
+
+ Degradation[P_degradation] --> Negative
+
+ Positive --> Balance[E_cont]
+
+ Negative --> Balance
+
+ Balance --> Margin{E_cont >= E_min_margin?}
+
+ Margin -->|yes| Continue[continuous useful energy]
+
+ Margin -->|no| Correct[shape demand / switch source / shed load]
 ```
 
 ---
@@ -112,7 +125,7 @@ flowchart LR
 Continuous energy is not static. It is a dynamic equilibrium:
 
 ```text
-source variability ↔ storage reserve ↔ demand flexibility ↔ conversion losses ↔ safety boundaries ↔ feedback adaptation
+source variability storage reserve demand flexibility conversion losses safety boundaries feedback adaptation
 ```
 
 If generation is high but storage is absent, continuity fails during interruptions. If storage is high but demand is unconstrained, continuity fails during spikes. If demand is controlled but feedback is false, continuity fails through misrouting. If safety margins are ignored, continuity may appear successful until it becomes unsafe.
@@ -220,19 +233,19 @@ A practical controller can follow:
 
 ```text
 if reserve_margin low:
-    reduce noncritical load
-    increase storage discharge
-    acquire alternate supply
+ reduce noncritical load
+ increase storage discharge
+ acquire alternate supply
 elif safety_margin low:
-    throttle transfer
-    dissipate heat
-    narrow permissions or reduce blast radius
+ throttle transfer
+ dissipate heat
+ narrow permissions or reduce blast radius
 elif forecasted demand rising:
-    precharge storage
-    preauthorize scoped access
-    stage demand response
+ precharge storage
+ preauthorize scoped access
+ stage demand response
 else:
-    optimize efficiency and reduce degradation
+ optimize efficiency and reduce degradation
 ```
 
 This control law applies to batteries, RF sensors, microgrids, thermal systems, and access governance.
@@ -243,26 +256,42 @@ This control law applies to batteries, RF sensors, microgrids, thermal systems, 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Supply: generation / field / access context, Continuity balance'}}%%
+
 flowchart TD
-    Supply[Supply: generation / field / access context] --> Balance[Continuity balance]
-    Storage[Storage and reserve] --> Balance
-    Recovery[Recovery and regeneration] --> Balance
-    Demand[Demand and critical load] --> Balance
-    Loss[Losses and friction] --> Balance
-    Safety[Safety and risk margin] --> Balance
-    Degradation[Drift and degradation] --> Balance
-    Feedback[Sensing and feedback] --> Balance
 
-    Balance --> Decision{Reserve margin?}
-    Decision -->|positive and safe| Sustain[Sustain continuous energy]
-    Decision -->|low reserve| Shape[Shape demand and discharge storage]
-    Decision -->|unsafe| Throttle[Throttle, dissipate, or isolate]
-    Decision -->|drifting| Maintain[Recalibrate, repair, review]
+ Supply[Supply: generation / field / access context] --> Balance[Continuity balance]
 
-    Sustain --> Feedback
-    Shape --> Feedback
-    Throttle --> Feedback
-    Maintain --> Feedback
+ Storage[Storage and reserve] --> Balance
+
+ Recovery[Recovery and regeneration] --> Balance
+
+ Demand[Demand and critical load] --> Balance
+
+ Loss[Losses and friction] --> Balance
+
+ Safety[Safety and risk margin] --> Balance
+
+ Degradation[Drift and degradation] --> Balance
+
+ Feedback[Sensing and feedback] --> Balance
+
+ Balance --> Decision{Reserve margin?}
+
+ Decision -->|positive and safe| Sustain[Sustain continuous energy]
+
+ Decision -->|low reserve| Shape[Shape demand and discharge storage]
+
+ Decision -->|unsafe| Throttle[Throttle, dissipate, or isolate]
+
+ Decision -->|drifting| Maintain[Recalibrate, repair, review]
+
+ Sustain --> Feedback
+
+ Shape --> Feedback
+
+ Throttle --> Feedback
+
+ Maintain --> Feedback
 ```
 
 ---

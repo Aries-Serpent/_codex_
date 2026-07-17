@@ -1,6 +1,6 @@
 # Production Health Checks Specification
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 **Version**: 1.0.0
@@ -9,13 +9,13 @@
 
 ---
 
-##  Overview
+## Overview
 
 This document specifies all health check endpoints for production services, their SLAs, failure modes, and remediation procedures.
 
 ---
 
-## 🏥 Health Check Categories
+## Health Check Categories
 
 ### Category A: Liveness Probes
 **Purpose**: Determine if service is running (Kubernetes kubelet uses for restart decisions)
@@ -193,21 +193,21 @@ This document specifies all health check endpoints for production services, thei
 
 ---
 
-##  Service Health Check Matrix
+## Service Health Check Matrix
 
 | Service | Liveness | Readiness | Detailed | Database | Cache | Queue | Disk | Memory |
 |---------|----------|-----------|----------|----------|-------|-------|------|--------|
-| **API Gateway** |  10s/2s |  30s/5s |  60s/10s |  |  |  |  |  |
-| **Auth Service** |  10s/2s |  30s/5s |  60s/10s |  |  |  |  |  |
-| **User Service** |  10s/2s |  30s/5s |  60s/10s |  |  |  |  |  |
-| **Order Service** |  10s/2s |  30s/5s |  60s/10s |  |  |  |  |  |
-| **Payment Service** |  10s/2s |  30s/5s |  60s/10s |  |  |  |  |  |
-| **Analytics Service** |  10s/2s |  60s/10s |  120s/15s |  |  |  |  |  |
-| **Notification Service** |  10s/2s |  30s/5s |  60s/10s |  |  |  |  |  |
+| **API Gateway** | 10s/2s | 30s/5s | 60s/10s | | | | | |
+| **Auth Service** | 10s/2s | 30s/5s | 60s/10s | | | | | |
+| **User Service** | 10s/2s | 30s/5s | 60s/10s | | | | | |
+| **Order Service** | 10s/2s | 30s/5s | 60s/10s | | | | | |
+| **Payment Service** | 10s/2s | 30s/5s | 60s/10s | | | | | |
+| **Analytics Service** | 10s/2s | 60s/10s | 120s/15s | | | | | |
+| **Notification Service** | 10s/2s | 30s/5s | 60s/10s | | | | | |
 
 ---
 
-##  Dependency Health Checks
+## Dependency Health Checks
 
 ### Database Health Check
 
@@ -315,7 +315,7 @@ def check_message_queue():
 
 ---
 
-## ️ Health Check Failure Modes
+## Health Check Failure Modes
 
 ### Scenario 1: Database Slow (Latency >5s)
 
@@ -409,7 +409,7 @@ def check_message_queue():
 
 ---
 
-##  SLA Targets
+## SLA Targets
 
 | Metric | Target | Threshold |
 |--------|--------|-----------|
@@ -427,7 +427,7 @@ def check_message_queue():
 
 ---
 
-## 🧪 Testing Procedures
+## Testing Procedures
 
 ### Load Test: Health Check Endpoints
 
@@ -488,7 +488,7 @@ def inject_failure():
 
 ---
 
-##  Deployment Checklist
+## Deployment Checklist
 
 - [ ] All services have `/health/live` endpoint
 - [ ] All services have `/health/ready` endpoint

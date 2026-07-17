@@ -1,10 +1,10 @@
 # Security Enforcement Gates — _codex_ Repository
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version**: 1.0  
-**Date**: 2026-06-27  
-**Status**: Phase 4, Lane 2 — ACTIVE  
+**Version**: 1.0
+**Date**: 2026-06-27
+**Status**: Phase 4, Lane 2 — ACTIVE
 **Owner**: Security Automation Team
 
 ---
@@ -18,34 +18,34 @@ This document specifies the security enforcement gates that block or warn on cod
 ## Gate Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   Code Change (Push / PR)                       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-         ┌───────────────────────┼────────────────────────────┐
-         │                       │                            │
-         ▼                       ▼                            ▼
-    ┌─────────┐            ┌──────────┐             ┌─────────────┐
-    │ Semgrep │            │ pip-audit│             │  Bandit     │
-    │  SAST   │            │  Vulns   │             │ Security    │
-    └────┬────┘            └────┬─────┘             └─────┬───────┘
-         │                      │                        │
-         │ [HIGH/CRITICAL]      │ [CRITICAL]             │ [CRITICAL]
-         │                      │                        │
-         └──────────────┬───────┴────────────────────────┘
-                        │
-                        ▼
-              ┌──────────────────────┐
-              │ Parse Severity Level │
-              └──────┬───────────────┘
-                     │
-         ┌───────────┴───────────┐
-         │                       │
-     [BLOCK]              [WARN/ADVISORY]
-         │                       │
-         ▼                       ▼
-    Fail Job              Continue with warning
-    Exit code 1           (advisory only)
+
+ Code Change (Push / PR) 
+
+ 
+ 
+ 
+ 
+ 
+ Semgrep pip-audit Bandit 
+ SAST Vulns Security 
+ 
+ 
+ [HIGH/CRITICAL] [CRITICAL] [CRITICAL]
+ 
+ 
+ 
+ 
+ 
+ Parse Severity Level 
+ 
+ 
+ 
+ 
+ [BLOCK] [WARN/ADVISORY]
+ 
+ 
+ Fail Job Continue with warning
+ Exit code 1 (advisory only)
 ```
 
 ---
@@ -54,9 +54,9 @@ This document specifies the security enforcement gates that block or warn on cod
 
 ### Configuration
 
-**Workflow**: `.github/workflows/semgrep_sarif.yml`  
-**Trigger**: Push (main, develop, copilot/*), PR (main, develop), scheduled (daily 3 AM), manual dispatch  
-**Runtime**: ~10 minutes  
+**Workflow**: `.github/workflows/semgrep_sarif.yml`
+**Trigger**: Push (main, develop, copilot/*), PR (main, develop), scheduled (daily 3 AM), manual dispatch
+**Runtime**: ~10 minutes
 **Permissions**: `contents:read`, `security-events:write`
 
 ### Enforcement Rules
@@ -88,9 +88,9 @@ github/codeql-action/upload-sarif@v4 --sarif-file semgrep.sarif
 
 ```yaml
 config: >-
-  p/security-audit      # Top security rules
-  p/python              # Python-specific checks
-  p/owasp-top-ten       # OWASP Top 10
+ p/security-audit # Top security rules
+ p/python # Python-specific checks
+ p/owasp-top-ten # OWASP Top 10
 ```
 
 See: [Semgrep Registry](https://semgrep.dev/r)
@@ -101,9 +101,9 @@ See: [Semgrep Registry](https://semgrep.dev/r)
 
 ### Configuration
 
-**Workflow**: `.github/workflows/scheduled-dependency-audit.yml` (dependency-audit job)  
-**Trigger**: PR (changes to `requirements*.txt`, `pyproject.toml`), scheduled (weekly Monday)  
-**Runtime**: ~5 minutes  
+**Workflow**: `.github/workflows/scheduled-dependency-audit.yml` (dependency-audit job)
+**Trigger**: PR (changes to `requirements*.txt`, `pyproject.toml`), scheduled (weekly Monday)
+**Runtime**: ~5 minutes
 **Permissions**: `contents:read`, `security-events:write`
 
 ### Enforcement Rules
@@ -119,20 +119,20 @@ See: [Semgrep Registry](https://semgrep.dev/r)
 
 ```bash
 pip-audit -r requirements.txt -r requirements-dev.txt \
-  --format json -o ci_pip_audit.json
+ --format json -o ci_pip_audit.json
 
 # Parse CRITICAL severity from JSON output
 if grep -i 'CRITICAL' pip_audit_output.txt; then
-  echo "::error::CRITICAL CVE detected"
-  exit 1  # Block PR
+ echo "::error::CRITICAL CVE detected"
+ exit 1 # Block PR
 fi
 ```
 
 ### Output Formats
 
-1. **JSON** → `.codex/reports/ci_pip_audit.json` (machine-readable)
-2. **CycloneDX** → `.codex/reports/ci_pip_audit_cyclonedx.json` (SBOM-compatible)
-3. **Text** → Logged to workflow summary for human review
+1. **JSON** `.codex/reports/ci_pip_audit.json` (machine-readable)
+2. **CycloneDX** `.codex/reports/ci_pip_audit_cyclonedx.json` (SBOM-compatible)
+3. **Text** Logged to workflow summary for human review
 
 ### Remediation Workflow
 
@@ -153,9 +153,9 @@ None at this time. All CRITICAL CVEs block PRs.
 
 ### Configuration
 
-**Workflow**: `.github/workflows/code-quality-coverage-suite.yml` (bandit step)  
-**Trigger**: PR (changes to src/ or scripts/), push (main), dispatch  
-**Runtime**: ~2 minutes  
+**Workflow**: `.github/workflows/code-quality-coverage-suite.yml` (bandit step)
+**Trigger**: PR (changes to src/ or scripts/), push (main), dispatch
+**Runtime**: ~2 minutes
 **Permissions**: `contents:read`
 
 ### Enforcement Rules
@@ -171,16 +171,16 @@ None at this time. All CRITICAL CVEs block PRs.
 
 ```bash
 bandit -r src/ --configfile .bandit \
-  -f json -o bandit-report.json \
-  -f txt -o bandit-output.txt
+ -f json -o bandit-report.json \
+ -f txt -o bandit-output.txt
 
 # Count CRITICAL and HIGH
 CRITICAL_COUNT=$(jq '[.results[] | select(.severity == "HIGH" and .confidence == "HIGH")] | length' bandit-report.json)
 HIGH_COUNT=$(jq '[.results[] | select(.severity == "HIGH")] | length' bandit-report.json)
 
 if [ $CRITICAL_COUNT -gt 0 ]; then
-  echo "::error::Bandit found ${CRITICAL_COUNT} CRITICAL issues"
-  exit 1  # Block PR
+ echo "::error::Bandit found ${CRITICAL_COUNT} CRITICAL issues"
+ exit 1 # Block PR
 fi
 ```
 
@@ -208,9 +208,9 @@ Key skips (security-justified):
 
 ### Configuration
 
-**Workflow**: `.github/workflows/security-scanning-suite.yml` (codeql-scan job)  
-**Trigger**: Push (main, develop, copilot/*), PR (main, develop), scheduled (daily 2 AM + Sunday 3 AM)  
-**Runtime**: ~40-50 minutes  
+**Workflow**: `.github/workflows/security-scanning-suite.yml` (codeql-scan job)
+**Trigger**: Push (main, develop, copilot/*), PR (main, develop), scheduled (daily 2 AM + Sunday 3 AM)
+**Runtime**: ~40-50 minutes
 **Permissions**: `actions:read`, `contents:read`, `security-events:write`
 
 ### Enforcement Model
@@ -229,8 +229,8 @@ Key skips (security-justified):
 
 | Language | Status | Continue-on-Error |
 |----------|--------|-------------------|
-| Python |  Required | false (must pass) |
-| JavaScript | ️ Optional | true (may fail) |
+| Python | Required | false (must pass) |
+| JavaScript | Optional | true (may fail) |
 
 ### Queries
 
@@ -264,14 +264,14 @@ When a PR is opened, all gates run in parallel:
 
 ```
 GitHub PR
-  ├─ Semgrep SAST (10 min)
-  │   └─ [BLOCK] if HIGH/CRITICAL found
-  ├─ pip-audit (5 min)
-  │   └─ [BLOCK] if CRITICAL CVE found
-  ├─ Bandit (2 min)
-  │   └─ [BLOCK] if CRITICAL issue found
-  └─ CodeQL (45 min)
-      └─ [WARN] if HIGH/MEDIUM found
+ Semgrep SAST (10 min)
+ [BLOCK] if HIGH/CRITICAL found
+ pip-audit (5 min)
+ [BLOCK] if CRITICAL CVE found
+ Bandit (2 min)
+ [BLOCK] if CRITICAL issue found
+ CodeQL (45 min)
+ [WARN] if HIGH/MEDIUM found
 
 Result: PR can merge only if all gates pass
 ```
@@ -279,10 +279,10 @@ Result: PR can merge only if all gates pass
 ### Branch Protection Rules
 
 **Main Branch** (`main`):
-- Require semgrep 
-- Require pip-audit 
-- Require bandit 
-- Require CodeQL (advisory → blocking after Phase 4)
+- Require semgrep
+- Require pip-audit
+- Require bandit
+- Require CodeQL (advisory blocking after Phase 4)
 - Require status checks to pass
 - Dismiss stale PR approvals on new commits
 
@@ -345,9 +345,9 @@ Via GitHub Actions UI:
 
 1. **Assessment**: Verify the finding is a false positive
 2. **Documentation**: Comment in PR with:
-   - Finding ID and severity
-   - Why it's not a real vulnerability
-   - Mitigation or code change
+ - Finding ID and severity
+ - Why it's not a real vulnerability
+ - Mitigation or code change
 3. **Approval**: Request security team review (`@security-team`)
 4. **Tracking**: Create suppression entry in `.codex/security/SUPPRESSIONS_LOG.md`
 5. **Bypass**: Security lead approves, finding suppressed
@@ -415,7 +415,7 @@ Monthly security report:
 
 ---
 
-**Last Updated**: 2026-06-27  
-**Next Review**: 2026-09-27 (quarterly)  
+**Last Updated**: 2026-06-27
+**Next Review**: 2026-09-27 (quarterly)
 **Contact**: @security-team
 

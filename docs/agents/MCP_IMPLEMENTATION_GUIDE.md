@@ -1,6 +1,6 @@
 # MCP Implementation Guide for AI Agents
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Version: 1.0.0 | Generated: 2026-06-22 | Author: Copilot Agent
 
@@ -12,36 +12,36 @@ This guide provides step-by-step instructions for AI agents to implement, extend
 
 ```
 src/mcp/
-├── __init__.py          # Package exports
-├── auth.py              # Authentication (MCPAuthenticator)
-├── config.py            # Configuration (MCPConfig)
-├── errors.py            # Error hierarchy (MCPError)
-├── lifecycle.py         # Lifecycle management (LifecycleManager)
-├── observability.py     # Metrics/tracing (MetricsRegistry, Tracer)
-├── rate_limit.py        # Rate limiting (TokenBucketRateLimiter)
-├── registry.py          # Tool registry (ToolRegistry)
-├── versioning.py        # Version compatibility
-└── server/
-    ├── __init__.py      # MCPServer, JsonRpcError, Tool
-    ├── stdio.py         # StdioTransport
-    └── json_rpc.py      # JsonRpcHandler
+ __init__.py # Package exports
+ auth.py # Authentication (MCPAuthenticator)
+ config.py # Configuration (MCPConfig)
+ errors.py # Error hierarchy (MCPError)
+ lifecycle.py # Lifecycle management (LifecycleManager)
+ observability.py # Metrics/tracing (MetricsRegistry, Tracer)
+ rate_limit.py # Rate limiting (TokenBucketRateLimiter)
+ registry.py # Tool registry (ToolRegistry)
+ versioning.py # Version compatibility
+ server/
+ __init__.py # MCPServer, JsonRpcError, Tool
+ stdio.py # StdioTransport
+ json_rpc.py # JsonRpcHandler
 ```
 
 ### Test Locations
 
 ```
 tests/mcp/
-├── test_server.py
-├── test_auth.py
-├── test_config.py
-├── test_lifecycle.py / test_lifecycle_management.py
-├── test_observability.py
-├── test_rate_limit.py
-├── test_registry.py
-├── test_versioning.py
-├── test_stdio.py
-├── test_json_rpc.py / test_json_rpc_handler.py
-└── test_integration.py
+ test_server.py
+ test_auth.py
+ test_config.py
+ test_lifecycle.py / test_lifecycle_management.py
+ test_observability.py
+ test_rate_limit.py
+ test_registry.py
+ test_versioning.py
+ test_stdio.py
+ test_json_rpc.py / test_json_rpc_handler.py
+ test_integration.py
 ```
 
 ## Implementation Patterns
@@ -66,29 +66,29 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class CapabilityConfig:
-    """Configuration for the capability."""
-    setting1: str = "default"
-    setting2: int = 100
+ """Configuration for the capability."""
+ setting1: str = "default"
+ setting2: int = 100
 
 
 class NewCapability:
-    """Implementation of the new capability."""
+ """Implementation of the new capability."""
 
-    def __init__(self, config: Optional[CapabilityConfig] = None) -> None:
-        self._config = config or CapabilityConfig()
-        self._logger = logging.getLogger(__name__)
+ def __init__(self, config: Optional[CapabilityConfig] = None) -> None:
+ self._config = config or CapabilityConfig()
+ self._logger = logging.getLogger(__name__)
 
-    def do_something(self, param: str) -> str:
-        """Perform the capability action.
+ def do_something(self, param: str) -> str:
+ """Perform the capability action.
 
-        Args:
-            param: Input parameter.
+ Args:
+ param: Input parameter.
 
-        Returns:
-            Result of the action.
-        """
-        self._logger.debug("Doing something with: %s", param)
-        return f"Result: {param}"
+ Returns:
+ Result of the action.
+ """
+ self._logger.debug("Doing something with: %s", param)
+ return f"Result: {param}"
 ```
 
 ## 2. Adding Tests for a Capability
@@ -103,30 +103,30 @@ from src.mcp.new_capability import NewCapability, CapabilityConfig
 
 
 class TestNewCapability:
-    """Test suite for NewCapability."""
+ """Test suite for NewCapability."""
 
-    def test_init_with_defaults(self):
-        """Test initialization with default config."""
-        cap = NewCapability()
-        assert cap._config.setting1 == "default"
+ def test_init_with_defaults(self):
+ """Test initialization with default config."""
+ cap = NewCapability()
+ assert cap._config.setting1 == "default"
 
-    def test_init_with_custom_config(self):
-        """Test initialization with custom config."""
-        config = CapabilityConfig(setting1="custom", setting2=200)
-        cap = NewCapability(config)
-        assert cap._config.setting1 == "custom"
+ def test_init_with_custom_config(self):
+ """Test initialization with custom config."""
+ config = CapabilityConfig(setting1="custom", setting2=200)
+ cap = NewCapability(config)
+ assert cap._config.setting1 == "custom"
 
-    def test_do_something(self):
-        """Test the main capability action."""
-        cap = NewCapability()
-        result = cap.do_something("test")
-        assert result == "Result: test"
+ def test_do_something(self):
+ """Test the main capability action."""
+ cap = NewCapability()
+ result = cap.do_something("test")
+ assert result == "Result: test"
 
-    def test_do_something_with_empty_input(self):
-        """Test with empty input."""
-        cap = NewCapability()
-        result = cap.do_something("")
-        assert result == "Result: "
+ def test_do_something_with_empty_input(self):
+ """Test with empty input."""
+ cap = NewCapability()
+ result = cap.do_something("")
+ assert result == "Result: "
 ```
 
 ## 3. Updating the Server to Support New Methods
@@ -138,18 +138,18 @@ self._methods["mcp.newMethod"] = self.handle_new_method
 
 # Add the handler method:
 async def handle_new_method(
-    self, params: Optional[Dict[str, Any]] = None
+ self, params: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
-    """Handler for mcp.newMethod.
+ """Handler for mcp.newMethod.
 
-    Args:
-        params: Method parameters.
+ Args:
+ params: Method parameters.
 
-    Returns:
-        Method result.
-    """
-    # Implementation here
-    return {"status": "ok"}
+ Returns:
+ Method result.
+ """
+ # Implementation here
+ return {"status": "ok"}
 ```
 
 ## Common Tasks
@@ -164,8 +164,8 @@ registry = ToolRegistry()
 
 # Register a tool
 tool = Tool(
-    name="my_tool",
-    description="Does something useful"
+ name="my_tool",
+ description="Does something useful"
 )
 registry.register(tool)
 ```
@@ -177,17 +177,17 @@ from src.mcp.rate_limit import TokenBucketRateLimiter
 
 # Create limiter
 limiter = TokenBucketRateLimiter(
-    rate=10.0,  # 10 requests per second
-    capacity=20  # Burst capacity
+ rate=10.0, # 10 requests per second
+ capacity=20 # Burst capacity
 )
 
 # Check rate limit
 if limiter.acquire():
-    # Proceed with request
-    pass
+ # Proceed with request
+ pass
 else:
-    # Rate limited
-    raise Exception("Rate limit exceeded")
+ # Rate limited
+ raise Exception("Rate limit exceeded")
 ```
 
 ## Task 3: Add Observability
@@ -202,8 +202,8 @@ metrics.record_request("mcp.listTools", duration_ms=15.5, status="success")
 # Add tracing
 tracer = get_tracer()
 with tracer.trace("handle_request") as span:
-    # Do work
-    span.tags["method"] = "mcp.listTools"
+ # Do work
+ span.tags["method"] = "mcp.listTools"
 ```
 
 ## Task 4: Manage Server Lifecycle

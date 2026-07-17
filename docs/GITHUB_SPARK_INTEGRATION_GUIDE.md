@@ -1,6 +1,6 @@
 # GitHub Spark Integration Guide for _Codex_ Cognitive Brain
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Purpose**: Comprehensive guide for developing GitHub Spark applications that integrate with the _Codex_ backend for advanced code generation and cognitive brain demonstrations.
 >
@@ -62,37 +62,37 @@ Combining GitHub Spark's rapid prototyping with _Codex_'s cognitive brain create
 ### System Overview
 
 ```
-┌─────────────────────┐
-│ GitHub Spark │
-│ React + TypeScript │
-│ Web Interface │
-└──────────┬──────────┘
- │ HTTP/REST
- ▼
-┌─────────────────────┐
-│ FastAPI Backend │
-│ services/api/main │
-│ - /infer │
-│ - /train │
-│ - /evaluate │
-└──────────┬──────────┘
- │
- ▼
-┌─────────────────────┐ ┌──────────────────┐
-│ Cognitive Brain │────▶│ Code Generator │
-│ - SuperpositionEng │ │ - Ingest │
-│ - EntanglementMgr │ │ - Analyze │
-│ - MemoryManager │ │ - Transform │
-│ - AdaptiveScoring │ │ - Verify │
-└─────────────────────┘ └──────────────────┘
- │
- ▼
-┌─────────────────────┐
-│ Agent System │
-│ - WorkflowNav │
-│ - QuantumGame │
-│ - PhysicsOrch │
-└─────────────────────┘
+
+ GitHub Spark 
+ React + TypeScript 
+ Web Interface 
+
+ HTTP/REST
+ 
+
+ FastAPI Backend 
+ services/api/main 
+ - /infer 
+ - /train 
+ - /evaluate 
+
+ 
+ 
+ 
+ Cognitive Brain Code Generator 
+ - SuperpositionEng - Ingest 
+ - EntanglementMgr - Analyze 
+ - MemoryManager - Transform 
+ - AdaptiveScoring - Verify 
+ 
+ 
+ 
+
+ Agent System 
+ - WorkflowNav 
+ - QuantumGame 
+ - PhysicsOrch 
+
 ```
 
 ### Component Breakdown
@@ -110,21 +110,21 @@ Combining GitHub Spark's rapid prototyping with _Codex_'s cognitive brain create
 
 ```
 User Prompt
- ↓
+ 
 GitHub Spark UI (validate, enrich)
- ↓
+ 
 FastAPI /infer (rate limit, auth)
- ↓
+ 
 SuperpositionEngine (parallel evaluation)
- ↓
+ 
 MemoryManager (check cache, retrieve patterns)
- ↓
-Code Generator (ingest → analyze → transform)
- ↓
+ 
+Code Generator (ingest analyze transform)
+ 
 Verification (behavior check, security scan)
- ↓
+ 
 Response (code + metrics + quantum data)
- ↓
+ 
 GitHub Spark UI (display, visualize)
 ```
 
@@ -208,7 +208,7 @@ from agents.workflow_navigator import WorkflowNavigator
 
 navigator = WorkflowNavigator()
 result = navigator.execute('AUDIT_EXEC')
-# Executes: validation → analysis → report generation
+# Executes: validation analysis report generation
 ```
 
 ## 4. Memory Management
@@ -218,7 +218,7 @@ result = navigator.execute('AUDIT_EXEC')
 **Architecture**: Hippocampus-Cortex model
 - **Short-Term Memory (STM)**: Recent 5-10 interactions
 - **Long-Term Memory (LTM)**: Pattern library with compression
-- **Consolidation**: Automatic STM → LTM transfer
+- **Consolidation**: Automatic STM LTM transfer
 
 **Compression**: 60% size reduction via PCA + quantization
 
@@ -365,13 +365,13 @@ RIGHT PANEL - Long-Term Memory:
 - Pattern library table with columns:
  - Pattern ID
  - Usage count
- - Compression ratio (original → compressed size)
+ - Compression ratio (original compressed size)
  - Last accessed time
 - Search/filter by pattern ID
 - "Clear Cache" button with confirmation dialog
 
 BOTTOM - Consolidation Timeline:
-- Visual timeline showing STM → LTM transfers
+- Visual timeline showing STM LTM transfers
 - Animated marker moving along timeline
 - Stats: Total patterns, cache hit rate, avg retrieval time
 ```
@@ -387,13 +387,13 @@ Build an agent control panel with:
 
 TOP - Active Agents Grid (3 columns):
 - Each agent card shows:
- - Icon ( workflow, ⚛️ quantum, physics)
+ - Icon ( workflow, quantum, physics)
  - Agent name
  - Status badge ( idle, active, error)
  - Last execution time
 - Hover effect: border glow + shadow
 
-MIDDLE - Workflow Token Buttons:  # pragma: allowlist secret
+MIDDLE - Workflow Token Buttons: # pragma: allowlist secret
 - 6 buttons in 2 rows (3x2 grid):
  - AUDIT_EXEC, DOC_GEN, HEAL
  - DECIDE, ORGANIZE, REVIEW
@@ -443,7 +443,7 @@ PIPELINE VISUALIZATION:
  - Icon + name
  - Progress bar (0-100%)
  - ETA (e.g., "~30 sec")
- - Status: queued → running → complete → error
+ - Status: queued running complete error
 - Connecting arrows with animation when active
 
 ERROR HANDLING:
@@ -465,27 +465,27 @@ ERROR HANDLING:
 Create transformation configuration panel:
 
 TIER SELECTION (Radio buttons):
-○ Tier A - Complex transformations
+ Tier A - Complex transformations
  • Architectural refactoring
  • Design pattern application
  • Advanced optimizations
 
-○ Tier B - Moderate refactoring
+ Tier B - Moderate refactoring
  • Function extraction
  • Code simplification
  • Performance tuning
 
-○ Tier C - Simple fixes
+ Tier C - Simple fixes
  • Formatting (Black)
  • Naming conventions (PEP 8)
  • Import sorting
 
 TOGGLES:
-☑ Auto-transform (skip confirmation)
-☑ LLM intent inference (OpenAI integration)
-☑ Runtime sandbox (memory: 512MB, timeout: 30s)
-☐ Generate tests (90% coverage target)
-☐ Create documentation (docstrings + README)
+ Auto-transform (skip confirmation)
+ LLM intent inference (OpenAI integration)
+ Runtime sandbox (memory: 512MB, timeout: 30s)
+ Generate tests (90% coverage target)
+ Create documentation (docstrings + README)
 
 ADVANCED OPTIONS (Collapsible):
 - Max iterations: [slider 1-10, default 3]
@@ -653,7 +653,7 @@ GRID LAYOUT (2 columns, 3 rows):
 1. Security Analysis
  - Description: "Detect SQL injection and XSS vulnerabilities"
  - Example code preview (collapsed)
- - [Try it] button → pre-fills prompt
+ - [Try it] button pre-fills prompt
 
 2. Performance Optimization
  - Description: "Identify bottlenecks and optimize loops"
@@ -670,7 +670,7 @@ GRID LAYOUT (2 columns, 3 rows):
  - Example code preview
  - [Try it] button
 
-5. 🧪 Test Generation
+5. Test Generation
  - Description: "Create pytest fixtures with 90% coverage"
  - Example code preview
  - [Try it] button
@@ -701,9 +701,9 @@ Implement user authentication system:
 
 LOGIN MODAL:
 - GitHub OAuth button ("Sign in with GitHub")
-- Alternative: Email + password form  # pragma: allowlist secret
+- Alternative: Email + password form # pragma: allowlist secret
 - "Remember me" checkbox
-- "Forgot password?" link  # pragma: allowlist secret
+- "Forgot password?" link # pragma: allowlist secret
 - Registration link
 
 USER MENU (Top right):
@@ -773,7 +773,7 @@ COMMENTS SYSTEM:
  - Timestamp (relative)
  - Comment text (Markdown support)
  - Reply button
- - Like button (❤️ count)
+ - Like button ( count)
  - Edit/Delete (if owner)
 - Real-time updates (WebSocket)
 
@@ -814,12 +814,12 @@ TAB 1 - GitHub Repository:
 TAB 2 - Download Package:
 - Format dropdown: ZIP, TAR.GZ
 - Include options:
- ☑ Source code
- ☑ Tests
- ☑ Documentation
- ☑ Requirements.txt
- ☑ Dockerfile
- ☑ Manifest.json (MCP format)
+ Source code
+ Tests
+ Documentation
+ Requirements.txt
+ Dockerfile
+ Manifest.json (MCP format)
 - [Download] button
 - File size preview
 
@@ -1143,7 +1143,7 @@ export const QuantumVisualizer: React.FC<{ state: QuantumState }> = ({ state }) 
  ctx.font = 'bold 20px Arial';
  ctx.fillStyle = '#667eea';
  ctx.textAlign = 'center';
- ctx.fillText('⚛️ Wave Function Collapsed!', canvas.width / 2, 250);
+ ctx.fillText(' Wave Function Collapsed!', canvas.width / 2, 250);
  }
  }, [state]);
 
@@ -1632,7 +1632,7 @@ pip install mangum
 **A**: The system uses a hippocampus-cortex model:
 - **Short-Term Memory (STM)**: Recent 5-10 interactions, fast access
 - **Long-Term Memory (LTM)**: Pattern library, compressed (60% reduction)
-- **Consolidation**: Automatic STM → LTM transfer based on usage patterns
+- **Consolidation**: Automatic STM LTM transfer based on usage patterns
 - **Cache-First Strategy**: Check memory before computation (30%+ hit rate)
 
 ### Q: Is this production-ready?
@@ -1663,7 +1663,7 @@ pip install mangum
 
 ## Changelog
 
-### v0.2.1 (2026-01-04)
+### v0.2.0 (2026-01-04)
 - Initial release of GitHub Spark Integration Guide
 - Complete promptset plan (Phase 1-5)
 - Implementation examples (TypeScript + React)

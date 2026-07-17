@@ -1,6 +1,6 @@
 # Plans
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Auto-generated index** — 2026-05-08 | Edit this file to add descriptions.
 > Directory: `docs/plans/`

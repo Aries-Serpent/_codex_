@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/TEST_FIXES_VALIDATION/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Test Fixes Validation Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2513,7 +2513,7 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document describes the fixes applied to resolve 5 failing tests identified in workflow run #21366314434.</p>
 <h2 id="fixes-applied">Fixes Applied<a class="headerlink" href="#fixes-applied" title="Permanent link">¶</a></h2>
-<h3 id="1-sentencepieceadapterencode-add-padding-parameter">1.  SentencePieceAdapter.encode() - Add padding parameter<a class="headerlink" href="#1-sentencepieceadapterencode-add-padding-parameter" title="Permanent link">¶</a></h3>
+<h3 id="1-sentencepieceadapterencode-add-padding-parameter">1. SentencePieceAdapter.encode() - Add padding parameter<a class="headerlink" href="#1-sentencepieceadapterencode-add-padding-parameter" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: <code>src/codex_ml/tokenization/sentencepiece_adapter.py</code></p>
 <p><strong>Change</strong>: Extended <code>encode()</code> method signature to support padding
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>def encode(
@@ -2533,7 +2533,7 @@
 <p><strong>Validation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>pytest<span class="w"> </span>tests/tokenization/test_sentencepiece_adapter_train.py::test_train_or_load_stubs<span class="w"> </span>-v
 </code></pre></div></p>
-<h3 id="2-sentencepieceadapterload-add-filenotfounderror-check">2.  SentencePieceAdapter.load() - Add FileNotFoundError check<a class="headerlink" href="#2-sentencepieceadapterload-add-filenotfounderror-check" title="Permanent link">¶</a></h3>
+<h3 id="2-sentencepieceadapterload-add-filenotfounderror-check">2. SentencePieceAdapter.load() - Add FileNotFoundError check<a class="headerlink" href="#2-sentencepieceadapterload-add-filenotfounderror-check" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: <code>src/codex_ml/tokenization/sentencepiece_adapter.py</code></p>
 <p><strong>Change</strong>: Added explicit file existence check at start of <code>load()</code> method
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SentencePieceAdapter"</span><span class="p">:</span>
@@ -2550,7 +2550,7 @@
 <p><strong>Validation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>pytest<span class="w"> </span>tests/tokenization/test_sentencepiece_adapter_train.py::test_load_requires_model<span class="w"> </span>-v
 </code></pre></div></p>
-<h3 id="3-test-fix-remove-invalid-huggingface-revision">3.  Test Fix - Remove invalid HuggingFace revision<a class="headerlink" href="#3-test-fix-remove-invalid-huggingface-revision" title="Permanent link">¶</a></h3>
+<h3 id="3-test-fix-remove-invalid-huggingface-revision">3. Test Fix - Remove invalid HuggingFace revision<a class="headerlink" href="#3-test-fix-remove-invalid-huggingface-revision" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: <code>tests/data/test_cache_roundtrip.py</code></p>
 <p><strong>Change</strong>: Removed invalid revision parameter from tokenizer loading
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Before:</span>
@@ -2566,7 +2566,7 @@
 <p><strong>Validation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>pytest<span class="w"> </span>tests/data/test_cache_roundtrip.py::test_cache_roundtrip<span class="w"> </span>-v
 </code></pre></div></p>
-<h2 id="4-plugin-registry-add-deduplication">4.  Plugin Registry - Add deduplication<a class="headerlink" href="#4-plugin-registry-add-deduplication" title="Permanent link">¶</a></h2>
+<h2 id="4-plugin-registry-add-deduplication">4. Plugin Registry - Add deduplication<a class="headerlink" href="#4-plugin-registry-add-deduplication" title="Permanent link">¶</a></h2>
 <p><strong>File</strong>: <code>src/codex_ml/plugins/programmatic.py</code></p>
 <p><strong>Change</strong>: Modified <code>PluginRegistry.register()</code> to log duplicates instead of raising
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="n">BasePlugin</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">override</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -2586,7 +2586,7 @@
 <p><strong>Validation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>pytest<span class="w"> </span>tests/plugins/test_list_plugins_cli_json.py::test_json_shape_no_discover<span class="w"> </span>-v
 </code></pre></div></p>
-<h3 id="5-test_render_monthly_html-no-fix-needed">5.  test_render_monthly_html - No Fix Needed<a class="headerlink" href="#5-test_render_monthly_html-no-fix-needed" title="Permanent link">¶</a></h3>
+<h3 id="5-test_render_monthly_html-no-fix-needed">5. test_render_monthly_html - No Fix Needed<a class="headerlink" href="#5-test_render_monthly_html-no-fix-needed" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: <code>tests/status/test_render_monthly_html.py</code></p>
 <p><strong>Status</strong>: Test already has proper implementation - no placeholder assertion found</p>
 <p><strong>Validation</strong>:
@@ -2598,9 +2598,9 @@
 <p><strong>Current Status</strong>: Function already has correct signature <code>def _build_hf_tokenizer(**kwargs: Any)</code></p>
 <p><strong>Analysis</strong>:
 - The error "takes 0 positional arguments but 1 was given" may be from:
-  - Stale bytecode cache (<code>.pyc</code> files)
-  - Environment-specific issue
-  - Cached entry point metadata
+ - Stale bytecode cache (<code>.pyc</code> files)
+ - Environment-specific issue
+ - Cached entry point metadata
 - The decorator <code>@tokenizer_registry.register("hf")</code> doesn't modify the function signature
 - The <code>get_tokenizer()</code> function calls factories with <code>**kwargs</code>, not positional args</p>
 <p><strong>Recommendation</strong>: If this error persists:
@@ -2610,7 +2610,7 @@
 <h3 id="from-future-import-order">from <strong>future</strong> import order<a class="headerlink" href="#from-future-import-order" title="Permanent link">¶</a></h3>
 <p><strong>Status</strong>: No actual issues found</p>
 <p><strong>Analysis</strong>:
-- All checked files have correct import order (docstring → future imports → other imports)
+- All checked files have correct import order (docstring future imports other imports)
 - Files like <code>noxfile.py</code> and <code>conftest.py</code> are correctly structured
 - Detection script had false positives</p>
 <h2 id="validation-commands">Validation Commands<a class="headerlink" href="#validation-commands" title="Permanent link">¶</a></h2>
@@ -2749,6 +2749,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

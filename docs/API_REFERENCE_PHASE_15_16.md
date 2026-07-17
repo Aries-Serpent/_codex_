@@ -1,6 +1,6 @@
 # API Reference - Phase 15-16
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Complete reference for all 11 FastAPI endpoints in the Phase 15-16 system.
 

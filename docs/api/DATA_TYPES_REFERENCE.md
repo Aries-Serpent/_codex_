@@ -1,6 +1,6 @@
 # API Data Types Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Complete reference for all data types and schemas used in the Codex API.
 

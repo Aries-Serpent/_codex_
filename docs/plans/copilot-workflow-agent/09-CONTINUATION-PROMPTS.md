@@ -1,11 +1,11 @@
 # Continuation Prompts for Copilot Workflow Agent
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2026-06-22  
+> Generated: 2026-06-22
 > Purpose: Ready-to-use prompts for resuming implementation
 
 ## Quickstart
@@ -69,7 +69,7 @@ Implement the Agent Orchestrator:
 4. Create tests/services/agent/test_orchestrator.py
 
 Requirements:
-- PLAN→ACT→OBSERVE→VERIFY flow
+- PLANACTOBSERVEVERIFY flow
 - Integrate GitHub client, workflow inventory, session state
 - Action queue with priorities
 - Dry-run mode for previews

@@ -1,8 +1,8 @@
 # Repository File Inventory
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22  
+> Generated: 2026-06-22
 > Purpose: Comprehensive catalog of files scanned for .codex/archive/deprecated/AGENTS.md creation
 
 | Path | Type | Size (KB) | 1-Line Summary | Priority | Read Depth |
@@ -114,16 +114,16 @@
 
 ## Priority Wavepoints
 
-1. **Entry** → README.md (quick orientation)
-2. **Agent Guide** → docs/guides/.codex/archive/deprecated/AGENTS.md (canonical agent instructions)
-3. **Continuation** → AGENT_CONTINUATION_PROMPT.md (resume protocol)
-4. **Orchestration** → codex_ready_task_sequence.yaml (task pipeline)
-5. **Executor** → codex_task_executor.py (execution engine)
-6. **Map** → _codex_repo_map.json (file inventory)
-7. **Prompts** → PROMPTS/ (prompt templates)
-8. **Examples** → examples/ (runnable code)
-9. **Governance** → CODE_OF_CONDUCT.md, SECURITY.md (policies)
-10. **Config** → pyproject.toml, noxfile.py (build/test setup)
+1. **Entry** README.md (quick orientation)
+2. **Agent Guide** docs/guides/.codex/archive/deprecated/AGENTS.md (canonical agent instructions)
+3. **Continuation** AGENT_CONTINUATION_PROMPT.md (resume protocol)
+4. **Orchestration** codex_ready_task_sequence.yaml (task pipeline)
+5. **Executor** codex_task_executor.py (execution engine)
+6. **Map** _codex_repo_map.json (file inventory)
+7. **Prompts** PROMPTS/ (prompt templates)
+8. **Examples** examples/ (runnable code)
+9. **Governance** CODE_OF_CONDUCT.md, SECURITY.md (policies)
+10. **Config** pyproject.toml, noxfile.py (build/test setup)
 
 ## Files Flagged as MISSING
 

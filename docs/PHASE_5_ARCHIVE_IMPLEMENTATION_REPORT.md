@@ -1,13 +1,13 @@
 # Phase 5: Archive Implementation Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Executive Summary
 
-**Status:**  COMPLETE  
-**Date:** June 23, 2026  
-**Archive Candidates:** 25 sessions identified (>90 days old)  
-**Archive Format:** Parquet (snappy compressed)  
+**Status:** COMPLETE
+**Date:** June 23, 2026
+**Archive Candidates:** 25 sessions identified (>90 days old)
+**Archive Format:** Parquet (snappy compressed)
 **Cold Storage Location:** `.codex/archive/sessions/YYYY/MM/`
 
 Phase 5 implements a complete archive system for session tracking modernization, enabling efficient cold storage of older sessions while maintaining fast retrieval and transparent access patterns.
@@ -28,50 +28,50 @@ Phase 5 implements a complete archive system for session tracking modernization,
 ```
 Archive Storage Structure:
 .codex/
-├── sessions.db                    # SQLite (active + archive index)
-├── sessions/                      # Active JSONL sessions (working data)
-└── archive/
-    ├── sessions/
-    │   ├── 2026/
-    │   │   ├── 03/
-    │   │   │   ├── session-1.parquet
-    │   │   │   ├── session-2.parquet
-    │   │   │   └── ...
-    │   │   ├── 04/
-    │   │   ├── 05/
-    │   │   └── ...
-    │   └── ...
-    ├── sessions_archive_index.json    # Archive index (256 sessions)
-    └── retention_log.json             # Audit trail
+ sessions.db # SQLite (active + archive index)
+ sessions/ # Active JSONL sessions (working data)
+ archive/
+ sessions/
+ 2026/
+ 03/
+ session-1.parquet
+ session-2.parquet
+ ...
+ 04/
+ 05/
+ ...
+ ...
+ sessions_archive_index.json # Archive index (256 sessions)
+ retention_log.json # Audit trail
 ```
 
 ### Data Flow
 
 ```
 ACTIVE SESSION (< 90 days old)
-    ↓
+ 
 In SQLite: archive_status = 'active'
-    ↓
+ 
 Served directly from DB
 
 ARCHIVE CANDIDATE (>= 90 days old)
-    ↓
+ 
 Migration Script (scripts/archive_sessions.py)
-    ↓
-Extract → Compress to Parquet → Store at .codex/archive/sessions/YYYY/MM/
-    ↓
+ 
+Extract Compress to Parquet Store at .codex/archive/sessions/YYYY/MM/
+ 
 Update SQLite: archive_status = 'archived', archive_location = path
-    ↓
+ 
 Build Archive Index (sessions_archive_index.json)
-    ↓
-Session DB → get_session(session_id) → Load from Parquet (transparent)
+ 
+Session DB get_session(session_id) Load from Parquet (transparent)
 
 RETENTION CLEANUP (> 30 iterations old)
-    ↓
+ 
 Maintenance Script (scripts/archive_maintenance.py)
-    ↓
+ 
 Delete Parquet file + Mark session as 'deleted' in DB
-    ↓
+ 
 Log deletion in retention_log.json
 ```
 
@@ -85,7 +85,7 @@ Log deletion in retention_log.json
 
 ```sql
 ALTER TABLE sessions ADD COLUMN archive_status TEXT DEFAULT 'active'
-    CHECK (archive_status IN ('active', 'archived', 'deleted'));
+ CHECK (archive_status IN ('active', 'archived', 'deleted'));
 ALTER TABLE sessions ADD COLUMN archive_location TEXT;
 ALTER TABLE sessions ADD COLUMN archive_timestamp TEXT;
 
@@ -161,7 +161,7 @@ from codex.session_db import SessionDB
 db = SessionDB()
 
 # Retrieve archived session (transparent)
-session = db.get_session("session-id")  # Works for active OR archived
+session = db.get_session("session-id") # Works for active OR archived
 
 # Force cache usage
 session = db.get_session("session-id", use_cache=True)
@@ -207,25 +207,25 @@ python scripts/archive_maintenance.py --max-iterations 60
 
 ```json
 {
-  "version": "1.0",
-  "created": "2026-06-23T02:51:09Z",
-  "sessions": [
-    {
-      "session_id": "session-b40bc2bd",
-      "archive_location": ".codex/archive/sessions/2026/03/session-b40bc2bd.parquet",
-      "file_size_bytes": 15360,
-      "timestamp": "2026-03-05T03:06:28.871414Z",
-      "created_at": "1741264800"
-    },
-    ...
-  ],
-  "statistics": {
-    "total_sessions": 25,
-    "total_size_mb": 0.39,
-    "retention_policy": "Delete archives >30 iterations old",
-    "archive_format": "Parquet (snappy compressed)",
-    "partitioning": "YYYY/MM/ by creation_date"
-  }
+ "version": "1.0",
+ "created": "2026-06-23T02:51:09Z",
+ "sessions": [
+ {
+ "session_id": "session-b40bc2bd",
+ "archive_location": ".codex/archive/sessions/2026/03/session-b40bc2bd.parquet",
+ "file_size_bytes": 15360,
+ "timestamp": "2026-03-05T03:06:28.871414Z",
+ "created_at": "1741264800"
+ },
+ ...
+ ],
+ "statistics": {
+ "total_sessions": 25,
+ "total_size_mb": 0.39,
+ "retention_policy": "Delete archives >30 iterations old",
+ "archive_format": "Parquet (snappy compressed)",
+ "partitioning": "YYYY/MM/ by creation_date"
+ }
 }
 ```
 
@@ -256,18 +256,18 @@ location = session["archive_location"]
 
 | Scenario | Target | Actual | Status |
 |----------|--------|--------|--------|
-| Cold retrieval (Parquet) | <500ms | ~250ms |  PASS |
-| Cached retrieval | <50ms | ~5ms |  PASS |
-| Index lookup | <10ms | ~2ms |  PASS |
+| Cold retrieval (Parquet) | <500ms | ~250ms | PASS |
+| Cached retrieval | <50ms | ~5ms | PASS |
+| Index lookup | <10ms | ~2ms | PASS |
 
 ### Archive Operations
 
 | Operation | Time | Status |
 |-----------|------|--------|
-| Archive single session | <1s |  PASS |
-| Archive 25 sessions | <20s |  PASS |
-| Build index | <5s |  PASS |
-| Retention cleanup | <10s |  PASS |
+| Archive single session | <1s | PASS |
+| Archive 25 sessions | <20s | PASS |
+| Build index | <5s | PASS |
+| Retention cleanup | <10s | PASS |
 
 ### Compression Efficiency
 
@@ -291,17 +291,17 @@ location = session["archive_location"]
 
 ```json
 {
-  "version": "1.0",
-  "created": "2026-06-23T02:51:09Z",
-  "cleanups": [
-    {
-      "timestamp": "2026-07-20T02:51:09Z",
-      "deleted_count": 5,
-      "total_candidates": 5,
-      "max_iterations": 30,
-      "deletions_count": 5
-    }
-  ]
+ "version": "1.0",
+ "created": "2026-06-23T02:51:09Z",
+ "cleanups": [
+ {
+ "timestamp": "2026-07-20T02:51:09Z",
+ "deleted_count": 5,
+ "total_candidates": 5,
+ "max_iterations": 30,
+ "deletions_count": 5
+ }
+ ]
 }
 ```
 
@@ -331,29 +331,29 @@ python scripts/ci/archive_integrity_check.py --json
 ### Checks Performed
 
 1. **Archive Index Validity**
-   - Index file exists and is valid JSON
-   - Required fields present
-   - Session count matches
+ - Index file exists and is valid JSON
+ - Required fields present
+ - Session count matches
 
 2. **File Readability**
-   - All Parquet files readable
-   - Data integrity verified
-   - Sample read successful
+ - All Parquet files readable
+ - Data integrity verified
+ - Sample read successful
 
 3. **Performance Benchmarks**
-   - Cold retrieval <500ms
-   - Cached retrieval <50ms
-   - Benchmarks logged
+ - Cold retrieval <500ms
+ - Cached retrieval <50ms
+ - Benchmarks logged
 
 4. **Retention Policy**
-   - Old archives marked for deletion
-   - Deletion log maintained
-   - Policy enforced
+ - Old archives marked for deletion
+ - Deletion log maintained
+ - Policy enforced
 
 5. **Database Consistency**
-   - All tables exist
-   - No orphaned records
-   - Archive metadata consistent
+ - All tables exist
+ - No orphaned records
+ - Archive metadata consistent
 
 ---
 
@@ -371,13 +371,13 @@ pytest tests/test_archive_implementation.py::TestSessionDB::test_archive_session
 
 ### Test Coverage
 
--  Database schema creation
--  Archive migration
--  Retrieval with caching
--  Retention policy
--  Integrity checks
--  Performance benchmarks
--  Edge cases
+- Database schema creation
+- Archive migration
+- Retrieval with caching
+- Retention policy
+- Integrity checks
+- Performance benchmarks
+- Edge cases
 
 ---
 
@@ -455,14 +455,14 @@ python scripts/ci/archive_integrity_check.py --verbose
 
 **Solution:** Increase cache size in `session_db.py`:
 ```python
-self.cache_max_size = 50 * 1024 * 1024  # 50 MB
+self.cache_max_size = 50 * 1024 * 1024 # 50 MB
 ```
 
 ### Issue: "Old archives not deleted"
 
 **Solution:** Run retention cleanup manually:
 ```bash
-python scripts/archive_maintenance.py  # Not dry-run
+python scripts/archive_maintenance.py # Not dry-run
 ```
 
 ---
@@ -508,45 +508,45 @@ python scripts/archive_maintenance.py  # Not dry-run
 ## 14. Next Steps (Post-Merge)
 
 1. **Deploy Scripts**
-   - Add archive maintenance to CI/CD schedule
-   - Monitor retention cleanup logs
-   - Validate performance metrics
+ - Add archive maintenance to CI/CD schedule
+ - Monitor retention cleanup logs
+ - Validate performance metrics
 
 2. **Monitor & Maintain**
-   - Track archive growth rate
-   - Monitor retrieval performance
-   - Review retention log weekly
+ - Track archive growth rate
+ - Monitor retrieval performance
+ - Review retention log weekly
 
 3. **Optimization Opportunities**
-   - Consider compression algorithm trade-offs
-   - Evaluate cache hit rates
-   - Profile bottlenecks under load
+ - Consider compression algorithm trade-offs
+ - Evaluate cache hit rates
+ - Profile bottlenecks under load
 
 4. **Future Enhancements**
-   - Archive compression tuning
-   - Parallel archive operations
-   - Archive search/query optimization
-   - Cross-session aggregations
+ - Archive compression tuning
+ - Parallel archive operations
+ - Archive search/query optimization
+ - Cross-session aggregations
 
 ---
 
 ## 15. Completion Summary
 
-**Phase 5 Archive Implementation**  COMPLETE
+**Phase 5 Archive Implementation** COMPLETE
 
--  Archive strategy: Directory-based Parquet storage (10:1 compression)
--  Sessions: 25 archived, 26 active (51 total)
--  Storage: .39 MB total (1.5 KB per session avg)
--  Retention: 30-iteration auto-purge policy
--  Performance: <500ms cold, <50ms cached retrieval
--  Testing: All integrity and performance tests passing
--  Documentation: Complete with migration guide
+- Archive strategy: Directory-based Parquet storage (10:1 compression)
+- Sessions: 25 archived, 26 active (51 total)
+- Storage: .39 MB total (1.5 KB per session avg)
+- Retention: 30-iteration auto-purge policy
+- Performance: <500ms cold, <50ms cached retrieval
+- Testing: All integrity and performance tests passing
+- Documentation: Complete with migration guide
 
 **Ready to merge for Phase 6: Integration Testing**
 
 ---
 
-**Document:** PHASE_5_ARCHIVE_IMPLEMENTATION_REPORT.md  
-**Version:** 1.0  
-**Date:** 2026-06-23  
-**Status:** COMPLETE 
+**Document:** PHASE_5_ARCHIVE_IMPLEMENTATION_REPORT.md
+**Version:** 1.0
+**Date:** 2026-06-23
+**Status:** COMPLETE

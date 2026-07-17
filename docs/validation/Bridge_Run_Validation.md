@@ -1,6 +1,6 @@
 # [Validation]: Bridge Run Validation — Copilot CLI via Bridge
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
@@ -9,7 +9,7 @@
 - **Python variant:** archived under `docs/examples/python-variant/README.md` with deprecation note.
 - **Automation confinement:** all runnable artifacts under `.codex/copilot_bridge/`.
 - **No active workflows:** example YAML moved to `docs/examples/self_hosted_example.yml`.
-- **Audit artifacts:** bridge manifests → `.codex/copilot_bridge/var/manifests/`; CLI manifests remain in `cwd`.
+- **Audit artifacts:** bridge manifests `.codex/copilot_bridge/var/manifests/`; CLI manifests remain in `cwd`.
 - **Security defaults:** deny-by-default beyond allow-list; pre-seeded denies applied.
 
 ## One-shot verification commands

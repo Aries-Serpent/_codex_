@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/CI_FAILURE_REMEDIATION/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI Failure Remediation Summary - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2402,7 +2402,7 @@
 <a class="md-nav__link" href="#1-codeql-security-alerts">
 <span class="md-ellipsis">
       
-        1. CodeQL Security Alerts ️
+        1. CodeQL Security Alerts
       
     </span>
 </a>
@@ -2489,9 +2489,9 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <p><strong>Date:2026-07-13
-</strong>PR:<strong> #2513<br/>
-</strong>Issue:<strong> All test jobs failing during dependency installation<br/>
-</strong>Status:**  RESOLVED</p>
+</strong>PR:<strong> #2513
+</strong>Issue:<strong> All test jobs failing during dependency installation
+</strong>Status:** RESOLVED</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Fixed critical build failures affecting all 40 CI test jobs by correcting package discovery configuration in <code>pyproject.toml</code>. The issue prevented any tests from running as builds failed during the dependency installation phase.</p>
 <h2 id="problem-statement">Problem Statement<a class="headerlink" href="#problem-statement" title="Permanent link">¶</a></h2>
@@ -2577,14 +2577,14 @@
 </code></pre></div>
 <h2 id="expected-ci-behavior">Expected CI Behavior<a class="headerlink" href="#expected-ci-behavior" title="Permanent link">¶</a></h2>
 <p><strong>Before Fix:</strong>
--  All 40 jobs failing at "Install dependencies" step
--  Failure after 11-21 seconds (setup phase)
--  No tests executed</p>
+- All 40 jobs failing at "Install dependencies" step
+- Failure after 11-21 seconds (setup phase)
+- No tests executed</p>
 <p><strong>After Fix:</strong>
--  Dependency installation completes
--  Package builds successfully
--  Tests can execute
-- ℹ️  Any failures would be actual test issues, not build issues</p>
+- Dependency installation completes
+- Package builds successfully
+- Tests can execute
+- ℹ Any failures would be actual test issues, not build issues</p>
 <h2 id="affected-workflows">Affected Workflows<a class="headerlink" href="#affected-workflows" title="Permanent link">¶</a></h2>
 <ol>
 <li><strong>Unified Test Suite</strong> (<code>.github/workflows/test-suite.yml</code>)</li>
@@ -2600,7 +2600,7 @@
 <li>Python 3.12 only</li>
 </ol>
 <h2 id="outstanding-items">Outstanding Items<a class="headerlink" href="#outstanding-items" title="Permanent link">¶</a></h2>
-<h3 id="1-codeql-security-alerts">1. CodeQL Security Alerts ️<a class="headerlink" href="#1-codeql-security-alerts" title="Permanent link">¶</a></h3>
+<h3 id="1-codeql-security-alerts">1. CodeQL Security Alerts<a class="headerlink" href="#1-codeql-security-alerts" title="Permanent link">¶</a></h3>
 <p><strong>Status:</strong> Requires manual review</p>
 <p>Cannot be accessed programmatically due to GitHub API permissions.</p>
 <p><strong>Details:</strong>
@@ -2612,9 +2612,9 @@
 2. Download SARIF file for detailed analysis
 3. Prioritize high-severity alert
 4. Assess whether alerts are:
-   - True positives → Fix vulnerabilities
-   - False positives → Add suppression with justification
-   - Library CVEs → Update dependencies</p>
+ - True positives Fix vulnerabilities
+ - False positives Add suppression with justification
+ - Library CVEs Update dependencies</p>
 <p><strong>Common Security Patterns:</strong>
 - SQL injection
 - Command injection (<code>shell=True</code>)
@@ -2712,6 +2712,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

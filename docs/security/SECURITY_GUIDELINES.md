@@ -1,6 +1,6 @@
 # Security Best Practices Guide
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -17,7 +17,7 @@
 
 ## Sensitive Data Handling
 
-###  DO: Mask Sensitive Data in Logs
+### DO: Mask Sensitive Data in Logs
 
 ```python
 from codex.security import mask_token, mask_email, mask_password
@@ -35,20 +35,20 @@ logger.info(f"Password validation: {mask_password(password)}")
 # Output: "Password validation: ***"
 ```
 
-##  DON'T: Log Sensitive Data in Plain Text
+## DON'T: Log Sensitive Data in Plain Text
 
 ```python
 # NEVER DO THIS
-logger.info(f"API Key: {api_key}")  #  Exposes full key in logs
-logger.info(f"User password: {password}")  #  Security violation
-print(f"Secret: {secret_token}")  #  may appear in console logs
+logger.info(f"API Key: {api_key}") # Exposes full key in logs
+logger.info(f"User password: {password}") # Security violation
+print(f"Secret: {secret_token}") # may appear in console logs
 ```
 
 ---
 
 ## Log Injection Prevention
 
-###  DO: Sanitize User-Controlled Input
+### DO: Sanitize User-Controlled Input
 
 ```python
 from src.utils.sanitize import sanitize_prompt
@@ -67,38 +67,38 @@ logger.info(f"User message: {sanitize_prompt(user_message, max_length=200)}")
 
 # Multiple attack vectors (combined defense)
 dangerous_input = request.form.get('data')
-safe_output = sanitize_prompt(dangerous_input)  # Removes control chars, ANSI, HTML-escapes
+safe_output = sanitize_prompt(dangerous_input) # Removes control chars, ANSI, HTML-escapes
 logger.info(f"Processed: {safe_output}")
 ```
 
-##  DON'T: Use Unsanitized User Input in Logs
+## DON'T: Use Unsanitized User Input in Logs
 
 ```python
 # NEVER DO THIS
 user_input = request.form.get('data')
-logger.info(f"User provided: {user_input}")  #  Log injection vulnerability
+logger.info(f"User provided: {user_input}") # Log injection vulnerability
 
 # Attacker input: "normal\nFAKE LOG ENTRY: Admin password reset"
 # Result in logs:
 # User provided: normal
-# FAKE LOG ENTRY: Admin password reset  # ← Injected by attacker
+# FAKE LOG ENTRY: Admin password reset # Injected by attacker
 
 # More attack vectors:
-# - Null byte: "data\x00hidden"  → String termination attacks
-# - ANSI codes: "\x1b[31mred\x1b[0m" → Terminal hijacking
-# - HTML/XSS: "<script>alert(1)</script>" → If logs are viewed in browser
+# - Null byte: "data\x00hidden" String termination attacks
+# - ANSI codes: "\x1b[31mred\x1b[0m" Terminal hijacking
+# - HTML/XSS: "<script>alert(1)</script>" If logs are viewed in browser
 ```
 
-## 🛡️ Defense-in-Depth Strategy
+## Defense-in-Depth Strategy
 
 The `sanitize_prompt()` function provides multiple layers of protection:
 
 | Layer | Attack Vector | Protection |
 |-------|---------------|-----------|
-| 1️⃣ Control Char Removal | Null bytes, carriage returns | `[\x00-\x1F\x7F]` regex |
-| 2️⃣ ANSI Stripping | Terminal escape sequences | `\x1B(?:[@-Z\\-_]\|\[[0-?]*[ -/]*[@-~])` |
-| 3️⃣ HTML Escaping | XSS in web-viewable logs | `<` → `&lt;`, etc. |
-| 4️⃣ Truncation | Buffer overflow, DoS | `max_length` parameter |
+| 1⃣ Control Char Removal | Null bytes, carriage returns | `[\x00-\x1F\x7F]` regex |
+| 2⃣ ANSI Stripping | Terminal escape sequences | `\x1B(?:[@-Z\\-_]\|\[[0-?]*[ -/]*[@-~])` |
+| 3⃣ HTML Escaping | XSS in web-viewable logs | `<` `&lt;`, etc. |
+| 4⃣ Truncation | Buffer overflow, DoS | `max_length` parameter |
 
 **Example Attack Scenarios:**
 
@@ -109,28 +109,28 @@ from src.utils.sanitize import sanitize_prompt
 malicious = "user123\nERROR: Database compromised\nAdmin password: leaked"
 safe = sanitize_prompt(malicious)
 # safe = "user123ERROR: Database compromisedAdmin password: leaked"
-#  Newlines removed, prevents fake log entries
+# Newlines removed, prevents fake log entries
 
 # Scenario 2: Terminal Hijacking via ANSI
 malicious = "\x1b[2J\x1b[H\x1b[31mSYSTEM HACKED\x1b[0m"
 safe = sanitize_prompt(malicious)
 # safe = "SYSTEM HACKED"
-#  ANSI codes removed, prevents terminal control
+# ANSI codes removed, prevents terminal control
 
 # Scenario 3: Null Byte String Termination
 malicious = "visible\x00hidden_payload"
 safe = sanitize_prompt(malicious)
 # safe = "visiblehidden_payload"
-#  Null byte removed, prevents truncation attacks
+# Null byte removed, prevents truncation attacks
 
 # Scenario 4: XSS in Web-Based Log Viewers
 malicious = "<img src=x onerror=alert(document.cookie)>"
 safe = sanitize_prompt(malicious)
 # safe = "&lt;img src=x onerror=alert(document.cookie)&gt;"
-#  HTML escaped, prevents XSS execution
+# HTML escaped, prevents XSS execution
 ```
 
-##  When to Use `sanitize_prompt()`
+## When to Use `sanitize_prompt()`
 
 **ALWAYS sanitize before:**
 - Writing to logs
@@ -146,24 +146,24 @@ safe = sanitize_prompt(malicious)
 from src.utils.sanitize import sanitize_prompt
 
 def process_user_action(username: str, action: str, details: str):
-    """Process and log user action with proper sanitization."""
+ """Process and log user action with proper sanitization."""
 
-    # Sanitize all user inputs before logging
-    safe_username = sanitize_prompt(username, max_length=50)
-    safe_action = sanitize_prompt(action, max_length=20)
-    safe_details = sanitize_prompt(details, max_length=200)
+ # Sanitize all user inputs before logging
+ safe_username = sanitize_prompt(username, max_length=50)
+ safe_action = sanitize_prompt(action, max_length=20)
+ safe_details = sanitize_prompt(details, max_length=200)
 
-    # Now safe to log
-    logger.info(f"User {safe_username} performed {safe_action}: {safe_details}")
+ # Now safe to log
+ logger.info(f"User {safe_username} performed {safe_action}: {safe_details}")
 
-    # Continue processing...
+ # Continue processing...
 ```
 
 ---
 
 ## Secure Storage
 
-###  DO: Use Encrypted Storage for Secrets
+### DO: Use Encrypted Storage for Secrets
 
 ```python
 from codex.security.storage import SecureStorage
@@ -183,7 +183,7 @@ storage.store_secret("secrets/db_password.enc", db_password)
 api_key = storage.load_secret("secrets/api_key.enc")
 ```
 
-##  Key Management Best Practices
+## Key Management Best Practices
 
 ```bash
 # Generate encryption key
@@ -198,27 +198,27 @@ key, salt = derive_key_from_password("my_secure_password")
 # Store salt securely, regenerate key when needed
 ```
 
-##  DON'T: Store Secrets in Plain Text
+## DON'T: Store Secrets in Plain Text
 
 ```python
 # NEVER DO THIS
 with open("api_key.txt", "w") as f:
-    f.write(api_key)  #  Plain text file
+ f.write(api_key) # Plain text file
 
 config = {
-    "api_key": "sk_live_abc123",  #  Hard-coded secret <!-- pragma: allowlist secret -->
-    "password": "admin123"  #  Plain text in config <!-- pragma: allowlist secret -->
+ "api_key": "sk_live_abc123", # Hard-coded secret <!-- pragma: allowlist secret -->
+ "password": "admin123" # Plain text in config <!-- pragma: allowlist secret -->
 }
 
 # In .env file:
-API_KEY=sk_live_abc123  #  Plain text (add .env to .gitignore!)
+API_KEY=sk_live_abc123 # Plain text (add .env to .gitignore!)
 ```
 
 ---
 
 ## Dependency Management
 
-###  DO: Keep Dependencies Updated
+### DO: Keep Dependencies Updated
 
 ```bash
 # Check for vulnerabilities
@@ -233,22 +233,22 @@ pip install --upgrade nbconvert>=7.16.6
 pip freeze > requirements/lock.txt
 ```
 
-##  Security Requirements
+## Security Requirements
 
 - **Critical/High CVEs**: Must be fixed within 7 iterations
 - **Moderate CVEs**: Should be fixed within 30 iterations
 - **Low CVEs**: Review and fix within 90 iterations
 
-###  DON'T: Ignore Dependabot Alerts
+### DON'T: Ignore Dependabot Alerts
 
 ```yaml
 # In dependabot.yml - Keep this enabled
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "per-phase"
+ - package-ecosystem: "pip"
+ directory: "/"
+ schedule:
+ interval: "per-phase"
 ```
 
 ---
@@ -290,11 +290,11 @@ grep -r "hashlib.md5\|hashlib.sha1" src/
 ### 1. Using MD5 for Security
 
 ```python
-#  WRONG
+# WRONG
 import hashlib
 token_hash = hashlib.md5(token.encode()).hexdigest()
 
-#  CORRECT
+# CORRECT
 from codex.security import hash_secure
 token_hash = hash_secure(token, algorithm='sha256')
 ```
@@ -302,28 +302,28 @@ token_hash = hash_secure(token, algorithm='sha256')
 ## 2. Logging Exception Details
 
 ```python
-#  WRONG (Phase 5 expose sensitive data in traceback)
+# WRONG (Phase 5 expose sensitive data in traceback)
 try:
-    api_call(api_key=secret_key)
+ api_call(api_key=secret_key)
 except Exception as e:
-    logger.error(f"API call failed: {e}")  # may contain secret_key
+ logger.error(f"API call failed: {e}") # may contain secret_key
 
-#  CORRECT
+# CORRECT
 try:
-    api_call(api_key=secret_key)
+ api_call(api_key=secret_key)
 except Exception as e:
-    logger.error("API call failed", exc_info=False)  # No sensitive data
-    logger.debug(f"Error details: {type(e).__name__}")
+ logger.error("API call failed", exc_info=False) # No sensitive data
+ logger.debug(f"Error details: {type(e).__name__}")
 ```
 
 ## 3. String Formatting in SQL
 
 ```python
-#  WRONG (SQL injection vulnerability)
+# WRONG (SQL injection vulnerability)
 query = f"SELECT * FROM users WHERE username = '{username}'"
 cursor.execute(query)
 
-#  CORRECT (parameterized query)
+# CORRECT (parameterized query)
 query = "SELECT * FROM users WHERE username = ?"
 cursor.execute(query, (username,))
 ```
@@ -331,15 +331,15 @@ cursor.execute(query, (username,))
 ## 4. Insecure File Permissions
 
 ```python
-#  WRONG (world-readable)
+# WRONG (world-readable)
 with open("secret.txt", "w") as f:
-    f.write(secret)
+ f.write(secret)
 
-#  CORRECT (owner-only permissions)
+# CORRECT (owner-only permissions)
 import os, stat
 with open("secret.txt", "w") as f:
-    f.write(secret)
-os.chmod("secret.txt", stat.S_IRUSR | stat.S_IWUSR)  # 0o600
+ f.write(secret)
+os.chmod("secret.txt", stat.S_IRUSR | stat.S_IWUSR) # 0o600
 ```
 
 ---
@@ -351,16 +351,16 @@ os.chmod("secret.txt", stat.S_IRUSR | stat.S_IWUSR)  # 0o600
 ```python
 # All security utilities in one place
 from codex.security import (
-    # Masking
-    mask_token,
-    mask_email,
-    mask_password,
-    mask_sensitive,
-    # Sanitization
-    sanitize_log,
-    sanitize_dict_for_log,
-    # Hashing
-    hash_secure,
+ # Masking
+ mask_token,
+ mask_email,
+ mask_password,
+ mask_sensitive,
+ # Sanitization
+ sanitize_log,
+ sanitize_dict_for_log,
+ # Hashing
+ hash_secure,
 )
 
 # Encrypted storage
@@ -403,5 +403,5 @@ Include:
 
 ---
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2025-12-23
 **Maintained By**: Security Team

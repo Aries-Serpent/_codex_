@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/TOKEN_ROTATION_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
-<title>🔑 CODEX_MASTER_KEY &amp; CODEX_BACKUP_KEY — Token Rotation Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>CODEX_MASTER_KEY &amp; CODEX_BACKUP_KEY — Token Rotation Guide - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              🔑 CODEX_MASTER_KEY &amp; CODEX_BACKUP_KEY — Token Rotation Guide
+              CODEX_MASTER_KEY &amp; CODEX_BACKUP_KEY — Token Rotation Guide
             
           </span>
 </div>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2272,7 +2272,7 @@
 <a class="md-nav__link" href="#overview">
 <span class="md-ellipsis">
       
-        🗺️ Overview
+        Overview
       
     </span>
 </a>
@@ -2471,33 +2471,45 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="codex_master_key-codex_backup_key-token-rotation-guide">🔑 CODEX_MASTER_KEY &amp; CODEX_BACKUP_KEY — Token Rotation Guide<a class="headerlink" href="#codex_master_key-codex_backup_key-token-rotation-guide" title="Permanent link">¶</a></h1>
+<h1 id="codex_master_key-codex_backup_key-token-rotation-guide">CODEX_MASTER_KEY &amp; CODEX_BACKUP_KEY — Token Rotation Guide<a class="headerlink" href="#codex_master_key-codex_backup_key-token-rotation-guide" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>For:</strong> Human administrator (<code>@mbaetiong</code>) — manual GitHub UI / CLI steps required<br/>
-<strong>Scope:</strong> <code>CODEX_MASTER_KEY</code> and <code>CODEX_BACKUP_KEY</code> repository secrets<br/>
-<strong>Policy:</strong> Rotate every <strong>90 days</strong> or immediately on suspected compromise<br/>
+<p><strong>For:</strong> Human administrator (<code>@mbaetiong</code>) — manual GitHub UI / CLI steps required
+<strong>Scope:</strong> <code>CODEX_MASTER_KEY</code> and <code>CODEX_BACKUP_KEY</code> repository secrets
+<strong>Policy:</strong> Rotate every <strong>90 days</strong> or immediately on suspected compromise
 <strong>Last Updated: 2026-07-11
 </strong>Version:** 1.0.0</p>
 </blockquote>
 <hr/>
-<h2 id="overview">🗺️ Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing 🔑 Token Rotation Start, "§1 Create new PAT\n(do NOT revoke old yet)"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    START([🔑 Token Rotation Start]) --&gt; ASSESS{Rotation reason?}
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    ASSESS --&gt;|Scheduled 90-day| SCHEDULED["§1 Create new PAT\n(do NOT revoke old yet)"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    ASSESS --&gt;|Suspected compromise| EMERGENCY["§E Emergency:\nRevoke old PAT FIRST\nthen §1"]
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Token Rotation Start, "§1 Create new PAT\n(do NOT revoke old yet)"'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> START([ Token Rotation Start]) --&gt; ASSESS{Rotation reason?}
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    SCHEDULED --&gt; CREATE_PAT["§1 Create new Personal Access Token\n(GitHub → Settings → Developer Settings)"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    CREATE_PAT --&gt; REQUIRED_SCOPES["§2 Set required scopes\nrepo, workflow, admin:repo_hook,\nvariables:write, read:org"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    REQUIRED_SCOPES --&gt; UPDATE_SECRET["§3 Update CODEX_MASTER_KEY secret\nin repository settings"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    UPDATE_SECRET --&gt; UPDATE_BACKUP["§4 Rotate CODEX_BACKUP_KEY\n(same process, different PAT)"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    UPDATE_BACKUP --&gt; VERIFY["§5 Verify — trigger\nagent-auth-delegation.yml"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    VERIFY --&gt;| Pass| REVOKE_OLD["§6 Revoke old PAT\n(GitHub Developer Settings)"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    VERIFY --&gt;| Fail| DEBUG["§7 Debug — see Troubleshooting"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    REVOKE_OLD --&gt; LOG["§8 Log rotation in\nthis file + CHANGELOG.md"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    LOG --&gt; DONE([ Rotation Complete])
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> ASSESS --&gt;|Scheduled 90-day| SCHEDULED["§1 Create new PAT\n(do NOT revoke old yet)"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> ASSESS --&gt;|Suspected compromise| EMERGENCY["§E Emergency:\nRevoke old PAT FIRST\nthen §1"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> SCHEDULED --&gt; CREATE_PAT["§1 Create new Personal Access Token\n(GitHub Settings Developer Settings)"]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> CREATE_PAT --&gt; REQUIRED_SCOPES["§2 Set required scopes\nrepo, workflow, admin:repo_hook,\nvariables:write, read:org"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> REQUIRED_SCOPES --&gt; UPDATE_SECRET["§3 Update CODEX_MASTER_KEY secret\nin repository settings"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> UPDATE_SECRET --&gt; UPDATE_BACKUP["§4 Rotate CODEX_BACKUP_KEY\n(same process, different PAT)"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> UPDATE_BACKUP --&gt; VERIFY["§5 Verify — trigger\nagent-auth-delegation.yml"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> VERIFY --&gt;| Pass| REVOKE_OLD["§6 Revoke old PAT\n(GitHub Developer Settings)"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> VERIFY --&gt;| Fail| DEBUG["§7 Debug — see Troubleshooting"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> REVOKE_OLD --&gt; LOG["§8 Log rotation in\nthis file + CHANGELOG.md"]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> LOG --&gt; DONE([ Rotation Complete])
 </code></pre></div>
 <hr/>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
@@ -2514,7 +2526,7 @@
 <td>Required</td>
 </tr>
 <tr>
-<td>Access to GitHub → Settings → Developer settings → Personal access tokens</td>
+<td>Access to GitHub Settings Developer settings Personal access tokens</td>
 <td>Required</td>
 </tr>
 <tr>
@@ -2531,54 +2543,54 @@
 <h2 id="1-create-new-personal-access-token-fine-grained">§ 1 — Create New Personal Access Token (Fine-Grained)<a class="headerlink" href="#1-create-new-personal-access-token-fine-grained" title="Permanent link">¶</a></h2>
 <ol>
 <li>
-<p>Navigate to: <strong>GitHub → Your profile → Settings → Developer settings → Personal access tokens → Fine-grained tokens</strong><br/>
-   Direct URL: <code>https://github.com/settings/tokens?type=beta</code></p>
+<p>Navigate to: <strong>GitHub Your profile Settings Developer settings Personal access tokens Fine-grained tokens</strong>
+ Direct URL: <code>https://github.com/settings/tokens?type=beta</code></p>
 </li>
 <li>
 <p>Click <strong>"Generate new token"</strong></p>
 </li>
 <li>
 <p>Fill in:
-   | Field | Value |
-   |-------|-------|
-   | <strong>Token name</strong> | <code>codex-master-key-YYYY-MM</code> (e.g. <code>codex-master-key-2026-06</code>) |
-   | <strong>Expiration</strong> | <code>90 days</code> |
-   | <strong>Resource owner</strong> | <code>Aries-Serpent</code> |
-   | <strong>Repository access</strong> | <code>Only select repositories</code> → <code>_codex_</code> |</p>
+ | Field | Value |
+ |-------|-------|
+ | <strong>Token name</strong> | <code>codex-master-key-YYYY-MM</code> (e.g. <code>codex-master-key-2026-06</code>) |
+ | <strong>Expiration</strong> | <code>90 days</code> |
+ | <strong>Resource owner</strong> | <code>Aries-Serpent</code> |
+ | <strong>Repository access</strong> | <code>Only select repositories</code> <code>_codex_</code> |</p>
 </li>
 <li>
 <p>Set <strong>Repository permissions</strong>:
-   | Permission | Level |
-   |-----------|-------|
-   | Actions | Read and write |
-   | Contents | Read and write |
-   | Pull requests | Read and write |
-   | Secrets | Read and write |
-   | Variables | Read and write |
-   | Workflows | Read and write |
-   | Issues | Read and write |
-   | Metadata | Read (auto-granted) |</p>
+ | Permission | Level |
+ |-----------|-------|
+ | Actions | Read and write |
+ | Contents | Read and write |
+ | Pull requests | Read and write |
+ | Secrets | Read and write |
+ | Variables | Read and write |
+ | Workflows | Read and write |
+ | Issues | Read and write |
+ | Metadata | Read (auto-granted) |</p>
 </li>
 <li>
 <p>Click <strong>"Generate token"</strong> — copy the token immediately (shown only once).</p>
 </li>
 </ol>
 <blockquote>
-<p>️ <strong>Store the new token securely</strong> in your password manager before proceeding.</p>
+<p><strong>Store the new token securely</strong> in your password manager before proceeding.</p>
 </blockquote>
 <hr/>
 <h2 id="2-update-codex_master_key-in-repository-secrets">§ 2 — Update <code>CODEX_MASTER_KEY</code> in Repository Secrets<a class="headerlink" href="#2-update-codex_master_key-in-repository-secrets" title="Permanent link">¶</a></h2>
 <h3 id="option-a-github-ui-recommended-for-first-rotation">Option A — GitHub UI (recommended for first rotation)<a class="headerlink" href="#option-a-github-ui-recommended-for-first-rotation" title="Permanent link">¶</a></h3>
 <ol>
 <li>Navigate to: <code>https://github.com/Aries-Serpent/_codex_/settings/secrets/actions</code></li>
-<li>Click <strong><code>CODEX_MASTER_KEY</code></strong> → <strong>"Update"</strong></li>
+<li>Click <strong><code>CODEX_MASTER_KEY</code></strong> <strong>"Update"</strong></li>
 <li>Paste the new PAT token value</li>
 <li>Click <strong>"Update secret"</strong></li>
 </ol>
 <h3 id="option-b-github-cli">Option B — GitHub CLI<a class="headerlink" href="#option-b-github-cli" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Authenticate with a PAT that has admin:repo_hook or use your browser session</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"YOUR_NEW_PAT_HERE"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_MASTER_KEY<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 </code></pre></div>
 <hr/>
 <h2 id="3-rotate-codex_backup_key">§ 3 — Rotate <code>CODEX_BACKUP_KEY</code><a class="headerlink" href="#3-rotate-codex_backup_key" title="Permanent link">¶</a></h2>
@@ -2590,36 +2602,36 @@ Rotate it on the same schedule but generate a <strong>separate</strong> PAT.</p>
 <li>Update <code>CODEX_BACKUP_KEY</code> via UI or CLI:</li>
 </ol>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"YOUR_BACKUP_PAT_HERE"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_BACKUP_KEY<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 </code></pre></div>
 <hr/>
 <h2 id="4-verify-rotation">§ 4 — Verify Rotation<a class="headerlink" href="#4-verify-rotation" title="Permanent link">¶</a></h2>
 <h3 id="trigger-verification-workflow">Trigger verification workflow<a class="headerlink" href="#trigger-verification-workflow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>agent-auth-delegation.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span>--ref<span class="w"> </span>main
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span>--ref<span class="w"> </span>main
 </code></pre></div>
-<p>Or navigate to:<br/>
-<code>https://github.com/Aries-Serpent/_codex_/actions/workflows/agent-auth-delegation.yml</code><br/>
-→ <strong>"Run workflow"</strong> on <code>main</code></p>
+<p>Or navigate to:
+<code>https://github.com/Aries-Serpent/_codex_/actions/workflows/agent-auth-delegation.yml</code>
+<strong>"Run workflow"</strong> on <code>main</code></p>
 <h3 id="expected-output-success">Expected output (success)<a class="headerlink" href="#expected-output-success" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a> CODEX_MASTER_KEY: secret present (length &gt; 0)
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> Cognitive Pre-flight Check: PASS
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> activate-delegation: success
 </code></pre></div>
 <h3 id="check-in-ci-log">Check in CI log<a class="headerlink" href="#check-in-ci-log" title="Permanent link">¶</a></h3>
-<p>Look for the <code>Cognitive Pre-flight Check</code> job → step <code>Set repo variables via CODEX_MASTER_KEY</code>:
-- Status:  <code>COPILOT_AGENT_AUTH_ENABLED=true</code>
-- Status:  Session number incremented</p>
+<p>Look for the <code>Cognitive Pre-flight Check</code> job step <code>Set repo variables via CODEX_MASTER_KEY</code>:
+- Status: <code>COPILOT_AGENT_AUTH_ENABLED=true</code>
+- Status: Session number incremented</p>
 <hr/>
 <h2 id="5-revoke-old-token">§ 5 — Revoke Old Token<a class="headerlink" href="#5-revoke-old-token" title="Permanent link">¶</a></h2>
 <blockquote>
-<p>️ <strong>Only do this AFTER §4 passes.</strong> Revoking before verification will break CI.</p>
+<p><strong>Only do this AFTER §4 passes.</strong> Revoking before verification will break CI.</p>
 </blockquote>
 <ol>
 <li>Navigate to: <code>https://github.com/settings/tokens</code></li>
 <li>Find the <strong>old</strong> <code>codex-master-key-YYYY-MM</code> token</li>
-<li>Click <strong>"Delete"</strong> → confirm</li>
+<li>Click <strong>"Delete"</strong> confirm</li>
 <li>Repeat for old <code>codex-backup-key-YYYY-MM</code></li>
 </ol>
 <hr/>
@@ -2656,8 +2668,8 @@ Rotate it on the same schedule but generate a <strong>separate</strong> PAT.</p>
 <li><strong>Immediately</strong> revoke the old PAT at <code>https://github.com/settings/tokens</code></li>
 <li>Follow §1–§4 above to create and deploy new tokens</li>
 <li>Audit recent workflow runs for unauthorized variable changes:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>gh<span class="w"> </span>api<span class="w"> </span>repos/Aries-Serpent/_codex_/actions/runs<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.workflow_runs[:20] | .[] | {id, name, conclusion, created_at}'</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>gh<span class="w"> </span>api<span class="w"> </span>repos/Aries-Serpent/_codex_/actions/runs<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>--jq<span class="w"> </span><span class="s1">'.workflow_runs[:20] | .[] | {id, name, conclusion, created_at}'</span>
 </code></pre></div></li>
 <li>Check <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> for unexpected agent activations</li>
 <li>File a GitHub security advisory if repository data was accessed: <code>https://github.com/Aries-Serpent/_codex_/security/advisories/new</code></li>
@@ -2665,18 +2677,18 @@ Rotate it on the same schedule but generate a <strong>separate</strong> PAT.</p>
 <hr/>
 <h2 id="7-troubleshooting">§ 7 — Troubleshooting<a class="headerlink" href="#7-troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="codex_master_key-not-available-in-ci"><code>CODEX_MASTER_KEY not available</code> in CI<a class="headerlink" href="#codex_master_key-not-available-in-ci" title="Permanent link">¶</a></h3>
-<p><strong>Symptom:</strong> CI log shows <code>️ CODEX_MASTER_KEY not available</code><br/>
-<strong>Cause:</strong> Secret was not saved, wrong repo, or expired<br/>
+<p><strong>Symptom:</strong> CI log shows <code>CODEX_MASTER_KEY not available</code>
+<strong>Cause:</strong> Secret was not saved, wrong repo, or expired
 <strong>Fix:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Verify secret exists (name only — value is never shown)</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>CODEX_MASTER_KEY
 </code></pre></div></p>
 <h2 id="failed-to-set-variable-403-forbidden"><code>Failed to set variable: 403 Forbidden</code><a class="headerlink" href="#failed-to-set-variable-403-forbidden" title="Permanent link">¶</a></h2>
-<p><strong>Symptom:</strong> <code>activate-delegation</code> job fails with 403<br/>
-<strong>Cause:</strong> New PAT missing <code>variables:write</code> permission<br/>
+<p><strong>Symptom:</strong> <code>activate-delegation</code> job fails with 403
+<strong>Cause:</strong> New PAT missing <code>variables:write</code> permission
 <strong>Fix:</strong> Regenerate token with <code>Variables: Read and write</code> permission (§1 step 4)</p>
 <h3 id="token-has-expired-in-workflow-logs"><code>token has expired</code> in workflow logs<a class="headerlink" href="#token-has-expired-in-workflow-logs" title="Permanent link">¶</a></h3>
-<p><strong>Symptom:</strong> Actions fail with authentication errors after 90 days<br/>
+<p><strong>Symptom:</strong> Actions fail with authentication errors after 90 days
 <strong>Fix:</strong> Rotate immediately following this guide</p>
 <hr/>
 <h2 id="token-rotation-calendar">Token Rotation Calendar<a class="headerlink" href="#token-rotation-calendar" title="Permanent link">¶</a></h2>
@@ -2747,6 +2759,6 @@ Rotate it on the same schedule but generate a <strong>separate</strong> PAT.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

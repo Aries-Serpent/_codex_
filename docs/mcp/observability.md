@@ -1,30 +1,30 @@
 # MCP Observability
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-06-22T00:00:00Z  
-**Status**:  Prototype Implementation  
-**Priority**: P2 (Supporting Documentation)  
+**Last Updated**: 2026-06-22T00:00:00Z
+**Status**: Prototype Implementation
+**Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Establish comprehensive observability framework for MCP operations through FastAPI middleware, JSON-RPC logging, metrics collection, and tracing hooks while maintaining offline-first architecture.
 
-**Energy Level**:  (3/5) - Essential monitoring infrastructure supporting MCP reliability.
+**Energy Level**: (3/5) - Essential monitoring infrastructure supporting MCP reliability.
 
 **Operational Status**:
--  FastAPI middleware integrated
--  JSON-RPC logging operational
--  Health endpoint exposes status payload
--  Prometheus scraping endpoint placeholder ready
-- 🔮 OpenTelemetry tracing hooks disabled by default (offline-first)
+- FastAPI middleware integrated
+- JSON-RPC logging operational
+- Health endpoint exposes status payload
+- Prometheus scraping endpoint placeholder ready
+- OpenTelemetry tracing hooks disabled by default (offline-first)
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **Observability Infrastructure**:
 - [ ] Health endpoint returns valid JSON status
@@ -47,15 +47,15 @@
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Health Endpoint Availability | 99.9% | - | 🔮 Pending Monitoring |
-| Log Write Latency (p95) | <10ms | - | 🔮 Pending Monitoring |
-| Metrics Scrape Interval | 15s | - | 🔮 Pending Config |
-| Tracing Overhead (when enabled) | <8% | - | 🔮 Pending Measurement |
-| Alert Response Time | <5min | - | 🔮 Pending Ops Setup |
+| Health Endpoint Availability | 99.9% | - | Pending Monitoring |
+| Log Write Latency (p95) | <10ms | - | Pending Monitoring |
+| Metrics Scrape Interval | 15s | - | Pending Config |
+| Tracing Overhead (when enabled) | <8% | - | Pending Measurement |
+| Alert Response Time | <5min | - | Pending Ops Setup |
 
 **Observability Coverage KPIs**:
 - Critical paths instrumented: 100% (target)
@@ -65,40 +65,54 @@
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Observability Flow)
-**Monitoring Path**: Event → Log/Metric → Collection → Aggregation → Analysis → Alert/Dashboard
+### Path (Observability Flow)
+**Monitoring Path**: Event Log/Metric Collection Aggregation Analysis Alert/Dashboard
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing MCP Event, FastAPI Middleware'}}%%
+
 graph TD
+
     A[MCP Event] --> B{Event Type}
+
     B -->|HTTP Request| C[FastAPI Middleware]
+
     B -->|JSON-RPC Call| D[JSON-RPC Logger]
+
     B -->|VectorStore Op| E[Query Tracer]
 
     C --> F[Structured Log]
+
     D --> F
+
     E --> F
 
     C --> G[Prometheus Metric]
+
     E --> G
 
     F --> H[Log Aggregator]
+
     G --> I[Metrics Scraper]
+
     E --> J[Trace Collector]
 
     H --> K[Analysis/Search]
+
     I --> L[Dashboard]
+
     J --> L
 
     K --> M{Anomaly?}
+
     M -->|Yes| N[Alert]
+
     M -->|No| O[Archive]
 ```
 
-### Fields  (Observability States)
+### Fields (Observability States)
 **Instrumentation States**:
 1. **Uninstrumented**: No observability hooks
 2. **Logging Only**: Basic log output
@@ -106,14 +120,14 @@ graph TD
 4. **Tracing Enabled**: OpenTelemetry spans captured
 5. **Fully Observable**: Logs + Metrics + Traces + Alerts
 
-### Patterns ️ (Observable Patterns)
+### Patterns (Observable Patterns)
 - **Request Duration Pattern**: p50/p95/p99 latency tracking
 - **Error Rate Pattern**: 4xx/5xx HTTP status codes
 - **Throughput Pattern**: Requests per second (RPS)
 - **Resource Usage Pattern**: Memory/CPU per operation
 - **Dependency Health Pattern**: VectorStore response times
 
-### Redundancy  (Observability Resilience)
+### Redundancy (Observability Resilience)
 **Multi-Layer Monitoring**:
 - Application logs: Immediate issue detection
 - Metrics: Trend analysis and capacity planning
@@ -125,7 +139,7 @@ graph TD
 - If tracing overhead high: Disable via env var
 - If log aggregation down: Local file logs persist
 
-### Balance ️ (Overhead vs. Insight)
+### Balance (Overhead vs. Insight)
 **Performance Trade-offs**:
 - Verbose logging vs. disk I/O
 - Tracing granularity vs. CPU overhead
@@ -138,7 +152,7 @@ graph TD
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 ### P0 Critical (40%)
 - Health endpoint reliability (15%)
@@ -160,7 +174,7 @@ graph TD
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 
@@ -271,11 +285,11 @@ Observability is built around FastAPI middleware and JSON-RPC logging hooks.
 
 ---
 
-**Document Version**: 2.0.0  
-**Last Updated**: 2026-06-22T00:00:00Z  
-**Implementation**: `src/mcp/server/http.py` (FastAPI middleware)  
-**Validation**: `scripts/validate_mcp.py --run-http-smoke`  
-**Iteration Alignment**: Phase 12.3+ compatible  
+**Document Version**: 2.0.0
+**Last Updated**: 2026-06-22T00:00:00Z
+**Implementation**: `src/mcp/server/http.py` (FastAPI middleware)
+**Validation**: `scripts/validate_mcp.py --run-http-smoke`
+**Iteration Alignment**: Phase 12.3+ compatible
 **MCP Protocol**: 2024-11-05 specification
 
 **Related Documentation**:

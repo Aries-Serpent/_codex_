@@ -1,6 +1,6 @@
 # MCP Rate Limiting
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-11
 
@@ -10,12 +10,19 @@ Rate limiting protects the MCP server and upstream providers from abuse and ensu
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Client Request, Process Request'}}%%
+
 graph LR
+
     A[Client Request] --> B{Rate Limiter}
+
     B -->|Under Limit| C[Process Request]
+
     B -->|Over Limit| D[429 Response]
+
     C --> E[Update Token Bucket]
+
     D --> F[Retry-After Header]
+
     E --> G[Response]
 ```
 
@@ -679,15 +686,15 @@ groups:
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Protect MCP servers and upstream providers with fair, distributed rate limiting using token bucket algorithm with burst capacity.
 
 **Energy Level:** 4/5 (High Priority - Service Protection)
 
-**Operational Status:**  **ACTIVE** - Production-ready with multiple storage backends
+**Operational Status:** **ACTIVE** - Production-ready with multiple storage backends
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] Token bucket algorithm implemented
 - [x] Per-API-key rate limiting
@@ -709,35 +716,35 @@ groups:
 - API key authentication
 - Monitoring infrastructure
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Rate Limit Accuracy** | >99.5% | 99.8% |  |
-| **Overhead per Request** | <5ms | 2-3ms |  |
-| **False Rejections** | <0.1% | 0.05% |  |
-| **Burst Handling** | 2x sustained rate | 2x |  |
-| **Storage Latency (Redis)** | <10ms | 5-8ms |  |
-| **Storage Latency (SQLite)** | <5ms | 2-4ms |  |
-| **Storage Latency (Memory)** | <1ms | 0.5ms |  |
-| **Test Coverage** | >90% | 95% |  |
+| **Rate Limit Accuracy** | >99.5% | 99.8% | |
+| **Overhead per Request** | <5ms | 2-3ms | |
+| **False Rejections** | <0.1% | 0.05% | |
+| **Burst Handling** | 2x sustained rate | 2x | |
+| **Storage Latency (Redis)** | <10ms | 5-8ms | |
+| **Storage Latency (SQLite)** | <5ms | 2-4ms | |
+| **Storage Latency (Memory)** | <1ms | 0.5ms | |
+| **Test Coverage** | >90% | 95% | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Rate Limiting Flow:**
-1. Request received → Extract API key
+1. Request received Extract API key
 2. Determine endpoint type (read/write)
 3. Get/create token bucket for key
 4. Check token availability
-5. Consume token if available → Allow request
-6. Reject if unavailable → Return 429
+5. Consume token if available Allow request
+6. Reject if unavailable Return 429
 
 **Sequential Dependencies:**
-- Authentication → Rate limiting → Request processing
+- Authentication Rate limiting Request processing
 - Token refill happens continuously (background)
 
-### Fields 
+### Fields
 **State Management:**
 - **Per-key buckets:** Isolated rate limits
 - **Token state:** Capacity, current tokens, last update
@@ -748,7 +755,7 @@ groups:
 - Burst capacity for traffic spikes
 - Automatic cleanup of old buckets
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Track rate limit checks (allowed/rejected)
 - Monitor token levels per bucket
@@ -761,30 +768,30 @@ groups:
 - Dependency injection (FastAPI)
 - Distributed coordination (Redis/Durable Objects)
 
-### Redundancy 
+### Redundancy
 **Failure Modes:**
-1. **Storage unavailable** → Fallback to in-memory (degraded)
-2. **Clock skew** → Use monotonic time (resilient)
-3. **High contention** → Per-key locks (safe)
-4. **Config error** → Default to safe limits (conservative)
+1. **Storage unavailable** Fallback to in-memory (degraded)
+2. **Clock skew** Use monotonic time (resilient)
+3. **High contention** Per-key locks (safe)
+4. **Config error** Default to safe limits (conservative)
 
 **Recovery:**
-- Redis connection failure → Local cache for 60s
-- SQLite lock timeout → Retry with backoff
-- Memory overflow → LRU eviction of old buckets
+- Redis connection failure Local cache for 60s
+- SQLite lock timeout Retry with backoff
+- Memory overflow LRU eviction of old buckets
 
-### Balance ️
+### Balance
 **Protection vs Usability:**
--  Burst capacity for legitimate spikes
--  Separate read/write limits
-- ️ Trade-off: Strict limits vs user experience
+- Burst capacity for legitimate spikes
+- Separate read/write limits
+- Trade-off: Strict limits vs user experience
 
 **Performance vs Accuracy:**
 - Fast in-memory (1ms) vs distributed Redis (5-8ms)
 - Atomic operations vs eventual consistency
 - Exact counting vs approximate (sliding window)
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -794,7 +801,7 @@ groups:
 | **P1** | Metrics/monitoring | 10% | Operational visibility |
 | **P2** | Burst handling | 5% | Enhanced UX |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

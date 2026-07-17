@@ -1,16 +1,16 @@
 # GitHub API Usage Patterns — Code Examples
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version:** 1.0.0  
-> **Date:** 2026-06-29  
+> **Version:** 1.0.0
+> **Date:** 2026-06-29
 > **Audience:** Developers, CI/CD automation, test engineers
 
 ---
 
-##  Quick Reference Examples
+## Quick Reference Examples
 
-All examples use the token chain: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GH_TOKEN` → `GITHUB_TOKEN`
+All examples use the token chain: `CODEX_MASTER_KEY` `CODEX_BACKUP_KEY` `GH_TOKEN` `GITHUB_TOKEN`
 
 ---
 

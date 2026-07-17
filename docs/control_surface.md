@@ -1,6 +1,6 @@
 # Control Surface: Internal Alpha Knob Contract
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-16
 
@@ -86,7 +86,7 @@ some presets are experimental).
 ## 6. Rollout Ring / Target Environment
 **What it controls:** Declares which ring this artifact is targeting
 next in the branch promotion ladder:
-`0A_base_` → `0B_base_` → `0C_base_` → `0D_base_` → `main`.
+`0A_base_` `0B_base_` `0C_base_` `0D_base_` `main`.
 
 **Where defined now:**
 Runbook expectations in `docs/README.md` and release workflows across
@@ -115,18 +115,18 @@ AlphaProductSurface = {
 Each knob is offline-first and review-gated:
 
 - `curriculum_phase` / `replay_strategy` come from the training configs and
-  continual replay logic in
-  `src/codex_ml/training/unified_training.py` / `src/codex_ml/training/strategies.py`.
+ continual replay logic in
+ `src/codex_ml/training/unified_training.py` / `src/codex_ml/training/strategies.py`.
 - `trace_mode` is documented as "disabled" by default. When enabled it is a
-  diagnostic fingerprint (`param-slice`) and remains offline-only until the
-  planned "activation-snapshot" ships.
+ diagnostic fingerprint (`param-slice`) and remains offline-only until the
+ planned "activation-snapshot" ships.
 - `eval_preset` is declared in `configs/evaluation/reasoning/*.yaml` and powers
-  offline theorem/tool probes.
+ offline theorem/tool probes.
 - `deploy_preset` is the dry-run manifest (`configs/deploy/reasoning_pod.yaml`)
-  rendered via `codex deploy --dry-run` for inspection (never auto-deploy).
-- `rollout_ring` is an intent badge in the ladder `0A_base_` → `0B_base_` →
-  `0C_base_` → `0D_base_` → `main`. It is not production approval.
+ rendered via `codex deploy --dry-run` for inspection (never auto-deploy).
+- `rollout_ring` is an intent badge in the ladder `0A_base_` `0B_base_`
+ `0C_base_` `0D_base_` `main`. It is not production approval.
 
-Product signoff to merge `0D_base_` → `main` should not happen unless every
+Product signoff to merge `0D_base_` `main` should not happen unless every
 knob above is documented, has a safe offline default, and is reflected in
 status / rollout notes.

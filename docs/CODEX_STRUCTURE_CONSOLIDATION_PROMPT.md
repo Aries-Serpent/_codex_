@@ -1,6 +1,6 @@
 # Codex Execution Prompt for Repository Structure Consolidation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Objective
 The aim of this prompt is to consolidate and enhance the structure of the repository for better organization, ease of navigation, and improved documentation.

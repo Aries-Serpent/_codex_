@@ -1,61 +1,61 @@
 # [Doc]: Configuration & Overrides Guide (Hydra-Compatible Patterns)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
- Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## Purpose
 Document deterministic, offline-friendly configuration practices compatible with Hydra/OmegaConf patterns while remaining robust without optional dependencies.
 
 ## Principles
 - Deterministic: Avoid random ordering; prefer explicit defaults.
-- Layered: base.yaml → env/cli overrides → experiment.yaml
+- Layered: base.yaml env/cli overrides experiment.yaml
 - Offline: No network-bound resolvers; local file references only.
 - Minimal Writes: Configs remain under `configs/`.
 
 ## Directory Layout (Suggested)
 ```text
 configs/
-├── base.yaml
-├── experiment.yaml
-└── env/
-    ├── dev.yaml
-    └── prod.yaml
+ base.yaml
+ experiment.yaml
+ env/
+ dev.yaml
+ prod.yaml
 ```text
 
 ## Base Config Example
 ```yaml
 # configs/base/base.yaml
 trainer:
-  seed: 123
-  batch_size: 32
-  deterministic: true
+ seed: 123
+ batch_size: 32
+ deterministic: true
 
 logging:
-  level: INFO
-  format: ndjson
+ level: INFO
+ format: ndjson
 
 paths:
-  data_dir: data/
-  artifacts_dir: artifacts/
+ data_dir: data/
+ artifacts_dir: artifacts/
 ```text
 
 ## Experiment Overrides
 ```yaml
 # configs/experimental/experiment.yaml
 trainer:
-  batch_size: 64
+ batch_size: 64
 
 logging:
-  level: DEBUG
+ level: DEBUG
 ```text
 
 ## Environment Overrides (Optional)
 ```yaml
 # configs/base/environment/dev.yaml
 paths:
-  data_dir: data/dev/
+ data_dir: data/dev/
 ```text
 
 ## Composition Order
@@ -74,17 +74,17 @@ python -m codex_ml.cli.config trainer.seed=42 logging.level=WARNING
 
 The Typer-based `codex-ml` shim now mirrors Hydra defaults even when the CLI is
 invoked in an offline shell. When you pass `--config path/to/train.yaml` the
-command applies the same precedence order as Hydra (CLI overrides → config →
+command applies the same precedence order as Hydra (CLI overrides config
 built-in defaults). Regression tests under
 `tests/codex_ml/test_cli_train_config_bridge.py` load a temporary YAML payload
 and assert that:
 
 - YAML-only values (e.g. `training.epochs`, `gradient_accumulation_steps`) are
-  propagated into `UnifiedTrainingConfig`.
+ propagated into `UnifiedTrainingConfig`.
 - Explicit CLI flags such as `--epochs` or `--grad-accum` take priority over
-  the YAML defaults.
+ the YAML defaults.
 - Offline toggles (e.g. `--mlflow`, `--wandb`) remain deterministic so you can
-  compose reproducible runs without Hydra installed.
+ compose reproducible runs without Hydra installed.
 
 Run the focused check with:
 
@@ -98,16 +98,16 @@ from pathlib import Path
 import yaml
 
 def load_yaml(p: Path) -> dict:
-    return yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else {}
+ return yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 def merge(a: dict, b: dict) -> dict:
-    out = dict(a)
-    for k, v in b.items():
-        if isinstance(v, dict) and isinstance(out.get(k), dict):
-            out[k] = merge(out[k], v)
-        else:
-            out[k] = v
-    return out
+ out = dict(a)
+ for k, v in b.items():
+ if isinstance(v, dict) and isinstance(out.get(k), dict):
+ out[k] = merge(out[k], v)
+ else:
+ out[k] = v
+ return out
 
 base = load_yaml(Path("configs/base/base.yaml"))
 env_cfg = load_yaml(Path("configs/base/environment/dev.yaml"))
@@ -117,9 +117,9 @@ cfg = merge(base, merge(env_cfg, exp))
 ```text
 
 ## Environment Variable Conventions
-- TRAINER_SEED → trainer.seed
-- TRAINER_BATCH_SIZE → trainer.batch_size
-- LOGGING_LEVEL → logging.level
+- TRAINER_SEED trainer.seed
+- TRAINER_BATCH_SIZE trainer.batch_size
+- LOGGING_LEVEL logging.level
 
 Example:
 ```bash
@@ -157,11 +157,11 @@ python train.py
 import os
 
 def apply_env_overrides(cfg: dict) -> dict:
-    new = dict(cfg)
-    if "TRAINER_SEED" in os.environ:
-        new.setdefault("trainer", {})
-        new["trainer"]["seed"] = int(os.environ["TRAINER_SEED"])
-    return new
+ new = dict(cfg)
+ if "TRAINER_SEED" in os.environ:
+ new.setdefault("trainer", {})
+ new["trainer"]["seed"] = int(os.environ["TRAINER_SEED"])
+ return new
 ```text
 
 ## Testing Guidance
@@ -169,12 +169,12 @@ def apply_env_overrides(cfg: dict) -> dict:
 - Test composition order deterministically.
 - Test environment override precedence.
 - Exercise the Typer CLI bridge to guarantee config defaults and CLI overrides
-  remain reproducible offline (`pytest tests/codex_ml/test_cli_train_config_bridge.py`).
+ remain reproducible offline (`pytest tests/codex_ml/test_cli_train_config_bridge.py`).
 
 ## Quality Gates
-- Missing base.yaml → warn.
-- Non-deterministic fields in configs → flag.
-- Paths not under repo → warn.
+- Missing base.yaml warn.
+- Non-deterministic fields in configs flag.
+- Paths not under repo warn.
 
 ## Appendix: Migration to Hydra (Optional)
 - Keep YAML shapes compatible with OmegaConf.

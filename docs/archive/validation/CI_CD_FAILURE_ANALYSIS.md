@@ -1,12 +1,12 @@
 # CI/CD Failure Analysis for PR #2968
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Branch:** `copilot/sub-pr-2968`  
-**Commit:** `ea7f255c2607c9832347e2c96d6005f6436049d3`  
-**Python Version:** 3.12.3  
+**Branch:** `copilot/sub-pr-2968`
+**Commit:** `ea7f255c2607c9832347e2c96d6005f6436049d3`
+**Python Version:** 3.12.3
 **Analysis Date:2026-07-13
 
 ## Executive Summary
@@ -23,29 +23,29 @@ Analysis reveals **21+ distinct failing test cases** and **100+ linting violatio
 ## Priority Classification
 
 ### P0 - Critical (Blocks CI/CD)
-1.  **Linting Failures** - 100+ violations blocking ruff check
-2.  **F1 Score Test Logic Error** - Incorrect expected value (1.0 vs 0.0)
-3.  **AuditResult API Mismatch** - Missing `repo_name` parameter
-4.  **Hydra Configuration Missing** - `hydra/data/base` not found
-5.  **Config Validation Failure** - Schema validation errors
+1. **Linting Failures** - 100+ violations blocking ruff check
+2. **F1 Score Test Logic Error** - Incorrect expected value (1.0 vs 0.0)
+3. **AuditResult API Mismatch** - Missing `repo_name` parameter
+4. **Hydra Configuration Missing** - `hydra/data/base` not found
+5. **Config Validation Failure** - Schema validation errors
 
 ### P1 - High (Test Suite Failures)
-6.  **Prometheus Metrics Collision** - 10 tests failing due to duplicated timeseries
-7.  **EntanglementManager Signature** - Wrong number of arguments
-8.  **Train Loop AttributeError** - `__version__` not found
-9.  **Agent Load Tests** - Scalability and concurrency failures
+6. **Prometheus Metrics Collision** - 10 tests failing due to duplicated timeseries
+7. **EntanglementManager Signature** - Wrong number of arguments
+8. **Train Loop AttributeError** - `__version__` not found
+9. **Agent Load Tests** - Scalability and concurrency failures
 
 ### P2 - Medium (Flaky/Intermittent)
-10. ️ **Checkpoint Provenance** - PyTorch serialization (passes in isolation)
-11. ️ **Test Collection Warnings** - dataclass __init__ constructors
+10. **Checkpoint Provenance** - PyTorch serialization (passes in isolation)
+11. **Test Collection Warnings** - dataclass __init__ constructors
 
 ---
 
 ## Detailed Failure Analysis
 
-### 1. Linting Violations (P0) 
+### 1. Linting Violations (P0)
 
-**Count:** 100+ violations  
+**Count:** 100+ violations
 **Files Affected:**
 - `.codex/agents/rfc-compliance-checker/run.py` (50+ issues)
 - `.codex/agents/security-input-validator/run.py` (50+ issues)
@@ -68,22 +68,22 @@ ruff check --fix .codex/agents/security-input-validator/run.py
 **Action Items:**
 1. Run `ruff check --fix .` to auto-fix whitespace issues
 2. Manually fix:
-   - Line 250: Rename variable `l` to `line` or `lines`
-   - Line 388: Remove f-string or add placeholder
-   - Line 191: Use variable `e` or remove catch
+ - Line 250: Rename variable `l` to `line` or `lines`
+ - Line 388: Remove f-string or add placeholder
+ - Line 191: Use variable `e` or remove catch
 
 ---
 
-### 2. F1 Score Zero Division Handling (P0) 
+### 2. F1 Score Zero Division Handling (P0)
 
 **Test:** `tests/metrics/test_f1_score.py::test_f1_micro_handles_zero_division`
 
 **Failure:**
 ```python
 def test_f1_micro_handles_zero_division() -> None:
-    metric = F1Score(num_classes=2, average="micro")
-    metric.update([0, 0], [0, 0])  # All predictions and labels are class 0
-    assert metric.compute()["f1_score"] == 0.0  #  Returns 1.0
+ metric = F1Score(num_classes=2, average="micro")
+ metric.update([0, 0], [0, 0]) # All predictions and labels are class 0
+ assert metric.compute()["f1_score"] == 0.0 # Returns 1.0
 ```
 
 **Root Cause:** When all predictions and labels are the same class, the F1 score returns 1.0 (perfect agreement) instead of handling zero division edge case.
@@ -107,7 +107,7 @@ assert metric.compute()["f1_score"] == 1.0
 
 ---
 
-## 3. Prometheus Metrics Duplicated Timeseries (P1) 
+## 3. Prometheus Metrics Duplicated Timeseries (P1)
 
 **Tests Affected:** 10 tests in `tests/test_prometheus_metrics.py`
 
@@ -119,8 +119,8 @@ ValueError: Duplicated timeseries in CollectorRegistry:
 
 **Root Cause:** Prometheus `CollectorRegistry` is a global singleton. Multiple test runs without proper cleanup cause metric re-registration errors.
 
-**Tests Pass In Isolation:**  Yes - when run individually, all tests pass
-**Tests Fail Together:**  Yes - when run with other tests, they fail
+**Tests Pass In Isolation:** Yes - when run individually, all tests pass
+**Tests Fail Together:** Yes - when run with other tests, they fail
 
 **Fix:** Add proper teardown to clear Prometheus registry between tests.
 
@@ -132,18 +132,18 @@ from prometheus_client import REGISTRY
 
 @pytest.fixture(autouse=True)
 def clear_prometheus_registry():
-    """Clear Prometheus registry before each test."""
-    # Save existing collectors
-    collectors = list(REGISTRY._collector_to_names.keys())
+ """Clear Prometheus registry before each test."""
+ # Save existing collectors
+ collectors = list(REGISTRY._collector_to_names.keys())
 
-    yield
+ yield
 
-    # Clear all collectors added during test
-    for collector in collectors:
-        try:
-            REGISTRY.unregister(collector)
-        except Exception:
-            pass
+ # Clear all collectors added during test
+ for collector in collectors:
+ try:
+ REGISTRY.unregister(collector)
+ except Exception:
+ pass
 ```
 
 **Alternative Fix:** Use isolated registry per test:
@@ -151,27 +151,27 @@ def clear_prometheus_registry():
 from prometheus_client import CollectorRegistry
 
 def test_metrics_collector_initializes():
-    registry = CollectorRegistry()
-    collector = MetricsCollector(registry=registry)
-    assert collector is not None
+ registry = CollectorRegistry()
+ collector = MetricsCollector(registry=registry)
+ assert collector is not None
 ```
 
 ---
 
-### 4. AuditResult API Mismatch (P0) 
+### 4. AuditResult API Mismatch (P0)
 
 **Test:** `tests/cognitive_brain/test_integration.py::test_end_to_end_compliance_workflow`
 
 **Failure:**
 ```python
 audit = AuditResult(
-    repo_name="test/repo",  #  Not in dataclass definition
-    audit_id="audit_001",
-    compliance_score=0.75,  #  Called 'score' in dataclass
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact="moderate"  #  Should be float 0-1, not string
+ repo_name="test/repo", # Not in dataclass definition
+ audit_id="audit_001",
+ compliance_score=0.75, # Called 'score' in dataclass
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact="moderate" # Should be float 0-1, not string
 )
 # TypeError: AuditResult.__init__() got an unexpected keyword argument 'repo_name'
 ```
@@ -180,12 +180,12 @@ audit = AuditResult(
 ```python
 @dataclass
 class AuditResult:
-    audit_id: str
-    score: float  # 0.0 to 1.0 (not compliance_score)
-    risk_level: str
-    remediation_cost: float
-    business_impact: float  # 0-1 float (not string)
-    violations: List[str]
+ audit_id: str
+ score: float # 0.0 to 1.0 (not compliance_score)
+ risk_level: str
+ remediation_cost: float
+ business_impact: float # 0-1 float (not string)
+ violations: List[str]
 ```
 
 **Root Cause:** Test uses outdated API signature or incorrect parameters.
@@ -196,29 +196,29 @@ class AuditResult:
 ```python
 # Change from:
 audit = AuditResult(
-    repo_name="test/repo",  #  Remove
-    audit_id="audit_001",
-    compliance_score=0.75,  #  Rename to 'score'
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact="moderate"  #  Change to float
+ repo_name="test/repo", # Remove
+ audit_id="audit_001",
+ compliance_score=0.75, # Rename to 'score'
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact="moderate" # Change to float
 )
 
 # To:
 audit = AuditResult(
-    audit_id="audit_001",
-    score=0.75,  #  Correct parameter name
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact=0.5  #  Float between 0-1
+ audit_id="audit_001",
+ score=0.75, # Correct parameter name
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact=0.5 # Float between 0-1
 )
 ```
 
 ---
 
-## 5. EntanglementManager Signature Error (P1) 
+## 5. EntanglementManager Signature Error (P1)
 
 **Tests Affected:**
 - `tests/cognitive_brain/test_integration.py::test_all_features_enabled`
@@ -240,7 +240,7 @@ grep -A 10 "class EntanglementManager" src/cognitive_brain/quantum/entanglement.
 
 ---
 
-### 6. Hydra Configuration Missing (P0) 
+### 6. Hydra Configuration Missing (P0)
 
 **Test:** `tests/config/test_hydra_defaults_tree.py::test_hydra_compose_smoke`
 
@@ -260,7 +260,7 @@ Could not load 'hydra/data/base'.
 
 ---
 
-### 7. Config Validation Schema Error (P0) 
+### 7. Config Validation Schema Error (P0)
 
 **Test:** `tests/configs/test_validate_configs_cli.py::test_group_validation_report`
 
@@ -279,7 +279,7 @@ AssertionError: FAIL configs/deployment/hhg_logistics/monitor/default.yaml
 
 ---
 
-### 8. Train Loop AttributeError (P1) 
+### 8. Train Loop AttributeError (P1)
 
 **Tests Affected:**
 - `tests/test_train_loop_smoke.py::test_run_training_smoke`
@@ -302,7 +302,7 @@ grep -r "__version__" src/codex_ml/training/ -n
 
 ---
 
-### 9. Agent Load and Scalability Tests (P1) 
+### 9. Agent Load and Scalability Tests (P1)
 
 **Tests:**
 - `tests/agents/test_load_and_concurrent.py::TestConcurrentMemoryAccess::test_concurrent_memory_reads`
@@ -320,7 +320,7 @@ test_increasing_load_handling: assert 4.219... < (2.0 * 2)
 
 ---
 
-### 10. Checkpoint Provenance (P2) ️
+### 10. Checkpoint Provenance (P2)
 
 **Test:** `tests/test_checkpoint_provenance.py::test_checkpoint_includes_commit_and_system`
 
@@ -330,7 +330,7 @@ CheckpointLoadError: failed to save checkpoint via pickle:
 issubclass() arg 2 must be a class, a tuple of classes, or a union
 ```
 
-**Status:** ️ **Passes in isolation**, fails in full suite (flaky)
+**Status:** **Passes in isolation**, fails in full suite (flaky)
 
 **Root Cause:** PyTorch 2.10.0 serialization issue with `nn.Module` type checking when modules are imported in different order.
 
@@ -343,7 +343,7 @@ issubclass() arg 2 must be a class, a tuple of classes, or a union
 
 ---
 
-## Test Collection Warnings (P2) ️
+## Test Collection Warnings (P2)
 
 **Warnings:**
 ```
@@ -357,37 +357,37 @@ cannot collect test class 'TestExecutionPriority' because it has a __init__ cons
 **Root Cause:** Dataclasses named with "Test" prefix are being collected by pytest as test classes.
 
 **Fix:** Rename dataclasses to avoid "Test" prefix:
-- `TestExecutionMetrics` → `ExecutionMetrics`
-- `TestExecutionPriority` → `ExecutionPriority`
+- `TestExecutionMetrics` `ExecutionMetrics`
+- `TestExecutionPriority` `ExecutionPriority`
 
 ---
 
 ## Fix Priority Roadmap
 
 ### Phase 1: Critical Blockers (P0) - 1-2 hours
-1.  Fix linting (auto-fix + 3 manual fixes)
-2.  Fix F1 Score test assertion (1 line)
-3.  Fix AuditResult API mismatch (6 lines)
-4.  Create/fix Hydra config file
-5.  Fix config validation errors
+1. Fix linting (auto-fix + 3 manual fixes)
+2. Fix F1 Score test assertion (1 line)
+3. Fix AuditResult API mismatch (6 lines)
+4. Create/fix Hydra config file
+5. Fix config validation errors
 
-**Estimated Time:** 1-2 hours  
+**Estimated Time:** 1-2 hours
 **Impact:** Unblocks 100+ linting checks, fixes 4 critical test failures
 
 ### Phase 2: High Priority (P1) - 2-3 hours
-6.  Fix Prometheus metrics isolation (add fixture)
-7.  Fix EntanglementManager signature (investigate + fix)
-8.  Fix train loop __version__ error
-9.  Review/fix agent load tests
+6. Fix Prometheus metrics isolation (add fixture)
+7. Fix EntanglementManager signature (investigate + fix)
+8. Fix train loop __version__ error
+9. Review/fix agent load tests
 
-**Estimated Time:** 2-3 hours  
+**Estimated Time:** 2-3 hours
 **Impact:** Fixes 13+ test failures
 
 ### Phase 3: Medium Priority (P2) - 1 hour
-10. ️ Add flaky marker to checkpoint test
-11. ️ Rename Test* dataclasses
+10. Add flaky marker to checkpoint test
+11. Rename Test* dataclasses
 
-**Estimated Time:** 1 hour  
+**Estimated Time:** 1 hour
 **Impact:** Resolves warnings and flaky tests
 
 ---
@@ -400,14 +400,14 @@ cannot collect test class 'TestExecutionPriority' because it has a __init__ cons
 ruff check --fix .
 
 # 2. Manual linting fixes
-vim .codex/agents/rfc-compliance-checker/run.py  # Line 250, 388
-vim .codex/agents/security-input-validator/run.py  # Line 191
+vim .codex/agents/rfc-compliance-checker/run.py # Line 250, 388
+vim .codex/agents/security-input-validator/run.py # Line 191
 
 # 3. Fix F1 Score test
-vim tests/metrics/test_f1_score.py  # Line 33: 0.0 → 1.0
+vim tests/metrics/test_f1_score.py # Line 33: 0.0 1.0
 
 # 4. Fix AuditResult test
-vim tests/cognitive_brain/test_integration.py  # Lines 197-205
+vim tests/cognitive_brain/test_integration.py # Lines 197-205
 
 # 5. Run tests
 python -m pytest tests/ -x --tb=short
@@ -423,11 +423,11 @@ python -m pytest tests/ -x --tb=short
 
 ## Success Criteria
 
--  All linting checks pass (`ruff check .`)
--  All P0 tests pass (5 fixes)
--  All P1 tests pass (13 fixes)
-- ️ P2 tests marked appropriately (flaky/warnings)
--  CI/CD pipeline green (100% pass rate)
+- All linting checks pass (`ruff check .`)
+- All P0 tests pass (5 fixes)
+- All P1 tests pass (13 fixes)
+- P2 tests marked appropriately (flaky/warnings)
+- CI/CD pipeline green (100% pass rate)
 
 ---
 

@@ -1,11 +1,11 @@
 # Secret Rotation Policy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version**: 1.0.0  
-**Effective Date**: 2026-06-14  
-**Classification**: Internal — Security Sensitive  
-**Owner**: Security Team  
+**Version**: 1.0.0
+**Effective Date**: 2026-06-14
+**Classification**: Internal — Security Sensitive
+**Owner**: Security Team
 **Last Updated**: 2026-06-14
 
 ---
@@ -68,11 +68,11 @@ This policy applies to:
 - **Annually (365 days)**: TLS certificates (shorter expiry recommended)
 
 **Triggers for Immediate Rotation**:
--  Credential compromise detected
--  Employee separation
--  Unauthorized access attempt
--  Policy violation
--  Regular security audit findings
+- Credential compromise detected
+- Employee separation
+- Unauthorized access attempt
+- Policy violation
+- Regular security audit findings
 
 ---
 
@@ -80,8 +80,8 @@ This policy applies to:
 
 ### 1. CODEX_MASTER_KEY Rotation
 
-**Frequency**: Quarterly (90 days)  
-**Owner**: Security Lead  
+**Frequency**: Quarterly (90 days)
+**Owner**: Security Lead
 **Duration**: 72 hours total (24h dual-write + 48h grace)
 
 #### Standard Quarterly Rotation
@@ -90,27 +90,27 @@ This policy applies to:
 ```bash
 # 1.1 Verify current key is secure
 python scripts/security/verify_key_integrity.py
-# Expected output:  Key integrity verified, entropy: 256-bit
+# Expected output: Key integrity verified, entropy: 256-bit
 
 # 1.2 Check deployment readiness
 python scripts/security/check_rotation_readiness.py
 # Expected output:
-#  All services can be updated
-#  Backup procedures ready
-#  Fallback key available
+# All services can be updated
+# Backup procedures ready
+# Fallback key available
 
 # 1.3 Test rotation scripts in staging
 nox -s security -- test-key-rotation-staging
-# Expected output:  All rotation steps passed in staging
+# Expected output: All rotation steps passed in staging
 ```
 
 **Phase 2: Generate New Key**
 ```bash
 # 2.1 Generate new master key
 python scripts/rotate_jwt_secret.py \
-  --generate \
-  --output-format=base64 \
-  --save-to=.env.new-key
+ --generate \
+ --output-format=base64 \
+ --save-to=.env.new-key
 
 # Example output:
 # New Key ID: mk-2026-06-14-001
@@ -120,17 +120,17 @@ python scripts/rotate_jwt_secret.py \
 
 # 2.2 Backup old key (encrypted)
 python scripts/security/backup_key.py \
-  --key=CODEX_MASTER_KEY \
-  --archive-days=90
+ --key=CODEX_MASTER_KEY \
+ --archive-days=90
 
-# Output:  Key backed up to: .codex/backups/mk-2026-03-14-001.enc
+# Output: Key backed up to: .codex/backups/mk-2026-03-14-001.enc
 ```
 
 **Phase 3: Dual-Write Phase** (24 hours)
 ```bash
 # 3.1 Update GitHub Actions secret with NEW key
 gh secret set VAULT_CODEX_MASTER_KEY_NEW \
-  --body="$(cat .env.new-key)"
+ --body="$(cat .env.new-key)"
 
 # 3.2 Update deployment to use dual keys
 # In .github/workflows/deploy.yml:
@@ -155,7 +155,7 @@ gh secret set VAULT_CODEX_MASTER_KEY --body="$(cat .env.new-key)"
 
 # 4.2 Update secondary to old key (fallback)
 gh secret set VAULT_CODEX_MASTER_KEY_OLD \
-  --body="$(cat .env.old-key)"
+ --body="$(cat .env.old-key)"
 
 # 4.3 Deploy single-key version (primary only)
 git commit -m "security: complete key rotation primary swap"
@@ -163,7 +163,7 @@ git push origin feature/key-rotation-$(date +%Y%m%d)
 
 # 4.4 Verify primary key active
 python scripts/security/verify_rotation_complete.py
-# Expected:  Primary key active, no encryption errors
+# Expected: Primary key active, no encryption errors
 ```
 
 **Phase 5: Grace Period & Cleanup** (48 hours)
@@ -174,13 +174,13 @@ python scripts/security/verify_rotation_complete.py
 
 # 5.2 Revoke old key (after 48h grace)
 python scripts/security/revoke_key.py \
-  --key-id=mk-2026-03-14-001 \
-  --archive-retention=90days
+ --key-id=mk-2026-03-14-001 \
+ --archive-retention=90days
 
-# Output:  Old key revoked, archived for 90 days
+# Output: Old key revoked, archived for 90 days
 
 # 5.3 Update rotation log
-echo "mk-2026-03-14-001 → mk-2026-06-14-001: SUCCESS" >> .codex/rotation.log
+echo "mk-2026-03-14-001 mk-2026-06-14-001: SUCCESS" >> .codex/rotation.log
 ```
 
 ## Emergency Rotation (Compromised Key)
@@ -188,12 +188,12 @@ echo "mk-2026-03-14-001 → mk-2026-06-14-001: SUCCESS" >> .codex/rotation.log
 ```bash
 # IMMEDIATE ACTION: No dual-write phase
 python scripts/rotate_jwt_secret.py \
-  --emergency \
-  --revoke-old \
-  --notify-team
+ --emergency \
+ --revoke-old \
+ --notify-team
 
 # Output:
-# ️ EMERGENCY ROTATION INITIATED
+# EMERGENCY ROTATION INITIATED
 # Old Key: mk-2026-03-14-001 [REVOKED]
 # New Key: mk-2026-06-14-emerg-001 [ACTIVE]
 # Grace Period: 60 minutes
@@ -201,44 +201,44 @@ python scripts/rotate_jwt_secret.py \
 
 # 1. Create emergency ticket
 gh issue create \
-  --title="SECURITY: Emergency key rotation - $(date)" \
-  --body="Emergency master key rotation completed. Impact: All tokens invalidated."
+ --title="SECURITY: Emergency key rotation - $(date)" \
+ --body="Emergency master key rotation completed. Impact: All tokens invalidated."
 
 # 2. Notify team via Slack
 # Posted to #security channel
 
 # 3. Re-authenticate active users
 python scripts/security/invalidate_sessions.py \
-  --reason="Key rotation" \
-  --grace-period=60min
+ --reason="Key rotation" \
+ --grace-period=60min
 ```
 
 **Test Coverage**: `tests/security/test_key_rotation.py`
--  `test_quarterly_rotation_success`
--  `test_emergency_rotation_immediate`
--  `test_dual_write_phase_integrity`
--  `test_old_key_revocation`
+- `test_quarterly_rotation_success`
+- `test_emergency_rotation_immediate`
+- `test_dual_write_phase_integrity`
+- `test_old_key_revocation`
 
 ---
 
 ## 2. GitHub OAuth Token Rotation
 
-**Frequency**: Monthly (30 days)  
-**Owner**: CI/CD Lead  
+**Frequency**: Monthly (30 days)
+**Owner**: CI/CD Lead
 **Duration**: 48 hours total (24h fallback + 24h revocation)
 
 ### Standard Rotation
 
 ```bash
 # 1. Generate new token in GitHub App settings
-# Navigate: Settings → Developer Settings → OAuth Apps → _codex_
+# Navigate: Settings Developer Settings OAuth Apps _codex_
 
 # 2. Create new GitHub Action secret
 NEW_TOKEN=$(gh api repos/Aries-Serpent/_codex_/actions/secrets/create \
-  --input - <<EOF
+ --input - <<EOF
 {
-  "name": "GITHUB_TOKEN_NEW",
-  "value": "$OAUTH_TOKEN_NEW"
+ "name": "GITHUB_TOKEN_NEW",
+ "value": "$OAUTH_TOKEN_NEW"
 }
 EOF)
 
@@ -266,8 +266,8 @@ echo "OAuth Token: $(date +%Y-%m-%d)" >> .codex/rotation.log
 
 ## 3. Database Credentials Rotation
 
-**Frequency**: Quarterly (90 days)  
-**Owner**: Database Administrator  
+**Frequency**: Quarterly (90 days)
+**Owner**: Database Administrator
 **Duration**: 72 hours (24h dual + 48h grace)
 
 ### Rotation Procedure
@@ -277,19 +277,19 @@ echo "OAuth Token: $(date +%Y-%m-%d)" >> .codex/rotation.log
 # Using: scripts/manage_db_credentials.py
 
 python scripts/manage_db_credentials.py \
-  --action=create-user \
-  --username=codex-app-2026-q2 \
-  --permissions=app-standard
+ --action=create-user \
+ --username=codex-app-2026-q2 \
+ --permissions=app-standard
 
 # Output: User created, password generated securely
 
 # 2. Grant same permissions as old user
 python scripts/manage_db_credentials.py \
-  --action=replicate-permissions \
-  --from=codex-app-2026-q1 \
-  --to=codex-app-2026-q2
+ --action=replicate-permissions \
+ --from=codex-app-2026-q1 \
+ --to=codex-app-2026-q2
 
-# Output:  Permissions replicated
+# Output: Permissions replicated
 
 # 3. Update DATABASE_URL secret (dual-phase)
 NEW_DB_URL="******db.example.com/codex"
@@ -309,19 +309,19 @@ gh secret set DATABASE_URL --body="$NEW_DB_URL"
 
 # 7. Drop old user (after 48h grace period)
 python scripts/manage_db_credentials.py \
-  --action=drop-user \
-  --username=codex-app-2026-q1 \
-  --archive-logs=true
+ --action=drop-user \
+ --username=codex-app-2026-q1 \
+ --archive-logs=true
 
-# Output:  Old user dropped, audit logs archived
+# Output: Old user dropped, audit logs archived
 ```
 
 ---
 
 ## 4. API Keys (External Services)
 
-**Frequency**: Monthly (30 days)  
-**Owner**: Service Owner (specific API)  
+**Frequency**: Monthly (30 days)
+**Owner**: Service Owner (specific API)
 **Duration**: 24 hours
 
 ### Rotation by Service
@@ -349,8 +349,8 @@ gh secret set API_KEY_<SERVICE>_NEW --body="$NEW_KEY"
 
 ## 5. JWT Signing Key Rotation
 
-**Frequency**: Quarterly (90 days)  
-**Owner**: Authentication Team  
+**Frequency**: Quarterly (90 days)
+**Owner**: Authentication Team
 **Duration**: 7 days (key algorithm transition period)
 
 ### Procedure
@@ -373,8 +373,8 @@ python scripts/rotate_jwt_key.py --generate
 
 ## 6. TLS Certificates
 
-**Frequency**: Annually (365 days) / Before Expiry  
-**Owner**: DevOps Team  
+**Frequency**: Annually (365 days) / Before Expiry
+**Owner**: DevOps Team
 **Duration**: Depends on certificate type
 
 ### Procedure
@@ -389,9 +389,9 @@ python scripts/security/check_cert_expiry.py
 
 # 3. Install new certificate
 python scripts/security/update_tls_cert.py \
-  --cert-file=new-cert.pem \
-  --key-file=new-key.pem \
-  --backup-old=true
+ --cert-file=new-cert.pem \
+ --key-file=new-key.pem \
+ --backup-old=true
 
 # 4. Verify certificate installation
 openssl s_client -connect api.example.com:443 -tls1_3
@@ -433,16 +433,16 @@ openssl s_client -connect api.example.com:443 -tls1_3
 ### Monitoring During Rotation
 
 **Metrics to Track**:
--  Authentication success rate (should remain >99.9%)
--  Authorization check latency
--  Secret cache hit rate
--  Decryption error count (should be 0)
--  Failed decrypt attempts (investigate any)
+- Authentication success rate (should remain >99.9%)
+- Authorization check latency
+- Secret cache hit rate
+- Decryption error count (should be 0)
+- Failed decrypt attempts (investigate any)
 
 **Alert Thresholds**:
-- ️ Authentication failures > 1% → Rollback
-- ️ Decryption errors > 0 → Investigation
-- ️ Latency spike > 500ms → Review
+- Authentication failures > 1% Rollback
+- Decryption errors > 0 Investigation
+- Latency spike > 500ms Review
 
 ### Post-Rotation Verification
 
@@ -469,21 +469,21 @@ echo "Secret rotated: $TYPE, date: $(date), status: SUCCESS" >> .codex/rotation.
 
 ### When to Trigger
 
--  Credential found in public repository
--  Unauthorized access detected
--  Disgruntled employee departing
--  Security policy violation
--  Audit findings
--  Suspected compromise
+- Credential found in public repository
+- Unauthorized access detected
+- Disgruntled employee departing
+- Security policy violation
+- Audit findings
+- Suspected compromise
 
 ### Emergency Procedure
 
 ```bash
 # IMMEDIATE (within 1 minute):
 python scripts/rotate_secret.py \
-  --type=$SECRET_TYPE \
-  --emergency \
-  --notify=immediate
+ --type=$SECRET_TYPE \
+ --emergency \
+ --notify=immediate
 
 # Expected steps:
 # 1. New secret generated
@@ -523,21 +523,21 @@ python scripts/rotate_secret.py \
 
 **Format**:
 ```
-date,secret_type,old_key_id,new_key_id,reason,status,duration_hours  # pragma: allowlist secret
+date,secret_type,old_key_id,new_key_id,reason,status,duration_hours # pragma: allowlist secret
 2026-06-14,CODEX_MASTER_KEY,mk-2026-03-14-001,mk-2026-06-14-001,scheduled,success,72
-2026-06-14,GITHUB_TOKEN,ghp_old123,ghp_new456,scheduled,success,48  # pragma: allowlist secret
+2026-06-14,GITHUB_TOKEN,ghp_old123,ghp_new456,scheduled,success,48 # pragma: allowlist secret
 ```
 
 ### Audit Logging
 
 All rotation events logged to immutable audit trail:
--  Who performed rotation (user/service account)
--  When rotation occurred
--  Which secret was rotated
--  Old and new key IDs
--  Reason for rotation
--  Status (success/failed)
--  Any errors or warnings
+- Who performed rotation (user/service account)
+- When rotation occurred
+- Which secret was rotated
+- Old and new key IDs
+- Reason for rotation
+- Status (success/failed)
+- Any errors or warnings
 
 ### Compliance Checks
 
@@ -547,10 +547,10 @@ python scripts/security/compliance_report.py --month=$(date +%Y-%m)
 # Output: Rotation compliance status
 
 # Expected output:
-#  CODEX_MASTER_KEY: Last rotated 2026-06-14 (within schedule)
-#  GitHub Tokens: Last rotated 2026-06-14 (within schedule)
-# ️ Database Creds: Last rotated 2026-03-14 (DUE 2026-06-14)
-#  TLS Certificates: Valid until 2027-01-15
+# CODEX_MASTER_KEY: Last rotated 2026-06-14 (within schedule)
+# GitHub Tokens: Last rotated 2026-06-14 (within schedule)
+# Database Creds: Last rotated 2026-03-14 (DUE 2026-06-14)
+# TLS Certificates: Valid until 2027-01-15
 ```
 
 **Audit Trail Verification** (quarterly):
@@ -635,9 +635,9 @@ Configure in `SERVICE_ACCOUNT_ROTATION_SCHEDULE.yaml`
 
 ---
 
-**Approved By**: Security Team  
-**Effective Date**: 2026-06-14  
-**Review Frequency**: Quarterly  
+**Approved By**: Security Team
+**Effective Date**: 2026-06-14
+**Review Frequency**: Quarterly
 **Next Review**: 2026-09-14
 
 ---

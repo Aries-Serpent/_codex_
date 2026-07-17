@@ -1,8 +1,8 @@
 # Repo Survey — main & PR 0 — 2025-10-30 (UTC)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Ref:** branch `main`  commit `0a6b27b0`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-main-and-0`
+**Ref:** branch `main` commit `0a6b27b0` • **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-main-and-0`
 
 ---
 
@@ -22,7 +22,7 @@ Targets Collected:
 
 Findings (highlights):
 - Baseline reasoning template present; curricula and evaluation presets resolvable.
-- Doc → CLI parity: confirm `codex repo-map --reasoning` and dry-run deploy flags.
+- Doc CLI parity: confirm `codex repo-map --reasoning` and dry-run deploy flags.
 - Sanitizer: `[BEGIN/END CONTENT]` blocks wrapped as fenced text in the final MD.
 
 Evidence:

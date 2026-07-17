@@ -1,6 +1,6 @@
 # HAR File Integration & Web Function Caching Plan
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 **Version**: 1.0.0
@@ -83,60 +83,60 @@ Include HAR files in `determinism-audit-*.zip`:
 ### Component Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Codex ML System                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌──────────────┐      ┌──────────────┐      ┌───────────┐ │
-│  │   Audit      │      │  Dashboard   │      │  GitHub   │ │
-│  │   Runner     │─────▶│  Generator   │─────▶│    API    │ │
-│  └──────────────┘      └──────────────┘      └───────────┘ │
-│         │                      │                     │       │
-│         │                      ▼                     │       │
-│         │            ┌──────────────────┐           │       │
-│         │            │   HAR Recorder   │           │       │
-│         │            └──────────────────┘           │       │
-│         │                      │                     │       │
-│         ▼                      ▼                     ▼       │
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │              HAR Cache Storage Layer                   │ │
-│  │  - Request/Response Cache                              │ │
-│  │  - Session Recording                                   │ │
-│  │  - Playback Engine                                     │ │
-│  └────────────────────────────────────────────────────────┘ │
-│                      │                                       │
-│                      ▼                                       │
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │          audit_artifacts/                              │ │
-│  │          ├── audit_session.har                         │ │
-│  │          ├── dashboard_assets.har                      │ │
-│  │          └── github_api_cache.har                      │ │
-│  └────────────────────────────────────────────────────────┘ │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
+
+ Codex ML System 
+
+ 
+ 
+ Audit Dashboard GitHub 
+ Runner Generator API 
+ 
+ 
+ 
+ 
+ HAR Recorder 
+ 
+ 
+ 
+ 
+ HAR Cache Storage Layer 
+ - Request/Response Cache 
+ - Session Recording 
+ - Playback Engine 
+ 
+ 
+ 
+ 
+ audit_artifacts/ 
+ audit_session.har 
+ dashboard_assets.har 
+ github_api_cache.har 
+ 
+ 
+
 ```
 
 ### Key Components
 
 1. **HAR Recorder**
-   - Captures HTTP/HTTPS traffic
-   - Integrates with existing tools (requests, httpx)
-   - Optional: Browser-based capture via Playwright
+ - Captures HTTP/HTTPS traffic
+ - Integrates with existing tools (requests, httpx)
+ - Optional: Browser-based capture via Playwright
 
 2. **HAR Cache Storage**
-   - Indexed HAR files for fast lookup
-   - Cache invalidation strategies
-   - Compression for large responses
+ - Indexed HAR files for fast lookup
+ - Cache invalidation strategies
+ - Compression for large responses
 
 3. **HAR Playback Engine**
-   - Serves cached responses
-   - Mock server for testing
-   - Offline mode support
+ - Serves cached responses
+ - Mock server for testing
+ - Offline mode support
 
 4. **HAR Integration Layer**
-   - Hooks into audit pipeline
-   - Dashboard generation
-   - API client wrappers
+ - Hooks into audit pipeline
+ - Dashboard generation
+ - API client wrappers
 
 ---
 
@@ -161,95 +161,95 @@ from typing import Any, Optional
 import gzip
 
 class HARRecorder:
-    """Record HTTP requests/responses in HAR format."""
+ """Record HTTP requests/responses in HAR format."""
 
-    def __init__(self, output_path: Path):
-        self.output_path = output_path
-        self.entries = []
-        self.pages = []
+ def __init__(self, output_path: Path):
+ self.output_path = output_path
+ self.entries = []
+ self.pages = []
 
-    def record_request(self, request, response, timing):
-        """
-        Record a single HTTP transaction.
+ def record_request(self, request, response, timing):
+ """
+ Record a single HTTP transaction.
 
-        TODO: Implementation needed
-        - Parse request object (method, URL, headers, body)
-        - Parse response object (status, headers, body, size)
-        - Record timing information (send, wait, receive)
-        - Format as HAR entry and append to self.entries
-        - Link to appropriate page in self.pages
-        """
-        pass
+ TODO: Implementation needed
+ - Parse request object (method, URL, headers, body)
+ - Parse response object (status, headers, body, size)
+ - Record timing information (send, wait, receive)
+ - Format as HAR entry and append to self.entries
+ - Link to appropriate page in self.pages
+ """
+ pass
 
-    def save(self):
-        """
-        Save HAR file to disk.
+ def save(self):
+ """
+ Save HAR file to disk.
 
-        TODO: Implementation needed
-        - Construct HAR JSON structure with version, creator, pages, entries
-        - Write to self.output_path with proper formatting
-        - Consider compression for large HAR files
-        - Validate HAR format before saving
-        """
-        pass
+ TODO: Implementation needed
+ - Construct HAR JSON structure with version, creator, pages, entries
+ - Write to self.output_path with proper formatting
+ - Consider compression for large HAR files
+ - Validate HAR format before saving
+ """
+ pass
 
 class HARCache:
-    """Cache HTTP responses using HAR format."""
+ """Cache HTTP responses using HAR format."""
 
-    def __init__(self, cache_dir: Path):
-        self.cache_dir = cache_dir
-        self.index = {}
+ def __init__(self, cache_dir: Path):
+ self.cache_dir = cache_dir
+ self.index = {}
 
-    def get(self, url: str, method: str = "GET") -> Optional[dict]:
-        """
-        Retrieve cached response.
+ def get(self, url: str, method: str = "GET") -> Optional[dict]:
+ """
+ Retrieve cached response.
 
-        TODO: Implementation needed
-        - Generate cache key from URL and method
-        - Check self.index for entry existence
-        - Verify cache entry hasn't expired
-        - Load and return cached response data
-        """
-        pass
+ TODO: Implementation needed
+ - Generate cache key from URL and method
+ - Check self.index for entry existence
+ - Verify cache entry hasn't expired
+ - Load and return cached response data
+ """
+ pass
 
-    def set(self, url: str, method: str, response: dict, ttl: int = 3600):
-        """
-        Store response in cache.
+ def set(self, url: str, method: str, response: dict, ttl: int = 3600):
+ """
+ Store response in cache.
 
-        TODO: Implementation needed
-        - Generate cache key from URL and method
-        - Store response data with expiration timestamp
-        - Update self.index with cache entry metadata
-        - Consider size limits and eviction policies
-        """
-        pass
+ TODO: Implementation needed
+ - Generate cache key from URL and method
+ - Store response data with expiration timestamp
+ - Update self.index with cache entry metadata
+ - Consider size limits and eviction policies
+ """
+ pass
 
-    def clear(self, pattern: str = "*"):
-        """
-        Clear cache entries matching pattern.
+ def clear(self, pattern: str = "*"):
+ """
+ Clear cache entries matching pattern.
 
-        TODO: Implementation needed
-        - Support glob patterns for URL matching
-        - Remove matching entries from cache directory
-        - Update self.index to reflect deletions
-        - Log cleared entries for debugging
-        """
-        pass
+ TODO: Implementation needed
+ - Support glob patterns for URL matching
+ - Remove matching entries from cache directory
+ - Update self.index to reflect deletions
+ - Log cleared entries for debugging
+ """
+ pass
 
 class HARPlayer:
-    """Replay HTTP requests from HAR file."""
+ """Replay HTTP requests from HAR file."""
 
-    def __init__(self, har_file: Path):
-        self.har_file = har_file
-        self.har_data = {}
+ def __init__(self, har_file: Path):
+ self.har_file = har_file
+ self.har_data = {}
 
-    def find_response(self, url: str, method: str = "GET") -> Optional[dict]:
-        """Find matching response in HAR."""
-        pass
+ def find_response(self, url: str, method: str = "GET") -> Optional[dict]:
+ """Find matching response in HAR."""
+ pass
 
-    def serve_mock(self, host: str = "localhost", port: int = 8000):
-        """Start mock HTTP server from HAR."""
-        pass
+ def serve_mock(self, host: str = "localhost", port: int = 8000):
+ """Start mock HTTP server from HAR."""
+ pass
 ```
 
 #### 1.2 Create Tests
@@ -281,17 +281,17 @@ Modify `scripts/space_traversal/audit_runner.py`:
 from har_utils import HARRecorder
 
 def run_full(cfg):
-    # Initialize HAR recorder
-    har_recorder = HARRecorder(
-        output_path=Path("audit_artifacts/audit_session.har")
-    )
+ # Initialize HAR recorder
+ har_recorder = HARRecorder(
+ output_path=Path("audit_artifacts/audit_session.har")
+ )
 
-    # Wrap HTTP calls
-    with har_recorder.recording():
-        # ... existing audit code ...
-        pass
+ # Wrap HTTP calls
+ with har_recorder.recording():
+ # ... existing audit code ...
+ pass
 
-    har_recorder.save()
+ har_recorder.save()
 ```
 
 #### 2.2 Add HAR to Dashboard Generator
@@ -302,17 +302,17 @@ Modify `scripts/generate_audit_dashboard.py`:
 from har_utils import HARCache, HARRecorder
 
 def generate_with_har_caching(artifacts, reports, manifest, output_path):
-    """Generate dashboard with HAR-cached assets."""
+ """Generate dashboard with HAR-cached assets."""
 
-    har_cache = HARCache(Path("audit_artifacts/.har_cache"))
+ har_cache = HARCache(Path("audit_artifacts/.har_cache"))
 
-    # Cache external resources (CDNs, fonts, etc.)
-    # Generate self-contained HTML with embedded assets
+ # Cache external resources (CDNs, fonts, etc.)
+ # Generate self-contained HTML with embedded assets
 
-    # Record generation process
-    har_recorder = HARRecorder(
-        Path("audit_artifacts/dashboard_generation.har")
-    )
+ # Record generation process
+ har_recorder = HARRecorder(
+ Path("audit_artifacts/dashboard_generation.har")
+ )
 ```
 
 #### 2.3 GitHub API Caching
@@ -329,27 +329,27 @@ from har_utils import HARCache
 import httpx
 
 class GitHubHARClient:
-    """GitHub API client with HAR caching."""
+ """GitHub API client with HAR caching."""
 
-    def __init__(self, token: str, cache_ttl: int = 3600):
-        self.client = httpx.Client()
-        self.har_cache = HARCache(Path(".cache/github_api"))
-        self.token = token
-        self.cache_ttl = cache_ttl
+ def __init__(self, token: str, cache_ttl: int = 3600):
+ self.client = httpx.Client()
+ self.har_cache = HARCache(Path(".cache/github_api"))
+ self.token = token
+ self.cache_ttl = cache_ttl
 
-    def get(self, url: str, use_cache: bool = True):
-        """GET request with HAR caching."""
-        if use_cache:
-            cached = self.har_cache.get(url, "GET")
-            if cached:
-                return cached
+ def get(self, url: str, use_cache: bool = True):
+ """GET request with HAR caching."""
+ if use_cache:
+ cached = self.har_cache.get(url, "GET")
+ if cached:
+ return cached
 
-        response = self.client.get(url, headers={"Authorization": f"token {self.token}"})
+ response = self.client.get(url, headers={"Authorization": f"token {self.token}"})
 
-        if use_cache and response.status_code == 200:
-            self.har_cache.set(url, "GET", response.json(), self.cache_ttl)
+ if use_cache and response.status_code == 200:
+ self.har_cache.set(url, "GET", response.json(), self.cache_ttl)
 
-        return response.json()
+ return response.json()
 ```
 
 ### Phase 3: Dashboard Enhancement (Pre-commit 9-12)
@@ -369,24 +369,24 @@ Add button to export current dashboard session as HAR:
 
 ```javascript
 function exportSessionAsHAR() {
-    const har = {
-        log: {
-            version: "1.2",
-            creator: {
-                name: "Audit Dashboard",
-                version: "1.0.0"
-            },
-            pages: [],
-            entries: [
-                // All dashboard API calls
-                // All resource loads
-                // All interactive selections
-            ]
-        }
-    };
+ const har = {
+ log: {
+ version: "1.2",
+ creator: {
+ name: "Audit Dashboard",
+ version: "1.0.0"
+ },
+ pages: [],
+ entries: [
+ // All dashboard API calls
+ // All resource loads
+ // All interactive selections
+ ]
+ }
+ };
 
-    // Download HAR file
-    downloadFile('dashboard_session.har', JSON.stringify(har, null, 2));
+ // Download HAR file
+ downloadFile('dashboard_session.har', JSON.stringify(har, null, 2));
 }
 ```
 
@@ -421,62 +421,62 @@ function exportSessionAsHAR() {
 
 ```json
 {
-  "log": {
-    "version": "1.2",
-    "creator": {
-      "name": "Codex Audit System",
-      "version": "1.5.0"
-    },
-    "pages": [{
-      "startedDateTime": "2025-12-10T22:00:00.000Z",
-      "id": "page_1",
-      "title": "Audit Run",
-      "pageTimings": {
-        "onContentLoad": 1200,
-        "onLoad": 2500
-      }
-    }],
-    "entries": [{
-      "startedDateTime": "2025-12-10T22:00:01.000Z",
-      "time": 150,
-      "request": {
-        "method": "GET",
-        "url": "https://api.github.com/repos/Aries-Serpent/_codex_/commits",
-        "httpVersion": "HTTP/1.1",
-        "headers": [],
-        "queryString": [],
-        "cookies": [],
-        "headersSize": -1,
-        "bodySize": 0
-      },
-      "response": {
-        "status": 200,
-        "statusText": "OK",
-        "httpVersion": "HTTP/1.1",
-        "headers": [],
-        "cookies": [],
-        "content": {
-          "size": 12345,
-          "mimeType": "application/json",
-          "text": "{...}",
-          "encoding": "utf-8"
-        },
-        "redirectURL": "",
-        "headersSize": -1,
-        "bodySize": 12345
-      },
-      "cache": {},
-      "timings": {
-        "blocked": 0,
-        "dns": 5,
-        "connect": 20,
-        "send": 1,
-        "wait": 100,
-        "receive": 24,
-        "ssl": 15
-      }
-    }]
-  }
+ "log": {
+ "version": "1.2",
+ "creator": {
+ "name": "Codex Audit System",
+ "version": "1.5.0"
+ },
+ "pages": [{
+ "startedDateTime": "2025-12-10T22:00:00.000Z",
+ "id": "page_1",
+ "title": "Audit Run",
+ "pageTimings": {
+ "onContentLoad": 1200,
+ "onLoad": 2500
+ }
+ }],
+ "entries": [{
+ "startedDateTime": "2025-12-10T22:00:01.000Z",
+ "time": 150,
+ "request": {
+ "method": "GET",
+ "url": "https://api.github.com/repos/Aries-Serpent/_codex_/commits",
+ "httpVersion": "HTTP/1.1",
+ "headers": [],
+ "queryString": [],
+ "cookies": [],
+ "headersSize": -1,
+ "bodySize": 0
+ },
+ "response": {
+ "status": 200,
+ "statusText": "OK",
+ "httpVersion": "HTTP/1.1",
+ "headers": [],
+ "cookies": [],
+ "content": {
+ "size": 12345,
+ "mimeType": "application/json",
+ "text": "{...}",
+ "encoding": "utf-8"
+ },
+ "redirectURL": "",
+ "headersSize": -1,
+ "bodySize": 12345
+ },
+ "cache": {},
+ "timings": {
+ "blocked": 0,
+ "dns": 5,
+ "connect": 20,
+ "send": 1,
+ "wait": 100,
+ "receive": 24,
+ "ssl": 15
+ }
+ }]
+ }
 }
 ```
 
@@ -484,19 +484,19 @@ function exportSessionAsHAR() {
 
 ```json
 {
-  "log": {
-    "_codex": {
-      "auditRunId": "run_20251210_220000",
-      "auditVersion": "1.5.0",
-      "capabilities": [],
-      "metrics": {
-        "totalRequests": 45,
-        "cacheHits": 12,
-        "cacheMisses": 33,
-        "totalTime": 5400
-      }
-    }
-  }
+ "log": {
+ "_codex": {
+ "auditRunId": "run_20251210_220000",
+ "auditVersion": "1.5.0",
+ "capabilities": [],
+ "metrics": {
+ "totalRequests": 45,
+ "cacheHits": 12,
+ "cacheMisses": 33,
+ "totalTime": 5400
+ }
+ }
+ }
 }
 ```
 
@@ -510,15 +510,15 @@ function exportSessionAsHAR() {
 # scripts/space_traversal/audit_runner.py
 
 def cmd_run(args, cfg):
-    """Run audit with HAR recording."""
-    har_recorder = HARRecorder(Path("audit_artifacts/audit_session.har"))
+ """Run audit with HAR recording."""
+ har_recorder = HARRecorder(Path("audit_artifacts/audit_session.har"))
 
-    try:
-        with har_recorder.recording():
-            # Existing audit logic
-            pass
-    finally:
-        har_recorder.save()
+ try:
+ with har_recorder.recording():
+ # Existing audit logic
+ pass
+ finally:
+ har_recorder.save()
 ```
 
 ## 2. Dashboard Generator
@@ -527,14 +527,14 @@ def cmd_run(args, cfg):
 # scripts/generate_audit_dashboard.py
 
 def main():
-    """Generate dashboard with HAR caching."""
-    har_cache = HARCache(Path(".cache/dashboard"))
+ """Generate dashboard with HAR caching."""
+ har_cache = HARCache(Path(".cache/dashboard"))
 
-    # Load artifacts with caching
-    # Generate HTML with cached assets
+ # Load artifacts with caching
+ # Generate HTML with cached assets
 
-    # Export session HAR
-    har_recorder.export("audit_artifacts/dashboard_session.har")
+ # Export session HAR
+ har_recorder.export("audit_artifacts/dashboard_session.har")
 ```
 
 ## 3. GitHub API Client
@@ -543,8 +543,8 @@ def main():
 # New file: scripts/space_traversal/github_client.py
 
 class GitHubClient:
-    def __init__(self, har_cache_enabled=True):
-        self.har_cache = HARCache(Path(".cache/github")) if har_cache_enabled else None
+ def __init__(self, har_cache_enabled=True):
+ self.har_cache = HARCache(Path(".cache/github")) if har_cache_enabled else None
 ```
 
 ## 4. Determinism Workflow
@@ -553,17 +553,17 @@ class GitHubClient:
 # .github/workflows/determinism.yml
 
 - name: Generate audit dashboard with HAR
-  run: |
-    python scripts/generate_audit_dashboard.py --enable-har
+ run: |
+ python scripts/generate_audit_dashboard.py --enable-har
 
 - name: Upload artifacts including HAR files
-  uses: actions/upload-artifact@v4
-  with:
-    name: determinism-audit-${{ github.run_number }}
-    path: |
-      index.html
-      audit_artifacts/**
-      audit_artifacts/*.har
+ uses: actions/upload-artifact@v4
+ with:
+ name: determinism-audit-${{ github.run_number }}
+ path: |
+ index.html
+ audit_artifacts/**
+ audit_artifacts/*.har
 ```
 
 ---
@@ -577,17 +577,17 @@ class GitHubClient:
 **Solution**:
 ```python
 class SecureHARRecorder(HARRecorder):
-    """HAR recorder with sensitive data filtering."""
+ """HAR recorder with sensitive data filtering."""
 
-    SENSITIVE_HEADERS = ['authorization', 'cookie', 'x-api-key']
-    SENSITIVE_PATTERNS = [r'token=\w+', r'key=\w+', r'password=\w+']
+ SENSITIVE_HEADERS = ['authorization', 'cookie', 'x-api-key']
+ SENSITIVE_PATTERNS = [r'token=\w+', r'key=\w+', r'password=\w+']
 
-    def sanitize_request(self, request):
-        """Remove sensitive data from request."""
-        for header in self.SENSITIVE_HEADERS:
-            if header in request['headers']:
-                request['headers'][header] = '[REDACTED]'
-        return request
+ def sanitize_request(self, request):
+ """Remove sensitive data from request."""
+ for header in self.SENSITIVE_HEADERS:
+ if header in request['headers']:
+ request['headers'][header] = '[REDACTED]'
+ return request
 ```
 
 ### 2. Access Control
@@ -619,24 +619,24 @@ class SecureHARRecorder(HARRecorder):
 ### Optimization Strategies
 
 1. **Selective Recording**
-   - Only record relevant requests
-   - Skip large binary responses
-   - Filter by content type
+ - Only record relevant requests
+ - Skip large binary responses
+ - Filter by content type
 
 2. **Compression**
-   - gzip compression for storage
-   - Brotli for transmission
-   - Automatic compression >1MB
+ - gzip compression for storage
+ - Brotli for transmission
+ - Automatic compression >1MB
 
 3. **Indexing**
-   - SQLite index for fast lookup
-   - URL-based hashing
-   - LRU cache eviction
+ - SQLite index for fast lookup
+ - URL-based hashing
+ - LRU cache eviction
 
 4. **Chunking**
-   - Split large HAR files
-   - Per-page HAR files
-   - Lazy loading
+ - Split large HAR files
+ - Per-page HAR files
+ - Lazy loading
 
 ---
 
@@ -648,42 +648,42 @@ class SecureHARRecorder(HARRecorder):
 # tests/space_traversal/test_har_utils.py
 
 def test_har_recorder_basic():
-    """Test basic HAR recording."""
-    recorder = HARRecorder(Path("/tmp/test.har"))
-    recorder.record_request(mock_request, mock_response, mock_timing)
-    recorder.save()
-    assert Path("/tmp/test.har").exists()
+ """Test basic HAR recording."""
+ recorder = HARRecorder(Path("/tmp/test.har"))
+ recorder.record_request(mock_request, mock_response, mock_timing)
+ recorder.save()
+ assert Path("/tmp/test.har").exists()
 
 def test_har_cache_hit():
-    """Test cache hit scenario."""
-    cache = HARCache(Path("/tmp/cache"))
-    cache.set("http://example.com", "GET", {"data": "test"})
-    result = cache.get("http://example.com", "GET")
-    assert result == {"data": "test"}
+ """Test cache hit scenario."""
+ cache = HARCache(Path("/tmp/cache"))
+ cache.set("http://example.com", "GET", {"data": "test"})
+ result = cache.get("http://example.com", "GET")
+ assert result == {"data": "test"}
 
 def test_har_sanitization():
-    """Test sensitive data removal."""
-    recorder = SecureHARRecorder(Path("/tmp/secure.har"))
-    request = {"headers": {"authorization": "Bearer secret"}}
-    sanitized = recorder.sanitize_request(request)
-    assert sanitized["headers"]["authorization"] == "[REDACTED]"
+ """Test sensitive data removal."""
+ recorder = SecureHARRecorder(Path("/tmp/secure.har"))
+ request = {"headers": {"authorization": "Bearer secret"}}
+ sanitized = recorder.sanitize_request(request)
+ assert sanitized["headers"]["authorization"] == "[REDACTED]"
 ```
 
 ## Integration Tests
 
 ```python
 def test_audit_with_har_recording():
-    """Test full audit run with HAR recording."""
-    # Run audit
-    # Verify HAR file created
-    # Verify HAR contains expected entries
-    # Verify sensitive data redacted
+ """Test full audit run with HAR recording."""
+ # Run audit
+ # Verify HAR file created
+ # Verify HAR contains expected entries
+ # Verify sensitive data redacted
 
 def test_dashboard_with_har_cache():
-    """Test dashboard generation with HAR caching."""
-    # Generate dashboard
-    # Verify cache used
-    # Verify offline mode works
+ """Test dashboard generation with HAR caching."""
+ # Generate dashboard
+ # Verify cache used
+ # Verify offline mode works
 ```
 
 ---
@@ -708,9 +708,9 @@ def test_dashboard_with_har_cache():
 ```yaml
 # Add to .github/workflows/security.yml
 - name: Run Bandit Security Scan
-  run: |
-    pip install bandit
-    bandit -r scripts/ src/ -f json -o bandit-report.json
+ run: |
+ pip install bandit
+ bandit -r scripts/ src/ -f json -o bandit-report.json
 ```
 
 ## 2. Git Command Failures in CI
@@ -734,9 +734,9 @@ but not in 'db45016d98daf73e5cab5b73d88b39602343d6e5' <!-- pragma: allowlist sec
 ```yaml
 # Update workflow to handle missing files
 - name: Check changed files
-  run: |
-    git fetch origin ${{ github.base_ref }}
-    git diff --name-only origin/${{ github.base_ref }}...HEAD || true
+ run: |
+ git fetch origin ${{ github.base_ref }}
+ git diff --name-only origin/${{ github.base_ref }}...HEAD || true
 ```
 
 ## Monitoring & Logging
@@ -749,13 +749,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 class HARRecorder:
-    def __init__(self, output_path, enable_logging=True):
-        self.logger = logger if enable_logging else None
+ def __init__(self, output_path, enable_logging=True):
+ self.logger = logger if enable_logging else None
 
-    def record_request(self, request, response, timing):
-        if self.logger:
-            self.logger.info(f"Recording: {request.method} {request.url}")
-            self.logger.debug(f"Response size: {len(response.content)} bytes")
+ def record_request(self, request, response, timing):
+ if self.logger:
+ self.logger.info(f"Recording: {request.method} {request.url}")
+ self.logger.debug(f"Response size: {len(response.content)} bytes")
 ```
 
 ## Configuration
@@ -763,16 +763,16 @@ class HARRecorder:
 ```yaml
 # Add to config files
 har:
-  enabled: true
-  cache_dir: ".cache/har"
-  retention_days: 30
-  compress: true
-  sanitize_sensitive: true
-  max_entry_size_mb: 10
-  excluded_patterns:
-    - "*.jpg"
-    - "*.png"
-    - "*.woff2"
+ enabled: true
+ cache_dir: ".cache/har"
+ retention_days: 30
+ compress: true
+ sanitize_sensitive: true
+ max_entry_size_mb: 10
+ excluded_patterns:
+ - "*.jpg"
+ - "*.png"
+ - "*.woff2"
 ```
 
 ---
@@ -782,35 +782,35 @@ har:
 ### Phase 5+: Advanced Features
 
 1. **HAR Diff Tool**
-   - Compare HAR files across audit runs
-   - Detect API changes
-   - Performance regression detection
+ - Compare HAR files across audit runs
+ - Detect API changes
+ - Performance regression detection
 
 2. **HAR Merge**
-   - Combine multiple HAR files
-   - De-duplicate entries
-   - Create master archive
+ - Combine multiple HAR files
+ - De-duplicate entries
+ - Create master archive
 
 3. **HAR Analytics**
-   - Request distribution analysis
-   - Response time trends
-   - Cache efficiency metrics
-   - Dashboard visualizations
+ - Request distribution analysis
+ - Response time trends
+ - Cache efficiency metrics
+ - Dashboard visualizations
 
 4. **HAR Replay Testing**
-   - Automated replay of HAR sessions
-   - Regression testing
-   - Load testing from HAR
+ - Automated replay of HAR sessions
+ - Regression testing
+ - Load testing from HAR
 
 5. **Browser Integration**
-   - Chrome DevTools export
-   - Firefox HAR export
-   - Playwright HAR capture
+ - Chrome DevTools export
+ - Firefox HAR export
+ - Playwright HAR capture
 
 6. **HAR to Mock Server**
-   - Generate mock API from HAR
-   - Dynamic response generation
-   - Scenario-based testing
+ - Generate mock API from HAR
+ - Dynamic response generation
+ - Scenario-based testing
 
 ---
 
@@ -818,26 +818,26 @@ har:
 
 ### Functional Requirements
 
--  HAR recording works for HTTP/HTTPS requests
--  HAR caching reduces API calls by 50%+
--  Offline mode works with cached HAR
--  Sensitive data properly redacted
--  HAR files included in audit artifacts
+- HAR recording works for HTTP/HTTPS requests
+- HAR caching reduces API calls by 50%+
+- Offline mode works with cached HAR
+- Sensitive data properly redacted
+- HAR files included in audit artifacts
 
 ### Non-Functional Requirements
 
--  HAR file size <10MB per audit run
--  Cache hit rate >60%
--  Performance overhead <10%
--  Storage <100MB per month
--  Compatible with existing workflows
+- HAR file size <10MB per audit run
+- Cache hit rate >60%
+- Performance overhead <10%
+- Storage <100MB per month
+- Compatible with existing workflows
 
 ### Documentation Requirements
 
--  Usage guide published
--  API documentation complete
--  Examples provided
--  Troubleshooting guide available
+- Usage guide published
+- API documentation complete
+- Examples provided
+- Troubleshooting guide available
 
 ---
 

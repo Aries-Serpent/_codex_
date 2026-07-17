@@ -1,6 +1,6 @@
 # Zendesk Support Administration Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This directory contains all documentation related to managing Zendesk Support with _codex_.
 
@@ -8,7 +8,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 
 **New to Zendesk workflows with _codex_?** Begin with:
 
-👉 **[ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)** - Complete guide for Zendesk Support administrators
+ **[ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)** - Complete guide for Zendesk Support administrators
 
 ## Documentation Overview
 
@@ -47,7 +47,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 1. Complete Path 1
 2. Study [../runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md)
 3. Review configuration examples in [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)
-4. Set up multi-environment workflow (dev → staging → prod)
+4. Set up multi-environment workflow (dev staging prod)
 5. Complete [../checklists/zendesk_first_cycle_verification.md](../checklists/zendesk_first_cycle_verification.md)
 
 ### Path 3: Advanced Topics (1 phase)
@@ -88,14 +88,14 @@ codex zendesk snapshot --env=dev
 
 # Generate diff
 codex zendesk diff triggers \
-  --desired-file configs/desired/zendesk/triggers.json \
-  --current-file snapshot/dev/latest/triggers.json \
-  --output diffs/triggers_diff.json
+ --desired-file configs/desired/zendesk/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/triggers_diff.json
 
 # Plan changes
 codex zendesk plan triggers \
-  --diff-file diffs/triggers_diff.json \
-  --output plans/triggers_plan.json
+ --diff-file diffs/triggers_diff.json \
+ --output plans/triggers_plan.json
 
 # Apply changes
 codex zendesk apply triggers plans/triggers_plan.json --env=dev
@@ -113,10 +113,10 @@ codex-task-sequence --sequence scripts/task_sequences/zendesk_first_cycle.yaml
 cat > my_workflow.yaml <<EOF
 name: My Zendesk Workflow
 tasks:
-  - name: Snapshot
-    command: codex zendesk snapshot --env=dev
-  - name: Apply triggers
-    command: codex zendesk apply triggers plans/triggers_plan.json --env=dev
+ - name: Snapshot
+ command: codex zendesk snapshot --env=dev
+ - name: Apply triggers
+ command: codex zendesk apply triggers plans/triggers_plan.json --env=dev
 EOF
 
 codex-task-sequence --sequence my_workflow.yaml
@@ -127,12 +127,12 @@ codex-task-sequence --sequence my_workflow.yaml
 ### Directory Structure
 ```text
 configs/desired/zendesk/
-├── triggers.json          # Automated actions
-├── views.json             # Agent queues
-├── macros.json            # Common responses
-├── ticket_fields.json     # Custom fields
-├── ticket_forms.json      # Submission forms
-└── webhooks.json          # External integrations
+ triggers.json # Automated actions
+ views.json # Agent queues
+ macros.json # Common responses
+ ticket_fields.json # Custom fields
+ ticket_forms.json # Submission forms
+ webhooks.json # External integrations
 ```text
 ### Example Files
 See detailed examples in [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md):
@@ -171,45 +171,45 @@ See [ZENDESK_NEWCOMER_GUIDE.md#troubleshooting](ZENDESK_NEWCOMER_GUIDE.md#troubl
 
 ## Best Practices
 
- **Always test in dev first**  
- **Version control all configurations**  
- **Review diffs before applying**  
- **Monitor metrics regularly**  
- **Keep snapshots for rollback**  
- **Document changes in commit messages**  
- **Use task sequences for repeatability**  
- **Never commit API tokens**  
+ **Always test in dev first**
+ **Version control all configurations**
+ **Review diffs before applying**
+ **Monitor metrics regularly**
+ **Keep snapshots for rollback**
+ **Document changes in commit messages**
+ **Use task sequences for repeatability**
+ **Never commit API tokens**
 
 ## Supported Zendesk Objects
 
 | Object | CRUD | Notes |
 |--------|------|-------|
-| Triggers |  | Automated actions on ticket events |
-| Views |  | Saved filters for agent queues |
-| Macros |  | Predefined responses and actions |
-| Ticket Fields |  | Custom fields on tickets |
-| Ticket Forms |  | Different submission types |
-| Groups |  | Agent teams and routing |
-| Webhooks |  | External integrations |
-| Routing |  | Skills-based routing |
-| Talk IVR | ️ | Phone menu system (limited) |
+| Triggers | | Automated actions on ticket events |
+| Views | | Saved filters for agent queues |
+| Macros | | Predefined responses and actions |
+| Ticket Fields | | Custom fields on tickets |
+| Ticket Forms | | Different submission types |
+| Groups | | Agent teams and routing |
+| Webhooks | | External integrations |
+| Routing | | Skills-based routing |
+| Talk IVR | | Phone menu system (limited) |
 
-Legend:  Full support | ️ Partial support |  Not yet supported
+Legend: Full support | Partial support | Not yet supported
 
 ## Environment Setup
 
 ### Recommended Structure
 ```text
 my-zendesk-config/
-├── .env                           # Credentials (gitignored)
-├── configs/desired/zendesk/       # Desired state
-├── snapshot/                      # Current state snapshots
-│   ├── dev/
-│   ├── staging/
-│   └── prod/
-├── diffs/                         # Generated diffs
-├── plans/                         # Generated plans
-└── scripts/task_sequences/        # Automation workflows
+ .env # Credentials (gitignored)
+ configs/desired/zendesk/ # Desired state
+ snapshot/ # Current state snapshots
+ dev/
+ staging/
+ prod/
+ diffs/ # Generated diffs
+ plans/ # Generated plans
+ scripts/task_sequences/ # Automation workflows
 ```text
 ### Environment Variables
 ```bash
@@ -225,9 +225,9 @@ ZENDESK_PROD_EMAIL=admin@example.com
 ZENDESK_PROD_TOKEN=your-prod-token
 
 # Optional
-ZENDESK_RATE_LIMIT_DELAY=1.5      # Seconds between requests
-ZENDESK_MAX_RETRIES=5              # Max retry attempts
-CODEX_LOG_LEVEL=INFO              # DEBUG for verbose output
+ZENDESK_RATE_LIMIT_DELAY=1.5 # Seconds between requests
+ZENDESK_MAX_RETRIES=5 # Max retry attempts
+CODEX_LOG_LEVEL=INFO # DEBUG for verbose output
 ```text
 
 ## CLI Reference
@@ -239,18 +239,18 @@ codex zendesk snapshot --env=<env> [--objects <types>] [--dry-run]
 
 # Diff operations
 codex zendesk diff <object_type> \
-  --desired-file <path> \
-  --current-file <path> \
-  --output <path>
+ --desired-file <path> \
+ --current-file <path> \
+ --output <path>
 
 # Plan operations
 codex zendesk plan <object_type> \
-  --diff-file <path> \
-  --output <path>
+ --diff-file <path> \
+ --output <path>
 
 # Apply operations
 codex zendesk apply <object_type> <plan_file> \
-  --env=<env> [--dry-run] [--rate-limit]
+ --env=<env> [--dry-run] [--rate-limit]
 
 # Utility commands
 codex zendesk metrics [--since <date>] [--format <json|text>]
@@ -293,17 +293,17 @@ gh pr create --title "Add priority triggers" --body "Adds auto-assignment based 
 ```bash
 # Export metrics to Prometheus
 codex zendesk metrics --format json | \
-  python -m codex.zendesk.monitoring.prometheus_exporter
+ python -m codex.zendesk.monitoring.prometheus_exporter
 
 # Set up alerts
 cat > alerts.yaml <<EOF
 alerts:
-  - name: ZendeskApplyFailure
-    condition: apply_success_rate < 0.95
-    action: notify_on_call
-  - name: ZendeskRateLimitHigh
-    condition: rate_limit_retries > 0.05
-    action: notify_ops
+ - name: ZendeskApplyFailure
+ condition: apply_success_rate < 0.95
+ action: notify_on_call
+ - name: ZendeskRateLimitHigh
+ condition: rate_limit_retries > 0.05
+ action: notify_ops
 EOF
 ```text
 
@@ -332,4 +332,4 @@ EOF
 
 ---
 
-**Ready to get started?** Head to [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md) and begin your journey! 
+**Ready to get started?** Head to [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md) and begin your journey!

@@ -1,12 +1,12 @@
 # AST Standardization - Dependency Requirements
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-**Generated**: 2026-06-22  
-**Purpose**: Complete dependency specification for AST standardization project  
+**Generated**: 2026-06-22
+**Purpose**: Complete dependency specification for AST standardization project
 **Status**: PLANNING - Not yet installed
 
 ---
@@ -61,10 +61,10 @@ ast = [
 
 | Dependency | Python 3.8 | Python 3.9 | Python 3.10 | Python 3.11 | Python 3.12 |
 |------------|------------|------------|-------------|-------------|-------------|
-| libcst>=1.0.0 |  |  |  |  |  |
-| radon>=6.0.0 |  |  |  |  |  |
-| parso>=0.8.0 |  |  |  |  |  |
-| tree-sitter>=0.20.0 |  |  |  |  | ️ (test) |
+| libcst>=1.0.0 | | | | | |
+| radon>=6.0.0 | | | | | |
+| parso>=0.8.0 | | | | | |
+| tree-sitter>=0.20.0 | | | | | (test) |
 
 ---
 
@@ -192,14 +192,14 @@ EOF
 
 ## Next Steps
 
-1.  AI Assistant autonomous document review
-2.  Create test environment for validation
-3.  Test dependency installation
-4.  Update pyproject.toml
-5.  Run full test suite
-6.  Document any issues discovered
-7.  Get sign-off from Tech Lead
+1. AI Assistant autonomous document review
+2. Create test environment for validation
+3. Test dependency installation
+4. Update pyproject.toml
+5. Run full test suite
+6. Document any issues discovered
+7. Get sign-off from Tech Lead
 
-**Status**: PLANNING COMPLETE - Awaiting implementation approval  
-**Owner**: DevOps Lead  
+**Status**: PLANNING COMPLETE - Awaiting implementation approval
+**Owner**: DevOps Lead
 **Timeline**: 1-2 iterations once approved

@@ -1,10 +1,10 @@
 # Memory Usage Policy & Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Batch:** Phase 6, Batch 3 (Testing, Validation & Release Preparation)  
-**Generated:** 2026-06-14  
-**Status:**  APPROVED  
+**Batch:** Phase 6, Batch 3 (Testing, Validation & Release Preparation)
+**Generated:** 2026-06-14
+**Status:** APPROVED
 **Owner:** Infrastructure Engineering
 
 ---
@@ -17,27 +17,27 @@ From production benchmarking (2026-06-14):
 
 | Scenario | Peak Memory | Target | Headroom | Status |
 |----------|-------------|--------|----------|--------|
-| **Idle** | 0.00 MiB | <500 MiB | 100% |  PASS |
-| **Normal Operation** | 3.20 MiB | <1000 MiB | 99.7% |  PASS |
-| **Peak Load** | 313.72 MiB | <2000 MiB | 84.3% |  PASS |
+| **Idle** | 0.00 MiB | <500 MiB | 100% | PASS |
+| **Normal Operation** | 3.20 MiB | <1000 MiB | 99.7% | PASS |
+| **Peak Load** | 313.72 MiB | <2000 MiB | 84.3% | PASS |
 
 ### 1.2 Memory Scaling Characteristics
 
 ```
 Memory Usage by Load:
 
-  500 ├─────────────────────────────────────── Peak Target: 2000 MiB
-      │
-  400 ├────────────────────
-      │                   └─ Peak Measured: 313.7 MiB
-  300 ├────────────────────
-      │
-  200 ├
-      │
-  100 ├
-      │
-    0 └─────────────────────────────────────
-      Idle   Normal   Peak
+ 500 Peak Target: 2000 MiB
+ 
+ 400 
+ Peak Measured: 313.7 MiB
+ 300 
+ 
+ 200 
+ 
+ 100 
+ 
+ 0 
+ Idle Normal Peak
 ```
 
 ### 1.3 Key Characteristics
@@ -57,10 +57,10 @@ Memory Usage by Load:
 #### Production Environment
 ```yaml
 resources:
-  limits:
-    memory: "1Gi"              # Hard limit
-  requests:
-    memory: "256Mi"            # Reservation for baseline
+ limits:
+ memory: "1Gi" # Hard limit
+ requests:
+ memory: "256Mi" # Reservation for baseline
 
 # Justification:
 # - Baseline: 0 MiB (plus 256 MiB overhead)
@@ -72,19 +72,19 @@ resources:
 ## Staging Environment
 ```yaml
 resources:
-  limits:
-    memory: "512Mi"            # Tighter limit for testing
-  requests:
-    memory: "128Mi"
+ limits:
+ memory: "512Mi" # Tighter limit for testing
+ requests:
+ memory: "128Mi"
 ```
 
 ### Development Environment
 ```yaml
 resources:
-  limits:
-    memory: "256Mi"            # Relaxed for dev flexibility
-  requests:
-    memory: "64Mi"
+ limits:
+ memory: "256Mi" # Relaxed for dev flexibility
+ requests:
+ memory: "64Mi"
 ```
 
 ### 2.2 Memory Allocation Justification
@@ -105,28 +105,28 @@ resources:
 
 ```yaml
 memory_current_usage_mib:
-  description: "Current heap usage"
-  source: "container runtime"
-  frequency: "10 seconds"
-  alerting:
-    warning: 500        # 50% of 1GB limit
-    critical: 800       # 80% of 1GB limit
+ description: "Current heap usage"
+ source: "container runtime"
+ frequency: "10 seconds"
+ alerting:
+ warning: 500 # 50% of 1GB limit
+ critical: 800 # 80% of 1GB limit
 
 memory_peak_usage_mib:
-  description: "Peak usage since last restart"
-  source: "container runtime"
-  frequency: "60 seconds"
-  alerting:
-    warning: 700        # 70% of 1GB limit
-    critical: 950       # 95% of 1GB limit
+ description: "Peak usage since last restart"
+ source: "container runtime"
+ frequency: "60 seconds"
+ alerting:
+ warning: 700 # 70% of 1GB limit
+ critical: 950 # 95% of 1GB limit
 
 memory_growth_rate_mib_per_hour:
-  description: "Leak detection metric"
-  source: "timeseries analysis"
-  frequency: "3600 seconds"
-  alerting:
-    warning: 50         # >50 MiB/hour suggests leak
-    critical: 100       # >100 MiB/hour is definite leak
+ description: "Leak detection metric"
+ source: "timeseries analysis"
+ frequency: "3600 seconds"
+ alerting:
+ warning: 50 # >50 MiB/hour suggests leak
+ critical: 100 # >100 MiB/hour is definite leak
 ```
 
 ### 3.2 Memory Dashboard
@@ -134,25 +134,25 @@ memory_growth_rate_mib_per_hour:
 **Metrics to Display:**
 
 1. **Current Memory Usage**
-   - Gauge: 0 → 1000 MiB
-   - Alert line: 800 MiB (critical)
-   - Target line: 500 MiB (warning)
+ - Gauge: 0 1000 MiB
+ - Alert line: 800 MiB (critical)
+ - Target line: 500 MiB (warning)
 
 2. **Memory Over Time (24 hours)**
-   - Line graph with 1-minute granularity
-   - Highlight peaks > 500 MiB
-   - Trend line for leak detection
+ - Line graph with 1-minute granularity
+ - Highlight peaks > 500 MiB
+ - Trend line for leak detection
 
 3. **Memory by Component**
-   - Heap: XX%
-   - Cache: XX%
-   - Buffers: XX%
-   - Other: XX%
+ - Heap: XX%
+ - Cache: XX%
+ - Buffers: XX%
+ - Other: XX%
 
 4. **Peak Memory Since Startup**
-   - Single number: XX MiB
-   - Compared to baseline
-   - History: last 7 days
+ - Single number: XX MiB
+ - Compared to baseline
+ - History: last 7 days
 
 ---
 
@@ -183,10 +183,10 @@ memory_growth_rate_mib_per_hour:
 2. Analyze retained objects
 3. Correlate with recent deployments
 4. Check for:
-   - Unbounded caches
-   - Connection leaks
-   - Event listener leaks
-   - Static reference leaks
+ - Unbounded caches
+ - Connection leaks
+ - Event listener leaks
+ - Static reference leaks
 ```
 
 **Step 3: Implement Fix** (1-4 hours)
@@ -219,11 +219,11 @@ jcmd <pid> GC.heap_dump /tmp/heap.dump
 
 ```yaml
 # JVM GC settings for production
--XX:+UseG1GC                           # Optimized for low latency
--XX:MaxGCPauseMillis=200              # Keep pauses <200ms
--XX:+ParallelRefProcEnabled           # Parallel reference processing
--XX:+UnlockDiagnosticVMOptions        # Enable diagnostics
--XX:G1ReservePercent=10               # Reserve 10% for collection
+-XX:+UseG1GC # Optimized for low latency
+-XX:MaxGCPauseMillis=200 # Keep pauses <200ms
+-XX:+ParallelRefProcEnabled # Parallel reference processing
+-XX:+UnlockDiagnosticVMOptions # Enable diagnostics
+-XX:G1ReservePercent=10 # Reserve 10% for collection
 ```
 
 ## 5.2 GC Tuning Goals
@@ -239,16 +239,16 @@ jcmd <pid> GC.heap_dump /tmp/heap.dump
 
 ```yaml
 gc_pause_time_ms_p99:
-  threshold: 200              # Alert if p99 > 200ms
-  tracking: "every 5 minutes"
+ threshold: 200 # Alert if p99 > 200ms
+ tracking: "every 5 minutes"
 
 gc_throughput_percent:
-  threshold: 95               # Alert if <95% (>5% time in GC)
-  tracking: "every 10 minutes"
+ threshold: 95 # Alert if <95% (>5% time in GC)
+ tracking: "every 10 minutes"
 
 gc_collection_count:
-  threshold: 60/hour          # Alert if >1/minute
-  tracking: "every 5 minutes"
+ threshold: 60/hour # Alert if >1/minute
+ tracking: "every 5 minutes"
 ```
 
 ---
@@ -260,20 +260,20 @@ gc_collection_count:
 ```
 Application Memory (1GB limit):
 
-┌─────────────────────────────────────────────────────────┐
-│ Runtime Overhead                         64 MiB (6%)    │
-├─────────────────────────────────────────────────────────┤
-│ Cache Layer (L1-L4)                     256 MiB (25%)   │
-├─────────────────────────────────────────────────────────┤
-│ Request Processing                      128 MiB (12%)   │
-├─────────────────────────────────────────────────────────┤
-│ Data Structures                         256 MiB (25%)   │
-├─────────────────────────────────────────────────────────┤
-│ Buffers & Scratch Space                128 MiB (12%)   │
-├─────────────────────────────────────────────────────────┤
-│ Available/Headroom                      192 MiB (20%)   │
-└─────────────────────────────────────────────────────────┘
-                        Total: 1024 MiB (100%)
+
+ Runtime Overhead 64 MiB (6%) 
+
+ Cache Layer (L1-L4) 256 MiB (25%) 
+
+ Request Processing 128 MiB (12%) 
+
+ Data Structures 256 MiB (25%) 
+
+ Buffers & Scratch Space 128 MiB (12%) 
+
+ Available/Headroom 192 MiB (20%) 
+
+ Total: 1024 MiB (100%)
 ```
 
 ### 6.2 Component Memory Guidelines
@@ -303,8 +303,8 @@ Application Memory (1GB limit):
 ```bash
 # Profile memory allocation
 java -XX:+TraceClassLoading -XX:+LogVMOutput \
-     -XX:LogFile=vm.log \
-     -jar application.jar
+ -XX:LogFile=vm.log \
+ -jar application.jar
 
 # Analyze allocation hotspots
 grep "new\|allocation" vm.log | sort | uniq -c
@@ -314,41 +314,41 @@ grep "new\|allocation" vm.log | sort | uniq -c
 
 **Issue 1: Unbounded Caches**
 ```python
-#  BAD - Grows without limit
+# BAD - Grows without limit
 cache = {}
 for item in large_dataset:
-    cache[item.id] = item.data
+ cache[item.id] = item.data
 
-#  GOOD - Bounded with LRU
+# GOOD - Bounded with LRU
 from functools import lru_cache
 @lru_cache(maxsize=1000)
 def get_item(item_id):
-    return lookup(item_id)
+ return lookup(item_id)
 ```
 
 **Issue 2: Connection Leaks**
 ```python
-#  BAD - Connections not closed
+# BAD - Connections not closed
 def process():
-    conn = db.connect()
-    return conn.query()
+ conn = db.connect()
+ return conn.query()
 
-#  GOOD - Guaranteed cleanup
+# GOOD - Guaranteed cleanup
 def process():
-    with db.connect() as conn:
-        return conn.query()
+ with db.connect() as conn:
+ return conn.query()
 ```
 
 **Issue 3: Event Listener Leaks**
 ```python
-#  BAD - Listeners accumulate
+# BAD - Listeners accumulate
 obj.addEventListener('change', handler)
 
-#  GOOD - Remove listeners
+# GOOD - Remove listeners
 obj.removeEventListener('change', handler)
 # Or use context manager
 with obj.listener('change', handler):
-    process()
+ process()
 ```
 
 ---
@@ -379,21 +379,21 @@ with obj.listener('change', handler):
 
 ```
 Warning Alert (75%)
-  ├─ Check memory trend
-  └─ If stable → monitor
-     If growing → Alert → Step 2
+ Check memory trend
+ If stable monitor
+ If growing Alert Step 2
 
 Critical Alert (85%)
-  ├─ Page on-call
-  ├─ Dump diagnostics
-  ├─ Check recent deployments
-  └─ Decide: Fix or restart
+ Page on-call
+ Dump diagnostics
+ Check recent deployments
+ Decide: Fix or restart
 
 OOM (95%)
-  ├─ Auto-restart pod
-  ├─ Alert ops team
-  ├─ Incident opened
-  └─ Root cause analysis
+ Auto-restart pod
+ Alert ops team
+ Incident opened
+ Root cause analysis
 ```
 
 ---
@@ -464,8 +464,8 @@ kubectl scale deployment myapp --replicas=2
 
 # 2. Restart one instance at a time
 for pod in $(kubectl get pods -l app=myapp -o name); do
-  kubectl delete $pod
-  sleep 30  # Wait for replacement
+ kubectl delete $pod
+ sleep 30 # Wait for replacement
 done
 
 # Expected outcome:
@@ -537,33 +537,33 @@ done
 
 ```python
 class MemoryManagedApp:
-    """Application with memory management best practices."""
+ """Application with memory management best practices."""
 
-    def __init__(self, memory_limit_mb: int = 1000):
-        self.memory_limit = memory_limit_mb * 1024 * 1024
-        self.cache = LRUCache(maxsize=10000)
-        self.monitoring = MemoryMonitor(
-            warning_threshold=0.75 * self.memory_limit,
-            critical_threshold=0.85 * self.memory_limit,
-        )
+ def __init__(self, memory_limit_mb: int = 1000):
+ self.memory_limit = memory_limit_mb * 1024 * 1024
+ self.cache = LRUCache(maxsize=10000)
+ self.monitoring = MemoryMonitor(
+ warning_threshold=0.75 * self.memory_limit,
+ critical_threshold=0.85 * self.memory_limit,
+ )
 
-    def process_request(self, request):
-        """Process request with memory safety."""
-        # Check memory before processing
-        current = psutil.Process().memory_info().rss
-        if current > self.memory_limit * 0.9:
-            self.cache.clear()
+ def process_request(self, request):
+ """Process request with memory safety."""
+ # Check memory before processing
+ current = psutil.Process().memory_info().rss
+ if current > self.memory_limit * 0.9:
+ self.cache.clear()
 
-        # Use context manager for cleanup
-        with MemoryBudget(request) as budget:
-            result = self._process(request)
-            assert budget.used() < self.memory_limit, "OOM risk"
+ # Use context manager for cleanup
+ with MemoryBudget(request) as budget:
+ result = self._process(request)
+ assert budget.used() < self.memory_limit, "OOM risk"
 
-        return result
+ return result
 
-    def _process(self, request):
-        # Implementation with per-request limits
-        pass
+ def _process(self, request):
+ # Implementation with per-request limits
+ pass
 ```
 
 ---
@@ -579,11 +579,11 @@ class MemoryManagedApp:
 
 ## 14. Approval
 
-**Owner:** Infrastructure Engineering  
-**Reviewed By:** Platform Team  
-**Approved:** 2026-06-14  
-**Status:**  APPROVED FOR PRODUCTION  
-**Effective:** Immediate  
+**Owner:** Infrastructure Engineering
+**Reviewed By:** Platform Team
+**Approved:** 2026-06-14
+**Status:** APPROVED FOR PRODUCTION
+**Effective:** Immediate
 **Next Review:** 2026-09-14
 
 ---

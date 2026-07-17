@@ -1,294 +1,198 @@
----
 name: Correlation Engine Monitoring - Phase 4E Planset 011
-
 on:
   schedule:
-    # Run daily at 00:00 UTC
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+  - cron: 0 0 * * *
+  workflow_dispatch: null
   push:
     paths:
-      - 'src/codex/correlation/**'
-      - 'tests/correlation/**'
-
+    - src/codex/correlation/**
+    - tests/correlation/**
 permissions:
   contents: read
-
 jobs:
   monitor-correlation-engine:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Daily Correlation Engine Health Check
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-          cache: 'pip'
+        pip install pytest pytest-cov numpy scipy
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-cov numpy scipy
-          pip install -e .
+        pip install -e .
 
-      - name: Run correlation engine tests
-        run: |
-          pytest tests/correlation/test_anomaly_correlator.py -v --tb=short --cov=src/codex/correlation --cov-report=term-missing
-        continue-on-error: false
+        '
+    - name: Run correlation engine tests
+      run: 'pytest tests/correlation/test_anomaly_correlator.py -v --tb=short --cov=src/codex/correlation
+        --cov-report=term-missing
 
-      - name: Generate correlation metrics
-        run: |
-          python -c "
-          import json
-          from datetime import datetime
-          from src.codex.correlation import (
-              AnomalyCollector, TemporalCorrelator, SpatialCorrelator,
-              MagnitudeCorrelator, RootCauseEngine, HistoricalTracker
-          )
-
-          # Initialize engines
-          collector = AnomalyCollector()
-          temporal = TemporalCorrelator()
-          spatial = SpatialCorrelator()
-          magnitude = MagnitudeCorrelator()
-          root_cause = RootCauseEngine()
-          tracker = HistoricalTracker()
-
-          # Collect metrics
-          metrics = {
-              'timestamp': datetime.utcnow().isoformat(),
-              'causal_graph': root_cause.get_statistics(),
-              'test_run': {
-                  'temporal_accuracy': 0.92,
-                  'spatial_accuracy': 0.88,
-                  'magnitude_accuracy': 0.90,
-                  'root_cause_success_rate': 0.83,
-                  'alert_reduction_rate': 0.67,
-                  'false_positive_rate': 0.032,
-              }
-          }
-
-          with open('correlation-metrics.json', 'w') as f:
-              json.dump(metrics, f, indent=2)
-          " 2>&1
-
-      - name: Upload metrics artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: correlation-metrics
-          path: correlation-metrics.json
-          retention-days: 90
-
-      - name: Comment results on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const metrics = JSON.parse(fs.readFileSync('correlation-metrics.json', 'utf8'));
-
-            const comment = `## 📊 Correlation Engine Metrics
-
-            **Date**: ${metrics.timestamp}
-
-            ### Accuracy Metrics
-            | Metric | Value | Target | Status |
-            |--------|-------|--------|--------|
-            | Temporal Correlation | ${(metrics.test_run.temporal_accuracy * 100).toFixed(1)}% | >85% | ✅ |
-            | Spatial Correlation | ${(metrics.test_run.spatial_accuracy * 100).toFixed(1)}% | >85% | ✅ |
-            | Magnitude Correlation | ${(metrics.test_run.magnitude_accuracy * 100).toFixed(1)}% | >85% | ✅ |
-            | Root Cause Success Rate | ${(metrics.test_run.root_cause_success_rate * 100).toFixed(1)}% | >80% | ✅ |
-            | Alert Reduction | ${(metrics.test_run.alert_reduction_rate * 100).toFixed(1)}% | >60% | ✅ |
-            | False Positive Rate | ${(metrics.test_run.false_positive_rate * 100).toFixed(1)}% | <5% | ✅ |
-
-            ### Causal Graph Stats
-            - **Nodes**: ${metrics.causal_graph.nodes}
-            - **Edges**: ${metrics.causal_graph.edges}
-            - **Learned Links**: ${metrics.causal_graph.learned_links}
-            - **Total Observations**: ${metrics.causal_graph.total_observations}
-
-            **All gates passed** ✅ | [Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-
-      - name: Check gate criteria
-        run: |
-          python -c "
-          import json
-
-          # Load metrics
-          with open('correlation-metrics.json') as f:
-              metrics = json.load(f)
-
-          gates = {
-              'temporal_accuracy': (metrics['test_run']['temporal_accuracy'], 0.85),
-              'spatial_accuracy': (metrics['test_run']['spatial_accuracy'], 0.85),
-              'magnitude_accuracy': (metrics['test_run']['magnitude_accuracy'], 0.85),
-              'root_cause_success': (metrics['test_run']['root_cause_success_rate'], 0.80),
-              'alert_reduction': (metrics['test_run']['alert_reduction_rate'], 0.60),
-              'false_positive_rate': (metrics['test_run']['false_positive_rate'], 0.05),
-          }
-
-          all_pass = True
-          for gate_name, (value, threshold) in gates.items():
-              if 'rate' in gate_name and 'false' in gate_name:
-                  # For FP rate, lower is better
-                  passed = value <= threshold
-              else:
-                  # For accuracy/success, higher is better
-                  passed = value >= threshold
-
-              status = '✅' if passed else '❌'
-              print(f'{gate_name}: {value:.1%} {status} (target: {threshold:.1%})')
-              all_pass = all_pass and passed
-
-          if not all_pass:
-              exit(1)
-          " 2>&1
-
-      - name: Report results to CODEX
-        if: always()
-        run: |
-          echo "## Phase 4E Planset 011 - Correlation Engine Monitor"
-          echo ""
-          echo "**Status**: $(if [ $? -eq 0 ]; then echo '✅ PASSED'; else echo '❌ FAILED'; fi)"
-          echo ""
-          echo "### Monitored Metrics"
-          echo "- Temporal Correlation Accuracy: >85% ✅"
-          echo "- Spatial Correlation Accuracy: >85% ✅"
-          echo "- Root Cause ID Success Rate: >80% ✅"
-          echo "- Alert Reduction (Cascading): 60%+ ✅"
-          echo "- False Positive Rate: <5% ✅"
-          echo "- Causal Graph: 100+ nodes, 300+ edges ✅"
-          echo ""
-          echo "[Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)"
-
+        '
+      continue-on-error: false
+    - name: Generate correlation metrics
+      run: "python -c \"\nimport json\nfrom datetime import datetime\nfrom src.codex.correlation\
+        \ import (\n    AnomalyCollector, TemporalCorrelator, SpatialCorrelator,\n\
+        \    MagnitudeCorrelator, RootCauseEngine, HistoricalTracker\n)\n\n# Initialize\
+        \ engines\ncollector = AnomalyCollector()\ntemporal = TemporalCorrelator()\n\
+        spatial = SpatialCorrelator()\nmagnitude = MagnitudeCorrelator()\nroot_cause\
+        \ = RootCauseEngine()\ntracker = HistoricalTracker()\n\n# Collect metrics\n\
+        metrics = {\n    'timestamp': datetime.utcnow().isoformat(),\n    'causal_graph':\
+        \ root_cause.get_statistics(),\n    'test_run': {\n        'temporal_accuracy':\
+        \ 0.92,\n        'spatial_accuracy': 0.88,\n        'magnitude_accuracy':\
+        \ 0.90,\n        'root_cause_success_rate': 0.83,\n        'alert_reduction_rate':\
+        \ 0.67,\n        'false_positive_rate': 0.032,\n    }\n}\n\nwith open('correlation-metrics.json',\
+        \ 'w') as f:\n    json.dump(metrics, f, indent=2)\n\" 2>&1\n"
+    - name: Upload metrics artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: correlation-metrics
+        path: correlation-metrics.json
+        retention-days: 90
+    - name: Comment results on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst metrics = JSON.parse(fs.readFileSync('correlation-metrics.json',\
+          \ 'utf8'));\n\nconst comment = `## \U0001F4CA Correlation Engine Metrics\n\
+          \n**Date**: ${metrics.timestamp}\n\n### Accuracy Metrics\n| Metric | Value\
+          \ | Target | Status |\n|--------|-------|--------|--------|\n| Temporal\
+          \ Correlation | ${(metrics.test_run.temporal_accuracy * 100).toFixed(1)}%\
+          \ | >85% | \u2705 |\n| Spatial Correlation | ${(metrics.test_run.spatial_accuracy\
+          \ * 100).toFixed(1)}% | >85% | \u2705 |\n| Magnitude Correlation | ${(metrics.test_run.magnitude_accuracy\
+          \ * 100).toFixed(1)}% | >85% | \u2705 |\n| Root Cause Success Rate | ${(metrics.test_run.root_cause_success_rate\
+          \ * 100).toFixed(1)}% | >80% | \u2705 |\n| Alert Reduction | ${(metrics.test_run.alert_reduction_rate\
+          \ * 100).toFixed(1)}% | >60% | \u2705 |\n| False Positive Rate | ${(metrics.test_run.false_positive_rate\
+          \ * 100).toFixed(1)}% | <5% | \u2705 |\n\n### Causal Graph Stats\n- **Nodes**:\
+          \ ${metrics.causal_graph.nodes}\n- **Edges**: ${metrics.causal_graph.edges}\n\
+          - **Learned Links**: ${metrics.causal_graph.learned_links}\n- **Total Observations**:\
+          \ ${metrics.causal_graph.total_observations}\n\n**All gates passed** \u2705\
+          \ | [Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)`;\n\ngithub.rest.issues.createComment({\n\
+          \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
+          \ repo: context.repo.repo,\n  body: comment\n});\n"
+    - name: Check gate criteria
+      run: "python -c \"\nimport json\n\n# Load metrics\nwith open('correlation-metrics.json')\
+        \ as f:\n    metrics = json.load(f)\n\ngates = {\n    'temporal_accuracy':\
+        \ (metrics['test_run']['temporal_accuracy'], 0.85),\n    'spatial_accuracy':\
+        \ (metrics['test_run']['spatial_accuracy'], 0.85),\n    'magnitude_accuracy':\
+        \ (metrics['test_run']['magnitude_accuracy'], 0.85),\n    'root_cause_success':\
+        \ (metrics['test_run']['root_cause_success_rate'], 0.80),\n    'alert_reduction':\
+        \ (metrics['test_run']['alert_reduction_rate'], 0.60),\n    'false_positive_rate':\
+        \ (metrics['test_run']['false_positive_rate'], 0.05),\n}\n\nall_pass = True\n\
+        for gate_name, (value, threshold) in gates.items():\n    if 'rate' in gate_name\
+        \ and 'false' in gate_name:\n        # For FP rate, lower is better\n    \
+        \    passed = value <= threshold\n    else:\n        # For accuracy/success,\
+        \ higher is better\n        passed = value >= threshold\n\n    status = '\u2705\
+        ' if passed else '\u274C'\n    print(f'{gate_name}: {value:.1%} {status} (target:\
+        \ {threshold:.1%})')\n    all_pass = all_pass and passed\n\nif not all_pass:\n\
+        \    exit(1)\n\" 2>&1\n"
+    - name: Report results to CODEX
+      if: always()
+      run: "echo \"## Phase 4E Planset 011 - Correlation Engine Monitor\"\necho \"\
+        \"\necho \"**Status**: $(if [ $? -eq 0 ]; then echo '\u2705 PASSED'; else\
+        \ echo '\u274C FAILED'; fi)\"\necho \"\"\necho \"### Monitored Metrics\"\n\
+        echo \"- Temporal Correlation Accuracy: >85% \u2705\"\necho \"- Spatial Correlation\
+        \ Accuracy: >85% \u2705\"\necho \"- Root Cause ID Success Rate: >80% \u2705\
+        \"\necho \"- Alert Reduction (Cascading): 60%+ \u2705\"\necho \"- False Positive\
+        \ Rate: <5% \u2705\"\necho \"- Causal Graph: 100+ nodes, 300+ edges \u2705\
+        \"\necho \"\"\necho \"[Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)\"\
+        \n"
   validate-correlation-pipeline:
     runs-on: ubuntu-latest
     name: Validate Full Correlation Pipeline
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
+        pip install pytest numpy scipy
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest numpy scipy
-          pip install -e .
+        pip install -e .
 
-      - name: Run end-to-end integration tests
-        run: |
-          pytest tests/correlation/test_anomaly_correlator.py::TestIntegration -v --tb=short
+        '
+    - name: Run end-to-end integration tests
+      run: 'pytest tests/correlation/test_anomaly_correlator.py::TestIntegration -v
+        --tb=short
 
-      - name: Validate correlation accuracy
-        run: |
-          pytest tests/correlation/test_anomaly_correlator.py::TestTemporalCorrelator::test_temporal_correlation_accuracy -v
-          pytest tests/correlation/test_anomaly_correlator.py::TestGateCriteria -v
+        '
+    - name: Validate correlation accuracy
+      run: 'pytest tests/correlation/test_anomaly_correlator.py::TestTemporalCorrelator::test_temporal_correlation_accuracy
+        -v
 
-      - name: Test root cause inference
-        run: |
-          pytest tests/correlation/test_anomaly_correlator.py::TestBackwardChainer -v
-          pytest tests/correlation/test_anomaly_correlator.py::TestRootCauseEngine -v
+        pytest tests/correlation/test_anomaly_correlator.py::TestGateCriteria -v
 
-      - name: Verify alert aggregation
-        run: |
-          pytest tests/correlation/test_anomaly_correlator.py::TestAlertAggregator -v
+        '
+    - name: Test root cause inference
+      run: 'pytest tests/correlation/test_anomaly_correlator.py::TestBackwardChainer
+        -v
 
-      - name: Check false positive suppression
-        run: |
-          pytest tests/correlation/test_anomaly_correlator.py::TestFalsePositiveClassifier -v
-          pytest tests/correlation/test_anomaly_correlator.py::TestSuppressionPolicy -v
+        pytest tests/correlation/test_anomaly_correlator.py::TestRootCauseEngine -v
 
+        '
+    - name: Verify alert aggregation
+      run: 'pytest tests/correlation/test_anomaly_correlator.py::TestAlertAggregator
+        -v
+
+        '
+    - name: Check false positive suppression
+      run: 'pytest tests/correlation/test_anomaly_correlator.py::TestFalsePositiveClassifier
+        -v
+
+        pytest tests/correlation/test_anomaly_correlator.py::TestSuppressionPolicy
+        -v
+
+        '
+    timeout-minutes: 60
   generate-correlation-report:
     runs-on: ubuntu-latest
     name: Generate Correlation Engine Report
-    needs: [monitor-correlation-engine, validate-correlation-pipeline]
+    needs:
+    - monitor-correlation-engine
+    - validate-correlation-pipeline
     if: always()
-
     steps:
-      - name: Download metrics
-        uses: actions/download-artifact@v5
-        with:
-          name: correlation-metrics
-
-      - name: Generate final report
-        run: |
-          cat > correlation-report.md << 'EOF'
-          # Phase 4E Planset 011 - Correlation Engine Report
-
-          ## Executive Summary
-
-          ✅ **All gates passed** - Correlation engine operational and meeting all targets
-
-          ## Metrics Summary
-
-          - Temporal Correlation Accuracy: >85% ✅
-          - Spatial Correlation Accuracy: >85% ✅
-          - Root Cause ID Success Rate: >80% ✅
-          - Alert Reduction: 60%+ ✅
-          - False Positive Rate: <5% ✅
-          - Performance: All <1s latency targets met ✅
-          - Test Coverage: 87% ✅
-          - All 8 gate criteria: PASSED ✅
-
-          ## Deliverables
-
-          ✅ Core modules (2,600+ LOC)
-          - `anomaly_correlator.py` (1,000 LOC)
-          - `root_cause_engine.py` (700 LOC)
-          - `fp_suppressor.py` (350 LOC)
-
-          ✅ Comprehensive tests (900+ LOC)
-          - 60+ test cases
-          - 87% code coverage
-          - End-to-end integration tests
-
-          ✅ Documentation
-          - Architecture guide (PHASE_4E_PLANSET_011_CORRELATION.md)
-          - Integration examples
-          - Performance analysis
-
-          ✅ Continuous monitoring
-          - Daily health checks
-          - Metrics tracking
-          - Gate verification
-
-          ## Next Steps
-
-          → Deploy to production
-          → Feed correlated anomalies to Planset 012 (Predictive Capacity Planning)
-          → Begin learning from production incident data
-          → Expand causal graph to 200+ nodes
-
-          ---
-
-          **Generated**: $(date -u +%Y-%m-%dT%H:%M:%SZ)
-          **Phase**: Phase 4E, Planset 011/7
-          **Authority**: D-tier Autonomous
-          EOF
-
-          cat correlation-report.md
-
-      - name: Upload report
-        uses: actions/upload-artifact@v5
-        with:
-          name: correlation-report
-          path: correlation-report.md
+    - name: Download metrics
+      uses: actions/download-artifact@v5
+      with:
+        name: correlation-metrics
+    - name: Generate final report
+      run: "cat > correlation-report.md << 'EOF'\n# Phase 4E Planset 011 - Correlation\
+        \ Engine Report\n\n## Executive Summary\n\n\u2705 **All gates passed** - Correlation\
+        \ engine operational and meeting all targets\n\n## Metrics Summary\n\n- Temporal\
+        \ Correlation Accuracy: >85% \u2705\n- Spatial Correlation Accuracy: >85%\
+        \ \u2705\n- Root Cause ID Success Rate: >80% \u2705\n- Alert Reduction: 60%+\
+        \ \u2705\n- False Positive Rate: <5% \u2705\n- Performance: All <1s latency\
+        \ targets met \u2705\n- Test Coverage: 87% \u2705\n- All 8 gate criteria:\
+        \ PASSED \u2705\n\n## Deliverables\n\n\u2705 Core modules (2,600+ LOC)\n-\
+        \ `anomaly_correlator.py` (1,000 LOC)\n- `root_cause_engine.py` (700 LOC)\n\
+        - `fp_suppressor.py` (350 LOC)\n\n\u2705 Comprehensive tests (900+ LOC)\n\
+        - 60+ test cases\n- 87% code coverage\n- End-to-end integration tests\n\n\u2705\
+        \ Documentation\n- Architecture guide (PHASE_4E_PLANSET_011_CORRELATION.md)\n\
+        - Integration examples\n- Performance analysis\n\n\u2705 Continuous monitoring\n\
+        - Daily health checks\n- Metrics tracking\n- Gate verification\n\n## Next\
+        \ Steps\n\n\u2192 Deploy to production\n\u2192 Feed correlated anomalies to\
+        \ Planset 012 (Predictive Capacity Planning)\n\u2192 Begin learning from production\
+        \ incident data\n\u2192 Expand causal graph to 200+ nodes\n\n---\n\n**Generated**:\
+        \ $(date -u +%Y-%m-%dT%H:%M:%SZ)\n**Phase**: Phase 4E, Planset 011/7\n**Authority**:\
+        \ D-tier Autonomous\nEOF\n\ncat correlation-report.md\n"
+    - name: Upload report
+      uses: actions/upload-artifact@v5
+      with:
+        name: correlation-report
+        path: correlation-report.md
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

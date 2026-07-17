@@ -1,9 +1,9 @@
-# FORMAL_ARTIFACTS v0.3 — Interpretable Specs (CLI/metrics/policy)  
+# FORMAL_ARTIFACTS v0.3 — Interpretable Specs (CLI/metrics/policy)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Scope
 - PEG CLI (admin+metrics), NDJSON JSON Schema (2020‑12), ReDoS‑safe regexes, token lifecycle (Mermaid), SMT‑LIB policy constraints, typing judgments (config), rewrites.
@@ -11,7 +11,7 @@ Scope
 A. CLI Surface (PEG, v0.2)
 - GNU‑style long options; `--k=v` ≡ `--k v`; last‑wins.
 - Error codes: E_CLI_1 (missing required), E_ADMIN_1 (policy fail).
-- Normalization: R1 duplicate → last, R2 `--k=v` → `--k v`, R3 path normalize, R4 booleans to typed plan, R5 lexicographic display.
+- Normalization: R1 duplicate last, R2 `--k=v` `--k v`, R3 path normalize, R4 booleans to typed plan, R5 lexicographic display.
 
 B. NDJSON Metrics Schema (2020‑12, v0.3)
 - epoch: integer or numeric string; else warn+reject.
@@ -21,7 +21,7 @@ C. ReDoS‑safe Regex (v0.2)
 - Bounded quantifiers; anchors; avoid nested unbounded groups.
 
 D. Token Lifecycle (Mermaid v2, v0.2)
-- Offline → MintAppJWT → Installation Token → UseToken → Done (+ 401/403/429 branches).
+- Offline MintAppJWT Installation Token UseToken Done (+ 401/403/429 branches).
 
 E. Policy Constraints (SMT‑LIB 2, v0.1)
 - admissible := online_allowlist ∧ host_allowlisted ∧ (action_readonly ∨ (action_admin ∧ admin_perms)).

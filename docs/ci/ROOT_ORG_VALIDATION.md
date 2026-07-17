@@ -1,6 +1,6 @@
 # Root Organization CI/CD Validation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -26,18 +26,18 @@ Triggered when PR affects root-level files:
 ### Manual (workflow_dispatch)
 ```yaml
 inputs:
-  file_to_validate: 'README.md'  # Optional
-  dry_run: true                   # Default: true
+ file_to_validate: 'README.md' # Optional
+ dry_run: true # Default: true
 ```
 
 **Usage:**
 ```bash
-# Via GitHub UI: Actions → Root Organization Validation → Run workflow
+# Via GitHub UI: Actions Root Organization Validation Run workflow
 
 # Via GitHub CLI:
 gh workflow run root-org-validation.yml \
-  -f file_to_validate=QUICKSTART.md \
-  -f dry_run=true
+ -f file_to_validate=QUICKSTART.md \
+ -f dry_run=true
 ```
 
 ## Jobs
@@ -92,17 +92,17 @@ gh workflow run root-org-validation.yml \
 ## Artifacts
 
 ### validation-baseline
-**Retention:** 7 iterations  
+**Retention:** 7 iterations
 **Content:** Baseline metrics from pre-validation
 **Format:** Text file with timestamped results
 
 ### reference-validation-report
-**Retention:** 30 iterations  
+**Retention:** 30 iterations
 **Content:** Reference check results
 **Format:** Markdown report
 
 ### root-org-validation-report
-**Retention:** 90 iterations  
+**Retention:** 90 iterations
 **Content:** Complete validation report
 **Format:** Markdown with all job results
 
@@ -113,12 +113,12 @@ gh workflow run root-org-validation.yml \
 ```yaml
 # Example: Validate before move
 - name: Validate file
-  run: python scripts/root_org/validate_references.py ${{ matrix.file }} --dry-run
+ run: python scripts/root_org/validate_references.py ${{ matrix.file }} --dry-run
 
 # Example: Check references after move
 - name: Check references
-  run: |
-    python scripts/root_org/validate_references.py ${{ matrix.new_path }}
+ run: |
+ python scripts/root_org/validate_references.py ${{ matrix.new_path }}
 ```
 
 ## With Custom Agents
@@ -126,9 +126,9 @@ gh workflow run root-org-validation.yml \
 ```yaml
 # Example: Use root-organizer-agent
 - name: Assess risk
-  run: |
-    # Agent would analyze risk level
-    # And provide recommendations
+ run: |
+ # Agent would analyze risk level
+ # And provide recommendations
 ```
 
 ## Validation Checks
@@ -192,15 +192,15 @@ git mv QUICKSTART.md docs/QUICKSTART.md
 python scripts/root_org/update_links_atomic.py --old QUICKSTART.md --new docs/QUICKSTART.md
 git commit -m "Move QUICKSTART.md to docs/"
 git push origin feature/move-files
-# Create PR → Workflow runs automatically
+# Create PR Workflow runs automatically
 ```
 
 ## Example 2: Manual Validation
 ```bash
 # Via GitHub CLI
 gh workflow run root-org-validation.yml \
-  -f file_to_validate=.codex/archive/deprecated/AGENTS.md \
-  -f dry_run=false
+ -f file_to_validate=.codex/archive/deprecated/AGENTS.md \
+ -f dry_run=false
 
 # Check run status
 gh run list --workflow=root-org-validation.yml --limit 1
@@ -268,21 +268,21 @@ Edit `.github/workflows/root-org-validation.yml`:
 **Change file patterns:**
 ```yaml
 paths:
-  - '*.md'
-  - 'custom/**/*.txt'  # Add custom patterns
+ - '*.md'
+ - 'custom/**/*.txt' # Add custom patterns
 ```
 
 **Adjust retention:**
 ```yaml
-retention-days: 90  # Default, can be changed per artifact
+retention-days: 90 # Default, can be changed per artifact
 ```
 
 **Add custom checks:**
 ```yaml
 - name: Custom validation
-  run: |
-    # Your custom validation logic
-    ./scripts/custom_check.sh
+ run: |
+ # Your custom validation logic
+ ./scripts/custom_check.sh
 ```
 
 ## Best Practices
@@ -323,7 +323,7 @@ For issues:
 
 ---
 
-**Version:** 1.0.0  
-**Created:** 2026-01-21  
-**Status:**  Production Ready  
+**Version:** 1.0.0
+**Created:** 2026-01-21
+**Status:** Production Ready
 **Integration:** root-org scripts, custom agents

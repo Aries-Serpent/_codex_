@@ -1,8 +1,8 @@
 # CRM Integration for Repository Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Document Status:** Active  
+**Document Status:** Active
 **Last Updated: 2026-07-11
 **Purpose:** Strategic guidance for using CRM SaaS products (Zendesk, Dynamics 365/D365) as methodology for managing codebase repository issues, bugs, and workflows.
 
@@ -10,7 +10,7 @@
 
 ---
 
-##  Strategic Vision
+## Strategic Vision
 
 The `_codex_` repository implements **CRM-native repository management**, enabling AI agents and developers to leverage enterprise CRM platforms (Zendesk, Dynamics 365/D365) for comprehensive issue tracking, bug management, and workflow orchestration.
 
@@ -22,12 +22,12 @@ This approach brings Production issue management, SLA tracking, automated routin
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ### 1. **Zendesk Integration** (`src/codex_crm/zd_admin/`)
 
 **Use Cases:**
-- **Issue Tracking**: Map GitHub issues → Zendesk tickets
+- **Issue Tracking**: Map GitHub issues Zendesk tickets
 - **Bug Management**: Route bugs through Zendesk support workflows
 - **Feature Requests**: Track feature requests with Zendesk forms and views
 - **SLA Management**: Apply service-level agreements to critical bugs
@@ -35,16 +35,16 @@ This approach brings Production issue management, SLA tracking, automated routin
 
 **Key Components:**
 ```
-src/codex_crm/zd_admin/          # Zendesk admin utilities
-configs/desired/zendesk/          # Desired state configurations
-  ├── ticket_fields.desired.json  # Custom fields for repo issues
-  ├── ticket_forms.desired.json   # Forms for bug/feature intake
-  ├── triggers.desired.json       # Auto-routing rules
-  ├── views.desired.json          # Developer dashboards
-  ├── macros.desired.json         # Common responses
-  └── routing.desired.json        # Skills-based assignment
-data/zendesk_docs_manifest.json   # API documentation catalog
-docs/zendesk/                     # Complete documentation
+src/codex_crm/zd_admin/ # Zendesk admin utilities
+configs/desired/zendesk/ # Desired state configurations
+ ticket_fields.desired.json # Custom fields for repo issues
+ ticket_forms.desired.json # Forms for bug/feature intake
+ triggers.desired.json # Auto-routing rules
+ views.desired.json # Developer dashboards
+ macros.desired.json # Common responses
+ routing.desired.json # Skills-based assignment
+data/zendesk_docs_manifest.json # API documentation catalog
+docs/zendesk/ # Complete documentation
 ```
 
 ### 2. **Dynamics 365 (D365) Integration** (`src/codex_crm/d365_admin/`)
@@ -58,12 +58,12 @@ docs/zendesk/                     # Complete documentation
 
 **Key Components:**
 ```
-src/codex_crm/d365_admin/                 # D365 admin utilities
-configs/deployment/d365/                  # D365 configurations
-  └── solution_manifest.json              # Solution metadata
-src/codex_crm/cdm/data/mapping/          # Common Data Model mappings
-  └── assignment_d365.csv                 # Assignment mappings
-docs/crm/admin-runbooks/d365.md          # D365 runbook
+src/codex_crm/d365_admin/ # D365 admin utilities
+configs/deployment/d365/ # D365 configurations
+ solution_manifest.json # Solution metadata
+src/codex_crm/cdm/data/mapping/ # Common Data Model mappings
+ assignment_d365.csv # Assignment mappings
+docs/crm/admin-runbooks/d365.md # D365 runbook
 ```
 
 ### 3. **Common Data Model** (`src/codex_crm/cdm/`)
@@ -71,10 +71,10 @@ docs/crm/admin-runbooks/d365.md          # D365 runbook
 **Purpose:** Unified data model for cross-platform CRM operations
 
 **Mappings:**
-- GitHub Issue → Zendesk Ticket → D365 Case
-- GitHub PR → Zendesk Change Request → D365 Service Activity
-- Repository Label → Zendesk Tag → D365 Category
-- GitHub Milestone → Zendesk Target → D365 Project Phase
+- GitHub Issue Zendesk Ticket D365 Case
+- GitHub PR Zendesk Change Request D365 Service Activity
+- Repository Label Zendesk Tag D365 Category
+- GitHub Milestone Zendesk Target D365 Project Phase
 
 ---
 
@@ -122,7 +122,7 @@ python -m codex.cli d365 apply-slas plan_slas.json --dry-run
 
 ---
 
-##  Mapping Repository Concepts to CRM
+## Mapping Repository Concepts to CRM
 
 | Repository Concept | Zendesk | Dynamics 365 (D365) |
 |-------------------|---------|-------------|
@@ -139,25 +139,34 @@ python -m codex.cli d365 apply-slas plan_slas.json --dry-run
 
 ---
 
-##  Workflow Examples
+## Workflow Examples
 
 ### Workflow 1: Bug Triage with Zendesk
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing GitHub Issue Created, Zendesk Ticket Created'}}%%
+
 graph LR
-    A[GitHub Issue Created] --> B[Zendesk Ticket Created]
-    B --> C{Severity?}
-    C -->|Critical| D[Auto-assign to P0 Team]
-    C -->|High| E[Skills-based Routing]
-    C -->|Low| F[General Queue]
-    D --> G[Apply P0 SLA]
-    E --> H[Apply Standard SLA]
-    F --> I[Monitor in View]
+
+ A[GitHub Issue Created] --> B[Zendesk Ticket Created]
+
+ B --> C{Severity?}
+
+ C -->|Critical| D[Auto-assign to P0 Team]
+
+ C -->|High| E[Skills-based Routing]
+
+ C -->|Low| F[General Queue]
+
+ D --> G[Apply P0 SLA]
+
+ E --> H[Apply Standard SLA]
+
+ F --> I[Monitor in View]
 ```
 
 **Implementation:**
-1. **Trigger:** New issue webhook → Create Zendesk ticket
+1. **Trigger:** New issue webhook Create Zendesk ticket
 2. **Classification:** Use Zendesk AI to auto-tag severity
 3. **Routing:** Apply `configs/desired/zendesk/routing.desired.json` rules
 4. **SLA:** Track resolution time via Zendesk SLA policies
@@ -167,36 +176,53 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CodeQL Scan, Generate Debt Report'}}%%
+
 graph TD
-    A[CodeQL Scan] --> B[Generate Debt Report]
-    B --> C[Create D365 Cases]
-    C --> D[Prioritize by Risk Score]
-    D --> E{Risk Level?}
-    E -->|High| F[Immediate Sprint]
-    E -->|Medium| G[Backlog]
-    E -->|Low| H[Future Release]
-    F --> I[Assign to Team]
-    G --> J[Track in Roadmap]
-    H --> K[Documentation]
+
+ A[CodeQL Scan] --> B[Generate Debt Report]
+
+ B --> C[Create D365 Cases]
+
+ C --> D[Prioritize by Risk Score]
+
+ D --> E{Risk Level?}
+
+ E -->|High| F[Immediate Sprint]
+
+ E -->|Medium| G[Backlog]
+
+ E -->|Low| H[Future Release]
+
+ F --> I[Assign to Team]
+
+ G --> J[Track in Roadmap]
+
+ H --> K[Documentation]
 ```
 
 **Implementation:**
 1. **Scan:** Run CodeQL/security scans
-2. **Extract:** Parse results → JSON format
+2. **Extract:** Parse results JSON format
 3. **Import:** `python scripts/debt_to_d365.py --input scan_results.json`
 4. **Classify:** Apply risk scoring via D365 calculated fields
 5. **Plan:** Use D365 project management for sprint planning
 
-### Workflow 3: Cross-Platform Sync (Zendesk ↔ Dynamics 365/D365)
+### Workflow 3: Cross-Platform Sync (Zendesk Dynamics 365/D365)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Zendesk Ticket, Sync to D365'}}%%
+
 graph LR
-    A[Zendesk Ticket] -->|High Priority| B[Sync to D365]
-    B --> C[D365 Case Created]
-    C --> D[Resource Allocation]
-    D --> E[Update Ticket Status]
-    E --> F[Sync Back to GitHub]
+
+ A[Zendesk Ticket] -->|High Priority| B[Sync to D365]
+
+ B --> C[D365 Case Created]
+
+ C --> D[Resource Allocation]
+
+ D --> E[Update Ticket Status]
+
+ E --> F[Sync Back to GitHub]
 ```
 
 **Implementation:**
@@ -206,7 +232,7 @@ graph LR
 
 ---
 
-##  AI Agent Integration
+## AI Agent Integration
 
 ### Agent Capabilities
 
@@ -226,10 +252,10 @@ from codex_crm.zd_admin import create_ticket_from_issue
 
 # AI agent detects bug pattern
 ticket = create_ticket_from_issue(
-    subject="Memory leak in src/quantum/orchestrator.py",
-    description="Detected unclosed resources...",
-    priority="high",
-    tags=["bug", "memory-leak", "quantum"]
+ subject="Memory leak in src/quantum/orchestrator.py",
+ description="Detected unclosed resources...",
+ priority="high",
+ tags=["bug", "memory-leak", "quantum"]
 )
 ```
 
@@ -239,9 +265,9 @@ from codex_crm.zd_admin import route_ticket
 
 # AI analyzes file paths and routes to expert
 route_ticket(
-    ticket_id=12345,
-    file_paths=["src/rag/pipelines/embedding.py"],
-    routing_strategy="skills-based"
+ ticket_id=12345,
+ file_paths=["src/rag/pipelines/embedding.py"],
+ routing_strategy="skills-based"
 )
 ```
 
@@ -251,9 +277,9 @@ from codex_crm.zd_admin import update_ticket
 
 # AI agent fixes bug, updates ticket
 update_ticket(
-    ticket_id=12345,
-    status="solved",
-    comment="Fixed in commit abc123. Root cause: ..."
+ ticket_id=12345,
+ status="solved",
+ comment="Fixed in commit abc123. Root cause: ..."
 )
 ```
 
@@ -264,22 +290,22 @@ update_ticket(
 ```yaml
 name: autonomous-bug-fixer
 triggers:
-  - zendesk_ticket_created
-  - ticket_tags: [bug, p0]
+ - zendesk_ticket_created
+ - ticket_tags: [bug, p0]
 steps:
-  1. Query Zendesk for new P0 bugs
-  2. Analyze code context (AST, dependencies)
-  3. Propose fix (code changes)
-  4. Create PR with fix
-  5. Update Zendesk ticket with PR link
-  6. Monitor CI/CD status
-  7. Auto-merge if tests pass
-  8. Mark Zendesk ticket as solved
+ 1. Query Zendesk for new P0 bugs
+ 2. Analyze code context (AST, dependencies)
+ 3. Propose fix (code changes)
+ 4. Create PR with fix
+ 5. Update Zendesk ticket with PR link
+ 6. Monitor CI/CD status
+ 7. Auto-merge if tests pass
+ 8. Mark Zendesk ticket as solved
 ```
 
 ---
 
-##  Analytics & Reporting
+## Analytics & Reporting
 
 ### Zendesk Dashboards
 
@@ -311,7 +337,7 @@ steps:
 
 ---
 
-##  Security & Compliance
+## Security & Compliance
 
 ### Data Protection
 
@@ -330,7 +356,7 @@ steps:
 
 ---
 
-##  Documentation Index
+## Documentation Index
 
 ## Getting Started
 - [Zendesk Integration Deep Dive](../guides/codex_zendesk_integration_deep_dive.md)
@@ -354,7 +380,7 @@ steps:
 
 ---
 
-## 🛠️ Implementation Checklist
+## Implementation Checklist
 
 ### Phase 1: Setup (Week 1)
 - [ ] Configure Zendesk environment variables
@@ -386,7 +412,7 @@ steps:
 
 ---
 
-## 🎓 Training Resources
+## Training Resources
 
 ### For Developers
 1. **Zendesk API Basics** - 2 hours
@@ -402,17 +428,17 @@ steps:
 
 ---
 
-## 🚦 Status & Roadmap
+## Status & Roadmap
 
 ### Current Status (2026-02-07)
 
 | Component | Status | Coverage |
 |-----------|--------|----------|
-| Zendesk Integration |  Production | 100% |
-| Dynamics 365 (D365) Integration |  Production | 100% |
-| Common Data Model |  Production | 80% |
-| AI Agent Automation | 🚧 Beta | 60% |
-| Analytics Dashboards | 🚧 Beta | 40% |
+| Zendesk Integration | Production | 100% |
+| Dynamics 365 (D365) Integration | Production | 100% |
+| Common Data Model | Production | 80% |
+| AI Agent Automation | Beta | 60% |
+| Analytics Dashboards | Beta | 40% |
 
 ### Roadmap
 
@@ -430,7 +456,7 @@ steps:
 
 ---
 
-## 📞 Support & Feedback
+## Support & Feedback
 
 **Questions?** Open a GitHub issue with tag `crm-integration`
 
@@ -440,7 +466,7 @@ steps:
 
 ---
 
-## 📄 License & Attribution
+## License & Attribution
 
 This methodology is part of the `_codex_` project and follows the same license.
 
@@ -452,6 +478,6 @@ This methodology is part of the `_codex_` project and follows the same license.
 
 ---
 
-**Document Version:** 1.0.0  
-**Last Review:** 2026-02-07  
+**Document Version:** 1.0.0
+**Last Review:** 2026-02-07
 **Next Review:** 2026-03-07

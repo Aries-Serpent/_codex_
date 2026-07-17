@@ -1,6 +1,6 @@
 # Operations Alert Runbooks
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 **Version**: 1.0.0
@@ -9,13 +9,13 @@
 
 ---
 
-## 📞 Critical Alert Runbooks
+## Critical Alert Runbooks
 
 All CRITICAL alerts require immediate action. These runbooks are designed to restore service within 15 minutes.
 
 ---
 
-##  CRITICAL: High Error Rate (>5% for 5 min)
+## CRITICAL: High Error Rate (>5% for 5 min)
 
 **Alert Trigger**:
 - Error rate exceeds 5% for 5 consecutive minutes
@@ -23,22 +23,22 @@ All CRITICAL alerts require immediate action. These runbooks are designed to res
 
 **Immediate Actions** (First 2 minutes):
 1. **Verify the alert** is real (not a dashboarding glitch)
-   ```bash
-   curl -s http://metrics:9090/api/v1/query?query='rate(http_requests_errors_total[5m])' | jq
-   ```
+ ```bash
+ curl -s http://metrics:9090/api/v1/query?query='rate(http_requests_errors_total[5m])' | jq
+ ```
 
 2. **Check which service is failing**
-   ```bash
-   # Check error distribution by service
-   kubectl logs -n production -l app=user-service --tail=50 | grep ERROR
-   kubectl logs -n production -l app=order-service --tail=50 | grep ERROR
-   ```
+ ```bash
+ # Check error distribution by service
+ kubectl logs -n production -l app=user-service --tail=50 | grep ERROR
+ kubectl logs -n production -l app=order-service --tail=50 | grep ERROR
+ ```
 
 3. **Identify error type** from logs
-   - Database errors?
-   - Timeout errors?
-   - Validation errors?
-   - Authentication errors?
+ - Database errors?
+ - Timeout errors?
+ - Validation errors?
+ - Authentication errors?
 
 **Triage** (Next 3 minutes):
 
@@ -52,8 +52,8 @@ All CRITICAL alerts require immediate action. These runbooks are designed to res
 **Escalation** (After 5 minutes):
 ```
 1. Notify product team (Slack: #incidents)
-2. If no resolution in 5 min → Page on-call manager
-3. If no resolution in 10 min → Page engineering lead
+2. If no resolution in 5 min Page on-call manager
+3. If no resolution in 10 min Page engineering lead
 ```
 
 **Resolution Examples**:
@@ -118,7 +118,7 @@ kubectl scale deployment payment-service -n production --replicas=5
 
 ---
 
-##  CRITICAL: Response Latency p99 > 2 seconds
+## CRITICAL: Response Latency p99 > 2 seconds
 
 **Alert Trigger**:
 - p99 latency exceeds 2 seconds for 5 consecutive minutes
@@ -126,21 +126,21 @@ kubectl scale deployment payment-service -n production --replicas=5
 **Immediate Actions** (First 2 minutes):
 
 1. **Confirm latency spike**
-   ```bash
-   kubectl logs -n production -l app=api-gateway | tail -20 | grep "latency"
-   ```
+ ```bash
+ kubectl logs -n production -l app=api-gateway | tail -20 | grep "latency"
+ ```
 
 2. **Identify affected endpoints**
-   ```promql
-   # In Prometheus
-   topk(5, rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]))
-   ```
+ ```promql
+ # In Prometheus
+ topk(5, rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]))
+ ```
 
 3. **Check resource availability**
-   ```bash
-   kubectl top nodes
-   kubectl top pods -n production
-   ```
+ ```bash
+ kubectl top nodes
+ kubectl top pods -n production
+ ```
 
 **Investigation** (Next 5 minutes):
 
@@ -175,8 +175,8 @@ python -c "
 import redis
 r = redis.Redis(host='localhost')
 for key in get_critical_keys():
-    value = fetch_from_db(key)
-    r.set(key, value, ex=3600)
+ value = fetch_from_db(key)
+ r.set(key, value, ex=3600)
 "
 
 # 3. Monitor hit ratio recovery
@@ -196,8 +196,8 @@ watch "kubectl logs metrics | grep p99"
 ```
 
 **Escalation**:
-- If latency still >1.5s after 10 min → Page on-call
-- If latency still >2.5s after 5 min → Page engineering lead
+- If latency still >1.5s after 10 min Page on-call
+- If latency still >2.5s after 5 min Page engineering lead
 
 **Recovery Validation**:
 ```
@@ -209,7 +209,7 @@ watch "kubectl logs metrics | grep p99"
 
 ---
 
-##  CRITICAL: Health Check Failed (>3 consecutive failures)
+## CRITICAL: Health Check Failed (>3 consecutive failures)
 
 **Alert Trigger**:
 - Service health check fails 3+ consecutive times (>30 seconds)
@@ -218,20 +218,20 @@ watch "kubectl logs metrics | grep p99"
 **Immediate Actions** (URGENT - under 30 seconds):
 
 1. **Check service status**
-   ```bash
-   kubectl describe pod -n production -l app=user-service | tail -20
-   ```
+ ```bash
+ kubectl describe pod -n production -l app=user-service | tail -20
+ ```
 
 2. **Check pod logs for startup errors**
-   ```bash
-   kubectl logs -n production -l app=user-service --tail=50
-   ```
+ ```bash
+ kubectl logs -n production -l app=user-service --tail=50
+ ```
 
 3. **Check resource availability**
-   ```bash
-   kubectl top nodes
-   kubectl describe events -n production
-   ```
+ ```bash
+ kubectl top nodes
+ kubectl describe events -n production
+ ```
 
 **Diagnosis** (Next 1-2 minutes):
 
@@ -309,7 +309,7 @@ kubectl delete pod pod-name -n production
 
 ---
 
-##  WARNING: Resource Utilization High (CPU/Memory >80%)
+## WARNING: Resource Utilization High (CPU/Memory >80%)
 
 **Alert Trigger**:
 - CPU > 80% for 5 minutes
@@ -378,7 +378,7 @@ kubectl delete pod pod-name -n production
 
 ---
 
-##  WARNING: Error Rate Elevated (>1% for 10 min)
+## WARNING: Error Rate Elevated (>1% for 10 min)
 
 **Alert Trigger**:
 - Error rate 1-5% for 10+ minutes
@@ -405,7 +405,7 @@ kubectl logs -n production -l app=user-service | grep ERROR | head -20
 
 ---
 
-##  Runbook Index
+## Runbook Index
 
 | Alert | Severity | Response Time | Escalation |
 |-------|----------|--------------|------------|
@@ -419,14 +419,14 @@ kubectl logs -n production -l app=user-service | grep ERROR | head -20
 
 ---
 
-## 🧪 Drill Procedures
+## Drill Procedures
 
 **Weekly Drill: Test Alert Notification**
 ```bash
 # Trigger test alert
 curl -X POST http://prometheus:9090/api/v1/alerts/fire \
-  -H "Content-Type: application/json" \
-  -d '{"alert": "TestAlert", "severity": "critical"}'
+ -H "Content-Type: application/json" \
+ -d '{"alert": "TestAlert", "severity": "critical"}'
 
 # Verify notification reaches on-call
 # Expected: Slack message in #alerts within 1 minute
@@ -448,25 +448,25 @@ kubectl scale deployment user-service -n production --replicas=3
 
 ---
 
-## 📞 Escalation Contacts
+## Escalation Contacts
 
 ```yaml
 escalation_path:
-  - primary_oncall: "@on-call-engineer"
-  - backup_oncall: "@on-call-backup"
-  - engineering_manager: "engineering-manager@company.com"
-  - director: "engineering-director@company.com"
-  - cto: "cto@company.com"
+ - primary_oncall: "@on-call-engineer"
+ - backup_oncall: "@on-call-backup"
+ - engineering_manager: "engineering-manager@company.com"
+ - director: "engineering-director@company.com"
+ - cto: "cto@company.com"
 
 escalation_timing:
-  tier1_timeout: 5min  # If primary doesn't ack in 5 min, page backup
-  tier2_timeout: 15min # If backup doesn't ack, page manager
-  tier3_timeout: 15min # If manager doesn't ack, page director
+ tier1_timeout: 5min # If primary doesn't ack in 5 min, page backup
+ tier2_timeout: 15min # If backup doesn't ack, page manager
+ tier3_timeout: 15min # If manager doesn't ack, page director
 ```
 
 ---
 
-##  Incident Tracking Template
+## Incident Tracking Template
 
 ```markdown
 ## Incident: [Alert Name]

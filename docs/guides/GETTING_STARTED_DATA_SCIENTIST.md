@@ -1,12 +1,12 @@
 ## Getting Started Guide for Data Scientists
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
-**Target Audience:** Data scientists, ML researchers, model developers  
+**Target Audience:** Data scientists, ML researchers, model developers
 **Estimated Time:** 15-20 minutes to first model
 
-##  Your Goal
+## Your Goal
 
 Transform raw data into trained ML models using Codex ML's integrated training pipeline. This guide covers data loading, model training, evaluation, and experimentation tracking.
 
@@ -19,10 +19,10 @@ Transform raw data into trained ML models using Codex ML's integrated training p
 ```bash
 # Pull the data science optimized image
 docker run -it \
-  -v $(pwd)/data:/workspace/data \
-  -v $(pwd)/outputs:/workspace/outputs \
-  --gpus all \
-  codex-ml:data-science
+ -v $(pwd)/data:/workspace/data \
+ -v $(pwd)/outputs:/workspace/outputs \
+ --gpus all \
+ codex-ml:data-science
 ```
 
 ### Option B: Local Virtual Environment
@@ -79,35 +79,35 @@ experiment_name: sentiment-v1
 output_dir: outputs/sentiment-v1
 
 model:
-  name: distilbert-base-uncased
-  task: sequence-classification
-  num_labels: 3
+ name: distilbert-base-uncased
+ task: sequence-classification
+ num_labels: 3
 
 training:
-  max_epochs: 3
-  batch_size: 16
-  learning_rate: 2e-5
-  warmup_steps: 100
-  
+ max_epochs: 3
+ batch_size: 16
+ learning_rate: 2e-5
+ warmup_steps: 100
+ 
 data:
-  train_split: 0.8
-  val_split: 0.1
-  test_split: 0.1
-  text_column: text
-  label_column: label
+ train_split: 0.8
+ val_split: 0.1
+ test_split: 0.1
+ text_column: text
+ label_column: label
 
 optimization:
-  precision: bf16  # Use mixed precision
-  gradient_accumulation_steps: 2
+ precision: bf16 # Use mixed precision
+ gradient_accumulation_steps: 2
 ```
 
 ### Step 3: Train
 
 ```bash
 codex train \
-  --config-path config/sentiment_experiment.yaml \
-  --data-path data/sentiment.csv \
-  --output-dir outputs/sentiment-v1
+ --config-path config/sentiment_experiment.yaml \
+ --data-path data/sentiment.csv \
+ --output-dir outputs/sentiment-v1
 
 # Alternative using Python API
 python -c "
@@ -125,15 +125,15 @@ print(f'Model saved to: {engine.output_dir}')
 
 ```bash
 codex evaluate \
-  --model-path outputs/sentiment-v1/final \
-  --data-path data/sentiment.csv \
-  --metrics accuracy f1 precision recall
+ --model-path outputs/sentiment-v1/final \
+ --data-path data/sentiment.csv \
+ --metrics accuracy f1 precision recall
 
 # Output will show:
-#  Accuracy: 89.5%
-#  F1 Score: 0.892
-#  Precision: 0.891
-#  Recall: 0.893
+# Accuracy: 89.5%
+# F1 Score: 0.892
+# Precision: 0.891
+# Recall: 0.893
 ```
 
 ---
@@ -151,13 +151,13 @@ tracker = ExperimentTracker()
 # View your experiments
 experiments = tracker.list_experiments()
 for exp in experiments:
-    print(f"{exp.name}: {exp.status} (Acc: {exp.metrics['accuracy']:.2%})")
+ print(f"{exp.name}: {exp.status} (Acc: {exp.metrics['accuracy']:.2%})")
 
 # Compare runs side-by-side
 tracker.compare_experiments([
-    'sentiment-v1',
-    'sentiment-v2', 
-    'sentiment-v3'
+ 'sentiment-v1',
+ 'sentiment-v2', 
+ 'sentiment-v3'
 ])
 ```
 
@@ -170,13 +170,13 @@ import mlflow
 mlflow.set_experiment("sentiment-analysis")
 
 with mlflow.start_run(run_name="v1-baseline"):
-    engine = TrainingEngine.from_config('config/sentiment_experiment.yaml')
-    metrics = engine.train(Path('data/sentiment.csv'))
-    
-    # Auto-log metrics
-    mlflow.log_metrics(metrics)
-    mlflow.log_artifact("config/sentiment_experiment.yaml")
-    mlflow.log_model(engine.model, "model")
+ engine = TrainingEngine.from_config('config/sentiment_experiment.yaml')
+ metrics = engine.train(Path('data/sentiment.csv'))
+ 
+ # Auto-log metrics
+ mlflow.log_metrics(metrics)
+ mlflow.log_artifact("config/sentiment_experiment.yaml")
+ mlflow.log_model(engine.model, "model")
 
 # View in MLflow UI
 # mlflow ui --host 0.0.0.0 --port 5000
@@ -193,22 +193,22 @@ from codex_ml.training import TrainingEngine, HyperparameterTuner
 
 # Define parameter space
 param_space = {
-    'learning_rate': [1e-5, 2e-5, 5e-5],
-    'batch_size': [8, 16, 32],
-    'num_epochs': [3, 5, 7],
+ 'learning_rate': [1e-5, 2e-5, 5e-5],
+ 'batch_size': [8, 16, 32],
+ 'num_epochs': [3, 5, 7],
 }
 
 # Run grid search
 tuner = HyperparameterTuner(
-    config_template='config/sentiment_experiment.yaml',
-    param_space=param_space,
-    metric_to_optimize='accuracy',
-    n_trials=27  # 3^3 grid
+ config_template='config/sentiment_experiment.yaml',
+ param_space=param_space,
+ metric_to_optimize='accuracy',
+ n_trials=27 # 3^3 grid
 )
 
 best_config, best_metrics = tuner.tune(
-    data_path='data/sentiment.csv',
-    output_dir='outputs/hp-tuning'
+ data_path='data/sentiment.csv',
+ output_dir='outputs/hp-tuning'
 )
 
 print(f"Best accuracy: {best_metrics['accuracy']:.2%}")
@@ -222,23 +222,23 @@ from codex_ml.training import TrainingEngine, LoRAAdapter
 
 # Use pre-trained model with LoRA fine-tuning
 config = {
-    'model': {
-        'name': 'mistral-7b',
-        'task': 'causal-lm',
-        'use_lora': True,  # Enable LoRA
-    },
-    'lora': {
-        'r': 8,                    # LoRA rank
-        'lora_alpha': 16,           # Scaling factor
-        'lora_dropout': 0.05,       # Regularization
-        'target_modules': ['q_proj', 'v_proj'],  # Which layers to adapt
-    },
-    'training': {
-        'max_epochs': 3,
-        'batch_size': 16,
-        'learning_rate': 2e-4,
-        'precision': 'bf16',
-    }
+ 'model': {
+ 'name': 'mistral-7b',
+ 'task': 'causal-lm',
+ 'use_lora': True, # Enable LoRA
+ },
+ 'lora': {
+ 'r': 8, # LoRA rank
+ 'lora_alpha': 16, # Scaling factor
+ 'lora_dropout': 0.05, # Regularization
+ 'target_modules': ['q_proj', 'v_proj'], # Which layers to adapt
+ },
+ 'training': {
+ 'max_epochs': 3,
+ 'batch_size': 16,
+ 'learning_rate': 2e-4,
+ 'precision': 'bf16',
+ }
 }
 
 engine = TrainingEngine(config)
@@ -256,9 +256,9 @@ dataset = loader.load_csv('data/sentiment.csv')
 
 # Preprocess pipeline
 preprocessor = Preprocessor(steps=[
-    ('tokenize', {'max_length': 128}),
-    ('normalize', {'lowercase': True, 'remove_special': True}),
-    ('augment', {'techniques': ['backtranslate']}),
+ ('tokenize', {'max_length': 128}),
+ ('normalize', {'lowercase': True, 'remove_special': True}),
+ ('augment', {'techniques': ['backtranslate']}),
 ])
 
 processed = preprocessor.fit_transform(dataset)
@@ -274,17 +274,17 @@ processed = preprocessor.fit_transform(dataset)
 **Solution:**
 ```yaml
 training:
-  batch_size: 8  # Reduce from 16
-  gradient_accumulation_steps: 4  # Compensate for less frequent updates
-  precision: bf16  # Use mixed precision
+ batch_size: 8 # Reduce from 16
+ gradient_accumulation_steps: 4 # Compensate for less frequent updates
+ precision: bf16 # Use mixed precision
 ```
 
 Or reduce model size:
 ```yaml
 model:
-  name: distilbert-base-uncased  # Smaller than bert-base
-  # or
-  name: TinyBERT-6L-768D  # Even smaller
+ name: distilbert-base-uncased # Smaller than bert-base
+ # or
+ name: TinyBERT-6L-768D # Even smaller
 ```
 
 ### Issue: Training Too Slow
@@ -293,13 +293,13 @@ model:
 ```python
 # Use data parallel training across multiple GPUs
 engine = TrainingEngine(
-    config='config/sentiment_experiment.yaml',
-    distributed=True,
-    num_gpus=4
+ config='config/sentiment_experiment.yaml',
+ distributed=True,
+ num_gpus=4
 )
 
 # Or sample your data during development
-small_dataset = dataset.sample(frac=0.1)  # Use 10% for quick iteration
+small_dataset = dataset.sample(frac=0.1) # Use 10% for quick iteration
 ```
 
 ### Issue: Poor Model Performance
@@ -310,7 +310,7 @@ small_dataset = dataset.sample(frac=0.1)  # Use 10% for quick iteration
 from codex_ml.data import DataQualityAnalyzer
 analyzer = DataQualityAnalyzer()
 report = analyzer.analyze(dataset)
-print(report)  # Shows missing values, imbalance, etc.
+print(report) # Shows missing values, imbalance, etc.
 
 # 2. Visualize attention
 from codex_ml.interpretability import AttentionVisualizer
@@ -342,8 +342,8 @@ exporter.export_torchscript('outputs/model.pt')
 
 # Export for serverless (small, quantized)
 exporter.export_quantized(
-    'outputs/model-quantized.onnx',
-    quantization_bits=8
+ 'outputs/model-quantized.onnx',
+ quantization_bits=8
 )
 ```
 
@@ -360,18 +360,18 @@ print(f"Prediction: {result['label']} (confidence: {result['confidence']:.2%})")
 
 # Batch prediction
 results = predictor.predict_batch([
-    "Great product!",
-    "Terrible experience.",
-    "It's okay, nothing special.",
+ "Great product!",
+ "Terrible experience.",
+ "It's okay, nothing special.",
 ])
 
 for text, pred in zip(texts, results):
-    print(f"{text} → {pred['label']}")
+ print(f"{text} {pred['label']}")
 ```
 
 ---
 
-##  Next Steps
+## Next Steps
 
 - **Explore Fine-tuning**: Check [Fine-tuning Guide](./FINE_TUNING_GUIDE.md)
 - **Build Ensemble**: See [Ensemble Methods](./ENSEMBLE_GUIDE.md)

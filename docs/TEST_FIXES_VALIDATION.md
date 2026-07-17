@@ -1,6 +1,6 @@
 # Test Fixes Validation Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -9,7 +9,7 @@ This document describes the fixes applied to resolve 5 failing tests identified 
 
 ## Fixes Applied
 
-### 1.  SentencePieceAdapter.encode() - Add padding parameter
+### 1. SentencePieceAdapter.encode() - Add padding parameter
 **File**: `src/codex_ml/tokenization/sentencepiece_adapter.py`
 
 **Change**: Extended `encode()` method signature to support padding
@@ -36,7 +36,7 @@ def encode(
 pytest tests/tokenization/test_sentencepiece_adapter_train.py::test_train_or_load_stubs -v
 ```
 
-### 2.  SentencePieceAdapter.load() - Add FileNotFoundError check
+### 2. SentencePieceAdapter.load() - Add FileNotFoundError check
 **File**: `src/codex_ml/tokenization/sentencepiece_adapter.py`
 
 **Change**: Added explicit file existence check at start of `load()` method
@@ -60,7 +60,7 @@ def load(self) -> "SentencePieceAdapter":
 pytest tests/tokenization/test_sentencepiece_adapter_train.py::test_load_requires_model -v
 ```
 
-### 3.  Test Fix - Remove invalid HuggingFace revision
+### 3. Test Fix - Remove invalid HuggingFace revision
 **File**: `tests/data/test_cache_roundtrip.py`
 
 **Change**: Removed invalid revision parameter from tokenizer loading
@@ -83,7 +83,7 @@ tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
 pytest tests/data/test_cache_roundtrip.py::test_cache_roundtrip -v
 ```
 
-## 4.  Plugin Registry - Add deduplication
+## 4. Plugin Registry - Add deduplication
 **File**: `src/codex_ml/plugins/programmatic.py`
 
 **Change**: Modified `PluginRegistry.register()` to log duplicates instead of raising
@@ -110,7 +110,7 @@ def register(self, plugin: BasePlugin, *, override: bool = False) -> None:
 pytest tests/plugins/test_list_plugins_cli_json.py::test_json_shape_no_discover -v
 ```
 
-### 5.  test_render_monthly_html - No Fix Needed
+### 5. test_render_monthly_html - No Fix Needed
 **File**: `tests/status/test_render_monthly_html.py`
 
 **Status**: Test already has proper implementation - no placeholder assertion found
@@ -129,9 +129,9 @@ pytest tests/status/test_render_monthly_html.py::test_render_monthly_html -v
 
 **Analysis**:
 - The error "takes 0 positional arguments but 1 was given" may be from:
-  - Stale bytecode cache (`.pyc` files)
-  - Environment-specific issue
-  - Cached entry point metadata
+ - Stale bytecode cache (`.pyc` files)
+ - Environment-specific issue
+ - Cached entry point metadata
 - The decorator `@tokenizer_registry.register("hf")` doesn't modify the function signature
 - The `get_tokenizer()` function calls factories with `**kwargs`, not positional args
 
@@ -144,7 +144,7 @@ pytest tests/status/test_render_monthly_html.py::test_render_monthly_html -v
 **Status**: No actual issues found
 
 **Analysis**:
-- All checked files have correct import order (docstring → future imports → other imports)
+- All checked files have correct import order (docstring future imports other imports)
 - Files like `noxfile.py` and `conftest.py` are correctly structured
 - Detection script had false positives
 
@@ -181,11 +181,11 @@ pytest tests/ --maxfail=5
 
 | Test File | Test Name | Status | Notes |
 |-----------|-----------|--------|-------|
-| `test_list_plugins_cli_json.py` | `test_json_shape_no_discover` |  Should Pass | Deduplication prevents errors |
-| `test_sentencepiece_adapter_train.py` | `test_train_or_load_stubs` |  Should Pass | Padding parameter added |
-| `test_sentencepiece_adapter_train.py` | `test_load_requires_model` |  Should Pass | FileNotFoundError raised |
-| `test_cache_roundtrip.py` | `test_cache_roundtrip` |  Should Pass | Valid tokenizer loading |
-| `test_render_monthly_html.py` | `test_render_monthly_html` |  Should Pass | Already correct |
+| `test_list_plugins_cli_json.py` | `test_json_shape_no_discover` | Should Pass | Deduplication prevents errors |
+| `test_sentencepiece_adapter_train.py` | `test_train_or_load_stubs` | Should Pass | Padding parameter added |
+| `test_sentencepiece_adapter_train.py` | `test_load_requires_model` | Should Pass | FileNotFoundError raised |
+| `test_cache_roundtrip.py` | `test_cache_roundtrip` | Should Pass | Valid tokenizer loading |
+| `test_render_monthly_html.py` | `test_render_monthly_html` | Should Pass | Already correct |
 
 ## Code Quality Checks
 

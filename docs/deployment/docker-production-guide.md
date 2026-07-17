@@ -1,12 +1,12 @@
 # Docker Deployment Production Guide
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2026-06-22  
-> **Status**: Production-Ready  
-> **Audience**: DevOps Engineers, ML Engineers, Platform Teams  
+> **Version**: 1.0.0
+> **Last Updated**: 2026-06-22
+> **Status**: Production-Ready
+> **Audience**: DevOps Engineers, ML Engineers, Platform Teams
 
 ---
 
@@ -48,7 +48,7 @@ This guide provides comprehensive instructions for deploying the Codex ML platfo
 
 ## Multi-Stage Docker Builds
 
-### Strategy: Build → Runtime Separation
+### Strategy: Build Runtime Separation
 
 Multi-stage builds dramatically reduce image size by separating build dependencies from runtime requirements.
 
@@ -62,9 +62,9 @@ WORKDIR /build
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+ build-essential \
+ git \
+ && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
 COPY requirements.txt .
@@ -77,9 +77,9 @@ WORKDIR /app
 
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+ ca-certificates \
+ curl \
+ && rm -rf /var/lib/apt/lists/*
 
 # Copy Python packages from builder
 COPY --from=builder /root/.local /root/.local
@@ -92,15 +92,15 @@ COPY --chown=codex:codex . /app
 
 # Set environment
 ENV PATH=/root/.local/bin:$PATH \
-    PYTHONUNBUFFERED=1 \
-    CODEX_ENV=production
+ PYTHONUNBUFFERED=1 \
+ CODEX_ENV=production
 
 USER codex
 
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+ CMD curl -f http://localhost:8000/health || exit 1
 
 CMD ["python", "-m", "src.codex_ml.cli"]
 ```
@@ -113,11 +113,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    ca-certificates \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+ build-essential \
+ ca-certificates \
+ curl \
+ git \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY requirements-cpu.txt .
 RUN pip install --no-cache-dir -r requirements-cpu.txt
@@ -126,14 +126,14 @@ RUN useradd -m -u 1000 codex
 COPY --chown=codex:codex . /app
 
 ENV PYTHONUNBUFFERED=1 \
-    CODEX_ENV=production \
-    DEVICE=cpu
+ CODEX_ENV=production \
+ DEVICE=cpu
 
 USER codex
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+ CMD curl -f http://localhost:8000/health || exit 1
 
 CMD ["python", "-m", "src.codex_ml.cli"]
 ```
@@ -147,12 +147,12 @@ FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04 as builder
 WORKDIR /build
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    python3.11 \
-    python3.11-dev \
-    python3-pip \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+ build-essential \
+ python3.11 \
+ python3.11-dev \
+ python3-pip \
+ git \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY requirements-gpu.txt .
 RUN pip install --user --no-cache-dir -r requirements-gpu.txt
@@ -163,10 +163,10 @@ FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.11 \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+ python3.11 \
+ ca-certificates \
+ curl \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /root/.local /root/.local
 
@@ -174,16 +174,16 @@ RUN useradd -m -u 1000 codex
 COPY --chown=codex:codex . /app
 
 ENV PATH=/root/.local/bin:$PATH \
-    PYTHONUNBUFFERED=1 \
-    CODEX_ENV=production \
-    DEVICE=cuda \
-    CUDA_VISIBLE_DEVICES=0
+ PYTHONUNBUFFERED=1 \
+ CODEX_ENV=production \
+ DEVICE=cuda \
+ CUDA_VISIBLE_DEVICES=0
 
 USER codex
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+ CMD curl -f http://localhost:8000/health || exit 1
 
 CMD ["python", "-m", "src.codex_ml.cli"]
 ```
@@ -230,7 +230,7 @@ API_WORKERS=4
 # Experiment Tracking
 MLFLOW_TRACKING_URI=file:///app/mlruns
 WANDB_PROJECT=codex-ml
-WANDB_MODE=disabled  # For offline mode
+WANDB_MODE=disabled # For offline mode
 
 # Feature Flags
 FEATURE_TOKENIZATION=true
@@ -270,11 +270,11 @@ docker run --env-file .env.production codex-ml:latest
 
 ```
 /app/
-├── data/              # Input datasets (read-only in production)
-├── checkpoints/       # Model checkpoints (persistent)
-├── logs/              # Application logs (persistent)
-├── artifacts/         # Experiment artifacts (persistent)
-└── config/            # Runtime configurations (mounted)
+ data/ # Input datasets (read-only in production)
+ checkpoints/ # Model checkpoints (persistent)
+ logs/ # Application logs (persistent)
+ artifacts/ # Experiment artifacts (persistent)
+ config/ # Runtime configurations (mounted)
 ```
 
 ### Production Volume Setup
@@ -287,12 +287,12 @@ docker volume create codex-artifacts
 
 # Run with volumes
 docker run \
-  -v codex-checkpoints:/app/checkpoints \
-  -v codex-logs:/app/logs \
-  -v codex-artifacts:/app/artifacts \
-  -v $(pwd)/data:/app/data:ro \
-  -v $(pwd)/config:/app/config:ro \
-  codex-ml:latest
+ -v codex-checkpoints:/app/checkpoints \
+ -v codex-logs:/app/logs \
+ -v codex-artifacts:/app/artifacts \
+ -v $(pwd)/data:/app/data:ro \
+ -v $(pwd)/config:/app/config:ro \
+ codex-ml:latest
 ```
 
 ## Docker Compose Volume Definition
@@ -301,24 +301,24 @@ docker run \
 version: '3.8'
 
 services:
-  codex:
-    image: codex-ml:latest
-    volumes:
-      - codex-checkpoints:/app/checkpoints
-      - codex-logs:/app/logs
-      - codex-artifacts:/app/artifacts
-      - ./data:/app/data:ro
-      - ./config:/app/config:ro
-    environment:
-      CODEX_ENV: production
+ codex:
+ image: codex-ml:latest
+ volumes:
+ - codex-checkpoints:/app/checkpoints
+ - codex-logs:/app/logs
+ - codex-artifacts:/app/artifacts
+ - ./data:/app/data:ro
+ - ./config:/app/config:ro
+ environment:
+ CODEX_ENV: production
 
 volumes:
-  codex-checkpoints:
-    driver: local
-  codex-logs:
-    driver: local
-  codex-artifacts:
-    driver: local
+ codex-checkpoints:
+ driver: local
+ codex-logs:
+ driver: local
+ codex-artifacts:
+ driver: local
 ```
 
 ### Persistent Data Strategies
@@ -337,10 +337,10 @@ volumes:
 ```bash
 # Mount S3 via s3fs
 docker run \
-  -v s3-bucket:/app/checkpoints \
-  -e AWS_ACCESS_KEY_ID=xxx \
-  -e AWS_SECRET_ACCESS_KEY=xxx \
-  codex-ml:latest
+ -v s3-bucket:/app/checkpoints \
+ -e AWS_ACCESS_KEY_ID=xxx \
+ -e AWS_SECRET_ACCESS_KEY=xxx \
+ codex-ml:latest
 ```
 
 ---
@@ -351,7 +351,7 @@ docker run \
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+ CMD curl -f http://localhost:8000/health || exit 1
 ```
 
 ### Custom Health Check Endpoint
@@ -364,43 +364,43 @@ app = Flask(__name__)
 
 @app.route('/health', methods=['GET'])
 def health():
-    """Liveness probe: basic connectivity check."""
-    return jsonify({"status": "alive"}), 200
+ """Liveness probe: basic connectivity check."""
+ return jsonify({"status": "alive"}), 200
 
 @app.route('/ready', methods=['GET'])
 def ready():
-    """Readiness probe: dependencies check."""
-    checks = {
-        "database": check_database(),
-        "model_loaded": check_model(),
-        "gpu_available": check_gpu(),
-    }
+ """Readiness probe: dependencies check."""
+ checks = {
+ "database": check_database(),
+ "model_loaded": check_model(),
+ "gpu_available": check_gpu(),
+ }
 
-    if all(checks.values()):
-        return jsonify({"ready": True, "checks": checks}), 200
-    else:
-        return jsonify({"ready": False, "checks": checks}), 503
+ if all(checks.values()):
+ return jsonify({"ready": True, "checks": checks}), 200
+ else:
+ return jsonify({"ready": False, "checks": checks}), 503
 
 def check_database():
-    try:
-        # Verify database connectivity
-        return True
-    except:
-        return False
+ try:
+ # Verify database connectivity
+ return True
+ except:
+ return False
 
 def check_model():
-    try:
-        # Verify model is loaded
-        return hasattr(app, 'model') and app.model is not None
-    except:
-        return False
+ try:
+ # Verify model is loaded
+ return hasattr(app, 'model') and app.model is not None
+ except:
+ return False
 
 def check_gpu():
-    try:
-        import torch
-        return torch.cuda.is_available()
-    except:
-        return False
+ try:
+ import torch
+ return torch.cuda.is_available()
+ except:
+ return False
 ```
 
 ## Liveness & Readiness Probes (Kubernetes)
@@ -409,41 +409,41 @@ def check_gpu():
 apiVersion: v1
 kind: Pod
 metadata:
-  name: codex-ml
+ name: codex-ml
 spec:
-  containers:
-  - name: codex
-    image: codex-ml:latest
-    ports:
-    - containerPort: 8000
+ containers:
+ - name: codex
+ image: codex-ml:latest
+ ports:
+ - containerPort: 8000
 
-    # Liveness probe: restart if unhealthy
-    livenessProbe:
-      httpGet:
-        path: /health
-        port: 8000
-      initialDelaySeconds: 30
-      periodSeconds: 10
-      timeoutSeconds: 5
-      failureThreshold: 3
+ # Liveness probe: restart if unhealthy
+ livenessProbe:
+ httpGet:
+ path: /health
+ port: 8000
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ timeoutSeconds: 5
+ failureThreshold: 3
 
-    # Readiness probe: remove from service if not ready
-    readinessProbe:
-      httpGet:
-        path: /ready
-        port: 8000
-      initialDelaySeconds: 10
-      periodSeconds: 5
-      timeoutSeconds: 3
-      failureThreshold: 2
+ # Readiness probe: remove from service if not ready
+ readinessProbe:
+ httpGet:
+ path: /ready
+ port: 8000
+ initialDelaySeconds: 10
+ periodSeconds: 5
+ timeoutSeconds: 3
+ failureThreshold: 2
 
-    # Startup probe: allow time for initialization
-    startupProbe:
-      httpGet:
-        path: /health
-        port: 8000
-      failureThreshold: 30
-      periodSeconds: 10
+ # Startup probe: allow time for initialization
+ startupProbe:
+ httpGet:
+ path: /health
+ port: 8000
+ failureThreshold: 30
+ periodSeconds: 10
 ```
 
 ---
@@ -459,31 +459,31 @@ import logging
 from datetime import datetime
 
 class JSONFormatter(logging.Formatter):
-    def format(self, record):
-        log_data = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "level": record.levelname,
-            "logger": record.name,
-            "message": record.getMessage(),
-            "module": record.module,
-            "function": record.funcName,
-            "line": record.lineno,
-        }
+ def format(self, record):
+ log_data = {
+ "timestamp": datetime.utcnow().isoformat(),
+ "level": record.levelname,
+ "logger": record.name,
+ "message": record.getMessage(),
+ "module": record.module,
+ "function": record.funcName,
+ "line": record.lineno,
+ }
 
-        if record.exc_info:
-            log_data["exception"] = self.formatException(record.exc_info)
+ if record.exc_info:
+ log_data["exception"] = self.formatException(record.exc_info)
 
-        return json.dumps(log_data)
+ return json.dumps(log_data)
 
 def configure_logging():
-    handler = logging.StreamHandler()
-    handler.setFormatter(JSONFormatter())
+ handler = logging.StreamHandler()
+ handler.setFormatter(JSONFormatter())
 
-    logger = logging.getLogger('codex')
-    logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+ logger = logging.getLogger('codex')
+ logger.addHandler(handler)
+ logger.setLevel(logging.INFO)
 
-    return logger
+ return logger
 ```
 
 ## Log Output to Files
@@ -499,11 +499,11 @@ RUN mkdir -p /app/logs
 **Running with log capture**:
 ```bash
 docker run \
-  -v codex-logs:/app/logs \
-  --log-driver json-file \
-  --log-opt max-size=100m \
-  --log-opt max-file=10 \
-  codex-ml:latest
+ -v codex-logs:/app/logs \
+ --log-driver json-file \
+ --log-opt max-size=100m \
+ --log-opt max-file=10 \
+ codex-ml:latest
 ```
 
 ## Metrics Endpoint
@@ -521,8 +521,8 @@ model_inference_time = Histogram('codex_inference_seconds', 'Inference time')
 
 @app.route('/metrics', methods=['GET'])
 def metrics():
-    from prometheus_client import generate_latest
-    return Response(generate_latest(), mimetype='text/plain')
+ from prometheus_client import generate_latest
+ return Response(generate_latest(), mimetype='text/plain')
 ```
 
 ---
@@ -541,30 +541,30 @@ USER codex
 
 ```bash
 docker run --read-only \
-  --tmpfs /tmp \
-  --tmpfs /app/logs \
-  codex-ml:latest
+ --tmpfs /tmp \
+ --tmpfs /app/logs \
+ codex-ml:latest
 ```
 
 ### 3. Resource Limits
 
 ```bash
 docker run \
-  --memory=4g \
-  --memory-swap=4g \
-  --cpus=2 \
-  --pids-limit=100 \
-  codex-ml:latest
+ --memory=4g \
+ --memory-swap=4g \
+ --cpus=2 \
+ --pids-limit=100 \
+ codex-ml:latest
 ```
 
 ### 4. Security Options
 
 ```bash
 docker run \
-  --cap-drop=ALL \
-  --cap-add=NET_BIND_SERVICE \
-  --security-opt no-new-privileges:true \
-  codex-ml:latest
+ --cap-drop=ALL \
+ --cap-add=NET_BIND_SERVICE \
+ --security-opt no-new-privileges:true \
+ codex-ml:latest
 ```
 
 ### 5. Secrets Management
@@ -575,11 +575,11 @@ echo "my-secret-key" | docker secret create api_key -
 
 # Reference in docker-compose.yml
 services:
-  codex:
-    secrets:
-      - api_key
-    environment:
-      - API_KEY_FILE=/run/secrets/api_key
+ codex:
+ secrets:
+ - api_key
+ environment:
+ - API_KEY_FILE=/run/secrets/api_key
 ```
 
 ## 6. Network Security
@@ -592,9 +592,9 @@ EXPOSE 8000
 docker network create codex-net
 
 docker run \
-  --network codex-net \
-  --network-alias codex \
-  codex-ml:latest
+ --network codex-net \
+ --network-alias codex \
+ codex-ml:latest
 ```
 
 ## 7. Image Scanning
@@ -605,7 +605,7 @@ trivy image codex-ml:latest
 
 # Push only verified images
 docker image inspect codex-ml:latest --format='{{json .}}' | \
-  jq '.RepoDigests'
+ jq '.RepoDigests'
 ```
 
 ---
@@ -620,7 +620,7 @@ FROM python:3.11-slim
 
 # System dependencies (rarely changed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential && rm -rf /var/lib/apt/lists/*
+ build-essential && rm -rf /var/lib/apt/lists/*
 
 # Python dependencies (changes more often)
 COPY requirements.txt .
@@ -644,10 +644,10 @@ RUN pip install torch==${PYTORCH_VERSION} --index-url https://download.pytorch.o
 **Build command**:
 ```bash
 docker build \
-  --build-arg PYTHON_VERSION=3.11 \
-  --build-arg PYTORCH_VERSION=2.0.0 \
-  -t codex-ml:latest \
-  .
+ --build-arg PYTHON_VERSION=3.11 \
+ --build-arg PYTORCH_VERSION=2.0.0 \
+ -t codex-ml:latest \
+ .
 ```
 
 ### Reduce Image Size

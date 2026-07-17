@@ -104,7 +104,7 @@
 | **Checkpoint 1** | 2026-07-31 | WS1-3 | Planning finalized, canary ready | ⏳ T+15d |
 | **Checkpoint 2** | 2026-08-07 | WS1-3 | Canary live, infra 50%, security go-live | ⏳ T+22d |
 | **Checkpoint 3** | 2026-08-14 | WS1-3 | A/B testing, cache opt, SIEM live | ⏳ T+29d |
-| **Checkpoint 4** | 2026-08-25 | WS1 | v0.2.1 GA (feature delivery complete) | ⏳ T+40d |
+| **Checkpoint 4** | 2026-08-25 | WS1 | v0.2.0 GA (feature delivery complete) | ⏳ T+40d |
 | **Checkpoint 5** | 2026-09-04 | WS2 | Infrastructure GA (scaling complete) | ⏳ T+50d |
 | **Phase 14 Final** | 2026-09-18 | WS3+WS4 | Security GA + Phase 15 planning ready | ⏳ T+55d |
 
@@ -118,7 +118,7 @@
 
 | ID | Source | Target | Type | Status |
 |----|--------|--------|------|--------|
-| DEP-1 | WS1 | WS2 | Blocking | Infrastructure 80% required for v0.2.1 GA |
+| DEP-1 | WS1 | WS2 | Blocking | Infrastructure 80% required for v0.2.0 GA |
 | DEP-2 | WS2 | WS1 | Non-blocking | Performance baselines inform feature limits |
 | DEP-3 | WS3 | WS1 | Non-blocking | Security checks inform feature auth model |
 | DEP-4 | WS1 | WS3 | Non-blocking | Feature scope informs SIEM coverage |

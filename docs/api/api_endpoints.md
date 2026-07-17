@@ -1,6 +1,6 @@
 # API Endpoints Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version:** 1.0.0 | **Release Date:** 2026-06-22
 
@@ -36,7 +36,7 @@ API information.
 **Response:**
 ```json
 {
-  "message": "Codex API v0.2.1",
+  "message": "Codex API v0.2.0",
   "docs": "/docs"
 }
 ```

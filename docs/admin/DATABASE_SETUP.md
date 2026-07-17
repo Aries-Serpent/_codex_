@@ -1,6 +1,6 @@
 # Database Setup & Configuration Guide
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 > **Version**: 2.0.0  

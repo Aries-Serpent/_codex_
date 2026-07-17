@@ -1,6 +1,6 @@
 # Concurrent Workflow Monitoring & Cherry-Pick Process — Reproducibility Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Session:** S146 | **PR:** #3615 | **Date:2026-07-13
 > **CLI tool:** `scripts/ci/monitor_run.py`
@@ -11,54 +11,84 @@
 ## Architecture Diagram
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔔 Trigger Event", "@copilot continue\ncomment posted"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Trigger Event", "@copilot continue\ncomment posted"'}}%%
+
 flowchart TD
-    subgraph TRIGGER["🔔 Trigger Event"]
-        T1["@copilot continue\ncomment posted"] --> T2[agent-auth-delegation.yml\nfires run]
-        T2 --> T3[D-00: session_bootstrap.py\n--offline --skip-triage]
-        T3 --> T4[New SWE agent run\ncreated — in_progress]
-    end
+ subgraph TRIGGER[" Trigger Event"]
 
-    subgraph DAEMON[" Concurrent Monitor Daemon  (non-blocking)"]
-        T4 --> D1["python monitor_run.py\n--run-id RUN_ID\n--daemon --cherry-pick --triage"]
-        D1 --> D2[launch_daemon\nfork + start_new_session]
-        D2 --> D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
-        D2 --> D4[(State file\n.codex/monitor/RUN_ID/state.json\nupdated each poll)]
-        D2 --> D5[(Log file\n.codex/monitor/RUN_ID/daemon.log)]
-        D2 --> D6[" Returns PID\nimmediately"]
-    end
+ T1["@copilot continue\ncomment posted"] --> T2[agent-auth-delegation.yml\nfires run]
 
-    subgraph PARALLEL["🛠️  Parallel Agent Work  (Loop B — unblocked)"]
-        D6 --> P1[Edit files\nwrite tests\nupdate docs]
-        P1 --> P2["python monitor_run.py\n--status RUN_ID\n(non-blocking check)"]
-        P2 -->|"exit 0\nin_progress"| P1
-        P2 -->|"exit 5\nsuccess"| INT
-        P2 -->|"exit 1\nfailure"| FIX
-    end
+ T2 --> T3[D-00: session_bootstrap.py\n--offline --skip-triage]
 
-    subgraph POLL[" Background Poll Loop  (Loop A — daemon)"]
-        D4 --> PL1[_poll_loop\nevery 300s]
-        PL1 -->|in_progress| PL1
-        PL1 -->|completed| PL2[cherry_pick_delta\nfilter _SKIP_PATTERNS]
-        PL2 --> PL3[run_triage\nci_triage_repro.sh --json]
-        PL3 --> PL4[Write final state.json\nremove daemon.pid]
-    end
+ T3 --> T4[New SWE agent run\ncreated — in_progress]
+ end
 
-    subgraph INT[" Integration  (Loop C)"]
-        PL4 --> I1["python monitor_run.py\n--wait RUN_ID\n(re-attach + tail log)"]
-        I1 --> I2[git diff --stat HEAD\norigin/BRANCH]
-        I2 -->|"no delta"| I4
-        I2 -->|"delta"| I3[git checkout\norigin/BRANCH -- FILE]
-        I3 --> I4[bash ci_triage_repro.sh\n7 checks]
-        I4 --> I5[pre-commit run\n--files CHANGED]
-        I5 --> I6[report_progress\ncommit + push]
-    end
+ subgraph DAEMON[" Concurrent Monitor Daemon (non-blocking)"]
 
-    subgraph FIX[" Failure Handling"]
-        F1[get failed job logs\ngh api .../jobs] --> F2[diagnose root cause]
-        F2 --> F3[apply fix locally]
-        F3 --> I4
-    end
+ T4 --> D1["python monitor_run.py\n--run-id RUN_ID\n--daemon --cherry-pick --triage"]
+
+ D1 --> D2[launch_daemon\nfork + start_new_session]
+
+ D2 --> D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
+
+ D2 --> D4[(State file\n.codex/monitor/RUN_ID/state.json\nupdated each poll)]
+
+ D2 --> D5[(Log file\n.codex/monitor/RUN_ID/daemon.log)]
+
+ D2 --> D6[" Returns PID\nimmediately"]
+ end
+
+ subgraph PARALLEL[" Parallel Agent Work (Loop B — unblocked)"]
+
+ D6 --> P1[Edit files\nwrite tests\nupdate docs]
+
+ P1 --> P2["python monitor_run.py\n--status RUN_ID\n(non-blocking check)"]
+
+ P2 -->|"exit 0\nin_progress"| P1
+
+ P2 -->|"exit 5\nsuccess"| INT
+
+ P2 -->|"exit 1\nfailure"| FIX
+ end
+
+ subgraph POLL[" Background Poll Loop (Loop A — daemon)"]
+
+ D4 --> PL1[_poll_loop\nevery 300s]
+
+ PL1 -->|in_progress| PL1
+
+ PL1 -->|completed| PL2[cherry_pick_delta\nfilter _SKIP_PATTERNS]
+
+ PL2 --> PL3[run_triage\nci_triage_repro.sh --json]
+
+ PL3 --> PL4[Write final state.json\nremove daemon.pid]
+ end
+
+ subgraph INT[" Integration (Loop C)"]
+
+ PL4 --> I1["python monitor_run.py\n--wait RUN_ID\n(re-attach + tail log)"]
+
+ I1 --> I2[git diff --stat HEAD\norigin/BRANCH]
+
+ I2 -->|"no delta"| I4
+
+ I2 -->|"delta"| I3[git checkout\norigin/BRANCH -- FILE]
+
+ I3 --> I4[bash ci_triage_repro.sh\n7 checks]
+
+ I4 --> I5[pre-commit run\n--files CHANGED]
+
+ I5 --> I6[report_progress\ncommit + push]
+ end
+
+ subgraph FIX[" Failure Handling"]
+
+ F1[get failed job logs\ngh api .../jobs] --> F2[diagnose root cause]
+
+ F2 --> F3[apply fix locally]
+
+ F3 --> I4
+ end
 ```
 
 ---
@@ -66,34 +96,34 @@ flowchart TD
 ## CLI Quick-Reference
 
 ```bash
-# ── Start daemon (non-blocking) ──────────────────────────────────────────
+# Start daemon (non-blocking) 
 python scripts/ci/monitor_run.py --run-id 23220880384 --daemon --cherry-pick --triage
 
-# ── Check status while working on other tasks ────────────────────────────
+# Check status while working on other tasks 
 python scripts/ci/monitor_run.py --status 23220880384
-# exit 0=in_progress  5=success  1=failure  2=timeout  3=api_error  4=triage_fail
+# exit 0=in_progress 5=success 1=failure 2=timeout 3=api_error 4=triage_fail
 
-# ── Re-attach to tail log ────────────────────────────────────────────────
+# Re-attach to tail log 
 python scripts/ci/monitor_run.py --wait 23220880384
 
-# ── Stop daemon ──────────────────────────────────────────────────────────
+# Stop daemon 
 python scripts/ci/monitor_run.py --stop 23220880384
 
-# ── List all monitors ────────────────────────────────────────────────────
+# List all monitors 
 python scripts/ci/monitor_run.py --list
 
-# ── Resolve via check-run ID or commit SHA ───────────────────────────────
+# Resolve via check-run ID or commit SHA 
 python scripts/ci/monitor_run.py --check-id 67492995091 --daemon
-python scripts/ci/monitor_run.py --commit  abc1234ef    --daemon
+python scripts/ci/monitor_run.py --commit abc1234ef --daemon
 
-# ── One-shot snapshot (no polling) ───────────────────────────────────────
+# One-shot snapshot (no polling) 
 python scripts/ci/monitor_run.py --run-id 23220880384 --check-only
 
-# ── Python API: non-blocking thread ──────────────────────────────────────
+# Python API: non-blocking thread 
 from scripts.ci.monitor_run import start_background_monitor, poll_status
 handle = start_background_monitor(run_id=23220880384, cherry_pick=True, triage=True)
 # ... do other work ...
-state = poll_status(23220880384)   # reads state.json — no network call
+state = poll_status(23220880384) # reads state.json — no network call
 ```
 
 ---
@@ -106,12 +136,12 @@ pattern** used whenever a Copilot SWE agent run is `in_progress` on the same bra
 The pattern has three interlocking loops managed by `monitor_run.py`:
 
 ```
-Loop A — Monitor (daemon)     Loop B — Parallel work         Loop C — Integration
-──────────────────────────    ──────────────────────         ────────────────────
-poll GitHub API every 5m      edit files, run tests          git diff vs remote
-write state.json each poll    check --status non-blocking    cherry_pick_delta
-                                                             ci_triage_repro.sh
-Detect completion ─────────────────────────────────────────► report_progress
+Loop A — Monitor (daemon) Loop B — Parallel work Loop C — Integration
+ 
+poll GitHub API every 5m edit files, run tests git diff vs remote
+write state.json each poll check --status non-blocking cherry_pick_delta
+ ci_triage_repro.sh
+Detect completion report_progress
 ```
 
 Each step below has:
@@ -150,14 +180,14 @@ immediately from the workflow list.
 # Repro: list the most recent in_progress run on the active branch
 BRANCH="copilot/sub-pr-3606-again"
 gh api \
-  "repos/Aries-Serpent/_codex_/actions/runs?branch=${BRANCH}&status=in_progress&per_page=5" \
-  --jq '.workflow_runs[] | [.id, .name, .status, .run_started_at] | @tsv'
+ "repos/Aries-Serpent/_codex_/actions/runs?branch=${BRANCH}&status=in_progress&per_page=5" \
+ --jq '.workflow_runs[] | [.id, .name, .status, .run_started_at] | @tsv'
 ```
 
 **Expected output:**
 
 ```
-23220880384    Addressing comment on PR #3615    in_progress    2026-03-17T23:15:03Z
+23220880384 Addressing comment on PR #3615 in_progress 2026-03-17T23:15:03Z
 ```
 
 **Decision:** Save `RUN_ID=23220880384`. Proceed to Step 1.
@@ -196,29 +226,29 @@ RUN_ID=23220880384
 
 # Repro: single-poll via GitHub CLI
 gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}" \
-  --jq '[.status, .conclusion, .updated_at] | @tsv'
+ --jq '[.status, .conclusion, .updated_at] | @tsv'
 ```
 
 **Possible outputs:**
 
 | Output | Meaning | Next step |
 |--------|---------|-----------|
-| `in_progress    null    <timestamp>` | Still running | Wait 5 min, re-poll |
-| `completed    success    <timestamp>` |  Run succeeded — may have pushed commits | → Step 4 |
-| `completed    failure    <timestamp>` |  Run failed | → Step 3 |
-| `completed    skipped    <timestamp>` | Run skipped (no matching trigger) | → Step 4 (no new commits expected) |
+| `in_progress null <timestamp>` | Still running | Wait 5 min, re-poll |
+| `completed success <timestamp>` | Run succeeded — may have pushed commits | Step 4 |
+| `completed failure <timestamp>` | Run failed | Step 3 |
+| `completed skipped <timestamp>` | Run skipped (no matching trigger) | Step 4 (no new commits expected) |
 
 ## Poll loop (bash)
 
 ```bash
 RUN_ID=23220880384
 while true; do
-  RESULT=$(gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}" \
-    --jq '[.status, .conclusion // "none"] | @tsv')
-  echo "[$(date -u +%H:%M:%SZ)] ${RESULT}"
-  STATUS=$(echo "${RESULT}" | cut -f1)
-  [[ "${STATUS}" != "in_progress" ]] && break
-  sleep 300   # 5-minute interval
+ RESULT=$(gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}" \
+ --jq '[.status, .conclusion // "none"] | @tsv')
+ echo "[$(date -u +%H:%M:%SZ)] ${RESULT}"
+ STATUS=$(echo "${RESULT}" | cut -f1)
+ [[ "${STATUS}" != "in_progress" ]] && break
+ sleep 300 # 5-minute interval
 done
 echo "Run ${RUN_ID} finished: ${RESULT}"
 ```
@@ -232,7 +262,7 @@ If the run concludes with `failure`:
 ```bash
 # Repro: get failed job logs
 gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}/jobs" \
-  --jq '.jobs[] | select(.conclusion=="failure") | [.id, .name] | @tsv'
+ --jq '.jobs[] | select(.conclusion=="failure") | [.id, .name] | @tsv'
 
 # Then fetch log for each failed job
 JOB_ID=<failed_job_id>
@@ -263,18 +293,18 @@ git log --oneline HEAD..origin/${BRANCH}
 
 | Output | Meaning | Next step |
 |--------|---------|-----------|
-| *(empty)* | Run pushed no substantive commits (or only `[skip ci]`) | → Step 5 (validate existing state) |
-| `abc1234 fix: some change` | New substantive commits | → Step 4a (cherry-pick) |
-| `abc1234 chore(auth): write provenance session token [skip ci]` | Auth-only commit | → Inspect then skip or apply |
+| *(empty)* | Run pushed no substantive commits (or only `[skip ci]`) | Step 5 (validate existing state) |
+| `abc1234 fix: some change` | New substantive commits | Step 4a (cherry-pick) |
+| `abc1234 chore(auth): write provenance session token [skip ci]` | Auth-only commit | Inspect then skip or apply |
 
 ## Step 4a — Cherry-pick new substantive commits
 
 ```bash
 # Repro: list files changed in new commits
 git diff --stat HEAD origin/${BRANCH} -- \
-  $(git diff --name-only HEAD origin/${BRANCH} \
-    | grep -v "^\.codex/agent_auth" \
-    | grep -v "^CODEX_MANIFEST")
+ $(git diff --name-only HEAD origin/${BRANCH} \
+ | grep -v "^\.codex/agent_auth" \
+ | grep -v "^CODEX_MANIFEST")
 ```
 
 If there are meaningful diffs, take the final state of those files:
@@ -282,10 +312,10 @@ If there are meaningful diffs, take the final state of those files:
 ```bash
 # Repro: checkout changed files from remote final state
 for FILE in $(git diff --name-only HEAD origin/${BRANCH} \
-    | grep -v "^\.codex/agent_auth" \
-    | grep -v "^CODEX_MANIFEST"); do
-  git checkout "origin/${BRANCH}" -- "${FILE}"
-  echo "Applied: ${FILE}"
+ | grep -v "^\.codex/agent_auth" \
+ | grep -v "^CODEX_MANIFEST"); do
+ git checkout "origin/${BRANCH}" -- "${FILE}"
+ echo "Applied: ${FILE}"
 done
 ```
 
@@ -309,14 +339,14 @@ bash scripts/ci/ci_triage_repro.sh
 **Expected output:**
 
 ```
-━━━ Summary ━━━
-   1_actionlint: 0 errors
-   2_ruff_i001: 0 issues
-   3_mypy_baseline: 282 <= 282
-   4_autofix: exit 0 (0 informational)
-   5_telemetry: all 3 fields correct
-   6_threshold: both=99.7
-   7_changelog: consistent
+ Summary 
+ 1_actionlint: 0 errors
+ 2_ruff_i001: 0 issues
+ 3_mypy_baseline: 282 <= 282
+ 4_autofix: exit 0 (0 informational)
+ 5_telemetry: all 3 fields correct
+ 6_threshold: both=99.7
+ 7_changelog: consistent
 
 All checks passed 
 ```
@@ -332,9 +362,9 @@ See `docs/ci/CI_TRIAGE_REPRO_S145.md` for per-check root-cause + fix reference.
 # Repro: collect changed files and run pre-commit
 CHANGED=$(git diff --name-only HEAD)
 if [[ -z "${CHANGED}" ]]; then
-  echo "No changes — skipping pre-commit"
+ echo "No changes — skipping pre-commit"
 else
-  pre-commit run --files ${CHANGED}
+ pre-commit run --files ${CHANGED}
 fi
 ```
 
@@ -391,9 +421,9 @@ Also confirm zero diff with PR #3613 source (if cherry-picking from it):
 SOURCE="copilot/sub-pr-3606"
 git fetch origin "${SOURCE}"
 git diff --stat HEAD origin/${SOURCE} -- \
-  $(git diff --name-only HEAD origin/${SOURCE} \
-    | grep -v "^\.codex/agent_auth" \
-    | grep -v "^CODEX_MANIFEST")
+ $(git diff --name-only HEAD origin/${SOURCE} \
+ | grep -v "^\.codex/agent_auth" \
+ | grep -v "^CODEX_MANIFEST")
 # Expected: 0 substantive differences
 ```
 
@@ -405,7 +435,7 @@ Run the entire monitoring + integration sequence in one shell session:
 
 ```bash
 #!/usr/bin/env bash
-# CONCURRENT MONITOR + CHERRY-PICK REPRO  (S146 pattern)
+# CONCURRENT MONITOR + CHERRY-PICK REPRO (S146 pattern)
 set -euo pipefail
 
 BRANCH="copilot/sub-pr-3606-again"
@@ -413,43 +443,43 @@ SOURCE="copilot/sub-pr-3606"
 RUN_ID="23220880384"
 REPO="Aries-Serpent/_codex_"
 
-echo "▶ Step 0: Record baseline"
+echo " Step 0: Record baseline"
 BASELINE_SHA=$(git rev-parse HEAD)
-echo "  Baseline: ${BASELINE_SHA}"
+echo " Baseline: ${BASELINE_SHA}"
 
-echo "▶ Step 1: Poll until run completes"
+echo " Step 1: Poll until run completes"
 while true; do
-  RESULT=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" \
-    --jq '[.status, .conclusion // "none"] | @tsv')
-  echo "  [$(date -u +%H:%M:%SZ)] ${RESULT}"
-  STATUS=$(echo "${RESULT}" | cut -f1)
-  [[ "${STATUS}" != "in_progress" ]] && break
-  sleep 300
+ RESULT=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" \
+ --jq '[.status, .conclusion // "none"] | @tsv')
+ echo " [$(date -u +%H:%M:%SZ)] ${RESULT}"
+ STATUS=$(echo "${RESULT}" | cut -f1)
+ [[ "${STATUS}" != "in_progress" ]] && break
+ sleep 300
 done
 
-echo "▶ Step 2: Fetch remote"
+echo " Step 2: Fetch remote"
 git fetch origin "${BRANCH}" "${SOURCE}"
 
-echo "▶ Step 3: Detect new commits"
+echo " Step 3: Detect new commits"
 NEW_COMMITS=$(git log --oneline "${BASELINE_SHA}..origin/${BRANCH}" \
-  | grep -v "\[skip ci\]" || true)
-echo "  New substantive commits: ${NEW_COMMITS:-none}"
+ | grep -v "\[skip ci\]" || true)
+echo " New substantive commits: ${NEW_COMMITS:-none}"
 
-echo "▶ Step 4: Apply parity from source branch"
+echo " Step 4: Apply parity from source branch"
 DIFF_FILES=$(git diff --name-only HEAD "origin/${SOURCE}" \
-  | grep -v "^\.codex/agent_auth" | grep -v "^CODEX_MANIFEST" || true)
+ | grep -v "^\.codex/agent_auth" | grep -v "^CODEX_MANIFEST" || true)
 if [[ -n "${DIFF_FILES}" ]]; then
-  for F in ${DIFF_FILES}; do
-    git checkout "origin/${SOURCE}" -- "${F}" && echo "  Applied: ${F}"
-  done
+ for F in ${DIFF_FILES}; do
+ git checkout "origin/${SOURCE}" -- "${F}" && echo " Applied: ${F}"
+ done
 else
-  echo "  Source branch fully absorbed — no delta"
+ echo " Source branch fully absorbed — no delta"
 fi
 
-echo "▶ Step 5: Run triage checks"
+echo " Step 5: Run triage checks"
 bash scripts/ci/ci_triage_repro.sh
 
-echo "▶ Step 6: Run tests"
+echo " Step 6: Run tests"
 python -m pytest tests/ci/ -q 2>&1 | tail -5
 
 echo " Ready to commit via report_progress"
@@ -461,30 +491,30 @@ echo " Ready to commit via report_progress"
 
 ```
 @copilot continue comment posted
-         │
-         ▼
-  Detect new run ID
-  (list_workflow_runs API)
-         │
-         ├── No new run? ──► Work proceeds without blocking; skip to Step 5
-         │
-         ▼
-  Poll run status (Step 2)
-         │
-         ├── in_progress ──► Do parallel work (Loop B); re-poll in 5 min
-         │
-         ├── failure ──────► Diagnose (Step 3) → fix → re-run triage
-         │
-         └── success ──────► Fetch delta (Step 4)
-                                    │
-                                    ├── No delta ──► Step 5 (triage)
-                                    │
-                                    └── Delta ─────► Checkout files (Step 4a)
-                                                     → Step 5 (triage)
-                                                     → Step 6 (pre-commit)
-                                                     → Step 7 (tests)
-                                                     → Step 8 (commit)
-                                                     → Step 9 (verify)
+ 
+ 
+ Detect new run ID
+ (list_workflow_runs API)
+ 
+ No new run? Work proceeds without blocking; skip to Step 5
+ 
+ 
+ Poll run status (Step 2)
+ 
+ in_progress Do parallel work (Loop B); re-poll in 5 min
+ 
+ failure Diagnose (Step 3) fix re-run triage
+ 
+ success Fetch delta (Step 4)
+ 
+ No delta Step 5 (triage)
+ 
+ Delta Checkout files (Step 4a)
+ Step 5 (triage)
+ Step 6 (pre-commit)
+ Step 7 (tests)
+ Step 8 (commit)
+ Step 9 (verify)
 ```
 
 ---
@@ -496,13 +526,13 @@ parallel because they do not conflict with the agent run's expected output:
 
 | Task | Safe? | Reason |
 |------|-------|--------|
-| Add unit tests for existing functions |  | New file; no conflict |
-| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |  | Append-only; merge trivially |
-| Create new docs (this file) |  | New file; no conflict |
-| Wire new CI step in a workflow |  | Agent run does not touch workflows |
-| Modify files the agent run is likely editing | ️ | Risk of conflict on integration |
-| Modify `.mypy_baseline` | ️ | Agent may also modify; check diff carefully |
-| Merge / rebase |  | Wait until run completes |
+| Add unit tests for existing functions | | New file; no conflict |
+| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | | Append-only; merge trivially |
+| Create new docs (this file) | | New file; no conflict |
+| Wire new CI step in a workflow | | Agent run does not touch workflows |
+| Modify files the agent run is likely editing | | Risk of conflict on integration |
+| Modify `.mypy_baseline` | | Agent may also modify; check diff carefully |
+| Merge / rebase | | Wait until run completes |
 
 ---
 

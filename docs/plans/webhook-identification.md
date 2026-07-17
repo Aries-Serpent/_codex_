@@ -1,6 +1,6 @@
 # W-123: Identify and Document Repository Webhooks
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -43,9 +43,9 @@ The repository has a full webhook management stack already in place:
 ### Token Requirements
 
 ```
-CODEX_ADMIN_KEY  → Fine-grained PAT: Webhooks: write  (preferred)
-CODEX_MASTER_KEY → Classic PAT: admin:repo_hook        (fallback)
-GITHUB_TOKEN     → Cannot manage webhooks (403)
+CODEX_ADMIN_KEY Fine-grained PAT: Webhooks: write (preferred)
+CODEX_MASTER_KEY Classic PAT: admin:repo_hook (fallback)
+GITHUB_TOKEN Cannot manage webhooks (403)
 ```
 
 ---
@@ -57,42 +57,47 @@ Each entry maps the event to the workflows that listen for it:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "GitHub Webhook Events fired to this repo", "issue_comment"'}}%%
+
 graph LR
-    subgraph Events["GitHub Webhook Events fired to this repo"]
-        E1["issue_comment"]
-        E2["pull_request"]
-        E3["push"]
-        E4["workflow_run"]
-        E5["schedule / cron"]
-        E6["repository_dispatch"]
-        E7["workflow_dispatch"]
-        E8["status"]
-        E9["pull_request_review"]
-        E10["label"]
-    end
-    subgraph Critical["Critical Workflows"]
-        W1["chatops_copilot_trigger.yml\n(@copilot / /copilot commands)"]
-        W2["agent-auth-delegation.yml\n(Token delegation gate)"]
-        W3["agent-handoff-gate.yml\n(Agent handoff protocol)"]
-        W4["agent-var-writer.yml\n(Variable writes from comments)"]
-        W5["cognitive_brain_ci_feedback.yml\n(CI outcome → Cognitive Brain)"]
-        W6["session-watchdog.yml\n(Session health monitoring)"]
-        W7["copilot-evolution-suite.yml\n(AAIS evolution tracking)"]
-        W8["audit-qa-suite.yml\n(QA audit triggers)"]
-    end
+ subgraph Events["GitHub Webhook Events fired to this repo"]
+ E1["issue_comment"]
+ E2["pull_request"]
+ E3["push"]
+ E4["workflow_run"]
+ E5["schedule / cron"]
+ E6["repository_dispatch"]
+ E7["workflow_dispatch"]
+ E8["status"]
+ E9["pull_request_review"]
+ E10["label"]
+ end
+ subgraph Critical["Critical Workflows"]
+ W1["chatops_copilot_trigger.yml\n(@copilot / /copilot commands)"]
+ W2["agent-auth-delegation.yml\n(Token delegation gate)"]
+ W3["agent-handoff-gate.yml\n(Agent handoff protocol)"]
+ W4["agent-var-writer.yml\n(Variable writes from comments)"]
+ W5["cognitive_brain_ci_feedback.yml\n(CI outcome Cognitive Brain)"]
+ W6["session-watchdog.yml\n(Session health monitoring)"]
+ W7["copilot-evolution-suite.yml\n(AAIS evolution tracking)"]
+ W8["audit-qa-suite.yml\n(QA audit triggers)"]
+ end
 
-    E1 --> W1 & W3 & W4 & W6 & W7 & W8
-    E4 --> W5
-    E9 --> W2
-    E2 --> W2 & W7 & W8
-    E6 --> W9["agent_infrastructure_manager.yml"]
+ E1 --> W1 & W3 & W4 & W6 & W7 & W8
 
-    style W1 fill:#10b981,color:#fff
-    style W2 fill:#3b82f6,color:#fff
-    style W5 fill:#8b5cf6,color:#fff
+ E4 --> W5
+
+ E9 --> W2
+
+ E2 --> W2 & W7 & W8
+
+ E6 --> W9["agent_infrastructure_manager.yml"]
+
+ style W1 fill:#10b981,color:#fff
+ style W2 fill:#3b82f6,color:#fff
+ style W5 fill:#8b5cf6,color:#fff
 ```
 
-### Event → Workflow Count
+### Event Workflow Count
 
 | GitHub Event | Workflows subscribed | Notes |
 |-------------|----------------------|-------|
@@ -105,7 +110,7 @@ graph LR
 | `repository_dispatch` | 3 | External trigger via API |
 | `pull_request_review` | 1 | Agent auth delegation gate |
 | `status` | 1 | Batch CI triage |
-| `label` | 1 | E→D transition gate |
+| `label` | 1 | ED transition gate |
 
 ---
 
@@ -117,10 +122,10 @@ These workflows are triggered **directly by GitHub webhook events** (not cron or
 
 ```
 Trigger : issue_comment (created)
-Guard   : comment starts with /copilot OR @copilot
-Actor   : COGNITIVE_BRAIN_ALLOWED_ACTORS
+Guard : comment starts with /copilot OR @copilot
+Actor : COGNITIVE_BRAIN_ALLOWED_ACTORS
 Commands: /copilot continue, /copilot run, /copilot status,
-          /copilot verify, /copilot tier-check, /copilot tier-promote, /copilot help
+ /copilot verify, /copilot tier-check, /copilot tier-promote, /copilot help
 Purpose : Parse slash commands and dispatch to downstream workflows
 ```
 
@@ -128,7 +133,7 @@ Purpose : Parse slash commands and dispatch to downstream workflows
 
 ```
 Trigger : pull_request (opened, synchronize, reopened)
-          pull_request_review (submitted — "approved")
+ pull_request_review (submitted — "approved")
 Purpose : Cognitive Pre-flight check (REQ-1–REQ-9) + token delegation gate
 ```
 
@@ -189,8 +194,8 @@ export GITHUB_REPOSITORY=Aries-Serpent/_codex_
 ## `agent_infrastructure_manager.yml` — Comment Commands
 
 ```
-@agent-infra list-webhooks     # List current hooks via API
-@agent-infra apply-webhooks    # Apply .codex/webhook_config.json
+@agent-infra list-webhooks # List current hooks via API
+@agent-infra apply-webhooks # Apply .codex/webhook_config.json
 ```
 
 ---
@@ -208,7 +213,7 @@ Notifies an external Cognitive Brain API server of CI outcomes in real-time.
 | **Content type** | `application/json` |
 | **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256 validation) |
 | **Events** | `workflow_run`, `pull_request`, `issue_comment` |
-| **Status** |  Pending — URL not yet deployed |
+| **Status** | Pending — URL not yet deployed |
 
 ### 5b. Runner Health Notification (New — W-123)
 
@@ -221,7 +226,7 @@ Notify Cognitive Brain when `copilot-setup-steps` completes so it can:
 | **Payload URL** | Same as 5a — Cognitive Brain endpoint |
 | **Events** | `workflow_run` (filter: `copilot-setup-steps`) |
 | **AAIS benefit** | Closes the autonomous runner-selection feedback loop |
-| **Status** |  Pending — depends on Cognitive Brain server deployment |
+| **Status** | Pending — depends on Cognitive Brain server deployment |
 
 ---
 
@@ -231,21 +236,30 @@ The following documentation gaps need to be filled in a follow-up PR:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "W-123: Webhook Audit", "Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"'}}%%
+
 flowchart TD
-    A["W-123: Webhook Audit"] --> B["Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"]
-    A --> C["Audit webhook_config.json\nIs it populated? Are URLs live?"]
-    A --> D["Document each active webhook\nin docs/ops/WEBHOOK_REGISTRY.md"]
-    A --> E["Verify HMAC signatures\nare validated on all receivers"]
-    A --> F["Add webhook_configurator.py\nto docs/agent/COPILOT_TOKEN_GUIDE.md\npermission matrix"]
 
-    B --> G["Create / update\n.codex/webhook_registry.json"]
-    C --> H["Populate .codex/webhook_config.json\nfor idempotent apply"]
-    D --> I["Link from ADMIN_MANUAL_SETUP_GUIDE.md §5"]
-    E --> J["Update AGENTIC_AGENCY_TIPS.md\nwebhook signature validation row"]
+ A["W-123: Webhook Audit"] --> B["Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"]
 
-    style A fill:#3b82f6,color:#fff
-    style G fill:#10b981,color:#fff
-    style H fill:#10b981,color:#fff
+ A --> C["Audit webhook_config.json\nIs it populated? Are URLs live?"]
+
+ A --> D["Document each active webhook\nin docs/ops/WEBHOOK_REGISTRY.md"]
+
+ A --> E["Verify HMAC signatures\nare validated on all receivers"]
+
+ A --> F["Add webhook_configurator.py\nto docs/agent/COPILOT_TOKEN_GUIDE.md\npermission matrix"]
+
+ B --> G["Create / update\n.codex/webhook_registry.json"]
+
+ C --> H["Populate .codex/webhook_config.json\nfor idempotent apply"]
+
+ D --> I["Link from ADMIN_MANUAL_SETUP_GUIDE.md §5"]
+
+ E --> J["Update AGENTIC_AGENCY_TIPS.md\nwebhook signature validation row"]
+
+ style A fill:#3b82f6,color:#fff
+ style G fill:#10b981,color:#fff
+ style H fill:#10b981,color:#fff
 ```
 
 ### Deliverables
@@ -264,10 +278,10 @@ flowchart TD
 
 ```
 [x] Run @agent-infra list-webhooks and capture output
-      → Result: 0 live hooks (403 via GITHUB_TOKEN — correct; full audit via static analysis)
+ Result: 0 live hooks (403 via GITHUB_TOKEN — correct; full audit via static analysis)
 [x] Populate .codex/webhook_config.json with desired hooks (2 hooks defined, active=false)
 [x] Create docs/ops/WEBHOOK_REGISTRY.md with full inventory
-      - Live hooks: 0 | Planned: 2 | Security schema: HMAC-SHA256 documented
+ - Live hooks: 0 | Planned: 2 | Security schema: HMAC-SHA256 documented
 [x] Verify WEBHOOK_SECRET org secret reference documented (agent_infrastructure_manager.yml)
 [x] Confirm cognitive_brain_ci_feedback webhook endpoint marked "pending deployment"
 [x] Document runner-health notification hook design (§5b above)

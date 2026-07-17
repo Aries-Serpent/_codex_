@@ -1,6 +1,6 @@
 # _codex_ Repository Architecture & Global Coding Guidelines
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-16
 
@@ -27,15 +27,15 @@
 
 ```
 _codex_/
-├── tools/auto_remediation/     # Intelligent fix generation & PR automation
-├── monitoring/                 # Real-time CI/CD & security metrics
-├── services/msp_gateway/       # API gateway with CORS security
-├── .github/agents/             # Custom GitHub Copilot agents
-│   ├── ci-diagnostic-agent/    # CI failure analysis
-│   └── ml-threat-detector/     # ML-based vulnerability detection
-├── src/codex/                  # Core Python codebase
-├── tests/                      # Comprehensive test suite
-└── rust_swarm/                 # Rust performance-critical components
+ tools/auto_remediation/ # Intelligent fix generation & PR automation
+ monitoring/ # Real-time CI/CD & security metrics
+ services/msp_gateway/ # API gateway with CORS security
+ .github/agents/ # Custom GitHub Copilot agents
+ ci-diagnostic-agent/ # CI failure analysis
+ ml-threat-detector/ # ML-based vulnerability detection
+ src/codex/ # Core Python codebase
+ tests/ # Comprehensive test suite
+ rust_swarm/ # Rust performance-critical components
 ```
 
 ## Global Coding Guidelines
@@ -52,24 +52,24 @@ _codex_/
 **Example**:
 ```python
 def analyze_vulnerability(
-    code: str,
-    patterns: list[str],
-    confidence_threshold: float = 0.8
+ code: str,
+ patterns: list[str],
+ confidence_threshold: float = 0.8
 ) -> tuple[bool, float]:
-    """Analyze code for vulnerability patterns.
+ """Analyze code for vulnerability patterns.
 
-    Args:
-        code: Source code to analyze
-        patterns: List of vulnerability patterns
-        confidence_threshold: Minimum confidence for detection
+ Args:
+ code: Source code to analyze
+ patterns: List of vulnerability patterns
+ confidence_threshold: Minimum confidence for detection
 
-    Returns:
-        Tuple of (is_vulnerable, confidence_score)
+ Returns:
+ Tuple of (is_vulnerable, confidence_score)
 
-    Raises:
-        ValueError: If code is empty or patterns invalid
-    """
-    # Implementation
+ Raises:
+ ValueError: If code is empty or patterns invalid
+ """
+ # Implementation
 ```
 
 **Security Best Practices**:
@@ -82,11 +82,11 @@ def analyze_vulnerability(
 **Error Handling**:
 ```python
 try:
-    result = risky_operation()
+ result = risky_operation()
 except SpecificException as e:
-    logger.error(f"Operation failed: {e}", exc_info=True)
-    # Graceful degradation or raise
-    raise
+ logger.error(f"Operation failed: {e}", exc_info=True)
+ # Graceful degradation or raise
+ raise
 ```
 
 ### Rust Code Standards
@@ -111,10 +111,10 @@ except SpecificException as e:
 /// # Errors
 /// Returns `AnalysisError` if code parsing fails
 pub fn analyze_performance(
-    code: &str,
-    threshold: f64
+ code: &str,
+ threshold: f64
 ) -> Result<f64, AnalysisError> {
-    // Implementation
+ // Implementation
 }
 ```
 
@@ -132,32 +132,32 @@ pub fn analyze_performance(
 name: Security Scan
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
+ push:
+ branches: [main, develop]
+ pull_request:
 
 permissions:
-  contents: read
-  security-events: write
+ contents: read
+ security-events: write
 
 jobs:
-  scan:
-    name: Run Security Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+ scan:
+ name: Run Security Analysis
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Run CodeQL
-        uses: github/codeql-action/analyze@v2
-        with:
-          languages: python, javascript
+ - name: Run CodeQL
+ uses: github/codeql-action/analyze@v2
+ with:
+ languages: python, javascript
 ```
 
 ## Key Design Patterns
 
 ### 1. Auto-Remediation Pattern
 ```
-Detection → Analysis → Fix Generation → Verification → PR Creation
+Detection Analysis Fix Generation Verification PR Creation
 ```
 - Use AST parsing for precise code modification
 - Validate fixes before and after application
@@ -166,7 +166,7 @@ Detection → Analysis → Fix Generation → Verification → PR Creation
 
 ### 2. CI Diagnostic Pattern
 ```
-Log Collection → Pattern Matching → Root Cause Analysis → Remediation Suggestion
+Log Collection Pattern Matching Root Cause Analysis Remediation Suggestion
 ```
 - Analyze workflow logs for known failure patterns
 - Calculate confidence scores for diagnoses
@@ -175,7 +175,7 @@ Log Collection → Pattern Matching → Root Cause Analysis → Remediation Sugg
 
 ### 3. Monitoring Pattern
 ```
-Metrics Collection → Aggregation → Visualization → Alerting
+Metrics Collection Aggregation Visualization Alerting
 ```
 - Collect from GitHub APIs (workflows, security, releases)
 - Store time-series data for trending
@@ -184,7 +184,7 @@ Metrics Collection → Aggregation → Visualization → Alerting
 
 ### 4. Security Scanning Pattern
 ```
-Pre-commit → Static Analysis → Dynamic Analysis → Vulnerability DB Check
+Pre-commit Static Analysis Dynamic Analysis Vulnerability DB Check
 ```
 - Multi-layer scanning (Semgrep, CodeQL, Bandit)
 - Custom rules for _codex_-specific patterns
@@ -196,10 +196,10 @@ Pre-commit → Static Analysis → Dynamic Analysis → Vulnerability DB Check
 ### Test Organization
 ```
 tests/
-├── unit/           # Fast, isolated tests
-├── integration/    # Multi-component tests
-├── e2e/            # End-to-end workflow tests
-└── fixtures/       # Test data and mocks
+ unit/ # Fast, isolated tests
+ integration/ # Multi-component tests
+ e2e/ # End-to-end workflow tests
+ fixtures/ # Test data and mocks
 ```
 
 ### Test Quality Requirements
@@ -212,15 +212,15 @@ tests/
 **Example**:
 ```python
 def test_fix_generator_handles_sql_injection_with_parameterized_queries():
-    """Fix generator should convert string interpolation to parameterized queries."""
-    vulnerable_code = 'cursor.execute(f"SELECT * FROM users WHERE id={user_id}")'
+ """Fix generator should convert string interpolation to parameterized queries."""
+ vulnerable_code = 'cursor.execute(f"SELECT * FROM users WHERE id={user_id}")'
 
-    fix = generator.generate_fix(vulnerable_code, VulnType.SQL_INJECTION)
+ fix = generator.generate_fix(vulnerable_code, VulnType.SQL_INJECTION)
 
-    assert "execute(" in fix.fixed_code
-    assert "?" in fix.fixed_code or "%s" in fix.fixed_code
-    assert "f\"" not in fix.fixed_code
-    assert fix.confidence > 0.9
+ assert "execute(" in fix.fixed_code
+ assert "?" in fix.fixed_code or "%s" in fix.fixed_code
+ assert "f\"" not in fix.fixed_code
+ assert fix.confidence > 0.9
 ```
 
 ## Documentation Standards

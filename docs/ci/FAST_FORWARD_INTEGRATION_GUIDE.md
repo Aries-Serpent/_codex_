@@ -1,20 +1,20 @@
 # Fast-Forward Safe Files + Auto-Approve Workflows Integration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
 ## Overview
 
-This document explains how to use **fast-forward-safe-files.yml** and **auto-approve-workflows.yml** together to enable **immediate deployment of discussion-posting workflows** from PR → main, without waiting for full PR merge.
+This document explains how to use **fast-forward-safe-files.yml** and **auto-approve-workflows.yml** together to enable **immediate deployment of discussion-posting workflows** from PR main, without waiting for full PR merge.
 
 ## The Problem It Solves
 
 GitHub Actions workflows only take effect **from the default branch (main)**. When you define a new workflow (like `post-phase-4-5-to-discussion.yml`) in a PR:
 
--  The `workflow_dispatch` button is **inactive** on the PR branch
--  Schedule triggers are **inert** until the file lands on main
--  The workflow can only run **after the PR is fully merged**
+- The `workflow_dispatch` button is **inactive** on the PR branch
+- Schedule triggers are **inert** until the file lands on main
+- The workflow can only run **after the PR is fully merged**
 
 **Result**: Discussion posts are delayed until PR merge, slowing down communication.
 
@@ -28,33 +28,33 @@ GitHub Actions workflows only take effect **from the default branch (main)**. Wh
 ### Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│ Edit .github/workflows/post-*.yml in PR          │
-│ (e.g., post-phase-4-5-to-discussion.yml)        │
-└────────────────────┬────────────────────────────┘
-                     │
-                     ↓
-┌─────────────────────────────────────────────────┐
-│ Run: fast-forward-safe-files.yml                 │
-│ Input: PR number, dry_run=false                 │
-│ → Creates "fast-forward/pr-XXXX-{sha}" branch   │
-│ → Opens Fast-Forward PR for review             │
-└────────────────────┬────────────────────────────┘
-                     │
-                     ↓
-┌─────────────────────────────────────────────────┐
-│ auto-approve-workflows.yml fires (workflow_run) │
-│ → Detects "wec:auto-approve" or "once" label   │
-│ → Approves pending workflow runs                │
-│ → Merges the Fast-Forward PR                    │
-└────────────────────┬────────────────────────────┘
-                     │
-                     ↓
-┌─────────────────────────────────────────────────┐
-│ Workflow file now ACTIVE on main                │
-│ → workflow_dispatch button works immediately    │
-│ → Schedule triggers become active               │
-└─────────────────────────────────────────────────┘
+
+ Edit .github/workflows/post-*.yml in PR 
+ (e.g., post-phase-4-5-to-discussion.yml) 
+
+ 
+ 
+
+ Run: fast-forward-safe-files.yml 
+ Input: PR number, dry_run=false 
+ Creates "fast-forward/pr-XXXX-{sha}" branch 
+ Opens Fast-Forward PR for review 
+
+ 
+ 
+
+ auto-approve-workflows.yml fires (workflow_run) 
+ Detects "wec:auto-approve" or "once" label 
+ Approves pending workflow runs 
+ Merges the Fast-Forward PR 
+
+ 
+ 
+
+ Workflow file now ACTIVE on main 
+ workflow_dispatch button works immediately 
+ Schedule triggers become active 
+
 ```
 
 ## Usage Workflow
@@ -78,20 +78,20 @@ Once the PR is ready, manually trigger the fast-forward:
 1. Go to: https://github.com/Aries-Serpent/_codex_/actions/workflows/fast-forward-safe-files.yml
 2. Click **"Run workflow"** button
 3. Fill in:
-   - **PR number**: `3856` (or your PR number)
-   - **dry_run**: `false` (to apply for real)
-   - **merge_mode**: `create-pr` (default — safe)
+ - **PR number**: `3856` (or your PR number)
+ - **dry_run**: `false` (to apply for real)
+ - **merge_mode**: `create-pr` (default — safe)
 4. Click the green **"Run workflow"** button
 
 **Via GitHub CLI:**
 
 ```bash
 gh workflow run fast-forward-safe-files.yml \
-  --repo Aries-Serpent/_codex_ \
-  --ref main \
-  -f pr_number=3856 \
-  -f dry_run=false \
-  -f merge_mode=create-pr
+ --repo Aries-Serpent/_codex_ \
+ --ref main \
+ -f pr_number=3856 \
+ -f dry_run=false \
+ -f merge_mode=create-pr
 ```
 
 ### Step 3: Monitor the Fast-Forward
@@ -107,17 +107,17 @@ To auto-approve the fast-forward PR:
 **One-time approval:**
 ```bash
 gh workflow run auto-approve-workflows.yml \
-  --repo Aries-Serpent/_codex_ \
-  -f pr_number=<FF_PR_NUMBER> \
-  -f enable_one_session=true
+ --repo Aries-Serpent/_codex_ \
+ -f pr_number=<FF_PR_NUMBER> \
+ -f enable_one_session=true
 ```
 
 **Persistent approval** (auto-approve future sessions too):
 ```bash
 gh workflow run auto-approve-workflows.yml \
-  --repo Aries-Serpent/_codex_ \
-  -f pr_number=<FF_PR_NUMBER> \
-  -f enable_persistent=true
+ --repo Aries-Serpent/_codex_ \
+ -f pr_number=<FF_PR_NUMBER> \
+ -f enable_persistent=true
 ```
 
 ### Step 5: Verify Workflow is Active
@@ -197,7 +197,7 @@ gh pr edit 3860 --add-label "wec:auto-approve-once"
 # Within 5 minutes, PR #3860 is merged to main
 
 # 8. Verify
-# Go to Actions → post-phase-4-5-to-discussion.yml
+# Go to Actions post-phase-4-5-to-discussion.yml
 # "Run workflow" button is now ACTIVE 
 ```
 
@@ -230,13 +230,13 @@ By default, fast-forward creates a PR (safe). For immediate main push:
 
 ```bash
 gh workflow run fast-forward-safe-files.yml \
-  --repo Aries-Serpent/_codex_ \
-  -f pr_number=3856 \
-  -f merge_mode=direct-push \
-  -f dry_run=false
+ --repo Aries-Serpent/_codex_ \
+ -f pr_number=3856 \
+ -f merge_mode=direct-push \
+ -f dry_run=false
 ```
 
-️ **Use with caution** — Commits directly to main, bypassing PR review.
+ **Use with caution** — Commits directly to main, bypassing PR review.
 
 ## References
 

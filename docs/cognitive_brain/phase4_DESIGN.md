@@ -1,6 +1,6 @@
 # Phase 4 Design: Bayesian Networks, Fuzzy Logic & Active Learning
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -17,9 +17,9 @@ each behind a feature flag defaulting to **false** to ensure zero production reg
 
 | Enhancement | Flag | Est. Benefit | Status |
 |-------------|------|-------------|--------|
-| Bayesian Networks | `CODEX_BAYESIAN_MODE` | 30% FP reduction |  PoC |
-| Fuzzy Logic | `CODEX_FUZZY_MODE` | 12% FN reduction |  PoC |
-| Active Learning | `CODEX_ACTIVE_LEARNING` | 30%+ ongoing FP reduction |  Hook |
+| Bayesian Networks | `CODEX_BAYESIAN_MODE` | 30% FP reduction | PoC |
+| Fuzzy Logic | `CODEX_FUZZY_MODE` | 12% FN reduction | PoC |
+| Active Learning | `CODEX_ACTIVE_LEARNING` | 30%+ ongoing FP reduction | Hook |
 
 ---
 
@@ -33,35 +33,35 @@ compliance screening by capturing conditional dependencies between risk factors.
 
 ```
 src/cognitive_brain/analytics/bayesian.py
-    └── BayesianAssessor
-        ├── from_json(path)          — Load CPD network from JSON
-        ├── from_dict(network)       — Build from pre-loaded dict
-        ├── posterior(evidence, node) — P(node | evidence) via enumeration
-        └── adjust_scores(base, ev)  — Blend quantum scores with Bayesian posterior
+ BayesianAssessor
+ from_json(path) — Load CPD network from JSON
+ from_dict(network) — Build from pre-loaded dict
+ posterior(evidence, node) — P(node | evidence) via enumeration
+ adjust_scores(base, ev) — Blend quantum scores with Bayesian posterior
 ```
 
 ### Network Schema (`networks/*.json`)
 
 ```json
 {
-  "nodes": [
-    {
-      "node": "risk_level",
-      "parents": [],
-      "values": ["low", "medium", "high"],
-      "probs": {"": {"low": 0.4, "medium": 0.4, "high": 0.2}}
-    },
-    {
-      "node": "decision",
-      "parents": ["risk_level"],
-      "values": ["approve", "reject", "conditional"],
-      "probs": {
-        "low":    {"approve": 0.80, "reject": 0.05, "conditional": 0.15},
-        "medium": {"approve": 0.30, "reject": 0.30, "conditional": 0.40},
-        "high":   {"approve": 0.10, "reject": 0.60, "conditional": 0.30}
-      }
-    }
-  ]
+ "nodes": [
+ {
+ "node": "risk_level",
+ "parents": [],
+ "values": ["low", "medium", "high"],
+ "probs": {"": {"low": 0.4, "medium": 0.4, "high": 0.2}}
+ },
+ {
+ "node": "decision",
+ "parents": ["risk_level"],
+ "values": ["approve", "reject", "conditional"],
+ "probs": {
+ "low": {"approve": 0.80, "reject": 0.05, "conditional": 0.15},
+ "medium": {"approve": 0.30, "reject": 0.30, "conditional": 0.40},
+ "high": {"approve": 0.10, "reject": 0.60, "conditional": 0.30}
+ }
+ }
+ ]
 }
 ```
 
@@ -71,8 +71,8 @@ In `QuantumComplianceAssessor._assess_with_superposition()`, after `evaluate_par
 
 ```python
 if _bayesian_mode_enabled() and hasattr(self, '_bayesian'):
-    evidence = {"risk_level": audit_result.risk_level}
-    scores = self._bayesian.adjust_scores(scores, evidence, alpha=0.3)
+ evidence = {"risk_level": audit_result.risk_level}
+ scores = self._bayesian.adjust_scores(scores, evidence, alpha=0.3)
 ```
 
 ### Blending Formula
@@ -95,12 +95,12 @@ compliance cases by replacing hard thresholds with gradual membership functions.
 
 ```
 src/cognitive_brain/analytics/fuzzy.py
-    ├── trimf(x, a, b, c)              — Triangular membership function
-    ├── trapmf(x, a, b, c, d)          — Trapezoidal membership function
-    └── FuzzyEngine
-        ├── default()                  — Pre-configured for compliance patterns
-        ├── evaluate(score, impact, cost) → FuzzyResult
-        └── fuzzy_blend(crisp, ...)    — Override near-boundary decisions
+ trimf(x, a, b, c) — Triangular membership function
+ trapmf(x, a, b, c, d) — Trapezoidal membership function
+ FuzzyEngine
+ default() — Pre-configured for compliance patterns
+ evaluate(score, impact, cost) FuzzyResult
+ fuzzy_blend(crisp, ...) — Override near-boundary decisions
 ```
 
 ### Membership Sets
@@ -118,10 +118,10 @@ src/cognitive_brain/analytics/fuzzy.py
 ### Inference Rules (Mamdani)
 
 ```
-Rule 1: score_high ∧ impact_high → APPROVE
-Rule 2: score_medium ∧ impact_high → MONITOR
-Rule 3: score_medium ∧ impact_low ∧ cost_low → CONDITIONAL
-Rule 4: score_low → REJECT
+Rule 1: score_high ∧ impact_high APPROVE
+Rule 2: score_medium ∧ impact_high MONITOR
+Rule 3: score_medium ∧ impact_low ∧ cost_low CONDITIONAL
+Rule 4: score_low REJECT
 ```
 
 ### Key Boundary Coverage
@@ -146,13 +146,13 @@ false-positive reduction by focusing expert review on uncertain predictions.
 
 ```
 src/cognitive_brain/active_learning/hook.py
-    └── ActiveLearningHook
-        ├── record_if_uncertain(audit, assessment) → bool
-        ├── get_queue(status=None) → [UncertainSample]
-        ├── mark_reviewed(audit_id, accepted) → bool
-        ├── clear_queue() → int
-        ├── pending_count: int
-        └── total_count: int
+ ActiveLearningHook
+ record_if_uncertain(audit, assessment) bool
+ get_queue(status=None) [UncertainSample]
+ mark_reviewed(audit_id, accepted) bool
+ clear_queue() int
+ pending_count: int
+ total_count: int
 ```
 
 ### Uncertainty Threshold
@@ -166,17 +166,17 @@ queue if: confidence < CODEX_AL_UNCERTAINTY_THRESHOLD (default 0.70)
 
 ```
 assess_compliance()
-    → low confidence (< 0.70)?
-        → Yes: hook.record_if_uncertain() → queued for human review
-        → No: proceed normally
+ low confidence (< 0.70)?
+ Yes: hook.record_if_uncertain() queued for human review
+ No: proceed normally
 
 Human expert reviews queue:
-    → hook.mark_reviewed(audit_id, accepted=True/False)
+ hook.mark_reviewed(audit_id, accepted=True/False)
 
 Fine-tuning cycle (future):
-    → Export rejected samples as new ground truth
-    → Re-train scoring function weights
-    → Measure FP reduction vs baseline
+ Export rejected samples as new ground truth
+ Re-train scoring function weights
+ Measure FP reduction vs baseline
 ```
 
 ---
@@ -206,31 +206,31 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 
 ```bash
 PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalidation.py \
-  --multi-seed --scenarios 200
+ --multi-seed --scenarios 200
 ```
 
 **Actual validation results (200 scenarios × 5 seeds):**
 
-| Seed | Accuracy | k₁    | Coherence | Notes |
+| Seed | Accuracy | k₁ | Coherence | Notes |
 |------|----------|-------|-----------|-------|
-| 42   | 91.4%    | 0.41  | 0.796     | Scenario generation beyond 110 GT reduces accuracy |
-| 123  | 93.6%    | 0.39  | 0.796     | Cross-seed generalisation |
-| 456  | 92.7%    | 0.39  | 0.778     | Cross-seed generalisation |
-| 789  | 94.1%    | 0.39  | 0.760     | Cross-seed generalisation |
-| 1000 | 92.7%    | 0.39  | 0.759     | Cross-seed generalisation |
+| 42 | 91.4% | 0.41 | 0.796 | Scenario generation beyond 110 GT reduces accuracy |
+| 123 | 93.6% | 0.39 | 0.796 | Cross-seed generalisation |
+| 456 | 92.7% | 0.39 | 0.778 | Cross-seed generalisation |
+| 789 | 94.1% | 0.39 | 0.760 | Cross-seed generalisation |
+| 1000 | 92.7% | 0.39 | 0.759 | Cross-seed generalisation |
 
 **Interpretation:**
-- Primary benchmark (seed=42, 110 GT scenarios): **100% accuracy, k₁ ≤ 0.35** 
+- Primary benchmark (seed=42, 110 GT scenarios): **100% accuracy, k₁ ≤ 0.35**
 - Cross-seed generalisation (200 scenarios): **91–94% accuracy** — above the 84% production minimum
 - k₁ increase at scale is expected: k₁ was optimised for the 110 GT scenario set; timing
-  variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
-- Coherence ≥ 0.650 maintained across all seeds 
-- No errors, no crashes, no memory leaks 
+ variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
+- Coherence ≥ 0.650 maintained across all seeds
+- No errors, no crashes, no memory leaks
 
 **Success criteria update:**
-- Primary benchmark accuracy: 100% 
-- Cross-seed accuracy: ≥84% (production minimum) 
-- System stability: no errors across 5 seeds 
+- Primary benchmark accuracy: 100%
+- Cross-seed accuracy: ≥84% (production minimum)
+- System stability: no errors across 5 seeds
 
 ---
 
@@ -239,7 +239,7 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 See `docs/ops/HMAC_rotation.md` for the complete KMS rotation runbook.
 
 **Summary:**
-- Development: empty key → SHA-256 fallback chain (safe, not tamper-proof)
+- Development: empty key SHA-256 fallback chain (safe, not tamper-proof)
 - Staging: 180-day rotation via Secrets Manager
 - Production: 90-day automatic KMS rotation + WORM persistence
 
@@ -251,22 +251,22 @@ See `docs/ops/HMAC_rotation.md` for the complete KMS rotation runbook.
 
 ```
 New files:
-├── src/cognitive_brain/analytics/
-│   ├── __init__.py
-│   ├── bayesian.py              — Bayesian Networks PoC
-│   └── fuzzy.py                 — Fuzzy Logic PoC
-├── src/cognitive_brain/active_learning/
-│   ├── __init__.py
-│   └── hook.py                  — Active Learning hook (staging only)
-├── tests/cognitive_brain/analytics/
-│   ├── __init__.py
-│   ├── test_bayesian.py         — 19 tests
-│   └── test_fuzzy.py            — 21 tests
-├── audit_artifacts/
-│   └── baselines/
-│       └── phase2_phase3.json   — Reproducibility baseline
-└── docs/ops/
-    └── HMAC_rotation.md         — KMS rotation runbook
+ src/cognitive_brain/analytics/
+ __init__.py
+ bayesian.py — Bayesian Networks PoC
+ fuzzy.py — Fuzzy Logic PoC
+ src/cognitive_brain/active_learning/
+ __init__.py
+ hook.py — Active Learning hook (staging only)
+ tests/cognitive_brain/analytics/
+ __init__.py
+ test_bayesian.py — 19 tests
+ test_fuzzy.py — 21 tests
+ audit_artifacts/
+ baselines/
+ phase2_phase3.json — Reproducibility baseline
+ docs/ops/
+ HMAC_rotation.md — KMS rotation runbook
 ```
 
 ---

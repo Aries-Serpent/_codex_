@@ -1,13 +1,13 @@
 # Test Coverage Plan: Path to 100%
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Document Version:** 1.0  
-**Created:** 2026-01-09  
-**Branch:** copilot/sub-pr-2750-c9b72a6c-e06f-4d68-b2cc-4e9352e363d2  
-**Status:**  Planning Phase  
+**Document Version:** 1.0
+**Created:** 2026-01-09
+**Branch:** copilot/sub-pr-2750-c9b72a6c-e06f-4d68-b2cc-4e9352e363d2
+**Status:** Planning Phase
 **Goal:** Achieve 90% minimum test coverage, 100% stretch goal
 
 ---
@@ -31,11 +31,11 @@ This document outlines a comprehensive, phased approach to achieving 100% test c
 
 **Tested Modules (48 tests):**
 - `src/codex/utils/config_loader.py`: **73.86%** (136/181 statements, 52/60 branches)
-  -  Good coverage on core functionality
-  -  Gaps: Error handling paths (37-41, 59-69), edge cases (251-265)
+ - Good coverage on core functionality
+ - Gaps: Error handling paths (37-41, 59-69), edge cases (251-265)
 
 - `src/bridge_manager.py`: **Not measured** (module not imported in tests)
-  - Note: Tests exist but coverage not captured
+ - Note: Tests exist but coverage not captured
 
 **Untested Modules (0% coverage):**
 - `src/codex/utils/context_discovery.py`: 63 statements, 16 branches
@@ -142,11 +142,11 @@ def test_utility_function_error_handling():
 - **Current:** ?% (tests exist but not measured correctly)
 - **Target:** 95%+
 - **Tasks:**
-  1. Fix coverage measurement (ensure module imported)
-  2. Add missing tests for error paths (WRITE_ERROR, READ_ERROR events)
-  3. Add timeout scenario tests
-  4. Add non-blocking I/O tests
-  5. Add socket mode tests (currently only pipe mode tested)
+ 1. Fix coverage measurement (ensure module imported)
+ 2. Add missing tests for error paths (WRITE_ERROR, READ_ERROR events)
+ 3. Add timeout scenario tests
+ 4. Add non-blocking I/O tests
+ 5. Add socket mode tests (currently only pipe mode tested)
 
 **Estimated Tests:** +8 tests (26 total)
 **Timeline:** 1 iteration
@@ -157,11 +157,11 @@ def test_utility_function_error_handling():
 - **Current:** 73.86%
 - **Target:** 95%+
 - **Tasks:**
-  1. Test error handling paths (lines 37-41, 59-69)
-  2. Test fallback resolution (lines 251-265)
-  3. Test environment variable overrides (lines 280-288)
-  4. Test edge cases with malformed configs
-  5. Test circular reference detection
+ 1. Test error handling paths (lines 37-41, 59-69)
+ 2. Test fallback resolution (lines 251-265)
+ 3. Test environment variable overrides (lines 280-288)
+ 4. Test edge cases with malformed configs
+ 5. Test circular reference detection
 
 **Estimated Tests:** +12 tests (42 total for config_loader)
 **Timeline:** 2 iterations
@@ -170,13 +170,13 @@ def test_utility_function_error_handling():
 - **Current:** 0%
 - **Target:** 95%+
 - **Tasks:**
-  1. Create comprehensive test suite from scratch
-  2. Test cache initialization and cleanup
-  3. Test cache hit/miss scenarios
-  4. Test cache expiration and eviction
-  5. Test concurrent access (if applicable)
-  6. Test serialization/deserialization
-  7. Test error recovery
+ 1. Create comprehensive test suite from scratch
+ 2. Test cache initialization and cleanup
+ 3. Test cache hit/miss scenarios
+ 4. Test cache expiration and eviction
+ 5. Test concurrent access (if applicable)
+ 6. Test serialization/deserialization
+ 7. Test error recovery
 
 **Estimated Tests:** +20 tests (NEW)
 **Timeline:** 3 iterations
@@ -185,12 +185,12 @@ def test_utility_function_error_handling():
 - **Current:** 0%
 - **Target:** 95%+
 - **Tasks:**
-  1. Test each validation function
-  2. Test with valid inputs (happy path)
-  3. Test with invalid inputs (rejection)
-  4. Test edge cases (empty, None, boundary values)
-  5. Test error messages are informative
-  6. Property-based testing for validators
+ 1. Test each validation function
+ 2. Test with valid inputs (happy path)
+ 3. Test with invalid inputs (rejection)
+ 4. Test edge cases (empty, None, boundary values)
+ 5. Test error messages are informative
+ 6. Property-based testing for validators
 
 **Estimated Tests:** +30 tests (NEW)
 **Timeline:** 3 iterations
@@ -201,10 +201,10 @@ def test_utility_function_error_handling():
 - **Current:** 0%
 - **Target:** 90%+
 - **Tasks:**
-  1. Test context extraction from various sources
-  2. Test context merging and conflict resolution
-  3. Test caching behavior
-  4. Test error handling for missing context
+ 1. Test context extraction from various sources
+ 2. Test context merging and conflict resolution
+ 3. Test caching behavior
+ 4. Test error handling for missing context
 
 **Estimated Tests:** +15 tests (NEW)
 **Timeline:** 2 iterations
@@ -213,10 +213,10 @@ def test_utility_function_error_handling():
 - **Current:** 0%
 - **Target:** 100%
 - **Tasks:**
-  1. Test process execution (simple utility, should be straightforward)
-  2. Test stdout/stderr capture
-  3. Test timeout handling
-  4. Test error conditions
+ 1. Test process execution (simple utility, should be straightforward)
+ 2. Test stdout/stderr capture
+ 3. Test timeout handling
+ 4. Test error conditions
 
 **Estimated Tests:** +5 tests (NEW)
 **Timeline:** 1 iteration
@@ -463,7 +463,7 @@ Add to `.pre-commit-config.yaml`:
 ## Implementation Timeline
 
 ### Phase 1: Foundation (Week 1)
--  Baseline assessment (COMPLETE)
+- Baseline assessment (COMPLETE)
 - [ ] Coverage infrastructure setup
 - [ ] Test template creation
 - [ ] CI/CD integration
@@ -475,8 +475,8 @@ Add to `.pre-commit-config.yaml`:
 
 ### Phase 3: P1 Business Logic (Weeks 3-4)
 - [ ] Config loader to 95%
-- [ ] Session cache test suite (0% → 95%)
-- [ ] Validators test suite (0% → 95%)
+- [ ] Session cache test suite (0% 95%)
+- [ ] Validators test suite (0% 95%)
 
 ### Phase 4: P2 Utilities (Week 5)
 - [ ] Context discovery tests
@@ -509,7 +509,7 @@ Add to `.pre-commit-config.yaml`:
 
 ### Quality Metrics
 
-- **Test Count:** 48 → 150+ tests
+- **Test Count:** 48 150+ tests
 - **Test Execution Time:** <5 minutes for full suite
 - **Flakiness Rate:** <1% (deterministic tests)
 - **Maintenance Burden:** Low (reusable patterns)
@@ -617,27 +617,27 @@ def test_validator_handles_any_string(input_str):
 ## Next Steps
 
 1. **Immediate (Day 1):**
-   - Fix bridge_manager coverage measurement
-   - Create coverage infrastructure scripts
-   - Set up CI/CD workflow
+ - Fix bridge_manager coverage measurement
+ - Create coverage infrastructure scripts
+ - Set up CI/CD workflow
 
 2. **Short-term (Week 1):**
-   - Implement P0 module tests (bridge_manager to 95%)
-   - Create test templates for P1 modules
-   - Begin session_cache test suite
+ - Implement P0 module tests (bridge_manager to 95%)
+ - Create test templates for P1 modules
+ - Begin session_cache test suite
 
 3. **Medium-term (Weeks 2-4):**
-   - Complete P1 module coverage (config_loader, session_cache, validators)
-   - Implement P2 module tests
-   - Add integration tests
+ - Complete P1 module coverage (config_loader, session_cache, validators)
+ - Implement P2 module tests
+ - Add integration tests
 
 4. **Long-term (Weeks 5-7):**
-   - Property-based testing
-   - Performance and stress tests
-   - Coverage enforcement and monitoring
+ - Property-based testing
+ - Performance and stress tests
+ - Coverage enforcement and monitoring
 
 ---
 
-**Document Maintainer:** GitHub Copilot  
+**Document Maintainer:** GitHub Copilot
 **Last Updated: 2026-07-11
 **Next Review:** After Phase 1 completion

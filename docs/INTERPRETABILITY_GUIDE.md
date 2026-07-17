@@ -1,6 +1,6 @@
 # ML Interpretability Module
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -226,7 +226,7 @@ for layer_idx, layer_name in enumerate(analysis.layer_names):
 ## Performance Considerations
 
 - **GPU Acceleration**: Both scorers automatically use GPU if available
-- **Batch Processing**: Currently optimized for single examples; batch support coming soon
+- **Batch Processing**: Optimized for single examples. Batch processing is planned.
 - **Memory Usage**: Attention analysis stores full attention matrices; use caution with long sequences
 - **Hook-based Extraction**: Falls back to hook-based extraction if model doesn't support standard interfaces
 

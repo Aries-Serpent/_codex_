@@ -1,9 +1,9 @@
 # Reference: GitHub Variables & Secrets — All Scopes, All Methods
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05  
-> **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)  
+> **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05
+> **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)
 > **Wired for:** GitHub Copilot Coding agent, Cognitive Brain CB connector, `wec_enforcer.py`, `agent-auth-delegation.yml`
 
 ---
@@ -12,18 +12,18 @@
 
 | Scope | Variables | Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| **repository** |  |  |  |  |
-| **Organization** |  |  |  |  |
-| **Environment** |  |  |  |  |
-| **User (Codespaces)** |  |  |  |  |
+| **repository** | | | | |
+| **Organization** | | | | |
+| **Environment** | | | | |
+| **User (Codespaces)** | | | | |
 
 ---
 
 ## 1. REST API
 
-> Requires PAT with `repo`, `admin:org`, or `codespace` scopes as appropriate.  
-> **Secrets** require sodium-sealed encryption before PUT — fetch the public key first:  
-> `GET /repos/{owner}/{repo}/actions/secrets/public-key`  
+> Requires PAT with `repo`, `admin:org`, or `codespace` scopes as appropriate.
+> **Secrets** require sodium-sealed encryption before PUT — fetch the public key first:
+> `GET /repos/{owner}/{repo}/actions/secrets/public-key`
 > **API version header:** `X-GitHub-Api-Version: 2026-03-10`
 
 ### 1a. repository Scope
@@ -126,7 +126,7 @@
 
 ### 1c. Environment Scope
 
-> Uses `repository_id` (numeric), not `owner/repo`.  
+> Uses `repository_id` (numeric), not `owner/repo`.
 > Get `repository_id`: `gh repo view OWNER/REPO --json databaseId --jq '.databaseId'`
 
 #### Variables
@@ -170,33 +170,33 @@
 ```bash
 # Read a repo variable (CODEX_MASTER_KEY token)
 curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE
+ -H "Accept: application/vnd.github+json" \
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2026-03-10" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE
 
 # Create / update a repo variable
 curl -L -X PATCH \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
-  -d '{"name":"COPILOT_AGENT_STATE","value":"ACTIVE"}'
+ -H "Accept: application/vnd.github+json" \
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2026-03-10" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
+ -d '{"name":"COPILOT_AGENT_STATE","value":"ACTIVE"}'
 
 # Get public key (required before encrypting secrets)
 curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  https://api.github.com/repos/Aries-Serpent/_codex_/actions/secrets/public-key
+ -H "Accept: application/vnd.github+json" \
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2026-03-10" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/secrets/public-key
 ```
 
 ---
 
 ## 2. GitHub CLI (`gh`)
 
-> Docs: `gh secret set --help` / `gh variable set --help`  
-> Install: <https://cli.github.com>  
+> Docs: `gh secret set --help` / `gh variable set --help`
+> Install: <https://cli.github.com>
 > Auth: `gh auth login` or set `GITHUB_TOKEN` / `GH_TOKEN` env var
 
 ### 2a. Secrets
@@ -208,9 +208,9 @@ echo "value" | gh secret set SECRET_NAME --repo OWNER/REPO
 
 # Organization secret
 gh secret set SECRET_NAME --org MY_ORG
-gh secret set SECRET_NAME --org MY_ORG --visibility all          # all repos
-gh secret set SECRET_NAME --org MY_ORG --visibility private      # private repos only
-gh secret set SECRET_NAME --org MY_ORG --repos "repo1,repo2"    # selected repos
+gh secret set SECRET_NAME --org MY_ORG --visibility all # all repos
+gh secret set SECRET_NAME --org MY_ORG --visibility private # private repos only
+gh secret set SECRET_NAME --org MY_ORG --repos "repo1,repo2" # selected repos
 
 # Environment secret
 gh secret set SECRET_NAME --env ENVIRONMENT_NAME --repo OWNER/REPO
@@ -260,7 +260,7 @@ gh variable list --env ENVIRONMENT_NAME --repo OWNER/REPO
 gh variable delete VAR_NAME --repo OWNER/REPO
 ```
 
-> ️ **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
+> **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
 
 ## 2c. Patterns Used in This repository
 
@@ -270,15 +270,15 @@ gh api /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE --jq '
 
 # Write a repo variable (canonical pattern from GITHUB_API_COPILOT_AGENT_REFERENCE.md)
 gh api PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
-  -f name='COPILOT_AGENT_STATE' \
-  -f value='ACTIVE'
+ -f name='COPILOT_AGENT_STATE' \
+ -f value='ACTIVE'
 
 # Increment a counter variable (pattern from agent-auth-delegation.yml)
 CURRENT=$(gh api /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER --jq '.value // "0"')
 NEXT=$((CURRENT + 1))
 gh api PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
-  -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
-  -f value="$NEXT"
+ -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
+ -f value="$NEXT"
 
 # Cancel a workflow run (used in wec_enforcer.py --cancel-unchecked)
 gh api POST /repos/$REPO/actions/runs/$RUN_ID/cancel
@@ -291,71 +291,71 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 
 ## 3. GitHub MCP Server
 
-> Official image: `ghcr.io/github/github-mcp-server`  
-> Remote endpoint: `https://api.githubcopilot.com/mcp/`  
-> Source: <https://github.com/github/github-mcp-server>  
+> Official image: `ghcr.io/github/github-mcp-server`
+> Remote endpoint: `https://api.githubcopilot.com/mcp/`
+> Source: <https://github.com/github/github-mcp-server>
 > Config guide: <https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md>
 
 ### 3a. Available Toolsets
 
 | Toolset | Covers | Default? |
 |---|---|---|
-| `context` | `get_me`, repo context |  |
-| `issues` | Create/update/read issues |  |
-| `pull_requests` | Create/update/read PRs, reviews, comments |  |
-| `repos` | File content, branches, commits, releases |  |
-| `users` | User lookup |  |
-| `actions` | workflow runs, jobs, artifacts |  opt-in |
-| `secret_protection` | Secret scanning alerts (GHAS, read-only) |  opt-in |
-| `dependabot` | Dependabot alerts (read-only) |  opt-in |
-| `code_security` | Code scanning alerts (read-only) |  opt-in |
-| `discussions` | GitHub Discussions read/write |  opt-in |
-| `notifications` | Notification management |  opt-in |
+| `context` | `get_me`, repo context | |
+| `issues` | Create/update/read issues | |
+| `pull_requests` | Create/update/read PRs, reviews, comments | |
+| `repos` | File content, branches, commits, releases | |
+| `users` | User lookup | |
+| `actions` | workflow runs, jobs, artifacts | opt-in |
+| `secret_protection` | Secret scanning alerts (GHAS, read-only) | opt-in |
+| `dependabot` | Dependabot alerts (read-only) | opt-in |
+| `code_security` | Code scanning alerts (read-only) | opt-in |
+| `discussions` | GitHub Discussions read/write | opt-in |
+| `notifications` | Notification management | opt-in |
 
-### 3b. ️ Critical Gap — Secrets/Variables CRUD not available via MCP
+### 3b. Critical Gap — Secrets/Variables CRUD not available via MCP
 
 As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, update, or delete Actions variables, Actions secrets, Dependabot secrets, or Codespaces secrets. Use the REST API or `gh` CLI for write operations on secrets and variables.
 
 | Operation | REST API | CLI (`gh`) | MCP Server |
 |---|---|---|---|
-| Repo Actions variable (CRUD) |  Full |  Full |  Not supported |
-| Repo Actions secret (CRUD) |  Full |  Full |  Not supported |
-| Org Actions variable (CRUD) |  Full |  Full |  Not supported |
-| Org Actions secret (CRUD) |  Full |  Full |  Not supported |
-| Environment variable (CRUD) |  Full |  Full |  Not supported |
-| Environment secret (CRUD) |  Full |  Full |  Not supported |
-| Dependabot secret (CRUD) |  Full |  Full |  Not supported |
-| Codespaces secret (CRUD) |  Full |  Full |  Not supported |
-| Secret scanning alerts (read) |  |  |  (`secret_protection`) |
-| Dependabot alerts (read) |  |  |  (`dependabot`) |
-| workflow runs/jobs (read) |  |  |  (`actions`) |
-| PR comments (write) |  |  |  (`pull_requests`) |
+| Repo Actions variable (CRUD) | Full | Full | Not supported |
+| Repo Actions secret (CRUD) | Full | Full | Not supported |
+| Org Actions variable (CRUD) | Full | Full | Not supported |
+| Org Actions secret (CRUD) | Full | Full | Not supported |
+| Environment variable (CRUD) | Full | Full | Not supported |
+| Environment secret (CRUD) | Full | Full | Not supported |
+| Dependabot secret (CRUD) | Full | Full | Not supported |
+| Codespaces secret (CRUD) | Full | Full | Not supported |
+| Secret scanning alerts (read) | | | (`secret_protection`) |
+| Dependabot alerts (read) | | | (`dependabot`) |
+| workflow runs/jobs (read) | | | (`actions`) |
+| PR comments (write) | | | (`pull_requests`) |
 
 ### 3c. MCP Server Configuration — Remote (VS Code / Copilot)
 
 ```json
 {
-  "servers": {
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
-    }
-  }
+ "servers": {
+ "github": {
+ "type": "http",
+ "url": "https://api.githubcopilot.com/mcp/"
+ }
+ }
 }
 ```
 
 With specific toolsets:
 ```json
 {
-  "servers": {
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "X-MCP-Toolsets": "repos,issues,pull_requests,actions,secret_protection"
-      }
-    }
-  }
+ "servers": {
+ "github": {
+ "type": "http",
+ "url": "https://api.githubcopilot.com/mcp/",
+ "headers": {
+ "X-MCP-Toolsets": "repos,issues,pull_requests,actions,secret_protection"
+ }
+ }
+ }
 }
 ```
 
@@ -363,9 +363,9 @@ With specific toolsets:
 
 ```bash
 docker run -i --rm \
-  -e GITHUB_PERSONAL_ACCESS_TOKEN="$CODEX_MASTER_KEY" \
-  -e GITHUB_TOOLSETS="repos,issues,pull_requests,actions,secret_protection,dependabot" \
-  ghcr.io/github/github-mcp-server
+ -e GITHUB_PERSONAL_ACCESS_TOKEN="$CODEX_MASTER_KEY" \
+ -e GITHUB_TOOLSETS="repos,issues,pull_requests,actions,secret_protection,dependabot" \
+ ghcr.io/github/github-mcp-server
 ```
 
 ### 3e. MCP Configuration Options Reference
@@ -386,12 +386,12 @@ From `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` (verified 2026-04-05):
 
 ```
 MCP aggregator :2301
-  ├─ playwright  (npx @playwright/mcp@0.0.40)      → 21 tools
-  └─ github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) → 28 tools
+ playwright (npx @playwright/mcp@0.0.40) 21 tools
+ github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) 28 tools
 ```
 
-> **Note:** The repo's live MCP connection uses the `/mcp/readonly` endpoint.  
-> Write operations (posting comments, dispatching workflows, updating variables) must use  
+> **Note:** The repo's live MCP connection uses the `/mcp/readonly` endpoint.
+> Write operations (posting comments, dispatching workflows, updating variables) must use
 > `CODEX_MASTER_KEY || CODEX_BACKUP_KEY` via direct REST API calls or `gh` CLI.
 
 ---
@@ -424,7 +424,7 @@ MCP aggregator :2301
 ```yaml
 # Canonical pattern — always use this token chain
 env:
-  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 ```
 
 ---
@@ -439,12 +439,12 @@ from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey
 from cryptography.hazmat.bindings._rust import openssl as rust_openssl
 
 def encrypt_secret(public_key_b64: str, secret_value: str) -> str:
-    """Encrypt a secret value using the repo/org public key (libsodium sealed box)."""
-    from nacl.public import PublicKey, SealedBox
-    pk = PublicKey(base64.b64decode(public_key_b64))
-    box = SealedBox(pk)
-    encrypted = box.encrypt(secret_value.encode("utf-8"))
-    return base64.b64encode(encrypted).decode("utf-8")
+ """Encrypt a secret value using the repo/org public key (libsodium sealed box)."""
+ from nacl.public import PublicKey, SealedBox
+ pk = PublicKey(base64.b64decode(public_key_b64))
+ box = SealedBox(pk)
+ encrypted = box.encrypt(secret_value.encode("utf-8"))
+ return base64.b64encode(encrypted).decode("utf-8")
 
 # Then PUT: {"encrypted_value": encrypted, "key_id": key_id}
 ```
@@ -510,15 +510,15 @@ From `tests/github/conftest_codex_master_key.py`:
 ```python
 @pytest.fixture
 def test_repo_var_name() -> str:
-    """Generate timestamped test variable name."""
-    timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
-    random_suffix = secrets.token_hex(3)  # 6 chars
-    return f"CODEX_API_TEST_REPO_VAR_{timestamp}_{random_suffix}"
+ """Generate timestamped test variable name."""
+ timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
+ random_suffix = secrets.token_hex(3) # 6 chars
+ return f"CODEX_API_TEST_REPO_VAR_{timestamp}_{random_suffix}"
 
 def test_create_variable(github_token: str, test_repo_var_name: str):
-    """Test creating a variable with proper naming."""
-    # Variable automatically has unique, timestamped name
-    # Query and cleanup are trivial due to naming convention
+ """Test creating a variable with proper naming."""
+ # Variable automatically has unique, timestamped name
+ # Query and cleanup are trivial due to naming convention
 ```
 
 ---

@@ -1,12 +1,12 @@
 # Security & Compliance Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**_codex_ v0.2.1 | Enterprise Security Strategy**
+**_codex_ v0.2.0 | Enterprise Security Strategy**
 
-> **Version:** 1.0.0  
+> **Version:** 1.0.0
 > **Last Updated: 2026-07-11
-> **Enforcement:** Mandatory for all security implementations  
+> **Enforcement:** Mandatory for all security implementations
 > **Owner:** Security & Compliance Team
 
 ---
@@ -74,7 +74,7 @@ hydra-core==1.3.2
 **Rationale:** Ceiling versions prevent automatic upgrades to breaking releases.
 
 ## 1.3 Dependency Lock File Enforcement
-**Status:** ️ Planned (Phase 9.1)  
+**Status:** Planned (Phase 9.1)
 **Location:** `requirements.lock` (to be created)
 
 **CI Gate:** `pre_flight_check.py` will validate lock file freshness before test execution.
@@ -93,7 +93,7 @@ python scripts/ci/pre_flight_check.py --validate-lock-file
 ## 2. Code Security Layer
 
 ### 2.1 SAST — Semgrep Integration
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `.semgrep/`, `semgrep_rules/`, `.github/workflows/semgrep*.yml`
 
 **Coverage:**
@@ -129,10 +129,10 @@ semgrep --config=.semgrep . --json -o semgrep_results.json
 ```
 
 ## 2.2 SAST — CodeQL Integration
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `.codeql/`, `.github/workflows/codeql.yml`
 
-**Database:** Created on every PR  
+**Database:** Created on every PR
 **Query Suites:** `python-code-scanning.qls` (default)
 
 **Custom Queries Implemented:**
@@ -154,10 +154,10 @@ codeql database analyze codeql_db \
 ```
 
 ## 2.3 Type Checking — Mypy
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `mypy.ini`, `.mypy_baseline.txt`
 
-**Coverage:** ~80% of codebase  
+**Coverage:** ~80% of codebase
 **Baseline:** `.mypy_baseline.txt` (incremental improvement tracked)
 
 ```bash
@@ -173,8 +173,8 @@ mypy src/ > .mypy_baseline.txt
 ## 3. Secret Management Layer
 
 ### 3.1 Gitleaks Integration
-**Status:**  Planned (config-only; no dedicated workflow)  
-**Location:** `.gitleaks.toml`  
+**Status:** Planned (config-only; no dedicated workflow)
+**Location:** `.gitleaks.toml`
 **Note:** Secret scanning is currently handled by `.github/workflows/security-scanning-suite.yml` via `detect-secrets`. A dedicated Gitleaks CI workflow (`.github/workflows/gitleaks.yml`) is planned but not yet implemented.
 
 **Secret Patterns Detected:**
@@ -213,7 +213,7 @@ gitleaks detect --source . --verbose --log-opts="--all"
 ```
 
 ## 3.2 Secrets Baseline
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `.secrets.baseline`
 
 **False Positives Management:**
@@ -251,7 +251,7 @@ grep -r "password\|secret\|api_key\|token" --include="*.py" src/ | grep -v "test
 ## 4. Runtime Security Layer
 
 ### 4.1 Permission Models & Token Delegation
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `src/security/`, `src/codex_bridge/bridge_protocol_v2.py`
 
 **Token Types:**
@@ -284,7 +284,7 @@ token = mgr.create_agent_token(  # pragma: allowlist secret
 ```
 
 ## 4.2 Rate Limiting & Request Throttling
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `src/services/`, `slowapi>=0.1.9`
 
 **Limits Configured:**
@@ -310,7 +310,7 @@ rate_limits:
 ```
 
 ## 4.3 Audit Logging
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `src/monitoring/audit_logger.py`, `.codex/audit_logs/`
 
 **Events Logged:**
@@ -345,7 +345,7 @@ rate_limits:
 ## 5. Supply Chain Security
 
 ### 5.1 Dependency Verification
-**Status:**  Implemented  
+**Status:** Implemented
 **Tool:** pip-audit, safety, dependency-check
 
 **Commands:**
@@ -361,7 +361,7 @@ dependency-check --project codex --scan src/
 ```
 
 ## 5.2 Build Integrity
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `Dockerfile`, `docker-compose.yml`
 
 **Measures:**
@@ -387,11 +387,11 @@ RUN chmod 555 /app
 ```
 
 ## 5.3 SBOM (Software Bill of Materials)
-**Status:**  Implemented  
+**Status:** Implemented
 **Location:** `.github/workflows/sbom.yml`, `SBOM.json`
 
-**Format:** CycloneDX JSON  
-**Generated On:** Every release  
+**Format:** CycloneDX JSON
+**Generated On:** Every release
 **Contents:**
 - All Python dependencies with versions
 - Rust crate dependencies
@@ -427,7 +427,7 @@ pytest tests/security/test_audit_logging.py -v
 ```
 
 ## 6.2 Penetration Test Framework
-**Status:** Planned (Phase 9.2)  
+**Status:** Planned (Phase 9.2)
 **Tools:** OWASP ZAP, Burp Suite Community
 
 ---
@@ -451,8 +451,8 @@ pytest tests/security/test_audit_logging.py -v
 ## 8. Incident Response
 
 ### 8.1 Vulnerability Disclosure
-**Security Contact:** security@aries-serpent.github.io  
-**Response Time:** 48 hours  
+**Security Contact:** security@aries-serpent.github.io
+**Response Time:** 48 hours
 **Patch Time:** 7 days for HIGH severity, 30 days for MEDIUM
 
 **Process:**
@@ -462,8 +462,8 @@ pytest tests/security/test_audit_logging.py -v
 4. Disclosure published to security advisories
 
 ### 8.2 Breach Notification
-**Trigger:** Any unauthorized access or data exfiltration  
-**Notification:** GitHub Security Advisory, email to maintainers  
+**Trigger:** Any unauthorized access or data exfiltration
+**Notification:** GitHub Security Advisory, email to maintainers
 **Retention:** 30-day incident report
 
 ---
@@ -471,19 +471,19 @@ pytest tests/security/test_audit_logging.py -v
 ## 9. Roadmap: Q2 2026 — Phase 9 Enhancements
 
 ### Phase 9.1: Dependency Lock Enforcement
-**ETA:** 2026-06-15  
+**ETA:** 2026-06-15
 **Goals:** Lock file validation in all CI pipelines
 
 ### Phase 9.2: Penetration Testing
-**ETA:** 2026-07-01  
+**ETA:** 2026-07-01
 **Goals:** Annual pentest with remediation tracking
 
 ### Phase 9.3: Security Certification
-**ETA:** 2026-08-15  
+**ETA:** 2026-08-15
 **Goals:** SOC 2 Type II compliance achievement
 
 ### Phase 9.4: Zero-Trust Architecture
-**ETA:** 2026-09-01  
+**ETA:** 2026-09-01
 **Goals:** Migrate to zero-trust security model
 
 ---
@@ -501,6 +501,6 @@ pytest tests/security/test_audit_logging.py -v
 
 ---
 
-**Status:**  Complete & Validated (2026-05-27)  
-**Next Review:** 2026-06-27  
-**Certification:** Production Security Built-In 
+**Status:** Complete & Validated (2026-05-27)
+**Next Review:** 2026-06-27
+**Certification:** Production Security Built-In

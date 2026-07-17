@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260304-copilot-agent-cli-api-gaps/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-20260304-copilot-agent-cli-api-gaps - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2336,7 +2336,7 @@
 <a class="md-nav__link" href="#rc-4-codex_master_key-not-available-memory-endpoints-blocked">
 <span class="md-ellipsis">
       
-        RC-4 — CODEX_MASTER_KEY not available → memory endpoints blocked
+        RC-4 — CODEX_MASTER_KEY not available memory endpoints blocked
       
     </span>
 </a>
@@ -2433,9 +2433,9 @@
 <p>**Last Updated: 2026-06-22</p>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
 <p><strong>Date:2026-07-13
-</strong>PR:<strong> #3495<br/>
-</strong>Session:<strong> COGNITIVE_BRAIN_SESSION_NUMBER 112<br/>
-</strong>Status:** ACCEPTED — gaps resolved in this PR  </p>
+</strong>PR:<strong> #3495
+</strong>Session:<strong> COGNITIVE_BRAIN_SESSION_NUMBER 112
+</strong>Status:** ACCEPTED — gaps resolved in this PR</p>
 <p>This ADR records the complete capability assessment of an active <strong>GitHub Copilot Coding Agent</strong>
 using the <strong>Cognitive Brain CLI API Client</strong> (<code>cognitive_app/src/server/cli_api_server.py</code>),
 identifies every gap discovered, and documents the targeted fixes applied.</p>
@@ -2495,7 +2495,7 @@ identifies every gap discovered, and documents the targeted fixes applied.</p>
 </tr>
 <tr>
 <td><code>POST /api/ooda/process</code></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td><code>cognitive_brain.base</code> import fails in CI</td>
 </tr>
 <tr>
@@ -2515,7 +2515,7 @@ identifies every gap discovered, and documents the targeted fixes applied.</p>
 </tr>
 <tr>
 <td><code>WebSocket /ws/cli</code> (PTY)</td>
-<td>️ UNTESTED</td>
+<td>UNTESTED</td>
 <td>No browser in agent sandbox; works if frontend is connected</td>
 </tr>
 <tr>
@@ -2536,7 +2536,7 @@ identifies every gap discovered, and documents the targeted fixes applied.</p>
 <tr>
 <td><code>COPILOT_CLI_BASE_URL</code> in agent env</td>
 <td>MISSING</td>
-<td><code>.codex/agent_context.json</code> did not exist → injection step silently skipped</td>
+<td><code>.codex/agent_context.json</code> did not exist injection step silently skipped</td>
 </tr>
 <tr>
 <td>Repo variables injected as env vars</td>
@@ -2567,14 +2567,14 @@ skipped. Consequence: none of the following reached the agent environment:</p>
 <code>BrainClient</code> and agent Python code had no standard way to discover the URL at runtime.</p>
 <p><strong>Fix (this PR):</strong>
 - <code>copilot-setup-steps.yml</code> now exports <code>CODEX_CLI_API_URL=${COPILOT_CLI_BASE_URL:-http://localhost:8765}</code> to <code>GITHUB_ENV</code>
-- <code>BrainClient.__init__</code> now checks <code>CODEX_CLI_API_URL</code> → <code>COPILOT_CLI_BASE_URL</code> → default</p>
+- <code>BrainClient.__init__</code> now checks <code>CODEX_CLI_API_URL</code> <code>COPILOT_CLI_BASE_URL</code> default</p>
 <h3 id="rc-3-no-python-client-wrapper-for-agent-code">RC-3 — No Python client wrapper for agent code<a class="headerlink" href="#rc-3-no-python-client-wrapper-for-agent-code" title="Permanent link">¶</a></h3>
 <p>Agents had to manually construct <code>curl</code> commands or use raw <code>httpx</code>/<code>urllib</code> calls.
 No standard, testable interface existed.</p>
 <p><strong>Fix (this PR):</strong> Created <code>src/codex/agents/brain_client.py</code> — <code>BrainClient</code> class with
 typed methods for every server endpoint, convenience helpers (<code>git_status</code>, <code>git_log</code>,
 <code>github_repo_info</code>, <code>github_workflow_runs</code>), and clean <code>BrainClientError</code> exception handling.</p>
-<h3 id="rc-4-codex_master_key-not-available-memory-endpoints-blocked">RC-4 — <code>CODEX_MASTER_KEY</code> not available → memory endpoints blocked<a class="headerlink" href="#rc-4-codex_master_key-not-available-memory-endpoints-blocked" title="Permanent link">¶</a></h3>
+<h3 id="rc-4-codex_master_key-not-available-memory-endpoints-blocked">RC-4 — <code>CODEX_MASTER_KEY</code> not available memory endpoints blocked<a class="headerlink" href="#rc-4-codex_master_key-not-available-memory-endpoints-blocked" title="Permanent link">¶</a></h3>
 <p><code>copilot-setup-steps.yml</code> references <code>secrets.CODEX_MASTER_KEY</code> and <code>secrets.CODEX_BACKUP_KEY</code>
 in the job <code>env:</code> block (lines 86–87). In theory these should inject into the session.
 In practice, the active session showed <code>CODEX_MASTER_KEY</code> empty.</p>
@@ -2641,27 +2641,27 @@ via the REST/WebSocket server.</p>
 </tr>
 <tr>
 <td><code>POST /api/ooda/process</code></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>Needs <code>cognitive_brain.base</code> installed</td>
 </tr>
 <tr>
 <td><code>GET /api/memory/state</code></td>
-<td>️ PENDING</td>
+<td>PENDING</td>
 <td>Requires <code>CODEX_MASTER_KEY</code> rotation (RC-4)</td>
 </tr>
 <tr>
 <td><code>GET /api/memory/search</code></td>
-<td>️ PENDING</td>
+<td>PENDING</td>
 <td>Same</td>
 </tr>
 <tr>
 <td><code>POST /api/memory/consolidate</code></td>
-<td>️ PENDING</td>
+<td>PENDING</td>
 <td>Same</td>
 </tr>
 <tr>
 <td><code>WebSocket /ws/cli</code> (PTY)</td>
-<td>️ HUMAN-ONLY</td>
+<td>HUMAN-ONLY</td>
 <td>Accessible from browser frontend, not agent</td>
 </tr>
 <tr>
@@ -2742,7 +2742,7 @@ via the REST/WebSocket server.</p>
 <tr>
 <td><code>CODEX_MASTER_KEY</code></td>
 <td>Org secret</td>
-<td>️ Possibly empty</td>
+<td>Possibly empty</td>
 <td><strong>Verify &amp; rotate</strong></td>
 <td>Action for @mbaetiong</td>
 </tr>
@@ -2848,6 +2848,6 @@ via the REST/WebSocket server.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

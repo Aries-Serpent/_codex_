@@ -1,18 +1,18 @@
-# Next Iteration Prompt v0.2.1
+# Next Iteration Prompt v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Generated**: 2026-06-22  
-> **Current Branch**: `copilot/sub-pr-2390`  
+> **Generated**: 2026-06-22
+> **Current Branch**: `copilot/sub-pr-2390`
 > **Scope**: Complete remaining validation tasks and legacy import refactoring
 
 ## Context
 
 Part B validation and hardening tasks have been substantially completed. Core quality gates are in place and passing:
--  Shadowing prevention (yaml, hydra)
--  Template integrity validation
--  CI workflow production-ready
--  Documentation comprehensive
+- Shadowing prevention (yaml, hydra)
+- Template integrity validation
+- CI workflow production-ready
+- Documentation comprehensive
 
 **Remaining work** focuses on runtime-intensive validations and code refactoring.
 
@@ -106,9 +106,9 @@ from hydra.something import OldModule
 # config_legacy/something.py
 import warnings
 warnings.warn(
-    "config_legacy.something is deprecated. Use hydra.something from site-packages.",
-    DeprecationWarning,
-    stacklevel=2
+ "config_legacy.something is deprecated. Use hydra.something from site-packages.",
+ DeprecationWarning,
+ stacklevel=2
 )
 from hydra.something import OldModule
 ```
@@ -116,14 +116,14 @@ from hydra.something import OldModule
 3. Update imports gradually:
 ```python
 # After
-from hydra.something import OldModule  # Now imports from site-packages
+from hydra.something import OldModule # Now imports from site-packages
 ```
 
 4. Add test to verify no shadowing:
 ```python
 def test_no_hydra_shadowing():
-    import hydra
-    assert "site-packages" in hydra.__file__
+ import hydra
+ assert "site-packages" in hydra.__file__
 ```
 
 **Acceptance Criteria**:
@@ -152,29 +152,29 @@ def test_no_hydra_shadowing():
 1. Add baseline age check to workflow:
 ```yaml
 - name: Check baseline age
-  id: baseline-age
-  run: |
-    if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
-      # Cross-platform age calculation using Python
-      AGE_DAYS=$(python -c "import os, time; print(int((time.time() - os.path.getmtime('audit_artifacts/baselines/capabilities_scored.json')) / 86400))")
-      echo "age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
-      if [ $AGE_DAYS -gt 30 ]; then
-        echo "️ Baseline is $AGE_DAYS days old - consider refreshing"
-      fi
-    fi
+ id: baseline-age
+ run: |
+ if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+ # Cross-platform age calculation using Python
+ AGE_DAYS=$(python -c "import os, time; print(int((time.time() - os.path.getmtime('audit_artifacts/baselines/capabilities_scored.json')) / 86400))")
+ echo "age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
+ if [ $AGE_DAYS -gt 30 ]; then
+ echo " Baseline is $AGE_DAYS days old - consider refreshing"
+ fi
+ fi
 ```
 
 2. Add conditional baseline refresh on main branch:
 ```yaml
 - name: Refresh baseline if stale
-  if: github.ref == 'refs/heads/main' && steps.baseline-age.outputs.age_days > 30
-  run: |
-    ./scripts/ci/establish_baseline.sh --force
-    git config user.name "github-actions[bot]"
-    git config user.email "github-actions[bot]@users.noreply.github.com"
-    git add audit_artifacts/baselines/capabilities_scored.json
-    git commit -m "chore: Auto-refresh audit baseline [skip ci]"
-    git push
+ if: github.ref == 'refs/heads/main' && steps.baseline-age.outputs.age_days > 30
+ run: |
+ ./scripts/ci/establish_baseline.sh --force
+ git config user.name "github-actions[bot]"
+ git config user.email "github-actions[bot]@users.noreply.github.com"
+ git add audit_artifacts/baselines/capabilities_scored.json
+ git commit -m "chore: Auto-refresh audit baseline [skip ci]"
+ git push
 ```
 
 **Acceptance Criteria**:
@@ -249,8 +249,8 @@ cat audit_run_manifest.json
 ```bash
 # Compare against baseline
 python scripts/space_traversal/audit_runner.py diff \
-  --old audit_artifacts/baselines/capabilities_scored.json \
-  --new audit_artifacts/capabilities_scored.json
+ --old audit_artifacts/baselines/capabilities_scored.json \
+ --new audit_artifacts/capabilities_scored.json
 ```
 
 **Expected**: No unexpected regressions
@@ -276,25 +276,25 @@ pytest tests/validation/test_audit_pipeline.py -v
 
 For this iteration to be considered **complete and ready for merge**:
 
-### Validation 
+### Validation
 - [x] Shadowing prevention verified
 - [x] Template integrity verified
 - [ ] Determinism validation passed
 - [ ] CI pipeline tested end-to-end
 
-### Code Quality 
+### Code Quality
 - [x] Documentation complete
 - [ ] Code review passed
 - [ ] Security scan clean
 - [ ] Linters passing
 
-### Functionality 
+### Functionality
 - [ ] Legacy imports analyzed
 - [ ] High-priority imports refactored
 - [ ] Tests covering changes
 - [ ] No regressions introduced
 
-### CI/CD 
+### CI/CD
 - [x] Workflow operational
 - [x] Baseline established
 - [x] Quality gates enforced
@@ -307,19 +307,19 @@ For this iteration to be considered **complete and ready for merge**:
 If critical issues arise:
 
 1. **Determinism Failures**:
-   - Identify non-deterministic source
-   - Fix sorting/ordering
-   - Re-validate
+ - Identify non-deterministic source
+ - Fix sorting/ordering
+ - Re-validate
 
 2. **Import Refactoring Issues**:
-   - Revert specific commits: `git revert <commit-sha>`
-   - Restore working import paths
-   - Add to known issues list
+ - Revert specific commits: `git revert <commit-sha>`
+ - Restore working import paths
+ - Add to known issues list
 
 3. **CI Workflow Issues**:
-   - Revert workflow changes: `git checkout HEAD~1 .github/workflows/space-audit.yml`
-   - Test locally before pushing
-   - Gradual re-introduction of changes
+ - Revert workflow changes: `git checkout HEAD~1 .github/workflows/space-audit.yml`
+ - Test locally before pushing
+ - Gradual re-introduction of changes
 
 ---
 
@@ -335,7 +335,7 @@ If critical issues arise:
 | C.5: Integration testing | 20 min | High |
 | **Total** | **3-4 hrs** | - |
 
-**Critical Path**: C.1 → C.4 → C.5 (must complete)  
+**Critical Path**: C.1 C.4 C.5 (must complete)
 **Optional**: C.2 (refactoring), C.3 (monitoring)
 
 ---
@@ -370,11 +370,11 @@ When applying this prompt:
 
 This iteration completes the audit remediation system validation. Key deliverables:
 
--  Production-ready CI workflow
--  Comprehensive documentation
--  Quality gates enforced
--  Determinism validation (pending)
--  Legacy import strategy (in progress)
+- Production-ready CI workflow
+- Comprehensive documentation
+- Quality gates enforced
+- Determinism validation (pending)
+- Legacy import strategy (in progress)
 
 **Recommended Approval Path**:
 1. Review validation summaries (PartB_Validation_Summary.md)

@@ -1,15 +1,15 @@
 # Repo Survey — work & PR 0 — 2025-10-30 (UTC)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Ref:** branch `work`  commit `63694ea8`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-0_`
+**Ref:** branch `work` commit `63694ea8` • **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-0_`
 
 ---
 
 ```yaml
 branch: work
 pr: 0
-rollout_ring: 0D_base_   # intent badge carried forward in templates (docs)
+rollout_ring: 0D_base_ # intent badge carried forward in templates (docs)
 eval_preset: base
 deployment_preset: reasoning_pod
 generated_utc: 2025-10-30T00:00:00Z
@@ -39,7 +39,7 @@ text
 
 ### >>> FILE: configs/training/reasoning/curricula/starter.yaml@work
 text
-(phase_schedule: warmup → first_principles → challenge)
+(phase_schedule: warmup first_principles challenge)
 
 ### >>> FILE: configs/evaluation/reasoning/base.yaml@work
 text
@@ -85,7 +85,7 @@ Let R = α·E + β·T + γ·D with α=0.2, β=0.2, γ=0.6.
 * E: 0.0 (no online eval required in this ring; treat as 0.0 unless artifacts exist)
 * T: 0.0 (set via latest run artifacts if present; default 0.0)
 * D: 0.9 (docs + dry-run parity strong)
-  => R = 0.54  → Recommendation: Proceed
+ => R = 0.54 Recommendation: Proceed
 ```text
 ---
 _Generated with `scripts/survey.sh` • R = α·E + β·T + γ·D (α+β+γ=1)_

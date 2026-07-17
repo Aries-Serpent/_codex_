@@ -1,10 +1,10 @@
 # PyTorch Security Migration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Date**: 2025-12-22 
+**Date**: 2025-12-22
 **Purpose**: Migrate existing `torch.load()` calls to secure wrappers
 
 ## Security Issue
@@ -96,7 +96,7 @@ Based on grep analysis, the following files need updates:
 
 ## Security Best Practices
 
-### DO 
+### DO
 ```python
 from utils.safe_torch_loader import safe_load
 
@@ -111,7 +111,7 @@ with torch_resource_guard():
  model.load_state_dict(state)
 ```
 
-## DON'T 
+## DON'T
 ```python
 # NEVER do this - RCE vulnerability!
 state = torch.load('model.pth')
@@ -120,7 +120,7 @@ state = torch.load('model.pth')
 state = torch.load('model.pth', weights_only=False)
 ```
 
-## 🧪 Testing Your Migration
+## Testing Your Migration
 
 After migrating, verify with:
 

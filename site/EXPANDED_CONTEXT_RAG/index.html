@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/EXPANDED_CONTEXT_RAG/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Expanded Context Workflow - RAG Implementation - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2589,19 +2589,19 @@
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="c1"># Initialize retriever</span>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">retriever</span> <span class="o">=</span> <span class="n">Retriever</span><span class="p">(</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span><span class="p">,</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span><span class="p">,</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="p">)</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># Query</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"How do I configure embeddings?"</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"File: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Text: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    <span class="nb">print</span><span class="p">()</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"File: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Text: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> <span class="nb">print</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <h3 id="indexer-module">Indexer Module<a class="headerlink" href="#indexer-module" title="Permanent link">¶</a></h3>
@@ -2610,11 +2610,11 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">codex.rag.indexer</span> <span class="kn">import</span> <span class="n">chunk_text</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="n">chunks</span> <span class="o">=</span> <span class="n">chunk_text</span><span class="p">(</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">text</span><span class="o">=</span><span class="s2">"Your long document text..."</span><span class="p">,</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># characters</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">overlap</span><span class="o">=</span><span class="mi">128</span>       <span class="c1"># overlap between chunks</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="n">text</span><span class="o">=</span><span class="s2">"Your long document text..."</span><span class="p">,</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="c1"># characters</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="n">overlap</span><span class="o">=</span><span class="mi">128</span> <span class="c1"># overlap between chunks</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="p">)</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="c1"># Returns: [(start_pos, end_pos, chunk_text), pass  # Implementation details]</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="c1"># Returns: [(start_pos, end_pos, chunk_text), pass # Implementation details]</span>
 </code></pre></div>
 <p>Features:
 - Smart boundary detection (sentence endings)
@@ -2624,11 +2624,11 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">codex.rag.indexer</span> <span class="kn">import</span> <span class="n">embed_chunks</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_chunks</span><span class="p">(</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">model_profile</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        <span class="s2">"model_name"</span><span class="p">:</span> <span class="s2">"sentence-transformers/all-MiniLM-L6-v2"</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>        <span class="s2">"cache_dir"</span><span class="p">:</span> <span class="kc">None</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="p">}</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">model_profile</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="s2">"model_name"</span><span class="p">:</span> <span class="s2">"sentence-transformers/all-MiniLM-L6-v2"</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="s2">"cache_dir"</span><span class="p">:</span> <span class="kc">None</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="p">}</span>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="p">)</span>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># Returns: numpy array of shape (num_chunks, embedding_dim)</span>
 </code></pre></div>
@@ -2636,12 +2636,12 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">codex.rag.indexer</span> <span class="kn">import</span> <span class="n">persist_index</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">index_path</span> <span class="o">=</span> <span class="n">persist_index</span><span class="p">(</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">embeddings</span><span class="o">=</span><span class="n">embeddings</span><span class="p">,</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">,</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"documentation"</span><span class="p">},</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">embeddings</span><span class="o">=</span><span class="n">embeddings</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">,</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"documentation"</span><span class="p">},</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="p">)</span>
 </code></pre></div>
 <p>Persists to <code>.codex/tenants/{tenant_id}/{index_name}/</code>:
@@ -2655,11 +2655,11 @@
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"docs"</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*.md"</span><span class="p">))</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="n">index_path</span> <span class="o">=</span> <span class="n">build_index_from_files</span><span class="p">(</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="n">overlap</span><span class="o">=</span><span class="mi">128</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> <span class="n">overlap</span><span class="o">=</span><span class="mi">128</span>
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="retriever-module">Retriever Module<a class="headerlink" href="#retriever-module" title="Permanent link">¶</a></h3>
@@ -2667,10 +2667,10 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">codex.rag.retriever</span> <span class="kn">import</span> <span class="n">Retriever</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="n">retriever</span> <span class="o">=</span> <span class="n">Retriever</span><span class="p">(</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span><span class="p">,</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="n">model_name</span><span class="o">=</span><span class="s2">"sentence-transformers/all-MiniLM-L6-v2"</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span><span class="p">,</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">model_name</span><span class="o">=</span><span class="s2">"sentence-transformers/all-MiniLM-L6-v2"</span>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="p">)</span>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="c1"># Query with provenance</span>
@@ -2691,11 +2691,11 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">codex.rag.retriever</span> <span class="kn">import</span> <span class="n">MultiIndexRetriever</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="n">retriever</span> <span class="o">=</span> <span class="n">MultiIndexRetriever</span><span class="p">(</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="n">indices</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>        <span class="p">{</span><span class="s2">"index_name"</span><span class="p">:</span> <span class="s2">"docs"</span><span class="p">,</span> <span class="s2">"tenant_id"</span><span class="p">:</span> <span class="s2">"default"</span><span class="p">},</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>        <span class="p">{</span><span class="s2">"index_name"</span><span class="p">:</span> <span class="s2">"code"</span><span class="p">,</span> <span class="s2">"tenant_id"</span><span class="p">:</span> <span class="s2">"default"</span><span class="p">},</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="p">],</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="n">indices</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="p">{</span><span class="s2">"index_name"</span><span class="p">:</span> <span class="s2">"docs"</span><span class="p">,</span> <span class="s2">"tenant_id"</span><span class="p">:</span> <span class="s2">"default"</span><span class="p">},</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="p">{</span><span class="s2">"index_name"</span><span class="p">:</span> <span class="s2">"code"</span><span class="p">,</span> <span class="s2">"tenant_id"</span><span class="p">:</span> <span class="s2">"default"</span><span class="p">},</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="p">],</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="n">index_dir</span><span class="o">=</span><span class="s2">".codex/tenants"</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="p">)</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"query"</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -2707,8 +2707,8 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">codex.rag.embeddings</span> <span class="kn">import</span> <span class="n">LocalSentenceTransformerProvider</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">LocalSentenceTransformerProvider</span><span class="p">(</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="n">model_name</span><span class="o">=</span><span class="s2">"sentence-transformers/all-MiniLM-L6-v2"</span><span class="p">,</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span>  <span class="c1"># Uses HuggingFace default cache</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="n">model_name</span><span class="o">=</span><span class="s2">"sentence-transformers/all-MiniLM-L6-v2"</span><span class="p">,</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span> <span class="c1"># Uses HuggingFace default cache</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="p">)</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="n">embeddings</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">encode</span><span class="p">([</span><span class="s2">"text1"</span><span class="p">,</span> <span class="s2">"text2"</span><span class="p">])</span>
@@ -2718,8 +2718,8 @@
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="kn">import</span> <span class="nn">os</span>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">OpenAIEmbeddingProvider</span><span class="p">(</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">model_name</span><span class="o">=</span><span class="s2">"text-embedding-3-small"</span><span class="p">,</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>    <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"OPENAI_API_KEY"</span><span class="p">]</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="n">model_name</span><span class="o">=</span><span class="s2">"text-embedding-3-small"</span><span class="p">,</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"OPENAI_API_KEY"</span><span class="p">]</span>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="p">)</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
 <a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="n">embeddings</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">encode</span><span class="p">([</span><span class="s2">"text1"</span><span class="p">,</span> <span class="s2">"text2"</span><span class="p">])</span>
@@ -2730,22 +2730,22 @@
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="n">base_provider</span> <span class="o">=</span> <span class="n">LocalSentenceTransformerProvider</span><span class="p">()</span>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="n">cached_provider</span> <span class="o">=</span> <span class="n">CachedEmbeddingProvider</span><span class="p">(</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="n">provider</span><span class="o">=</span><span class="n">base_provider</span><span class="p">,</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    <span class="n">cache_dir</span><span class="o">=</span><span class="s2">".codex/embeddings_cache"</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="n">provider</span><span class="o">=</span><span class="n">base_provider</span><span class="p">,</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="n">cache_dir</span><span class="o">=</span><span class="s2">".codex/embeddings_cache"</span>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="p">)</span>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="c1"># First call: cache miss, generates embeddings</span>
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="n">embeddings1</span> <span class="o">=</span> <span class="n">cached_provider</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="s2">"text1"</span><span class="p">,</span> <span class="s2">"text2"</span><span class="p">],</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    <span class="n">cache_key</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"file_mtime"</span><span class="p">:</span> <span class="mi">1234567890</span><span class="p">}</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="s2">"text1"</span><span class="p">,</span> <span class="s2">"text2"</span><span class="p">],</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="n">cache_key</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"file_mtime"</span><span class="p">:</span> <span class="mi">1234567890</span><span class="p">}</span>
 <a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="p">)</span>
 <a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>
 <a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="c1"># Second call: cache hit, loads from cache</span>
 <a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="n">embeddings2</span> <span class="o">=</span> <span class="n">cached_provider</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>    <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="s2">"text1"</span><span class="p">,</span> <span class="s2">"text2"</span><span class="p">],</span>
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>    <span class="n">cache_key</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"file_mtime"</span><span class="p">:</span> <span class="mi">1234567890</span><span class="p">}</span>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a> <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="s2">"text1"</span><span class="p">,</span> <span class="s2">"text2"</span><span class="p">],</span>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> <span class="n">cache_key</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"file_mtime"</span><span class="p">:</span> <span class="mi">1234567890</span><span class="p">}</span>
 <a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a><span class="p">)</span>
 <a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>
 <a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a><span class="c1"># Check stats</span>
@@ -2758,29 +2758,29 @@
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="c1"># Local with caching (default)</span>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">create_embedding_provider</span><span class="p">(</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="n">provider_type</span><span class="o">=</span><span class="s2">"local"</span><span class="p">,</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">cache_dir</span><span class="o">=</span><span class="s2">".codex/embeddings_cache"</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="n">provider_type</span><span class="o">=</span><span class="s2">"local"</span><span class="p">,</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">cache_dir</span><span class="o">=</span><span class="s2">".codex/embeddings_cache"</span>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">)</span>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
 <a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="c1"># OpenAI with caching (if OPENAI_API_KEY is set)</span>
 <a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">create_embedding_provider</span><span class="p">(</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>    <span class="n">provider_type</span><span class="o">=</span><span class="s2">"openai"</span><span class="p">,</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>    <span class="n">model_name</span><span class="o">=</span><span class="s2">"text-embedding-3-small"</span><span class="p">,</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>    <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="n">provider_type</span><span class="o">=</span><span class="s2">"openai"</span><span class="p">,</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> <span class="n">model_name</span><span class="o">=</span><span class="s2">"text-embedding-3-small"</span><span class="p">,</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="storage-layout">Storage Layout<a class="headerlink" href="#storage-layout" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>.codex/
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>├── tenants/                    # Multi-tenant index storage
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>│   └── {tenant_id}/           # Tenant-specific directory
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>│       └── {index_name}/      # Named index
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>│           ├── index.faiss    # FAISS index binary
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>│           ├── chunks.json    # Chunk metadata
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>│           └── metadata.json  # Index metadata
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>└── embeddings_cache/          # Embedding cache
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>    ├── {cache_key}.npz        # Cached embeddings
-<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>    └── {cache_key}.meta.json  # Cache metadata
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> tenants/ # Multi-tenant index storage
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> {tenant_id}/ # Tenant-specific directory
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> {index_name}/ # Named index
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> index.faiss # FAISS index binary
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> chunks.json # Chunk metadata
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> metadata.json # Index metadata
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> embeddings_cache/ # Embedding cache
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a> {cache_key}.npz # Cached embeddings
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a> {cache_key}.meta.json # Cache metadata
 </code></pre></div>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <p>Environment variables:</p>
@@ -2894,6 +2894,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

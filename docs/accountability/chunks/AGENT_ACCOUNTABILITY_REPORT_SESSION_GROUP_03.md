@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 03
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 3 of 32  
 **Sessions:** S_PR3958_CTEP_SWEEP to S315_PR4048_WEEKLY_DEPENDABOT_FOLDIN  

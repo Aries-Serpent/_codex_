@@ -6,8 +6,8 @@ Yep — you can use **GitHub Copilot in the CLI** right in an Ubuntu 24.x termin
 
 * Natural-language help for shell/git/`gh` commands:
 
-  * Explain a command: `gh copilot explain "sudo apt-get"` ([GitHub Docs][1])
-  * Suggest a command (interactive): `gh copilot suggest "Undo the last commit"` ([GitHub Docs][1])
+ * Explain a command: `gh copilot explain "sudo apt-get"` ([GitHub Docs][1])
+ * Suggest a command (interactive): `gh copilot suggest "Undo the last commit"` ([GitHub Docs][1])
 * Optional aliases so it can **execute** chosen suggestions (`ghcs`) after confirmation. ([GitHub Docs][2])
 
 ## Requirements (Ubuntu 24.x)
@@ -22,12 +22,12 @@ Yep — you can use **GitHub Copilot in the CLI** right in an Ubuntu 24.x termin
 ```bash
 # 1) Install GitHub CLI (Ubuntu 24 has "gh" in the archive)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-sudo apt update && sudo apt install -y gh  # or see cli.github.com for alternatives
+sudo apt update && sudo apt install -y gh # or see cli.github.com for alternatives
 
 # 2) Authenticate GitHub CLI
-gh auth login  # follow the prompts (HTTPS, "Login with a web browser")
+gh auth login # follow the prompts (HTTPS, "Login with a web browser")
 
 # 3) Install Copilot in the CLI
 gh extension install github/gh-copilot
@@ -51,8 +51,8 @@ echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc && source ~/.zshrc
 Now you can use:
 
 ```bash
-ghce "what does 'iptables -L' do?"   # explain
-ghcs "archive current dir to tar.gz excluding .git"  # suggest → choose Execute
+ghce "what does 'iptables -L' do?" # explain
+ghcs "archive current dir to tar.gz excluding .git" # suggest choose Execute
 ```text
 You can also change the default execution confirmation or analytics via:
 
@@ -63,9 +63,9 @@ gh copilot config
 
 ## Troubleshooting quick hits
 
-* **“Feature disabled by org”** → your owner must enable “Copilot in the CLI.” ([GitHub Docs][1])
-* **Extension out of date** → `gh extension upgrade gh-copilot`. ([GitHub Docs][5])
-* **Auth problems** → re-run `gh auth login` and ensure the account has Copilot entitlements. ([GitHub Docs][4])
+* **“Feature disabled by org”** your owner must enable “Copilot in the CLI.” ([GitHub Docs][1])
+* **Extension out of date** `gh extension upgrade gh-copilot`. ([GitHub Docs][5])
+* **Auth problems** re-run `gh auth login` and ensure the account has Copilot entitlements. ([GitHub Docs][4])
 
 If you want, I can bundle a tiny shell script that installs `gh`, logs in (browser step still required), adds the Copilot extension, and wires up the aliases for Bash/Zsh — so your lab VMs get Copilot-in-CLI in one go.
 

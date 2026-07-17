@@ -1,6 +1,6 @@
 # Glossary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -143,11 +143,11 @@
 **Relation**
 - Connection between concepts
 - Types: causal, temporal, spatial, generic
-- Directed: source → target
+- Directed: source target
 
 **Analogy**
 - Mapping between domains
-- Source domain → Target domain
+- Source domain Target domain
 - Quality scored by structural similarity
 
 **Embedding**

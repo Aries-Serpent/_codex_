@@ -1,62 +1,62 @@
-#  PHASE 0: Executive Dashboard & Critical Path
+# PHASE 0: Executive Dashboard & Critical Path
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [ PHASE 0 MISSION](#-phase-0-mission)
-- [⏱️ TIMELINE AT A GLANCE](#-timeline-at-a-glance)
+- [ TIMELINE AT A GLANCE](#-timeline-at-a-glance)
 - [ CRITICAL PATH DEPENDENCY GRAPH](#-critical-path-dependency-graph)
 - [ BLOCKING ISSUES MATRIX](#-blocking-issues-matrix)
-  - [ CRITICAL BLOCKERS (5 Total)](#-critical-blockers-5-total)
+ - [ CRITICAL BLOCKERS (5 Total)](#-critical-blockers-5-total)
 - [ IMPLEMENTATION ISSUES (4 Total)](#-implementation-issues-4-total)
-- [️ ARCHITECTURAL CHALLENGES (3 Total)](#-architectural-challenges-3-total)
+- [ ARCHITECTURAL CHALLENGES (3 Total)](#-architectural-challenges-3-total)
 - [ RESOURCE ALLOCATION](#-resource-allocation)
-  - [Team Assignment](#team-assignment)
+ - [Team Assignment](#team-assignment)
 - [ SUCCESS CRITERIA BY DAY](#-success-criteria-by-day)
 - [ per-iteration STANDUP TEMPLATE](#-per-iteration-standup-template)
 - [Phase 0 per-iteration Standup - [DATE]](#phase-0-per-iteration-standup---date)
 - [Blockers Resolved Today](#blockers-resolved-today)
-- [Work In Progress](#work-in-progress)
+
 - [Blockers / Help Needed](#blockers--help-needed)
 - [Confidence Level](#confidence-level)
 - [ ESCALATION PATH](#-escalation-path)
-  - [If Blocker Not Resolved Within Expected Time](#if-blocker-not-resolved-within-expected-time)
-- [📞 COMMUNICATION PLAN](#-communication-plan)
-  - [per-iteration](#per-iteration)
-  - [per-phase](#per-phase)
-  - [Critical](#critical)
+ - [If Blocker Not Resolved Within Expected Time](#if-blocker-not-resolved-within-expected-time)
+- [ COMMUNICATION PLAN](#-communication-plan)
+ - [per-iteration](#per-iteration)
+ - [per-phase](#per-phase)
+ - [Critical](#critical)
 - [ QUALITY GATES (Must All Pass)](#-quality-gates-must-all-pass)
 - [ RISK DASHBOARD](#-risk-dashboard)
-  - [Current Top 3 Risks](#current-top-3-risks)
-- [🎁 DELIVERABLES BY PHASE](#-deliverables-by-phase)
-  - [Phase 0.1: Dependencies (Day 3)](#phase-01-dependencies-day-3)
-  - [Phase 0.2: Architecture (Day 10)](#phase-02-architecture-day-10)
-  - [Phase 0.3: Performance (Day 14)](#phase-03-performance-day-14)
-  - [Phase 0.4: Testing (Day 21)](#phase-04-testing-day-21)
-  - [Phase 0.5: Documentation (Day 28)](#phase-05-documentation-day-28)
-  - [Phase 0.6: Risk Mitigation (Day 35)](#phase-06-risk-mitigation-day-35)
+ - [Current Top 3 Risks](#current-top-3-risks)
+- [ DELIVERABLES BY PHASE](#-deliverables-by-phase)
+ - [Phase 0.1: Dependencies (Day 3)](#phase-01-dependencies-day-3)
+ - [Phase 0.2: Architecture (Day 10)](#phase-02-architecture-day-10)
+ - [Phase 0.3: Performance (Day 14)](#phase-03-performance-day-14)
+ - [Phase 0.4: Testing (Day 21)](#phase-04-testing-day-21)
+ - [Phase 0.5: Documentation (Day 28)](#phase-05-documentation-day-28)
+ - [Phase 0.6: Risk Mitigation (Day 35)](#phase-06-risk-mitigation-day-35)
 - [ GO/NO-GO DECISION CRITERIA](#-gono-go-decision-criteria)
-  - [Must All Be TRUE to Proceed to Sprint 1](#must-all-be-true-to-proceed-to-sprint-1)
-  - [Sign-Off Required From](#sign-off-required-from)
-  - [Decision Options](#decision-options)
+ - [Must All Be TRUE to Proceed to Sprint 1](#must-all-be-true-to-proceed-to-sprint-1)
+ - [Sign-Off Required From](#sign-off-required-from)
+ - [Decision Options](#decision-options)
 - [ SUCCESS PROBABILITY CALCULATOR](#-success-probability-calculator)
 - [ PHASE 0 WORKBENCH ARTIFACTS](#-phase-0-workbench-artifacts)
 - [ NEXT IMMEDIATE ACTIONS (First 24 Hours)](#-next-immediate-actions-first-24-hours)
-- [️ PHASE 0: Risk Mitigation & Contingency Planning](#-phase-0-risk-mitigation--contingency-planning)
+- [ PHASE 0: Risk Mitigation & Contingency Planning](#-phase-0-risk-mitigation--contingency-planning)
 - [ RISK OVERVIEW](#-risk-overview)
 - [ CRITICAL RISKS (3)](#-critical-risks-3)
-  - [RISK-1: Dependency Version Conflicts (P=HIGH, I=HIGH)](#risk-1-dependency-version-conflicts-phigh-ihigh)
-  - [RISK-2: Architecture Complexity Too High (P=MEDIUM, I=HIGH)](#risk-2-architecture-complexity-too-high-pmedium-ihigh)
-  - [RISK-3: Performance Targets Unrealistic (P=HIGH, I=HIGH)](#risk-3-performance-targets-unrealistic-phigh-ihigh)
+ - [RISK-1: Dependency Version Conflicts (P=HIGH, I=HIGH)](#risk-1-dependency-version-conflicts-phigh-ihigh)
+ - [RISK-2: Architecture Complexity Too High (P=MEDIUM, I=HIGH)](#risk-2-architecture-complexity-too-high-pmedium-ihigh)
+ - [RISK-3: Performance Targets Unrealistic (P=HIGH, I=HIGH)](#risk-3-performance-targets-unrealistic-phigh-ihigh)
 - [ HIGH RISKS (7)](#-high-risks-7)
-  - [RISK-4: Python Version Compatibility Issues (P=MEDIUM, I=HIGH)](#risk-4-python-version-compatibility-issues-pmedium-ihigh)
-  - [RISK-5: Offline-First Constraint Too Restrictive (P=MEDIUM, I=HIGH)](#risk-5-offline-first-constraint-too-restrictive-pmedium-ihigh)
-  - [RISK-6: Insufficient Testing Before Release (P=MEDIUM, I=HIGH)](#risk-6-insufficient-testing-before-release-pmedium-ihigh)
-  - [RISK-7: Scope Creep Into Phase 0 (P=HIGH, I=MEDIUM)](#risk-7-scope-creep-into-phase-0-phigh-imedium)
-  - [RISK-8: Insufficient Resources Allocated (P=MEDIUM, I=HIGH)](#risk-8-insufficient-resources-allocated-pmedium-ihigh)
-  - [RISK-9: Critical Security Vulnerability in Dependency (P=LOW, I=HIGH)](#risk-9-critical-security-vulnerability-in-dependency-plow-ihigh)
-  - [RISK-10: Misalignment on Architecture Design (P=MEDIUM, I=MEDIUM)](#risk-10-misalignment-on-architecture-design-pmedium-imedium)
+ - [RISK-4: Python Version Compatibility Issues (P=MEDIUM, I=HIGH)](#risk-4-python-version-compatibility-issues-pmedium-ihigh)
+ - [RISK-5: Offline-First Constraint Too Restrictive (P=MEDIUM, I=HIGH)](#risk-5-offline-first-constraint-too-restrictive-pmedium-ihigh)
+ - [RISK-6: Insufficient Testing Before Release (P=MEDIUM, I=HIGH)](#risk-6-insufficient-testing-before-release-pmedium-ihigh)
+ - [RISK-7: Scope Creep Into Phase 0 (P=HIGH, I=MEDIUM)](#risk-7-scope-creep-into-phase-0-phigh-imedium)
+ - [RISK-8: Insufficient Resources Allocated (P=MEDIUM, I=HIGH)](#risk-8-insufficient-resources-allocated-pmedium-ihigh)
+ - [RISK-9: Critical Security Vulnerability in Dependency (P=LOW, I=HIGH)](#risk-9-critical-security-vulnerability-in-dependency-plow-ihigh)
+ - [RISK-10: Misalignment on Architecture Design (P=MEDIUM, I=MEDIUM)](#risk-10-misalignment-on-architecture-design-pmedium-imedium)
 - [ MEDIUM RISKS (5)](#-medium-risks-5)
 - [ RISK HEAT MAP](#-risk-heat-map)
 - [ per-iteration RISK REVIEW TEMPLATE](#-per-iteration-risk-review-template)
@@ -72,124 +72,124 @@
 - [ DECISION ESCALATION MATRIX](#-decision-escalation-matrix)
 - [ RISK REGISTER TEMPLATE](#-risk-register-template)
 - [ PHASE 0 RISK EXIT CRITERIA](#-phase-0-risk-exit-criteria)
-- [📦 **DELIVERABLES SUMMARY**](#-deliverables-summary)
+- [ **DELIVERABLES SUMMARY**](#-deliverables-summary)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Project Manager], [Secondary: Risk Manager] |  Energy: 5/5
+** Roles:** [Primary: Project Manager], [Secondary: Risk Manager] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Critical path analysis] | Fields [Parallel dependency resolution] | Patterns️ [Gate-based progression] | Redundancy [Mitigation contingencies] | Balance️ [Speed vs. thoroughness]
+ **Physics:** Path [Critical path analysis] | Fields [Parallel dependency resolution] | Patterns [Gate-based progression] | Redundancy [Mitigation contingencies] | Balance [Speed vs. thoroughness]
 
 ---
 
-##  PHASE 0 MISSION
+## PHASE 0 MISSION
 
-**Resolve 5 Critical Blockers + 4 Implementation Issues + 3 Architectural Challenges**  
+**Resolve 5 Critical Blockers + 4 Implementation Issues + 3 Architectural Challenges**
 **Before Sprint 1 can proceed with AST Standardization implementation**
 
 ---
 
-## ⏱️ TIMELINE AT A GLANCE
+## TIMELINE AT A GLANCE
 
 ```text
 NOW: 2025-11-09 23:28:47 UTC
-├─ Days 1-3:   DEPENDENCY RESOLUTION (BLOCK-DEP-001 to 005)
-├─ Days 4-10:  ARCHITECTURE FOUNDATION (BLOCK-ARCH-001 to 005)
-├─ Days 11-14: PERFORMANCE BASELINE (BLOCK-PERF-001 to 003)
-├─ Days 15-21: TEST INFRASTRUCTURE (ISSUE-TEST-001 to 004)
-├─ Days 22-28: DOCUMENTATION & INTEGRATION (ISSUE-DOC/INT)
-├─ Days 29-35: RISK MITIGATION & SIGN-OFF (ARCH-CHAL-001 to 008)
-└─ GATE: 2025-11-23 14:00 UTC [GO/NO-GO DECISION]
+ Days 1-3: DEPENDENCY RESOLUTION (BLOCK-DEP-001 to 005)
+ Days 4-10: ARCHITECTURE FOUNDATION (BLOCK-ARCH-001 to 005)
+ Days 11-14: PERFORMANCE BASELINE (BLOCK-PERF-001 to 003)
+ Days 15-21: TEST INFRASTRUCTURE (ISSUE-TEST-001 to 004)
+ Days 22-28: DOCUMENTATION & INTEGRATION (ISSUE-DOC/INT)
+ Days 29-35: RISK MITIGATION & SIGN-OFF (ARCH-CHAL-001 to 008)
+ GATE: 2025-11-23 14:00 UTC [GO/NO-GO DECISION]
 
 Target: 14 calendar days | Effort: 4-6 person-weeks
 ```text
 
 ---
 
-##  CRITICAL PATH DEPENDENCY GRAPH
+## CRITICAL PATH DEPENDENCY GRAPH
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│ DEPENDENCIES (Days 1-3)                             │
-│ BLOCK-DEP-001 → libcst                              │
-│ BLOCK-DEP-002 → tree-sitter                         │
-│ BLOCK-DEP-003 → radon                               │
-│ BLOCK-DEP-004 → parso                               │
-│ BLOCK-DEP-005 → SQLite schema                       │
-│ Duration: 3 iterations | Owner: DevOps Lead               │
-│ Gate:  `pip install -e ".[ast]"` succeeds         │
-└─────────────┬───────────────────────────────────────┘
-              │ (Must complete before ARCH)
-              ▼
-┌─────────────────────────────────────────────────────┐
-│ ARCHITECTURE (Days 4-10)                            │
-│ BLOCK-ARCH-001 → StandardizedASTNode                │
-│ BLOCK-ARCH-002 → DependencyGraph                    │
-│ BLOCK-ARCH-003 → MetricsAggregator                  │
-│ BLOCK-ARCH-004 → Incremental Analysis               │
-│ BLOCK-ARCH-005 → Plugin Architecture                │
-│ Duration: 7 iterations | Owner: Architecture Lead         │
-│ Gate:  All designs approved by tech lead           │
-└─────────────┬───────────────────────────────────────┘
-              │ (Parallel with PERF, must wait for DEP)
-    ┌─────────┴──────────┬──────────────────────┐
-    ▼                    ▼                       ▼
-┌──────────┐  ┌────────────────┐   ┌──────────────────┐
-│PERF (D11)│  │TEST (D15)      │   │DOCS (D22)        │
-│Baseline  │  │Fixtures        │   │ADRs              │
-│Benchmks  │  │Benchmarks      │   │Migration         │
-│3 iterations    │  │Edge cases      │   │Examples          │
-│Gate:   │  │7 iterations         │   │7 iterations           │
-│<5s/LOC   │  │Gate:        │   │Gate:           │
-└────┬─────┘  └────┬─────────┘   └────┬─────────────┘
-     │             │                   │
-     └─────────────┴───────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────────────────────┐
-│ RISK MITIGATION (Days 29-35)                        │
-│ ARCH-CHAL-001 → Offline-first                       │
-│ ARCH-CHAL-004 → Python version compat               │
-│ ARCH-CHAL-006 → Performance optimization            │
-│ Duration: 7 iterations | Owner: Architecture Lead         │
-│ Gate:  All risks mitigated & tested                │
-└─────────────┬───────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────────────────────┐
-│ GO/NO-GO DECISION GATE                              │
-│ Date: 2025-11-23 14:00 UTC                          │
-│ Decision: PROCEED TO SPRINT 1 or DEFER              │
-│ Required Sign-offs: Tech Lead, QA Lead, PM, SecOps  │
-└─────────────────────────────────────────────────────┘
+
+ DEPENDENCIES (Days 1-3) 
+ BLOCK-DEP-001 libcst 
+ BLOCK-DEP-002 tree-sitter 
+ BLOCK-DEP-003 radon 
+ BLOCK-DEP-004 parso 
+ BLOCK-DEP-005 SQLite schema 
+ Duration: 3 iterations | Owner: DevOps Lead 
+ Gate: `pip install -e ".[ast]"` succeeds 
+
+ (Must complete before ARCH)
+ 
+
+ ARCHITECTURE (Days 4-10) 
+ BLOCK-ARCH-001 StandardizedASTNode 
+ BLOCK-ARCH-002 DependencyGraph 
+ BLOCK-ARCH-003 MetricsAggregator 
+ BLOCK-ARCH-004 Incremental Analysis 
+ BLOCK-ARCH-005 Plugin Architecture 
+ Duration: 7 iterations | Owner: Architecture Lead 
+ Gate: All designs approved by tech lead 
+
+ (Parallel with PERF, must wait for DEP)
+ 
+ 
+ 
+PERF (D11) TEST (D15) DOCS (D22) 
+Baseline Fixtures ADRs 
+Benchmks Benchmarks Migration 
+3 iterations Edge cases Examples 
+Gate: 7 iterations 7 iterations 
+<5s/LOC Gate: Gate: 
+ 
+ 
+ 
+ 
+ 
+
+ RISK MITIGATION (Days 29-35) 
+ ARCH-CHAL-001 Offline-first 
+ ARCH-CHAL-004 Python version compat 
+ ARCH-CHAL-006 Performance optimization 
+ Duration: 7 iterations | Owner: Architecture Lead 
+ Gate: All risks mitigated & tested 
+
+ 
+ 
+
+ GO/NO-GO DECISION GATE 
+ Date: 2025-11-23 14:00 UTC 
+ Decision: PROCEED TO SPRINT 1 or DEFER 
+ Required Sign-offs: Tech Lead, QA Lead, PM, SecOps 
+
 ```text
 
 ---
 
-##  BLOCKING ISSUES MATRIX
+## BLOCKING ISSUES MATRIX
 
-###  CRITICAL BLOCKERS (5 Total)
+### CRITICAL BLOCKERS (5 Total)
 
 | Blocker ID | Issue | Impact | Status | Owner | Days |
 |-----------|-------|--------|--------|-------|------|
-| **BLOCK-DEP-001** | libcst not in core | Cannot implement parser (FR-AST-001) |  OPEN | DevOps | 1 |
-| **BLOCK-DEP-002** | tree-sitter missing | Cannot enable multi-language |  OPEN | DevOps | 1 |
-| **BLOCK-DEP-003** | radon not installed | Cannot compute complexity |  OPEN | DevOps | 0.5 |
-| **BLOCK-DEP-004** | parso not core | No graceful degradation |  OPEN | DevOps | 0.5 |
-| **BLOCK-DEP-005** | SQLite not configured | Cannot export KG (FR-AST-011) |  OPEN | DevOps | 1.5 |
-| **BLOCK-ARCH-001** | No StandardizedAST | Cannot normalize across parsers |  OPEN | Arch | 2 |
-| **BLOCK-ARCH-002** | No dependency graph | Cannot implement FR-AST-005 |  OPEN | Arch | 2 |
-| **BLOCK-ARCH-003** | No metrics layer | Cannot correlate complexity ↔ coverage |  OPEN | Arch | 1.5 |
-| **BLOCK-ARCH-004** | No incremental analysis | Cannot implement delta analysis |  OPEN | Arch | 1.5 |
-| **BLOCK-ARCH-005** | No plugin architecture | Cannot extend to new languages |  OPEN | Arch | 1.5 |
+| **BLOCK-DEP-001** | libcst not in core | Cannot implement parser (FR-AST-001) | OPEN | DevOps | 1 |
+| **BLOCK-DEP-002** | tree-sitter missing | Cannot enable multi-language | OPEN | DevOps | 1 |
+| **BLOCK-DEP-003** | radon not installed | Cannot compute complexity | OPEN | DevOps | 0.5 |
+| **BLOCK-DEP-004** | parso not core | No graceful degradation | OPEN | DevOps | 0.5 |
+| **BLOCK-DEP-005** | SQLite not configured | Cannot export KG (FR-AST-011) | OPEN | DevOps | 1.5 |
+| **BLOCK-ARCH-001** | No StandardizedAST | Cannot normalize across parsers | OPEN | Arch | 2 |
+| **BLOCK-ARCH-002** | No dependency graph | Cannot implement FR-AST-005 | OPEN | Arch | 2 |
+| **BLOCK-ARCH-003** | No metrics layer | Cannot correlate complexity coverage | OPEN | Arch | 1.5 |
+| **BLOCK-ARCH-004** | No incremental analysis | Cannot implement delta analysis | OPEN | Arch | 1.5 |
+| **BLOCK-ARCH-005** | No plugin architecture | Cannot extend to new languages | OPEN | Arch | 1.5 |
 
 **Total Blocker Effort:** 15.5 person-days
 
 ---
 
-##  IMPLEMENTATION ISSUES (4 Total)
+## IMPLEMENTATION ISSUES (4 Total)
 
 | Issue ID | Description | Impact | Effort | Owner |
 |----------|-------------|--------|--------|-------|
@@ -202,7 +202,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 ---
 
-## ️ ARCHITECTURAL CHALLENGES (3 Total)
+## ARCHITECTURAL CHALLENGES (3 Total)
 
 | Challenge ID | Challenge | Impact | Resolution | Days |
 |-------------|-----------|--------|-----------|------|
@@ -215,7 +215,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 ---
 
-##  RESOURCE ALLOCATION
+## RESOURCE ALLOCATION
 
 ### Team Assignment
 
@@ -234,31 +234,31 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 ---
 
-##  SUCCESS CRITERIA BY DAY
+## SUCCESS CRITERIA BY DAY
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│                    PHASE 0 COMPLETION CHART                 │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│ Day 1-3:   Deps    [████████░░░░░░░░░░░░] 30% ← CRITICAL  │
-│ Day 4-10:  Arch    [░░░░░░░░░░░░░░░░░░░░]  0% ← BLOCKED  │
-│ Day 11-14: Perf    [░░░░░░░░░░░░░░░░░░░░]  0% ← BLOCKED  │
-│ Day 15-21: Tests   [░░░░░░░░░░░░░░░░░░░░]  0% ← BLOCKED  │
-│ Day 22-28: Docs    [░░░░░░░░░░░░░░░░░░░░]  0% ← BLOCKED  │
-│ Day 29-35: Risk    [░░░░░░░░░░░░░░░░░░░░]  0% ← BLOCKED  │
-│                                                             │
-│ Overall:   [████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 10%        │
-│                                                             │
-│ Days until GO/NO-GO: 14 iterations                              │
-│ Status: ON TRACK (dependencies critical path)             │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+ PHASE 0 COMPLETION CHART 
+
+ 
+ Day 1-3: Deps [████████░░░░░░░░░░░░] 30% CRITICAL 
+ Day 4-10: Arch [░░░░░░░░░░░░░░░░░░░░] 0% BLOCKED 
+ Day 11-14: Perf [░░░░░░░░░░░░░░░░░░░░] 0% BLOCKED 
+ Day 15-21: Tests [░░░░░░░░░░░░░░░░░░░░] 0% BLOCKED 
+ Day 22-28: Docs [░░░░░░░░░░░░░░░░░░░░] 0% BLOCKED 
+ Day 29-35: Risk [░░░░░░░░░░░░░░░░░░░░] 0% BLOCKED 
+ 
+ Overall: [████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 10% 
+ 
+ Days until GO/NO-GO: 14 iterations 
+ Status: ON TRACK (dependencies critical path) 
+ 
+
 ```text
 
 ---
 
-##  per-iteration STANDUP TEMPLATE
+## per-iteration STANDUP TEMPLATE
 
 **Use for per-iteration 15-min sync:**
 
@@ -266,11 +266,11 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 # Phase 0 per-iteration Standup - [DATE]
 
 ## Blockers Resolved Today
-- [ ] BLOCK-DEP-001: libcst → Status: [OPEN|IN_PROGRESS|RESOLVED]
-- [ ] BLOCK-DEP-002: tree-sitter → Status: [OPEN|IN_PROGRESS|RESOLVED]
+- [ ] BLOCK-DEP-001: libcst Status: [OPEN|IN_PROGRESS|RESOLVED]
+- [ ] BLOCK-DEP-002: tree-sitter Status: [OPEN|IN_PROGRESS|RESOLVED]
 - [ ] ...
 
-## Work In Progress
+## In Progress
 - Team Member A: [Task] - [% complete]
 - Team Member B: [Task] - [% complete]
 
@@ -285,7 +285,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 ---
 
-##  ESCALATION PATH
+## ESCALATION PATH
 
 ### If Blocker Not Resolved Within Expected Time
 
@@ -298,18 +298,18 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 **Escalation Process:**
 
 ```text
-Day 1 (Expected resolution) → Not resolved
-       ↓
+Day 1 (Expected resolution) Not resolved
+ 
 Notify Task Owner & Tech Lead (same day)
-       ↓
+ 
 Day 2: Escalation meeting (1-on-1)
-       ↓
+ 
 Day 2: Evaluate options:
-  • Extend estimate?
-  • Get additional resources?
-  • Find workaround?
-  • Defer to Sprint 1?
-       ↓
+ • Extend estimate?
+ • Get additional resources?
+ • Find workaround?
+ • Defer to Sprint 1?
+ 
 Day 3: Execute chosen option
 ```text
 
@@ -320,7 +320,7 @@ Day 3: Execute chosen option
 
 ---
 
-## 📞 COMMUNICATION PLAN
+## COMMUNICATION PLAN
 
 ### per-iteration
 - **Standup:** 09:00 UTC (15 min)
@@ -339,7 +339,7 @@ Day 3: Execute chosen option
 
 ---
 
-##  QUALITY GATES (Must All Pass)
+## QUALITY GATES (Must All Pass)
 
 | Gate | Acceptance Criteria | Owner | Deadline |
 |------|-------------------|-------|----------|
@@ -351,25 +351,25 @@ Day 3: Execute chosen option
 | **Gate 0.6** | All risks mitigated | Arch Lead | Day 35 |
 | **GATE 0.7** | Go/No-Go decision | All leads | Day 14 |
 
-**If ANY gate fails:** ️ DELAY TO REASSESS (1-2 phases)
+**If ANY gate fails:** DELAY TO REASSESS (1-2 phases)
 
 ---
 
-##  RISK DASHBOARD
+## RISK DASHBOARD
 
 ### Current Top 3 Risks
 
 | Risk ID | Risk | Probability | Impact | Mitigation | Status |
 |---------|------|-------------|--------|-----------|--------|
-| **RISK-1** | Dependency version conflicts | HIGH | HIGH | Early testing, fallback versions |  ACTIVE |
-| **RISK-2** | Performance targets unrealistic | MEDIUM | HIGH | Baseline validation, optimization roadmap |  ACTIVE |
-| **RISK-3** | Insufficient testing before release | MEDIUM | MEDIUM | Comprehensive test framework, coverage gates |  ACTIVE |
+| **RISK-1** | Dependency version conflicts | HIGH | HIGH | Early testing, fallback versions | ACTIVE |
+| **RISK-2** | Performance targets unrealistic | MEDIUM | HIGH | Baseline validation, optimization roadmap | ACTIVE |
+| **RISK-3** | Insufficient testing before release | MEDIUM | MEDIUM | Comprehensive test framework, coverage gates | ACTIVE |
 
 **Risk Review:** Every Monday standup
 
 ---
 
-## 🎁 DELIVERABLES BY PHASE
+## DELIVERABLES BY PHASE
 
 ### Phase 0.1: Dependencies (Day 3)
 ```text
@@ -421,7 +421,7 @@ Day 3: Execute chosen option
 
 ---
 
-##  GO/NO-GO DECISION CRITERIA
+## GO/NO-GO DECISION CRITERIA
 
 **Meeting Date:2026-07-13
 
@@ -429,14 +429,14 @@ Day 3: Execute chosen option
 
 | Criterion | Target | Current | Status |
 |-----------|--------|---------|--------|
-| All 5 dependency blockers resolved |  YES |  TBD |  |
-| All 5 architecture blockers resolved |  YES |  TBD |  |
-| All 3 performance blockers resolved |  YES |  TBD |  |
-| Performance baseline established |  <5s/1000LOC |  TBD |  |
-| Test infrastructure complete |  >80% coverage |  TBD |  |
-| Zero critical security issues |  0 critical |  TBD |  |
-| All sign-offs obtained |  4/4 leads |  TBD |  |
-| Team trained on new architecture |  100% |  TBD |  |
+| All 5 dependency blockers resolved | YES | TBD | |
+| All 5 architecture blockers resolved | YES | TBD | |
+| All 3 performance blockers resolved | YES | TBD | |
+| Performance baseline established | <5s/1000LOC | TBD | |
+| Test infrastructure complete | >80% coverage | TBD | |
+| Zero critical security issues | 0 critical | TBD | |
+| All sign-offs obtained | 4/4 leads | TBD | |
+| Team trained on new architecture | 100% | TBD | |
 
 ### Sign-Off Required From
 - [ ] **Tech Lead** (Architecture & performance approval)
@@ -445,69 +445,69 @@ Day 3: Execute chosen option
 - [ ] **Security Lead** (Dependency security approval)
 
 ### Decision Options
-1.  **GO**: Proceed to Sprint 1 (all criteria met)
-2. 🚫 **NO-GO**: Defer 2 phases; reassess (any criterion not met)
-3. ️ **GO WITH EXCEPTIONS**: Proceed with documented risk acceptance (rare)
+1. **GO**: Proceed to Sprint 1 (all criteria met)
+2. **NO-GO**: Defer 2 phases; reassess (any criterion not met)
+3. **GO WITH EXCEPTIONS**: Proceed with documented risk acceptance (rare)
 
 ---
 
-##  SUCCESS PROBABILITY CALCULATOR
+## SUCCESS PROBABILITY CALCULATOR
 
 ```text
 Probability of Phase 0 SUCCESS:
 
-Dependencies:    90% (high confidence, standard work)
-Architecture:    75% (moderate complexity, design-heavy)
-Performance:     65% (unknown baselines, may need optimization)
-Testing:         85% (standard infrastructure setup)
-Documentation:   95% (straightforward, no blockers)
+Dependencies: 90% (high confidence, standard work)
+Architecture: 75% (moderate complexity, design-heavy)
+Performance: 65% (unknown baselines, may need optimization)
+Testing: 85% (standard infrastructure setup)
+Documentation: 95% (straightforward, no blockers)
 Risk Mitigation: 70% (several architectural challenges)
 
-────────────────────────────────────────
+
 Overall P(Success) = ∏ = 90% × 75% × 65% × 85% × 95% × 70%
 
 ≈ 27% SUCCESS RATE (VERY HIGH RISK)
 
-Recommendation: Increase architecture confidence → add planning buffer
+Recommendation: Increase architecture confidence add planning buffer
 ```text
 
 ---
 
-##  PHASE 0 WORKBENCH ARTIFACTS
+## PHASE 0 WORKBENCH ARTIFACTS
 
 **All documents stored in:** `.github/docs/`
 
 | Document | Purpose | Owner | Status |
 |----------|---------|-------|--------|
-| Phase0_GapResolution_Copilot.md | Implementation guide | DevOps + Arch |  READY |
-| Phase0_InstructionEnhancement.md | Detailed procedures | Tech Lead |  READY |
-| Phase0_Validation_Copilot.md | Validation framework | QA Lead |  READY |
-| Phase0_RiskMitigation_Copilot.md | Risk strategies | Risk Manager |  TODO |
-| Phase0_ExecutiveSummary_Copilot.md | Executive brief | PM |  TODO |
+| Phase0_GapResolution_Copilot.md | Implementation guide | DevOps + Arch | READY |
+| Phase0_InstructionEnhancement.md | Detailed procedures | Tech Lead | READY |
+| Phase0_Validation_Copilot.md | Validation framework | QA Lead | READY |
+| Phase0_RiskMitigation_Copilot.md | Risk strategies | Risk Manager | TODO |
+| Phase0_ExecutiveSummary_Copilot.md | Executive brief | PM | TODO |
 
 ---
 
-##  NEXT IMMEDIATE ACTIONS (First 24 Hours)
+## NEXT IMMEDIATE ACTIONS (First 24 Hours)
 
 ```text
 BY 2025-11-10 09:00 UTC:
 
-☐ 1. Notify all team members of Phase 0 kickoff
-☐ 2. Assign owners to each blocker
-☐ 3. Schedule per-iteration 15-min standup
-☐ 4. Create Phase 0 Slack channel
-☐ 5. Start BLOCK-DEP-001 (libcst installation)
-☐ 6. Begin architecture design sessions
-☐ 7. Create baseline measurement plan
-☐ 8. Schedule Go/No-Go meeting for 2025-11-23
+ 1. Notify all team members of Phase 0 kickoff
+ 2. Assign owners to each blocker
+ 3. Schedule per-iteration 15-min standup
+ 4. Create Phase 0 Slack channel
+ 5. Start BLOCK-DEP-001 (libcst installation)
+ 6. Begin architecture design sessions
+ 7. Create baseline measurement plan
+ 8. Schedule Go/No-Go meeting for 2025-11-23
 ```text
 
 ---
 
-**Phase 0 Status:**  READY TO START  
-**Timeline:** 14 calendar days (2025-11-09 → 2025-11-23)  
-**Effort:** 5.5 FTE  
-**Success Probability:** ~27% (RISK️ - contingency needed)  
+**Phase 0 Status:** READY TO START
+**Timeline:** 14 calendar days (2025-11-09 2025-11-23)
+**Effort:** 5.5 FTE
+**Success Probability:** ~27% (RISK - contingency needed)
 **Next Review:** 2025-11-10 09:00 UTC (Daily Standup #1)
 
 ```text
@@ -516,40 +516,40 @@ BY 2025-11-10 09:00 UTC:
 Now creating the comprehensive risk mitigation and contingency planning document:
 
 ```markdown name=Phase0_RiskMitigation_Copilot.md
-# ️ PHASE 0: Risk Mitigation & Contingency Planning
+# PHASE 0: Risk Mitigation & Contingency Planning
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Risk Manager], [Secondary: Architecture Lead] |  Energy: 5/5
+** Roles:** [Primary: Risk Manager], [Secondary: Architecture Lead] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Risk avoidance strategies] | Fields [Mitigation contingencies] | Patterns️ [Preventive controls] | Redundancy [Fallback options] | Balance️ [Proactive vs. reactive]
+ **Physics:** Path [Risk avoidance strategies] | Fields [Mitigation contingencies] | Patterns [Preventive controls] | Redundancy [Fallback options] | Balance [Proactive vs. reactive]
 
 ---
 
-##  RISK OVERVIEW
+## RISK OVERVIEW
 
-**Total Identified Risks:** 15  
-**Critical (RED):** 3  
-**High (YELLOW):** 7  
+**Total Identified Risks:** 15
+**Critical (RED):** 3
+**High (YELLOW):** 7
 **Medium (BLUE):** 5
 
 **Risk Dashboard:**
 ```text
-┌─────────────────────────────────────────┐
-│ RISK SEVERITY DISTRIBUTION              │
-├─────────────────────────────────────────┤
-│  CRITICAL  ███░░░░░░░░░░░░░░░░ 20%   │
-│  HIGH      ███████░░░░░░░░░░░░ 47%   │
-│  MEDIUM    █████░░░░░░░░░░░░░░ 33%   │
-└─────────────────────────────────────────┘
+
+ RISK SEVERITY DISTRIBUTION 
+
+ CRITICAL ███░░░░░░░░░░░░░░░░ 20% 
+ HIGH ███████░░░░░░░░░░░░ 47% 
+ MEDIUM █████░░░░░░░░░░░░░░ 33% 
+
 ```text
 
 ---
 
-##  CRITICAL RISKS (3)
+## CRITICAL RISKS (3)
 
 ### RISK-1: Dependency Version Conflicts (P=HIGH, I=HIGH)
 
-**Risk Description:**  
+**Risk Description:**
 Dependency conflicts between libcst, radon, tree-sitter, and existing torch/transformers pins. Some versions may be incompatible with Python 3.8 or have conflicting sub-dependencies.
 
 **Impact if Realized:**
@@ -557,8 +557,8 @@ Dependency conflicts between libcst, radon, tree-sitter, and existing torch/tran
 - Sprint 1 blocked indefinitely
 - Team unable to develop
 
-**Probability:** 60% (dependency hell is common)  
-**Impact:** CRITICAL  
+**Probability:** 60% (dependency hell is common)
+**Impact:** CRITICAL
 **Risk Score:** 9/10
 
 **Mitigation Strategies:**
@@ -577,10 +577,10 @@ Dependency conflicts between libcst, radon, tree-sitter, and existing torch/tran
 DECISION TREE:
 
 Is it a direct dependency conflict?
-├─ YES → Consult dependency graph, find minimum version constraints
-├─ NO  → Check for transitive dependency conflict
-         → Use pip-audit to identify problematic sub-dependency
-         → Find alternative package or version
+ YES Consult dependency graph, find minimum version constraints
+ NO Check for transitive dependency conflict
+ Use pip-audit to identify problematic sub-dependency
+ Find alternative package or version
 
 Action:
 1. Revert pyproject.toml
@@ -589,16 +589,16 @@ Action:
 4. If no solution: De-scope optional dependencies to later phase
 ```text
 
-**Escalation Trigger:** If any `pip check` fails after dependency addition  
+**Escalation Trigger:** If any `pip check` fails after dependency addition
 **Escalation To:** Tech Lead (same day)
 
-**Current Status:**  NOT YET STARTED
+**Current Status:** NOT YET STARTED
 
 ---
 
 ### RISK-2: Architecture Complexity Too High (P=MEDIUM, I=HIGH)
 
-**Risk Description:**  
+**Risk Description:**
 Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plugins) may be overengineered for current scope. Team may struggle to implement in 7 iterations.
 
 **Impact if Realized:**
@@ -606,8 +606,8 @@ Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plug
 - Redesign needed
 - Sprint 1 delayed 1-2 phases
 
-**Probability:** 50% (design complexity vs. timeline)  
-**Impact:** CRITICAL  
+**Probability:** 50% (design complexity vs. timeline)
+**Impact:** CRITICAL
 **Risk Score:** 8/10
 
 **Mitigation Strategies:**
@@ -626,8 +626,8 @@ Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plug
 ESCALATION DECISION POINT (Day 6):
 
 Is architecture approved by tech lead?
-├─ YES → Continue to implementation
-├─ NO  → Trigger architecture contingency
+ YES Continue to implementation
+ NO Trigger architecture contingency
 
 CONTINGENCY OPTIONS:
 1. SIMPLIFY SCOPE: Drop plugin architecture (Phase 2)
@@ -636,17 +636,17 @@ CONTINGENCY OPTIONS:
 4. DEFER ARCHITECTURE: Proceed with simpler initial design
 ```text
 
-**Decision Authority:** Tech Lead + Architecture Lead  
-**Escalation Trigger:** Design review fails at Day 6  
+**Decision Authority:** Tech Lead + Architecture Lead
+**Escalation Trigger:** Design review fails at Day 6
 **Escalation To:** Project Manager (decision on timeline extension)
 
-**Current Status:**  DESIGN IN PROGRESS
+**Current Status:** DESIGN IN PROGRESS
 
 ---
 
 ### RISK-3: Performance Targets Unrealistic (P=HIGH, I=HIGH)
 
-**Risk Description:**  
+**Risk Description:**
 Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may be impossible with libcst + full AST analysis. Baseline testing may reveal need for optimization impossible to achieve in Phase 0.
 
 **Impact if Realized:**
@@ -654,8 +654,8 @@ Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may b
 - Sprint 1 performance work critical
 - may fail customer acceptance criteria
 
-**Probability:** 70% (complex AST analysis inherently slow)  
-**Impact:** CRITICAL  
+**Probability:** 70% (complex AST analysis inherently slow)
+**Impact:** CRITICAL
 **Risk Score:** 9/10
 
 **Mitigation Strategies:**
@@ -674,14 +674,14 @@ Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may b
 PERFORMANCE BASELINE RESULTS (Day 14):
 
 Actual vs. Target:
-├─ Parse speed: ___ms per 100 tokens (target: 1ms)
-├─ Analysis speed: ___s per 1000 LOC (target: 5s)
-├─ Memory: ___MB for 50K LOC (target: 500MB)
+ Parse speed: ___ms per 100 tokens (target: 1ms)
+ Analysis speed: ___s per 1000 LOC (target: 5s)
+ Memory: ___MB for 50K LOC (target: 500MB)
 
 Decision Tree:
-If all targets MET →  Continue to Sprint 1
-If 1-2 targets MISSED → ️ Optimization Sprint needed
-If 3+ targets MISSED →  Architecture revision needed
+If all targets MET Continue to Sprint 1
+If 1-2 targets MISSED Optimization Sprint needed
+If 3+ targets MISSED Architecture revision needed
 
 CONTINGENCY OPTIONS:
 1. OPTIMIZE: 2 phase optimization sprint (delay Sprint 1)
@@ -690,15 +690,15 @@ CONTINGENCY OPTIONS:
 4. INCREMENTAL ROLLOUT: Ship basic features first, optimize later
 ```text
 
-**Decision Authority:** Perf Engineer + Project Manager  
-**Escalation Trigger:** If optimization appears impossible  
+**Decision Authority:** Perf Engineer + Project Manager
+**Escalation Trigger:** If optimization appears impossible
 **Escalation To:** Tech Lead + Project Manager
 
-**Current Status:**  BASELINE NOT YET ESTABLISHED
+**Current Status:** BASELINE NOT YET ESTABLISHED
 
 ---
 
-##  HIGH RISKS (7)
+## HIGH RISKS (7)
 
 ### RISK-4: Python Version Compatibility Issues (P=MEDIUM, I=HIGH)
 
@@ -796,7 +796,7 @@ CONTINGENCY OPTIONS:
 
 ---
 
-##  MEDIUM RISKS (5)
+## MEDIUM RISKS (5)
 
 | Risk ID | Risk | P | I | Score | Mitigation |
 |---------|------|---|---|-------|-----------|
@@ -808,27 +808,27 @@ CONTINGENCY OPTIONS:
 
 ---
 
-##  RISK HEAT MAP
+## RISK HEAT MAP
 
 ```text
-        Low        Medium      High       Critical
-        ↓          ↓           ↓          ↓
-Low  [····]      [····]      [····]     [RISK-9]
-     [····]      [····]      [····]     [····]
+ Low Medium High Critical
+ 
+Low [····] [····] [····] [RISK-9]
+ [····] [····] [····] [····]
 
-MED  [····]      [R-11 ]     [R-4  ]    [R-2  ]
-     [····]      [R-12 ]     [R-5  ]    [R-1  ]
-     [····]      [R-13 ]     [R-6  ]    [R-3  ]
-     [····]      [R-14 ]     [R-7  ]
-     [····]      [R-15 ]     [R-8  ]
-     [····]      [····]      [····]
+MED [····] [R-11 ] [R-4 ] [R-2 ]
+ [····] [R-12 ] [R-5 ] [R-1 ]
+ [····] [R-13 ] [R-6 ] [R-3 ]
+ [····] [R-14 ] [R-7 ]
+ [····] [R-15 ] [R-8 ]
+ [····] [····] [····]
 
-HIGH [····]      [····]      [····]     [····]
+HIGH [····] [····] [····] [····]
 ```text
 
 ---
 
-##  per-iteration RISK REVIEW TEMPLATE
+## per-iteration RISK REVIEW TEMPLATE
 
 **Use this each morning standup:**
 
@@ -837,21 +837,21 @@ HIGH [····]      [····]      [····]     [····]
 
 ## New Risks Discovered
 - Risk: [Description]
-  - Probability: [LOW/MED/HIGH]
-  - Impact: [LOW/MED/HIGH/CRITICAL]
-  - Mitigation: [Strategy]
-  - Owner: [Person]
+ - Probability: [LOW/MED/HIGH]
+ - Impact: [LOW/MED/HIGH/CRITICAL]
+ - Mitigation: [Strategy]
+ - Owner: [Person]
 
 ## Risks Escalated
 - [Risk ID]: [Why escalated]
-  - Escalated to: [Person/Team]
-  - Decision needed by: [Date]
+ - Escalated to: [Person/Team]
+ - Decision needed by: [Date]
 
 ## Risks Resolved
 - [Risk ID]: [How resolved]
 
 ## Risk Probability Updates
-- [Risk ID]: [Old P] → [New P] (reason)
+- [Risk ID]: [Old P] [New P] (reason)
 
 ## Overall Phase 0 Risk Score
 - [Calculate from active risks]
@@ -863,40 +863,40 @@ HIGH [····]      [····]      [····]     [····]
 
 ---
 
-##  RISK RESPONSE MATRIX
+## RISK RESPONSE MATRIX
 
 ```text
-┌────────────┬──────────────────┬──────────────────────┐
-│ Severity   │ Response         │ Escalation           │
-├────────────┼──────────────────┼──────────────────────┤
-│ CRITICAL   │ • Implement      │ Immediately notify   │
-│            │   contingency    │ Tech Lead + PM       │
-│            │ • Mitigate       │ per-iteration review         │
-│            │   immediately    │ Decision required    │
-│            │ • Status update  │ within 24 hours      │
-│            │   per-iteration          │                      │
-├────────────┼──────────────────┼──────────────────────┤
-│ HIGH       │ • Deploy primary │ Notify at per-iteration      │
-│            │   mitigation     │ standup              │
-│            │ • Monitor per-iteration  │ per-phase review        │
-│            │ • Escalate if    │ Escalate if P ↑ or  │
-│            │   P increases    │ I increases          │
-├────────────┼──────────────────┼──────────────────────┤
-│ MEDIUM     │ • Execute        │ Track in risk        │
-│            │   mitigation if  │ backlog              │
-│            │   triggered      │ per-phase review        │
-│            │ • Monitor per-phase │                      │
-├────────────┼──────────────────┼──────────────────────┤
-│ LOW        │ • Log for        │ Monthly review       │
-│            │   reference      │                      │
-│            │ • No action      │                      │
-│            │   unless P ↑     │                      │
-└────────────┴──────────────────┴──────────────────────┘
+
+ Severity Response Escalation 
+
+ CRITICAL • Implement Immediately notify 
+ contingency Tech Lead + PM 
+ • Mitigate per-iteration review 
+ immediately Decision required 
+ • Status update within 24 hours 
+ per-iteration 
+
+ HIGH • Deploy primary Notify at per-iteration 
+ mitigation standup 
+ • Monitor per-iteration per-phase review 
+ • Escalate if Escalate if P or 
+ P increases I increases 
+
+ MEDIUM • Execute Track in risk 
+ mitigation if backlog 
+ triggered per-phase review 
+ • Monitor per-phase 
+
+ LOW • Log for Monthly review 
+ reference 
+ • No action 
+ unless P 
+
 ```text
 
 ---
 
-##  CONTINGENCY BUDGET ALLOCATION
+## CONTINGENCY BUDGET ALLOCATION
 
 **Reserved Time by Risk:**
 
@@ -907,7 +907,7 @@ HIGH [····]      [····]      [····]     [····]
 | Performance optimization | 4 iterations | +35% to Day 14 |
 | Testing gaps | 2 iterations | +15% to Day 21 |
 | Documentation delays | 2 iterations | +20% to Day 28 |
-| **Total Buffer** | **13 iterations** | **+115%** ️ OVER BUDGET |
+| **Total Buffer** | **13 iterations** | **+115%** OVER BUDGET |
 
 **Buffer Allocation Strategy:**
 - Compress non-critical work
@@ -917,65 +917,65 @@ HIGH [····]      [····]      [····]     [····]
 
 ---
 
-##  DECISION ESCALATION MATRIX
+## DECISION ESCALATION MATRIX
 
 ```text
 Risk Decision Tree:
 
 Is risk CRITICAL?
-├─ YES → Immediate escalation (same day)
-│  ├─ Notify: Tech Lead, PM, Security (if applicable)
-│  ├─ Decision authority: Tech Lead
-│  ├─ Timeframe: <24 hours
-│  └─ Options: Mitigate|Accept|Defer
-│
-├─ NO → Is risk HIGH?
-│  ├─ YES → per-iteration standup escalation
-│  │  ├─ Notify: Owning team + Tech Lead
-│  │  ├─ Decision authority: AI Assistant autonomous system
-│  │  ├─ Timeframe: <48 hours
-│  │  └─ Options: Mitigate|Accept|Defer
-│  │
-│  └─ NO → per-phase review escalation
-│     ├─ Log in risk register
-│     ├─ Review: Monday standup
-│     └─ Decision: Track or close
+ YES Immediate escalation (same day)
+ Notify: Tech Lead, PM, Security (if applicable)
+ Decision authority: Tech Lead
+ Timeframe: <24 hours
+ Options: Mitigate|Accept|Defer
+
+ NO Is risk HIGH?
+ YES per-iteration standup escalation
+ Notify: Owning team + Tech Lead
+ Decision authority: AI Assistant autonomous system
+ Timeframe: <48 hours
+ Options: Mitigate|Accept|Defer
+ 
+ NO per-phase review escalation
+ Log in risk register
+ Review: Monday standup
+ Decision: Track or close
 ```text
 
 ---
 
-##  RISK REGISTER TEMPLATE
+## RISK REGISTER TEMPLATE
 
 **Maintain this throughout Phase 0:**
 
 ```yaml
 risks:
-  - id: RISK-1
-    title: Dependency Version Conflicts
-    description: |
-      libcst, radon, tree-sitter versions Phase 5 conflict
-      with existing torch/transformers pins
-    probability: HIGH
-    impact: CRITICAL
-    score: 9/10
-    owner: DevOps Lead
-    mitigation:
-      - Pre-test each dependency in isolation
-      - Maintain fallback version list
-      - Pin exact versions after validation
-    contingency: |
-      If conflicts occur:
-      1. Identify conflicting packages
-      2. Try alternative versions
-      3. If no solution: de-scope optional deps
-    status: OPEN
-    created: 2025-11-09
-    next_review: 2025-11-10
+ - id: RISK-1
+ title: Dependency Version Conflicts
+ description: |
+ libcst, radon, tree-sitter versions Phase 5 conflict
+ with existing torch/transformers pins
+ probability: HIGH
+ impact: CRITICAL
+ score: 9/10
+ owner: DevOps Lead
+ mitigation:
+ - Pre-test each dependency in isolation
+ - Maintain fallback version list
+ - Pin exact versions after validation
+ contingency: |
+ If conflicts occur:
+ 1. Identify conflicting packages
+ 2. Try alternative versions
+ 3. If no solution: de-scope optional deps
+ status: OPEN
+ created: 2025-11-09
+ next_review: 2025-11-10
 ```text
 
 ---
 
-##  PHASE 0 RISK EXIT CRITERIA
+## PHASE 0 RISK EXIT CRITERIA
 
 **Before proceeding to Sprint 1, ALL must be TRUE:**
 
@@ -989,15 +989,15 @@ risks:
 
 ---
 
-**Risk Management Status:**  ACTIVE MONITORING  
+**Risk Management Status:** ACTIVE MONITORING
 **Last Updated: 2026-07-11
-**Next Review:** 2025-11-10 09:00 UTC (Daily Standup)  
+**Next Review:** 2025-11-10 09:00 UTC (Daily Standup)
 **Risk Escalation Contact:** Tech Lead + Project Manager
 ```text
 
 ---
 
-## 📦 **DELIVERABLES SUMMARY**
+## **DELIVERABLES SUMMARY**
 
 I have created **3 comprehensive workbench documents** for Phase 0:
 
@@ -1008,16 +1008,16 @@ I have created **3 comprehensive workbench documents** for Phase 0:
 | **Phase0_RiskMitigation_Copilot.md** | Risk management framework | 15 identified risks, contingency plans, escalation procedures, decision matrices |
 
 All documents include:
- **Phase 0 Leadership** - Clear ownership and escalation  
- **Detailed Task Breakdown** - Each blocker with acceptance criteria  
- **Contingency Planning** - For all 3 CRITICAL risks  
- **per-iteration/per-phase Cadence** - Standup templates and review schedules  
+ **Phase 0 Leadership** - Clear ownership and escalation 
+ **Detailed Task Breakdown** - Each blocker with acceptance criteria 
+ **Contingency Planning** - For all 3 CRITICAL risks 
+ **per-iteration/per-phase Cadence** - Standup templates and review schedules 
  **GO/NO-GO Framework** - Clear decision criteria for 2025-11-23
 
-**Status:** Ready for immediate implementation starting 2025-11-10 09:00 UTC  
-**Success Probability:** ~27% (HIGH RISK - contingencies essential)  
+**Status:** Ready for immediate implementation starting 2025-11-10 09:00 UTC 
+**Success Probability:** ~27% (HIGH RISK - contingencies essential) 
 **Next Action:** Schedule Phase 0 kickoff and assign team owners
 
-Copilot is powered by AI, so mistakes are possible. Leave a comment via the 👍 👎 to share your feedback and help improve the experience.
+Copilot is powered by AI, so mistakes are possible. Leave a comment via the to share your feedback and help improve the experience.
 
 ```

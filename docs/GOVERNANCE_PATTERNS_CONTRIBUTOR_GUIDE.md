@@ -1,10 +1,10 @@
 # Governance Patterns Contributor Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Purpose**: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.  
-> **Authority**: Phase D Tier 2 operational guidance (autonomous execution)  
-> **Version**: 1.0  
+> **Purpose**: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.
+> **Authority**: Phase D Tier 2 operational guidance (autonomous execution)
+> **Version**: 1.0
 > **Last Updated**: 2026-07-02
 
 ---
@@ -112,10 +112,10 @@ Use this template to propose a new governance pattern:
 
 ```yaml
 governance:
-  pattern: [CATEGORY]-[SEQUENCE]
-  enabled: true
-  enforcement: [hard_block | soft_block | audit]
-  # Pattern-specific config
+ pattern: [CATEGORY]-[SEQUENCE]
+ enabled: true
+ enforcement: [hard_block | soft_block | audit]
+ # Pattern-specific config
 ```
 
 ## 4. Dependencies
@@ -221,12 +221,19 @@ Use this decision tree to assign the correct category and sequence ID:
 
 ```mermaid
 graph TD
+
     A["Is this pattern about<br/>POLICY or GOVERNANCE?"]
+
     A -->|Yes| B["Governance Policy<br/><strong>Category: GP</strong><br/>Covers approval gates,<br/>code review rules,<br/>change control"]
+
     A -->|No| C["Is this about<br/>APPROVALS or WORKFLOWS?"]
+
     C -->|Yes| D["Approval & Workflow<br/><strong>Category: AP</strong><br/>Covers PR approvals,<br/>deployment gates,<br/>workflow automation"]
+
     C -->|No| E["Is this about<br/>COMPLIANCE or AUDIT?"]
+
     E -->|Yes| F["Compliance & Audit<br/><strong>Category: CP</strong><br/>Covers policy compliance,<br/>audit trails,<br/>access controls"]
+
     E -->|No| G["Advanced Integration<br/><strong>Category: IP</strong><br/>Covers agent routing,<br/>cross-system patterns,<br/>orchestration"]
 ```
 
@@ -256,7 +263,7 @@ This 6-step workflow ensures governance patterns are properly vetted before inte
 **Action**: Create a GitHub Discussion in the `Governance Patterns` category
 
 **Deliverables**:
-- Discussion title: `[DRAFT] Pattern Proposal: [Pattern Name]`
+- Discussion title: `Pattern Proposal: [Pattern Name]`
 - Discussion body: Complete pattern proposal using the [Pattern Creation Template](#pattern-creation-template)
 - Tagging: Label with `governance-pattern-proposal` and target category label (e.g., `category:governance-policy`)
 
@@ -296,10 +303,10 @@ This 6-step workflow ensures governance patterns are properly vetted before inte
 **Deliverables**:
 - Branch: `feature/governance-pattern-[ID]-[name]`
 - Files modified:
-  - `.codex/GOVERNANCE_PATTERNS_REFERENCE.md` (add pattern entry)
-  - `.codex/GOVERNANCE_PATTERN_EXAMPLES.md` (add implementation example)
-  - Code implementation files (if agent-specific)
-  - Tests (unit + integration as per [Testing Requirements](#testing-requirements))
+ - `.codex/GOVERNANCE_PATTERNS_REFERENCE.md` (add pattern entry)
+ - `.codex/GOVERNANCE_PATTERN_EXAMPLES.md` (add implementation example)
+ - Code implementation files (if agent-specific)
+ - Tests (unit + integration as per [Testing Requirements](#testing-requirements))
 
 **Success Criteria**:
 - [ ] Pattern documented in reference guide
@@ -690,7 +697,7 @@ Avoid these mistakes when creating governance patterns:
 
 **Problem**: Pattern addresses a general concern but doesn't tie to specific failures.
 
-**Example of Pitfall**: "We should improve code quality"  
+**Example of Pitfall**: "We should improve code quality"
 **Example of Fix**: "Three code reviews this month missed security vulnerabilities because reviewers didn't check for hardcoded credentials. This pattern requires automated scanning before approval."
 
 **Prevention**:
@@ -704,7 +711,7 @@ Avoid these mistakes when creating governance patterns:
 
 **Problem**: Pattern doesn't specify what happens when rule is violated.
 
-**Example of Pitfall**: "Code review should happen"  
+**Example of Pitfall**: "Code review should happen"
 **Example of Fix**: "Code review is a Hard Block. If PR lacks approval from authorized reviewer, reject PR automatically and notify submitter with link to review runbook."
 
 **Prevention**:
@@ -719,7 +726,7 @@ Avoid these mistakes when creating governance patterns:
 
 **Problem**: Pattern depends on another pattern but doesn't document it.
 
-**Example of Pitfall**: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).  
+**Example of Pitfall**: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).
 **Example of Fix**: AP-001 section states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."
 
 **Prevention**:
@@ -733,7 +740,7 @@ Avoid these mistakes when creating governance patterns:
 
 **Problem**: Pattern only works in one scenario but should be more general.
 
-**Example of Pitfall**: Pattern documents GitHub Actions workflow but should apply to all CI/CD systems.  
+**Example of Pitfall**: Pattern documents GitHub Actions workflow but should apply to all CI/CD systems.
 **Example of Fix**: Pattern documents generic governance principle with examples for GitHub Actions, GitLab CI, and local execution.
 
 **Prevention**:
@@ -747,7 +754,7 @@ Avoid these mistakes when creating governance patterns:
 
 **Problem**: Pattern is vague about how to verify it's working.
 
-**Example of Pitfall**: Pattern says "Monitor code review quality" without saying how.  
+**Example of Pitfall**: Pattern says "Monitor code review quality" without saying how.
 **Example of Fix**: Pattern includes checklist: "Verify enforcement: [ ] Review comments present, [ ] Violations logged, [ ] Metrics populated"
 
 **Prevention**:
@@ -761,7 +768,7 @@ Avoid these mistakes when creating governance patterns:
 
 **Problem**: Pattern examples include real secrets (API keys, passwords, tokens).
 
-**Example of Pitfall**: Example shows `api_key: sk-1234567890abcdef`  
+**Example of Pitfall**: Example shows `api_key: sk-1234567890abcdef`
 **Example of Fix**: Example shows `api_key: ${API_KEY_PLACEHOLDER}` with note "Replace with your actual API key from secure store"
 
 **Prevention**:
@@ -792,7 +799,7 @@ Governance patterns use semantic versioning to track changes:
 | Add example | Include new implementation example | 1.1 |
 | Clarify documentation | Reword confusing section | 1.0.1 |
 | Add configuration option | New config parameter (optional) | 1.1 |
-| Change enforcement | Hard Block → Soft Block | 2.0 |
+| Change enforcement | Hard Block Soft Block | 2.0 |
 | Add prerequisite | Pattern now depends on new pattern | 2.0 |
 | Bug fix | Enforcement logic corrected | 1.0.1 |
 

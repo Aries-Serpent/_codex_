@@ -1,9 +1,9 @@
 # Guide: Evidence & Citation in Status (v1.2)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Evidence Curator], [Secondary: Reviewer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Evidence Curator], [Secondary: Reviewer] Energy: 5
 
 Purpose
 - Standardize how authors reference evidence (tests, logs, artifacts) to support claims in daily status.
@@ -21,7 +21,7 @@ Examples
 | "Coverage rose by 2.3%" | reports/.coverage.json (totals.percent_covered), delta.tests_coverage_delta |
 | "Parity tests added" | tests/tokenization/test_tokenizer_parity.py |
 | "Secrets baseline present" | .secrets.baseline (audited) |
-| "Schema validation PASS" | scripts/status/collect_schema_results.py → schema_validation_results.json |
+| "Schema validation PASS" | scripts/status/collect_schema_results.py schema_validation_results.json |
 
 Checklist
 - [ ] Evidence path exists and is readable

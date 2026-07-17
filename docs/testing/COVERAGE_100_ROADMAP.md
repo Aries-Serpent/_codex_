@@ -1,18 +1,18 @@
 # Test Coverage 100% Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Version**: 1.0.0  
-**Created**: 2025-12-30  
-**Target**: 100% test coverage  
-**Current**: 10.7% (from coverage.xml)  
-**Status**:  Active
+**Version**: 1.0.0
+**Created**: 2025-12-30
+**Target**: 100% test coverage
+**Current**: 10.7% (from coverage.xml)
+**Status**: Active
 
 ---
 
-##  Mission
+## Mission
 
 Achieve **100% test coverage** for the `_codex_` repository through systematic, phased testing enhancement.
 
@@ -25,7 +25,7 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 
 ---
 
-##  Current State
+## Current State
 
 ### Test Infrastructure
 - **Total Tests**: 21,500+ tests
@@ -56,28 +56,28 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 
 ---
 
-## 🗺️ 4-Phase Strategy
+## 4-Phase Strategy
 
-### Phase 9.1: Critical Path Coverage (10.7% → 25%)
-**Priority**:  CRITICAL  
-**Effort**: 1-2 sessions (~40K-60K tokens)  
+### Phase 9.1: Critical Path Coverage (10.7% 25%)
+**Priority**: CRITICAL
+**Effort**: 1-2 sessions (~40K-60K tokens)
 **Focus**: Cover all critical business logic and happy paths
 
 **Targets**:
 1. **Core Pipeline** (`src/codex/`)
-   - Code ingestion and processing
-   - AST transformation pipeline
-   - RAG and retrieval systems
+ - Code ingestion and processing
+ - AST transformation pipeline
+ - RAG and retrieval systems
 
 2. **Agent Core** (`agents/`)
-   - Agent orchestration workflows
-   - Decision-making logic
-   - State transitions
+ - Agent orchestration workflows
+ - Decision-making logic
+ - State transitions
 
 3. **MCP System** (`scripts/mcp/`)
-   - Package creation and validation
-   - Manifest generation
-   - File selection logic
+ - Package creation and validation
+ - Manifest generation
+ - File selection logic
 
 **Success Criteria**:
 - [ ] All critical paths tested
@@ -87,28 +87,28 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 
 **Test Additions Estimate**: 150-200 new tests
 
-### Phase 9.2: Public API Coverage (85% → 92%)
-**Priority**:  HIGH  
-**Effort**: 1 session (~30K-40K tokens)  
+### Phase 9.2: Public API Coverage (85% 92%)
+**Priority**: HIGH
+**Effort**: 1 session (~30K-40K tokens)
 **Focus**: Cover all public APIs and their contracts
 
 **Targets**:
 1. **Public Functions** (all modules)
-   - Function entry points
-   - Parameter validation
-   - Return value testing
-   - Docstring examples
+ - Function entry points
+ - Parameter validation
+ - Return value testing
+ - Docstring examples
 
 2. **Class APIs** (all classes)
-   - Constructor variations
-   - Public method coverage
-   - Property accessors
-   - Magic methods
+ - Constructor variations
+ - Public method coverage
+ - Property accessors
+ - Magic methods
 
 3. **Module-Level APIs**
-   - Exported functions
-   - Module constants
-   - Factory functions
+ - Exported functions
+ - Module constants
+ - Factory functions
 
 **Success Criteria**:
 - [ ] All public APIs have ≥ 1 test
@@ -118,29 +118,29 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 
 **Test Additions Estimate**: 100-150 new tests
 
-### Phase 9.3: Error Path Coverage (92% → 97%)
-**Priority**:  MEDIUM  
-**Effort**: 1 session (~30K-40K tokens)  
+### Phase 9.3: Error Path Coverage (92% 97%)
+**Priority**: MEDIUM
+**Effort**: 1 session (~30K-40K tokens)
 **Focus**: Cover all error handling and exception paths
 
 **Targets**:
 1. **Exception Handling**
-   - Try/except blocks
-   - Exception raising
-   - Error recovery logic
-   - Cleanup in error paths
+ - Try/except blocks
+ - Exception raising
+ - Error recovery logic
+ - Cleanup in error paths
 
 2. **Input Validation**
-   - Invalid inputs
-   - Boundary conditions
-   - Type errors
-   - Value errors
+ - Invalid inputs
+ - Boundary conditions
+ - Type errors
+ - Value errors
 
 3. **External Failures**
-   - Network errors (mocked)
-   - File I/O errors
-   - Permission errors
-   - Timeout handling
+ - Network errors (mocked)
+ - File I/O errors
+ - Permission errors
+ - Timeout handling
 
 **Success Criteria**:
 - [x] All exception paths tested
@@ -148,31 +148,31 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 - [x] Cleanup verified
 - [ ] Coverage reaches 97%
 
-**Test Additions Estimate**: 80-120 new tests  
-**Actual Tests Added**: 50 tests (44 agents + 6 MCP) — Phase 9.3  COMPLETE
+**Test Additions Estimate**: 80-120 new tests
+**Actual Tests Added**: 50 tests (44 agents + 6 MCP) — Phase 9.3 COMPLETE
 
-### Phase 9.4: Edge Case Coverage (97% → 100%)
-**Priority**:  FINAL  
-**Effort**: 0.5-1 session (~20K-40K tokens)  
+### Phase 9.4: Edge Case Coverage (97% 100%)
+**Priority**: FINAL
+**Effort**: 0.5-1 session (~20K-40K tokens)
 **Focus**: Cover remaining edge cases and corner cases
 
 **Targets**:
 1. **Boundary Conditions**
-   - Empty inputs
-   - Null/None values
-   - Maximum/minimum values
-   - Zero-length collections
+ - Empty inputs
+ - Null/None values
+ - Maximum/minimum values
+ - Zero-length collections
 
 2. **Rare Paths**
-   - Uncommon configurations
-   - Deprecated code paths
-   - Backwards compatibility
-   - Platform-specific code
+ - Uncommon configurations
+ - Deprecated code paths
+ - Backwards compatibility
+ - Platform-specific code
 
 3. **Race Conditions** (if applicable)
-   - Concurrent access
-   - Threading edge cases
-   - Lock contention
+ - Concurrent access
+ - Threading edge cases
+ - Lock contention
 
 **Success Criteria**:
 - [x] All uncovered lines tested
@@ -184,7 +184,7 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 
 ---
 
-## 🛠️ Testing Standards & Practices
+## Testing Standards & Practices
 
 ### Test Quality Requirements
 1. **Deterministic**: All tests must produce consistent results
@@ -267,7 +267,7 @@ pytest --cov=src --cov-fail-under=85
 
 ---
 
-##  Progress Tracking
+## Progress Tracking
 
 ### Phase 9.1: Critical Path (Target: 85%)
 - [ ] src/codex/ coverage ≥ 90%
@@ -286,13 +286,13 @@ pytest --cov=src --cov-fail-under=85
 - [x] All exception paths tested
 - [x] Input validation complete
 - [x] Error recovery verified
-- [x] 50 new tests added (agents error paths + MCP error paths) — Phase 9.3  COMPLETE
+- [x] 50 new tests added (agents error paths + MCP error paths) — Phase 9.3 COMPLETE
 
 ### Phase 9.4: Edge Cases (Target: 100%)
 - [x] All boundary conditions tested
 - [x] Rare paths covered
 - [x] Edge cases documented
-- [x] 71 new tests added (52 agents + 19 MCP) — Phase 9.4  COMPLETE
+- [x] 71 new tests added (52 agents + 19 MCP) — Phase 9.4 COMPLETE
 
 ### Final Validation
 - [ ] Coverage report shows 100%
@@ -303,7 +303,7 @@ pytest --cov=src --cov-fail-under=85
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 ### Quantitative
 
@@ -315,16 +315,16 @@ pytest --cov=src --cov-fail-under=85
 | **Untested Modules** | Unknown | 0 critical | 0 public | 0 error | **0 total** |
 
 ### Qualitative
--  All critical business logic tested
--  All public APIs have contracts validated
--  All error paths have recovery tests
--  All edge cases documented and tested
--  Test suite is maintainable and fast
--  CI enforces coverage thresholds
+- All critical business logic tested
+- All public APIs have contracts validated
+- All error paths have recovery tests
+- All edge cases documented and tested
+- Test suite is maintainable and fast
+- CI enforces coverage thresholds
 
 ---
 
-##  Tools & Commands
+## Tools & Commands
 
 ### Coverage Analysis
 ```bash
@@ -371,40 +371,40 @@ mutmut run --paths-to-mutate src/
 
 ---
 
-## 🚧 Known Challenges & Mitigations
+## Known Challenges & Mitigations
 
 ### Challenges
 
 1. **External Dependencies**
-   - **Issue**: Network calls, file I/O, databases
-   - **Mitigation**: Comprehensive mocking, fixtures, test doubles
+ - **Issue**: Network calls, file I/O, databases
+ - **Mitigation**: Comprehensive mocking, fixtures, test doubles
 
 2. **Non-Deterministic Code**
-   - **Issue**: Timestamps, random values, concurrency
-   - **Mitigation**: Use `mental_mapping` clock abstraction, seed random
+ - **Issue**: Timestamps, random values, concurrency
+ - **Mitigation**: Use `mental_mapping` clock abstraction, seed random
 
 3. **Complex State Machines**
-   - **Issue**: Many state transitions, hard to reach states
-   - **Mitigation**: Property-based testing, state machine testing
+ - **Issue**: Many state transitions, hard to reach states
+ - **Mitigation**: Property-based testing, state machine testing
 
 4. **Legacy Code**
-   - **Issue**: Hard to test, tightly coupled
-   - **Mitigation**: Characterization tests, gradual refactoring
+ - **Issue**: Hard to test, tightly coupled
+ - **Mitigation**: Characterization tests, gradual refactoring
 
 5. **Time Constraints**
-   - **Issue**: 100% coverage is time-intensive
-   - **Mitigation**: Phased approach, prioritize critical paths
+ - **Issue**: 100% coverage is time-intensive
+ - **Mitigation**: Phased approach, prioritize critical paths
 
 ### Mitigations Active
--  Deterministic testing infrastructure (mental_mapping)
--  Comprehensive mocking patterns established
--  Property-based testing framework (hypothesis)
--  Phased roadmap with clear priorities
--  Automated coverage tracking in CI
+- Deterministic testing infrastructure (mental_mapping)
+- Comprehensive mocking patterns established
+- Property-based testing framework (hypothesis)
+- Phased roadmap with clear priorities
+- Automated coverage tracking in CI
 
 ---
 
-##  Reference Documents
+## Reference Documents
 
 ### Testing Guides
 - [Testing Guide](../guides/TESTING_GUIDE.md) - Comprehensive testing guide
@@ -423,29 +423,29 @@ mutmut run --paths-to-mutate src/
 
 ---
 
-##  Continuous Improvement
+## Continuous Improvement
 
 ### After 100% Achievement
 1. **Maintain Coverage**
-   - CI fails if coverage drops
-   - Pre-commit hooks check coverage
-   - Regular coverage reviews
+ - CI fails if coverage drops
+ - Pre-commit hooks check coverage
+ - Regular coverage reviews
 
 2. **Test Quality**
-   - Periodic test review
-   - Remove redundant tests
-   - Optimize slow tests
-   - Update property-based tests
+ - Periodic test review
+ - Remove redundant tests
+ - Optimize slow tests
+ - Update property-based tests
 
 3. **Expand Testing**
-   - Mutation testing
-   - Fuzz testing
-   - Performance testing
-   - Load testing
+ - Mutation testing
+ - Fuzz testing
+ - Performance testing
+ - Load testing
 
 ---
 
-##  Reporting
+## Reporting
 
 ### per-phase Coverage Report
 Generated automatically and posted to Dashboard:
@@ -466,7 +466,7 @@ After each phase completion:
 
 ---
 
-##  Acceptance Criteria
+## Acceptance Criteria
 
 Phase 9 (100% Coverage) complete when:
 - [ ] All 4 phases complete (9.1, 9.2, 9.3, 9.4)
@@ -480,9 +480,9 @@ Phase 9 (100% Coverage) complete when:
 
 ---
 
-**Status**: Phase 9.1 Starting  
-**Current Coverage**: 10.7%  
-**Target Coverage**: 100%  
+**Status**: Phase 9.1 Starting
+**Current Coverage**: 10.7%
+**Target Coverage**: 100%
 **Estimated Completion**: 3-4 sessions
 
 **Remember**: Quality over speed. Every test must be deterministic, isolated, and maintainable.

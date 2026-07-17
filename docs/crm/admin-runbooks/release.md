@@ -1,6 +1,6 @@
-# Codex Release (Offline Pack → Verify → Unpack)
+# Codex Release (Offline Pack Verify Unpack)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -52,7 +52,7 @@ Every PACK/VERIFY/UNPACK appends JSONL to:
 `release pack` will attempt to write release metadata to the archive if the backend supports it:
 
 - `release_meta(release_id, version, created_at, actor, metadata)`
-- `release_component(release_id → release_meta.id, item_id?, tombstone, dest_path, mode, template_vars)`
+- `release_component(release_id release_meta.id, item_id?, tombstone, dest_path, mode, template_vars)`
 
 Backends:
 
@@ -60,14 +60,14 @@ Backends:
 - **Postgres**: implemented. Ensure the DB has `pgcrypto` enabled:
   ```sql
   CREATE EXTENSION IF NOT EXISTS pgcrypto;
-  ```
-  Apply `db/migrations/postgres/002_release.sql` then configure:
+ ```
+ Apply `db/migrations/postgres/002_release.sql` then configure:
   ```bash
   export CODEX_ARCHIVE_BACKEND=postgres
   export CODEX_ARCHIVE_URL="postgresql://<user>:<pass>@host:5432/dbname"
-  ```
+ ```
 - **MariaDB**: implemented (UUIDs generated client-side). Apply `db/migrations/mariadb/002_release.sql` then:
   ```bash
   export CODEX_ARCHIVE_BACKEND=mariadb
   export CODEX_ARCHIVE_URL="mysql://<user>:<pass>@host:3306/dbname"
-  ```
+ ```

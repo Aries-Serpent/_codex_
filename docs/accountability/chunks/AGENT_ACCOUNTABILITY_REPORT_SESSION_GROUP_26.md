@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 26
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 26 of 32  
 **Sessions:** S293-pytest to S293-pytest  

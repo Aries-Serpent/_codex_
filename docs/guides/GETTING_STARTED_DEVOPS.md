@@ -1,13 +1,13 @@
 ## Getting Started Guide for DevOps Engineers
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-07-08
-**Target Audience:** DevOps, SRE, infrastructure engineers, platform teams  
+**Target Audience:** DevOps, SRE, infrastructure engineers, platform teams
 **Estimated Time:** 25-30 minutes to production infrastructure
 
-##  Your Goal
+## Your Goal
 
 Set up, manage, and scale Codex ML infrastructure with Production reliability, automation, and disaster recovery. This guide covers infrastructure-as-code, container orchestration, and operational excellence.
 
@@ -629,7 +629,7 @@ groups:
 
 ---
 
-##  Next Steps
+## Next Steps
 
 - **Helm Charts**: [Helm Deployment](./HELM_DEPLOYMENT.md)
 - **GitOps**: [ArgoCD Setup](./GITOPS_SETUP.md)
@@ -644,4 +644,4 @@ groups:
 
 ---
 
-**Let's build reliable infrastructure! 🛠️**
+**Let's build reliable infrastructure! **

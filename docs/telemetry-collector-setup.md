@@ -1,11 +1,11 @@
 # Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Authority:** @mbaetiong (D-tier) 
-**Status:** Production Ready 
-**Version:** 1.0.0 
-**Created:** 2026-07-03 
+**Authority:** @mbaetiong (D-tier)
+**Status:** Production Ready
+**Version:** 1.0.0
+**Created:** 2026-07-03
 
 ---
 
@@ -18,7 +18,7 @@ This deliverable implements a complete telemetry collection infrastructure for m
 | Component | Files | Purpose |
 |-----------|-------|---------|
 | **Telemetry Collector** | `approval_telemetry_collector.py` | Core metrics collection (17 metrics) |
-| **Event Schema Validator** | `approval_event_schema.py` | Event validation (v0.2.1) & immutable audit logging |
+| **Event Schema Validator** | `approval_event_schema.py` | Event validation (v0.2.0) & immutable audit logging |
 | **SLA Monitor** | `sla_monitoring.py` | Real-time SLA tracking & compliance reporting |
 | **Grafana Dashboard** | `approval-sla-dashboard.json` | Real-time SLA visualization |
 | **Prometheus Alerts** | `approval-alert-rules.yml` | 15+ alerting rules for SLA/security/compliance |
@@ -76,7 +76,7 @@ All success criteria ** MET**:
 
 - **5-tier retention policies enforced**
  - hot: 7 days (real-time alerting)
- - warm: 90 days (operational analytics) 
+ - warm: 90 days (operational analytics)
  - cold: 7 years (legal hold)
  - Implemented in metadata tagging
 
@@ -169,7 +169,7 @@ integration.on_decision_made(
 
 # 2. Telemetry collector:
 # - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0
-# - Checks SLA: 3600 <= 14400 → sla_met=true
+# - Checks SLA: 3600 <= 14400 sla_met=true
 # - Creates event with sla_status="met"
 
 # 3. SLA monitor:
@@ -309,13 +309,13 @@ approval_unauthorized_attempt_count_total
 
 | Category | Per-Stage SLA | Total SLA | Escalation Path |
 |----------|---|---|---|
-| **D** (Deployment) | 4h | 12h | Release Mgr → DevOps → Owner |
-| **S** (Security) | 4h | 12h | Security Lead → Manager → Owner |
-| **R** (Resource) | 4h | 12h | DBA/DevOps → Budget → Owner |
-| **C** (Config) | 4h | 12h | Relevant Owner → Product → Owner |
-| **G** (Capability) | 4h | 12h | Service Owner → Security → Owner |
-| **I** (Incident) | 2h | 2h (emergency) | Incident Cmdr → VP → Owner |
-| **A** (Audit) | 8h | 24h | Compliance → Legal → Owner |
+| **D** (Deployment) | 4h | 12h | Release Mgr DevOps Owner |
+| **S** (Security) | 4h | 12h | Security Lead Manager Owner |
+| **R** (Resource) | 4h | 12h | DBA/DevOps Budget Owner |
+| **C** (Config) | 4h | 12h | Relevant Owner Product Owner |
+| **G** (Capability) | 4h | 12h | Service Owner Security Owner |
+| **I** (Incident) | 2h | 2h (emergency) | Incident Cmdr VP Owner |
+| **A** (Audit) | 8h | 24h | Compliance Legal Owner |
 | **E** (Escalation) | 4h | Variable | Per-level escalation |
 
 ---
@@ -340,7 +340,7 @@ approval_unauthorized_attempt_count_total
 
 ---
 
-## 🧪 TESTING & VALIDATION
+## TESTING & VALIDATION
 
 ### Unit Tests (30+ tests)
 ```bash
@@ -360,7 +360,7 @@ pytest tests/observability/test_approval_telemetry.py::TestApprovalServiceIntegr
 - Metrics are collected for all 8 event types
 - SLA calculations are correct (latency ≤ threshold = met)
 - Cardinality stays < 900 timeseries (verified with validation script)
-- Events conform to schema v0.2.1 (validated with ApprovalEventValidator)
+- Events conform to schema v0.2.0 (validated with ApprovalEventValidator)
 - Alerts fire correctly on SLA breach (tested with synthetic data)
 - Dashboard displays all 10 panels correctly
 - Per-agent metrics aggregated by role (not per-agent)
@@ -444,7 +444,7 @@ print(result)
 # "escalation_triggered": True,
 # }
 
-# Escalation callback fires → escalates to Release Manager's manager
+# Escalation callback fires escalates to Release Manager's manager
 ```
 
 ### Example 3: Generate Compliance Report
@@ -486,7 +486,7 @@ print(f"Violations (24h): {daily['total_violations_24h']}")
 - Alert fired on: UnauthorizedApprovalAttempt
 
 ### Event Schema Validation
-- All events validated against schema v0.2.1
+- All events validated against schema v0.2.0
 - Version compatibility check (only v1.x.x supported)
 - SLA calculation validation (prevents false SLA=met when latency > threshold)
 - Required fields enforced; optional fields allowed
@@ -515,11 +515,11 @@ baseline_timeseries = (
  - policy_category: 8 values
  - approver_role: 8-10 values
  - approval_stage: 3-4 values
- 
+
 2. **Medium-cardinality dimensions** (aggregate):
  - requester_role: aggregate by role
  - sla_status: 3 values (met/approaching/breached)
- 
+
 3. **High-cardinality dimensions** (excluded from timeseries):
  - agent_id: stored in audit logs only (append-only, not timeseries)
  - approver_id: aggregated by approver_role
@@ -534,7 +534,7 @@ print(f"Limit: {cardinality['limit']}")
 print(f"Safe: {cardinality['cardinality_safe']}")
 
 if cardinality['warning']:
- print(f"️ {cardinality['warning']}")
+ print(f" {cardinality['warning']}")
 ```
 
 ---
@@ -591,11 +591,11 @@ print(f"Errors: {errors}")
 
 ## SUPPORT & DOCUMENTATION
 
-**TELEMETRY_SCHEMA.md** — Complete specification of 100+ metrics 
-**APPROVAL_POLICIES.md** — SLA thresholds and approval rules 
-**approval-sla-dashboard.json** — Grafana dashboard definition 
-**approval-alert-rules.yml** — Prometheus alert rules (15 rules) 
-**test_approval_telemetry.py** — 40+ integration tests with examples 
+**TELEMETRY_SCHEMA.md** — Complete specification of 100+ metrics
+**APPROVAL_POLICIES.md** — SLA thresholds and approval rules
+**approval-sla-dashboard.json** — Grafana dashboard definition
+**approval-alert-rules.yml** — Prometheus alert rules (15 rules)
+**test_approval_telemetry.py** — 40+ integration tests with examples
 
 ---
 
@@ -615,7 +615,7 @@ print(f"Errors: {errors}")
 
 ---
 
-**Status:** Phase 12 Wave 2 D3.2 — COMPLETE 
-**Delivered:** 2026-07-03 
-**Authority:** @mbaetiong (D-tier) 
-**Handoff:** Ready for D1.2 & D2.2 integration 
+**Status:** Phase 12 Wave 2 D3.2 — COMPLETE
+**Delivered:** 2026-07-03
+**Authority:** @mbaetiong (D-tier)
+**Handoff:** Ready for D1.2 & D2.2 integration

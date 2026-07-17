@@ -10,9 +10,9 @@
 <link href="../" rel="prev"/>
 <link href="../../accountability/INDEX/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Post-Merge Doc Alignment - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -212,7 +212,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -896,7 +896,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1626,7 +1626,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2657,7 +2657,7 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>USE AFTER:</strong> PR #3818 (<code>0D_base_</code> → <code>main</code>) is merged
+<p><strong>USE AFTER:</strong> PR #3818 (<code>0D_base_</code> <code>main</code>) is merged
 <strong>INVOKE WITH:</strong> <code>@copilot Execute docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md</code>
 <strong>AGENT DEFINITION:</strong> <code>.github/agents/post-merge-doc-alignment-agent.md</code>
 <strong>ESTIMATED DURATION:</strong> 1 session (~45 min)</p>
@@ -2715,7 +2715,7 @@
 <p><strong>If any Mermaid diagram renders as raw text:</strong> The <code>mermaid2</code> plugin or CDN is not loading. Check <code>mkdocs.yml</code> plugin config and <code>docs/_config.yml</code>. The fix is documented in <code>.github/agents/github-pages-manager.md §Mermaid CDN</code>.</p>
 <p><strong>Page 2: CI/CD Index</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>URL: https://aries-serpent.github.io/_codex_/ci/INDEX/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>   OR https://aries-serpent.github.io/_codex_/ci/
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> OR https://aries-serpent.github.io/_codex_/ci/
 </code></pre></div>
 - [ ] "CI Rescue Pipeline" entry appears at the top under " CI Rescue Pipeline (Golden Path)"
 - [ ] Link to <code>CI_RESCUE_PIPELINE.md</code> resolves correctly</p>
@@ -2723,22 +2723,22 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>URL: https://aries-serpent.github.io/_codex_/
 </code></pre></div>
 - [ ] " CI Rescue &amp; Health" section visible in nav sidebar
-- [ ] " CI Rescue Pipeline" quick-link present under " Quick Links →  CI Rescue &amp; Health"
+- [ ] " CI Rescue Pipeline" quick-link present under " Quick Links CI Rescue &amp; Health"
 - [ ] No broken links in the quick-links section</p>
 <h3 id="1b-verify-site-navigation">1B. Verify Site Navigation<a class="headerlink" href="#1b-verify-site-navigation" title="Permanent link">¶</a></h3>
 <p>Fetch the nav sidebar on any page and confirm these entries exist:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>CI Rescue &amp; Health                ← NEW (S244)
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>  ├── CI Rescue Pipeline          ← NEW (S244)
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>  ├── CI/CD Index
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>  ├── Failure Analysis
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>  ├── CI Fix Summary
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>  └── Root Org Validation
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>CI/CD Workflows                   ← EXISTING (should still be present)
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>  ├── Workflow Index
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>  ├── Consolidation Guide
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>  ├── Deprecation Plan
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>  ├── Optimization Summary
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>  └── Cache Architecture
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>CI Rescue &amp; Health NEW (S244)
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> CI Rescue Pipeline NEW (S244)
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> CI/CD Index
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> Failure Analysis
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> CI Fix Summary
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> Root Org Validation
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>CI/CD Workflows EXISTING (should still be present)
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> Workflow Index
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> Consolidation Guide
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> Deprecation Plan
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> Optimization Summary
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> Cache Architecture
 </code></pre></div>
 <h3 id="1c-spot-check-existing-pages-for-staleness">1C. Spot-Check Existing Pages for Staleness<a class="headerlink" href="#1c-spot-check-existing-pages-for-staleness" title="Permanent link">¶</a></h3>
 <p>For each page below, fetch content and scan for the staleness patterns listed:</p>
@@ -2774,7 +2774,7 @@
 </table>
 <hr/>
 <h2 id="phase-2-detect-and-fix-drift">Phase 2 — Detect and Fix Drift<a class="headerlink" href="#phase-2-detect-and-fix-drift" title="Permanent link">¶</a></h2>
-<p>Work through this checklist in order. For each item: detect → fix source file → verify.</p>
+<p>Work through this checklist in order. For each item: detect fix source file verify.</p>
 <h3 id="2a-branch-name-references-in-docs-high-priority">2A. Branch Name References in Docs (High Priority)<a class="headerlink" href="#2a-branch-name-references-in-docs-high-priority" title="Permanent link">¶</a></h3>
 <p>After merge, <code>0D_base_</code> references in documentation should be updated to <code>main</code> <strong>except</strong> in:
 - Historical golden-path sequence diagrams (they describe what happened on the branch)
@@ -2783,14 +2783,14 @@
 <p><strong>Files to check and update where appropriate:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Find 0D_base_ references in docs (excluding historical/accountability files)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>grep<span class="w"> </span>-rn<span class="w"> </span><span class="s2">"0D_base_"</span><span class="w"> </span>docs/<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span>--include<span class="o">=</span><span class="s2">"*.md"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span>--exclude-dir<span class="o">=</span><span class="s2">"accountability"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span>--exclude<span class="o">=</span><span class="s2">"*SESSION*"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span>--exclude<span class="o">=</span><span class="s2">"*COGNITIVE_BRAIN_STATUS*"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span>--exclude<span class="o">=</span><span class="s2">"*aftermath*"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^Binary"</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span>--include<span class="o">=</span><span class="s2">"*.md"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span>--exclude-dir<span class="o">=</span><span class="s2">"accountability"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span>--exclude<span class="o">=</span><span class="s2">"*SESSION*"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span>--exclude<span class="o">=</span><span class="s2">"*COGNITIVE_BRAIN_STATUS*"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span>--exclude<span class="o">=</span><span class="s2">"*aftermath*"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^Binary"</span>
 </code></pre></div>
-<p>For each hit, determine: is this a <strong>current instruction</strong> (fix → <code>main</code>) or <strong>historical record</strong> (preserve)?</p>
+<p>For each hit, determine: is this a <strong>current instruction</strong> (fix <code>main</code>) or <strong>historical record</strong> (preserve)?</p>
 <h2 id="2b-nav-entry-verification">2B. Nav Entry Verification<a class="headerlink" href="#2b-nav-entry-verification" title="Permanent link">¶</a></h2>
 <p>Run this check to find any <code>mkdocs.yml</code> nav paths that don't resolve to real files:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>python3<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
@@ -2800,25 +2800,25 @@
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="s">broken = []</span>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="s">def check_nav(node):</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="s">    if isinstance(node, dict):</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="s">        for k, v in node.items():</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="s">            check_nav(v)</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="s">    elif isinstance(node, list):</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="s">        for item in node:</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="s">            check_nav(item)</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="s">    elif isinstance(node, str) and not node.startswith("http"):</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="s">        p = docs_root / node</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="s">        if not p.exists():</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="s">            broken.append(node)</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="s"> if isinstance(node, dict):</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="s"> for k, v in node.items():</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="s"> check_nav(v)</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="s"> elif isinstance(node, list):</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="s"> for item in node:</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="s"> check_nav(item)</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="s"> elif isinstance(node, str) and not node.startswith("http"):</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="s"> p = docs_root / node</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="s"> if not p.exists():</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="s"> broken.append(node)</span>
 <a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
 <a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="s">check_nav(nav_yaml.get("nav", []))</span>
 <a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="s">if broken:</span>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="s">    print("BROKEN NAV PATHS:")</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="s">    for b in broken:</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="s">        print(f"  {b}")</span>
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="s">    sys.exit(1)</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="s"> print("BROKEN NAV PATHS:")</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="s"> for b in broken:</span>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="s"> print(f" {b}")</span>
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="s"> sys.exit(1)</span>
 <a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="s">else:</span>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="s">    print(" All nav paths resolve to real files")</span>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="s"> print(" All nav paths resolve to real files")</span>
 <a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="s">EOF</span>
 </code></pre></div>
 <p>Fix any broken paths found.</p>
@@ -2833,14 +2833,14 @@
 <h3 id="2d-verify-script-references-are-accurate">2D. Verify Script References Are Accurate<a class="headerlink" href="#2d-verify-script-references-are-accurate" title="Permanent link">¶</a></h3>
 <p>These scripts are referenced in multiple docs. Confirm each actually exists at the stated path:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">for</span><span class="w"> </span>f<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span>scripts/ci/generate_coverage_map.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span>scripts/ci/ci_rescue.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">  </span>scripts/ci/sync_tracked_files.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">  </span>scripts/ci/check_cross_references.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">  </span>scripts/ci/check_pr_comments.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">  </span>scripts/ci/session_bootstrap.py<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">  </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$f</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" MISSING: </span><span class="nv">$f</span><span class="s2">"</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span>scripts/ci/generate_coverage_map.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span>scripts/ci/ci_rescue.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span>scripts/ci/sync_tracked_files.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span>scripts/ci/check_cross_references.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span>scripts/ci/check_pr_comments.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span>scripts/ci/session_bootstrap.py<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$f</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" MISSING: </span><span class="nv">$f</span><span class="s2">"</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="k">done</span>
 </code></pre></div>
 <p>If any are missing, find the correct path and update all docs referencing the old path.</p>
@@ -2892,9 +2892,9 @@
 <h3 id="commit-format">Commit Format<a class="headerlink" href="#commit-format" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>python3<span class="w"> </span>scripts/ci/sync_tracked_files.py<span class="w"> </span>--fix
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>git<span class="w"> </span>add<span class="w"> </span>docs/<span class="w"> </span>mkdocs.yml
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: post-merge alignment — PR #3818 → main (S244-doc-align)</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: post-merge alignment — PR #3818 main (S244-doc-align)</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="s2">- Update branch refs 0D_base_ → main in non-historical docs</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="s2">- Update branch refs 0D_base_ main in non-historical docs</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="s2">- Verify CI Rescue Pipeline Mermaid diagrams render on live site</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="s2">- Fix any broken nav entries found</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="s2">- MkDocs build: 0 warnings</span>
@@ -2903,32 +2903,32 @@
 </code></pre></div>
 <h3 id="final-report-comment">Final Report Comment<a class="headerlink" href="#final-report-comment" title="Permanent link">¶</a></h3>
 <p>Post this summary as a comment on PR #3818 (or as a new issue if the PR is already merged):</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="gu">##  Post-Merge Documentation Alignment Complete — S244</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="gu">## Post-Merge Documentation Alignment Complete — S244</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="gs">**Site:**</span> https://aries-serpent.github.io/_codex_/
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="gs">**Merged PR:**</span> <span class="ni">#3818</span> (0D_base_ → main, S233–S244)
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="gs">**Merged PR:**</span> <span class="ni">#3818</span> (0D_base_ main, S233–S244)
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="gs">**Alignment session:**</span> S244-doc-align — {DATE}
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="gu">###  New Pages Verified on Live Site</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="gu">### New Pages Verified on Live Site</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">-</span><span class="w"> </span>CI Rescue Pipeline: {STATUS} — {N}/9 Mermaid diagrams rendering
 <a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="k">-</span><span class="w"> </span>CI/CD Index: {STATUS}
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="k">-</span><span class="w"> </span>Homepage quick-link: {STATUS}
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="gu">###  Drift Fixes Applied</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="gu">### Drift Fixes Applied</span>
 <a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>| Fix | Files | Details |
 <a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>|-----|-------|---------|
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>| Branch refs 0D_base_ → main | N | Only in non-historical sections |
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>| Branch refs 0D_base_ main | N | Only in non-historical sections |
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>| Nav entries | N | All paths verified |
 <a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>| Script references | N | All exist at stated paths |
 <a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>| Stale session IDs | N | Updated to S244 |
 <a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="gu">### 🔨 MkDocs Build</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="gu">### MkDocs Build</span>
 <a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="k">-</span><span class="w"> </span>Warnings: 0 
 <a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="k">-</span><span class="w"> </span>Errors: 0 
 <a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="k">-</span><span class="w"> </span>Pages built: N
 <a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="gu">###  Commit</span>
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>fix(docs): post-merge alignment — PR <span class="ni">#3818</span> → main · {SHORT_SHA}
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="gu">### Commit</span>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>fix(docs): post-merge alignment — PR <span class="ni">#3818</span> main · {SHORT_SHA}
 </code></pre></div>
 <hr/>
 <h2 id="escalation">Escalation<a class="headerlink" href="#escalation" title="Permanent link">¶</a></h2>
@@ -2941,24 +2941,24 @@
 <hr/>
 <h2 id="checklist-summary">Checklist Summary<a class="headerlink" href="#checklist-summary" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Phase 1 — Traverse Live Site
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>  [ ] CI Rescue Pipeline page: loads + 9 Mermaid diagrams render
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>  [ ] CI/CD Index page: Pipeline entry at top
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>  [ ] Homepage: quick-link + nav entry present
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>  [ ] Site nav: "CI Rescue &amp; Health" section with 5 entries
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> [ ] CI Rescue Pipeline page: loads + 9 Mermaid diagrams render
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> [ ] CI/CD Index page: Pipeline entry at top
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> [ ] Homepage: quick-link + nav entry present
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> [ ] Site nav: "CI Rescue &amp; Health" section with 5 entries
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>Phase 2 — Fix Drift
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>  [ ] Branch refs audit: 0D_base_ → main (non-historical)
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>  [ ] Nav paths: all resolve to real files
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>  [ ] Script paths: all 7 CI scripts exist at documented locations
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>  [ ] test_generate_coverage_map.py referenced in docs
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> [ ] Branch refs audit: 0D_base_ main (non-historical)
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> [ ] Nav paths: all resolve to real files
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> [ ] Script paths: all 7 CI scripts exist at documented locations
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> [ ] test_generate_coverage_map.py referenced in docs
 <a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
 <a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>Phase 3 — Build
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>  [ ] mkdocs build --strict: 0 warnings, 0 errors
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> [ ] mkdocs build --strict: 0 warnings, 0 errors
 <a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>
 <a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>Phase 4 — Commit + Report
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>  [ ] sync_tracked_files.py --fix: all 5 checks 
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>  [ ] Commit pushed with fix(docs): prefix
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>  [ ] Report comment posted on PR #3818
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> [ ] sync_tracked_files.py --fix: all 5 checks 
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a> [ ] Commit pushed with fix(docs): prefix
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> [ ] Report comment posted on PR #3818
 </code></pre></div>
 <hr/>
 <p><em>Created: S244 — 2026-03-30 · For use immediately after PR #3818 merges to main</em>
@@ -2992,6 +2992,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

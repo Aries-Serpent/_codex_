@@ -1,10 +1,10 @@
 # Codex ML: Structured Learning Paths
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version:** v0.2.1 Pre-Release 
+> **Version:** v0.2.0 Pre-Release
 > **Last Updated: 2026-06-27
-> **Total Estimated Time:** 20-40 hours depending on path 
+> **Total Estimated Time:** 20-40 hours depending on path
 
 ---
 
@@ -19,9 +19,9 @@
 
 ## Beginner Path
 
-**Target Audience:** New developers, ML engineers new to this codebase 
-**Time Commitment:** 2-4 hours 
-**Prerequisites:** Python knowledge, basic ML concepts 
+**Target Audience:** New developers, ML engineers new to this codebase
+**Time Commitment:** 2-4 hours
+**Prerequisites:** Python knowledge, basic ML concepts
 
 ### Step 1: Installation & First Run (30 min)
 
@@ -138,7 +138,7 @@ def test_config_loads():
  pytest tests/unit/test_beginner.py -v
  ```
 
-4. **Checkpoint:** Test passes 
+4. **Checkpoint:** Test passes
 
 ---
 
@@ -156,9 +156,9 @@ You've learned:
 
 ## Intermediate Path
 
-**Target Audience:** Developers ready to extend Codex ML 
-**Time Commitment:** 6-8 hours 
-**Prerequisites:** Completed beginner path 
+**Target Audience:** Developers ready to extend Codex ML
+**Time Commitment:** 6-8 hours
+**Prerequisites:** Completed beginner path
 
 ### Step 1: Understand Configuration Deep Dive (90 min)
 
@@ -227,7 +227,7 @@ trainer.train()
  - Watch logs in `outputs/logs/`
  - Check checkpoint in `outputs/checkpoints/`
 
-5. **Checkpoint:** Training completes successfully 
+5. **Checkpoint:** Training completes successfully
 
 ---
 
@@ -315,7 +315,7 @@ def test_my_component():
 
 ```
 
-6. **Checkpoint:** Tests pass 
+6. **Checkpoint:** Tests pass
 
 ---
 
@@ -333,9 +333,9 @@ You've learned:
 
 ## Advanced Path
 
-**Target Audience:** Contributors, system architects 
-**Time Commitment:** 10-16 hours 
-**Prerequisites:** Completed intermediate path 
+**Target Audience:** Contributors, system architects
+**Time Commitment:** 10-16 hours
+**Prerequisites:** Completed intermediate path
 
 ### Step 1: Architecture Deep Dive (120 min)
 
@@ -346,7 +346,7 @@ You've learned:
 2. **Map the architecture:**
  - Draw each layer on paper
  - Identify key components in each layer
- - Trace a request from Layer 5 → Layer 1
+ - Trace a request from Layer 5 Layer 1
 
 3. **Study design patterns:**
  - Plugin architecture (registry pattern)
@@ -487,7 +487,7 @@ print(f"Peak: {peak / 1024 / 1024:.1f} MB")
  time python examples/training.py
  ```
 
-5. **Checkpoint:** Achieved 20%+ performance improvement 
+5. **Checkpoint:** Achieved 20%+ performance improvement
 
 ---
 
@@ -521,7 +521,7 @@ print(f"Peak: {peak / 1024 / 1024:.1f} MB")
  - Link related issues
  - Include test results
 
-7. **Checkpoint:** PR merged 
+7. **Checkpoint:** PR merged
 
 ---
 
@@ -534,7 +534,7 @@ You've learned:
 - Performance optimization
 - Open-source contribution workflow
 
-**Congratulations!** You're now a Codex ML expert! 
+**Congratulations!** You're now a Codex ML expert!
 
 ---
 
@@ -544,7 +544,7 @@ Choose a specialization based on your interests:
 
 ### ML Engineering Path
 
-**Time:** 6-8 hours 
+**Time:** 6-8 hours
 **Focus:** Training, evaluation, optimization
 
 1. **[Distributed Training](./training/distributed_training_guide.md)**
@@ -567,9 +567,9 @@ Choose a specialization based on your interests:
  - Batch inference
  - Real-time serving
 
-### ️ Infrastructure & Deployment Path
+### Infrastructure & Deployment Path
 
-**Time:** 6-8 hours 
+**Time:** 6-8 hours
 **Focus:** DevOps, deployment, monitoring
 
 1. **[Docker & Containerization](./docker_guide.md)**
@@ -594,7 +594,7 @@ Choose a specialization based on your interests:
 
 ### Cognitive Systems & Agents Path
 
-**Time:** 8-10 hours 
+**Time:** 8-10 hours
 **Focus:** Agent design, decision-making, memory
 
 1. **[Cognitive Brain Fundamentals](./cognitive_brain/INDEX.md)**
@@ -619,7 +619,7 @@ Choose a specialization based on your interests:
 
 ### Data & Testing Path
 
-**Time:** 6-8 hours 
+**Time:** 6-8 hours
 **Focus:** Data engineering, testing strategies
 
 1. **[Data Loading & Processing](./data/INDEX.md)**
@@ -653,14 +653,14 @@ Use this checklist to track your progress:
 - [ ] Step 2: Project structure understood
 - [ ] Step 3: Hydra configuration working
 - [ ] Step 4: First test running
-- [ ] Beginner path complete 
+- [ ] Beginner path complete
 
 ### Intermediate Path
 - [ ] Step 1: Configuration mastered
 - [ ] Step 2: Custom model trained
 - [ ] Step 3: Evaluation working
 - [ ] Step 4: Custom component added
-- [ ] Intermediate path complete 
+- [ ] Intermediate path complete
 
 ### Advanced Path
 - [ ] Step 1: Architecture mastered
@@ -668,7 +668,7 @@ Use this checklist to track your progress:
 - [ ] Step 3: Memory systems explored
 - [ ] Step 4: Performance optimized
 - [ ] Step 5: Contribution submitted
-- [ ] Advanced path complete 
+- [ ] Advanced path complete
 
 ---
 
@@ -707,4 +707,4 @@ Use this checklist to track your progress:
 
 ---
 
-**Happy learning!** 
+**Happy learning!**

@@ -1,0 +1,626 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:5faa9aeb-d301-4f37-bac9-c3f181a3c14e",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-17T19:11:20Z",
+    "tools": [
+      {
+        "vendor": "codex",
+        "name": "dependency-scanner",
+        "version": "1.0"
+      }
+    ],
+    "component": {
+      "bom-ref": "codex-project",
+      "type": "application",
+      "name": "Codex Project",
+      "version": "0.2.0"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "python-typer>=0.12",
+      "type": "library",
+      "name": "typer>=0.12",
+      "version": "0.12",
+      "purl": "pkg:python/typer>=0.12@0.12",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-cryptography>=48.0.1,<50.0.0",
+      "type": "library",
+      "name": "cryptography>=48.0.1,<50.0.0",
+      "version": "48.0.1",
+      "purl": "pkg:python/cryptography>=48.0.1,<50.0.0@48.0.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-PyJWT>=2.13.0,<3.0.0",
+      "type": "library",
+      "name": "PyJWT>=2.13.0,<3.0.0",
+      "version": "2.13.0",
+      "purl": "pkg:python/PyJWT>=2.13.0,<3.0.0@2.13.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-wheel>=0.46.2",
+      "type": "library",
+      "name": "wheel>=0.46.2",
+      "version": "0.46.2",
+      "purl": "pkg:python/wheel>=0.46.2@0.46.2",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-PyNaCl>=1.5.0,<2.0.0",
+      "type": "library",
+      "name": "PyNaCl>=1.5.0,<2.0.0",
+      "version": "1.5.0",
+      "purl": "pkg:python/PyNaCl>=1.5.0,<2.0.0@1.5.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pyOpenSSL>=26.0.0,<27.0.0",
+      "type": "library",
+      "name": "pyOpenSSL>=26.0.0,<27.0.0",
+      "version": "26.0.0",
+      "purl": "pkg:python/pyOpenSSL>=26.0.0,<27.0.0@26.0.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-jsonschema>=4.26.0",
+      "type": "library",
+      "name": "jsonschema>=4.26.0",
+      "version": "4.26.0",
+      "purl": "pkg:python/jsonschema>=4.26.0@4.26.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-psutil>=5.9;",
+      "type": "library",
+      "name": "psutil>=5.9;",
+      "version": "5.9",
+      "purl": "pkg:python/psutil>=5.9;@5.9",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-tomli>=2.0;",
+      "type": "library",
+      "name": "tomli>=2.0;",
+      "version": "2.0",
+      "purl": "pkg:python/tomli>=2.0;@2.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest>=9.0.3,<10.0.0",
+      "type": "library",
+      "name": "pytest>=9.0.3,<10.0.0",
+      "version": "9.0.3",
+      "purl": "pkg:python/pytest>=9.0.3,<10.0.0@9.0.3",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest-cov==7.1.0",
+      "type": "library",
+      "name": "pytest-cov==7.1.0",
+      "version": "7.1.0",
+      "purl": "pkg:python/pytest-cov==7.1.0@7.1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest-xdist>=3.5.0,<4.0.0",
+      "type": "library",
+      "name": "pytest-xdist>=3.5.0,<4.0.0",
+      "version": "3.5.0",
+      "purl": "pkg:python/pytest-xdist>=3.5.0,<4.0.0@3.5.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-nox>=2026.4.10,<2027",
+      "type": "library",
+      "name": "nox>=2026.4.10,<2027",
+      "version": "2026.4.10",
+      "purl": "pkg:python/nox>=2026.4.10,<2027@2026.4.10",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-numpy>=2.4.6,<3",
+      "type": "library",
+      "name": "numpy>=2.4.6,<3",
+      "version": "2.4.6",
+      "purl": "pkg:python/numpy>=2.4.6,<3@2.4.6",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-torch>=2.6.1,<3.0.0;",
+      "type": "library",
+      "name": "torch>=2.6.1,<3.0.0;",
+      "version": "2.6.1",
+      "purl": "pkg:python/torch>=2.6.1,<3.0.0;@2.6.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-transformers>=5.12.1,<6",
+      "type": "library",
+      "name": "transformers>=5.12.1,<6",
+      "version": "5.12.1",
+      "purl": "pkg:python/transformers>=5.12.1,<6@5.12.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-defusedxml>=0.7.1,<1.0.0",
+      "type": "library",
+      "name": "defusedxml>=0.7.1,<1.0.0",
+      "version": "0.7.1",
+      "purl": "pkg:python/defusedxml>=0.7.1,<1.0.0@0.7.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pyyaml>=6.0",
+      "type": "library",
+      "name": "pyyaml>=6.0",
+      "version": "6.0",
+      "purl": "pkg:python/pyyaml>=6.0@6.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-jinja2>=3.1.6",
+      "type": "library",
+      "name": "jinja2>=3.1.6",
+      "version": "3.1.6",
+      "purl": "pkg:python/jinja2>=3.1.6@3.1.6",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-certifi>=2026.6.17",
+      "type": "library",
+      "name": "certifi>=2026.6.17",
+      "version": "2026.6.17",
+      "purl": "pkg:python/certifi>=2026.6.17@2026.6.17",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-filelock>=3.29.0",
+      "type": "library",
+      "name": "filelock>=3.29.0",
+      "version": "3.29.0",
+      "purl": "pkg:python/filelock>=3.29.0@3.29.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-idna>=3.18",
+      "type": "library",
+      "name": "idna>=3.18",
+      "version": "3.18",
+      "purl": "pkg:python/idna>=3.18@3.18",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-urllib3>=2.7.0",
+      "type": "library",
+      "name": "urllib3>=2.7.0",
+      "version": "2.7.0",
+      "purl": "pkg:python/urllib3>=2.7.0@2.7.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-requests>=2.33.0",
+      "type": "library",
+      "name": "requests>=2.33.0",
+      "version": "2.33.0",
+      "purl": "pkg:python/requests>=2.33.0@2.33.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest==9.1.1",
+      "type": "library",
+      "name": "pytest==9.1.1",
+      "version": "9.1.1",
+      "purl": "pkg:python/pytest==9.1.1@9.1.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest-xdist==3.8.0",
+      "type": "library",
+      "name": "pytest-xdist==3.8.0",
+      "version": "3.8.0",
+      "purl": "pkg:python/pytest-xdist==3.8.0@3.8.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest-randomly==4.1.0",
+      "type": "library",
+      "name": "pytest-randomly==4.1.0",
+      "version": "4.1.0",
+      "purl": "pkg:python/pytest-randomly==4.1.0@4.1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest-rerunfailures==16.4",
+      "type": "library",
+      "name": "pytest-rerunfailures==16.4",
+      "version": "16.4",
+      "purl": "pkg:python/pytest-rerunfailures==16.4@16.4",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-pytest-timeout==2.4.0",
+      "type": "library",
+      "name": "pytest-timeout==2.4.0",
+      "version": "2.4.0",
+      "purl": "pkg:python/pytest-timeout==2.4.0@2.4.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-coverage[toml]>=7.15.1,<8",
+      "type": "library",
+      "name": "coverage[toml]>=7.15.1,<8",
+      "version": "7.15.1",
+      "purl": "pkg:python/coverage[toml]>=7.15.1,<8@7.15.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-hypothesis>=6.152.4",
+      "type": "library",
+      "name": "hypothesis>=6.152.4",
+      "version": "6.152.4",
+      "purl": "pkg:python/hypothesis>=6.152.4@6.152.4",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-responses==0.26.1",
+      "type": "library",
+      "name": "responses==0.26.1",
+      "version": "0.26.1",
+      "purl": "pkg:python/responses==0.26.1@0.26.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-slowapi==0.1.9",
+      "type": "library",
+      "name": "slowapi==0.1.9",
+      "version": "0.1.9",
+      "purl": "pkg:python/slowapi==0.1.9@0.1.9",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-hydra-core==1.3.2",
+      "type": "library",
+      "name": "hydra-core==1.3.2",
+      "version": "1.3.2",
+      "purl": "pkg:python/hydra-core==1.3.2@1.3.2",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-prometheus-client>=0.19.0",
+      "type": "library",
+      "name": "prometheus-client>=0.19.0",
+      "version": "0.19.0",
+      "purl": "pkg:python/prometheus-client>=0.19.0@0.19.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-cryptography>=48.0.0,<50.0.0",
+      "type": "library",
+      "name": "cryptography>=48.0.0,<50.0.0",
+      "version": "48.0.0",
+      "purl": "pkg:python/cryptography>=48.0.0,<50.0.0@48.0.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-sentence-transformers>=5.5.1",
+      "type": "library",
+      "name": "sentence-transformers>=5.5.1",
+      "version": "5.5.1",
+      "purl": "pkg:python/sentence-transformers>=5.5.1@5.5.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-faiss-cpu>=1.7.4",
+      "type": "library",
+      "name": "faiss-cpu>=1.7.4",
+      "version": "1.7.4",
+      "purl": "pkg:python/faiss-cpu>=1.7.4@1.7.4",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "python-openai>=2.40.0",
+      "type": "library",
+      "name": "openai>=2.40.0",
+      "version": "2.40.0",
+      "purl": "pkg:python/openai>=2.40.0@2.40.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "python"
+        }
+      ]
+    },
+    {
+      "bom-ref": "rust-pyo3",
+      "type": "library",
+      "name": "pyo3",
+      "version": "0.24.1",
+      "purl": "pkg:rust/pyo3@0.24.1",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "rust"
+        }
+      ]
+    },
+    {
+      "bom-ref": "rust-tokio",
+      "type": "library",
+      "name": "tokio",
+      "version": "1.36",
+      "purl": "pkg:rust/tokio@1.36",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "rust"
+        }
+      ]
+    },
+    {
+      "bom-ref": "rust-serde",
+      "type": "library",
+      "name": "serde",
+      "version": "1.0.197",
+      "purl": "pkg:rust/serde@1.0.197",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "rust"
+        }
+      ]
+    },
+    {
+      "bom-ref": "rust-zstd",
+      "type": "library",
+      "name": "zstd",
+      "version": "0.13.0",
+      "purl": "pkg:rust/zstd@0.13.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "ecosystem",
+          "value": "rust"
+        }
+      ]
+    }
+  ]
+}

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/dynamical-system/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Dynamical system - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2347,7 +2347,7 @@ and a risk functional ℛ (see §7) that weights invasive edits.</p>
 <p>Public-API (re)exports are encoded as commuting constraints <code>E_s = 1</code> for each expected symbol s in <code>__all__/index.ts/lib.rs</code>.</p>
 <hr/>
 <h1 id="5-canonicalization-triad-mergerenamedelete">5) Canonicalization triad (merge/rename/delete)<a class="headerlink" href="#5-canonicalization-triad-mergerenamedelete" title="Permanent link">¶</a></h1>
-<p>For each duplicate family 𝔽 (e.g., <code>tokenizer.py0, .py1, .py00 → tokenizer.py</code>) define idempotent operators:</p>
+<p>For each duplicate family 𝔽 (e.g., <code>tokenizer.py0, .py1, .py00 tokenizer.py</code>) define idempotent operators:</p>
 <p><code>text
 𝕄_𝔽  (merge) ,   ℜ_𝔽  (rename) ,   𝔇_𝔽  (delete)</code>text
 with laws</p>
@@ -2397,7 +2397,7 @@ Conditioning on success collapses onto the “green build” manifold; otherwise
 <h1 id="9-stability-invariants-and-fixed-points">9) Stability, invariants, and fixed points<a class="headerlink" href="#9-stability-invariants-and-fixed-points" title="Permanent link">¶</a></h1>
 <p><strong>Invariants.</strong></p>
 <ul>
-<li>No-Actions invariant: <code>[H(t), Π_noGH] = 0</code> ⇒ forbidden files cannot be created/activated.</li>
+<li>No-Actions invariant: <code>[H(t), Π_noGH] = 0</code> forbidden files cannot be created/activated.</li>
 <li>Canonicalization decreases a Lyapunov potential <code>Φ = ∑_𝔽 N_suffix,𝔽</code>, and</li>
 </ul>
 <p><code>text
@@ -2411,7 +2411,7 @@ Interpretation: no pending edits, no error channels active, all gates passing.</
 <h1 id="10-toy-derivation-on-a-duplicate-file-family">10) Toy derivation on a duplicate-file family<a class="headerlink" href="#10-toy-derivation-on-a-duplicate-file-family" title="Permanent link">¶</a></h1>
 <p>Consider one family 𝔽 = {<code>x.py0</code>, <code>x.py1</code>} with target <code>x.py</code>.
 Occupancies <code>(n0, n1, n)</code> are eigenvalues of <code>{N_0, N_1, N}</code>.</p>
-<p>Start with <code>|ψ₀⟩ = |1,1,0⟩</code>. Apply merge→rename→delete:</p>
+<p>Start with <code>|ψ₀⟩ = |1,1,0⟩</code>. Apply mergerenamedelete:</p>
 <p><code>text
 |ψ₁⟩ = 𝕄_𝔽 |1,1,0⟩ = |0,0,1⟩         (content union landed in canonical)
 |ψ₂⟩ = ℜ_𝔽 |0,0,1⟩ = |0,0,1⟩         (idempotent if already canonical)
@@ -2478,6 +2478,6 @@ postselect on G(θ)=1 under Π_noGH — and you’re done.”</code>text</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

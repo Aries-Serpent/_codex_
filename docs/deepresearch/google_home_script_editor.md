@@ -1,36 +1,36 @@
 # DeepResearch: Google Home Script Editor — Automations, Templates, and File Formats
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [1. Executive Summary](#1-executive-summary)
 - [2. Repository Mapping](#2-repository-mapping)
 - [3. Top 5 Workflows from Design to Production](#3-top-5-workflows-from-design-to-production)
-  - [Workflow 1 — Schema Discovery and Template Extraction](#workflow-1--schema-discovery-and-template-extraction)
-  - [Workflow 2 — Schema and Template Design with Validation](#workflow-2--schema-and-template-design-with-validation)
-  - [Workflow 3 — Cognitive Pattern Recording for Automation Failures](#workflow-3--cognitive-pattern-recording-for-automation-failures)
-  - [Workflow 4 — Template Validation and Production Gate](#workflow-4--template-validation-and-production-gate)
-  - [Workflow 5 — Production Rollout with RAG-Assisted Context](#workflow-5--production-rollout-with-rag-assisted-context)
+ - [Workflow 1 — Schema Discovery and Template Extraction](#workflow-1--schema-discovery-and-template-extraction)
+ - [Workflow 2 — Schema and Template Design with Validation](#workflow-2--schema-and-template-design-with-validation)
+ - [Workflow 3 — Cognitive Pattern Recording for Automation Failures](#workflow-3--cognitive-pattern-recording-for-automation-failures)
+ - [Workflow 4 — Template Validation and Production Gate](#workflow-4--template-validation-and-production-gate)
+ - [Workflow 5 — Production Rollout with RAG-Assisted Context](#workflow-5--production-rollout-with-rag-assisted-context)
 - [4. Top 5 Custom Agents to Design or Enhance](#4-top-5-custom-agents-to-design-or-enhance)
-  - [Agent 1 — `google-home-script-agent` *(New)*](#agent-1--google-home-script-agent-new)
-  - [Agent 2 — `energy-conversion-agent` *(Enhance)*](#agent-2--energy-conversion-agent-enhance)
-  - [Agent 3 — `smart-home-template-guardian` *(New)*](#agent-3--smart-home-template-guardian-new)
-  - [Agent 4 — `cognitive-home-automation-agent` *(New)*](#agent-4--cognitive-home-automation-agent-new)
-  - [Agent 5 — `rag-home-knowledge-agent` *(New)*](#agent-5--rag-home-knowledge-agent-new)
+ - [Agent 1 — `google-home-script-agent` *(New)*](#agent-1--google-home-script-agent-new)
+ - [Agent 2 — `energy-conversion-agent` *(Enhance)*](#agent-2--energy-conversion-agent-enhance)
+ - [Agent 3 — `smart-home-template-guardian` *(New)*](#agent-3--smart-home-template-guardian-new)
+ - [Agent 4 — `cognitive-home-automation-agent` *(New)*](#agent-4--cognitive-home-automation-agent-new)
+ - [Agent 5 — `rag-home-knowledge-agent` *(New)*](#agent-5--rag-home-knowledge-agent-new)
 - [5. Top 5 Conceptual Usages and Integrations](#5-top-5-conceptual-usages-and-integrations)
-  - [Integration 1 — Pattern DB as Automation Failure Historian](#integration-1--pattern-db-as-automation-failure-historian)
-  - [Integration 2 — YAML Strict Gate for Template Deployments](#integration-2--yaml-strict-gate-for-template-deployments)
-  - [Integration 3 — Deepresearch Index as Automation Template Library](#integration-3--deepresearch-index-as-automation-template-library)
-  - [Integration 4 — Energy Conversion Agent as Home Energy Optimizer](#integration-4--energy-conversion-agent-as-home-energy-optimizer)
-  - [Integration 5 — RAG-Powered Automation Authoring Assistant](#integration-5--rag-powered-automation-authoring-assistant)
+ - [Integration 1 — Pattern DB as Automation Failure Historian](#integration-1--pattern-db-as-automation-failure-historian)
+ - [Integration 2 — YAML Strict Gate for Template Deployments](#integration-2--yaml-strict-gate-for-template-deployments)
+ - [Integration 3 — Deepresearch Index as Automation Template Library](#integration-3--deepresearch-index-as-automation-template-library)
+ - [Integration 4 — Energy Conversion Agent as Home Energy Optimizer](#integration-4--energy-conversion-agent-as-home-energy-optimizer)
+ - [Integration 5 — RAG-Powered Automation Authoring Assistant](#integration-5--rag-powered-automation-authoring-assistant)
 - [6. Relevant Repo Files and Docs](#6-relevant-repo-files-and-docs)
 - [7. Constraints, Limitations, and Workarounds](#7-constraints-limitations-and-workarounds)
 - [8. Recommended Next Actions](#8-recommended-next-actions)
 - [Sources](#sources)
 
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
-> **Roles:** [Primary: Research Integrator], [Secondary: Agent Designer]  Energy: 8
+> **Roles:** [Primary: Research Integrator], [Secondary: Agent Designer] Energy: 8
 > **Linked Agent:** `.github/agents/energy-conversion-agent.md` (cross-domain automation patterns)
 > **Index:** `docs/deepresearch/INDEX.md`
 
@@ -39,16 +39,16 @@
 ## 1. Executive Summary
 
 Google Home's **Script Editor** (launched 2024–2025) enables power users to write
-**YAML-based automation scripts** directly in the Google Home app.  These scripts
+**YAML-based automation scripts** directly in the Google Home app. These scripts
 use a structured `metadata` + `automations` schema with typed `starters`, optional
-`condition` blocks, and `actions`.  As of 2025 the platform supports ~20 device
+`condition` blocks, and `actions`. As of 2025 the platform supports ~20 device
 traits, Gemini-AI cognitive routines, Matter local control, and is in active staged
 rollout.
 
 **How this connects to `_codex_`**: The repository's cognitive brain, CI pattern
 knowledge graph, agent framework, and RAG pipeline all exhibit structural patterns
 — schema-driven automation, YAML validation gates, template reuse, and contextual
-decision logic — that directly map to Google Home automation design.  Applying
+decision logic — that directly map to Google Home automation design. Applying
 `_codex_` conventions to this domain yields five reusable workflows, five custom
 agents, and five cognitive-brain integration points documented below.
 
@@ -134,7 +134,7 @@ A Google Home schema validator would extend this with trait-level type checking.
 | **Repo Convention** | Phase 6-7 pattern recording pipeline; `CODEX_DB_PATH` env var |
 | **Relevant Files** | `scripts/ci/pattern_recorder.py`, `CODEX_MANIFEST.json` (`ci_patterns` key) |
 
-This workflow maps directly to the `_codex_` pattern knowledge graph.  Each
+This workflow maps directly to the `_codex_` pattern knowledge graph. Each
 Google Home automation failure would be recorded as a pattern occurrence with a
 `git_sha`-equivalent run ID, enabling `cross_pr_correlation()` to detect
 automations that fail repeatedly across multiple home deployments.
@@ -198,7 +198,7 @@ is "production-ready" only when it passes device availability check + schema lin
 | **Primary** | Model smart-home loads (lights, HVAC, locks) as G2E consumption nodes |
 | **Secondary** | Use Google Home Script Editor starters (e.g. `device.state.EnergyStorage`) to trigger PD optimization |
 | **Capabilities** | Add `google_home_device_loads` module; parse Google Home energy-reporting traits |
-| **Repo Alignment** | Existing agent at `.github/agents/energy-conversion-agent.md` (v0.2.1); enhance to v0.2.1 |
+| **Repo Alignment** | Existing agent at `.github/agents/energy-conversion-agent.md` (v0.2.0); enhance to v0.2.0 |
 | **Type** | Enhancement of `.github/agents/energy-conversion-agent.md` |
 | **Enhancement** | Add "Smart Home Energy Integration" section; map `device.command.OnOff` to load-shedding PD setpoints |
 
@@ -250,11 +250,11 @@ is "production-ready" only when it passes device availability check + schema lin
 
 ### Integration 1 — Pattern DB as Automation Failure Historian
 
-**Cognitive brain objective:** Self-healing CI → Self-healing automation
+**Cognitive brain objective:** Self-healing CI Self-healing automation
 **Concept:** Each Google Home automation run = one CI job. Failures are
-structured pattern occurrences.  `pattern_recorder.record_from_report()` ingests
+structured pattern occurrences. `pattern_recorder.record_from_report()` ingests
 structured failure logs, building a rolling 7-day trend and `high_recurrence()`
-table.  `cross_pr_correlation()` flags automations that fail in ≥3 distinct home
+table. `cross_pr_correlation()` flags automations that fail in ≥3 distinct home
 deployments.
 
 **Operational value:** Identifies fragile automations before they affect production.
@@ -264,9 +264,9 @@ deployments.
 
 ### Integration 2 — YAML Strict Gate for Template Deployments
 
-**Cognitive brain objective:** Pre-merge gate → Pre-deploy gate
+**Cognitive brain objective:** Pre-merge gate Pre-deploy gate
 **Concept:** Adapt `ci_pattern_pipeline.py --strict` to act as a pre-deployment
-gate for Google Home automations.  Any automation with detected schema errors
+gate for Google Home automations. Any automation with detected schema errors
 (Pattern 3: YAML Indentation) or unknown device traits (new Pattern 19) blocks
 deployment.
 
@@ -279,9 +279,9 @@ block structure as GitHub Actions workflows — the same ruff/yamllint toolchain
 
 ### Integration 3 — Deepresearch Index as Automation Template Library
 
-**Cognitive brain objective:** Knowledge graph → Indexed template library
+**Cognitive brain objective:** Knowledge graph Indexed template library
 **Concept:** `docs/deepresearch/INDEX.md` and `check_docs_index.py --generate`
-provide auto-indexing for any YAML template collection.  Google Home templates
+provide auto-indexing for any YAML template collection. Google Home templates
 committed under `docs/deepresearch/google_home_templates/` would be
 auto-discovered and indexed.
 
@@ -294,9 +294,9 @@ agent responses.
 
 ### Integration 4 — Energy Conversion Agent as Home Energy Optimizer
 
-**Cognitive brain objective:** G2E optimization → Smart home load management
+**Cognitive brain objective:** G2E optimization Smart home load management
 **Concept:** The `energy-conversion-agent` models gas-to-electric conversion
-efficiency.  Google Home's `device.state.EnergyStorage` and
+efficiency. Google Home's `device.state.EnergyStorage` and
 `device.command.OnOff` traits can be used as real-time load inputs.
 The agent's PID controller setpoints become automation actions in YAML.
 
@@ -310,7 +310,7 @@ energy optimization via Google Home.
 
 ### Integration 5 — RAG-Powered Automation Authoring Assistant
 
-**Cognitive brain objective:** RAG knowledge retrieval → Context-aware YAML generation
+**Cognitive brain objective:** RAG knowledge retrieval Context-aware YAML generation
 **Concept:** The `/rag/build` + `/rag/query` endpoints serve as the backbone for
 an authoring assistant that retrieves the closest matching validated template,
 applies it to the user's device list, and returns a deployable YAML.
@@ -354,7 +354,7 @@ known-limitation warnings in one query.
 | `_ensure_subpath()` requires explicit `RAG_FILES_BASE_DIR` | Default CWD may not cover template library locations | Set `RAG_FILES_BASE_DIR=docs/deepresearch/google_home_templates` in CI environment |
 | Pattern DB (SQLite) lives only on the runner — lost between CI jobs | Cross-run pattern correlation requires persistence | Phase 8 P2: snapshot DB to workflow artifact (GitHub Actions `upload-artifact`) |
 | Gemini AI cognitive routines are in staged rollout | Not universally available | Design agents to degrade gracefully; fall back to static YAML templates |
-|  **Gap:** No existing Google Home schema validator in `_codex_` | Templates cannot be programmatically validated today | P1: add `docs/deepresearch/google_home_schema.json` + integrate into Pattern 3 extension |
+| **Gap:** No existing Google Home schema validator in `_codex_` | Templates cannot be programmatically validated today | P1: add `docs/deepresearch/google_home_schema.json` + integrate into Pattern 3 extension |
 
 ---
 
@@ -365,7 +365,7 @@ known-limitation warnings in one query.
 | P1 | Add `docs/deepresearch/google_home_templates/` directory with 5 starter templates | CI agent | `docs/deepresearch/INDEX.md` |
 | P1 | Create `.github/agents/google-home-script-agent.md` (see §4 Agent 1) | Agent designer | `.github/agents/` |
 | P1 | Extend Pattern 3 with Google Home device-trait validation (new Pattern 19) | `auto_fix_common_issues.py` | `scripts/ci/auto_fix_common_issues.py` |
-| P2 | Enhance `energy-conversion-agent.md` v1.2 → v1.3: add smart-home energy integration section | Agent designer | `.github/agents/energy-conversion-agent.md` |
+| P2 | Enhance `energy-conversion-agent.md` v1.2 v1.3: add smart-home energy integration section | Agent designer | `.github/agents/energy-conversion-agent.md` |
 | P2 | Add `google_home_schema.json` to deepresearch as schema reference | Research agent | `docs/deepresearch/` |
 | P2 | Snapshot pattern SQLite DB to GitHub Actions artifact (Phase 8 P2) | CI engineer | `.github/workflows/pre-merge-validation.yml` |
 | P3 | Create `cognitive-home-automation-agent.md` leveraging `cross_pr_correlation()` | Agent designer | `.github/agents/` |

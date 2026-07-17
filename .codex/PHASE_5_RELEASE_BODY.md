@@ -21,7 +21,7 @@ Consolidated production deployment campaign (Phases 1-4) with complete security 
 - @copilot (Copilot Coding Agent) — Implementation & verification
 
 ## Breaking Changes
-None — backward compatible with v0.2.1.
+None — backward compatible with v0.2.0.
 
 ## Installation
 ```bash

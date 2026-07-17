@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/GENESIS_10_1_GUARD_REMOVAL/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Genesis Phase 10.1 — Guard Removal Checklist - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2372,9 +2372,9 @@
 <h1 id="genesis-phase-101-guard-removal-checklist">Genesis Phase 10.1 — Guard Removal Checklist<a class="headerlink" href="#genesis-phase-101-guard-removal-checklist" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status</strong>:  Awaiting Admin Approval<br/>
-<strong>Owner</strong>: @mbaetiong<br/>
-<strong>Planset</strong>: PS-17c<br/>
+<p><strong>Status</strong>: Awaiting Admin Approval
+<strong>Owner</strong>: @mbaetiong
+<strong>Planset</strong>: PS-17c
 <strong>Last Updated</strong>: 2026-05-27</p>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2383,7 +2383,7 @@
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> CODEX_MASTER_KEY confirmed and available</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> CODEX_BACKUP_KEY confirmed and available</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All 17 plansets (PS-01 through PS-16)  Complete</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All 17 plansets (PS-01 through PS-16) Complete</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> AAIS V3.4 score 97.0/100 (A+) achieved</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Fragile test coverage 99.4% (153/154 files guarded)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> CacheManager integrated in 25/61 workflows (41%)</li>
@@ -2392,23 +2392,23 @@
 </ul>
 <h2 id="3-step-guard-removal-protocol">3-Step Guard Removal Protocol<a class="headerlink" href="#3-step-guard-removal-protocol" title="Permanent link">¶</a></h2>
 <h3 id="step-1-workflow-guard-genesis-bootstrapyml">Step 1: Workflow Guard (<code>genesis-bootstrap.yml</code>)<a class="headerlink" href="#step-1-workflow-guard-genesis-bootstrapyml" title="Permanent link">¶</a></h3>
-<p><strong>Current</strong>: <code>if: false</code> (prevents workflow execution)<br/>
+<p><strong>Current</strong>: <code>if: false</code> (prevents workflow execution)
 <strong>Target</strong>: <code>if: true</code> (enables workflow execution)</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Change: if: false → if: true</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Change: if: false if: true</span>
 </code></pre></div>
 <p><strong>Rollback</strong>: Set <code>if: false</code> to immediately disable.</p>
 <h2 id="step-2-script-guard-autonomous_agentpy">Step 2: Script Guard (<code>autonomous_agent.py</code>)<a class="headerlink" href="#step-2-script-guard-autonomous_agentpy" title="Permanent link">¶</a></h2>
-<p><strong>Current</strong>: <code>SAFE_MODE = True</code> (blocks autonomous actions)<br/>
+<p><strong>Current</strong>: <code>SAFE_MODE = True</code> (blocks autonomous actions)
 <strong>Target</strong>: <code>SAFE_MODE = False</code> (enables supervised autonomous actions)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># scripts/autonomous_agent.py</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="c1"># Change: SAFE_MODE = True → SAFE_MODE = False</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="c1"># Change: SAFE_MODE = True SAFE_MODE = False</span>
 </code></pre></div>
 <p><strong>Rollback</strong>: Set <code>SAFE_MODE = True</code> to immediately revert.</p>
 <h2 id="step-3-config-guard-guardrailsmd">Step 3: Config Guard (<code>guardrails.md</code>)<a class="headerlink" href="#step-3-config-guard-guardrailsmd" title="Permanent link">¶</a></h2>
-<p><strong>Current</strong>: <code>autonomous_actions_enabled: false</code><br/>
+<p><strong>Current</strong>: <code>autonomous_actions_enabled: false</code>
 <strong>Target</strong>: <code>autonomous_actions_enabled: true</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># .codex/guardrails.md</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># Change: autonomous_actions_enabled: false → autonomous_actions_enabled: true</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># Change: autonomous_actions_enabled: false autonomous_actions_enabled: true</span>
 </code></pre></div>
 <p><strong>Rollback</strong>: Set <code>autonomous_actions_enabled: false</code> to immediately revert.</p>
 <h2 id="execution-order">Execution Order<a class="headerlink" href="#execution-order" title="Permanent link">¶</a></h2>
@@ -2464,6 +2464,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

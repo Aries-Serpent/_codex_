@@ -53,7 +53,7 @@ Phase 14 Hybrid Multi-Workstream Campaign is **FULLY READY FOR LAUNCH**. All 4 w
 
 ## Confirmation Checklist (Tier 2: All 4 Workstreams Ready)
 
-### WS1: Feature Rollout (v0.2.1 GA Target: 2026-08-25)
+### WS1: Feature Rollout (v0.2.0 GA Target: 2026-08-25)
 
 **Status:** ✅ FULLY READY
 
@@ -248,7 +248,7 @@ Phase 14 Hybrid Multi-Workstream Campaign is **FULLY READY FOR LAUNCH**. All 4 w
 | 2026-07-17T20:00Z | Phase 13 WS4 permanent ops LIVE (cutover milestone) | ⏳ PENDING | Critical |
 | 2026-07-24T20:10Z | **PHASE 14 OFFICIAL KICKOFF** | 🚀 TARGET | None |
 | 2026-07-31T20:10Z | Checkpoint 1 (feature finalized, infra prep, security planning) | 📅 T+7 days | None |
-| 2026-08-25T20:10Z | WS1 Complete (v0.2.1 GA) | 📅 T+32 days | None |
+| 2026-08-25T20:10Z | WS1 Complete (v0.2.0 GA) | 📅 T+32 days | None |
 | 2026-09-04T20:10Z | WS2 Complete (Infrastructure GA) | 📅 T+42 days | None |
 | 2026-09-18T20:10Z | WS3+WS4 Complete (Security GA, Phase 15 ready) | 📅 T+56 days | None |
 

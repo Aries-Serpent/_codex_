@@ -1,10 +1,10 @@
 ## Guide 04 — Building Resilient ML Services
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Estimated time:** 25 minutes  
+**Estimated time:** 25 minutes
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`
 
 ---
@@ -19,7 +19,7 @@ ML services in production routinely call:
 - **Monitoring endpoints** — non-critical but noisy when they fail
 
 Without protection, a single failing dependency can cascade into a full service
-outage.  The `codex.resilience` module provides three complementary primitives
+outage. The `codex.resilience` module provides three complementary primitives
 that compose together for production-grade fault tolerance:
 
 | Primitive | Role |
@@ -35,16 +35,16 @@ that compose together for production-grade fault tolerance:
 The circuit breaker implements the classic three-state pattern:
 
 ```
-CLOSED ──(N failures)──► OPEN ──(timeout elapsed)──► HALF_OPEN
-  ▲                                                       │
-  └─────────────────(M successes)────────────────────────┘
+CLOSED (N failures) OPEN (timeout elapsed) HALF_OPEN
+ 
+ (M successes)
 ```
 
 - **CLOSED** — normal operation; failures are counted.
 - **OPEN** — calls are rejected immediately with `CircuitOpenError` until
-  the recovery timeout elapses.
+ the recovery timeout elapses.
 - **HALF_OPEN** — a limited trial: consecutive successes close the circuit;
-  any failure re-opens it.
+ any failure re-opens it.
 
 ### Decorator pattern
 
@@ -54,26 +54,26 @@ import requests
 
 # One circuit breaker per downstream service
 feature_store_cb = CircuitBreaker(
-    failure_threshold=3,    # open after 3 consecutive failures
-    recovery_timeout=30,    # wait 30 s before trying again
-    success_threshold=2,    # close after 2 successes in HALF_OPEN
-    name="feature_store",
+ failure_threshold=3, # open after 3 consecutive failures
+ recovery_timeout=30, # wait 30 s before trying again
+ success_threshold=2, # close after 2 successes in HALF_OPEN
+ name="feature_store",
 )
 
 def get_features(user_id: str) -> dict:
-    try:
-        return feature_store_cb.call(
-            requests.get,
-            f"https://features.internal/user/{user_id}",
-            timeout=2,
-        ).json()
-    except CircuitOpenError as exc:
-        # Circuit is open — use a cached or default value
-        print(f"Feature store unavailable (retry in ~{exc.retry_after:.0f}s)")
-        return {"user_id": user_id, "segment": "default"}
-    except requests.RequestException:
-        # Network error — circuit breaker has already incremented failure count
-        return {"user_id": user_id, "segment": "default"}
+ try:
+ return feature_store_cb.call(
+ requests.get,
+ f"https://features.internal/user/{user_id}",
+ timeout=2,
+ ).json()
+ except CircuitOpenError as exc:
+ # Circuit is open — use a cached or default value
+ print(f"Feature store unavailable (retry in ~{exc.retry_after:.0f}s)")
+ return {"user_id": user_id, "segment": "default"}
+ except requests.RequestException:
+ # Network error — circuit breaker has already incremented failure count
+ return {"user_id": user_id, "segment": "default"}
 ```
 
 ## Checking the state
@@ -81,11 +81,11 @@ def get_features(user_id: str) -> dict:
 ```python
 from codex.resilience import CircuitState
 
-print(feature_store_cb.state)         # CircuitState.CLOSED
-print(feature_store_cb.state.value)   # "closed"
+print(feature_store_cb.state) # CircuitState.CLOSED
+print(feature_store_cb.state.value) # "closed"
 
 if feature_store_cb.state is CircuitState.OPEN:
-    print("Circuit is open — skipping call")
+ print("Circuit is open — skipping call")
 ```
 
 ### Manual reset
@@ -93,7 +93,7 @@ if feature_store_cb.state is CircuitState.OPEN:
 Useful during incident recovery:
 
 ```python
-feature_store_cb.reset()   # force back to CLOSED
+feature_store_cb.reset() # force back to CLOSED
 ```
 
 ---
@@ -116,23 +116,23 @@ delay = min(base_delay × 2ⁿ + jitter, max_delay)
 from codex.resilience import retry_with_backoff, RetryExhausted
 
 @retry_with_backoff(
-    max_retries=4,
-    base_delay=0.5,     # 0.5 s, 1 s, 2 s, 4 s + jitter
-    max_delay=10.0,
-    jitter=0.2,
-    exceptions=(IOError, TimeoutError),   # only retry these
+ max_retries=4,
+ base_delay=0.5, # 0.5 s, 1 s, 2 s, 4 s + jitter
+ max_delay=10.0,
+ jitter=0.2,
+ exceptions=(IOError, TimeoutError), # only retry these
 )
 def download_model_weights(uri: str) -> bytes:
-    response = requests.get(uri, timeout=10)
-    response.raise_for_status()
-    return response.content
+ response = requests.get(uri, timeout=10)
+ response.raise_for_status()
+ return response.content
 
 
 try:
-    weights = download_model_weights("https://registry.internal/models/v3.pt")
+ weights = download_model_weights("https://registry.internal/models/v3.pt")
 except RetryExhausted as exc:
-    print(f"Download failed after {exc.attempts} attempts: {exc.__cause__}")
-    weights = load_from_local_cache()
+ print(f"Download failed after {exc.attempts} attempts: {exc.__cause__}")
+ weights = load_from_local_cache()
 ```
 
 ### Direct wrapper (no decorator)
@@ -145,9 +145,9 @@ from codex.resilience import retry_with_backoff
 retried_get = retry_with_backoff(max_retries=3, base_delay=1.0)(requests.get)
 
 try:
-    resp = retried_get("https://api.example.com/v1/predict", json=payload, timeout=5)
+ resp = retried_get("https://api.example.com/v1/predict", json=payload, timeout=5)
 except RetryExhausted:
-    resp = None
+ resp = None
 ```
 
 ---
@@ -164,8 +164,8 @@ from codex.resilience import GracefulDegradation
 
 @GracefulDegradation(fallback={"explanation": "unavailable"})
 def get_explanation(prediction_id: str) -> dict:
-    """Fetch a costly SHAP explanation from the interpretability service."""
-    return interpretability_api.explain(prediction_id)
+ """Fetch a costly SHAP explanation from the interpretability service."""
+ return interpretability_api.explain(prediction_id)
 
 
 # If the interpretability API is down, returns {"explanation": "unavailable"}
@@ -182,9 +182,9 @@ function call:
 from codex.resilience import GracefulDegradation
 
 with GracefulDegradation(fallback=0.5) as dg:
-    dg.result = fetch_dynamic_threshold_from_config_service()
+ dg.result = fetch_dynamic_threshold_from_config_service()
 
-threshold = dg.result   # 0.5 if the config service was unreachable
+threshold = dg.result # 0.5 if the config service was unreachable
 ```
 
 ### No fallback — convert to `DegradationError`
@@ -196,7 +196,7 @@ raw library exception:
 from codex.resilience import GracefulDegradation, DegradationError
 
 with GracefulDegradation() as dg:
-    dg.result = critical_operation()
+ dg.result = critical_operation()
 # raises DegradationError(original=<original exception>) on failure
 ```
 
@@ -204,48 +204,48 @@ with GracefulDegradation() as dg:
 
 ## Part 4 — Combining All Three
 
-The three primitives are designed to be layered.  Here is a production pattern
+The three primitives are designed to be layered. Here is a production pattern
 for a model inference endpoint that calls an external feature store:
 
 ```python
 from codex.resilience import (
-    CircuitBreaker,
-    CircuitOpenError,
-    GracefulDegradation,
-    retry_with_backoff,
-    RetryExhausted,
+ CircuitBreaker,
+ CircuitOpenError,
+ GracefulDegradation,
+ retry_with_backoff,
+ RetryExhausted,
 )
 
-# ── One circuit breaker per downstream service ────────────────────────────────
+# One circuit breaker per downstream service 
 _cb = CircuitBreaker(failure_threshold=5, recovery_timeout=60, name="feature_store")
 
-# ── Retry for transient network errors ────────────────────────────────────────
+# Retry for transient network errors 
 @retry_with_backoff(max_retries=3, base_delay=0.5, exceptions=(IOError, TimeoutError))
 def _fetch_features_raw(user_id: str) -> dict:
-    return _cb.call(requests.get, f"https://features.svc/user/{user_id}", timeout=2).json()
+ return _cb.call(requests.get, f"https://features.svc/user/{user_id}", timeout=2).json()
 
-# ── Graceful degradation if everything fails ──────────────────────────────────
+# Graceful degradation if everything fails 
 @GracefulDegradation(fallback={"segment": "unknown", "tier": "free"})
 def fetch_features(user_id: str) -> dict:
-    try:
-        return _fetch_features_raw(user_id)
-    except (CircuitOpenError, RetryExhausted) as exc:
-        raise RuntimeError(f"Feature store unavailable: {exc}") from exc
+ try:
+ return _fetch_features_raw(user_id)
+ except (CircuitOpenError, RetryExhausted) as exc:
+ raise RuntimeError(f"Feature store unavailable: {exc}") from exc
 
 
-# ── Inference endpoint ────────────────────────────────────────────────────────
+# Inference endpoint 
 def predict(user_id: str) -> dict:
-    features = fetch_features(user_id)   # always returns, even on full outage
-    prediction = model.predict(features)
-    return {"prediction": prediction, "features_source": "live" if features.get("tier") != "unknown" else "fallback"}
+ features = fetch_features(user_id) # always returns, even on full outage
+ prediction = model.predict(features)
+ return {"prediction": prediction, "features_source": "live" if features.get("tier") != "unknown" else "fallback"}
 ```
 
 **What this buys you:**
 
-1. Transient errors (network blip) → retried up to 3 times with backoff.
-2. Sustained failure → circuit opens after 5 failures, saving downstream quota.
-3. Circuit still open or all retries exhausted → `GracefulDegradation` returns
-   a default feature set so inference can still proceed.
+1. Transient errors (network blip) retried up to 3 times with backoff.
+2. Sustained failure circuit opens after 5 failures, saving downstream quota.
+3. Circuit still open or all retries exhausted `GracefulDegradation` returns
+ a default feature set so inference can still proceed.
 4. After 60 s, the circuit enters HALF_OPEN and automatically probes recovery.
 
 ---
@@ -258,15 +258,15 @@ from unittest.mock import patch, MagicMock
 from codex.resilience import CircuitBreaker, CircuitOpenError
 
 def test_circuit_opens_after_threshold():
-    cb = CircuitBreaker(failure_threshold=2, recovery_timeout=9999)
-    failing = MagicMock(side_effect=IOError("down"))
+ cb = CircuitBreaker(failure_threshold=2, recovery_timeout=9999)
+ failing = MagicMock(side_effect=IOError("down"))
 
-    for _ in range(2):
-        with pytest.raises(IOError):
-            cb.call(failing)
+ for _ in range(2):
+ with pytest.raises(IOError):
+ cb.call(failing)
 
-    with pytest.raises(CircuitOpenError):
-        cb.call(failing)   # third call → circuit is open
+ with pytest.raises(CircuitOpenError):
+ cb.call(failing) # third call circuit is open
 ```
 
 ---
@@ -282,8 +282,8 @@ def test_circuit_opens_after_threshold():
 
 ---
 
-> **See also:**  
+> **See also:**
 > `src/codex/resilience/circuit_breaker.py` · `src/codex/resilience/retry.py` ·
 > `src/codex/resilience/degradation.py`
 >
-> [← Tutorial 03 — Continuous Learning](03_continuous_learning.md)
+> [ Tutorial 03 — Continuous Learning](03_continuous_learning.md)

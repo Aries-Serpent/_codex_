@@ -1,10 +1,10 @@
 # Fragile Test Patterns and Stabilization Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Document Status**: STABLE 
+**Document Status**: STABLE
 **Last Updated**: 2026-06-27
-**Agent**: autonomous-test-healer-agent v0.2.1-s228
+**Agent**: autonomous-test-healer-agent v0.2.0-s228
 **Scope**: Phase 4, Lane 1 — Test Foundation Hardening
 
 ---
@@ -35,13 +35,13 @@ Tests that rely on timing assertions or subprocess execution are prone to flakin
 @pytest.mark.flaky(reruns=2)
 @pytest.mark.timeout(90)
 def test_budget_cap_raises_on_timeout():
-    @mod.budget_cap(max_seconds=0.15)
-    def slow():
-        time.sleep(1)
-        return "never"
-    
-    with pytest.raises(Exception):
-        slow()  # ← Fails on slow CI runners
+ @mod.budget_cap(max_seconds=0.15)
+ def slow():
+ time.sleep(1)
+ return "never"
+ 
+ with pytest.raises(Exception):
+ slow() # Fails on slow CI runners
 ```
 
 ### Root Causes
@@ -58,14 +58,14 @@ def test_budget_cap_raises_on_timeout():
 ```python
 @mod.budget_cap(max_seconds=0.15)
 def slow():
-    time.sleep(1)
+ time.sleep(1)
 ```
 
 **After**:
 ```python
-@mod.budget_cap(max_seconds=0.5)  # Larger buffer for slow runners
+@mod.budget_cap(max_seconds=0.5) # Larger buffer for slow runners
 def slow():
-    time.sleep(3)  # Longer sleep = more reliable timeout enforcement
+ time.sleep(3) # Longer sleep = more reliable timeout enforcement
 ```
 
 #### Solution 1B: Add Fallback Retry
@@ -73,29 +73,29 @@ def slow():
 ```python
 @pytest.mark.flaky(reruns=1, reason="Timing: improved with fallback retry")
 def test_budget_cap_raises_on_timeout():
-    mod = _import_scheduler()
-    
-    @mod.budget_cap(max_seconds=0.5)
-    def slow():
-        time.sleep(3)
-        return "never"
-    
-    exception_raised = False
-    try:
-        with pytest.raises(Exception, timeout=1):
-            slow()
-        exception_raised = True
-    except AssertionError:
-        # Fallback: retry once with longer timeout
-        time.sleep(0.1)
-        try:
-            with pytest.raises(Exception, timeout=2):
-                slow()
-            exception_raised = True
-        except AssertionError as e:
-            raise AssertionError("Timeout exception must be raised") from e
-    
-    assert exception_raised
+ mod = _import_scheduler()
+ 
+ @mod.budget_cap(max_seconds=0.5)
+ def slow():
+ time.sleep(3)
+ return "never"
+ 
+ exception_raised = False
+ try:
+ with pytest.raises(Exception, timeout=1):
+ slow()
+ exception_raised = True
+ except AssertionError:
+ # Fallback: retry once with longer timeout
+ time.sleep(0.1)
+ try:
+ with pytest.raises(Exception, timeout=2):
+ slow()
+ exception_raised = True
+ except AssertionError as e:
+ raise AssertionError("Timeout exception must be raised") from e
+ 
+ assert exception_raised
 ```
 
 #### Solution 1C: Polling-Based Validation
@@ -103,24 +103,24 @@ def test_budget_cap_raises_on_timeout():
 ```python
 @pytest.mark.flaky(reruns=1, reason="Timing: polling-based validation")
 def test_timeout_with_polling():
-    """Detect actual timeout instead of assuming sleep accuracy."""
-    @decorator(max_seconds=0.5)
-    def operation():
-        time.sleep(3)
-    
-    start = time.time()
-    max_wait = 5.0
-    timed_out = False
-    
-    while (time.time() - start) < max_wait:
-        try:
-            operation()
-        except TimeoutError:
-            timed_out = True
-            break
-        time.sleep(0.1)  # Poll every 100ms
-    
-    assert timed_out, "Operation must have timed out"
+ """Detect actual timeout instead of assuming sleep accuracy."""
+ @decorator(max_seconds=0.5)
+ def operation():
+ time.sleep(3)
+ 
+ start = time.time()
+ max_wait = 5.0
+ timed_out = False
+ 
+ while (time.time() - start) < max_wait:
+ try:
+ operation()
+ except TimeoutError:
+ timed_out = True
+ break
+ time.sleep(0.1) # Poll every 100ms
+ 
+ assert timed_out, "Operation must have timed out"
 ```
 
 ### Recommended Practice
@@ -139,12 +139,12 @@ Tests that manipulate files without synchronization fail intermittently:
 
 ```python
 def test_file_cache_invalidate(tmp_path: Path):
-    cache = FileCache(tmp_path / "cache")
-    cache.set("key1", "value")
-    
-    # Race condition: file deletion
-    assert cache.invalidate("key1") is True
-    assert cache.get("key1") is None  # ← May fail on slow FS
+ cache = FileCache(tmp_path / "cache")
+ cache.set("key1", "value")
+ 
+ # Race condition: file deletion
+ assert cache.invalidate("key1") is True
+ assert cache.get("key1") is None # May fail on slow FS
 ```
 
 ### Root Causes
@@ -159,80 +159,80 @@ def test_file_cache_invalidate(tmp_path: Path):
 
 ```python
 def test_file_cache_invalidate(tmp_path: Path):
-    cache = FileCache(tmp_path / "cache")
-    cache.set("key1", "value")
-    assert cache.get("key1") == "value"
-    
-    # Fix: Retry invalidation with sleep
-    max_attempts = 3
-    for attempt in range(max_attempts):
-        result = cache.invalidate("key1")
-        if result:
-            break
-        if attempt < max_attempts - 1:
-            time.sleep(0.05)  # 50ms backoff
-    
-    assert result is True
-    
-    # Fix: Retry verification with sleep
-    for attempt in range(max_attempts):
-        retrieved = cache.get("key1")
-        if retrieved is None:
-            break
-        if attempt < max_attempts - 1:
-            time.sleep(0.05)
-    
-    assert retrieved is None
+ cache = FileCache(tmp_path / "cache")
+ cache.set("key1", "value")
+ assert cache.get("key1") == "value"
+ 
+ # Fix: Retry invalidation with sleep
+ max_attempts = 3
+ for attempt in range(max_attempts):
+ result = cache.invalidate("key1")
+ if result:
+ break
+ if attempt < max_attempts - 1:
+ time.sleep(0.05) # 50ms backoff
+ 
+ assert result is True
+ 
+ # Fix: Retry verification with sleep
+ for attempt in range(max_attempts):
+ retrieved = cache.get("key1")
+ if retrieved is None:
+ break
+ if attempt < max_attempts - 1:
+ time.sleep(0.05)
+ 
+ assert retrieved is None
 ```
 
 #### Solution 2B: Atomic Operations
 
 ```python
 def test_file_cache_clear(tmp_path: Path):
-    cache = FileCache(tmp_path / "cache")
-    
-    # Add pre-clear verification
-    cache.set("key1", "value1")
-    cache.set("key2", "value2")
-    assert cache.get("key1") is not None
-    assert cache.get("key2") is not None
-    
-    # Clear and retry verification
-    count = cache.clear()
-    assert count == 2
-    
-    # Verify with retry logic
-    max_attempts = 3
-    for key in ["key1", "key2"]:
-        for attempt in range(max_attempts):
-            result = cache.get(key)
-            if result is None:
-                break
-            if attempt < max_attempts - 1:
-                time.sleep(0.05)
-        assert result is None, f"Key {key} must be cleared"
+ cache = FileCache(tmp_path / "cache")
+ 
+ # Add pre-clear verification
+ cache.set("key1", "value1")
+ cache.set("key2", "value2")
+ assert cache.get("key1") is not None
+ assert cache.get("key2") is not None
+ 
+ # Clear and retry verification
+ count = cache.clear()
+ assert count == 2
+ 
+ # Verify with retry logic
+ max_attempts = 3
+ for key in ["key1", "key2"]:
+ for attempt in range(max_attempts):
+ result = cache.get(key)
+ if result is None:
+ break
+ if attempt < max_attempts - 1:
+ time.sleep(0.05)
+ assert result is None, f"Key {key} must be cleared"
 ```
 
 #### Solution 2C: Polling for File State
 
 ```python
 def test_file_deletion_with_polling(tmp_path: Path):
-    """Wait for actual file deletion instead of assuming immediate removal."""
-    cache = FileCache(tmp_path / "cache")
-    cache.set("key1", "value")
-    
-    # Invalidate and poll for actual deletion
-    result = cache.invalidate("key1")
-    assert result is True
-    
-    start = time.time()
-    max_wait = 1.0
-    while (time.time() - start) < max_wait:
-        if cache.get("key1") is None:
-            break
-        time.sleep(0.05)  # Poll every 50ms
-    
-    assert cache.get("key1") is None
+ """Wait for actual file deletion instead of assuming immediate removal."""
+ cache = FileCache(tmp_path / "cache")
+ cache.set("key1", "value")
+ 
+ # Invalidate and poll for actual deletion
+ result = cache.invalidate("key1")
+ assert result is True
+ 
+ start = time.time()
+ max_wait = 1.0
+ while (time.time() - start) < max_wait:
+ if cache.get("key1") is None:
+ break
+ time.sleep(0.05) # Poll every 50ms
+ 
+ assert cache.get("key1") is None
 ```
 
 ### Recommended Practice
@@ -253,26 +253,26 @@ Async tests fail inconsistently, especially when run in sequence:
 ```python
 @pytest.mark.asyncio
 async def test_concurrent_enqueue_dequeue():
-    queue = AsyncMessageQueue()
-    
-    async def producer():
-        for i in range(5):
-            await queue.enqueue({"id": i})
-    
-    async def consumer():
-        count = 0
-        while count < 5:
-            await queue.dequeue()
-            count += 1
-        return count
-    
-    prod = asyncio.create_task(producer())
-    cons = asyncio.create_task(consumer())
-    
-    await prod
-    result = await cons
-    
-    assert result == 5  # ← May fail if tasks leak to next test
+ queue = AsyncMessageQueue()
+ 
+ async def producer():
+ for i in range(5):
+ await queue.enqueue({"id": i})
+ 
+ async def consumer():
+ count = 0
+ while count < 5:
+ await queue.dequeue()
+ count += 1
+ return count
+ 
+ prod = asyncio.create_task(producer())
+ cons = asyncio.create_task(consumer())
+ 
+ await prod
+ result = await cons
+ 
+ assert result == 5 # May fail if tasks leak to next test
 ```
 
 ### Root Causes
@@ -288,24 +288,24 @@ async def test_concurrent_enqueue_dequeue():
 ```python
 @pytest.fixture(autouse=True)
 def reset_event_loop():
-    """Reset event loop state after each test to prevent state leaks."""
-    yield
-    # Cleanup: close any pending tasks and reset the event loop
-    try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            loop.stop()
-        # Cancel all remaining tasks
-        pending = asyncio.all_tasks(loop)
-        for task in pending:
-            task.cancel()
-        # Wait for cancellation to propagate
-        loop.run_until_complete(
-            asyncio.gather(*pending, return_exceptions=True)
-        )
-    except RuntimeError:
-        # Event loop might already be closed in some environments
-        pass
+ """Reset event loop state after each test to prevent state leaks."""
+ yield
+ # Cleanup: close any pending tasks and reset the event loop
+ try:
+ loop = asyncio.get_event_loop()
+ if loop.is_running():
+ loop.stop()
+ # Cancel all remaining tasks
+ pending = asyncio.all_tasks(loop)
+ for task in pending:
+ task.cancel()
+ # Wait for cancellation to propagate
+ loop.run_until_complete(
+ asyncio.gather(*pending, return_exceptions=True)
+ )
+ except RuntimeError:
+ # Event loop might already be closed in some environments
+ pass
 ```
 
 #### Solution 3B: Task Cleanup in Test
@@ -313,23 +313,23 @@ def reset_event_loop():
 ```python
 @pytest.mark.asyncio
 async def test_concurrent_operations():
-    """Explicit task cleanup to prevent leaks."""
-    queue = AsyncMessageQueue()
-    
-    try:
-        # Test code
-        prod = asyncio.create_task(producer())
-        cons = asyncio.create_task(consumer())
-        await prod
-        result = await cons
-        assert result == 5
-    finally:
-        # Explicit cleanup
-        pending = asyncio.all_tasks()
-        for task in pending:
-            if not task.done():
-                task.cancel()
-        await asyncio.gather(*pending, return_exceptions=True)
+ """Explicit task cleanup to prevent leaks."""
+ queue = AsyncMessageQueue()
+ 
+ try:
+ # Test code
+ prod = asyncio.create_task(producer())
+ cons = asyncio.create_task(consumer())
+ await prod
+ result = await cons
+ assert result == 5
+ finally:
+ # Explicit cleanup
+ pending = asyncio.all_tasks()
+ for task in pending:
+ if not task.done():
+ task.cancel()
+ await asyncio.gather(*pending, return_exceptions=True)
 ```
 
 #### Solution 3C: Context Manager for Task Management
@@ -337,24 +337,24 @@ async def test_concurrent_operations():
 ```python
 @contextmanager
 def managed_async_context():
-    """Context manager for safe async task management."""
-    try:
-        yield
-    finally:
-        loop = asyncio.get_event_loop()
-        pending = asyncio.all_tasks(loop)
-        for task in pending:
-            task.cancel()
-        loop.run_until_complete(
-            asyncio.gather(*pending, return_exceptions=True)
-        )
+ """Context manager for safe async task management."""
+ try:
+ yield
+ finally:
+ loop = asyncio.get_event_loop()
+ pending = asyncio.all_tasks(loop)
+ for task in pending:
+ task.cancel()
+ loop.run_until_complete(
+ asyncio.gather(*pending, return_exceptions=True)
+ )
 
 @pytest.mark.asyncio
 async def test_with_context():
-    with managed_async_context():
-        # Test code here
-        result = await async_operation()
-        assert result
+ with managed_async_context():
+ # Test code here
+ result = await async_operation()
+ assert result
 ```
 
 ### Recommended Practice
@@ -372,27 +372,27 @@ async def test_with_context():
 
 ```python
 @pytest.mark.flaky(reruns=1, reason="Timing: polling-based validation")
-@pytest.mark.timeout(120)  # Allow sufficient time for slow runners
+@pytest.mark.timeout(120) # Allow sufficient time for slow runners
 def test_timing_sensitive_operation():
-    """
-    Checklist:
-    - [ ] Use polling instead of fixed sleep
-    - [ ] Increase timeouts 3x+ normal duration
-    - [ ] Add retry logic with exponential backoff
-    - [ ] Verify state before and after
-    - [ ] Reduce reruns from 2 to 1 after fix
-    - [ ] Validate on slow runners (CI environment)
-    """
-    start = time.time()
-    max_wait = 10.0  # 3x+ the expected duration
-    
-    while (time.time() - start) < max_wait:
-        result = check_condition()
-        if result:
-            break
-        time.sleep(0.1)  # Poll every 100ms
-    
-    assert result, "Condition must be true"
+ """
+ Checklist:
+ - [ ] Use polling instead of fixed sleep
+ - [ ] Increase timeouts 3x+ normal duration
+ - [ ] Add retry logic with exponential backoff
+ - [ ] Verify state before and after
+ - [ ] Reduce reruns from 2 to 1 after fix
+ - [ ] Validate on slow runners (CI environment)
+ """
+ start = time.time()
+ max_wait = 10.0 # 3x+ the expected duration
+ 
+ while (time.time() - start) < max_wait:
+ result = check_condition()
+ if result:
+ break
+ time.sleep(0.1) # Poll every 100ms
+ 
+ assert result, "Condition must be true"
 ```
 
 ### TTL/Expiry Test Template
@@ -401,55 +401,55 @@ def test_timing_sensitive_operation():
 @pytest.mark.flaky(reruns=1, reason="TTL: polling-based expiry detection")
 @pytest.mark.timeout(90)
 def test_ttl_expiry(tmp_path: Path):
-    """Template for TTL-based tests."""
-    cache = FileCache(tmp_path / "cache")
-    
-    # Set with short TTL
-    cache.set("key", "value", ttl_seconds=1)
-    assert cache.get("key") == "value"
-    
-    # Poll for expiry instead of sleeping
-    start = time.time()
-    while (time.time() - start) < 3.0:  # Max 3s wait
-        value = cache.get("key")
-        if value is None:
-            break
-        time.sleep(0.1)  # Poll every 100ms
-    
-    assert value is None, "Key must expire"
+ """Template for TTL-based tests."""
+ cache = FileCache(tmp_path / "cache")
+ 
+ # Set with short TTL
+ cache.set("key", "value", ttl_seconds=1)
+ assert cache.get("key") == "value"
+ 
+ # Poll for expiry instead of sleeping
+ start = time.time()
+ while (time.time() - start) < 3.0: # Max 3s wait
+ value = cache.get("key")
+ if value is None:
+ break
+ time.sleep(0.1) # Poll every 100ms
+ 
+ assert value is None, "Key must expire"
 ```
 
 ### File Operation Test Template
 
 ```python
 def test_file_operation(tmp_path: Path):
-    """Template for file operation tests."""
-    cache = FileCache(tmp_path / "cache")
-    
-    # Verify initial state
-    cache.set("key", "value")
-    assert cache.get("key") == "value"
-    
-    # Perform operation with retry
-    max_attempts = 3
-    for attempt in range(max_attempts):
-        result = cache.invalidate("key")
-        if result:
-            break
-        if attempt < max_attempts - 1:
-            time.sleep(0.05)
-    
-    assert result is True
-    
-    # Verify final state with retry
-    for attempt in range(max_attempts):
-        final_value = cache.get("key")
-        if final_value is None:
-            break
-        if attempt < max_attempts - 1:
-            time.sleep(0.05)
-    
-    assert final_value is None
+ """Template for file operation tests."""
+ cache = FileCache(tmp_path / "cache")
+ 
+ # Verify initial state
+ cache.set("key", "value")
+ assert cache.get("key") == "value"
+ 
+ # Perform operation with retry
+ max_attempts = 3
+ for attempt in range(max_attempts):
+ result = cache.invalidate("key")
+ if result:
+ break
+ if attempt < max_attempts - 1:
+ time.sleep(0.05)
+ 
+ assert result is True
+ 
+ # Verify final state with retry
+ for attempt in range(max_attempts):
+ final_value = cache.get("key")
+ if final_value is None:
+ break
+ if attempt < max_attempts - 1:
+ time.sleep(0.05)
+ 
+ assert final_value is None
 ```
 
 ### Async Test Template
@@ -457,33 +457,33 @@ def test_file_operation(tmp_path: Path):
 ```python
 @pytest.fixture(autouse=True)
 def reset_event_loop():
-    """Reset event loop state after each test."""
-    yield
-    try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            loop.stop()
-        pending = asyncio.all_tasks(loop)
-        for task in pending:
-            task.cancel()
-        loop.run_until_complete(
-            asyncio.gather(*pending, return_exceptions=True)
-        )
-    except RuntimeError:
-        pass
+ """Reset event loop state after each test."""
+ yield
+ try:
+ loop = asyncio.get_event_loop()
+ if loop.is_running():
+ loop.stop()
+ pending = asyncio.all_tasks(loop)
+ for task in pending:
+ task.cancel()
+ loop.run_until_complete(
+ asyncio.gather(*pending, return_exceptions=True)
+ )
+ except RuntimeError:
+ pass
 
 @pytest.mark.asyncio
 async def test_async_operation():
-    """Template for async tests with state cleanup."""
-    queue = AsyncMessageQueue()
-    
-    prod = asyncio.create_task(producer(queue))
-    cons = asyncio.create_task(consumer(queue))
-    
-    await prod
-    result = await cons
-    
-    assert result == expected_value
+ """Template for async tests with state cleanup."""
+ queue = AsyncMessageQueue()
+ 
+ prod = asyncio.create_task(producer(queue))
+ cons = asyncio.create_task(consumer(queue))
+ 
+ await prod
+ result = await cons
+ 
+ assert result == expected_value
 ```
 
 ---
@@ -502,24 +502,24 @@ async def test_async_operation():
 ### Validation Methodology
 
 1. **Run Tests 3 Consecutive Times**
-   - Ensures no transient failures
-   - Target: 100% pass rate
+ - Ensures no transient failures
+ - Target: 100% pass rate
 
 2. **Monitor CI Pipeline**
-   - Track pass rate over time
-   - Alert on flakiness regression
+ - Track pass rate over time
+ - Alert on flakiness regression
 
 3. **Periodic Audit**
-   - Review existing flaky markers
-   - Apply patterns to new tests
+ - Review existing flaky markers
+ - Apply patterns to new tests
 
 ### Success Criteria
 
--  100% pass rate on 3 consecutive runs
--  Reduced flaky markers (reruns: 2→1 where applicable)
--  No timing-based test failures
--  No file system race conditions
--  No async state leaks
+- 100% pass rate on 3 consecutive runs
+- Reduced flaky markers (reruns: 21 where applicable)
+- No timing-based test failures
+- No file system race conditions
+- No async state leaks
 
 ---
 
@@ -537,9 +537,9 @@ grep -r "reason=" tests/ --include="*.py" | grep flaky
 
 ### Step 2: Apply Appropriate Pattern
 
-- **Timing issues** → Use polling-based validation
-- **File operations** → Add retry loops with sleep
-- **Async operations** → Add autouse fixture for cleanup
+- **Timing issues** Use polling-based validation
+- **File operations** Add retry loops with sleep
+- **Async operations** Add autouse fixture for cleanup
 
 ### Step 3: Reduce Reruns
 
@@ -547,12 +547,12 @@ grep -r "reason=" tests/ --include="*.py" | grep flaky
 # Before
 @pytest.mark.flaky(reruns=2, reason="P2-timing: TTL precision")
 def test_example():
-    pass
+ pass
 
 # After (once fixed)
 @pytest.mark.flaky(reruns=1, reason="P2-timing: polling-based validation")
 def test_example():
-    pass
+ pass
 # Or remove entirely if test is stable
 ```
 
@@ -561,7 +561,7 @@ def test_example():
 ```bash
 # Run test 3 times
 for i in 1 2 3; do
-    python -m pytest tests/path/to/test.py -v
+ python -m pytest tests/path/to/test.py -v
 done
 
 # Check for 100% pass rate
@@ -595,6 +595,6 @@ done
 ---
 
 **Document Version**: 1.0.0
-**Stability**: STABLE 
+**Stability**: STABLE
 **Last Reviewed**: 2026-06-27
 **Next Review**: 2026-07-27 (one month)

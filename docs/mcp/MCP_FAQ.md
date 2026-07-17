@@ -1,6 +1,6 @@
 # MCP FAQ - Frequently Asked Questions
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status**: Production Ready
 **Last Updated**: 2026-06-22T00:00:00Z
@@ -65,17 +65,17 @@ Create `.mcp-config.json` in repository root:
 
 ```json
 {
-  "version": "1.0",
-  "server": {
-    "host": "0.0.0.0",
-    "port": 8000
-  },
-  "security": {
-    "api_keys": ["your-secure-api-key"],
-    "rate_limit": {
-      "requests_per_minute": 60
-    }
-  }
+ "version": "1.0",
+ "server": {
+ "host": "0.0.0.0",
+ "port": 8000
+ },
+ "security": {
+ "api_keys": ["your-secure-api-key"],
+ "rate_limit": {
+ "requests_per_minute": 60
+ }
+ }
 }
 ```
 
@@ -91,16 +91,16 @@ from mcp.registry import MCPToolRegistry
 registry = MCPToolRegistry()
 
 def my_tool(param1: str) -> dict:
-    """My custom tool."""
-    return {"result": f"Processed {param1}"}
+ """My custom tool."""
+ return {"result": f"Processed {param1}"}
 
 registry.register_tool(
-    name="my_tool",
-    handler=my_tool,
-    metadata={
-        "description": "Custom tool description",
-        "version": "1.0.0"
-    }
+ name="my_tool",
+ handler=my_tool,
+ metadata={
+ "description": "Custom tool description",
+ "version": "1.0.0"
+ }
 )
 ```
 
@@ -121,13 +121,13 @@ Yes, use `registry.unregister_tool("tool_name")` to remove a tool from the regis
 ```python
 # Via JSON-RPC
 request = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "callTool",
-    "params": {
-        "name": "my_tool",
-        "arguments": {"param1": "test"}
-    }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "callTool",
+ "params": {
+ "name": "my_tool",
+ "arguments": {"param1": "test"}
+ }
 }
 
 response = server.handle_request(request)
@@ -139,16 +139,16 @@ MCP returns a structured JSON-RPC error response:
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "error": {
-    "code": -32603,
-    "message": "Internal error",
-    "data": {
-      "tool": "my_tool",
-      "error_type": "RuntimeError"
-    }
-  }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "error": {
+ "code": -32603,
+ "message": "Internal error",
+ "data": {
+ "tool": "my_tool",
+ "error_type": "RuntimeError"
+ }
+ }
 }
 ```
 
@@ -176,18 +176,18 @@ Rate limiting is automatic when configured in `.mcp-config.json`:
 
 ```json
 {
-  "security": {
-    "rate_limit": {
-      "requests_per_minute": 60,
-      "burst_size": 10
-    }
-  }
+ "security": {
+ "rate_limit": {
+ "requests_per_minute": 60,
+ "burst_size": 10
+ }
+ }
 }
 ```
 
 ### How secure are password hashes?
 
-️ **Important**: Use bcrypt or argon2 for passwords, NOT SHA-256:
+ **Important**: Use bcrypt or argon2 for passwords, NOT SHA-256:
 
 ```python
 import bcrypt
@@ -297,19 +297,19 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 ### What are MCP security best practices?
 
-1.  Use bcrypt/argon2 for passwords
-2.  Rotate API keys regularly
-3.  Enable rate limiting in production
-4.  Implement role-based authorization
-5.  Monitor audit logs for suspicious activity
+1. Use bcrypt/argon2 for passwords
+2. Rotate API keys regularly
+3. Enable rate limiting in production
+4. Implement role-based authorization
+5. Monitor audit logs for suspicious activity
 
 ### What are MCP development best practices?
 
-1.  Define JSON schema for tool parameters
-2.  Implement comprehensive error handling
-3.  Use type hints for parameters and returns
-4.  Write unit tests for all tools
-5.  Document tool behavior and requirements
+1. Define JSON schema for tool parameters
+2. Implement comprehensive error handling
+3. Use type hints for parameters and returns
+4. Write unit tests for all tools
+5. Document tool behavior and requirements
 
 ---
 
@@ -323,20 +323,20 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Provide clear, concise answers to frequently asked questions about MCP implementation, configuration, security, and usage, enabling rapid developer onboarding and troubleshooting.
 
-**Energy Level**:  (4/5) - High Value Reference
+**Energy Level**: (4/5) - High Value Reference
 - High impact: Accelerates developer onboarding
 - High adoption: Most consulted troubleshooting resource
 - Long-term value: Reduces support burden
 
-**Status**:  Production Ready |  Continuously Updated
+**Status**: Production Ready | Continuously Updated
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **Content Coverage**:
 - [ ] General MCP concepts explained
@@ -354,40 +354,40 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Question Coverage | >50 FAQs | 42 FAQs |  Growing |
-| Developer Satisfaction | >4/5 | 4.3/5 |  High |
-| Support Ticket Reduction | >30% | ~35% |  Excellent |
-| Search Hit Rate | >80% | ~75% |  Good |
-| Content Freshness | <30 iterations | 0 iterations |  Current |
+| Question Coverage | >50 FAQs | 42 FAQs | Growing |
+| Developer Satisfaction | >4/5 | 4.3/5 | High |
+| Support Ticket Reduction | >30% | ~35% | Excellent |
+| Search Hit Rate | >80% | ~75% | Good |
+| Content Freshness | <30 iterations | 0 iterations | Current |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Question Resolution)
+### Path (Question Resolution)
 ```
-Developer question → Search FAQ → Find answer → Apply solution → Verify success
+Developer question Search FAQ Find answer Apply solution Verify success
 ```
 
-### Fields  (Knowledge Transfer)
-Question emerges → Documentation provides answer → Developer understands → Knowledge internalized → Productivity increases
+### Fields (Knowledge Transfer)
+Question emerges Documentation provides answer Developer understands Knowledge internalized Productivity increases
 
-### Patterns ️ (FAQ Categories)
+### Patterns (FAQ Categories)
 **Installation** (setup) | **Configuration** (settings) | **Development** (tools) | **Security** (auth) | **Troubleshooting** (debugging)
 
-### Redundancy  (Answer Validation)
-Code example → Explanation → Link to detailed doc → Related FAQ reference
+### Redundancy (Answer Validation)
+Code example Explanation Link to detailed doc Related FAQ reference
 
-### Balance ️
-Brevity (quick answers) ↔ Completeness (sufficient detail) ↔ Clarity (easy to understand)
+### Balance
+Brevity (quick answers) Completeness (sufficient detail) Clarity (easy to understand)
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 **P0 - Critical Questions (40%)**:
 - Installation and setup
@@ -409,7 +409,7 @@ Brevity (quick answers) ↔ Completeness (sufficient detail) ↔ Clarity (easy t
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Missing Answer Recovery**:
 1. **Question not in FAQ**: Search related docs
@@ -429,5 +429,5 @@ Brevity (quick answers) ↔ Completeness (sufficient detail) ↔ Clarity (easy t
 **Last Updated**: 2026-06-22T00:00:00Z
 **Version**: 2.0
 **FAQ Count**: 42+
-**Status**: Production Ready 
-**Template Compliance**:  Phase 2 Physics-Aligned
+**Status**: Production Ready
+**Template Compliance**: Phase 2 Physics-Aligned

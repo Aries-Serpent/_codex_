@@ -1,9 +1,9 @@
 # Guide: Questions & Answers Section (v1.2)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Q&A Steward], [Secondary: Reviewer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Q&A Steward], [Secondary: Reviewer] Energy: 5
 
 Purpose
 - Standardize usage of `questions` in the status schema for traceability.
@@ -24,5 +24,5 @@ Fields
 | confidence | 1–5 | No | Confidence in answer |
 
 Lifecycle
-- Open → In Review → Answered/Deferred.
+- Open In Review Answered/Deferred.
 - Use links to CAP-/FIND-/PATCH- where applicable.

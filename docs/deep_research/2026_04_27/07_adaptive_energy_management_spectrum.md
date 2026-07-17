@@ -1,6 +1,6 @@
 # Research Note 07 — Adaptive Energy-Management Across Energy Spectra
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -112,21 +112,37 @@ This equation is synthetic, but each term corresponds to real engineering patter
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CpT baseline, Shared adaptive-energy grammar'}}%%
+
 flowchart LR
+
     CpT[CpT baseline] --> Shared[Shared adaptive-energy grammar]
+
     Shared --> Capacity[C_d capacity]
+
     Shared --> Intensity[I_d intensity]
+
     Shared --> Context[Phi_d context]
+
     Shared --> Efficiency[eta_d efficiency]
+
     Shared --> Loss[L_d and R_d loss/risk]
+
     Shared --> Storage[S_d reserve]
+
     Shared --> Drift[D_d degradation]
+
     Capacity --> E[E_adapt,d]
+
     Intensity --> E
+
     Context --> E
+
     Efficiency --> E
+
     Loss --> E
+
     Storage --> E
+
     Drift --> E
 ```
 
@@ -149,18 +165,31 @@ The repository already uses physics-inspired control metaphors:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Sensors: grid, thermal, RF, user, threat, storage, State estimation'}}%%
+
 flowchart TD
+
     Sense[Sensors: grid, thermal, RF, user, threat, storage] --> Estimate[State estimation]
+
     Estimate --> Forecast[Forecast demand, risk, weather, load, context]
+
     Forecast --> Optimize[Multi-objective optimizer]
+
     Optimize --> Route[Route energy or access]
+
     Route --> Store[Store surplus]
+
     Route --> Convert[Convert between forms]
+
     Route --> Dissipate[Dissipate harmful excess]
+
     Store --> Feedback[Telemetry feedback]
+
     Convert --> Feedback
+
     Dissipate --> Feedback
+
     Feedback --> Learn[Update adaptive weights]
+
     Learn --> Sense
 ```
 

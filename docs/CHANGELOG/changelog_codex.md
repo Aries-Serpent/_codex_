@@ -1,21 +1,21 @@
 # Codex Changelog
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [2025-10-14 – Evaluation helper & tokenizer adapter refresh](#2025-10-14--evaluation-helper--tokenizer-adapter-refresh)
-  - [WHY](#why)
-  - [Changes](#changes)
-  - [Risk](#risk)
-  - [Rollback](#rollback)
-  - [Tests/Docs](#testsdocs)
+ - [WHY](#why)
+ - [Changes](#changes)
+ - [Risk](#risk)
+ - [Rollback](#rollback)
+ - [Tests/Docs](#testsdocs)
 - [2025-10-06 — Unified training + tracking guards + data determinism tests](#2025-10-06--unified-training--tracking-guards--data-determinism-tests)
-  - [WHY](#why)
-  - [Changes](#changes)
-  - [Risk](#risk)
-  - [Rollback](#rollback)
-  - [Tests/Docs](#testsdocs)
+ - [WHY](#why)
+ - [Changes](#changes)
+ - [Risk](#risk)
+ - [Rollback](#rollback)
+ - [Tests/Docs](#testsdocs)
 - [2025-09-17 – Checkpoint resume & dataset manifest updates](#2025-09-17--checkpoint-resume--dataset-manifest-updates)
 - [2025-08-28 – Codex offline runner](#2025-08-28--codex-offline-runner)
 - [2025-08-31 – CLI testing improvements](#2025-08-31--cli-testing-improvements)
@@ -28,54 +28,54 @@
 - [CI policy docs — 2025-08-26T20:17:49Z](#ci-policy-docs--2025-08-26t201749z)
 - [Disable remote CI — 2025-08-26T20:17:49Z](#disable-remote-ci--2025-08-26t201749z)
 - [2025-08-26 – Δ PR Checklist Applied](#2025-08-26---pr-checklist-applied)
-  - [New](#new)
-  - [Modified](#modified)
-  - [Removed](#removed)
-  - [Deferred / Pruned](#deferred--pruned)
+ - [New](#new)
+ - [Modified](#modified)
+ - [Removed](#removed)
+ - [Deferred / Pruned](#deferred--pruned)
 - [2025-08-28 – Portable workflow tooling](#2025-08-28--portable-workflow-tooling)
-  - [New](#new)
+ - [New](#new)
 - [2025-08-29 – Misc bug fixes and utilities](#2025-08-29--misc-bug-fixes-and-utilities)
 - [2025-08-29 – Utilities and test cleanup](#2025-08-29--utilities-and-test-cleanup)
 - [Codex Changelog](#codex-changelog)
 - [2025-08-30 – Tokenizer, MLflow, and ingestion utilities](#2025-08-30--tokenizer-mlflow-and-ingestion-utilities)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
-  - [TEST](#test)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
+ - [TEST](#test)
 - [2025-08-30 – Tokenizer unification and ingestion consolidation (alternate notes)](#2025-08-30--tokenizer-unification-and-ingestion-consolidation-alternate-notes)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
 - [2025-08-29 – Restore no-op MLflow context manager](#2025-08-29--restore-no-op-mlflow-context-manager)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
 - [2025-08-29 – Local orchestration scripts](#2025-08-29--local-orchestration-scripts)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
-  - [REPRO](#repro)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
+ - [REPRO](#repro)
 - [2025-08-29 – Tokenizer & training wiring](#2025-08-29--tokenizer--training-wiring)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
 - [2025-08-29 – Tokenizer and tracking utilities (detailed)](#2025-08-29--tokenizer-and-tracking-utilities-detailed)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
-  - [REPRO CHECKLIST](#repro-checklist)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
+ - [REPRO CHECKLIST](#repro-checklist)
 - [2025-08-29 – Phase 3 integrations](#2025-08-29--phase-3-integrations)
-  - [WHY](#why)
-  - [RISK](#risk)
-  - [ROLLBACK](#rollback)
+ - [WHY](#why)
+ - [RISK](#risk)
+ - [ROLLBACK](#rollback)
 - [Notes and Next Steps](#notes-and-next-steps)
 - [2025-08-28 — Codex Run](#2025-08-28--codex-run)
 - [$(date -u +%Y-%m-%d) — Codex Run](#date--u-y-m-d--codex-run)
 - [2025-09-02 — Codex Run](#2025-09-02--codex-run)
 - [[Unreleased] - 2025-09-02](#unreleased---2025-09-02)
-  - [Unreleased - 2025-09-07](#unreleased---2025-09-07)
+ - [Unreleased - 2025-09-07](#unreleased---2025-09-07)
 - [[Unreleased] - 2025-09-02](#unreleased---2025-09-02)
-  - [Unreleased - 2025-09-07](#unreleased---2025-09-07)
+ - [Unreleased - 2025-09-07](#unreleased---2025-09-07)
 - [2025-09-26 – Codex-ready task sequence foundation](#2025-09-26--codex-ready-task-sequence-foundation)
 
 **Last Updated: 2026-06-22
@@ -94,7 +94,7 @@
 - `src/codex_ml/interfaces/tokenizer.py`: register `HFTokenizerAdapter` around `tokenizer.json` files and expose via package exports.
 - `configs/base/default.yaml`: include explicit nested `training.lora` defaults aligned with audit guidance.
 - Tests:
-  - `tests/eval/test_evaluate_dataloader_helper.py`: unit tests covering averaging behaviour and torch guardrails.
+ - `tests/eval/test_evaluate_dataloader_helper.py`: unit tests covering averaging behaviour and torch guardrails.
 - Metadata: export `evaluate_dataloader` through `__all__` and document the change in this changelog.
 
 ### Risk
@@ -118,15 +118,15 @@
 - `src/codex_ml/checkpointing/checkpoint_core.py`: add `load_checkpoint(...)` to match `save_checkpoint(...)`.
 - `src/codex_ml/tracking/guards.py`: add `decide_mlflow_tracking_uri(...)` returning a structured decision and normalizing URIs.
 - Tests:
-  - `tests/tracking/test_tracking_guards.py`: parameterized matrix for MLflow/W&B offline gates and allow-remote override.
-  - `tests/data/test_dataset_determinism.py`: checksum stability, seed-diff, shard coverage, UTF-8 fallback.
-  - `tests/training/test_unified_training_warnings.py`: `DeprecationWarning` assertions on legacy shims.
+ - `tests/tracking/test_tracking_guards.py`: parameterized matrix for MLflow/W&B offline gates and allow-remote override.
+ - `tests/data/test_dataset_determinism.py`: checksum stability, seed-diff, shard coverage, UTF-8 fallback.
+ - `tests/training/test_unified_training_warnings.py`: `DeprecationWarning` assertions on legacy shims.
 - Docs:
-  - `docs/unified_training.md`, `docs/SEARCH_NOTES.md`.
+ - `docs/unified_training.md`, `docs/SEARCH_NOTES.md`.
 
 ### Risk
 - Behavior change for users relying on remote MLflow endpoints when offline signals are set.
-  Mitigated by `CODEX_ALLOW_REMOTE_TRACKING=1` escape hatch.
+ Mitigated by `CODEX_ALLOW_REMOTE_TRACKING=1` escape hatch.
 
 ### Rollback
 - Remove imports/usages of `codex_ml.tracking.guards` and legacy shims will remain no-ops.
@@ -249,17 +249,17 @@
 ## 2025-08-29 – Utilities and test cleanup
 
 - Added standalone `utils.training_callbacks` with EarlyStopping.
-  - WHY: share training callback outside `codex_ml` package.
-  - RISK: low; new module.
-  - ROLLBACK: revert `src/utils/training_callbacks.py`.
+ - WHY: share training callback outside `codex_ml` package.
+ - RISK: low; new module.
+ - ROLLBACK: revert `src/utils/training_callbacks.py`.
 - Improved git tag decoding to try locale and latin-1 fallbacks.
-  - WHY: handle non-UTF-8 git outputs gracefully.
-  - RISK: minimal; affects only metadata helpers.
-  - ROLLBACK: revert changes in `src/codex_ml/tracking/git_tag.py`.
+ - WHY: handle non-UTF-8 git outputs gracefully.
+ - RISK: minimal; affects only metadata helpers.
+ - ROLLBACK: revert changes in `src/codex_ml/tracking/git_tag.py`.
 - Fixed missing imports in `label_policy_lint` tests.
-  - WHY: ensure lint helper tests run.
-  - RISK: none; tests only.
-  - ROLLBACK: revert `tests/test_label_policy_lint.py`.
+ - WHY: ensure lint helper tests run.
+ - RISK: none; tests only.
+ - ROLLBACK: revert `tests/test_label_policy_lint.py`.
 # Codex Changelog
 
 ## 2025-08-30 – Tokenizer, MLflow, and ingestion utilities
@@ -278,8 +278,8 @@
 
 ### TEST
 - Recommended checks:
-  - `pre-commit run --files src/codex_ml/interfaces/tokenizer.py src/codex_ml/tracking/mlflow_utils.py src/ingestion/encoding_detect.py src/ingestion/io_text.py src/ingestion/utils.py tests/interfaces/test_tokenizer_hf.py tests/tracking/test_mlflow_utils.py tests/ingestion/test_io_text.py`
-  - `pytest` (note: during initial integration this run reported a number of collection/compatibility issues — expect follow-up fixes; historically some branches reported ~13 collection errors).
+ - `pre-commit run --files src/codex_ml/interfaces/tokenizer.py src/codex_ml/tracking/mlflow_utils.py src/ingestion/encoding_detect.py src/ingestion/io_text.py src/ingestion/utils.py tests/interfaces/test_tokenizer_hf.py tests/tracking/test_mlflow_utils.py tests/ingestion/test_io_text.py`
+ - `pytest` (note: during initial integration this run reported a number of collection/compatibility issues — expect follow-up fixes; historically some branches reported ~13 collection errors).
 
 ---
 
@@ -316,8 +316,8 @@
 
 ### WHY
 - Add local tooling to run the sequential Codex workflow:
-  - `tools/codex_exec.py` and `tools/codex_exec.sh` to run the end-to-end local workflow (preparation, scan, suggest patches, capture errors, finalize).
-  - Local task runner utilities for running pytest-selected tasks and capturing failure outputs for later inspection.
+ - `tools/codex_exec.py` and `tools/codex_exec.sh` to run the end-to-end local workflow (preparation, scan, suggest patches, capture errors, finalize).
+ - Local task runner utilities for running pytest-selected tasks and capturing failure outputs for later inspection.
 
 ### RISK
 - Low: scripts are optional and operate only on the local repository.
@@ -410,7 +410,7 @@
 - Format `src/codex_ml/safety/risk_score.py` with Black.
 - Correct README typos and complete environment description.
 - Pin `peft` dependency to ensure `nox -s tests` passes.
-- Applied fallback_patch_4.1-4.8 with safe sanitize→apply fallbacks; preserved intended functionality.
+- Applied fallback_patch_4.1-4.8 with safe sanitizeapply fallbacks; preserved intended functionality.
 - Normalized line endings/BOM; stripped markdown/email artifacts from patch.
 - Conformed to local gates (pre-commit/Black/isort/tests), Codex-only (no GitHub Actions). - Ensure test dependencies (including `langchain`) are installed so `nox -s tests` passes.
 - Add runbook for offline wheelhouse usage at `docs/runbooks/offline_wheelhouse.md`.
@@ -439,7 +439,7 @@
 - Format `src/codex_ml/safety/risk_score.py` with Black.
 - Correct README typos and complete environment description.
 - Pin `peft` dependency to ensure `nox -s tests` passes.
-- Applied fallback_patch_4.1-4.8 with safe sanitize→apply fallbacks; preserved intended functionality.
+- Applied fallback_patch_4.1-4.8 with safe sanitizeapply fallbacks; preserved intended functionality.
 - Normalized line endings/BOM; stripped markdown/email artifacts from patch.
 - Conformed to local gates (pre-commit/Black/isort/tests), Codex-only (no GitHub Actions). - Ensure test dependencies (including `langchain`) are installed so `nox -s tests` passes.
 - Add runbook for offline wheelhouse usage at `docs/runbooks/offline_wheelhouse.md`.

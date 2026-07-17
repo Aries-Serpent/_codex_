@@ -1,9 +1,9 @@
 # _codex_ Frequently Asked Questions (FAQ)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last Updated: 2026-07-16
-> **Status:** Phase 3 - Documentation Enhancement Campaign 
+> **Status:** Phase 3 - Documentation Enhancement Campaign
 > **Reading Level:** 8th Grade (Flesch-Kincaid)
 
 ---
@@ -140,16 +140,16 @@ python train.py +experiment=my_experiment
 
 ```
 _codex_/
-├── configs/
-│ ├── default/ # Default settings
-│ │ ├── training.yaml
-│ │ ├── model.yaml
-│ │ └── evaluation.yaml
-│ └── production/ # Production-specific settings
-│ ├── training.yaml
-│ └── features.yaml
-└── experiments/ # Experiment variations
- └── my_experiment.yaml
+ configs/
+ default/ # Default settings
+ training.yaml
+ model.yaml
+ evaluation.yaml
+ production/ # Production-specific settings
+ training.yaml
+ features.yaml
+ experiments/ # Experiment variations
+ my_experiment.yaml
 ```
 
 **Find the right config:**
@@ -354,7 +354,7 @@ cat results/eval_1/metrics.json
 ```bash
 # Use MLflow to compare runs
 # Open http://localhost:5000
-# Click "Experiments" → "Compare Runs"
+# Click "Experiments" "Compare Runs"
 ```
 
 ---
@@ -410,8 +410,8 @@ If still crashing, create an [issue on GitHub](https://github.com/Aries-Serpent/
 **Example interpretation:**
 ```
 Epoch 1: Loss=0.45, Accuracy=82%
-↓ Loss is decreasing (good!)
-↑ Accuracy is improving (good!)
+ Loss is decreasing (good!)
+ Accuracy is improving (good!)
 
 Epoch 10: Loss=0.05, Accuracy=95%
  Model is learning well
@@ -419,8 +419,8 @@ Epoch 10: Loss=0.05, Accuracy=95%
 
 **Warning signs:**
 ```
-Loss not decreasing → Learning rate too low or model too weak
-Accuracy stuck → Need more training data or better model
+Loss not decreasing Learning rate too low or model too weak
+Accuracy stuck Need more training data or better model
 ```
 
 ---
@@ -532,7 +532,7 @@ logger.error("Error message")
  ```
 
 **Report it:**
-Go to [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) → Click "New Issue"
+Go to [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) Click "New Issue"
 
 ---
 
@@ -702,7 +702,7 @@ python train.py > output.log 2>&1
 
 ### Common Workflows
 
-**Train → Evaluate → Deploy**
+**Train Evaluate Deploy**
 ```bash
 # 1. Train
 python train.py --output runs/my_experiment
@@ -722,7 +722,7 @@ python -m codex_ml.serving.cli serve \
 ## Key Learning Points
 
 | Concept | Why It Matters | Learn More |
-|---------|---------------|-----------| 
+|---------|---------------|-----------|
 | **Hydra** | Manage configurations without code changes | [Hydra Guide](./configuration/hydra_quickstart.md) |
 | **Training** | Core ML workflow - how to prepare & train models | [Training Guide](./training/README.md) |
 | **Evaluation** | Measure model quality - know if it's good | [Evaluation Guide](./evaluation/README.md) |
@@ -765,7 +765,7 @@ python -m codex_ml.serving.cli serve \
 ### Examples
 - [Code Examples](../examples/)
 - [Jupyter Notebooks](../notebooks/)
-- 🧪 [Test Cases](../tests/)
+- [Test Cases](../tests/)
 
 ---
 

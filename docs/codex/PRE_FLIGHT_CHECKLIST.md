@@ -1,11 +1,11 @@
 # Pre-flight Checklist for Codex Operations
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-> **Purpose**: Address CODEX-005 (planning deficit). Reduces rework from 50% → 15%.  
-> **Usage**: Copy, fill, commit before complex operations.  
+> **Purpose**: Address CODEX-005 (planning deficit). Reduces rework from 50% 15%.
+> **Usage**: Copy, fill, commit before complex operations.
 > **Status**: Mandatory for patch applications; recommended for all operations.
 
 ## Pre-flight Checklist Template
@@ -15,10 +15,10 @@
 ```text
 ## Operation: [DESCRIBE YOUR TASK IN ONE SENTENCE]
 
-**Date (UTC)**: [YYYY-MM-DD HH:MM:SS]  
-**Operator**: [YOUR NAME]  
-**Branch**: [GIT BRANCH NAME]  
-**PR Number**: [PR OR N/A]  
+**Date (UTC)**: [YYYY-MM-DD HH:MM:SS] 
+**Operator**: [YOUR NAME] 
+**Branch**: [GIT BRANCH NAME] 
+**PR Number**: [PR OR N/A] 
 
 ### Phase 1: Context Collection
 - [ ] Read ALL source files that will be modified
@@ -75,9 +75,9 @@
 ## Operation: Apply security fix patch from PR #1234 to src/auth/handler.py
 
 **Date 2026-07-13
-**Operator**: mbaetiong  
-**Branch**: 0D_base_  
-**PR Number**: 1234  
+**Operator**: mbaetiong 
+**Branch**: 0D_base_ 
+**PR Number**: 1234 
 
 ### Phase 1: Context Collection
 - [x] Read ALL source files: src/auth/handler.py, src/auth/utils.py, tests/test_auth.py
@@ -87,7 +87,7 @@
 - [x] Git context: Branch 0D_base_, commit c829fec7, user mbaetiong
 
 ### Phase 2: Tool Inventory
-- [x] Operations: Validate patch → Apply patch → Run tests → Commit
+- [x] Operations: Validate patch Apply patch Run tests Commit
 - [x] Tools: git apply, bash script, pytest
 - [x] Tool availability: git apply , bash , pytest 
 - [x] No conflicts detected
@@ -130,5 +130,5 @@
 ```text
 ---
 
-**Last Updated**: 2026-07-13  
+**Last Updated**: 2026-07-13
 **Status**: Reference template for CODEX-005 mitigation

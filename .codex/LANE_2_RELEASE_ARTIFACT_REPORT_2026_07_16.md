@@ -439,7 +439,7 @@ None. Full backward compatibility maintained.
 4. 📋 Verify production deployment
 
 ### Future Releases
-- v0.2.1+: Automated via GitHub Actions (OIDC)
+- v0.2.0+: Automated via GitHub Actions (OIDC)
 - v0.3.0+: Full enterprise automation
 - Quarterly: Security audit and dependency updates
 

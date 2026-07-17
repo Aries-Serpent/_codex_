@@ -1,6 +1,6 @@
 # Performance Thresholds Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -39,14 +39,14 @@ GitHub Actions shared runners experience significant performance variability due
 
 The 200 tasks/s threshold was chosen to:
 
--  **Catch catastrophic regressions**: A drop below 200 tasks/s indicates a severe performance issue (>95% regression from baseline)
--  **Avoid false positives**: Minimizes flaky test failures due to CI environment variability
--  **Maintain CI stability**: Tests pass consistently across different runner types and load conditions
--  **Signal critical issues**: While permissive, still alerts on fundamental algorithmic or architectural problems
+- **Catch catastrophic regressions**: A drop below 200 tasks/s indicates a severe performance issue (>95% regression from baseline)
+- **Avoid false positives**: Minimizes flaky test failures due to CI environment variability
+- **Maintain CI stability**: Tests pass consistently across different runner types and load conditions
+- **Signal critical issues**: While permissive, still alerts on fundamental algorithmic or architectural problems
 
 ### What This Threshold Does NOT Catch
 
-️ **Important Limitations**:
+ **Important Limitations**:
 
 - **Moderate regressions** (20-50% slowdown): A drop from 5,000 to 2,500 tasks/s would still pass
 - **Incremental degradation**: Gradual performance decay over time
@@ -69,22 +69,22 @@ For better regression detection, consider:
    const THRESHOLD: f64 = 2000.0;
 
    // Build with: cargo test --features ci_environment
-   ```
+ ```
 
 2. **Statistical baseline tracking**:
-   - Store historical performance metrics
-   - Alert when current run is >2 standard deviations below mean
-   - Adapt baseline automatically based on runner performance
+ - Store historical performance metrics
+ - Alert when current run is >2 standard deviations below mean
+ - Adapt baseline automatically based on runner performance
 
 3. **Tiered thresholds**:
-   - **Critical**: 200 tasks/s (test fails - catastrophic regression)
-   - **Warning**: 1,000 tasks/s (log warning - investigate)
-   - **Optimal**: 5,000+ tasks/s (expected for production)
+ - **Critical**: 200 tasks/s (test fails - catastrophic regression)
+ - **Warning**: 1,000 tasks/s (log warning - investigate)
+ - **Optimal**: 5,000+ tasks/s (expected for production)
 
 4. **Separate benchmark suite**:
-   - Run performance benchmarks on dedicated hardware
-   - Track trends over time with visualization
-   - Use tools like `criterion` for statistical rigor
+ - Run performance benchmarks on dedicated hardware
+ - Track trends over time with visualization
+ - Use tools like `criterion` for statistical rigor
 
 ## Other Performance Thresholds
 

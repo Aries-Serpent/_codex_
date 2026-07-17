@@ -352,6 +352,141 @@ class SessionDB:
             "cache_size_mb": self.cache_current_size / (1024 * 1024),
         }
 
+    def query_all(self) -> list[dict[str, Any]]:
+        """Get all active sessions.
+
+        Returns:
+            List of session dictionaries (active sessions only)
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM sessions WHERE archive_status = 'active' ORDER BY created_at DESC")
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [dict(row) for row in rows]
+
+    def query_by_pr_number(self, pr_number: int) -> list[dict[str, Any]]:
+        """Query sessions by PR number.
+
+        Args:
+            pr_number: Pull request number to filter by
+
+        Returns:
+            List of sessions associated with the PR
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM sessions WHERE pr_number = ? AND archive_status = 'active' ORDER BY created_at DESC",
+            (pr_number,),
+        )
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [dict(row) for row in rows]
+
+    def query_by_branch(self, branch: str) -> list[dict[str, Any]]:
+        """Query sessions by branch name.
+
+        Args:
+            branch: Branch name to filter by
+
+        Returns:
+            List of sessions on the branch
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM sessions WHERE branch = ? AND archive_status = 'active' ORDER BY created_at DESC",
+            (branch,),
+        )
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [dict(row) for row in rows]
+
+    def query_by_agent_name(self, agent_name: str) -> list[dict[str, Any]]:
+        """Query sessions by agent name.
+
+        Args:
+            agent_name: Agent name to filter by
+
+        Returns:
+            List of sessions for the agent
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM sessions WHERE agent_name = ? AND archive_status = 'active' ORDER BY created_at DESC",
+            (agent_name,),
+        )
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [dict(row) for row in rows]
+
+    def query_sessions(
+        self, filters: Optional[dict[str, Any]] = None, limit: int = 100, offset: int = 0
+    ) -> list[dict[str, Any]]:
+        """Query sessions with flexible filtering.
+
+        Args:
+            filters: Dictionary of filters:
+                - status: Session status (pending, in-progress, complete, failed)
+                - pr_number: Pull request number
+                - branch: Branch name
+                - agent_name: Agent name
+            limit: Maximum number of results
+            offset: Number of results to skip
+
+        Returns:
+            List of filtered sessions
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        # Start with base query
+        query = "SELECT * FROM sessions WHERE archive_status = 'active'"
+        params: list[Any] = []
+
+        # Add filters if provided
+        if filters:
+            if "status" in filters:
+                query += " AND status = ?"
+                params.append(filters["status"])
+
+            if "pr_number" in filters:
+                query += " AND pr_number = ?"
+                params.append(filters["pr_number"])
+
+            if "branch" in filters:
+                query += " AND branch = ?"
+                params.append(filters["branch"])
+
+            if "agent_name" in filters:
+                query += " AND agent_name = ?"
+                params.append(filters["agent_name"])
+
+        # Add ordering and pagination
+        query += " ORDER BY created_at DESC LIMIT ? OFFSET ?"
+        params.extend([limit, offset])
+
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [dict(row) for row in rows]
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

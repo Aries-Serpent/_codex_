@@ -1,11 +1,11 @@
 # Agent Workflow Coordination Diagrams
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Document:** Mermaid Workflow Diagrams for Multi-Agent Orchestration  
-> **Version:** 1.0.0  
-> **Generated:** 2026-06-26  
-> **Purpose:** Visual reference for agent coordination patterns, decision flows, and parallel execution models  
+> **Document:** Mermaid Workflow Diagrams for Multi-Agent Orchestration
+> **Version:** 1.0.0
+> **Generated:** 2026-06-26
+> **Purpose:** Visual reference for agent coordination patterns, decision flows, and parallel execution models
 
 ---
 
@@ -26,46 +26,62 @@
 
 ```mermaid
 graph TB
-    subgraph "Copilot Agents"
-        Orchestrator[" Orchestrator<br/>(coordinator)"]
 
-        subgraph "Domain Specialists"
-            CICD[" CI/CD<br/>auto-healer<br/>ci-testing"]
-            Testing["🧪 Testing<br/>coverage<br/>alignment"]
-            Docs[" Docs<br/>consolidation<br/>freshness"]
-            Security[" Security<br/>scanning<br/>remediation"]
-            Config[" Config<br/>validation<br/>migration"]
-        end
-    end
+ subgraph "Copilot Agents"
+ Orchestrator[" Orchestrator<br/>(coordinator)"]
 
-    subgraph "Execution Environment"
-        Repository["📦 Repository<br/>(codebase)"]
-        GitHub[" GitHub API<br/>(events, workflows)"]
-        Results[" Results<br/>(artifacts)"]
-    end
+ subgraph "Domain Specialists"
+ CICD[" CI/CD<br/>auto-healer<br/>ci-testing"]
+ Testing[" Testing<br/>coverage<br/>alignment"]
+ Docs[" Docs<br/>consolidation<br/>freshness"]
+ Security[" Security<br/>scanning<br/>remediation"]
+ Config[" Config<br/>validation<br/>migration"]
+ end
+ end
 
-    Orchestrator -->|selects & delegates| CICD
-    Orchestrator -->|selects & delegates| Testing
-    Orchestrator -->|selects & delegates| Docs
-    Orchestrator -->|selects & delegates| Security
-    Orchestrator -->|selects & delegates| Config
+ subgraph "Execution Environment"
+ Repository[" Repository<br/>(codebase)"]
+ GitHub[" GitHub API<br/>(events, workflows)"]
+ Results[" Results<br/>(artifacts)"]
+ end
 
-    CICD -->|reads/writes| Repository
-    CICD -->|queries/triggers| GitHub
-    Testing -->|reads/writes| Repository
-    Testing -->|queries| GitHub
-    Docs -->|reads/writes| Repository
-    Security -->|reads/writes| Repository
-    Config -->|reads/writes| Repository
+ Orchestrator -->|selects & delegates| CICD
 
-    CICD -->|produces| Results
-    Testing -->|produces| Results
-    Docs -->|produces| Results
-    Security -->|produces| Results
-    Config -->|produces| Results
+ Orchestrator -->|selects & delegates| Testing
 
-    GitHub -->|events| Orchestrator
-    Results -->|feedback| Orchestrator
+ Orchestrator -->|selects & delegates| Docs
+
+ Orchestrator -->|selects & delegates| Security
+
+ Orchestrator -->|selects & delegates| Config
+
+ CICD -->|reads/writes| Repository
+
+ CICD -->|queries/triggers| GitHub
+
+ Testing -->|reads/writes| Repository
+
+ Testing -->|queries| GitHub
+
+ Docs -->|reads/writes| Repository
+
+ Security -->|reads/writes| Repository
+
+ Config -->|reads/writes| Repository
+
+ CICD -->|produces| Results
+
+ Testing -->|produces| Results
+
+ Docs -->|produces| Results
+
+ Security -->|produces| Results
+
+ Config -->|produces| Results
+
+ GitHub -->|events| Orchestrator
+
+ Results -->|feedback| Orchestrator
 ```
 
 ---
@@ -74,75 +90,120 @@ graph TB
 
 ```mermaid
 graph TD
-    A[" Task Received"] --> B["🏷️ Classify Domain"]
 
-    B --> C{Domain Type?}
+ A[" Task Received"] --> B[" Classify Domain"]
 
-    C -->|CI/CD| D[" CI/CD Triage"]
-    C -->|Testing| E[" Testing Triage"]
-    C -->|Docs| F[" Docs Triage"]
-    C -->|Security| G[" Security Triage"]
-    C -->|Config| H[" Config Triage"]
+ B --> C{Domain Type?}
 
-    D --> D1{Issue Type?}
-    D1 -->|Workflow Syntax| D1A["➡️ workflow-ci-fixer"]
-    D1 -->|Test Failure| D1B["➡️ ci-testing-agent"]
-    D1 -->|Known Pattern| D1C["➡️ ci-auto-healer-agent"]
-    D1 -->|Blocking Issue| D1D["➡️ ci-emergency-response-agent"]
+ C -->|CI/CD| D[" CI/CD Triage"]
 
-    E --> E1{Issue Type?}
-    E1 -->|Coverage Gap| E1A["➡️ unified-coverage-agent"]
-    E1 -->|Failing Tests| E1B["➡️ autonomous-test-healer-agent"]
-    E1 -->|Flaky Tests| E1C["➡️ fragile-test-guardian"]
-    E1 -->|API Changed| E1D["➡️ test-alignment-fixer"]
+ C -->|Testing| E[" Testing Triage"]
 
-    F --> F1{Issue Type?}
-    F1 -->|Structure| F1A["➡️ unified-doc-agent"]
-    F1 -->|Link Health| F1B["➡️ link-validator-agent"]
-    F1 -->|Freshness| F1C["➡️ doc-freshness-checker"]
-    F1 -->|Terminology| F1D["➡️ terminology-consistency-agent"]
+ C -->|Docs| F[" Docs Triage"]
 
-    G --> G1{Issue Type?}
-    G1 -->|CodeQL Alert| G1A["➡️ codeql-alert-resolution-agent"]
-    G1 -->|Secret Found| G1B["➡️ secret-detection-agent"]
-    G1 -->|Vuln Check| G1C["➡️ dependency-vulnerability-scanner"]
-    G1 -->|Full Audit| G1D["➡️ unified-security-scanner"]
+ C -->|Security| G[" Security Triage"]
 
-    H --> H1{Issue Type?}
-    H1 -->|Validate| H1A["➡️ config-validator"]
-    H1 -->|Migrate| H1B["➡️ config-migration-assistant"]
-    H1 -->|PyTorch| H1C["➡️ meta-tensor-validator"]
+ C -->|Config| H[" Config Triage"]
 
-    D1A --> I[" Single Agent<br/>or Delegate"]
-    D1B --> I
-    D1C --> I
-    D1D --> I
-    E1A --> I
-    E1B --> I
-    E1C --> I
-    E1D --> I
-    F1A --> I
-    F1B --> I
-    F1C --> I
-    F1D --> I
-    G1A --> I
-    G1B --> I
-    G1C --> I
-    G1D --> I
-    H1A --> I
-    H1B --> I
-    H1C --> I
+ D --> D1{Issue Type?}
 
-    I --> J{Parallel<br/>Viable?}
+ D1 -->|Workflow Syntax| D1A[" workflow-ci-fixer"]
 
-    J -->|No| K["🔁 Sequential<br/>Execution"]
-    J -->|Yes| L[" Parallel<br/>Delegation<br/>2-4 agents"]
+ D1 -->|Test Failure| D1B[" ci-testing-agent"]
 
-    K --> M[" Collect Results"]
-    L --> M
+ D1 -->|Known Pattern| D1C[" ci-auto-healer-agent"]
 
-    M --> N["✔️ Verify & Merge"]
-    N --> O[" Task Complete"]
+ D1 -->|Blocking Issue| D1D[" ci-emergency-response-agent"]
+
+ E --> E1{Issue Type?}
+
+ E1 -->|Coverage Gap| E1A[" unified-coverage-agent"]
+
+ E1 -->|Failing Tests| E1B[" autonomous-test-healer-agent"]
+
+ E1 -->|Flaky Tests| E1C[" fragile-test-guardian"]
+
+ E1 -->|API Changed| E1D[" test-alignment-fixer"]
+
+ F --> F1{Issue Type?}
+
+ F1 -->|Structure| F1A[" unified-doc-agent"]
+
+ F1 -->|Link Health| F1B[" link-validator-agent"]
+
+ F1 -->|Freshness| F1C[" doc-freshness-checker"]
+
+ F1 -->|Terminology| F1D[" terminology-consistency-agent"]
+
+ G --> G1{Issue Type?}
+
+ G1 -->|CodeQL Alert| G1A[" codeql-alert-resolution-agent"]
+
+ G1 -->|Secret Found| G1B[" secret-detection-agent"]
+
+ G1 -->|Vuln Check| G1C[" dependency-vulnerability-scanner"]
+
+ G1 -->|Full Audit| G1D[" unified-security-scanner"]
+
+ H --> H1{Issue Type?}
+
+ H1 -->|Validate| H1A[" config-validator"]
+
+ H1 -->|Migrate| H1B[" config-migration-assistant"]
+
+ H1 -->|PyTorch| H1C[" meta-tensor-validator"]
+
+ D1A --> I[" Single Agent<br/>or Delegate"]
+
+ D1B --> I
+
+ D1C --> I
+
+ D1D --> I
+
+ E1A --> I
+
+ E1B --> I
+
+ E1C --> I
+
+ E1D --> I
+
+ F1A --> I
+
+ F1B --> I
+
+ F1C --> I
+
+ F1D --> I
+
+ G1A --> I
+
+ G1B --> I
+
+ G1C --> I
+
+ G1D --> I
+
+ H1A --> I
+
+ H1B --> I
+
+ H1C --> I
+
+ I --> J{Parallel<br/>Viable?}
+
+ J -->|No| K[" Sequential<br/>Execution"]
+
+ J -->|Yes| L[" Parallel<br/>Delegation<br/>2-4 agents"]
+
+ K --> M[" Collect Results"]
+
+ L --> M
+
+ M --> N[" Verify & Merge"]
+
+ N --> O[" Task Complete"]
 ```
 
 ---
@@ -151,39 +212,52 @@ graph TD
 
 ```mermaid
 graph TD
-    A[" CI Failure Detected"] --> B[" Get Workflow Logs"]
 
-    B --> C{"Parse Logs<br/>for Pattern"}
+ A[" CI Failure Detected"] --> B[" Get Workflow Logs"]
 
-    C -->|Syntax Error| C1[" workflow-ci-fixer"]
-    C -->|Test Failure| C2["🧪 ci-testing-agent"]
-    C -->|Known Pattern| C3[" ci-auto-healer-agent"]
-    C -->|Build Error| C4["🔨 CI Docker Build<br/>Healer"]
-    C -->|Unknown| C5[" ci-triage-pipeline-agent"]
+ B --> C{"Parse Logs<br/>for Pattern"}
 
-    C1 --> D[" Fix Type 1"]
-    C2 --> D
-    C3 --> D
-    C4 --> D
-    C5 --> E[" Classify<br/>& Recommend"]
+ C -->|Syntax Error| C1[" workflow-ci-fixer"]
 
-    E --> C
+ C -->|Test Failure| C2[" ci-testing-agent"]
 
-    D --> F[" Fix Applied"]
+ C -->|Known Pattern| C3[" ci-auto-healer-agent"]
 
-    F --> G[" Re-run CI"]
+ C -->|Build Error| C4[" CI Docker Build<br/>Healer"]
 
-    G --> H{Result?}
+ C -->|Unknown| C5[" ci-triage-pipeline-agent"]
 
-    H -->|Pass| I[" Resolved"]
-    H -->|Fail| J{"Same<br/>Error?"}
+ C1 --> D[" Fix Type 1"]
 
-    J -->|Yes| K[" Escalate<br/>to Human"]
-    J -->|No| B
+ C2 --> D
 
-    I --> L[" Log Resolution"]
-    K --> L
-    L --> M[" Complete"]
+ C3 --> D
+
+ C4 --> D
+
+ C5 --> E[" Classify<br/>& Recommend"]
+
+ E --> C
+
+ D --> F[" Fix Applied"]
+
+ F --> G[" Re-run CI"]
+
+ G --> H{Result?}
+
+ H -->|Pass| I[" Resolved"]
+
+ H -->|Fail| J{"Same<br/>Error?"}
+
+ J -->|Yes| K[" Escalate<br/>to Human"]
+
+ J -->|No| B
+
+ I --> L[" Log Resolution"]
+
+ K --> L
+
+ L --> M[" Complete"]
 ```
 
 ---
@@ -192,44 +266,53 @@ graph TD
 
 ```mermaid
 graph TD
-    A[" Testing Audit<br/>Initiated"] --> B[" Collect Metrics"]
 
-    B --> C[" Failing Tests?"]
-    B --> D["️ Flaky Tests?"]
-    B --> E["📉 Coverage Gaps?"]
+ A[" Testing Audit<br/>Initiated"] --> B[" Collect Metrics"]
 
-    C -->|Yes| C1["➡️ autonomous-test-healer-agent"]
-    C -->|No| C2["Skip"]
+ B --> C[" Failing Tests?"]
 
-    D -->|Yes| D1["➡️ fragile-test-guardian"]
-    D -->|No| D2["Skip"]
+ B --> D[" Flaky Tests?"]
 
-    E -->|Yes| E1["➡️ unified-coverage-agent"]
-    E -->|No| E2["Skip"]
+ B --> E[" Coverage Gaps?"]
 
-    C1 -.->|parallel| X[" All agents<br/>execute"]
-    D1 -.->|parallel| X
-    E1 -.->|parallel| X
-    C2 -.->|skip| X
-    D2 -.->|skip| X
-    E2 -.->|skip| X
+ C -->|Yes| C1[" autonomous-test-healer-agent"]
 
-    X --> F[" Wait for<br/>Results"]
+ C -->|No| C2["Skip"]
 
-    F --> G[" Merge Results"]
+ D -->|Yes| D1[" fragile-test-guardian"]
 
-    G --> H[" New Metrics"]
+ D -->|No| D2["Skip"]
 
-    H --> I{All Criteria<br/>Met?}
+ E -->|Yes| E1[" unified-coverage-agent"]
 
-    I -->|Yes| J[" Add Edge<br/>Cases"]
-    I -->|No| K[" Escalate<br/>Failures"]
+ E -->|No| E2["Skip"]
 
-    J --> L["➡️ test-enhancement-agent"]
-    K --> M[" Human<br/>Review"]
+ C1 -.->|parallel| X[" All agents<br/>execute"]
+ D1 -.->|parallel| X
+ E1 -.->|parallel| X
+ C2 -.->|skip| X
+ D2 -.->|skip| X
+ E2 -.->|skip| X
 
-    L --> N[" Audit<br/>Complete"]
-    M --> N
+ X --> F[" Wait for<br/>Results"]
+
+ F --> G[" Merge Results"]
+
+ G --> H[" New Metrics"]
+
+ H --> I{All Criteria<br/>Met?}
+
+ I -->|Yes| J[" Add Edge<br/>Cases"]
+
+ I -->|No| K[" Escalate<br/>Failures"]
+
+ J --> L[" test-enhancement-agent"]
+
+ K --> M[" Human<br/>Review"]
+
+ L --> N[" Audit<br/>Complete"]
+
+ M --> N
 ```
 
 ---
@@ -238,36 +321,43 @@ graph TD
 
 ```mermaid
 graph TD
-    A[" Documentation<br/>Audit"] --> B{Scope?}
 
-    B -->|Structural| B1["➡️ unified-doc-agent"]
-    B -->|Links| B2["➡️ link-validator-agent"]
-    B -->|Freshness| B3["➡️ doc-freshness-checker"]
-    B -->|Terminology| B4["➡️ terminology-consistency-agent"]
-    B -->|All| B5["➡️ unified-doc-agent<br/>+ specialists"]
+ A[" Documentation<br/>Audit"] --> B{Scope?}
 
-    B1 -.->|parallel if All| B5
-    B2 -.->|parallel if All| B5
-    B3 -.->|parallel if All| B5
-    B4 -.->|parallel if All| B5
+ B -->|Structural| B1[" unified-doc-agent"]
 
-    B5 --> C[" Agents Execute"]
+ B -->|Links| B2[" link-validator-agent"]
 
-    C --> D[" Collect Findings"]
+ B -->|Freshness| B3[" doc-freshness-checker"]
 
-    D --> E[" Merge Reports"]
+ B -->|Terminology| B4[" terminology-consistency-agent"]
 
-    E --> F["️ Issues Found?"]
+ B -->|All| B5[" unified-doc-agent<br/>+ specialists"]
 
-    F -->|None| G[" Docs Healthy"]
-    F -->|Yes| H[" Auto-fix<br/>Issues"]
+ B1 -.->|parallel if All| B5
+ B2 -.->|parallel if All| B5
+ B3 -.->|parallel if All| B5
+ B4 -.->|parallel if All| B5
 
-    H --> I[" Generate<br/>Report"]
+ B5 --> C[" Agents Execute"]
 
-    I --> J["️ Human<br/>Review"]
+ C --> D[" Collect Findings"]
 
-    J --> K[" Audit<br/>Complete"]
-    G --> K
+ D --> E[" Merge Reports"]
+
+ E --> F[" Issues Found?"]
+
+ F -->|None| G[" Docs Healthy"]
+
+ F -->|Yes| H[" Auto-fix<br/>Issues"]
+
+ H --> I[" Generate<br/>Report"]
+
+ I --> J[" Human<br/>Review"]
+
+ J --> K[" Audit<br/>Complete"]
+
+ G --> K
 ```
 
 ---
@@ -276,44 +366,57 @@ graph TD
 
 ```mermaid
 graph TD
-    A[" Security<br/>Scan"] --> B{Scan Type?}
 
-    B -->|CodeQL| B1["➡️ codeql-alert-resolution-agent"]
-    B -->|GHAS| B2["➡️ code-scanning-remediation-agent"]
-    B -->|Dependencies| B3["➡️ dependency-vulnerability-scanner"]
-    B -->|Secrets| B4["➡️ secret-detection-agent"]
-    B -->|Full| B5["➡️ unified-security-scanner"]
+ A[" Security<br/>Scan"] --> B{Scan Type?}
 
-    B1 -.->|parallel if Full| B5
-    B2 -.->|parallel if Full| B5
-    B3 -.->|parallel if Full| B5
-    B4 -.->|parallel if Full| B5
+ B -->|CodeQL| B1[" codeql-alert-resolution-agent"]
 
-    B5 --> C[" Agents<br/>Execute"]
+ B -->|GHAS| B2[" code-scanning-remediation-agent"]
 
-    C --> D[" Aggregate<br/>Findings"]
+ B -->|Dependencies| B3[" dependency-vulnerability-scanner"]
 
-    D --> E{Severity?}
+ B -->|Secrets| B4[" secret-detection-agent"]
 
-    E -->|Critical| E1[" Auto-fix<br/>Enabled"]
-    E -->|High| E2[" Review<br/>& Fix"]
-    E -->|Medium| E3[" Queue<br/>for Review"]
-    E -->|Low| E4[" Log<br/>& Monitor"]
+ B -->|Full| B5[" unified-security-scanner"]
 
-    E1 --> F["➡️ Remediation<br/>Agent"]
-    E2 --> F
-    E3 --> G["️ Human<br/>Review"]
-    E4 --> H[" Complete"]
+ B1 -.->|parallel if Full| B5
+ B2 -.->|parallel if Full| B5
+ B3 -.->|parallel if Full| B5
+ B4 -.->|parallel if Full| B5
 
-    F --> I[" Verify<br/>Fix"]
+ B5 --> C[" Agents<br/>Execute"]
 
-    I --> J{Fix<br/>Valid?}
+ C --> D[" Aggregate<br/>Findings"]
 
-    J -->|Yes| H
-    J -->|No| G
+ D --> E{Severity?}
 
-    G --> K[" Manual<br/>Remediation"]
-    K --> H
+ E -->|Critical| E1[" Auto-fix<br/>Enabled"]
+
+ E -->|High| E2[" Review<br/>& Fix"]
+
+ E -->|Medium| E3[" Queue<br/>for Review"]
+
+ E -->|Low| E4[" Log<br/>& Monitor"]
+
+ E1 --> F[" Remediation<br/>Agent"]
+
+ E2 --> F
+
+ E3 --> G[" Human<br/>Review"]
+
+ E4 --> H[" Complete"]
+
+ F --> I[" Verify<br/>Fix"]
+
+ I --> J{Fix<br/>Valid?}
+
+ J -->|Yes| H
+
+ J -->|No| G
+
+ G --> K[" Manual<br/>Remediation"]
+
+ K --> H
 ```
 
 ---
@@ -322,34 +425,45 @@ graph TD
 
 ```mermaid
 graph LR
-    A[" Primary<br/>Agent"] -->|delegate| B[" Lane 1"]
-    A -->|delegate| C[" Lane 2"]
-    A -->|delegate| D[" Lane 3"]
-    A -->|delegate| E[" Lane 4"]
 
-    B -->|exec| B1["Agent-A<br/>Work"]
-    C -->|exec| C1["Agent-B<br/>Work"]
-    D -->|exec| D1["Agent-C<br/>Work"]
-    E -->|exec| E1["Agent-D<br/>Work"]
+ A[" Primary<br/>Agent"] -->|delegate| B[" Lane 1"]
 
-    B1 --> B2[" Result-A"]
-    C1 --> C2[" Result-B"]
-    D1 --> D2[" Result-C"]
-    E1 --> E2[" Result-D"]
+ A -->|delegate| C[" Lane 2"]
 
-    B2 -.->|merge| F[" Consolidate<br/>Results"]
-    C2 -.->|merge| F
-    D2 -.->|merge| F
-    E2 -.->|merge| F
+ A -->|delegate| D[" Lane 3"]
 
-    F --> G["✔️ Verify<br/>Consistency"]
+ A -->|delegate| E[" Lane 4"]
 
-    G --> H{Conflicts?}
+ B -->|exec| B1["Agent-A<br/>Work"]
 
-    H -->|No| I[" Return<br/>Merged Result"]
-    H -->|Yes| J[" Resolve<br/>Conflicts"]
+ C -->|exec| C1["Agent-B<br/>Work"]
 
-    J --> I
+ D -->|exec| D1["Agent-C<br/>Work"]
+
+ E -->|exec| E1["Agent-D<br/>Work"]
+
+ B1 --> B2[" Result-A"]
+
+ C1 --> C2[" Result-B"]
+
+ D1 --> D2[" Result-C"]
+
+ E1 --> E2[" Result-D"]
+
+ B2 -.->|merge| F[" Consolidate<br/>Results"]
+ C2 -.->|merge| F
+ D2 -.->|merge| F
+ E2 -.->|merge| F
+
+ F --> G[" Verify<br/>Consistency"]
+
+ G --> H{Conflicts?}
+
+ H -->|No| I[" Return<br/>Merged Result"]
+
+ H -->|Yes| J[" Resolve<br/>Conflicts"]
+
+ J --> I
 ```
 
 ---
@@ -358,36 +472,39 @@ graph LR
 
 ```mermaid
 graph TD
-    A[" Session Start"] --> B[" Load Context<br/>& Priors"]
 
-    B --> C[" Identify Tasks<br/>in Backlog"]
+ A[" Session Start"] --> B[" Load Context<br/>& Priors"]
 
-    C --> D["🏗️ Build<br/>Execution Plan"]
+ B --> C[" Identify Tasks<br/>in Backlog"]
 
-    D --> E[" Plan<br/>Review"]
+ C --> D[" Build<br/>Execution Plan"]
 
-    E --> F{"Approve<br/>Plan?"}
+ D --> E[" Plan<br/>Review"]
 
-    F -->|No| G[" Revise Plan"]
-    G --> E
+ E --> F{"Approve<br/>Plan?"}
 
-    F -->|Yes| H[" Execute<br/>Phase 1"]
+ F -->|No| G[" Revise Plan"]
 
-    H --> I[" Collect<br/>Results"]
+ G --> E
 
-    I --> J{"More<br/>Work?"}
+ F -->|Yes| H[" Execute<br/>Phase 1"]
 
-    J -->|Yes| K["🔁 Cycle:<br/>Phase N+1"]
-    K --> H
+ H --> I[" Collect<br/>Results"]
 
-    J -->|No| L[" Generate<br/>Summary"]
+ I --> J{"More<br/>Work?"}
 
-    L --> M["💾 Archive<br/>Artifacts"]
+ J -->|Yes| K[" Cycle:<br/>Phase N+1"]
 
-    M --> N[" Session<br/>Complete"]
+ K --> H
 
-    style A fill:#90EE90
-    style N fill:#FFB6C6
+ J -->|No| L[" Generate<br/>Summary"]
+
+ L --> M[" Archive<br/>Artifacts"]
+
+ M --> N[" Session<br/>Complete"]
+
+ style A fill:#90EE90
+ style N fill:#FFB6C6
 ```
 
 ---
@@ -396,47 +513,57 @@ graph TD
 
 ```mermaid
 graph TD
-    A["⏰ Session Time<br/>Available?"] -->|Yes| B[" Identify<br/>Open Lane"]
-    A -->|No| END["🏁 Session End"]
 
-    B --> C{Lane<br/>Available?}
+ A[" Session Time<br/>Available?"] -->|Yes| B[" Identify<br/>Open Lane"]
 
-    C -->|No| D[" Wait for<br/>Completion"]
-    D -->|Timeout| A
-    D -->|Ready| B
+ A -->|No| END[" Session End"]
 
-    C -->|Yes| E[" Find Next<br/>Task"]
+ B --> C{Lane<br/>Available?}
 
-    E --> F{Task<br/>Found?}
+ C -->|No| D[" Wait for<br/>Completion"]
 
-    F -->|No| A
-    F -->|Yes| G[" Select<br/>Best Agent"]
+ D -->|Timeout| A
 
-    G --> H["📤 Delegate<br/>Work"]
+ D -->|Ready| B
 
-    H --> I[" Await<br/>Result"]
+ C -->|Yes| E[" Find Next<br/>Task"]
 
-    I --> J{Result<br/>Success?}
+ E --> F{Task<br/>Found?}
 
-    J -->|No| K[" Escalate<br/>or Retry"]
-    J -->|Yes| L[" Accept<br/>Result"]
+ F -->|No| A
 
-    K --> M{Can<br/>Retry?}
-    M -->|Yes| G
-    M -->|No| N[" Log<br/>Failure"]
-    N --> A
+ F -->|Yes| G[" Select<br/>Best Agent"]
 
-    L --> O[" Check<br/>Session Time"]
+ G --> H[" Delegate<br/>Work"]
 
-    O -->|Time Left| A
-    O -->|Time Up| END
+ H --> I[" Await<br/>Result"]
 
-    style A fill:#87CEEB
-    style E fill:#87CEEB
-    style G fill:#DDA0DD
-    style H fill:#F0E68C
-    style L fill:#90EE90
-    style END fill:#FFB6C6
+ I --> J{Result<br/>Success?}
+
+ J -->|No| K[" Escalate<br/>or Retry"]
+
+ J -->|Yes| L[" Accept<br/>Result"]
+
+ K --> M{Can<br/>Retry?}
+
+ M -->|Yes| G
+
+ M -->|No| N[" Log<br/>Failure"]
+
+ N --> A
+
+ L --> O[" Check<br/>Session Time"]
+
+ O -->|Time Left| A
+
+ O -->|Time Up| END
+
+ style A fill:#87CEEB
+ style E fill:#87CEEB
+ style G fill:#DDA0DD
+ style H fill:#F0E68C
+ style L fill:#90EE90
+ style END fill:#FFB6C6
 ```
 
 ---
@@ -445,47 +572,59 @@ graph TD
 
 ```mermaid
 graph TB
-    A[" Session Start<br/>Full Autonomy"] --> B[" Load Task<br/>Backlog"]
 
-    B --> C["🏃 Phase 1:<br/>Initial Sweep"]
+ A[" Session Start<br/>Full Autonomy"] --> B[" Load Task<br/>Backlog"]
 
-    C -->|Lane 1| C1["Agent-A"]
-    C -->|Lane 2| C2["Agent-B"]
-    C -->|Lane 3| C3["Agent-C"]
-    C -->|Lane 4| C4["Agent-D"]
+ B --> C[" Phase 1:<br/>Initial Sweep"]
 
-    C1 -.->|result| X[" Collect<br/>Results"]
-    C2 -.->|result| X
-    C3 -.->|result| X
-    C4 -.->|result| X
+ C -->|Lane 1| C1["Agent-A"]
 
-    X --> Y[" Merge &<br/>Validate"]
+ C -->|Lane 2| C2["Agent-B"]
 
-    Y --> Z[" Assess<br/>State"]
+ C -->|Lane 3| C3["Agent-C"]
 
-    Z -->|More work| AA[" Phase 2:<br/>Secondary Tasks"]
-    Z -->|Done| AB[" Complete"]
+ C -->|Lane 4| C4["Agent-D"]
 
-    AA -->|Lane 1| AA1["Agent-A2"]
-    AA -->|Lane 2| AA2["Agent-B2"]
-    AA -->|Lane 3| AA3["Agent-C2"]
+ C1 -.->|result| X[" Collect<br/>Results"]
+ C2 -.->|result| X
+ C3 -.->|result| X
+ C4 -.->|result| X
 
-    AA1 -.->|result| AY[" Collect<br/>Phase 2"]
-    AA2 -.->|result| AY
-    AA3 -.->|result| AY
+ X --> Y[" Merge &<br/>Validate"]
 
-    AY --> AZ[" Merge &<br/>Validate"]
-    AZ --> BAA[" Assess<br/>State"]
+ Y --> Z[" Assess<br/>State"]
 
-    BAA -->|More work| BB[" Phase N:<br/>Final Push"]
-    BAA -->|Done| AB
+ Z -->|More work| AA[" Phase 2:<br/>Secondary Tasks"]
 
-    BB --> BC[" Execute<br/>Remaining"]
-    BC --> BD[" Complete"]
-    BD --> AB
+ Z -->|Done| AB[" Complete"]
 
-    AB --> AC["💾 Archive<br/>Artifacts"]
-    AC --> AD["🎉 Session<br/>Success"]
+ AA -->|Lane 1| AA1["Agent-A2"]
+
+ AA -->|Lane 2| AA2["Agent-B2"]
+
+ AA -->|Lane 3| AA3["Agent-C2"]
+
+ AA1 -.->|result| AY[" Collect<br/>Phase 2"]
+ AA2 -.->|result| AY
+ AA3 -.->|result| AY
+
+ AY --> AZ[" Merge &<br/>Validate"]
+
+ AZ --> BAA[" Assess<br/>State"]
+
+ BAA -->|More work| BB[" Phase N:<br/>Final Push"]
+
+ BAA -->|Done| AB
+
+ BB --> BC[" Execute<br/>Remaining"]
+
+ BC --> BD[" Complete"]
+
+ BD --> AB
+
+ AB --> AC[" Archive<br/>Artifacts"]
+
+ AC --> AD[" Session<br/>Success"]
 ```
 
 ---

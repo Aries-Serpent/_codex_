@@ -1,6 +1,6 @@
 # Functional Training
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -36,9 +36,9 @@ The functional training system consists of several key components:
 
 ```
 training/
-├── functional_training.py       # Core training loop implementation
-├── config.py                   # Training configuration dataclasses
-└── checkpoint_manager.py       # Checkpoint persistence utilities
+ functional_training.py # Core training loop implementation
+ config.py # Training configuration dataclasses
+ checkpoint_manager.py # Checkpoint persistence utilities
 ```
 
 ## Usage
@@ -55,21 +55,21 @@ val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # Configure training
 config = {
-    "model": "bert-base-uncased",
-    "epochs": 10,
-    "learning_rate": 2e-5,
-    "seed": 42,
-    "checkpoint_dir": "./checkpoints",
-    "gradient_clip_norm": 1.0,
+ "model": "bert-base-uncased",
+ "epochs": 10,
+ "learning_rate": 2e-5,
+ "seed": 42,
+ "checkpoint_dir": "./checkpoints",
+ "gradient_clip_norm": 1.0,
 }
 
 # Run functional training loop
 train_functional(
-    model=model,
-    train_dataloader=train_dataloader,
-    val_dataloader=val_dataloader,
-    optimizer=optimizer,
-    config=config,
+ model=model,
+ train_dataloader=train_dataloader,
+ val_dataloader=val_dataloader,
+ optimizer=optimizer,
+ config=config,
 )
 ```
 
@@ -84,22 +84,22 @@ mlflow.set_tracking_uri("./mlruns")
 mlflow.set_experiment("my-experiment")
 
 with mlflow.start_run():
-    # Training configuration
-    config = {
-        "model": "roberta-base",
-        "epochs": 20,
-        "batch_size": 16,
-        "learning_rate": 1e-4,
-        "seed": 123,
-        "mlflow_tracking": True,
-    }
+ # Training configuration
+ config = {
+ "model": "roberta-base",
+ "epochs": 20,
+ "batch_size": 16,
+ "learning_rate": 1e-4,
+ "seed": 123,
+ "mlflow_tracking": True,
+ }
 
-    # Run training with automatic MLflow logging
-    train_functional(
-        model=model,
-        train_dataloader=train_loader,
-        config=config,
-    )
+ # Run training with automatic MLflow logging
+ train_functional(
+ model=model,
+ train_dataloader=train_loader,
+ config=config,
+ )
 ```
 
 ## Resuming from Checkpoint
@@ -114,12 +114,12 @@ checkpoint = load_training_checkpoint(checkpoint_path)
 
 # Resume training from loaded state
 train_functional(
-    model=model,
-    train_dataloader=train_loader,
-    optimizer=optimizer,
-    config=config,
-    resume_from_checkpoint=checkpoint,
-    start_epoch=checkpoint["epoch"] + 1,
+ model=model,
+ train_dataloader=train_loader,
+ optimizer=optimizer,
+ config=config,
+ resume_from_checkpoint=checkpoint,
+ start_epoch=checkpoint["epoch"] + 1,
 )
 ```
 
@@ -160,16 +160,16 @@ train_functional(
 
 ```python
 def custom_loss_fn(outputs, targets):
-    """Custom loss function for training."""
-    # Implement custom loss logic
-    loss = torch.nn.functional.cross_entropy(outputs, targets)
-    return loss
+ """Custom loss function for training."""
+ # Implement custom loss logic
+ loss = torch.nn.functional.cross_entropy(outputs, targets)
+ return loss
 
 train_functional(
-    model=model,
-    train_dataloader=train_loader,
-    loss_fn=custom_loss_fn,
-    config=config,
+ model=model,
+ train_dataloader=train_loader,
+ loss_fn=custom_loss_fn,
+ config=config,
 )
 ```
 
@@ -177,15 +177,15 @@ train_functional(
 
 ```python
 def on_epoch_end_hook(epoch, metrics):
-    """Hook called at the end of each epoch."""
-    print(f"Epoch {epoch} completed with metrics: {metrics}")
-    # Custom validation logic
+ """Hook called at the end of each epoch."""
+ print(f"Epoch {epoch} completed with metrics: {metrics}")
+ # Custom validation logic
 
 train_functional(
-    model=model,
-    train_dataloader=train_loader,
-    config=config,
-    hooks={"on_epoch_end": on_epoch_end_hook},
+ model=model,
+ train_dataloader=train_loader,
+ config=config,
+ hooks={"on_epoch_end": on_epoch_end_hook},
 )
 ```
 
@@ -198,12 +198,12 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 model = DDP(model, device_ids=[local_rank])
 
 train_functional(
-    model=model,
-    train_dataloader=train_loader,
-    config=config,
-    distributed=True,
-    world_size=world_size,
-    rank=rank,
+ model=model,
+ train_dataloader=train_loader,
+ config=config,
+ distributed=True,
+ world_size=world_size,
+ rank=rank,
 )
 ```
 
@@ -231,12 +231,12 @@ torch.use_deterministic_algorithms(True)
 
 # Configure reproducible training with validation
 config = {
-    "seed": 42,
-    "deterministic": True,
-    "save_rng_state": True,
-    "offline": True,  # Offline execution support
-    "manifest": True,  # Generate data manifest with checksums
-    "baseline": "v1.0",  # Baseline tracking
+ "seed": 42,
+ "deterministic": True,
+ "save_rng_state": True,
+ "offline": True, # Offline execution support
+ "manifest": True, # Generate data manifest with checksums
+ "baseline": "v1.0", # Baseline tracking
 }
 
 train_functional(model=model, train_dataloader=train_loader, config=config)
@@ -257,15 +257,15 @@ The training system automatically tracks:
 
 ```python
 def compute_custom_metrics(outputs, targets):
-    """Compute custom evaluation metrics."""
-    accuracy = (outputs.argmax(dim=1) == targets).float().mean()
-    return {"accuracy": accuracy.item()}
+ """Compute custom evaluation metrics."""
+ accuracy = (outputs.argmax(dim=1) == targets).float().mean()
+ return {"accuracy": accuracy.item()}
 
 train_functional(
-    model=model,
-    train_dataloader=train_loader,
-    config=config,
-    metric_functions={"custom": compute_custom_metrics},
+ model=model,
+ train_dataloader=train_loader,
+ config=config,
+ metric_functions={"custom": compute_custom_metrics},
 )
 ```
 

@@ -1,10 +1,10 @@
 # Guide: Atomic Patch Diff Style for `_codex_` (v1.2 — with Schema Validation)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer]  Energy: 5  
-⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer] Energy: 5
+ Physics: Path Fields Patterns Redundancy Balance
 
 ## 1. Mandatory Elements per Patch
 - **Title (PATCH-XXX)** and component paths
@@ -13,12 +13,12 @@
 - **Rollback** steps (exact, testable)
 - **Tests/Docs** changes
 - **Validation Checklist**:
-  - Build/lint/typecheck pass
-  - Unit/integration tests green
-  - Security scan results reviewed
-  - Rollback rehearsal or proof
-  - Compatibility assessment
-  - **NEW v1.2**: If configs touched, schema validation passes (run `tools/validate_configs.py` post-patch)
+ - Build/lint/typecheck pass
+ - Unit/integration tests green
+ - Security scan results reviewed
+ - Rollback rehearsal or proof
+ - Compatibility assessment
+ - **NEW v1.2**: If configs touched, schema validation passes (run `tools/validate_configs.py` post-patch)
 - **Cross‑links** (when relevant): CAP‑IDs, REPRO‑IDs, and FIND-IDs
 
 ## 2. Canonical Diff Fences

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/quantum_orchestrator_README/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Quantum-Relativistic-Dirac Orchestrator Framework - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2641,28 +2641,28 @@
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="c1"># Create orchestrator</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="n">orch</span> <span class="o">=</span> <span class="n">create_orchestrator</span><span class="p">(</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">max_throughput</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>  <span class="c1"># Maximum tasks/second</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">work_granularity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Minimum work unit</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">time_step</span><span class="o">=</span><span class="mf">0.1</span>          <span class="c1"># Evolution time step</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">max_throughput</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="c1"># Maximum tasks/second</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="n">work_granularity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="c1"># Minimum work unit</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">time_step</span><span class="o">=</span><span class="mf">0.1</span> <span class="c1"># Evolution time step</span>
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="p">)</span>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># Add tasks</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="n">orch</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    <span class="n">task_id</span><span class="o">=</span><span class="s2">"task_1"</span><span class="p">,</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Initialize System"</span><span class="p">,</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    <span class="n">priority</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>    <span class="n">complexity</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    <span class="n">rest_mass</span><span class="o">=</span><span class="mf">2.0</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> <span class="n">task_id</span><span class="o">=</span><span class="s2">"task_1"</span><span class="p">,</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"Initialize System"</span><span class="p">,</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> <span class="n">priority</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> <span class="n">complexity</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> <span class="n">rest_mass</span><span class="o">=</span><span class="mf">2.0</span>
 <a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="p">)</span>
 <a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
 <a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="n">orch</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>    <span class="n">task_id</span><span class="o">=</span><span class="s2">"task_2"</span><span class="p">,</span>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Process Data"</span><span class="p">,</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>    <span class="n">priority</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>    <span class="n">complexity</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>    <span class="n">rest_mass</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>    <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="s2">"task_1"</span><span class="p">],</span>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>    <span class="n">deadline</span><span class="o">=</span><span class="mf">10.0</span>  <span class="c1"># SLA deadline</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> <span class="n">task_id</span><span class="o">=</span><span class="s2">"task_2"</span><span class="p">,</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"Process Data"</span><span class="p">,</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> <span class="n">priority</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> <span class="n">complexity</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> <span class="n">rest_mass</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="s2">"task_1"</span><span class="p">],</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> <span class="n">deadline</span><span class="o">=</span><span class="mf">10.0</span> <span class="c1"># SLA deadline</span>
 <a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="p">)</span>
 <a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>
 <a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="c1"># Run orchestration</span>
@@ -2674,9 +2674,9 @@
 <a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="c1"># Get task status</span>
 <a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="n">status</span> <span class="o">=</span> <span class="n">orch</span><span class="o">.</span><span class="n">get_task_status</span><span class="p">()</span>
 <a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="k">for</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">status</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'probability'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2"> complete"</span><span class="p">)</span>
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Stable: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'stable'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Energy: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'energy'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'probability'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2"> complete"</span><span class="p">)</span>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Stable: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'stable'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Energy: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'energy'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="core-components">Core Components<a class="headerlink" href="#core-components" title="Permanent link">¶</a></h2>
 <h3 id="physicsconstants">PhysicsConstants<a class="headerlink" href="#physicsconstants" title="Permanent link">¶</a></h3>
@@ -2700,13 +2700,13 @@
 <h3 id="taskstate">TaskState<a class="headerlink" href="#taskstate" title="Permanent link">¶</a></h3>
 <p>Complete task representation:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="n">task</span> <span class="o">=</span> <span class="n">TaskState</span><span class="p">(</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">task_id</span><span class="o">=</span><span class="s2">"example"</span><span class="p">,</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"Example Task"</span><span class="p">,</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">position</span><span class="o">=</span><span class="n">TaskVector</span><span class="p">(</span><span class="n">priority</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">complexity</span><span class="o">=</span><span class="mf">2.0</span><span class="p">),</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="n">rest_mass</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    <span class="n">deadline</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="s2">"dep1"</span><span class="p">,</span> <span class="s2">"dep2"</span><span class="p">],</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="n">required_resources</span><span class="o">=</span><span class="p">{</span><span class="s2">"cpu"</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span> <span class="s2">"memory"</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">}</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="n">task_id</span><span class="o">=</span><span class="s2">"example"</span><span class="p">,</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"Example Task"</span><span class="p">,</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="n">position</span><span class="o">=</span><span class="n">TaskVector</span><span class="p">(</span><span class="n">priority</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">complexity</span><span class="o">=</span><span class="mf">2.0</span><span class="p">),</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="n">rest_mass</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> <span class="n">deadline</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="s2">"dep1"</span><span class="p">,</span> <span class="s2">"dep2"</span><span class="p">],</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="n">required_resources</span><span class="o">=</span><span class="p">{</span><span class="s2">"cpu"</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span> <span class="s2">"memory"</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">}</span>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="p">)</span>
 </code></pre></div></p>
 <h2 id="advanced-features">Advanced Features<a class="headerlink" href="#advanced-features" title="Permanent link">¶</a></h2>
@@ -2714,26 +2714,26 @@
 <p>The orchestrator automatically detects and corrects:</p>
 <p><strong>Zitterbewegung (Instability)</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="n">unstable_tasks</span> <span class="o">=</span> <span class="n">orch</span><span class="o">.</span><span class="n">check_stability</span><span class="p">()</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">orch</span><span class="o">.</span><span class="n">self_heal</span><span class="p">()</span>  <span class="c1"># Stabilizes unstable tasks</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">orch</span><span class="o">.</span><span class="n">self_heal</span><span class="p">()</span> <span class="c1"># Stabilizes unstable tasks</span>
 </code></pre></div></p>
 <p><strong>Bottlenecks</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">bottlenecks</span> <span class="o">=</span> <span class="n">orch</span><span class="o">.</span><span class="n">flow_analyzer</span><span class="o">.</span><span class="n">identify_bottlenecks</span><span class="p">(</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    <span class="n">orch</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> <span class="n">orch</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="p">)</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="k">for</span> <span class="n">bn</span> <span class="ow">in</span> <span class="n">bottlenecks</span><span class="p">:</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bottleneck: </span><span class="si">{</span><span class="n">bn</span><span class="p">[</span><span class="s1">'task_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">, severity=</span><span class="si">{</span><span class="n">bn</span><span class="p">[</span><span class="s1">'severity'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bottleneck: </span><span class="si">{</span><span class="n">bn</span><span class="p">[</span><span class="s1">'task_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">, severity=</span><span class="si">{</span><span class="n">bn</span><span class="p">[</span><span class="s1">'severity'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="2-flow-analysis">2. Flow Analysis<a class="headerlink" href="#2-flow-analysis" title="Permanent link">¶</a></h3>
 <p>Monitor probability flow:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Current flow rate</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">current</span> <span class="o">=</span> <span class="n">orch</span><span class="o">.</span><span class="n">current_op</span><span class="o">.</span><span class="n">task_current</span><span class="p">(</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">current_state</span><span class="p">,</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">dt</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">current_state</span><span class="p">,</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">dt</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="p">)</span>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Flow rate: </span><span class="si">{</span><span class="n">current</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="c1"># Efficiency</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="n">efficiency</span> <span class="o">=</span> <span class="n">orch</span><span class="o">.</span><span class="n">flow_analyzer</span><span class="o">.</span><span class="n">flow_efficiency</span><span class="p">(</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    <span class="n">current_state</span><span class="p">,</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">dt</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="n">current_state</span><span class="p">,</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">dt</span>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="p">)</span>
 <a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"System efficiency: </span><span class="si">{</span><span class="n">efficiency</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
@@ -2782,41 +2782,41 @@
 - Integration scenarios</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>src/codex/quantum_orchestrator/
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>├── __init__.py              # Package exports
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>├── constants.py             # Physical constants
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>├── orchestrator.py          # Main implementation
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>├── state/
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>│   ├── task_vector.py       # Position in task space
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>│   ├── task_state.py        # Complete task state
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>│   ├── spinor_state.py      # Dirac spinor
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>│   └── orchestrator_state.py # System state
-<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>├── operators/
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>│   ├── momentum.py          # p̂ = -iℏ∇
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>│   ├── energy.py            # Ê = iℏ∂/∂t
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>│   ├── hamiltonian.py       # Ĥ = T̂ + V̂
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>│   ├── klein_gordon.py      # Relativistic extension
-<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>│   ├── probability_current.py # Flow analysis
-<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a>│   └── dirac.py             # Dirac equation
-<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>└── dynamics/
-<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>    ├── evolution.py         # Time evolution
-<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a>    └── self_healing.py      # Self-healing logic
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> __init__.py # Package exports
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> constants.py # Physical constants
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> orchestrator.py # Main implementation
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> state/
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> task_vector.py # Position in task space
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> task_state.py # Complete task state
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> spinor_state.py # Dirac spinor
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a> orchestrator_state.py # System state
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a> operators/
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> momentum.py # p̂ = -iℏ∇
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> energy.py # Ê = iℏ∂/∂t
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> hamiltonian.py # Ĥ = T̂ + V̂
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> klein_gordon.py # Relativistic extension
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> probability_current.py # Flow analysis
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a> dirac.py # Dirac equation
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a> dynamics/
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a> evolution.py # Time evolution
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a> self_healing.py # Self-healing logic
 </code></pre></div>
 <h2 id="physics-validation">Physics Validation<a class="headerlink" href="#physics-validation" title="Permanent link">¶</a></h2>
 <p>The implementation maintains physical accuracy:</p>
 <h3 id="energy-momentum-relation">Energy-Momentum Relation<a class="headerlink" href="#energy-momentum-relation" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>E² ≈ p²c² + m²c⁴  # Verified in tests
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>E² ≈ p²c² + m²c⁴ # Verified in tests
 </code></pre></div>
 <h3 id="lorentz-factor">Lorentz Factor<a class="headerlink" href="#lorentz-factor" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>γ = 1/√(1 - v²/c²) ≥ 1  # Always satisfied
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>γ = 1/√(1 - v²/c²) ≥ 1 # Always satisfied
 </code></pre></div>
 <h3 id="speed-limit">Speed Limit<a class="headerlink" href="#speed-limit" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="n">v</span> <span class="o">&lt;</span> <span class="n">c</span>  <span class="c1"># Enforced via apply_force()</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="n">v</span> <span class="o">&lt;</span> <span class="n">c</span> <span class="c1"># Enforced via apply_force()</span>
 </code></pre></div>
 <h3 id="probability-conservation">Probability Conservation<a class="headerlink" href="#probability-conservation" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>∂ρ/∂t + ∇·j = 0  # Checked via ContinuityChecker
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>∂ρ/∂t + ∇·j = 0 # Checked via ContinuityChecker
 </code></pre></div>
 <h3 id="dirac-current-bound">Dirac Current Bound<a class="headerlink" href="#dirac-current-bound" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>|j| ≤ c  # Always subluminal
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>|j| ≤ c # Always subluminal
 </code></pre></div>
 <h2 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h2>
 <ul>
@@ -2900,6 +2900,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

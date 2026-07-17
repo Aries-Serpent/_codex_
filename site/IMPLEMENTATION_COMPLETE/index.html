@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/IMPLEMENTATION_COMPLETE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex ML - Complete Implementation Summary - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2466,8 +2466,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Status:</strong> 71/71 Azure MLOps Capabilities (100%) <br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Status:</strong> 71/71 Azure MLOps Capabilities (100%)
+<strong>Version:</strong> 1.0.0
 **Date:2026-07-13</p>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2478,14 +2478,14 @@
 <p><strong>Implementation:</strong> Phase 1 - Complete K8s deployment stack</p>
 <p><strong>Components:</strong>
 - <strong>Base Manifests</strong> (<code>manifests/k8s/base/</code>)
-  - <code>deployment.yaml</code>: 3 replicas, health probes, resource limits
-  - <code>service.yaml</code>: ClusterIP with http/metrics ports
-  - <code>configmap.yaml</code>: Offline-first configuration
-  - <code>secret.yaml.template</code>: Secret management template
-  - <code>hpa.yaml</code>: Auto-scaling 2-10 replicas (CPU 70%, Memory 80%)
-  - <code>resourcequota.yaml</code>: Cluster resource limits
-  - <code>servicemonitor.yaml</code>: Prometheus integration
-  - <code>kustomization.yaml</code>: Base configuration</p>
+ - <code>deployment.yaml</code>: 3 replicas, health probes, resource limits
+ - <code>service.yaml</code>: ClusterIP with http/metrics ports
+ - <code>configmap.yaml</code>: Offline-first configuration
+ - <code>secret.yaml.template</code>: Secret management template
+ - <code>hpa.yaml</code>: Auto-scaling 2-10 replicas (CPU 70%, Memory 80%)
+ - <code>resourcequota.yaml</code>: Cluster resource limits
+ - <code>servicemonitor.yaml</code>: Prometheus integration
+ - <code>kustomization.yaml</code>: Base configuration</p>
 <ul>
 <li><strong>Environment Overlays</strong> (<code>manifests/k8s/overlays/</code>)</li>
 <li>Development: 1 replica, reduced resources</li>
@@ -2506,17 +2506,17 @@
 - Prometheus ServiceMonitor integration
 - Resource quotas: 20 CPU cores, 40Gi memory total</p>
 <p><strong>Capabilities Achieved:</strong>
-- Row 14: Compute is managed 
-- Row 15: Containerized orchestration 
-- Row 16: Managed ML workloads </p>
+- Row 14: Compute is managed
+- Row 15: Containerized orchestration
+- Row 16: Managed ML workloads</p>
 <hr/>
 <h3 id="2-feature-store-row-27">2. Feature Store (Row 27)<a class="headerlink" href="#2-feature-store-row-27" title="Permanent link">¶</a></h3>
 <p><strong>Implementation:</strong> Phase 2 - Centralized feature management</p>
 <p><strong>Components:</strong>
 - <strong>Core Store</strong> (<code>src/codex_ml/features/</code>)
-  - <code>feature_store.py</code>: Feature store with versioning and caching
-  - <code>monitoring.py</code>: Health and freshness monitoring
-  - <code>__init__.py</code>: Package exports</p>
+ - <code>feature_store.py</code>: Feature store with versioning and caching
+ - <code>monitoring.py</code>: Health and freshness monitoring
+ - <code>__init__.py</code>: Package exports</p>
 <ul>
 <li><strong>CLI Tools</strong> (<code>src/codex_ml/cli/</code>)</li>
 <li>
@@ -2541,16 +2541,16 @@
 - <code>codex-ml features export-metadata</code>: Export to JSON
 - <code>codex-ml features clear-cache</code>: Clear cache</p>
 <p><strong>Capabilities Achieved:</strong>
-- Row 27: Managed feature store adopted </p>
+- Row 27: Managed feature store adopted</p>
 <hr/>
 <h3 id="3-cloud-events-row-28">3. Cloud Events (Row 28)<a class="headerlink" href="#3-cloud-events-row-28" title="Permanent link">¶</a></h3>
 <p><strong>Implementation:</strong> Phase 3 - Multi-cloud event integration</p>
 <p><strong>Components:</strong>
 - <strong>Event Base</strong> (<code>src/codex_ml/events/</code>)
-  - <code>base.py</code>: Event types, Event class, EventPublisher/Subscriber, EventBus
-  - <code>azure_events.py</code>: Azure Event Grid integration
-  - <code>aws_events.py</code>: AWS EventBridge integration
-  - <code>__init__.py</code>: Package exports</p>
+ - <code>base.py</code>: Event types, Event class, EventPublisher/Subscriber, EventBus
+ - <code>azure_events.py</code>: Azure Event Grid integration
+ - <code>aws_events.py</code>: AWS EventBridge integration
+ - <code>__init__.py</code>: Package exports</p>
 <ul>
 <li><strong>Training Integration</strong> (<code>src/codex_ml/training/</code>)</li>
 <li>
@@ -2580,23 +2580,21 @@
 - Training lifecycle event emission
 - Configuration-driven setup</p>
 <p><strong>Capabilities Achieved:</strong>
-- Row 28: Azure Event Grid lifecycle events </p>
+- Row 28: Azure Event Grid lifecycle events</p>
 <hr/>
 <h3 id="4-feature-freshness-monitoring-row-63">4. Feature Freshness Monitoring (Row 63)<a class="headerlink" href="#4-feature-freshness-monitoring-row-63" title="Permanent link">¶</a></h3>
 <p><strong>Implementation:</strong> Phase 4 - Enhanced freshness tracking</p>
 <p><strong>Components:</strong>
 - <strong>Enhanced Monitoring</strong> (<code>src/codex_ml/features/</code>)
-  - <code>monitoring.py</code>: Enhanced with freshness methods
-    - <code>get_time_until_stale()</code>: Calculate time until stale
-    - <code>get_freshness_distribution()</code>: Distribution percentages</p>
+ - <code>monitoring.py</code>: Enhanced with freshness methods
+ - <code>get_time_until_stale()</code>: Calculate time until stale
+ - <code>get_freshness_distribution()</code>: Distribution percentages</p>
 <ul>
 <li><strong>Drift Integration</strong> (<code>src/codex_ml/monitoring/</code>)</li>
-<li><code>feature_freshness_drift.py</code>: FeatureFreshnessDriftDetector<ul>
+<li><code>feature_freshness_drift.py</code>: FeatureFreshnessDriftDetector</li>
 <li>Freshness checking before drift detection</li>
 <li>Combined drift reports with freshness context</li>
 <li>Auto-skip for very stale features (&gt;48h)</li>
-</ul>
-</li>
 </ul>
 <p><strong>Freshness Levels:</strong>
 - <strong>FRESH</strong>: &lt; 1 hour
@@ -2612,7 +2610,7 @@
 - Auto-skip drift checks for very stale features
 - Health warnings and error tracking</p>
 <p><strong>Capabilities Achieved:</strong>
-- Row 63: Feature materialization health and freshness monitored </p>
+- Row 63: Feature materialization health and freshness monitored</p>
 <hr/>
 <h2 id="complete-capability-matrix">Complete Capability Matrix<a class="headerlink" href="#complete-capability-matrix" title="Permanent link">¶</a></h2>
 <h3 id="all-categories-at-100">All Categories at 100%<a class="headerlink" href="#all-categories-at-100" title="Permanent link">¶</a></h3>
@@ -2680,50 +2678,50 @@
 <hr/>
 <h2 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>_codex_/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── manifests/k8s/                      # Kubernetes manifests
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   ├── base/                           # Base K8s configuration
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│   │   ├── deployment.yaml             # Main deployment (3 replicas)
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│   │   ├── service.yaml                # ClusterIP service
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│   │   ├── configmap.yaml              # Application config
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   │   ├── secret.yaml.template        # Secret template
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│   │   ├── hpa.yaml                    # HorizontalPodAutoscaler
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   │   ├── resourcequota.yaml          # Resource quotas
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│   │   ├── servicemonitor.yaml         # Prometheus integration
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│   │   └── kustomization.yaml          # Kustomize base
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│   └── overlays/                       # Environment overlays
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│       ├── development/                # Dev environment
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│       └── production/                 # Prod environment
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>├── src/codex_ml/
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│   ├── features/                       # Feature store
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│   │   ├── __init__.py
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>│   │   ├── feature_store.py            # Core feature store
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>│   │   └── monitoring.py               # Health &amp; freshness
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│   ├── events/                         # Cloud events
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>│   │   ├── __init__.py
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>│   │   ├── base.py                     # Event base classes
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>│   │   ├── azure_events.py             # Azure Event Grid
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>│   │   └── aws_events.py               # AWS EventBridge
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>│   ├── training/
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>│   │   └── event_integration.py        # Training event emitter
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>│   ├── monitoring/
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>│   │   └── feature_freshness_drift.py  # Freshness drift detector
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>│   └── cli/
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>│       └── features.py                 # Feature CLI commands
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>│
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>├── configs/events/
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>│   └── event_config.yaml               # Event configuration
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>│
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>├── scripts/
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>│   └── k8s_deploy.sh                   # K8s deployment script
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>│
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>├── examples/features/
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>│   └── text_features.py                # Example features
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>│
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>└── .github/prompts/followup_execution_plan/
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    ├── AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    ├── COMPARISON_RATING.md
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    └── IMPLEMENTATION_ROADMAP.md
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> manifests/k8s/ # Kubernetes manifests
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> base/ # Base K8s configuration
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> deployment.yaml # Main deployment (3 replicas)
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> service.yaml # ClusterIP service
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> configmap.yaml # Application config
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> secret.yaml.template # Secret template
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> hpa.yaml # HorizontalPodAutoscaler
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> resourcequota.yaml # Resource quotas
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> servicemonitor.yaml # Prometheus integration
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> kustomization.yaml # Kustomize base
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> overlays/ # Environment overlays
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> development/ # Dev environment
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> production/ # Prod environment
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> src/codex_ml/
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> features/ # Feature store
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> __init__.py
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> feature_store.py # Core feature store
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> monitoring.py # Health &amp; freshness
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> events/ # Cloud events
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> __init__.py
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> base.py # Event base classes
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> azure_events.py # Azure Event Grid
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> aws_events.py # AWS EventBridge
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> training/
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> event_integration.py # Training event emitter
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> monitoring/
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> feature_freshness_drift.py # Freshness drift detector
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> cli/
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> features.py # Feature CLI commands
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> configs/events/
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> event_config.yaml # Event configuration
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> scripts/
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> k8s_deploy.sh # K8s deployment script
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> examples/features/
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a> text_features.py # Example features
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a> .github/prompts/followup_execution_plan/
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a> COMPARISON_RATING.md
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> IMPLEMENTATION_ROADMAP.md
 </code></pre></div>
 <hr/>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">¶</a></h2>
@@ -2802,7 +2800,7 @@
 </tr>
 <tr>
 <td><strong>Total</strong></td>
-<td><strong>6 → 0 gaps</strong></td>
+<td><strong>6 0 gaps</strong></td>
 <td><strong>28 files</strong></td>
 </tr>
 </tbody>
@@ -2837,36 +2835,36 @@
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="c1"># Define features</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="n">features</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="n">Feature</span><span class="p">(</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">"token_count"</span><span class="p">,</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="n">transform_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>        <span class="n">metadata</span><span class="o">=</span><span class="n">FeatureMetadata</span><span class="p">(</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">"token_count"</span><span class="p">,</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>            <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>            <span class="n">dtype</span><span class="o">=</span><span class="s2">"int"</span><span class="p">,</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">"Number of tokens"</span><span class="p">,</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>            <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>            <span class="n">updated_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">"category"</span><span class="p">:</span> <span class="s2">"text_stats"</span><span class="p">},</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>        <span class="p">),</span>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    <span class="p">)</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="n">Feature</span><span class="p">(</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"token_count"</span><span class="p">,</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="n">transform_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="n">metadata</span><span class="o">=</span><span class="n">FeatureMetadata</span><span class="p">(</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"token_count"</span><span class="p">,</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> <span class="n">dtype</span><span class="o">=</span><span class="s2">"int"</span><span class="p">,</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Number of tokens"</span><span class="p">,</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> <span class="n">updated_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">"category"</span><span class="p">:</span> <span class="s2">"text_stats"</span><span class="p">},</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> <span class="p">),</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> <span class="p">)</span>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="p">]</span>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>
 <a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="c1"># Register feature group</span>
 <a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="n">group</span> <span class="o">=</span> <span class="n">FeatureGroup</span><span class="p">(</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"text_features"</span><span class="p">,</span>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>    <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>    <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Text processing features"</span><span class="p">,</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"text_features"</span><span class="p">,</span>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Text processing features"</span><span class="p">,</span>
 <a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="p">)</span>
 <a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="n">store</span><span class="o">.</span><span class="n">register_feature_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 <a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>
 <a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="c1"># Materialize features</span>
 <a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="n">result</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">materialize_features</span><span class="p">(</span>
-<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>    <span class="p">[</span><span class="s2">"token_count"</span><span class="p">],</span>
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>    <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Hello world"</span><span class="p">},</span>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a> <span class="p">[</span><span class="s2">"token_count"</span><span class="p">],</span>
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Hello world"</span><span class="p">},</span>
 <a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="p">)</span>
-<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># {'token_count': 2}</span>
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1"># {'token_count': 2}</span>
 </code></pre></div>
 <h2 id="3-cloud-events">3. Cloud Events<a class="headerlink" href="#3-cloud-events" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">codex_ml.training.event_integration</span> <span class="kn">import</span> <span class="n">TrainingEventEmitter</span>
@@ -2901,21 +2899,21 @@
 <a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="n">detector</span> <span class="o">=</span> <span class="n">FeatureFreshnessDriftDetector</span><span class="p">(</span><span class="n">monitor</span><span class="p">)</span>
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="n">drift_scores</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"feature1"</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="s2">"feature2"</span><span class="p">:</span> <span class="mf">0.82</span><span class="p">}</span>
 <a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="n">report</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">get_drift_report_with_freshness</span><span class="p">(</span>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    <span class="p">[</span><span class="s2">"feature1"</span><span class="p">,</span> <span class="s2">"feature2"</span><span class="p">],</span>
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>    <span class="n">drift_scores</span><span class="p">,</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> <span class="p">[</span><span class="s2">"feature1"</span><span class="p">,</span> <span class="s2">"feature2"</span><span class="p">],</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> <span class="n">drift_scores</span><span class="p">,</span>
 <a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">¶</a></h2>
 <p>All implementations have been verified:</p>
-<p><strong>File Existence</strong>: All 28 files created and exist<br/>
-<strong>Import Tests</strong>: All modules import successfully<br/>
-<strong>Functional Tests</strong>: Core functionality tested and working<br/>
-<strong>K8s Validation</strong>: Manifests pass kubectl validation<br/>
-<strong>Integration Tests</strong>: Event system, feature store, freshness tracking verified</p>
+<p><strong>File Existence</strong>: All 28 files created and exist
+ <strong>Import Tests</strong>: All modules import successfully
+ <strong>Functional Tests</strong>: Core functionality tested and working
+ <strong>K8s Validation</strong>: Manifests pass kubectl validation
+ <strong>Integration Tests</strong>: Event system, feature store, freshness tracking verified</p>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
-<p><strong>Achievement:</strong> Perfect 71/71 Azure MLOps Level 4 Capabilities </p>
+<p><strong>Achievement:</strong> Perfect 71/71 Azure MLOps Level 4 Capabilities</p>
 <p><strong>Production Readiness:</strong> All implementations are production-grade with:
 - Comprehensive error handling
 - Graceful degradation
@@ -2929,9 +2927,9 @@
 - Register production features in feature store
 - Monitor freshness and drift in production</p>
 <hr/>
-<p><strong>Documentation Version:</strong> 1.0.0<br/>
+<p><strong>Documentation Version:</strong> 1.0.0
 <strong>Last Updated:2026-07-13
-</strong>Status:** Complete </p>
+</strong>Status:** Complete</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2961,6 +2959,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

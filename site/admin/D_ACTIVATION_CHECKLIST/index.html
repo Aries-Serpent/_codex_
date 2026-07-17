@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/D_ACTIVATION_CHECKLIST/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>D Model Activation Checklist - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2528,7 +2528,7 @@ after successful Genesis Phase 1 and Phase 2 completion.</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Genesis Phase 1 complete (template files committed, safety guards active)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Genesis Phase 2 complete (human admin injected secrets, enabled workflows)</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>admin_setup_verification.yml</code> passes with  for all §2–§7 checks</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>admin_setup_verification.yml</code> passes with for all §2–§7 checks</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODEX_MASTER_KEY</code> and <code>CODEX_BACKUP_KEY</code> are functional (§3a/§3b green)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> GitHub Discussions enabled and accessible (§4 green)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> At least one Copilot agent session has completed successfully on PR #3854</li>
@@ -2536,7 +2536,7 @@ after successful Genesis Phase 1 and Phase 2 completion.</p>
 <hr/>
 <h2 id="1-pre-activation-checklist">§1 Pre-Activation Checklist<a class="headerlink" href="#1-pre-activation-checklist" title="Permanent link">¶</a></h2>
 <h3 id="11-repository-variables">1.1 Repository Variables<a class="headerlink" href="#11-repository-variables" title="Permanent link">¶</a></h3>
-<p>Verify these repository variables are set (Settings → Secrets and variables → Actions → Variables):</p>
+<p>Verify these repository variables are set (Settings Secrets and variables Actions Variables):</p>
 <table>
 <thead>
 <tr>
@@ -2647,11 +2647,11 @@ after successful Genesis Phase 1 and Phase 2 completion.</p>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span><span class="m">3854</span>
 </code></pre></div>
 <p>Verify all checks pass:
-- [ ] <code>CODEX_MASTER_KEY</code> read + write: 
-- [ ] <code>CODEX_BACKUP_KEY</code> read + write:  (or ️ if optional)
-- [ ] GitHub Discussions: 
-- [ ] Repository variables: 
-- [ ] Follow-up prompt file: </p>
+- [ ] <code>CODEX_MASTER_KEY</code> read + write:
+- [ ] <code>CODEX_BACKUP_KEY</code> read + write: (or if optional)
+- [ ] GitHub Discussions:
+- [ ] Repository variables:
+- [ ] Follow-up prompt file:</p>
 <h2 id="32-session-health-checks">3.2 Session Health Checks<a class="headerlink" href="#32-session-health-checks" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Verify COPILOT_ACTIVE_SESSION was acquired and released correctly</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>gh<span class="w"> </span>api<span class="w"> </span>repos/Aries-Serpent/_codex_/actions/variables/COPILOT_ACTIVE_SESSION<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="se">\</span>
@@ -2719,7 +2719,7 @@ Run Admin Setup Verification to confirm.</p>
 <ol>
 <li>Set <code>COPILOT_AGENT_AUTH_ENABLED</code> to <code>false</code> in repository variables</li>
 <li>The <code>agent-auth-delegation.yml</code> and <code>copilot-agent-checkin.yml</code> missed-trigger guards
-   will immediately stop posting new <code>@copilot</code> triggers</li>
+ will immediately stop posting new <code>@copilot</code> triggers</li>
 <li>Any in-progress session will complete normally</li>
 </ol>
 <h3 id="full-rollback-hard-stop">Full Rollback (hard stop)<a class="headerlink" href="#full-rollback-hard-stop" title="Permanent link">¶</a></h3>
@@ -2800,6 +2800,6 @@ Run Admin Setup Verification to confirm.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

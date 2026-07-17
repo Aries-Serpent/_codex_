@@ -1,12 +1,12 @@
 # Offline Hardening and Reproducibility Guards - Implementation Status
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Branch**: `chore/offline-hardening-and-repro-guards-0D`  
-**Date**: 2025-11-03  
-**Status**:  **All features already implemented**
+**Branch**: `chore/offline-hardening-and-repro-guards-0D`
+**Date**: 2025-11-03
+**Status**: **All features already implemented**
 
 ## Executive Summary
 
@@ -16,9 +16,9 @@ All requested offline hardening and reproducibility guard patchsets have been ve
 
 ## Feature Implementation Status
 
-### [A] Default NDJSON Metrics Sink 
+### [A] Default NDJSON Metrics Sink
 
-**Status**: Already implemented  
+**Status**: Already implemented
 **Location**: `src/codex_ml/eval/runner.py:542`
 
 ```python
@@ -29,9 +29,9 @@ The default is already `"ndjson"` with CSV as a fallback option. The system supp
 
 ---
 
-### [B] Deterministic Seeding at Train CLI 
+### [B] Deterministic Seeding at Train CLI
 
-**Status**: Already implemented  
+**Status**: Already implemented
 **Location**: `src/codex_ml/cli/train.py:305`
 
 ```python
@@ -46,7 +46,7 @@ except Exception as exc:
 
 The training CLI already calls `repro.set_seed(seed)` to ensure deterministic behavior.
 
-**Supporting Module**: `src/codex_ml/utils/repro.py`  
+**Supporting Module**: `src/codex_ml/utils/repro.py`
 The module provides:
 - `set_seed(seed, deterministic=None)` - Sets seeds for Python, NumPy, PyTorch
 - `set_reproducible(seed)` - Comprehensive seeding wrapper
@@ -54,9 +54,9 @@ The module provides:
 
 ---
 
-### [C] Deterministic Split Helper (SHA1 → 80/10/10) 
+### [C] Deterministic Split Helper (SHA1 80/10/10)
 
-**Status**: Already implemented  
+**Status**: Already implemented
 **Location**: `src/codex_ml/data/splits.py`
 
 ```python
@@ -83,9 +83,9 @@ def assign_split(example_id: str) -> str:
 
 ---
 
-### [D] PEFT / LoRA Opt-in Gating 
+### [D] PEFT / LoRA Opt-in Gating
 
-**Status**: Already implemented with graceful degradation  
+**Status**: Already implemented with graceful degradation
 **Location**: `src/codex_ml/models/peft_hooks.py:6-10`
 
 ```python
@@ -107,9 +107,9 @@ def build_lora(model: Any, cfg: Optional[LoraBuildCfg] = None) -> Any:
 
 ---
 
-### [E] CPU-only Model Construction Smoke Gate 
+### [E] CPU-only Model Construction Smoke Gate
 
-**Status**: Already implemented  
+**Status**: Already implemented
 **Location**: `noxfile.py:177-189`
 
 ```python
@@ -131,9 +131,9 @@ def model_smoke(session: nox.Session) -> None:
 
 ---
 
-### [F] Make Dev Install Lock-only 
+### [F] Make Dev Install Lock-only
 
-**Status**: Already implemented  
+**Status**: Already implemented
 **Location**: `configs/development/Makefile:12-18`
 
 ```makefile
@@ -150,9 +150,9 @@ The Makefile enforces `requirements/lock.txt` for reproducible installs.
 
 ---
 
-### [G] Tokenization CLI: Explicit Offline-first Flags ️
+### [G] Tokenization CLI: Explicit Offline-first Flags
 
-**Status**: Partially implemented  
+**Status**: Partially implemented
 **Location**: `src/codex_ml/tokenization/cli.py`
 
 The tokenization CLI exists but doesn't have all the explicit offline flags mentioned in the patchset. However, it does support:
@@ -163,9 +163,9 @@ The tokenization CLI exists but doesn't have all the explicit offline flags ment
 
 ---
 
-### [H] Docker: Documented Digest-pin Example 
+### [H] Docker: Documented Digest-pin Example
 
-**Status**: Already implemented  
+**Status**: Already implemented
 **Location**: `Dockerfile:10-12`
 
 ```dockerfile
@@ -178,7 +178,7 @@ FROM python:3.11-slim AS builder
 
 ## Validation Checklist
 
-###  Completed Validations
+### Completed Validations
 
 1. **Install deps**: Makefile uses `requirements/lock.txt`
 2. **Model smoke gate**: `nox -s model-smoke` exists and is functional
@@ -188,7 +188,7 @@ FROM python:3.11-slim AS builder
 6. **Docker best practices**: Digest-pin documented
 7. **NDJSON metrics**: Default sink configured
 
-### ️ Pending Validations
+### Pending Validations
 
 1. **Tokenization roundtrip test**: Test file path from patchset needs verification
 2. **No CI YAML touched**: Confirmed - no workflow files modified

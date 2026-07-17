@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ADMIN_DECISIONS_README/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Repository Admin Implementation Decisions - Documentation Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2272,7 +2272,7 @@
 <a class="md-nav__link" href="#documentation-structure">
 <span class="md-ellipsis">
       
-        📁 Documentation Structure
+        Documentation Structure
       
     </span>
 </a>
@@ -2370,7 +2370,7 @@
 <a class="md-nav__link" href="#physics-inspired-framework">
 <span class="md-ellipsis">
       
-        🔬 Physics-Inspired Framework
+        Physics-Inspired Framework
       
     </span>
 </a>
@@ -2379,7 +2379,7 @@
 <a class="md-nav__link" href="#implementation-phases">
 <span class="md-ellipsis">
       
-        🛣️ Implementation Phases
+        Implementation Phases
       
     </span>
 </a>
@@ -2464,7 +2464,7 @@
 <a class="md-nav__link" href="#contributing">
 <span class="md-ellipsis">
       
-        🤝 Contributing
+        Contributing
       
     </span>
 </a>
@@ -2473,7 +2473,7 @@
 <a class="md-nav__link" href="#support">
 <span class="md-ellipsis">
       
-        📞 Support
+        Support
       
     </span>
 </a>
@@ -2511,14 +2511,14 @@
 <p>Complete guide to physics-inspired configuration decisions for the <em>codex</em> repository</p>
 </blockquote>
 <hr/>
-<h2 id="documentation-structure">📁 Documentation Structure<a class="headerlink" href="#documentation-structure" title="Permanent link">¶</a></h2>
+<h2 id="documentation-structure">Documentation Structure<a class="headerlink" href="#documentation-structure" title="Permanent link">¶</a></h2>
 <p>This directory contains comprehensive documentation for repository administrators making configuration decisions:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>docs/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── REPO_ADMIN_IMPLEMENTATION_DECISIONS.md  # Full analysis (2,080 lines)
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── REPO_ADMIN_DECISIONS_SUMMARY.md         # Executive summary
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── ADMIN_DECISIONS_README.md               # This file
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── ADMIN_IMPLEMENTATION_GUIDE.md           # Setup guide
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>└── ADMIN_FAQ.md                            # Frequently asked questions
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> REPO_ADMIN_IMPLEMENTATION_DECISIONS.md # Full analysis (2,080 lines)
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> REPO_ADMIN_DECISIONS_SUMMARY.md # Executive summary
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> ADMIN_DECISIONS_README.md # This file
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> ADMIN_IMPLEMENTATION_GUIDE.md # Setup guide
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> ADMIN_FAQ.md # Frequently asked questions
 </code></pre></div>
 <hr/>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
@@ -2544,72 +2544,70 @@
 <h3 id="41-implementation-questions">4.1 Implementation Questions<a class="headerlink" href="#41-implementation-questions" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Are default smell thresholds appropriate?</strong></li>
-<li>Long function: 50 lines </li>
-<li>Max arguments: 5 </li>
-<li>Max nesting: 4 levels </li>
+<li>Long function: 50 lines</li>
+<li>Max arguments: 5</li>
+<li>Max nesting: 4 levels</li>
 <li>
-<p>God class: 20 methods </p>
+<p>God class: 20 methods</p>
 </li>
 <li>
 <p><strong>Are all 5 export formats needed?</strong></p>
 </li>
 <li>
-<p>JSON, YAML, HTML, CSV, SQLite </p>
+<p>JSON, YAML, HTML, CSV, SQLite</p>
 </li>
 <li>
 <p><strong>Should LibCST remain primary parser?</strong></p>
 </li>
-<li>Yes, elevate to primary </li>
+<li>Yes, elevate to primary</li>
 </ol>
 <h3 id="42-configuration-questions">4.2 Configuration Questions<a class="headerlink" href="#42-configuration-questions" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Should AST_SIMILARITY_ENABLE be default in CI?</strong></li>
 <li>
-<p>Yes in CI, No locally </p>
+<p>Yes in CI, No locally</p>
 </li>
 <li>
 <p><strong>Should errors="ignore" log warnings?</strong></p>
 </li>
-<li>Yes, use errors="replace" + logging </li>
+<li>Yes, use errors="replace" + logging</li>
 </ol>
 <h3 id="43-integration-questions">4.3 Integration Questions<a class="headerlink" href="#43-integration-questions" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Should CLI entry points be registered?</strong></li>
 <li>
-<p>Yes, register codex-analyze, codex-audit, codex-diff </p>
+<p>Yes, register codex-analyze, codex-audit, codex-diff</p>
 </li>
 <li>
 <p><strong>Should code smell detection block merges?</strong></p>
 </li>
 <li>
-<p>Warnings only (3-phase rollout) ️</p>
+<p>Warnings only (3-phase rollout)</p>
 </li>
 <li>
 <p><strong>Standard SQLite location?</strong></p>
 </li>
-<li>Yes, <code>.codex/session_logs.db</code> </li>
+<li>Yes, <code>.codex/session_logs.db</code></li>
 </ol>
 <h3 id="44-future-direction-questions">4.4 Future Direction Questions<a class="headerlink" href="#44-future-direction-questions" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Tree-sitter for YAML/SQL?</strong></li>
 <li>
-<p>Yes, medium priority </p>
+<p>Yes, medium priority</p>
 </li>
 <li>
 <p><strong>Incremental analysis needed?</strong></p>
-<ul>
-<li>Yes, high priority (10-100x faster) </li>
-</ul>
+</li>
+<li>
+<p>Yes, high priority (10-100x faster)</p>
 </li>
 <li>
 <p><strong>HTML report generation?</strong></p>
-<ul>
-<li>Yes, medium priority </li>
-</ul>
 </li>
+<li>Yes, medium priority</li>
 </ol>
 <hr/>
-<h2 id="physics-inspired-framework">🔬 Physics-Inspired Framework<a class="headerlink" href="#physics-inspired-framework" title="Permanent link">¶</a></h2>
+<h2 id="physics-inspired-framework">Physics-Inspired Framework<a class="headerlink" href="#physics-inspired-framework" title="Permanent link">¶</a></h2>
 <p>Each decision leverages physics paradigms from <code>agents/advanced_physics_calculators.py</code>:</p>
 <table>
 <thead>
@@ -2647,7 +2645,7 @@
 </table>
 <p><strong>Unique Innovation</strong>: First repository to apply physics-based decision making to software configuration.</p>
 <hr/>
-<h2 id="implementation-phases">🛣️ Implementation Phases<a class="headerlink" href="#implementation-phases" title="Permanent link">¶</a></h2>
+<h2 id="implementation-phases">Implementation Phases<a class="headerlink" href="#implementation-phases" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -2768,12 +2766,12 @@
 <ol>
 <li><strong>Physics-Logic Framework</strong>: Apply physical principles to software decisions</li>
 <li><strong>Context-Aware Configs</strong>: Different settings for local/CI/production</li>
-<li><strong>Graduated Enforcement</strong>: 3-phase rollout (observe → warn → enforce)</li>
+<li><strong>Graduated Enforcement</strong>: 3-phase rollout (observe warn enforce)</li>
 <li><strong>Multi-Persona Design</strong>: Export formats optimized for different users</li>
 <li><strong>Incremental Analysis</strong>: Path to 10-100x performance improvement</li>
 </ol>
 <hr/>
-<h2 id="contributing">🤝 Contributing<a class="headerlink" href="#contributing" title="Permanent link">¶</a></h2>
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">¶</a></h2>
 <p>Found an issue or have suggestions?</p>
 <ol>
 <li><strong>Questions</strong>: Open GitHub issue with <code>admin-decision-question</code> label</li>
@@ -2782,7 +2780,7 @@
 <li><strong>Feedback</strong>: Comment on PR #[NUMBER]</li>
 </ol>
 <hr/>
-<h2 id="support">📞 Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Implementation Help</strong>: See <a href="../ADMIN_IMPLEMENTATION_GUIDE/">ADMIN_IMPLEMENTATION_GUIDE.md</a></li>
 <li><strong>General Questions</strong>: See <a href="../ADMIN_FAQ/">ADMIN_FAQ.md</a></li>
@@ -2831,9 +2829,9 @@
 </table>
 <p><strong>Total Documentation</strong>: 2,452 lines covering 14 configuration questions</p>
 <hr/>
-<p><strong>Version</strong>: 1.0.0<br/>
-<strong>Created</strong>: 2025-12-21<br/>
-<strong>Maintainer</strong>: Codex Admin Team<br/>
+<p><strong>Version</strong>: 1.0.0
+<strong>Created</strong>: 2025-12-21
+<strong>Maintainer</strong>: Codex Admin Team
 <strong>License</strong>: Same as repository</p>
 </article>
 </div>
@@ -2864,6 +2862,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

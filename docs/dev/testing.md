@@ -1,6 +1,6 @@
 # Testing Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -53,7 +53,7 @@ All push and PR events trigger `.github/workflows/ci-pytest.yml`:
 - Automatic PR comments with coverage summary and download links
 
 **Manual workflow trigger:**
-1. Navigate to Actions → "CI - Pytest with Coverage"
+1. Navigate to Actions "CI - Pytest with Coverage"
 2. Click "Run workflow"
 3. Select branch and run
 
@@ -96,14 +96,14 @@ make -f codex.mk codex-coverage        # coverage report
 ```
 
 - `nox -s tests` installs the project in editable mode, runs `pytest` with
-  `pytest-cov`/`pytest-randomly`, and enforces coverage using
-  `.coveragerc` (`fail_under = 80`, `skip_covered = true`).
+ `pytest-cov`/`pytest-randomly`, and enforces coverage using
+ `.coveragerc` (`fail_under = 80`, `skip_covered = true`).
 - When running with `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`, `pytest.ini`
-  preloads `pytest-cov` via `-p pytest_cov` so coverage flags continue to
-  parse correctly without additional CLI arguments.
+ preloads `pytest-cov` via `-p pytest_cov` so coverage flags continue to
+ parse correctly without additional CLI arguments.
 - Pass extra flags through to pytest with `nox -s tests -- -k tokenizer`.
 - After the run, `coverage report` re-applies the configured threshold; tighten
-  locally via `COVERAGE_MIN=90 nox -s tests` or `coverage report --fail-under=90`.
+ locally via `COVERAGE_MIN=90 nox -s tests` or `coverage report --fail-under=90`.
 
 `pytest-randomly` seeds the suite (`randomly_seed = 42` in `pytest.ini`) so reruns
 remain reproducible while still surfacing order-dependent failures.
@@ -144,6 +144,6 @@ python -m analysis.tests_docs_links_audit --repo . \
 ```
 
 The command prints a JSON summary and records it under
-`artifacts/docs_link_audit/`.  The `--fail-on-issues` flag causes the script to
+`artifacts/docs_link_audit/`. The `--fail-on-issues` flag causes the script to
 exit with status code `1` when missing navigation targets, dangling Markdown
 links, or nonexistent `tests/` references are discovered.

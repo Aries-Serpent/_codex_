@@ -219,7 +219,7 @@ Post-Analysis (Analytics Team):
 
 ### 3.1 Automated Canary Deployment
 ```yaml
-Trigger: GitHub release tag created (v0.2.1, etc.)
+Trigger: GitHub release tag created (v0.2.0, etc.)
 
 CI/CD Pipeline:
   Stage 1: Validation (30 min)
@@ -325,7 +325,7 @@ Analysis Cadence:
 ### 4.1 Release Schedule (v0.2.0 baseline → v0.3.0)
 ```
 Q3 2026 (Jul-Sep):
-  v0.2.1 (Late Jul): Canary deployment framework + feature flags
+  v0.2.0 (Late Jul): Canary deployment framework + feature flags
     - Milestone 1: Unleash deployment + Python/Go/TS clients
     - Milestone 2: Feature flag RBAC, audit logging
     - Release window: 2026-07-20T00:00Z
@@ -356,7 +356,7 @@ Q4 2026 (Oct-Dec):
     - Release window: 2026-11-01T00:00Z
   
   v0.3.0 (Mid Dec): Major release
-    - Consolidated features from v0.2.1→v0.2.4
+    - Consolidated features from v0.2.0→v0.2.4
     - Marketing campaign
     - Release window: 2026-12-15T00:00Z (after holiday freeze review)
 
@@ -379,13 +379,13 @@ Release Planning:
   Sprint +2: Retrospective, planning for next release
 
 Dependency Sequencing:
-  v0.2.1 → (foundation) → v0.2.2, v0.2.3 (parallel)
+  v0.2.0 → (foundation) → v0.2.2, v0.2.3 (parallel)
   v0.2.2 + v0.2.3 → (consolidated) → v0.2.4
   v0.2.4 → v0.3.0-rc1 → v0.3.0
 
 Blocked Dependencies:
-  - A/B testing (v0.2.2) blocked by feature flags (v0.2.1)
-  - SLO enforcement (v0.2.3) blocked by observability (v0.2.1)
+  - A/B testing (v0.2.2) blocked by feature flags (v0.2.0)
+  - SLO enforcement (v0.2.3) blocked by observability (v0.2.0)
   - Cohort segmentation (v0.2.4) blocked by metrics pipeline (v0.2.2)
 ```
 
@@ -393,7 +393,7 @@ Blocked Dependencies:
 ```yaml
 Semantic Versioning: vMAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 
-Format: v0.2.1
+Format: v0.2.0
   - MAJOR (0): Platform stability, breaking changes
   - MINOR (2): Feature releases
   - PATCH (1): Bug fixes, security patches
@@ -408,11 +408,11 @@ Build Metadata:
   - +buildN: Sequential build number from CI
 
 Examples:
-  v0.2.1-alpha.1 (feature development)
-  v0.2.1-beta.2 (feature freeze, bug fixes)
-  v0.2.1-rc.1+abc1234 (production candidate)
-  v0.2.1 (final release)
-  v0.2.1+ubuntu-5.15 (distribution-specific patch)
+  v0.2.0-alpha.1 (feature development)
+  v0.2.0-beta.2 (feature freeze, bug fixes)
+  v0.2.0-rc.1+abc1234 (production candidate)
+  v0.2.0 (final release)
+  v0.2.0+ubuntu-5.15 (distribution-specific patch)
 
 Validation (GitHub Actions):
   - Tag format: ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+(\.[a-z0-9]+)*)?(\+[0-9a-z]+)?$
@@ -633,7 +633,7 @@ On-Call Rotation:
 
 ## Code Rollback
 1. Check Service Mesh state: `kubectl get vs codex-api -o yaml`
-2. Scale canary to 0: `kubectl scale deployment codex-api-v0.2.1 --replicas=0`
+2. Scale canary to 0: `kubectl scale deployment codex-api-v0.2.0 --replicas=0`
 3. Verify traffic: `kubectl get svc codex-api -o wide` (all pods on v0.2.0)
 4. If traffic still split: Restart service: `kubectl rollout restart deploy/codex-api`
 5. Database verification: Connect to replica, run checksums
@@ -721,7 +721,7 @@ On-Call Rotation:
 Approval checklist:
 - [ ] Feature flag infrastructure approved (Unleash deployment)
 - [ ] Canary rollout percentages approved (5→25→50→100%)
-- [ ] 6-month roadmap approved (v0.2.1 through v0.3.0)
+- [ ] 6-month roadmap approved (v0.2.0 through v0.3.0)
 - [ ] Kill switch procedure approved
 - [ ] Team training materials reviewed
 
@@ -729,10 +729,10 @@ Approval checklist:
 1. Implement Unleash infrastructure (WS3 Sprint 1)
 2. Deploy feature flags to staging (WS3 Sprint 2)
 3. Conduct team training sessions (WS3 Sprint 2)
-4. Begin v0.2.1 canary deployment (2026-07-20)
+4. Begin v0.2.0 canary deployment (2026-07-20)
 
 ---
 
 **Document Status**: 🟢 Ready for D-tier Review  
 **Last Updated**: 2026-07-16T20:45Z  
-**Next Review**: 2026-07-23 (post-v0.2.1 deployment)
+**Next Review**: 2026-07-23 (post-v0.2.0 deployment)

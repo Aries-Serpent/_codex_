@@ -10,9 +10,9 @@
 <link href="../status/GITHUB_PAGES_STATUS/" rel="prev"/>
 <link href="../evolution/INDEX/" rel="next"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive App - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -212,7 +212,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -511,7 +511,7 @@
 <a class="md-nav__link" href="#memory-management">
 <span class="md-ellipsis">
       
-        💾 Memory Management
+        Memory Management
       
     </span>
 </a>
@@ -520,7 +520,7 @@
 <a class="md-nav__link" href="#code-generation">
 <span class="md-ellipsis">
       
-        💻 Code Generation
+        Code Generation
       
     </span>
 </a>
@@ -1219,7 +1219,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1751,7 +1751,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2643,7 +2643,7 @@
 <a class="md-nav__link" href="#memory-management">
 <span class="md-ellipsis">
       
-        💾 Memory Management
+        Memory Management
       
     </span>
 </a>
@@ -2652,7 +2652,7 @@
 <a class="md-nav__link" href="#code-generation">
 <span class="md-ellipsis">
       
-        💻 Code Generation
+        Code Generation
       
     </span>
 </a>
@@ -2906,7 +2906,7 @@
 <h1 id="cognitive-codex-web-application">Cognitive Codex Web Application<a class="headerlink" href="#cognitive-codex-web-application" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p>**Last Updated: 2026-06-22</p>
+<p>**Last Updated: 2026-07-16</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>The Cognitive Codex App is a quantum-enhanced code generation platform with real-time cognitive brain visualization, built with React, TypeScript, and Vite.</p>
 <h2 id="quick-links">Quick Links<a class="headerlink" href="#quick-links" title="Permanent link">¶</a></h2>
@@ -2931,7 +2931,7 @@
 - <strong>Custom Token Creation</strong> - 4-step wizard for custom workflows
 - <strong>Dependency Management</strong> - DAG-based auto-execution
 - <strong>Cascading Execution</strong> - Real-time cascade monitoring with waterfall visualization</p>
-<h3 id="memory-management">💾 Memory Management<a class="headerlink" href="#memory-management" title="Permanent link">¶</a></h3>
+<h3 id="memory-management">Memory Management<a class="headerlink" href="#memory-management" title="Permanent link">¶</a></h3>
 <p>Hippocampus-cortex inspired memory system:
 - <strong>Short-Term Memory (STM)</strong> - Quick access for recent interactions
 - <strong>Long-Term Memory (LTM)</strong> - Compressed pattern storage
@@ -2939,7 +2939,7 @@
 - <strong>32% Cache Hit Rate</strong> - Efficient retrieval
 - <strong>Pattern Library</strong> - Reusable decision patterns
 - <strong>Memory Search</strong> - Full-text search across memories</p>
-<h3 id="code-generation">💻 Code Generation<a class="headerlink" href="#code-generation" title="Permanent link">¶</a></h3>
+<h3 id="code-generation">Code Generation<a class="headerlink" href="#code-generation" title="Permanent link">¶</a></h3>
 <p>Natural language to code:
 - <strong>Monaco Editor Integration</strong> - Syntax highlighting
 - <strong>Real-time Metrics</strong> - Complexity, quality scores
@@ -2966,12 +2966,12 @@
 <h3 id="backend-integration-planned">Backend Integration (Planned)<a class="headerlink" href="#backend-integration-planned" title="Permanent link">¶</a></h3>
 <p>The application is designed to connect to a FastAPI backend:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>services/api/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── main.py                # FastAPI app
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── cognitive_api.py       # Quantum decision endpoints
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── agents_api.py          # Agent orchestration
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── memory_api.py          # Memory management
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>├── code_api.py            # Code analysis
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>└── websocket_manager.py   # Real-time updates
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> main.py # FastAPI app
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> cognitive_api.py # Quantum decision endpoints
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> agents_api.py # Agent orchestration
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> memory_api.py # Memory management
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> code_api.py # Code analysis
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> websocket_manager.py # Real-time updates
 </code></pre></div>
 <p><strong>Current Status:</strong> Frontend uses mock API client for development. Backend implementation pending.</p>
 <h2 id="component-library">Component Library<a class="headerlink" href="#component-library" title="Permanent link">¶</a></h2>
@@ -3041,7 +3041,7 @@
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nx">base</span><span class="o">:</span><span class="w"> </span><span class="kt">process.env.GITHUB_ACTIONS</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'/_codex_/cognitive_app/'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'/'</span>
 </code></pre></div>
 <h3 id="environment-variables-future">Environment Variables (Future)<a class="headerlink" href="#environment-variables-future" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nv">VITE_CODEX_KEY</span><span class="o">=</span>demo-key<span class="w">               </span><span class="c1"># API key</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nv">VITE_CODEX_KEY</span><span class="o">=</span>demo-key<span class="w"> </span><span class="c1"># API key</span>
 </code></pre></div>
 <h2 id="implementation-status">Implementation Status<a class="headerlink" href="#implementation-status" title="Permanent link">¶</a></h2>
 <p><strong>Overall: 95% Complete</strong></p>
@@ -3054,7 +3054,7 @@
 - All code components (3)
 - Component documentation
 - Build and deployment configuration</p>
-<p>️ <strong>In Progress:</strong>
+<p><strong>In Progress:</strong>
 - Backend API implementation (0%)
 - Enhanced code pipeline (30%)
 - WebSocket real-time updates (0%)</p>
@@ -3132,6 +3132,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,17 +1,17 @@
-# [Wave 3]: Split-Brain Convergence & Canonical Imports (v0.2.1)
+# [Wave 3]: Split-Brain Convergence & Canonical Imports (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
- Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5  
-⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
+ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
+ Physics: Path Fields Patterns Redundancy Balance
 
 ---
 
 ## Executive Summary
 
-**Issue**: Split-brain architecture discovered across root `training/`, `tokenization/` and `src/training/`, `src/tokenization/` led to broken refactors in v0.2.1. Refactored imports targeting `src.*` modules that didn't exist caused potential runtime failures.
+**Issue**: Split-brain architecture discovered across root `training/`, `tokenization/` and `src/training/`, `src/tokenization/` led to broken refactors in v0.2.0. Refactored imports targeting `src.*` modules that didn't exist caused potential runtime failures.
 
 **Action**: Introduce canonical `src.*` import shims that forward to legacy modules to preserve runtime while enabling continued migration toward consolidated architecture.
 
@@ -21,27 +21,27 @@
 
 ## Background: The Split-Brain Architecture
 
-### Discovery (v0.2.1 Post-Refactor Analysis)
+### Discovery (v0.2.0 Post-Refactor Analysis)
 
-During v0.2.1 refactoring (99 → 42 legacy imports, 57.6% reduction), code review identified:
+During v0.2.0 refactoring (99 42 legacy imports, 57.6% reduction), code review identified:
 
 1. **Root `training/` contains**:
-   - `engine_hf_trainer.py` 
-   - `functional_training.py` 
-   - `checkpoint_manager.py` 
-   - `data_utils.py` 
-   - `config.py` 
-   - Other actual implementation modules
+ - `engine_hf_trainer.py`
+ - `functional_training.py`
+ - `checkpoint_manager.py`
+ - `data_utils.py`
+ - `config.py`
+ - Other actual implementation modules
 
 2. **`src/training/` contains**:
-   - `trainer.py` 
-   - `simple_trainer.py` 
-   - `checkpointing.py` 
-   - DIFFERENT set of modules
+ - `trainer.py`
+ - `simple_trainer.py`
+ - `checkpointing.py`
+ - DIFFERENT set of modules
 
 3. **Root `training/__init__.py`**:
-   - Compatibility shim importing FROM `src.training.trainer`
-   - Only covers a subset of modules
+ - Compatibility shim importing FROM `src.training.trainer`
+ - Only covers a subset of modules
 
 ### Problem
 
@@ -53,12 +53,12 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 
 | Option | Description | Risk | Path to 99% | Status |
 |--------|-------------|------|-------------|--------|
-| **A (Recommended)** | Keep `src.*` as canonical; add shims forwarding to legacy modules now; subsequently move legacy modules into `src/` | Low | After shim validation, move files and remove shims |  **CHOSEN** |
+| **A (Recommended)** | Keep `src.*` as canonical; add shims forwarding to legacy modules now; subsequently move legacy modules into `src/` | Low | After shim validation, move files and remove shims | **CHOSEN** |
 | B | Expand legacy root shims to re-export from `src.*` forever | Medium (technical debt) | Accept debt; codify policy in docs | Deferred |
 | C | Revert refactors; keep root as canonical | Medium/High (rework) | Contradicts convergence plan | Rejected |
 
 **Rationale for Option A**:
-- Preserves v0.2.1 refactoring work (57 occurrences eliminated)
+- Preserves v0.2.0 refactoring work (57 occurrences eliminated)
 - No runtime breakage (shims bridge the gap)
 - Clear path to full consolidation (move + remove shims)
 - Maintains momentum toward 99% readiness
@@ -72,14 +72,14 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 Created forwarding modules in `src/training/` and `src/tokenization/`:
 
 **Training Shims**:
-- `src/training/engine_hf_trainer.py` → `training.engine_hf_trainer`
-- `src/training/functional_training.py` → `training.functional_training`
-- `src/training/data_utils.py` → `training.data_utils`
-- `src/training/checkpoint_manager.py` → `training.checkpoint_manager`
-- `src/training/config.py` → `training.config`
+- `src/training/engine_hf_trainer.py` `training.engine_hf_trainer`
+- `src/training/functional_training.py` `training.functional_training`
+- `src/training/data_utils.py` `training.data_utils`
+- `src/training/checkpoint_manager.py` `training.checkpoint_manager`
+- `src/training/config.py` `training.config`
 
 **Tokenization Shims**:
-- `src/tokenization/train_tokenizer.py` → `tokenization.train_tokenizer`
+- `src/tokenization/train_tokenizer.py` `tokenization.train_tokenizer`
 
 ### Shim Pattern
 
@@ -129,8 +129,8 @@ python scripts/remediation/analyze_legacy_usage.py
 
 # Regression diff
 python scripts/space_traversal/audit_runner.py diff \
-  --old audit_artifacts/baselines/capabilities_scored.json \
-  --new audit_artifacts/capabilities_scored.json || true
+ --old audit_artifacts/baselines/capabilities_scored.json \
+ --new audit_artifacts/capabilities_scored.json || true
 
 # Shim tests
 pytest -q tests/validation/test_import_shims.py tests/validation/
@@ -159,7 +159,7 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 
 ### Pipeline Validation
 - [ ] S1-S7 audit pipeline completes successfully
-- [ ] Determinism PASS (2 runs → identical normalized output)
+- [ ] Determinism PASS (2 runs identical normalized output)
 - [ ] `verify_conflicts.py` shows no hydra/yaml shadowing
 - [ ] Split-brain warning acknowledged (informative, not blocking)
 
@@ -173,17 +173,17 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 - [ ] Wave3 convergence document complete
 - [ ] Convergence plan aligns to Option A timeline
 - [ ] Rollback procedures documented
-- [ ] Next iteration prompt generated (v0.2.1)
+- [ ] Next iteration prompt generated (v0.2.0)
 
 ---
 
 ## Impact on Production Readiness
 
-### Before (v0.2.1)
+### Before (v0.2.0)
 - **75% ready**: Infrastructure complete, refactoring done but broken
 - **Blocker**: Runtime import failures expected
 
-### After (v0.2.1)
+### After (v0.2.0)
 - **≥85% ready**: Shims resolve imports, system operational
 - **Path to 99%**: Clear roadmap via file consolidation
 
@@ -195,7 +195,7 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 
 ---
 
-## Next Steps (v0.2.1)
+## Next Steps (v0.2.0)
 
 ### Phase 1: File Consolidation (Optional)
 
@@ -264,15 +264,15 @@ git checkout <commit-before-shims> -- src/training/ src/tokenization/ tests/vali
 **Before Shims**:
 ```python
 from src.training.engine_hf_trainer import run_hf_trainer
-# → ModuleNotFoundError: No module named 'src.training.engine_hf_trainer'
+# ModuleNotFoundError: No module named 'src.training.engine_hf_trainer'
 ```
 
 **After Shims**:
 ```python
 from src.training.engine_hf_trainer import run_hf_trainer
-# → src/training/engine_hf_trainer.py loads
-# → Shim imports training.engine_hf_trainer
-# → run_hf_trainer is available 
+# src/training/engine_hf_trainer.py loads
+# Shim imports training.engine_hf_trainer
+# run_hf_trainer is available 
 ```
 
 ## Shim Overhead
@@ -286,17 +286,17 @@ from src.training.engine_hf_trainer import run_hf_trainer
 
 ## Conclusion
 
-Wave 3 successfully resolves the split-brain architecture issue identified in v0.2.1 through canonical `src.*` import shims. This approach:
--  Preserves all v0.2.1 refactoring work
--  Eliminates runtime import failures
--  Maintains clear path to full consolidation
--  Raises production readiness to ≥85%
+Wave 3 successfully resolves the split-brain architecture issue identified in v0.2.0 through canonical `src.*` import shims. This approach:
+- Preserves all v0.2.0 refactoring work
+- Eliminates runtime import failures
+- Maintains clear path to full consolidation
+- Raises production readiness to ≥85%
 
-The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v0.2.1.
+The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v0.2.0.
 
 ---
 
-**Document Version**: 1.0  
-**Status**: Active  
-**Next Review**: After v0.2.1 file consolidation  
+**Document Version**: 1.0
+**Status**: Active
+**Next Review**: After v0.2.0 file consolidation
 **Maintainer**: @mbaetiong

@@ -297,6 +297,46 @@ def _pydantic_available() -> bool:
     return importlib.util.find_spec("pydantic") is not None
 
 
+@pytest.fixture(scope="session", autouse=True)
+def _fix_torch_stubs_for_cli_tests():
+    """Replace torch stubs with real torch for CLI subprocess tests.
+    
+    This fixture ensures that when CLI commands spawn subprocesses,
+    they don't load torch stubs. This is needed for tests like
+    test_evaluate_cli.py which run CLI subprocesses that import torch modules.
+    """
+    import sys
+    
+    # Check if torch is a stub
+    torch_mod = sys.modules.get("torch")
+    if torch_mod is None:
+        return
+    
+    is_stub = getattr(torch_mod, "__version__", "").endswith("stub")
+    if not is_stub:
+        return
+    
+    # Try to replace stub with real torch
+    try:
+        from pathlib import Path
+        site_packages = (
+            Path(sys.executable).resolve().parent.parent
+            / f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages"
+        )
+        if site_packages.exists() and str(site_packages) not in sys.path:
+            sys.path.insert(0, str(site_packages))
+        
+        # Remove stub and reimport real torch
+        for mod_name in list(sys.modules.keys()):
+            if mod_name.startswith("torch"):
+                del sys.modules[mod_name]
+        
+        importlib.import_module("torch")
+    except Exception:
+        # If real torch not available, just continue with stub
+        pass
+
+
 collect_ignore: list[str] = []
 collect_ignore_glob: list[str] = []
 

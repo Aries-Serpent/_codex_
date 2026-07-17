@@ -1,10 +1,10 @@
-# [Doc]: Copilot Space Traversal Workflow (v0.2.1)
+# [Doc]: Copilot Space Traversal Workflow (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
- Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor]  Energy: 5
+ Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor] Energy: 5
 
 ## 1. Objective
 Codify a reproducible, explainable capability maturity assessment pipeline with deterministic outputs.
@@ -12,19 +12,19 @@ Codify a reproducible, explainable capability maturity assessment pipeline with 
 ## 2. Flow (Conceptual)
 ```text
 FILES
-  ↓ (S1 Index: enumerate + hash)
+ (S1 Index: enumerate + hash)
 FACETS
-  ↓ (S2 Regex cluster)
+ (S2 Regex cluster)
 CAPABILITIES_RAW
-  ↓ (S3 Static + dynamic detectors)
+ (S3 Static + dynamic detectors)
 CAPABILITIES_SCORED
-  ↓ (S4 Component weighting)
+ (S4 Component weighting)
 GAPS
-  ↓ (S5 Threshold segmentation)
+ (S5 Threshold segmentation)
 REPORT (Markdown)
-  ↓ (S6 Jinja rendering)
+ (S6 Jinja rendering)
 MANIFEST
-  ↓ (S7 Integrity chain)
+ (S7 Integrity chain)
 ```text
 
 ## 3. Component Score Formula
@@ -65,7 +65,7 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 | Sorted traversal | Use `sorted(Path.rglob())` |
 | Read truncation | Cap file read length (200KB) |
 | Hash chain | Manifest collects per-artifact SHA |
-| Template fingerprint | Concatenate `.j2` files → SHA |
+| Template fingerprint | Concatenate `.j2` files SHA |
 | Weight normalization | Auto-correct + record warning |
 
 ## 8. Diff Usage
@@ -93,20 +93,20 @@ Outputs component contributions + normalized weights.
 ## 11. Manifest Anatomy (Excerpt)
 ```json
 {
-  "repo_root_sha": "<sha>",
-  "artifacts": [
-    {"name": "context_index.json", "sha": "<sha>"},
-    {"name": "capabilities_scored.json", "sha": "<sha>"}
-  ],
-  "template_hash": "<sha>",
-  "weights": {
-    "functionality": 0.25,
-    "consistency": 0.2,
-    "tests": 0.25,
-    "safeguards": 0.15,
-    "documentation": 0.15
-  },
-  "warnings": []
+ "repo_root_sha": "<sha>",
+ "artifacts": [
+ {"name": "context_index.json", "sha": "<sha>"},
+ {"name": "capabilities_scored.json", "sha": "<sha>"}
+ ],
+ "template_hash": "<sha>",
+ "weights": {
+ "functionality": 0.25,
+ "consistency": 0.2,
+ "tests": 0.25,
+ "safeguards": 0.15,
+ "documentation": 0.15
+ },
+ "warnings": []
 }
 ```text
 
@@ -146,17 +146,17 @@ rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
 ## 16. Sample Capability Entry (Post-Scoring)
 ```json
 {
-  "id": "logging-tracking",
-  "components": {
-    "functionality": 0.88,
-    "consistency": 0.70,
-    "tests": 0.55,
-    "safeguards": 0.50,
-    "documentation": 0.60
-  },
-  "score": 0.676,
-  "found_patterns": ["log","mlflow"],
-  "evidence_files": ["src/.../tracking.py", "..."]
+ "id": "logging-tracking",
+ "components": {
+ "functionality": 0.88,
+ "consistency": 0.70,
+ "tests": 0.55,
+ "safeguards": 0.50,
+ "documentation": 0.60
+ },
+ "score": 0.676,
+ "found_patterns": ["log","mlflow"],
+ "evidence_files": ["src/.../tracking.py", "..."]
 }
 ```text
 
@@ -164,22 +164,22 @@ rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
 ### A. Detector Template Stub
 ```python
 def detect(file_index: dict) -> dict:
-    paths = [f["path"] for f in file_index["files"] if f["path"].endswith(".py")]
-    evidence = [p for p in paths if "serve" in p.lower()]
-    found = []
-    required = ["serve", "fastapi"]
-    # simplistic pattern detection
-    for p in evidence:
-        # lazy load text if needed (future improvement)
-        if any(tok in p.lower() for tok in required):
-            found.append("serve")
-    return {
-        "id": "inference-serving",
-        "evidence_files": evidence,
-        "found_patterns": sorted(set(found)),
-        "required_patterns": required,
-        "meta": {"layer": "serving"}
-    }
+ paths = [f["path"] for f in file_index["files"] if f["path"].endswith(".py")]
+ evidence = [p for p in paths if "serve" in p.lower()]
+ found = []
+ required = ["serve", "fastapi"]
+ # simplistic pattern detection
+ for p in evidence:
+ # lazy load text if needed (future improvement)
+ if any(tok in p.lower() for tok in required):
+ found.append("serve")
+ return {
+ "id": "inference-serving",
+ "evidence_files": evidence,
+ "found_patterns": sorted(set(found)),
+ "required_patterns": required,
+ "meta": {"layer": "serving"}
+ }
 ```
 
 ## 18. MCP-Aware Audit Overview (Pointer)
@@ -188,7 +188,7 @@ For a full MCP-oriented description of S1–S7, scoring, and gaps:
 - See `MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md` (Sections A & E) and `MCP_IMPLEMENTATION_SUMMARY.md`.
 
 In summary, the MCP audit uses the same deterministic pipeline:
-- S1–S7 unchanged (index → facets → capabilities → scoring → gaps → render → manifest).
+- S1–S7 unchanged (index facets capabilities scoring gaps render manifest).
 - MCP capabilities (e.g., `mcp-protocol-surface`, `mcp-schema-validation`, `mcp-rate-limiting`) are just **additional capabilities** produced at S3 and scored at S4.
 - New MCP-specific detectors under `scripts/space_traversal/detectors/` (9 files: `mcp_*.py`).
 - New MCP core modules under `mcp/` package (registry, auth, rate_limit, errors, versioning).

@@ -1,5 +1,5 @@
 # Documentation Hub
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
 
@@ -10,7 +10,7 @@
 ## Cognitive Brain (Start Here for AI Agents)
 
 ### **Unified Navigation System**
-- ️ **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
+- **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
 - **[Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
 - **[Roadmap](./ROADMAP.md)** - Iteration plans, priorities, future scope
 
@@ -32,7 +32,7 @@ The cognitive brain enables:
 
 ### Core Documentation
 - **[Architecture](./architecture/INDEX.md)** - Detailed technical architecture
-- 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
+- **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
 - **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
 - **[API Reference](api/index.md)** - Complete API documentation
 - **[Getting Started](guides/quickstart.md)** - Quick start guide
@@ -44,18 +44,18 @@ The cognitive brain enables:
 - **[Packaging Guide](mcp/PACKAGING_GUIDE.md)** - Complete packaging workflows
 - **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
 - **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
-- 🧭 **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
+- **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
 - **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap
 
 ### Capability Guides
 - **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
-- ️ **[Training Loops](capabilities/train_loop.md)** - Production training patterns
+- **[Training Loops](capabilities/train_loop.md)** - Production training patterns
 - **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
 - **[Code Quality](capabilities/code_quality_tooling.md)** - Complete quality stack
 
 ---
 
-## 🧭 Orientation Pillars
+## Orientation Pillars
 
 - **Reasoning roadmap** — Track milestone health and forward-looking bets in README_ROOT.md.
 - **Architecture** — Pair [`diagrams/architecture.svg`](./diagrams/architecture.svg) with the systems notes in [`guides/reasoning_overview.md`](./guides/reasoning_overview.md).
@@ -91,7 +91,7 @@ Operational templates encode recurring delivery rituals so teams can execute mig
 - [Planning — Intent Validation](./templates/Planning_IntentValidation.md)
 
 ### Handoff Checklist
-Each template includes role guidance (developers draft → maintainers execute), `[PLACEHOLDER: …]` prompts, and success criteria aligned with the coverage standard. Ensure the following before requesting review:
+Each template includes role guidance (developers draft maintainers execute), `[PLACEHOLDER: …]` prompts, and success criteria aligned with the coverage standard. Ensure the following before requesting review:
 
 1. All placeholders are replaced with repo-specific context and linked artifacts.
 2. Rollback and communication steps point to real runbooks or dashboards.

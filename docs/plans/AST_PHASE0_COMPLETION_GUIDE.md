@@ -1,66 +1,66 @@
 # Phase 0: AST Implementation - Complete Guidance & Readiness Assessment
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 
 ## Table of Contents
 
 - [ Executive Summary: Phase 0 Completion Status](#-executive-summary-phase-0-completion-status)
-  - [Current State Assessment (2025-11-10 12:51:49 UTC)](#current-state-assessment-2025-11-10-125149-utc)
+ - [Current State Assessment (2025-11-10 12:51:49 UTC)](#current-state-assessment-2025-11-10-125149-utc)
 - [Part 1: Phase 0 Completion Checklist (Pre-Phase 1)](#part-1-phase-0-completion-checklist-pre-phase-1)
-  - [Go/No-Go Gate Requirements](#gono-go-gate-requirements)
-  - [Phase 0 Critical Path (5 iterations to Gate Decision)](#phase-0-critical-path-5-iterations-to-gate-decision)
+ - [Go/No-Go Gate Requirements](#gono-go-gate-requirements)
+ - [Phase 0 Critical Path (5 iterations to Gate Decision)](#phase-0-critical-path-5-iterations-to-gate-decision)
 - [Part 2: Phase 0 Deliverables Summary](#part-2-phase-0-deliverables-summary)
-  - [Research & Planning Documents (13 Total)](#research--planning-documents-13-total)
+ - [Research & Planning Documents (13 Total)](#research--planning-documents-13-total)
 - [Part 3: Deep Research Findings Summary](#part-3-deep-research-findings-summary)
-  - [Blocker Resolution Matrix (46 Total Blockers)](#blocker-resolution-matrix-46-total-blockers)
-    - [Critical Blockers (15) - With Recommended Solutions](#critical-blockers-15---with-recommended-solutions)
-    - [Implementation Issues (23 Total)](#implementation-issues-23-total)
-    - [Architectural Challenges (8 Total)](#architectural-challenges-8-total)
+ - [Blocker Resolution Matrix (46 Total Blockers)](#blocker-resolution-matrix-46-total-blockers)
+ - [Critical Blockers (15) - With Recommended Solutions](#critical-blockers-15---with-recommended-solutions)
+ - [Implementation Issues (23 Total)](#implementation-issues-23-total)
+ - [Architectural Challenges (8 Total)](#architectural-challenges-8-total)
 - [Part 4: Phase 1 Full Implementation Context](#part-4-phase-1-full-implementation-context)
-  - [Phase 1: Quick Wins (5 iterations) - Complete Specification](#phase-1-quick-wins-5-iterations---complete-specification)
-    - [Task 1: Add Core Dependencies (0.5 iterations)](#task-1-add-core-dependencies-05-iterations)
-    - [Task 2: Create StandardizedASTNode Dataclass (1 iteration)](#task-2-create-standardizedastnode-dataclass-1-iteration)
-    - [Task 3: Implement DependencyGraph (1 iteration)](#task-3-implement-dependencygraph-1-iteration)
-    - [Task 4: Create MetricsAggregator (0.5 iterations)](#task-4-create-metricsaggregator-05-iterations)
-    - [Tasks 5-8: Test Suite, Documentation, CLI, Pre-commit (2 iterations)](#tasks-5-8-test-suite-documentation-cli-pre-commit-2-iterations)
+ - [Phase 1: Quick Wins (5 iterations) - Complete Specification](#phase-1-quick-wins-5-iterations---complete-specification)
+ - [Task 1: Add Core Dependencies (0.5 iterations)](#task-1-add-core-dependencies-05-iterations)
+ - [Task 2: Create StandardizedASTNode Dataclass (1 iteration)](#task-2-create-standardizedastnode-dataclass-1-iteration)
+ - [Task 3: Implement DependencyGraph (1 iteration)](#task-3-implement-dependencygraph-1-iteration)
+ - [Task 4: Create MetricsAggregator (0.5 iterations)](#task-4-create-metricsaggregator-05-iterations)
+ - [Tasks 5-8: Test Suite, Documentation, CLI, Pre-commit (2 iterations)](#tasks-5-8-test-suite-documentation-cli-pre-commit-2-iterations)
 - [Part 5: Phase 0 Completion Timeline](#part-5-phase-0-completion-timeline)
-  - [Days 1-2: Stakeholder Alignment](#days-1-2-stakeholder-alignment)
-  - [Days 3-4: Final Readiness Check (If Approved)](#days-3-4-final-readiness-check-if-approved)
-  - [Day 5: Official Go/No-Go Gate](#day-5-official-gono-go-gate)
+ - [Days 1-2: Stakeholder Alignment](#days-1-2-stakeholder-alignment)
+ - [Days 3-4: Final Readiness Check (If Approved)](#days-3-4-final-readiness-check-if-approved)
+ - [Day 5: Official Go/No-Go Gate](#day-5-official-gono-go-gate)
 - [Part 6: Phase 0 Success Criteria](#part-6-phase-0-success-criteria)
 - [Phase 0 Final Recommendation](#phase-0-final-recommendation)
-  - [ RECOMMEND: Proceed with Phase 1 (5 iteration Quick Wins)](#-recommend-proceed-with-phase-1-5-iteration-quick-wins)
-  - [ DEFER: Phase 2-3 to Dedicated Project](#-defer-phase-2-3-to-dedicated-project)
+ - [ RECOMMEND: Proceed with Phase 1 (5 iteration Quick Wins)](#-recommend-proceed-with-phase-1-5-iteration-quick-wins)
+ - [ DEFER: Phase 2-3 to Dedicated Project](#-defer-phase-2-3-to-dedicated-project)
 - [Phase 1: AST Implementation Quick Wins - Complete Specification](#phase-1-ast-implementation-quick-wins---complete-specification)
 - [ Phase 1 Executive Summary](#-phase-1-executive-summary)
 - [Part 1: per-iteration Implementation Schedule](#part-1-per-iteration-implementation-schedule)
-  - [Day 1: Dependencies + Foundation (1 iteration)](#day-1-dependencies--foundation-1-iteration)
-  - [Day 2: Graph + Metrics (1 iteration)](#day-2-graph--metrics-1-iteration)
-  - [Day 3: Testing (1 iteration)](#day-3-testing-1-iteration)
-  - [Day 4: CLI + Documentation (1 iteration)](#day-4-cli--documentation-1-iteration)
-  - [Day 5: Validation + Integration (1 iteration)](#day-5-validation--integration-1-iteration)
+ - [Day 1: Dependencies + Foundation (1 iteration)](#day-1-dependencies--foundation-1-iteration)
+ - [Day 2: Graph + Metrics (1 iteration)](#day-2-graph--metrics-1-iteration)
+ - [Day 3: Testing (1 iteration)](#day-3-testing-1-iteration)
+ - [Day 4: CLI + Documentation (1 iteration)](#day-4-cli--documentation-1-iteration)
+ - [Day 5: Validation + Integration (1 iteration)](#day-5-validation--integration-1-iteration)
 - [Part 2: Complete Code Implementation](#part-2-complete-code-implementation)
-  - [Module 1: `src/codex/ast/__init__.py` (NEW)](#module-1-srccodexast__init__py-new)
-  - [Module 2: `src/codex/ast/node.py` (COMPLETE - SEE ABOVE)](#module-2-srccodexastnodepy-complete---see-above)
-  - [Module 3: `src/codex/ast/graph.py` (COMPLETE - SEE ABOVE)](#module-3-srccodexastgraphpy-complete---see-above)
-  - [Module 4: `src/codex/ast/metrics.py` (COMPLETE - SEE ABOVE)](#module-4-srccodexastmetricspy-complete---see-above)
-  - [Module 5: `src/codex/ast/cli.py` (NEW)](#module-5-srccodexastclipy-new)
-  - [Test Files](#test-files)
+ - [Module 1: `src/codex/ast/__init__.py` (NEW)](#module-1-srccodexast__init__py-new)
+ - [Module 2: `src/codex/ast/node.py` (COMPLETE - SEE ABOVE)](#module-2-srccodexastnodepy-complete---see-above)
+ - [Module 3: `src/codex/ast/graph.py` (COMPLETE - SEE ABOVE)](#module-3-srccodexastgraphpy-complete---see-above)
+ - [Module 4: `src/codex/ast/metrics.py` (COMPLETE - SEE ABOVE)](#module-4-srccodexastmetricspy-complete---see-above)
+ - [Module 5: `src/codex/ast/cli.py` (NEW)](#module-5-srccodexastclipy-new)
+ - [Test Files](#test-files)
 - [Part 3: Git Commit Strategy (5 Atomic Commits)](#part-3-git-commit-strategy-5-atomic-commits)
-  - [Commit 1: Dependencies](#commit-1-dependencies)
-  - [Commit 2: Foundation Modules](#commit-2-foundation-modules)
-  - [Commit 3: Comprehensive Tests](#commit-3-comprehensive-tests)
-  - [Commit 4: CLI + Documentation](#commit-4-cli--documentation)
-  - [Commit 5: Validation Report](#commit-5-validation-report)
+ - [Commit 1: Dependencies](#commit-1-dependencies)
+ - [Commit 2: Foundation Modules](#commit-2-foundation-modules)
+ - [Commit 3: Comprehensive Tests](#commit-3-comprehensive-tests)
+ - [Commit 4: CLI + Documentation](#commit-4-cli--documentation)
+ - [Commit 5: Validation Report](#commit-5-validation-report)
 - [Part 4: Verification Checklist](#part-4-verification-checklist)
-  - [iteration-by-iteration Verification](#iteration-by-iteration-verification)
+ - [iteration-by-iteration Verification](#iteration-by-iteration-verification)
 - [Part 5: Success Criteria (Must All Be TRUE)](#part-5-success-criteria-must-all-be-true)
-  - [Functional Criteria](#functional-criteria)
-  - [Quality Criteria](#quality-criteria)
-  - [Process Criteria](#process-criteria)
+ - [Functional Criteria](#functional-criteria)
+ - [Quality Criteria](#quality-criteria)
+ - [Process Criteria](#process-criteria)
 - [Part 6: Post-Phase 1 Next Steps](#part-6-post-phase-1-next-steps)
-  - [Immediately After Phase 1 Completion (Day 6)](#immediately-after-phase-1-completion-day-6)
-  - [Success Metrics Review](#success-metrics-review)
+ - [Immediately After Phase 1 Completion (Day 6)](#immediately-after-phase-1-completion-day-6)
+ - [Success Metrics Review](#success-metrics-review)
 - [AST Standardization Project: Stakeholder Approval & Governance Framework (Single Copilot Pro+ Seat)](#ast-standardization-project-stakeholder-approval--governance-framework-single-copilot-pro-seat)
 - [Generated: 2026-06-22 (audited) | Author: mbaetiong](#generated-2026-06-22-audited--author-mbaetiong)
 - [Purpose: Updated governance to reflect ONLY ONE (1) GitHub Copilot Pro+ subscription as the sole cost driver.](#purpose-updated-governance-to-reflect-only-one-1-github-copilot-pro-subscription-as-the-sole-cost-driver)
@@ -99,29 +99,29 @@
 - [SECTION 10: SUMMARY & NEXT ACTIONS](#section-10-summary--next-actions)
 - [============================================================================](#)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Implementation Architect], [Secondary: Research Lead] |  Energy: 5/5
+** Roles:** [Primary: Implementation Architect], [Secondary: Research Lead] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Research → Validation → Gate → Execution] | Fields [Blocker pools, solution references] | Patterns️ [Best-fit extraction, pattern synthesis] | Redundancy [Contingency strategies, fallbacks] | Balance️ [Completeness vs timeline (Phase 0 only)]
+ **Physics:** Path [Research Validation Gate Execution] | Fields [Blocker pools, solution references] | Patterns [Best-fit extraction, pattern synthesis] | Redundancy [Contingency strategies, fallbacks] | Balance [Completeness vs timeline (Phase 0 only)]
 
 ---
 
-##  Executive Summary: Phase 0 Completion Status
+## Executive Summary: Phase 0 Completion Status
 
 ### Current State Assessment (2025-11-10 12:51:49 UTC)
 
 **Maturity Improvement Progress**:
--  **Phases 1-3 Complete**: 98 tests (100% passing), 12 capabilities addressed, 75% completion
--  **AST Planning Complete**: 13 documents (4,200+ lines), 46 blockers analyzed, 25+ OSS references
--  **Phase 0 Status**: Planning complete, implementation guidance ready
--  **Phase 1-3**: Deferred (AST standardization requires dedicated project)
+- **Phases 1-3 Complete**: 98 tests (100% passing), 12 capabilities addressed, 75% completion
+- **AST Planning Complete**: 13 documents (4,200+ lines), 46 blockers analyzed, 25+ OSS references
+- **Phase 0 Status**: Planning complete, implementation guidance ready
+- **Phase 1-3**: Deferred (AST standardization requires dedicated project)
 
 **Key Metrics**:
-- Test coverage improvement: 0.00-0.31 → 0.70+ (average 17x improvement)
+- Test coverage improvement: 0.00-0.31 0.70+ (average 17x improvement)
 - Documentation created: 13 documents (3,900+ lines total)
 - Blockers identified: 46 (15 critical, 23 issues, 8 challenges)
 - OSS references: 25+ validated implementations
@@ -154,28 +154,28 @@
 
 ```text
 Day 1-2: Stakeholder Review Meeting
-  ├─ Present findings from deep research
-  ├─ Review Phase 1 Quick Wins proposal (5 iterations)
-  ├─ Address architecture questions
-  └─ Decision: Approve Phase 1 or defer
+ Present findings from deep research
+ Review Phase 1 Quick Wins proposal (5 iterations)
+ Address architecture questions
+ Decision: Approve Phase 1 or defer
 
 Day 3: Architecture Review (if needed)
-  ├─ Deep dive on StandardizedASTNode design
-  ├─ Review DependencyGraph algorithm
-  ├─ Validate performance assumptions
-  └─ Consensus on implementation approach
+ Deep dive on StandardizedASTNode design
+ Review DependencyGraph algorithm
+ Validate performance assumptions
+ Consensus on implementation approach
 
 Day 4: Resource Planning
-  ├─ Allocate team for Phase 1 (1-2 developers)
-  ├─ Schedule 5 iteration implementation window
-  ├─ Plan testing/review cycles
-  └─ Confirm timeline feasibility
+ Allocate team for Phase 1 (1-2 developers)
+ Schedule 5 iteration implementation window
+ Plan testing/review cycles
+ Confirm timeline feasibility
 
 Day 5: Final Go/No-Go Decision
-  ├─ Leadership approval check
-  ├─ Risk acceptance sign-off
-  ├─ Commit resources
-  └─ Official kickoff or defer decision
+ Leadership approval check
+ Risk acceptance sign-off
+ Commit resources
+ Official kickoff or defer decision
 ```text
 
 ---
@@ -185,23 +185,23 @@ Day 5: Final Go/No-Go Decision
 ### Research & Planning Documents (13 Total)
 
 **Maturity Improvement (5 docs)**:
-1.  `MATURITY_IMPROVEMENT_PLAN.md` (750 lines) - Master 15 phase roadmap
-2.  `MATURITY_IMPLEMENTATION_SUMMARY.md` - Implementation metrics
-3.  `MATURITY_REMAINING_WORK.md` (400+ lines) - Completion status + recommendations
-4.  `IMPLEMENTATION_STATUS.md` (337 lines) - Comprehensive status report
-5.  `FINAL_COMPLETION_REPORT.md` - Final completion summary
+1. `MATURITY_IMPROVEMENT_PLAN.md` (750 lines) - Master 15 phase roadmap
+2. `MATURITY_IMPLEMENTATION_SUMMARY.md` - Implementation metrics
+3. `MATURITY_REMAINING_WORK.md` (400+ lines) - Completion status + recommendations
+4. `IMPLEMENTATION_STATUS.md` (337 lines) - Comprehensive status report
+5. `FINAL_COMPLETION_REPORT.md` - Final completion summary
 
 **AST Phase 0 Planning (7 docs)**:
-6.  `PHASE0_IMPLEMENTATION_ASSESSMENT.md` (300+ lines) - Capability analysis
-7.  `AST_DEPENDENCY_REQUIREMENTS.md` (250+ lines) - Full dependency spec
-8.  `AST_ARCHITECTURE_DESIGN.md` (600+ lines) - Complete architecture
-9.  `AST_TEST_STRATEGY.md` (250+ lines) - Testing framework
-10.  `EXISTING_AST_AUDIT.md` (400+ lines) - Code audit (10 files, 3,816 LOC)
-11.  `PHASE0_READINESS_REPORT.md` (500+ lines) - Readiness assessment
-12.  `AST_IMPLEMENTATION_BLOCKERS.md` (424 lines) - Blockers analysis
+6. `PHASE0_IMPLEMENTATION_ASSESSMENT.md` (300+ lines) - Capability analysis
+7. `AST_DEPENDENCY_REQUIREMENTS.md` (250+ lines) - Full dependency spec
+8. `AST_ARCHITECTURE_DESIGN.md` (600+ lines) - Complete architecture
+9. `AST_TEST_STRATEGY.md` (250+ lines) - Testing framework
+10. `EXISTING_AST_AUDIT.md` (400+ lines) - Code audit (10 files, 3,816 LOC)
+11. `PHASE0_READINESS_REPORT.md` (500+ lines) - Readiness assessment
+12. `AST_IMPLEMENTATION_BLOCKERS.md` (424 lines) - Blockers analysis
 
 **AST Engineering (1 doc)**:
-13.  `AST_ENGINEERING_PROJECT_GUIDE.md` (489 lines) - 9 tables, complete guidance
+13. `AST_ENGINEERING_PROJECT_GUIDE.md` (489 lines) - 9 tables, complete guidance
 
 **TOTAL**: 4,200+ lines of planning documentation, zero risk (docs only)
 
@@ -215,52 +215,52 @@ Day 5: Final Go/No-Go Decision
 
 | Category | Blocker ID | Problem | Ideal Solution | OSS Reference | Status |
 |----------|-----------|---------|----------------|----------------|--------|
-| **Dependencies (5)** | BLOCK-DEP-001 | libcst not core | Add to pyproject.toml | [libcst PyPI](https://pypi.org/project/libcst/) |  Ready |
-| | BLOCK-DEP-002 | tree-sitter missing | Install language grammars | [tree-sitter](https://github.com/tree-sitter/py-tree-sitter) |  Ready |
-| | BLOCK-DEP-003 | radon missing | Add to core deps | [radon PyPI](https://pypi.org/project/radon/) |  Ready |
-| | BLOCK-DEP-004 | parso not core | Move to core | [parso PyPI](https://pypi.org/project/parso/) |  Ready |
-| | BLOCK-DEP-005 | SQLite not configured | Design schema + manager | [SQLite best practices](https://www.sqlite.org/bestpractice.html) |  Ready |
-| **Architecture (5)** | BLOCK-ARCH-001 | No StandardizedAST | Create dataclass hierarchy | [libcst node design](https://libcst.readthedocs.io/) |  Ready |
-| | BLOCK-ARCH-002 | No dependency graph | Implement Tarjan's SCC | [NetworkX SCC](https://github.com/networkx/networkx) |  Ready |
-| | BLOCK-ARCH-003 | No metrics layer | Design aggregator | [pandas agg](https://pandas.pydata.org/) |  Ready |
-| | BLOCK-ARCH-004 | No incremental analysis | Design baseline storage | [deepdiff](https://github.com/seperman/deepdiff) |  Ready |
-| | BLOCK-ARCH-005 | No plugin system | Simplified registry pattern | [Pytest plugins](https://docs.pytest.org/en/latest/how-to-write-and-share-plugins.html) |  Ready |
-| **Performance (3)** | BLOCK-PERF-001 | No baseline | Create benchmark suite | [pytest-benchmark](https://pytest-benchmark.readthedocs.io/) |  Ready |
-| | BLOCK-PERF-002 | No streaming | Implement chunked parser | [libcst streaming](https://libcst.readthedocs.io/) |  Ready |
-| | BLOCK-PERF-003 | No parallel | Add ProcessPoolExecutor | [concurrent.futures](https://docs.python.org/3/library/concurrent.futures.html) |  Ready |
-| **Testing (2)** | ISSUE-TEST-001 | No fixtures | Create test fixtures | [pytest fixtures](https://docs.pytest.org/en/latest/how-to/fixtures.html) |  Ready |
-| | ISSUE-DOC-001 | No API docs | Generate with Sphinx | [Sphinx](https://www.sphinx-doc.org/) |  Ready |
+| **Dependencies (5)** | BLOCK-DEP-001 | libcst not core | Add to pyproject.toml | [libcst PyPI](https://pypi.org/project/libcst/) | Ready |
+| | BLOCK-DEP-002 | tree-sitter missing | Install language grammars | [tree-sitter](https://github.com/tree-sitter/py-tree-sitter) | Ready |
+| | BLOCK-DEP-003 | radon missing | Add to core deps | [radon PyPI](https://pypi.org/project/radon/) | Ready |
+| | BLOCK-DEP-004 | parso not core | Move to core | [parso PyPI](https://pypi.org/project/parso/) | Ready |
+| | BLOCK-DEP-005 | SQLite not configured | Design schema + manager | [SQLite best practices](https://www.sqlite.org/bestpractice.html) | Ready |
+| **Architecture (5)** | BLOCK-ARCH-001 | No StandardizedAST | Create dataclass hierarchy | [libcst node design](https://libcst.readthedocs.io/) | Ready |
+| | BLOCK-ARCH-002 | No dependency graph | Implement Tarjan's SCC | [NetworkX SCC](https://github.com/networkx/networkx) | Ready |
+| | BLOCK-ARCH-003 | No metrics layer | Design aggregator | [pandas agg](https://pandas.pydata.org/) | Ready |
+| | BLOCK-ARCH-004 | No incremental analysis | Design baseline storage | [deepdiff](https://github.com/seperman/deepdiff) | Ready |
+| | BLOCK-ARCH-005 | No plugin system | Simplified registry pattern | [Pytest plugins](https://docs.pytest.org/en/latest/how-to-write-and-share-plugins.html) | Ready |
+| **Performance (3)** | BLOCK-PERF-001 | No baseline | Create benchmark suite | [pytest-benchmark](https://pytest-benchmark.readthedocs.io/) | Ready |
+| | BLOCK-PERF-002 | No streaming | Implement chunked parser | [libcst streaming](https://libcst.readthedocs.io/) | Ready |
+| | BLOCK-PERF-003 | No parallel | Add ProcessPoolExecutor | [concurrent.futures](https://docs.python.org/3/library/concurrent.futures.html) | Ready |
+| **Testing (2)** | ISSUE-TEST-001 | No fixtures | Create test fixtures | [pytest fixtures](https://docs.pytest.org/en/latest/how-to/fixtures.html) | Ready |
+| | ISSUE-DOC-001 | No API docs | Generate with Sphinx | [Sphinx](https://www.sphinx-doc.org/) | Ready |
 
-**All 15 Critical Blockers Have Validated Solutions** 
+**All 15 Critical Blockers Have Validated Solutions**
 
 #### Implementation Issues (23 Total)
 
 | Category | Count | Key Issues | Status | Effort |
 |----------|-------|-----------|--------|--------|
-| AST usage inconsistency | 4 | 10+ files using raw ast |  Solution ready | 3 iterations |
-| Test infrastructure | 4 | Missing fixtures, benchmarks |  Solution ready | 2 iterations |
-| Documentation | 4 | Missing API docs, examples |  Solution ready | 2 iterations |
-| Integration | 4 | No CI/CD, pre-commit |  Solution ready | 2 iterations |
-| Performance | 3 | Caching, streaming needed |  Solution ready | 3 iterations |
-| Version compatibility | 2 | Python 3.8-3.12 |  Solution ready | 2 iterations |
-| Error handling | 2 | Scattered patterns |  Solution ready | 1 iteration |
+| AST usage inconsistency | 4 | 10+ files using raw ast | Solution ready | 3 iterations |
+| Test infrastructure | 4 | Missing fixtures, benchmarks | Solution ready | 2 iterations |
+| Documentation | 4 | Missing API docs, examples | Solution ready | 2 iterations |
+| Integration | 4 | No CI/CD, pre-commit | Solution ready | 2 iterations |
+| Performance | 3 | Caching, streaming needed | Solution ready | 3 iterations |
+| Version compatibility | 2 | Python 3.8-3.12 | Solution ready | 2 iterations |
+| Error handling | 2 | Scattered patterns | Solution ready | 1 iteration |
 
-**All 23 Issues Have Identified Solutions** 
+**All 23 Issues Have Identified Solutions**
 
 #### Architectural Challenges (8 Total)
 
 | Challenge ID | Challenge | Ideal Solution | Status |
 |-------------|-----------|----------------|--------|
-| ARCH-CHAL-001 | Offline-first constraint | Pre-bundle grammar files |  Ready |
-| ARCH-CHAL-002 | Python version compat | Version adapter layer |  Ready |
-| ARCH-CHAL-003 | Performance vs accuracy | Tiered analysis (fast/full) |  Ready |
-| ARCH-CHAL-004 | Plugin complexity | Simplified registry |  Ready |
-| ARCH-CHAL-005 | Cycle detection | Tarjan's SCC algorithm |  Ready |
-| ARCH-CHAL-006 | Type inference limits | Local inference only |  Ready |
-| ARCH-CHAL-007 | Code smell accuracy | Heuristic tuning |  Ready |
-| ARCH-CHAL-008 | Knowledge graph scale | Incremental updates |  Ready |
+| ARCH-CHAL-001 | Offline-first constraint | Pre-bundle grammar files | Ready |
+| ARCH-CHAL-002 | Python version compat | Version adapter layer | Ready |
+| ARCH-CHAL-003 | Performance vs accuracy | Tiered analysis (fast/full) | Ready |
+| ARCH-CHAL-004 | Plugin complexity | Simplified registry | Ready |
+| ARCH-CHAL-005 | Cycle detection | Tarjan's SCC algorithm | Ready |
+| ARCH-CHAL-006 | Type inference limits | Local inference only | Ready |
+| ARCH-CHAL-007 | Code smell accuracy | Heuristic tuning | Ready |
+| ARCH-CHAL-008 | Knowledge graph scale | Incremental updates | Ready |
 
-**All 8 Challenges Have Mitigation Strategies** 
+**All 8 Challenges Have Mitigation Strategies**
 
 ---
 
@@ -282,18 +282,18 @@ Day 5: Final Go/No-Go Decision
 ```toml
 [project]
 dependencies = [
-    # ... existing dependencies ...
-    "libcst>=1.0.0",     # Universal Python parser (MIT license)
-    "radon>=6.0.0",      # Cyclomatic complexity metrics (MIT license)
-    "parso>=0.8.0",      # Fallback parser for graceful degradation (MIT license)
+ # ... existing dependencies ...
+ "libcst>=1.0.0", # Universal Python parser (MIT license)
+ "radon>=6.0.0", # Cyclomatic complexity metrics (MIT license)
+ "parso>=0.8.0", # Fallback parser for graceful degradation (MIT license)
 ]
 
 [project.optional-dependencies]
 ast = [
-    "tree-sitter>=0.20.0",
-    "tree-sitter-python>=0.20.0",
-    "tree-sitter-yaml>=0.20.0",
-    "sqlparse>=0.4.0",
+ "tree-sitter>=0.20.0",
+ "tree-sitter-python>=0.20.0",
+ "tree-sitter-yaml>=0.20.0",
+ "sqlparse>=0.4.0",
 ]
 ```text
 
@@ -305,17 +305,17 @@ import libcst
 import radon
 import parso
 print(' All core dependencies installed')
-print(f'  libcst: {libcst.__version__}')
-print(f'  radon: {radon.__version__}')
-print(f'  parso: {parso.__version__}')
+print(f' libcst: {libcst.__version__}')
+print(f' radon: {radon.__version__}')
+print(f' parso: {parso.__version__}')
 "
 ```text
 
 **Success Criteria**:
--  `pip install -e .` succeeds without conflicts
--  All imports work
--  `pip check` reports no issues
--  Existing tests still pass
+- `pip install -e .` succeeds without conflicts
+- All imports work
+- `pip check` reports no issues
+- Existing tests still pass
 
 ---
 
@@ -342,98 +342,98 @@ from enum import Enum
 
 
 class NodeType(Enum):
-    """Supported AST node types."""
-    MODULE = "module"
-    FUNCTION = "function"
-    ASYNC_FUNCTION = "async_function"
-    CLASS = "class"
-    LAMBDA = "lambda"
-    IMPORT = "import"
-    FROM_IMPORT = "from_import"
-    STATEMENT = "statement"
-    EXPRESSION = "expression"
-    DECORATOR = "decorator"
-    COMPREHENSION = "comprehension"
+ """Supported AST node types."""
+ MODULE = "module"
+ FUNCTION = "function"
+ ASYNC_FUNCTION = "async_function"
+ CLASS = "class"
+ LAMBDA = "lambda"
+ IMPORT = "import"
+ FROM_IMPORT = "from_import"
+ STATEMENT = "statement"
+ EXPRESSION = "expression"
+ DECORATOR = "decorator"
+ COMPREHENSION = "comprehension"
 
 
 @dataclass
 class SourceLocation:
-    """Pinpoint source code location."""
-    file_path: Path
-    line_start: int
-    column_start: int
-    line_end: int
-    column_end: int
+ """Pinpoint source code location."""
+ file_path: Path
+ line_start: int
+ column_start: int
+ line_end: int
+ column_end: int
 
-    def __str__(self) -> str:
-        return f"{self.file_path}:{self.line_start}:{self.column_start}"
+ def __str__(self) -> str:
+ return f"{self.file_path}:{self.line_start}:{self.column_start}"
 
 
 @dataclass
 class StandardizedASTNode:
-    """Language-agnostic AST node representation.
+ """Language-agnostic AST node representation.
 
-    Attributes:
-        node_id: Unique identifier within codebase
-        type: Node type (NodeType enum)
-        name: Identifier (function name, class name, etc.)
-        source_location: File + line/column information
-        children: Child nodes (empty for leaf nodes)
-        parent: Parent node reference (None for root)
-        docstring: Documentation string (if present)
-        decorators: Applied decorators (if any)
-        type_hints: Type annotations (param → type mappings)
-        metadata: Language-specific metadata
-    """
+ Attributes:
+ node_id: Unique identifier within codebase
+ type: Node type (NodeType enum)
+ name: Identifier (function name, class name, etc.)
+ source_location: File + line/column information
+ children: Child nodes (empty for leaf nodes)
+ parent: Parent node reference (None for root)
+ docstring: Documentation string (if present)
+ decorators: Applied decorators (if any)
+ type_hints: Type annotations (param type mappings)
+ metadata: Language-specific metadata
+ """
 
-    node_id: str
-    type: NodeType
-    name: str
-    source_location: SourceLocation
+ node_id: str
+ type: NodeType
+ name: str
+ source_location: SourceLocation
 
-    children: List['StandardizedASTNode'] = field(default_factory=list)
-    parent: Optional['StandardizedASTNode'] = None
-    docstring: Optional[str] = None
-    decorators: List[str] = field(default_factory=list)
-    type_hints: Dict[str, str] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+ children: List['StandardizedASTNode'] = field(default_factory=list)
+ parent: Optional['StandardizedASTNode'] = None
+ docstring: Optional[str] = None
+ decorators: List[str] = field(default_factory=list)
+ type_hints: Dict[str, str] = field(default_factory=dict)
+ metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def add_child(self, child: 'StandardizedASTNode') -> None:
-        """Add child node and set parent reference."""
-        child.parent = self
-        self.children.append(child)
+ def add_child(self, child: 'StandardizedASTNode') -> None:
+ """Add child node and set parent reference."""
+ child.parent = self
+ self.children.append(child)
 
-    def to_dict(self) -> Dict[str, Any]:
-        """Serialize to dictionary (JSON-compatible)."""
-        return {
-            'node_id': self.node_id,
-            'type': self.type.value,
-            'name': self.name,
-            'source_location': {
-                'file': str(self.source_location.file_path),
-                'line_start': self.source_location.line_start,
-                'line_end': self.source_location.line_end,
-                'column_start': self.source_location.column_start,
-                'column_end': self.source_location.column_end,
-            },
-            'children': [c.node_id for c in self.children],
-            'docstring': self.docstring,
-            'decorators': self.decorators,
-            'type_hints': self.type_hints,
-            'metadata': self.metadata,
-        }
+ def to_dict(self) -> Dict[str, Any]:
+ """Serialize to dictionary (JSON-compatible)."""
+ return {
+ 'node_id': self.node_id,
+ 'type': self.type.value,
+ 'name': self.name,
+ 'source_location': {
+ 'file': str(self.source_location.file_path),
+ 'line_start': self.source_location.line_start,
+ 'line_end': self.source_location.line_end,
+ 'column_start': self.source_location.column_start,
+ 'column_end': self.source_location.column_end,
+ },
+ 'children': [c.node_id for c in self.children],
+ 'docstring': self.docstring,
+ 'decorators': self.decorators,
+ 'type_hints': self.type_hints,
+ 'metadata': self.metadata,
+ }
 
-    def walk(self):
-        """Depth-first tree traversal."""
-        yield self
-        for child in self.children:
-            yield from child.walk()
+ def walk(self):
+ """Depth-first tree traversal."""
+ yield self
+ for child in self.children:
+ yield from child.walk()
 
-    def get_depth(self) -> int:
-        """Get node depth in tree."""
-        if self.parent is None:
-            return 0
-        return self.parent.get_depth() + 1
+ def get_depth(self) -> int:
+ """Get node depth in tree."""
+ if self.parent is None:
+ return 0
+ return self.parent.get_depth() + 1
 ```text
 
 **Unit Tests**: `tests/ast/test_node.py`
@@ -443,68 +443,68 @@ from pathlib import Path
 from codex.ast.node import StandardizedASTNode, NodeType, SourceLocation
 
 def test_node_creation():
-    """Test basic node creation."""
-    loc = SourceLocation(Path("test.py"), 1, 0, 1, 10)
-    node = StandardizedASTNode(
-        node_id="func_1",
-        type=NodeType.FUNCTION,
-        name="test_func",
-        source_location=loc
-    )
-    assert node.node_id == "func_1"
-    assert node.type == NodeType.FUNCTION
-    assert node.name == "test_func"
+ """Test basic node creation."""
+ loc = SourceLocation(Path("test.py"), 1, 0, 1, 10)
+ node = StandardizedASTNode(
+ node_id="func_1",
+ type=NodeType.FUNCTION,
+ name="test_func",
+ source_location=loc
+ )
+ assert node.node_id == "func_1"
+ assert node.type == NodeType.FUNCTION
+ assert node.name == "test_func"
 
 def test_node_serialization():
-    """Test node to_dict serialization."""
-    loc = SourceLocation(Path("test.py"), 1, 0, 5, 10)
-    node = StandardizedASTNode(
-        node_id="n1",
-        type=NodeType.FUNCTION,
-        name="test",
-        source_location=loc,
-        docstring="Test function",
-        decorators=["@decorator"],
-        type_hints={"x": "int", "return": "str"}
-    )
-    data = node.to_dict()
-    assert data["node_id"] == "n1"
-    assert data["type"] == "function"
-    assert data["docstring"] == "Test function"
-    assert len(data["decorators"]) == 1
+ """Test node to_dict serialization."""
+ loc = SourceLocation(Path("test.py"), 1, 0, 5, 10)
+ node = StandardizedASTNode(
+ node_id="n1",
+ type=NodeType.FUNCTION,
+ name="test",
+ source_location=loc,
+ docstring="Test function",
+ decorators=["@decorator"],
+ type_hints={"x": "int", "return": "str"}
+ )
+ data = node.to_dict()
+ assert data["node_id"] == "n1"
+ assert data["type"] == "function"
+ assert data["docstring"] == "Test function"
+ assert len(data["decorators"]) == 1
 
 def test_parent_child_relationship():
-    """Test parent-child node relationships."""
-    parent_loc = SourceLocation(Path("test.py"), 1, 0, 10, 0)
-    parent = StandardizedASTNode("m1", NodeType.MODULE, "test_module", parent_loc)
+ """Test parent-child node relationships."""
+ parent_loc = SourceLocation(Path("test.py"), 1, 0, 10, 0)
+ parent = StandardizedASTNode("m1", NodeType.MODULE, "test_module", parent_loc)
 
-    child_loc = SourceLocation(Path("test.py"), 2, 4, 4, 0)
-    child = StandardizedASTNode("f1", NodeType.FUNCTION, "test_func", child_loc)
+ child_loc = SourceLocation(Path("test.py"), 2, 4, 4, 0)
+ child = StandardizedASTNode("f1", NodeType.FUNCTION, "test_func", child_loc)
 
-    parent.add_child(child)
+ parent.add_child(child)
 
-    assert child.parent == parent
-    assert child in parent.children
-    assert child.get_depth() == 1
-    assert parent.get_depth() == 0
+ assert child.parent == parent
+ assert child in parent.children
+ assert child.get_depth() == 1
+ assert parent.get_depth() == 0
 
 def test_tree_traversal():
-    """Test DFS tree traversal."""
-    root_loc = SourceLocation(Path("test.py"), 1, 0, 10, 0)
-    root = StandardizedASTNode("m1", NodeType.MODULE, "root", root_loc)
+ """Test DFS tree traversal."""
+ root_loc = SourceLocation(Path("test.py"), 1, 0, 10, 0)
+ root = StandardizedASTNode("m1", NodeType.MODULE, "root", root_loc)
 
-    child1_loc = SourceLocation(Path("test.py"), 2, 0, 5, 0)
-    child1 = StandardizedASTNode("c1", NodeType.FUNCTION, "child1", child1_loc)
+ child1_loc = SourceLocation(Path("test.py"), 2, 0, 5, 0)
+ child1 = StandardizedASTNode("c1", NodeType.FUNCTION, "child1", child1_loc)
 
-    child2_loc = SourceLocation(Path("test.py"), 6, 0, 10, 0)
-    child2 = StandardizedASTNode("c2", NodeType.FUNCTION, "child2", child2_loc)
+ child2_loc = SourceLocation(Path("test.py"), 6, 0, 10, 0)
+ child2 = StandardizedASTNode("c2", NodeType.FUNCTION, "child2", child2_loc)
 
-    root.add_child(child1)
-    root.add_child(child2)
+ root.add_child(child1)
+ root.add_child(child2)
 
-    nodes = list(root.walk())
-    assert len(nodes) == 3
-    assert nodes[0] == root
+ nodes = list(root.walk())
+ assert len(nodes) == 3
+ assert nodes[0] == root
 ```text
 
 ---
@@ -528,166 +528,166 @@ from collections import defaultdict
 
 
 class DependencyGraph:
-    """Directed graph for dependency analysis and cycle detection."""
+ """Directed graph for dependency analysis and cycle detection."""
 
-    def __init__(self):
-        self.nodes: Set[str] = set()
-        self.edges: Dict[str, Set[str]] = defaultdict(set)
+ def __init__(self):
+ self.nodes: Set[str] = set()
+ self.edges: Dict[str, Set[str]] = defaultdict(set)
 
-    def add_node(self, node_id: str) -> None:
-        """Add node to graph."""
-        self.nodes.add(node_id)
+ def add_node(self, node_id: str) -> None:
+ """Add node to graph."""
+ self.nodes.add(node_id)
 
-    def add_edge(self, source: str, target: str) -> None:
-        """Add directed edge: source → target."""
-        self.nodes.add(source)
-        self.nodes.add(target)
-        self.edges[source].add(target)
+ def add_edge(self, source: str, target: str) -> None:
+ """Add directed edge: source target."""
+ self.nodes.add(source)
+ self.nodes.add(target)
+ self.edges[source].add(target)
 
-    def detect_cycles(self) -> List[List[str]]:
-        """Detect all cycles using Tarjan's algorithm.
+ def detect_cycles(self) -> List[List[str]]:
+ """Detect all cycles using Tarjan's algorithm.
 
-        Returns:
-            List of cycles, where each cycle is a list of node IDs
-            forming a strongly connected component (cycle) in the graph.
+ Returns:
+ List of cycles, where each cycle is a list of node IDs
+ forming a strongly connected component (cycle) in the graph.
 
-        Time Complexity: O(V + E) where V = nodes, E = edges
-        Space Complexity: O(V)
-        """
-        index_counter = [0]
-        stack = []
-        lowlinks = {}
-        index = {}
-        on_stack = {}
-        sccs = []
+ Time Complexity: O(V + E) where V = nodes, E = edges
+ Space Complexity: O(V)
+ """
+ index_counter = [0]
+ stack = []
+ lowlinks = {}
+ index = {}
+ on_stack = {}
+ sccs = []
 
-        def strongconnect(node_id: str):
-            """Recursive SCC detection for single node."""
-            index[node_id] = index_counter[0]
-            lowlinks[node_id] = index_counter[0]
-            index_counter[0] += 1
-            stack.append(node_id)
-            on_stack[node_id] = True
+ def strongconnect(node_id: str):
+ """Recursive SCC detection for single node."""
+ index[node_id] = index_counter[0]
+ lowlinks[node_id] = index_counter[0]
+ index_counter[0] += 1
+ stack.append(node_id)
+ on_stack[node_id] = True
 
-            # Process successors
-            for target_id in self.edges.get(node_id, set()):
-                if target_id not in index:
-                    # Successor not yet visited
-                    strongconnect(target_id)
-                    lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
-                elif on_stack.get(target_id, False):
-                    # Successor on stack = back edge (cycle indicator)
-                    lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
+ # Process successors
+ for target_id in self.edges.get(node_id, set()):
+ if target_id not in index:
+ # Successor not yet visited
+ strongconnect(target_id)
+ lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
+ elif on_stack.get(target_id, False):
+ # Successor on stack = back edge (cycle indicator)
+ lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
 
-            # If node is a root node of SCC, pop the stack
-            if lowlinks[node_id] == index[node_id]:
-                scc = []
-                while True:
-                    w = stack.pop()
-                    on_stack[w] = False
-                    scc.append(w)
-                    if w == node_id:
-                        break
+ # If node is a root node of SCC, pop the stack
+ if lowlinks[node_id] == index[node_id]:
+ scc = []
+ while True:
+ w = stack.pop()
+ on_stack[w] = False
+ scc.append(w)
+ if w == node_id:
+ break
 
-                # Only record actual cycles (SCC size > 1)
-                if len(scc) > 1:
-                    sccs.append(scc)
+ # Only record actual cycles (SCC size > 1)
+ if len(scc) > 1:
+ sccs.append(scc)
 
-        # Find SCCs for all nodes
-        for node_id in self.nodes:
-            if node_id not in index:
-                strongconnect(node_id)
+ # Find SCCs for all nodes
+ for node_id in self.nodes:
+ if node_id not in index:
+ strongconnect(node_id)
 
-        return sccs
+ return sccs
 
-    def topological_sort(self) -> List[str]:
-        """Topological sort of DAG (fails if cycles exist).
+ def topological_sort(self) -> List[str]:
+ """Topological sort of DAG (fails if cycles exist).
 
-        Returns:
-            List of nodes in topological order
+ Returns:
+ List of nodes in topological order
 
-        Raises:
-            ValueError: If graph contains cycles
-        """
-        cycles = self.detect_cycles()
-        if cycles:
-            raise ValueError(f"Graph has cycles: {cycles}")
+ Raises:
+ ValueError: If graph contains cycles
+ """
+ cycles = self.detect_cycles()
+ if cycles:
+ raise ValueError(f"Graph has cycles: {cycles}")
 
-        visited = set()
-        stack = []
+ visited = set()
+ stack = []
 
-        def dfs(node_id: str):
-            visited.add(node_id)
-            for target in self.edges.get(node_id, set()):
-                if target not in visited:
-                    dfs(target)
-            stack.append(node_id)
+ def dfs(node_id: str):
+ visited.add(node_id)
+ for target in self.edges.get(node_id, set()):
+ if target not in visited:
+ dfs(target)
+ stack.append(node_id)
 
-        for node_id in self.nodes:
-            if node_id not in visited:
-                dfs(node_id)
+ for node_id in self.nodes:
+ if node_id not in visited:
+ dfs(node_id)
 
-        return stack[::-1]
+ return stack[::-1]
 
-    def get_transitive_deps(self, node_id: str) -> Set[str]:
-        """Get all transitive dependencies of a node."""
-        visited = set()
-        stack = [node_id]
+ def get_transitive_deps(self, node_id: str) -> Set[str]:
+ """Get all transitive dependencies of a node."""
+ visited = set()
+ stack = [node_id]
 
-        while stack:
-            current = stack.pop()
-            if current in visited:
-                continue
+ while stack:
+ current = stack.pop()
+ if current in visited:
+ continue
 
-            visited.add(current)
-            stack.extend(self.edges.get(current, set()))
+ visited.add(current)
+ stack.extend(self.edges.get(current, set()))
 
-        return visited - {node_id}
+ return visited - {node_id}
 ```text
 
 **Unit Tests**: `tests/ast/test_graph.py`
 ```python
 def test_simple_cycle():
-    """Test detection of simple 2-node cycle."""
-    graph = DependencyGraph()
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "A")
+ """Test detection of simple 2-node cycle."""
+ graph = DependencyGraph()
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "A")
 
-    cycles = graph.detect_cycles()
-    assert len(cycles) == 1
-    assert set(cycles[0]) == {"A", "B"}
+ cycles = graph.detect_cycles()
+ assert len(cycles) == 1
+ assert set(cycles[0]) == {"A", "B"}
 
 def test_complex_cycle():
-    """Test detection of complex 4-node cycle."""
-    graph = DependencyGraph()
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "C")
-    graph.add_edge("C", "D")
-    graph.add_edge("D", "A")
+ """Test detection of complex 4-node cycle."""
+ graph = DependencyGraph()
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ graph.add_edge("C", "D")
+ graph.add_edge("D", "A")
 
-    cycles = graph.detect_cycles()
-    assert len(cycles) == 1
-    assert set(cycles[0]) == {"A", "B", "C", "D"}
+ cycles = graph.detect_cycles()
+ assert len(cycles) == 1
+ assert set(cycles[0]) == {"A", "B", "C", "D"}
 
 def test_no_cycles():
-    """Test graph with no cycles."""
-    graph = DependencyGraph()
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "C")
+ """Test graph with no cycles."""
+ graph = DependencyGraph()
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
 
-    cycles = graph.detect_cycles()
-    assert len(cycles) == 0
+ cycles = graph.detect_cycles()
+ assert len(cycles) == 0
 
 def test_topological_sort():
-    """Test topological sort on DAG."""
-    graph = DependencyGraph()
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "C")
-    graph.add_edge("A", "C")
+ """Test topological sort on DAG."""
+ graph = DependencyGraph()
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ graph.add_edge("A", "C")
 
-    order = graph.topological_sort()
-    assert order.index("A") < order.index("B")
-    assert order.index("B") < order.index("C")
+ order = graph.topological_sort()
+ assert order.index("A") < order.index("B")
+ assert order.index("B") < order.index("C")
 ```text
 
 ---
@@ -709,142 +709,142 @@ import statistics
 
 @dataclass
 class CodeMetrics:
-    """Aggregated code quality metrics for a code entity."""
+ """Aggregated code quality metrics for a code entity."""
 
-    cyclomatic_complexity: int
-    cognitive_complexity: float
-    lines_of_code: int
-    comment_lines: int
-    maintainability_index: float
+ cyclomatic_complexity: int
+ cognitive_complexity: float
+ lines_of_code: int
+ comment_lines: int
+ maintainability_index: float
 
-    @property
-    def quality_tier(self) -> str:
-        """Compute quality grade (A-F) from maintainability index."""
-        if self.maintainability_index >= 85:
-            return "A"
-        elif self.maintainability_index >= 70:
-            return "B"
-        elif self.maintainability_index >= 55:
-            return "C"
-        elif self.maintainability_index >= 40:
-            return "D"
-        else:
-            return "F"
+ @property
+ def quality_tier(self) -> str:
+ """Compute quality grade (A-F) from maintainability index."""
+ if self.maintainability_index >= 85:
+ return "A"
+ elif self.maintainability_index >= 70:
+ return "B"
+ elif self.maintainability_index >= 55:
+ return "C"
+ elif self.maintainability_index >= 40:
+ return "D"
+ else:
+ return "F"
 
-    def to_dict(self) -> Dict:
-        """Serialize to dictionary."""
-        return {
-            "cyclomatic_complexity": self.cyclomatic_complexity,
-            "cognitive_complexity": self.cognitive_complexity,
-            "lines_of_code": self.lines_of_code,
-            "comment_lines": self.comment_lines,
-            "maintainability_index": self.maintainability_index,
-            "quality_tier": self.quality_tier,
-        }
+ def to_dict(self) -> Dict:
+ """Serialize to dictionary."""
+ return {
+ "cyclomatic_complexity": self.cyclomatic_complexity,
+ "cognitive_complexity": self.cognitive_complexity,
+ "lines_of_code": self.lines_of_code,
+ "comment_lines": self.comment_lines,
+ "maintainability_index": self.maintainability_index,
+ "quality_tier": self.quality_tier,
+ }
 
 
 class MetricsAggregator:
-    """Aggregate and correlate metrics from multiple sources."""
+ """Aggregate and correlate metrics from multiple sources."""
 
-    def __init__(self):
-        self.metrics: Dict[str, CodeMetrics] = {}
+ def __init__(self):
+ self.metrics: Dict[str, CodeMetrics] = {}
 
-    def store_metrics(self, entity_id: str, metrics: CodeMetrics) -> None:
-        """Store metrics for an entity."""
-        self.metrics[entity_id] = metrics
+ def store_metrics(self, entity_id: str, metrics: CodeMetrics) -> None:
+ """Store metrics for an entity."""
+ self.metrics[entity_id] = metrics
 
-    def aggregate(self, metrics_list: List[CodeMetrics]) -> CodeMetrics:
-        """Aggregate multiple metrics into summary.
+ def aggregate(self, metrics_list: List[CodeMetrics]) -> CodeMetrics:
+ """Aggregate multiple metrics into summary.
 
-        Args:
-            metrics_list: List of CodeMetrics objects
+ Args:
+ metrics_list: List of CodeMetrics objects
 
-        Returns:
-            Aggregated CodeMetrics
-        """
-        if not metrics_list:
-            return CodeMetrics(0, 0.0, 0, 0, 100.0)
+ Returns:
+ Aggregated CodeMetrics
+ """
+ if not metrics_list:
+ return CodeMetrics(0, 0.0, 0, 0, 100.0)
 
-        return CodeMetrics(
-            cyclomatic_complexity=sum(m.cyclomatic_complexity for m in metrics_list),
-            cognitive_complexity=sum(m.cognitive_complexity for m in metrics_list),
-            lines_of_code=sum(m.lines_of_code for m in metrics_list),
-            comment_lines=sum(m.comment_lines for m in metrics_list),
-            maintainability_index=statistics.mean(
-                m.maintainability_index for m in metrics_list
-            ),
-        )
+ return CodeMetrics(
+ cyclomatic_complexity=sum(m.cyclomatic_complexity for m in metrics_list),
+ cognitive_complexity=sum(m.cognitive_complexity for m in metrics_list),
+ lines_of_code=sum(m.lines_of_code for m in metrics_list),
+ comment_lines=sum(m.comment_lines for m in metrics_list),
+ maintainability_index=statistics.mean(
+ m.maintainability_index for m in metrics_list
+ ),
+ )
 
-    def correlate_complexity_coverage(
-        self,
-        complexity_metrics: List[float],
-        coverage_metrics: List[float],
-    ) -> float:
-        """Compute correlation between complexity and test coverage.
+ def correlate_complexity_coverage(
+ self,
+ complexity_metrics: List[float],
+ coverage_metrics: List[float],
+ ) -> float:
+ """Compute correlation between complexity and test coverage.
 
-        Returns:
-            Pearson correlation coefficient (-1.0 to 1.0)
-        """
-        if len(complexity_metrics) < 2:
-            return 0.0
+ Returns:
+ Pearson correlation coefficient (-1.0 to 1.0)
+ """
+ if len(complexity_metrics) < 2:
+ return 0.0
 
-        mean_cc = statistics.mean(complexity_metrics)
-        mean_cov = statistics.mean(coverage_metrics)
+ mean_cc = statistics.mean(complexity_metrics)
+ mean_cov = statistics.mean(coverage_metrics)
 
-        numerator = sum(
-            (c - mean_cc) * (v - mean_cov)
-            for c, v in zip(complexity_metrics, coverage_metrics)
-        )
+ numerator = sum(
+ (c - mean_cc) * (v - mean_cov)
+ for c, v in zip(complexity_metrics, coverage_metrics)
+ )
 
-        denom_cc = (sum((c - mean_cc) ** 2 for c in complexity_metrics)) ** 0.5
-        denom_cov = (sum((c - mean_cov) ** 2 for c in coverage_metrics)) ** 0.5
+ denom_cc = (sum((c - mean_cc) ** 2 for c in complexity_metrics)) ** 0.5
+ denom_cov = (sum((c - mean_cov) ** 2 for c in coverage_metrics)) ** 0.5
 
-        if denom_cc * denom_cov == 0:
-            return 0.0
+ if denom_cc * denom_cov == 0:
+ return 0.0
 
-        return numerator / (denom_cc * denom_cov)
+ return numerator / (denom_cc * denom_cov)
 
-    def summary(self) -> Dict:
-        """Get summary statistics of all metrics."""
-        if not self.metrics:
-            return {}
+ def summary(self) -> Dict:
+ """Get summary statistics of all metrics."""
+ if not self.metrics:
+ return {}
 
-        ccs = [m.cyclomatic_complexity for m in self.metrics.values()]
-        locs = [m.lines_of_code for m in self.metrics.values()]
-        mis = [m.maintainability_index for m in self.metrics.values()]
+ ccs = [m.cyclomatic_complexity for m in self.metrics.values()]
+ locs = [m.lines_of_code for m in self.metrics.values()]
+ mis = [m.maintainability_index for m in self.metrics.values()]
 
-        return {
-            "total_entities": len(self.metrics),
-            "total_lines_of_code": sum(locs),
-            "average_cyclomatic_complexity": statistics.mean(ccs),
-            "max_cyclomatic_complexity": max(ccs),
-            "average_maintainability_index": statistics.mean(mis),
-        }
+ return {
+ "total_entities": len(self.metrics),
+ "total_lines_of_code": sum(locs),
+ "average_cyclomatic_complexity": statistics.mean(ccs),
+ "max_cyclomatic_complexity": max(ccs),
+ "average_maintainability_index": statistics.mean(mis),
+ }
 ```text
 
 **Unit Tests**: `tests/ast/test_metrics.py`
 ```python
 def test_metrics_aggregation():
-    """Test basic metrics aggregation."""
-    m1 = CodeMetrics(5, 3.0, 100, 10, 80.0)
-    m2 = CodeMetrics(3, 2.0, 50, 5, 90.0)
+ """Test basic metrics aggregation."""
+ m1 = CodeMetrics(5, 3.0, 100, 10, 80.0)
+ m2 = CodeMetrics(3, 2.0, 50, 5, 90.0)
 
-    agg = MetricsAggregator()
-    result = agg.aggregate([m1, m2])
+ agg = MetricsAggregator()
+ result = agg.aggregate([m1, m2])
 
-    assert result.cyclomatic_complexity == 8
-    assert result.lines_of_code == 150
-    assert result.maintainability_index == 85.0
+ assert result.cyclomatic_complexity == 8
+ assert result.lines_of_code == 150
+ assert result.maintainability_index == 85.0
 
 def test_quality_tier():
-    """Test quality tier grading."""
-    m_a = CodeMetrics(5, 3.0, 100, 10, 90.0)
-    m_b = CodeMetrics(10, 5.0, 200, 20, 75.0)
-    m_f = CodeMetrics(20, 15.0, 500, 50, 30.0)
+ """Test quality tier grading."""
+ m_a = CodeMetrics(5, 3.0, 100, 10, 90.0)
+ m_b = CodeMetrics(10, 5.0, 200, 20, 75.0)
+ m_f = CodeMetrics(20, 15.0, 500, 50, 30.0)
 
-    assert m_a.quality_tier == "A"
-    assert m_b.quality_tier == "B"
-    assert m_f.quality_tier == "F"
+ assert m_a.quality_tier == "A"
+ assert m_b.quality_tier == "B"
+ assert m_f.quality_tier == "F"
 ```text
 
 ---
@@ -890,16 +890,16 @@ def test_quality_tier():
 
 **All of the following must be TRUE**:
 
-- [x] **46 blockers researched** - All identified with solutions 
-- [x] **25+ OSS references** - Validated and cited 
-- [x] **Architecture designed** - Awaiting stakeholder approval 
-- [x] **Dependencies validated** - Version compatibility confirmed 
-- [x] **Timeline realistic** - 5 iteration Phase 1 + 6-8 phases Phase 2-3 
-- [x] **Resources estimated** - 6-8 person-months identified 
-- [x] **Risk assessed** - Mitigation strategies defined 
-- [ ] **Stakeholder approval** - Awaiting sign-off 
-- [ ] **Team committed** - Awaiting resource allocation 
-- [ ] **Funding approved** - Awaiting budget confirmation 
+- [x] **46 blockers researched** - All identified with solutions
+- [x] **25+ OSS references** - Validated and cited
+- [x] **Architecture designed** - Awaiting stakeholder approval
+- [x] **Dependencies validated** - Version compatibility confirmed
+- [x] **Timeline realistic** - 5 iteration Phase 1 + 6-8 phases Phase 2-3
+- [x] **Resources estimated** - 6-8 person-months identified
+- [x] **Risk assessed** - Mitigation strategies defined
+- [ ] **Stakeholder approval** - Awaiting sign-off
+- [ ] **Team committed** - Awaiting resource allocation
+- [ ] **Funding approved** - Awaiting budget confirmation
 
 **Current Status**: 7 of 10 criteria met (70%) - **Awaiting stakeholder decision**
 
@@ -907,17 +907,17 @@ def test_quality_tier():
 
 ## Phase 0 Final Recommendation
 
-###  RECOMMEND: Proceed with Phase 1 (5 iteration Quick Wins)
+### RECOMMEND: Proceed with Phase 1 (5 iteration Quick Wins)
 
 **Justification**:
--  **Low effort**: 5 iterations only (minimal disruption)
--  **Low risk**: Reversible, additive changes only
--  **High value**: Foundation + 8 blockers resolved
--  **Aligned**: Supports 75% maturity improvement work
--  **Validated**: 25+ OSS reference implementations
--  **Documented**: 13 documents, 4,200+ lines planning
+- **Low effort**: 5 iterations only (minimal disruption)
+- **Low risk**: Reversible, additive changes only
+- **High value**: Foundation + 8 blockers resolved
+- **Aligned**: Supports 75% maturity improvement work
+- **Validated**: 25+ OSS reference implementations
+- **Documented**: 13 documents, 4,200+ lines planning
 
-###  DEFER: Phase 2-3 to Dedicated Project
+### DEFER: Phase 2-3 to Dedicated Project
 
 **Justification**:
 - Beyond current scope (75% maturity work complete)
@@ -927,7 +927,7 @@ def test_quality_tier():
 
 ---
 
-**Phase 0 Status**:  **PLANNING COMPLETE - AWAITING STAKEHOLDER APPROVAL**
+**Phase 0 Status**: **PLANNING COMPLETE - AWAITING STAKEHOLDER APPROVAL**
 
 **Next Action**: Schedule stakeholder review meeting to present findings and gain approval for Phase 1 Quick Wins execution.
 ```text
@@ -939,13 +939,13 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong | User: mbaetiong
 
-** Roles:** [Primary: Implementation Lead], [Secondary: QA Lead] |  Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: QA Lead] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Design → Code → Test → Validate] | Fields [8 focused tasks] | Patterns️ [Modular implementation, atomic commits] | Redundancy [Unit + integration tests] | Balance️ [Speed vs quality, 5 iterations timeline]
+ **Physics:** Path [Design Code Test Validate] | Fields [8 focused tasks] | Patterns [Modular implementation, atomic commits] | Redundancy [Unit + integration tests] | Balance [Speed vs quality, 5 iterations timeline]
 
 ---
 
-##  Phase 1 Executive Summary
+## Phase 1 Executive Summary
 
 **Scope**: 8 high-value, low-risk tasks to establish AST foundation
 
@@ -1064,12 +1064,12 @@ from .graph import DependencyGraph
 from .metrics import CodeMetrics, MetricsAggregator
 
 __all__ = [
-    "StandardizedASTNode",
-    "NodeType",
-    "SourceLocation",
-    "DependencyGraph",
-    "CodeMetrics",
-    "MetricsAggregator",
+ "StandardizedASTNode",
+ "NodeType",
+ "SourceLocation",
+ "DependencyGraph",
+ "CodeMetrics",
+ "MetricsAggregator",
 ]
 ```text
 
@@ -1095,8 +1095,8 @@ from .node import StandardizedASTNode
 
 @click.group()
 def cli():
-    """Codex AST Analysis CLI."""
-    pass
+ """Codex AST Analysis CLI."""
+ pass
 
 
 @cli.command()
@@ -1104,33 +1104,33 @@ def cli():
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 @click.option("--format", "-f", type=click.Choice(["json", "text", "yaml"]), default="text")
 def analyze(path: str, output: Optional[str], format: str):
-    """Analyze AST for a file or directory."""
-    path_obj = Path(path)
+ """Analyze AST for a file or directory."""
+ path_obj = Path(path)
 
-    if path_obj.is_file():
-        click.echo(f"Analyzing file: {path_obj}")
-        # TODO: Implement file analysis
-    elif path_obj.is_dir():
-        click.echo(f"Analyzing directory: {path_obj}")
-        # TODO: Implement directory analysis
+ if path_obj.is_file():
+ click.echo(f"Analyzing file: {path_obj}")
+ # TODO: Implement file analysis
+ elif path_obj.is_dir():
+ click.echo(f"Analyzing directory: {path_obj}")
+ # TODO: Implement directory analysis
 
-    click.echo(" Analysis complete")
+ click.echo(" Analysis complete")
 
 
 @cli.command()
 @click.argument("path", type=click.Path(exists=True))
 @click.option("--output", "-o", type=click.Path(), help="Report file path (default: audit_report.html)")
 def audit(path: str, output: Optional[str]):
-    """Run full codebase audit."""
-    path_obj = Path(path)
-    output_file = Path(output or "audit_report.html")
+ """Run full codebase audit."""
+ path_obj = Path(path)
+ output_file = Path(output or "audit_report.html")
 
-    click.echo(f"Auditing codebase: {path_obj}")
-    click.echo(f"Output: {output_file}")
+ click.echo(f"Auditing codebase: {path_obj}")
+ click.echo(f"Output: {output_file}")
 
-    # TODO: Implement full audit
+ # TODO: Implement full audit
 
-    click.echo(f" Audit complete: {output_file}")
+ click.echo(f" Audit complete: {output_file}")
 
 
 @cli.command()
@@ -1138,17 +1138,17 @@ def audit(path: str, output: Optional[str]):
 @click.argument("commit2", type=str)
 @click.option("--metric", "-m", type=str, default="complexity")
 def diff(commit1: str, commit2: str, metric: str):
-    """Compare AST metrics between two commits."""
-    click.echo(f"Comparing {commit1}..{commit2}")
-    click.echo(f"Metric: {metric}")
+ """Compare AST metrics between two commits."""
+ click.echo(f"Comparing {commit1}..{commit2}")
+ click.echo(f"Metric: {metric}")
 
-    # TODO: Implement commit diff
+ # TODO: Implement commit diff
 
-    click.echo(" Diff complete")
+ click.echo(" Diff complete")
 
 
 if __name__ == "__main__":
-    cli()
+ cli()
 ```text
 
 ### Test Files
@@ -1166,41 +1166,41 @@ from codex.ast.metrics import CodeMetrics, MetricsAggregator
 
 @pytest.fixture
 def sample_location() -> SourceLocation:
-    """Sample source location."""
-    return SourceLocation(Path("test.py"), 1, 0, 5, 20)
+ """Sample source location."""
+ return SourceLocation(Path("test.py"), 1, 0, 5, 20)
 
 
 @pytest.fixture
 def sample_node(sample_location) -> StandardizedASTNode:
-    """Sample AST node."""
-    return StandardizedASTNode(
-        node_id="test_func",
-        type=NodeType.FUNCTION,
-        name="test_function",
-        source_location=sample_location,
-        docstring="Test function",
-    )
+ """Sample AST node."""
+ return StandardizedASTNode(
+ node_id="test_func",
+ type=NodeType.FUNCTION,
+ name="test_function",
+ source_location=sample_location,
+ docstring="Test function",
+ )
 
 
 @pytest.fixture
 def sample_graph() -> DependencyGraph:
-    """Sample dependency graph."""
-    graph = DependencyGraph()
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "C")
-    return graph
+ """Sample dependency graph."""
+ graph = DependencyGraph()
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ return graph
 
 
 @pytest.fixture
 def sample_metrics() -> CodeMetrics:
-    """Sample code metrics."""
-    return CodeMetrics(
-        cyclomatic_complexity=5,
-        cognitive_complexity=4.0,
-        lines_of_code=50,
-        comment_lines=5,
-        maintainability_index=85.0,
-    )
+ """Sample code metrics."""
+ return CodeMetrics(
+ cyclomatic_complexity=5,
+ cognitive_complexity=4.0,
+ lines_of_code=50,
+ comment_lines=5,
+ maintainability_index=85.0,
+ )
 ```text
 
 **`tests/ast/test_*.py`** - (All test files as specified in Part 1, Tasks 5-8)
@@ -1213,80 +1213,80 @@ def sample_metrics() -> CodeMetrics:
 ```text
 commit: "feat(ast): Add core dependencies (libcst, radon, parso)"
 files:
-  - pyproject.toml
+ - pyproject.toml
 changes:
-  - Add libcst>=1.0, radon>=6.0, parso>=0.8 to core dependencies
-  - Add optional ast extra with tree-sitter, sqlparse
+ - Add libcst>=1.0, radon>=6.0, parso>=0.8 to core dependencies
+ - Add optional ast extra with tree-sitter, sqlparse
 tests:
-  - Verify: pip install -e . succeeds
-  - Verify: All imports work
+ - Verify: pip install -e . succeeds
+ - Verify: All imports work
 ```text
 
 ### Commit 2: Foundation Modules
 ```text
 commit: "feat(ast): Add StandardizedASTNode, DependencyGraph, MetricsAggregator"
 files:
-  - src/codex/ast/__init__.py (NEW)
-  - src/codex/ast/node.py (NEW)
-  - src/codex/ast/graph.py (NEW)
-  - src/codex/ast/metrics.py (NEW)
+ - src/codex/ast/__init__.py (NEW)
+ - src/codex/ast/node.py (NEW)
+ - src/codex/ast/graph.py (NEW)
+ - src/codex/ast/metrics.py (NEW)
 changes:
-  - Implement StandardizedASTNode dataclass
-  - Implement DependencyGraph with Tarjan's SCC
-  - Implement MetricsAggregator
+ - Implement StandardizedASTNode dataclass
+ - Implement DependencyGraph with Tarjan's SCC
+ - Implement MetricsAggregator
 tests:
-  - All imports work
-  - Basic instantiation tests pass
+ - All imports work
+ - Basic instantiation tests pass
 ```text
 
 ### Commit 3: Comprehensive Tests
 ```text
 commit: "test(ast): Add 20 unit + integration tests (>80% coverage)"
 files:
-  - tests/ast/conftest.py (NEW)
-  - tests/ast/test_node.py (NEW)
-  - tests/ast/test_graph.py (NEW)
-  - tests/ast/test_metrics.py (NEW)
-  - tests/ast/test_integration.py (NEW)
+ - tests/ast/conftest.py (NEW)
+ - tests/ast/test_node.py (NEW)
+ - tests/ast/test_graph.py (NEW)
+ - tests/ast/test_metrics.py (NEW)
+ - tests/ast/test_integration.py (NEW)
 changes:
-  - 20 tests covering all core modules
-  - Integration tests for workflows
+ - 20 tests covering all core modules
+ - Integration tests for workflows
 tests:
-  - pytest tests/ast/ -v: all 20 passing
-  - Coverage: >80%
+ - pytest tests/ast/ -v: all 20 passing
+ - Coverage: >80%
 ```text
 
 ### Commit 4: CLI + Documentation
 ```text
 commit: "feat(ast): Add CLI interface and documentation"
 files:
-  - src/codex/ast/cli.py (NEW)
-  - .pre-commit-hooks.yaml (NEW)
-  - docs/ast/README.md (NEW)
-  - docs/ast/IMPLEMENTATION_NOTES.md (NEW)
+ - src/codex/ast/cli.py (NEW)
+ - .pre-commit-hooks.yaml (NEW)
+ - docs/ast/README.md (NEW)
+ - docs/ast/IMPLEMENTATION_NOTES.md (NEW)
 changes:
-  - Click-based CLI with analyze/audit/diff commands
-  - Pre-commit hook skeleton
-  - Complete API documentation
+ - Click-based CLI with analyze/audit/diff commands
+ - Pre-commit hook skeleton
+ - Complete API documentation
 tests:
-  - CLI commands parse correctly
-  - Docs render without errors
+ - CLI commands parse correctly
+ - Docs render without errors
 ```text
 
 ### Commit 5: Validation Report
 ```text
 commit: "chore(ast): Phase 1 completion and validation report"
 files:
-  - PHASE1_COMPLETION_REPORT.md (NEW)
-  - docs/ast/PHASE1_SUMMARY.md (NEW)
+ - PHASE1_COMPLETION_REPORT.md (NEW)
+ - docs/ast/PHASE1_SUMMARY.md (NEW)
 changes:
-  - Final validation results
-  - Test coverage report
-  - Blockers resolved summary
+ - Final validation results
+ - Test coverage report
+ - Blockers resolved summary
 tests:
-  - All tests passing
-  - Linting clean
-  - Type checking passing
+ - All tests passing
+ - Linting clean
+ - Type checking passing
 ```text
 
 ---
@@ -1359,20 +1359,20 @@ tests:
 ### Immediately After Phase 1 Completion (Day 6)
 
 1. **Merge Phase 1 PR**
-   - [ ] All approvals obtained
-   - [ ] CI/CD passing
-   - [ ] Merge to develop/main
+ - [ ] All approvals obtained
+ - [ ] CI/CD passing
+ - [ ] Merge to develop/main
 
 2. **Update Project Documentation**
-   - [ ] Update README with AST module link
-   - [ ] Add AST to docs/index.md
-   - [ ] Update CHANGELOG.md with Phase 1 completion
+ - [ ] Update README with AST module link
+ - [ ] Add AST to docs/index.md
+ - [ ] Update CHANGELOG.md with Phase 1 completion
 
 3. **Plan Phase 2-3**
-   - [ ] Evaluate Phase 1 outcomes
-   - [ ] Decide whether to proceed with Phase 2-3
-   - [ ] If yes: Allocate dedicated team + resources
-   - [ ] If no: Document rationale + defer indefinitely
+ - [ ] Evaluate Phase 1 outcomes
+ - [ ] Decide whether to proceed with Phase 2-3
+ - [ ] If yes: Allocate dedicated team + resources
+ - [ ] If no: Document rationale + defer indefinitely
 
 ### Success Metrics Review
 
@@ -1388,7 +1388,7 @@ tests:
 
 ---
 
-**Phase 1 Status**:  **READY FOR EXECUTION**
+**Phase 1 Status**: **READY FOR EXECUTION**
 
 **Next Action**: Upon stakeholder approval, begin Day 1 implementation.
 
@@ -1402,79 +1402,79 @@ tests:
 ---
 
 project:
-  name: "AST Standardization Implementation (Phase 0-3)"
-  version: "2.0.0"
-  start_date: "2025-11-10"
-  phase_0_target_end: "2025-11-23"
-  phase_1_target_end: 2026-07-13
-  full_project_target_end: "2026-02-07"
-  governance_model: "Single-seat Copilot Pro+ (Personal) for ALL requests/iterations"
-  # Updated total budget reflects Copilot Pro+ single-seat only (license + zero expected overage)
-  estimated_budget_usd: 150
-  budget_notes: |
-    This governance replaces prior labor-heavy estimates with a Copilot-first plan using ONE Copilot Pro+ seat (Personal).
-    Based on consolidated model below, projected spend ≈ $127.40 (licenses only, prorated) with $0 overage expected.
-    A small contingency lifts the governance “ask” to $150.
+ name: "AST Standardization Implementation (Phase 0-3)"
+ version: "2.0.0"
+ start_date: "2025-11-10"
+ phase_0_target_end: "2025-11-23"
+ phase_1_target_end: 2026-07-13
+ full_project_target_end: "2026-02-07"
+ governance_model: "Single-seat Copilot Pro+ (Personal) for ALL requests/iterations"
+ # Updated total budget reflects Copilot Pro+ single-seat only (license + zero expected overage)
+ estimated_budget_usd: 150
+ budget_notes: |
+ This governance replaces prior labor-heavy estimates with a Copilot-first plan using ONE Copilot Pro+ seat (Personal).
+ Based on consolidated model below, projected spend ≈ $127.40 (licenses only, prorated) with $0 overage expected.
+ A small contingency lifts the governance “ask” to $150.
 
 # ============================================================================
 # SECTION 0: CONSOLIDATED COPILOT PRO+ SINGLE-SEAT COST MODEL (from COPILOT_COST_CALCULATION_MODEL_PROPLUS_SINGLE_SEAT.yaml)
 # ============================================================================
 
 copilot_pro_plus_cost_model:
-  constants:
-    plan: "Copilot Pro+ (Personal)"
-    seat_count: 1
-    seat_price_usd_per_month: 39.0
-    included_premium_requests_per_month: 1500
-    overage_cost_usd_per_premium_request: 0.04
-    month_days_basis: 30
-    models_multipliers:
-      Claude_Haiku_4_5: 0.33
-      Claude_Opus_4_1: 10
-      Claude_Sonnet_4_5: 1
-      Gemini_2_5_Pro: 1
-      GPT_4_1: 0
-      GPT_4o: 0
-      GPT_5_mini: 0
-      GPT_5: 1
-      GPT_5_Codex: 1
-      Grok_Code_Fast_1: 0.25
-      Copilot_Agent_Session: 1
-  formulae:
-    per_user_monthly_requests: "R_total = Σ(w_m × n_m) + s"
-    prorated_seat_cost: "seat_cost = $39 × (phase_days / 30)"
-    prorated_allowance: "included_PR = 1500 × (phase_days / 30)"
-    overage: "overage_cost = max(0, (R_total - included_PR)) × $0.04"
-  phases:
-    phase_0_planning_research:
-      duration_days: 14
-      license_cost_usd: 18.20   # 39 * 14/30
-      included_pr: 700          # 1500 * 14/30
-      estimated_premium_requests: 125.0  # 80*1 + 120*0.33 + 5*1
-      estimated_overage_pr: 0
-      estimated_overage_cost_usd: 0.00
-    phase_1_quick_wins:
-      duration_days: 7
-      license_cost_usd: 9.10    # 39 * 7/30
-      included_pr: 350          # 1500 * 7/30
-      estimated_premium_requests: 93.0   # 80*1 + 13*1
-      estimated_overage_pr: 0
-      estimated_overage_cost_usd: 0.00
-    phase_2_full_implementation:
-      duration_days: 77
-      license_cost_usd: 100.10  # 39 * 77/30
-      included_pr: 3850         # 1500 * 77/30
-      estimated_premium_requests: 2514.0 # Opus 1650 + Sonnet 666 + Agents 198
-      estimated_overage_pr: 0
-      estimated_overage_cost_usd: 0.00
-  totals_single_seat:
-    total_license_cost_usd: 127.40   # 18.20 + 9.10 + 100.10
-    total_included_pr: 4900          # 700 + 350 + 3850
-    total_estimated_pr_used: 2732.0  # 125 + 93 + 2514
-    total_overage_pr: 0
-    total_overage_cost_usd: 0.00
-    governance_budget_request_usd: 150
-    summary: "One Copilot Pro+ seat covers all expected usage with zero overage; license proration is the only cost."
+ constants:
+ plan: "Copilot Pro+ (Personal)"
+ seat_count: 1
+ seat_price_usd_per_month: 39.0
+ included_premium_requests_per_month: 1500
+ overage_cost_usd_per_premium_request: 0.04
+ month_days_basis: 30
+ models_multipliers:
+ Claude_Haiku_4_5: 0.33
+ Claude_Opus_4_1: 10
+ Claude_Sonnet_4_5: 1
+ Gemini_2_5_Pro: 1
+ GPT_4_1: 0
+ GPT_4o: 0
+ GPT_5_mini: 0
+ GPT_5: 1
+ GPT_5_Codex: 1
+ Grok_Code_Fast_1: 0.25
+ Copilot_Agent_Session: 1
+ formulae:
+ per_user_monthly_requests: "R_total = Σ(w_m × n_m) + s"
+ prorated_seat_cost: "seat_cost = $39 × (phase_days / 30)"
+ prorated_allowance: "included_PR = 1500 × (phase_days / 30)"
+ overage: "overage_cost = max(0, (R_total - included_PR)) × $0.04"
+ phases:
+ phase_0_planning_research:
+ duration_days: 14
+ license_cost_usd: 18.20 # 39 * 14/30
+ included_pr: 700 # 1500 * 14/30
+ estimated_premium_requests: 125.0 # 80*1 + 120*0.33 + 5*1
+ estimated_overage_pr: 0
+ estimated_overage_cost_usd: 0.00
+ phase_1_quick_wins:
+ duration_days: 7
+ license_cost_usd: 9.10 # 39 * 7/30
+ included_pr: 350 # 1500 * 7/30
+ estimated_premium_requests: 93.0 # 80*1 + 13*1
+ estimated_overage_pr: 0
+ estimated_overage_cost_usd: 0.00
+ phase_2_full_implementation:
+ duration_days: 77
+ license_cost_usd: 100.10 # 39 * 77/30
+ included_pr: 3850 # 1500 * 77/30
+ estimated_premium_requests: 2514.0 # Opus 1650 + Sonnet 666 + Agents 198
+ estimated_overage_pr: 0
+ estimated_overage_cost_usd: 0.00
+ totals_single_seat:
+ total_license_cost_usd: 127.40 # 18.20 + 9.10 + 100.10
+ total_included_pr: 4900 # 700 + 350 + 3850
+ total_estimated_pr_used: 2732.0 # 125 + 93 + 2514
+ total_overage_pr: 0
+ total_overage_cost_usd: 0.00
+ governance_budget_request_usd: 150
+ summary: "One Copilot Pro+ seat covers all expected usage with zero overage; license proration is the only cost."
 
 # ============================================================================
 # SECTION 1: STAKEHOLDER REGISTRY (Ranked by Approval Priority)
@@ -1482,139 +1482,139 @@ copilot_pro_plus_cost_model:
 
 stakeholders:
 
-  # TIER 1: EXECUTIVE DECISION MAKERS (MANDATORY APPROVAL)
+ # TIER 1: EXECUTIVE DECISION MAKERS (MANDATORY APPROVAL)
 
-  - stakeholder_id: "EXEC-001"
-    name: "Chief Technology Officer (CTO)"
-    organization: "Aries-Serpent"
-    role: "Executive Sponsor"
-    priority: 1
-    approval_authority: "GO/NO-GO Decision Authority"
-    signing_authority: true
-    budget_approval_limit_usd: 1000000
-    dependencies: []
-    approval_path: |
-      Phase 0: Approve single-seat Copilot Pro+ governance → GO/NO-GO Gate
-      Phase 1: Confirm single-seat usage policy enforcement → Kickoff Authorization
-      Phase 2-3: Approve continued single-seat operation or adjust policy if needed
-    contact_email: "[TBD]"
-    escalation_contact: "CEO"
+ - stakeholder_id: "EXEC-001"
+ name: "Chief Technology Officer (CTO)"
+ organization: "Aries-Serpent"
+ role: "Executive Sponsor"
+ priority: 1
+ approval_authority: "GO/NO-GO Decision Authority"
+ signing_authority: true
+ budget_approval_limit_usd: 1000000
+ dependencies: []
+ approval_path: |
+ Phase 0: Approve single-seat Copilot Pro+ governance GO/NO-GO Gate
+ Phase 1: Confirm single-seat usage policy enforcement Kickoff Authorization
+ Phase 2-3: Approve continued single-seat operation or adjust policy if needed
+ contact_email: "[TBD]"
+ escalation_contact: "CEO"
 
-  - stakeholder_id: "EXEC-002"
-    name: "Chief Product Officer (CPO) / Product Lead"
-    organization: "Aries-Serpent"
-    role: "Product Sponsor"
-    priority: 2
-    approval_authority: "Roadmap Alignment"
-    signing_authority: true
-    budget_approval_limit_usd: 500000
-    dependencies: ["EXEC-001"]
-    approval_path: |
-      Phase 0: Scope alignment with single-seat throughput
-      Phase 1: Acceptance of Copilot-first delivery cadence
-      Phase 2-3: Release planning aligned to Copilot single-seat throughput
-    contact_email: "[TBD]"
-    escalation_contact: "EXEC-001 (CTO)"
+ - stakeholder_id: "EXEC-002"
+ name: "Chief Product Officer (CPO) / Product Lead"
+ organization: "Aries-Serpent"
+ role: "Product Sponsor"
+ priority: 2
+ approval_authority: "Roadmap Alignment"
+ signing_authority: true
+ budget_approval_limit_usd: 500000
+ dependencies: ["EXEC-001"]
+ approval_path: |
+ Phase 0: Scope alignment with single-seat throughput
+ Phase 1: Acceptance of Copilot-first delivery cadence
+ Phase 2-3: Release planning aligned to Copilot single-seat throughput
+ contact_email: "[TBD]"
+ escalation_contact: "EXEC-001 (CTO)"
 
-  # TIER 2: ARCHITECTURE, SECURITY, QUALITY
+ # TIER 2: ARCHITECTURE, SECURITY, QUALITY
 
-  - stakeholder_id: "TECH-001"
-    name: "Chief Architect / Technical Lead"
-    organization: "Aries-Serpent"
-    role: "Architecture Authority"
-    priority: 3
-    approval_authority: "Architecture Decision & Model Usage Policy"
-    signing_authority: true
-    budget_approval_limit_usd: 250000
-    dependencies: []
-    approval_path: |
-      Phase 0: Approve StandardizedASTNode/Graph/Metrics + single-seat model usage policy
-      Phase 1: Validate implementation quality under Copilot agent workflow
-      Phase 2-3: Performance guardrails under single-seat constraints
-    contact_email: "[TBD]"
-    escalation_contact: "EXEC-001 (CTO)"
+ - stakeholder_id: "TECH-001"
+ name: "Chief Architect / Technical Lead"
+ organization: "Aries-Serpent"
+ role: "Architecture Authority"
+ priority: 3
+ approval_authority: "Architecture Decision & Model Usage Policy"
+ signing_authority: true
+ budget_approval_limit_usd: 250000
+ dependencies: []
+ approval_path: |
+ Phase 0: Approve StandardizedASTNode/Graph/Metrics + single-seat model usage policy
+ Phase 1: Validate implementation quality under Copilot agent workflow
+ Phase 2-3: Performance guardrails under single-seat constraints
+ contact_email: "[TBD]"
+ escalation_contact: "EXEC-001 (CTO)"
 
-  - stakeholder_id: "SEC-001"
-    name: "Security Lead / InfoSec Officer"
-    organization: "Aries-Serpent"
-    role: "Security Authority"
-    priority: 4
-    approval_authority: "Security Review & Model Policy"
-    signing_authority: true
-    budget_approval_limit_usd: 100000
-    dependencies: []
-    approval_path: |
-      Phase 0: Approve single-seat Copilot usage policy and data-handling guidelines
-      Phase 1: SAST/DAST review under Copilot-generated changes
-      Phase 2-3: Security hardening, SQLite/input validation checkpoints
-    contact_email: "[TBD]"
-    escalation_contact: "EXEC-001 (CTO)"
+ - stakeholder_id: "SEC-001"
+ name: "Security Lead / InfoSec Officer"
+ organization: "Aries-Serpent"
+ role: "Security Authority"
+ priority: 4
+ approval_authority: "Security Review & Model Policy"
+ signing_authority: true
+ budget_approval_limit_usd: 100000
+ dependencies: []
+ approval_path: |
+ Phase 0: Approve single-seat Copilot usage policy and data-handling guidelines
+ Phase 1: SAST/DAST review under Copilot-generated changes
+ Phase 2-3: Security hardening, SQLite/input validation checkpoints
+ contact_email: "[TBD]"
+ escalation_contact: "EXEC-001 (CTO)"
 
-  - stakeholder_id: "QA-001"
-    name: "QA Lead / Test Architecture"
-    organization: "Aries-Serpent"
-    role: "Quality Assurance Authority"
-    priority: 5
-    approval_authority: "Test Strategy & Coverage Gates"
-    signing_authority: true
-    budget_approval_limit_usd: 150000
-    dependencies: ["TECH-001"]
-    approval_path: |
-      Phase 0: Approve test coverage plan for Copilot-generated code
-      Phase 1: Validate 20+ tests, >80% coverage achieved
-      Phase 2-3: Performance/regression test expansion
-    contact_email: "[TBD]"
-    escalation_contact: "TECH-001 (Tech Lead)"
+ - stakeholder_id: "QA-001"
+ name: "QA Lead / Test Architecture"
+ organization: "Aries-Serpent"
+ role: "Quality Assurance Authority"
+ priority: 5
+ approval_authority: "Test Strategy & Coverage Gates"
+ signing_authority: true
+ budget_approval_limit_usd: 150000
+ dependencies: ["TECH-001"]
+ approval_path: |
+ Phase 0: Approve test coverage plan for Copilot-generated code
+ Phase 1: Validate 20+ tests, >80% coverage achieved
+ Phase 2-3: Performance/regression test expansion
+ contact_email: "[TBD]"
+ escalation_contact: "TECH-001 (Tech Lead)"
 
-  # TIER 3: PM, FINANCE, OPERATOR
+ # TIER 3: PM, FINANCE, OPERATOR
 
-  - stakeholder_id: "PM-001"
-    name: "Project Manager / Scrum Master"
-    organization: "Aries-Serpent"
-    role: "Project Governance"
-    priority: 6
-    approval_authority: "Timeline, Milestones"
-    signing_authority: true
-    budget_approval_limit_usd: 200000
-    dependencies: ["EXEC-001", "EXEC-002"]
-    approval_path: |
-      Phase 0: Plan single-seat throughput schedule
-      Phase 1: Sprint plan aligned to single-seat constraints
-      Phase 2-3: Release planning with Copilot-first execution
-    contact_email: "[TBD]"
-    escalation_contact: "EXEC-002 (CPO)"
+ - stakeholder_id: "PM-001"
+ name: "Project Manager / Scrum Master"
+ organization: "Aries-Serpent"
+ role: "Project Governance"
+ priority: 6
+ approval_authority: "Timeline, Milestones"
+ signing_authority: true
+ budget_approval_limit_usd: 200000
+ dependencies: ["EXEC-001", "EXEC-002"]
+ approval_path: |
+ Phase 0: Plan single-seat throughput schedule
+ Phase 1: Sprint plan aligned to single-seat constraints
+ Phase 2-3: Release planning with Copilot-first execution
+ contact_email: "[TBD]"
+ escalation_contact: "EXEC-002 (CPO)"
 
-  - stakeholder_id: "FIN-001"
-    name: "Finance / Budget Owner"
-    organization: "Aries-Serpent"
-    role: "Budget Authority"
-    priority: 7
-    approval_authority: "Budget Allocation & Cost Monitoring"
-    signing_authority: true
-    budget_approval_limit_usd: 500000
-    dependencies: ["EXEC-001"]
-    approval_path: |
-      Phase 0: Approve $39/month Copilot Pro+ subscription (single seat)
-      Phase 1: Confirm proration usage (7 iteration window)
-      Phase 2-3: Confirm proration usage (77 iteration window) + monitor overage (expected $0)
-    contact_email: "[TBD]"
-    escalation_contact: "EXEC-001 (CTO)"
+ - stakeholder_id: "FIN-001"
+ name: "Finance / Budget Owner"
+ organization: "Aries-Serpent"
+ role: "Budget Authority"
+ priority: 7
+ approval_authority: "Budget Allocation & Cost Monitoring"
+ signing_authority: true
+ budget_approval_limit_usd: 500000
+ dependencies: ["EXEC-001"]
+ approval_path: |
+ Phase 0: Approve $39/month Copilot Pro+ subscription (single seat)
+ Phase 1: Confirm proration usage (7 iteration window)
+ Phase 2-3: Confirm proration usage (77 iteration window) + monitor overage (expected $0)
+ contact_email: "[TBD]"
+ escalation_contact: "EXEC-001 (CTO)"
 
-  - stakeholder_id: "OPS-001"
-    name: "Copilot Single-Seat Operator"
-    organization: "Aries-Serpent"
-    role: "Execution Owner (All requests/iterations via one seat)"
-    priority: 8
-    approval_authority: "Operational Confirmation"
-    signing_authority: false
-    budget_approval_limit_usd: 0
-    dependencies: ["TECH-001", "PM-001"]
-    approval_path: |
-      Phase 0: Confirm access and model policy compliance
-      Phase 1: Execute commits/PRs via Copilot agent/workflows
-      Phase 2-3: Maintain usage within allowance; per-phase reporting
-    contact_email: "mbaetiong@[TBD]"
-    escalation_contact: "PM-001 (Project Manager)"
+ - stakeholder_id: "OPS-001"
+ name: "Copilot Single-Seat Operator"
+ organization: "Aries-Serpent"
+ role: "Execution Owner (All requests/iterations via one seat)"
+ priority: 8
+ approval_authority: "Operational Confirmation"
+ signing_authority: false
+ budget_approval_limit_usd: 0
+ dependencies: ["TECH-001", "PM-001"]
+ approval_path: |
+ Phase 0: Confirm access and model policy compliance
+ Phase 1: Execute commits/PRs via Copilot agent/workflows
+ Phase 2-3: Maintain usage within allowance; per-phase reporting
+ contact_email: "mbaetiong@[TBD]"
+ escalation_contact: "PM-001 (Project Manager)"
 
 # ============================================================================
 # SECTION 2: APPROVAL MATRIX (WHO APPROVES WHAT, WHEN)
@@ -1622,119 +1622,119 @@ stakeholders:
 
 approval_matrix:
 
-  phase_0_design_review:
-    gate_name: "Phase 0: Design & Single-Seat Policy Review"
-    gate_stage: "PRE-IMPLEMENTATION"
-    required_approvals:
-      - stakeholder_id: "TECH-001"
-        approval_type: "Architecture + Single-Seat Model Policy"
-        deadline_days: 2
-        approval_criteria:
-          - "StandardizedASTNode/Graph/Metrics design approved"
-          - "Single-seat Copilot usage policy approved (models, caps, fallbacks)"
-          - "Performance assumptions documented"
-          - "25+ OSS references verified (no reinvention)"
-      - stakeholder_id: "SEC-001"
-        approval_type: "Security Policy for Copilot Use"
-        deadline_days: 2
-        approval_criteria:
-          - "No PII/secret exposure in prompts"
-          - "Dependency CVE checks configured"
-          - "SAST/DAST gates planned"
-      - stakeholder_id: "QA-001"
-        approval_type: "Testing Plan Under Copilot-Generated Code"
-        deadline_days: 2
-        approval_criteria:
-          - "20+ unit/integration tests planned"
-          - ">80% coverage target"
-          - "Performance checks defined"
-      - stakeholder_id: "FIN-001"
-        approval_type: "Budget Check (Pro+ single-seat)"
-        deadline_days: 1
-        approval_criteria:
-          - "Seat price $39/month accepted"
-          - "Proration accepted (per-phase)"
-          - "Overage mechanism $0.04/PR noted (expected $0)"
-    go_no_go_criteria:
-      - "All 4 approvals obtained"
-      - "Single-seat policy accepted"
-      - "Zero additional licenses required"
+ phase_0_design_review:
+ gate_name: "Phase 0: Design & Single-Seat Policy Review"
+ gate_stage: "PRE-IMPLEMENTATION"
+ required_approvals:
+ - stakeholder_id: "TECH-001"
+ approval_type: "Architecture + Single-Seat Model Policy"
+ deadline_days: 2
+ approval_criteria:
+ - "StandardizedASTNode/Graph/Metrics design approved"
+ - "Single-seat Copilot usage policy approved (models, caps, fallbacks)"
+ - "Performance assumptions documented"
+ - "25+ OSS references verified (no reinvention)"
+ - stakeholder_id: "SEC-001"
+ approval_type: "Security Policy for Copilot Use"
+ deadline_days: 2
+ approval_criteria:
+ - "No PII/secret exposure in prompts"
+ - "Dependency CVE checks configured"
+ - "SAST/DAST gates planned"
+ - stakeholder_id: "QA-001"
+ approval_type: "Testing Plan Under Copilot-Generated Code"
+ deadline_days: 2
+ approval_criteria:
+ - "20+ unit/integration tests planned"
+ - ">80% coverage target"
+ - "Performance checks defined"
+ - stakeholder_id: "FIN-001"
+ approval_type: "Budget Check (Pro+ single-seat)"
+ deadline_days: 1
+ approval_criteria:
+ - "Seat price $39/month accepted"
+ - "Proration accepted (per-phase)"
+ - "Overage mechanism $0.04/PR noted (expected $0)"
+ go_no_go_criteria:
+ - "All 4 approvals obtained"
+ - "Single-seat policy accepted"
+ - "Zero additional licenses required"
 
-  phase_0_stakeholder_alignment:
-    gate_name: "Phase 0: Stakeholder Alignment & GO/NO-GO"
-    gate_stage: "STAKEHOLDER DECISION"
-    required_approvals:
-      - stakeholder_id: "EXEC-001"
-        approval_type: "Executive GO/NO-GO (Single-Seat)"
-        deadline_days: 1
-        approval_criteria:
-          - "Single Copilot Pro+ seat confirmed for ALL requests"
-          - "Budget request ≤ $150 approved"
-          - "Risk profile accepted"
-      - stakeholder_id: "EXEC-002"
-        approval_type: "Product Alignment (Single-Seat Throughput)"
-        deadline_days: 1
-        approval_criteria:
-          - "Roadmap aligned to Copilot-first cadence"
-    go_no_go_criteria:
-      - "CTO approval obtained"
-      - "CPO alignment obtained"
-      - "Finance confirmed budget ≤ $150"
+ phase_0_stakeholder_alignment:
+ gate_name: "Phase 0: Stakeholder Alignment & GO/NO-GO"
+ gate_stage: "STAKEHOLDER DECISION"
+ required_approvals:
+ - stakeholder_id: "EXEC-001"
+ approval_type: "Executive GO/NO-GO (Single-Seat)"
+ deadline_days: 1
+ approval_criteria:
+ - "Single Copilot Pro+ seat confirmed for ALL requests"
+ - "Budget request ≤ $150 approved"
+ - "Risk profile accepted"
+ - stakeholder_id: "EXEC-002"
+ approval_type: "Product Alignment (Single-Seat Throughput)"
+ deadline_days: 1
+ approval_criteria:
+ - "Roadmap aligned to Copilot-first cadence"
+ go_no_go_criteria:
+ - "CTO approval obtained"
+ - "CPO alignment obtained"
+ - "Finance confirmed budget ≤ $150"
 
-  phase_1_implementation_gate:
-    gate_name: "Phase 1: Implementation Completion & Review (Single-Seat)"
-    gate_stage: "POST-IMPLEMENTATION"
-    required_approvals:
-      - stakeholder_id: "OPS-001"
-        approval_type: "Execution Confirmation (Single-Seat)"
-        deadline_days: 1
-        approval_criteria:
-          - "All commits/PRs executed via Copilot single seat"
-          - "Usage within phase allowance (350 PR)"
-      - stakeholder_id: "TECH-001"
-        approval_type: "Architecture & Code Review"
-        deadline_days: 1
-        approval_criteria:
-          - "Architecture adhered to"
-          - "5 atomic commits"
-          - "No anti-patterns"
-      - stakeholder_id: "QA-001"
-        approval_type: "Quality Gate"
-        deadline_days: 1
-        approval_criteria:
-          - "20/20 tests passing"
-          - ">80% coverage"
-      - stakeholder_id: "SEC-001"
-        approval_type: "Security Gate"
-        deadline_days: 1
-        approval_criteria:
-          - "No high/critical security issues"
-          - "Dependency audit clean"
-    go_no_go_criteria:
-      - "All 4 approvals obtained"
-      - "PR ready to merge"
-      - "CI/CD green"
+ phase_1_implementation_gate:
+ gate_name: "Phase 1: Implementation Completion & Review (Single-Seat)"
+ gate_stage: "POST-IMPLEMENTATION"
+ required_approvals:
+ - stakeholder_id: "OPS-001"
+ approval_type: "Execution Confirmation (Single-Seat)"
+ deadline_days: 1
+ approval_criteria:
+ - "All commits/PRs executed via Copilot single seat"
+ - "Usage within phase allowance (350 PR)"
+ - stakeholder_id: "TECH-001"
+ approval_type: "Architecture & Code Review"
+ deadline_days: 1
+ approval_criteria:
+ - "Architecture adhered to"
+ - "5 atomic commits"
+ - "No anti-patterns"
+ - stakeholder_id: "QA-001"
+ approval_type: "Quality Gate"
+ deadline_days: 1
+ approval_criteria:
+ - "20/20 tests passing"
+ - ">80% coverage"
+ - stakeholder_id: "SEC-001"
+ approval_type: "Security Gate"
+ deadline_days: 1
+ approval_criteria:
+ - "No high/critical security issues"
+ - "Dependency audit clean"
+ go_no_go_criteria:
+ - "All 4 approvals obtained"
+ - "PR ready to merge"
+ - "CI/CD green"
 
-  phase_2_3_gate:
-    gate_name: "Phase 2-3: Full Implementation & Release (Single-Seat)"
-    gate_stage: "MAJOR MILESTONE"
-    required_approvals:
-      - stakeholder_id: "EXEC-001"
-        approval_type: "Proceed with Single-Seat or Adjust"
-        deadline_days: 2
-        approval_criteria:
-          - "Phase 1 merged"
-          - "Single-seat plan retained (default) OR policy adjusted with justification"
-      - stakeholder_id: "PM-001"
-        approval_type: "Schedule & Reporting"
-        deadline_days: 2
-        approval_criteria:
-          - "per-phase usage monitoring enabled"
-          - "Alerts at 80% allowance configured"
-    go_no_go_criteria:
-      - "CTO decision recorded"
-      - "Monitoring confirmed"
-      - "Budget tracking in place (license-only)"
+ phase_2_3_gate:
+ gate_name: "Phase 2-3: Full Implementation & Release (Single-Seat)"
+ gate_stage: "MAJOR MILESTONE"
+ required_approvals:
+ - stakeholder_id: "EXEC-001"
+ approval_type: "Proceed with Single-Seat or Adjust"
+ deadline_days: 2
+ approval_criteria:
+ - "Phase 1 merged"
+ - "Single-seat plan retained (default) OR policy adjusted with justification"
+ - stakeholder_id: "PM-001"
+ approval_type: "Schedule & Reporting"
+ deadline_days: 2
+ approval_criteria:
+ - "per-phase usage monitoring enabled"
+ - "Alerts at 80% allowance configured"
+ go_no_go_criteria:
+ - "CTO decision recorded"
+ - "Monitoring confirmed"
+ - "Budget tracking in place (license-only)"
 
 # ============================================================================
 # SECTION 3: RESOURCE ALLOCATION & TEAM COMMITMENT (Single-Seat Execution)
@@ -1742,57 +1742,57 @@ approval_matrix:
 
 resource_allocation:
 
-  single_seat_policy:
-    seat_owner: "mbaetiong (OPS-001)"
-    license_plan: "Copilot Pro+ (Personal)"
-    seat_price_usd_per_month: 39.0
-    monthly_included_premium_requests: 1500
-    overage_cost_usd_per_request: 0.04
-    enforcement:
-      - "All Copilot Chat/Agent/coding agent sessions executed by seat_owner"
-      - "Team members Phase 5 request tasks; execution performed via single seat"
-      - "per-phase usage report shared in project channel"
-    fallbacks:
-      - "Prefer GPT-4o/GPT-4.1/GPT-5 mini (multiplier 0)"
-      - "Sonnet 4.5 default for reasoning (1x)"
-      - "Opus 4.1 only for critical decisions (10x), capped"
-      - "Copilot Agents for bulk generation (1 PR/session)"
+ single_seat_policy:
+ seat_owner: "mbaetiong (OPS-001)"
+ license_plan: "Copilot Pro+ (Personal)"
+ seat_price_usd_per_month: 39.0
+ monthly_included_premium_requests: 1500
+ overage_cost_usd_per_request: 0.04
+ enforcement:
+ - "All Copilot Chat/Agent/coding agent sessions executed by seat_owner"
+ - "Team members Phase 5 request tasks; execution performed via single seat"
+ - "per-phase usage report shared in project channel"
+ fallbacks:
+ - "Prefer GPT-4o/GPT-4.1/GPT-5 mini (multiplier 0)"
+ - "Sonnet 4.5 default for reasoning (1x)"
+ - "Opus 4.1 only for critical decisions (10x), capped"
+ - "Copilot Agents for bulk generation (1 PR/session)"
 
-  phase_0_2_weeks:
-    execution: "Research & Planning via Copilot single seat"
-    start_date: "2025-11-10"
-    end_date: "2025-11-23"
-    roles:
-      - role: "OPS-001 (Seat Owner)"
-        tasks: ["Deep research", "Doc generation", "Architecture notes"]
-    seat_months: 0.4667
-    included_pr: 700
-    expected_pr_usage: 125
-    note: "Well within allowance"
+ phase_0_2_weeks:
+ execution: "Research & Planning via Copilot single seat"
+ start_date: "2025-11-10"
+ end_date: "2025-11-23"
+ roles:
+ - role: "OPS-001 (Seat Owner)"
+ tasks: ["Deep research", "Doc generation", "Architecture notes"]
+ seat_months: 0.4667
+ included_pr: 700
+ expected_pr_usage: 125
+ note: "Well within allowance"
 
-  phase_1_5_to_7_days:
-    execution: "Quick Wins via single seat"
-    start_date: "2025-11-24"
-    end_date: 2026-07-13
-    roles:
-      - role: "OPS-001 (Seat Owner)"
-        tasks: ["Node/Graph/Metrics/CLI generation", "Test suite generation"]
-    seat_months: 0.2333
-    included_pr: 350
-    expected_pr_usage: 93
-    note: "Well within allowance"
+ phase_1_5_to_7_days:
+ execution: "Quick Wins via single seat"
+ start_date: "2025-11-24"
+ end_date: 2026-07-13
+ roles:
+ - role: "OPS-001 (Seat Owner)"
+ tasks: ["Node/Graph/Metrics/CLI generation", "Test suite generation"]
+ seat_months: 0.2333
+ included_pr: 350
+ expected_pr_usage: 93
+ note: "Well within allowance"
 
-  phase_2_3_77_days:
-    execution: "Full Implementation via single seat"
-    start_date: "2025-12-01"
-    end_date: "2026-02-07"
-    roles:
-      - role: "OPS-001 (Seat Owner)"
-        tasks: ["Streaming/parallel/plugins", "Docs", "Security testing"]
-    seat_months: 2.5667
-    included_pr: 3850
-    expected_pr_usage: 2514
-    note: "Within allowance assuming Opus usage capped as modeled"
+ phase_2_3_77_days:
+ execution: "Full Implementation via single seat"
+ start_date: "2025-12-01"
+ end_date: "2026-02-07"
+ roles:
+ - role: "OPS-001 (Seat Owner)"
+ tasks: ["Streaming/parallel/plugins", "Docs", "Security testing"]
+ seat_months: 2.5667
+ included_pr: 3850
+ expected_pr_usage: 2514
+ note: "Within allowance assuming Opus usage capped as modeled"
 
 # ============================================================================
 # SECTION 4: BUDGET ESTIMATE & COST BREAKDOWN (Single-Seat Only)
@@ -1800,48 +1800,48 @@ resource_allocation:
 
 budget:
 
-  total_project_budget_usd: 150
-  currency: "USD"
-  budget_variance_tolerance_percent: 20
+ total_project_budget_usd: 150
+ currency: "USD"
+ budget_variance_tolerance_percent: 20
 
-  cost_breakdown:
-    phase_0_planning:
-      description: "Single-seat license proration"
-      license_cost_usd: 18.20
-      included_pr: 700
-      estimated_pr_used: 125
-      overage_cost_usd: 0.00
-      total_phase_0_usd: 18.20
-    phase_1_quick_wins:
-      description: "Single-seat license proration"
-      license_cost_usd: 9.10
-      included_pr: 350
-      estimated_pr_used: 93
-      overage_cost_usd: 0.00
-      total_phase_1_usd: 9.10
-    phase_2_3_full_implementation:
-      description: "Single-seat license proration"
-      license_cost_usd: 100.10
-      included_pr: 3850
-      estimated_pr_used: 2514
-      overage_cost_usd: 0.00
-      total_phase_2_3_usd: 100.10
+ cost_breakdown:
+ phase_0_planning:
+ description: "Single-seat license proration"
+ license_cost_usd: 18.20
+ included_pr: 700
+ estimated_pr_used: 125
+ overage_cost_usd: 0.00
+ total_phase_0_usd: 18.20
+ phase_1_quick_wins:
+ description: "Single-seat license proration"
+ license_cost_usd: 9.10
+ included_pr: 350
+ estimated_pr_used: 93
+ overage_cost_usd: 0.00
+ total_phase_1_usd: 9.10
+ phase_2_3_full_implementation:
+ description: "Single-seat license proration"
+ license_cost_usd: 100.10
+ included_pr: 3850
+ estimated_pr_used: 2514
+ overage_cost_usd: 0.00
+ total_phase_2_3_usd: 100.10
 
-  totals:
-    license_costs_total_usd: 127.40
-    expected_overage_cost_usd: 0.00
-    contingency_usd: 22.60
-    governance_budget_request_usd: 150
-    notes: "Contingency allows for minor calendar proration differences."
+ totals:
+ license_costs_total_usd: 127.40
+ expected_overage_cost_usd: 0.00
+ contingency_usd: 22.60
+ governance_budget_request_usd: 150
+ notes: "Contingency allows for minor calendar proration differences."
 
-  financial_controls:
-    premium_request_monitoring:
-      alert_threshold_percent: 80
-      report_frequency: "per-phase"
-      remedial_actions:
-        - "Shift to multiplier-0 models (GPT-4o/4.1/5 mini)"
-        - "Defer Opus requests to next allowance window"
-        - "Prefer Copilot Agents for bulk generation"
+ financial_controls:
+ premium_request_monitoring:
+ alert_threshold_percent: 80
+ report_frequency: "per-phase"
+ remedial_actions:
+ - "Shift to multiplier-0 models (GPT-4o/4.1/5 mini)"
+ - "Defer Opus requests to next allowance window"
+ - "Prefer Copilot Agents for bulk generation"
 
 # ============================================================================
 # SECTION 5: APPROVAL WORKFLOW TIMELINE (Single-Seat)
@@ -1849,41 +1849,41 @@ budget:
 
 approval_timeline:
 
-  day_1_2025_11_10:
-    title: "Kick-off & Single-Seat Policy Presentation"
-    actions:
-      - "Present deep research findings"
-      - "Present single-seat policy and cost model"
-      - "Confirm OPS-001 as seat owner"
-    stakeholders: ["EXEC-001", "EXEC-002", "TECH-001", "FIN-001", "SEC-001", "PM-001"]
+ day_1_2025_11_10:
+ title: "Kick-off & Single-Seat Policy Presentation"
+ actions:
+ - "Present deep research findings"
+ - "Present single-seat policy and cost model"
+ - "Confirm OPS-001 as seat owner"
+ stakeholders: ["EXEC-001", "EXEC-002", "TECH-001", "FIN-001", "SEC-001", "PM-001"]
 
-  day_2_2025_11_11:
-    title: "Architecture, Security, QA approvals"
-    actions:
-      - "TECH-001 approves design + policy"
-      - "SEC-001 approves security rules"
-      - "QA-001 approves test strategy"
-    deadline: "EOD 2025-11-11"
+ day_2_2025_11_11:
+ title: "Architecture, Security, QA approvals"
+ actions:
+ - "TECH-001 approves design + policy"
+ - "SEC-001 approves security rules"
+ - "QA-001 approves test strategy"
+ deadline: "EOD 2025-11-11"
 
-  day_3_2025_11_12:
-    title: "Finance & Executive GO/NO-GO"
-    actions:
-      - "FIN-001 approves $39/month Pro+ seat"
-      - "EXEC-001 GO/NO-GO"
-      - "EXEC-002 roadmap alignment"
-    deadline: "EOD 2025-11-12"
+ day_3_2025_11_12:
+ title: "Finance & Executive GO/NO-GO"
+ actions:
+ - "FIN-001 approves $39/month Pro+ seat"
+ - "EXEC-001 GO/NO-GO"
+ - "EXEC-002 roadmap alignment"
+ deadline: "EOD 2025-11-12"
 
-  day_4_2025_11_13:
-    title: "Operationalization"
-    actions:
-      - "Provision single seat to OPS-001"
-      - "Configure usage monitoring & alerts"
+ day_4_2025_11_13:
+ title: "Operationalization"
+ actions:
+ - "Provision single seat to OPS-001"
+ - "Configure usage monitoring & alerts"
 
-  day_5_2025_11_14:
-    title: "Phase 1 Kickoff Confirmed"
-    actions:
-      - "Schedule dailies"
-      - "Begin implementation 2025-11-24"
+ day_5_2025_11_14:
+ title: "Phase 1 Kickoff Confirmed"
+ actions:
+ - "Schedule dailies"
+ - "Begin implementation 2025-11-24"
 
 # ============================================================================
 # SECTION 6: GO/NO-GO DECISION CRITERIA
@@ -1891,39 +1891,39 @@ approval_timeline:
 
 go_no_go_gates:
 
-  phase_0_go_no_go:
-    gate_date: "2025-11-12"
-    required_approvals:
-      - "EXEC-001 (CTO) — Single-seat GO/NO-GO"
-      - "EXEC-002 (CPO) — Roadmap alignment"
-      - "FIN-001 (Finance) — Seat budget ≤ $150 total approved"
-      - "TECH-001 (Tech Lead) — Policy/design approved"
-      - "SEC-001 (Security) — Policy approved"
-    go_criteria:
-      - single_seat_policy_accepted: true
-      - ops_001_seat_assigned: true
-      - monitoring_enabled: true
+ phase_0_go_no_go:
+ gate_date: "2025-11-12"
+ required_approvals:
+ - "EXEC-001 (CTO) — Single-seat GO/NO-GO"
+ - "EXEC-002 (CPO) — Roadmap alignment"
+ - "FIN-001 (Finance) — Seat budget ≤ $150 total approved"
+ - "TECH-001 (Tech Lead) — Policy/design approved"
+ - "SEC-001 (Security) — Policy approved"
+ go_criteria:
+ - single_seat_policy_accepted: true
+ - ops_001_seat_assigned: true
+ - monitoring_enabled: true
 
-  phase_1_go_no_go:
-    gate_date: 2026-07-13
-    required_approvals:
-      - "OPS-001 — Execution confirmation"
-      - "TECH-001 — Code review"
-      - "QA-001 — Coverage gate"
-      - "SEC-001 — Security gate"
-    go_criteria:
-      - tests_passing_100_percent: true
-      - coverage_ge_80_percent: true
-      - pr_ready_for_merge: true
+ phase_1_go_no_go:
+ gate_date: 2026-07-13
+ required_approvals:
+ - "OPS-001 — Execution confirmation"
+ - "TECH-001 — Code review"
+ - "QA-001 — Coverage gate"
+ - "SEC-001 — Security gate"
+ go_criteria:
+ - tests_passing_100_percent: true
+ - coverage_ge_80_percent: true
+ - pr_ready_for_merge: true
 
-  phase_2_go_no_go:
-    gate_date: "2026-02-07"
-    required_approvals:
-      - "EXEC-001 — Retain/adjust single-seat policy"
-      - "PM-001 — Release sign-off"
-    go_criteria:
-      - within_included_pr_allowance: true
-      - no_critical_security_issues: true
+ phase_2_go_no_go:
+ gate_date: "2026-02-07"
+ required_approvals:
+ - "EXEC-001 — Retain/adjust single-seat policy"
+ - "PM-001 — Release sign-off"
+ go_criteria:
+ - within_included_pr_allowance: true
+ - no_critical_security_issues: true
 
 # ============================================================================
 # SECTION 7: APPROVAL SIGNATURE BLOCKS
@@ -1931,107 +1931,107 @@ go_no_go_gates:
 
 approvals_required:
 
-  phase_0_executive_approval:
-    title: "Phase 0: Executive GO/NO-GO (Single Seat)"
-    date: 2026-07-11
-    approval_required_from:
-      - name: "[CTO Name]"
-        title: "Chief Technology Officer"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "GO/NO-GO Authority"
-      - name: "[CPO Name]"
-        title: "Chief Product Officer"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "Roadmap Alignment"
-      - name: "[Finance Director Name]"
-        title: "Finance Director"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "Copilot Pro+ Single-Seat Budget Approval"
+ phase_0_executive_approval:
+ title: "Phase 0: Executive GO/NO-GO (Single Seat)"
+ date: 2026-07-11
+ approval_required_from:
+ - name: "[CTO Name]"
+ title: "Chief Technology Officer"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "GO/NO-GO Authority"
+ - name: "[CPO Name]"
+ title: "Chief Product Officer"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "Roadmap Alignment"
+ - name: "[Finance Director Name]"
+ title: "Finance Director"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "Copilot Pro+ Single-Seat Budget Approval"
 
-  phase_1_technical_approval:
-    title: "Phase 1: Completion Approval"
-    date: 2026-07-13
-    approval_required_from:
-      - name: "[Seat Owner Name]"
-        title: "OPS-001 (Copilot Single-Seat Operator)"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "Execution Confirmation"
-      - name: "[Tech Lead Name]"
-        title: "Technical Lead"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "Architecture & Code Review"
-      - name: "[QA Lead Name]"
-        title: "QA Lead"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "Test Coverage & Quality Assurance"
-      - name: "[Security Lead Name]"
-        title: "Security Lead"
-        signature_block: "__________________________    Date: __________"
-        approval_authority: "Security Code Review"
+ phase_1_technical_approval:
+ title: "Phase 1: Completion Approval"
+ date: 2026-07-13
+ approval_required_from:
+ - name: "[Seat Owner Name]"
+ title: "OPS-001 (Copilot Single-Seat Operator)"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "Execution Confirmation"
+ - name: "[Tech Lead Name]"
+ title: "Technical Lead"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "Architecture & Code Review"
+ - name: "[QA Lead Name]"
+ title: "QA Lead"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "Test Coverage & Quality Assurance"
+ - name: "[Security Lead Name]"
+ title: "Security Lead"
+ signature_block: "__________________________ Date: __________"
+ approval_authority: "Security Code Review"
 
 # ============================================================================
 # SECTION 8: ESCALATION & CONTINGENCY
 # ============================================================================
 
 escalation_procedures:
-  nearing_allowance_80_percent:
-    escalation_to: "PM-001, TECH-001"
-    action:
-      - "Shift to multiplier-0 models"
-      - "Defer Opus usage"
-      - "Use Copilot Agents for bulk changes"
-  policy_violation:
-    escalation_to: "CTO, Security"
-    action:
-      - "Immediate review"
-      - "Revoke offending usage"
-      - "Reinforce policy"
+ nearing_allowance_80_percent:
+ escalation_to: "PM-001, TECH-001"
+ action:
+ - "Shift to multiplier-0 models"
+ - "Defer Opus usage"
+ - "Use Copilot Agents for bulk changes"
+ policy_violation:
+ escalation_to: "CTO, Security"
+ action:
+ - "Immediate review"
+ - "Revoke offending usage"
+ - "Reinforce policy"
 
 # ============================================================================
 # SECTION 9: APPROVAL HISTORY & AUDIT TRAIL
 # ============================================================================
 
 approval_history:
-  document_version: "2.0"
-  generated_date: "2025-11-10 16:04:41 UTC"
-  last_updated: 2026-07-11
-  phase_0_approvals:
-    status: "PENDING"
-    approvals_required: 3
-    pending_from:
-      - "EXEC-001 (CTO)"
-      - "EXEC-002 (CPO)"
-      - "FIN-001 (Finance)"
-    target_completion_date: "2025-11-12"
-  phase_1_approvals:
-    status: "PENDING"
-    approvals_required: 4
-    pending_from:
-      - "OPS-001"
-      - "TECH-001"
-      - "QA-001"
-      - "SEC-001"
-    target_completion_date: 2026-07-13
+ document_version: "2.0"
+ generated_date: "2025-11-10 16:04:41 UTC"
+ last_updated: 2026-07-11
+ phase_0_approvals:
+ status: "PENDING"
+ approvals_required: 3
+ pending_from:
+ - "EXEC-001 (CTO)"
+ - "EXEC-002 (CPO)"
+ - "FIN-001 (Finance)"
+ target_completion_date: "2025-11-12"
+ phase_1_approvals:
+ status: "PENDING"
+ approvals_required: 4
+ pending_from:
+ - "OPS-001"
+ - "TECH-001"
+ - "QA-001"
+ - "SEC-001"
+ target_completion_date: 2026-07-13
 
 # ============================================================================
 # SECTION 10: SUMMARY & NEXT ACTIONS
 # ============================================================================
 
 summary:
-  overall_status: " READY FOR SINGLE-SEAT APPROVALS"
-  key_decisions_required:
-    - "Approve single-seat Copilot Pro+ policy (CTO, CPO)"
-    - "Approve budget ≤ $150 total (Finance)"
-    - "Assign seat to OPS-001 (mbaetiong)"
-    - "Enable per-phase usage monitoring"
-  critical_success_factors:
-    - "All approvals by 2025-11-12"
-    - "Zero overage (maintain model policy caps)"
-    - "Quality gates met (>80% coverage, 100% tests)"
-  next_immediate_actions:
-    - "[ ] Schedule alignment meeting (Day 1)"
-    - "[ ] Provision seat & monitoring (Day 4)"
-    - "[ ] Kickoff Phase 1 (2025-11-24)"
+ overall_status: " READY FOR SINGLE-SEAT APPROVALS"
+ key_decisions_required:
+ - "Approve single-seat Copilot Pro+ policy (CTO, CPO)"
+ - "Approve budget ≤ $150 total (Finance)"
+ - "Assign seat to OPS-001 (mbaetiong)"
+ - "Enable per-phase usage monitoring"
+ critical_success_factors:
+ - "All approvals by 2025-11-12"
+ - "Zero overage (maintain model policy caps)"
+ - "Quality gates met (>80% coverage, 100% tests)"
+ next_immediate_actions:
+ - "[ ] Schedule alignment meeting (Day 1)"
+ - "[ ] Provision seat & monitoring (Day 4)"
+ - "[ ] Kickoff Phase 1 (2025-11-24)"
 
 ...
 

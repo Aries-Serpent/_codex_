@@ -1,6 +1,6 @@
 # Quantum-Relativistic-Dirac Orchestrator Architecture
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -9,52 +9,52 @@
 The Quantum Orchestrator is a physics-inspired task scheduling and optimization system that applies quantum mechanical and relativistic principles to computational workflows.
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    QUANTUM-RELATIVISTIC-DIRAC ORCHESTRATOR                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                        PHASE 1: CORE PHYSICS                         │   │
-│  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────────────┐   │   │
-│  │  │  SCHRÖDINGER  │  │ KLEIN-GORDON  │  │        DIRAC          │   │   │
-│  │  │  iℏ∂ψ/∂t=Ĥψ  │──│ E²=p²c²+m²c⁴ │──│ iℏ∂ψ/∂t=-iℏα·∇ψ+βmc²ψ│   │   │
-│  │  │               │  │               │  │   4-Spinor States     │   │   │
-│  │  └───────────────┘  └───────────────┘  └───────────────────────┘   │   │
-│  │                              │                                      │   │
-│  │                              ▼                                      │   │
-│  │  ┌─────────────────────────────────────────────────────────────┐   │   │
-│  │  │                  PROBABILITY CURRENT                         │   │   │
-│  │  │        j = (iℏ/2mc²)(ψ*∂ψ/∂t - ψ∂ψ*/∂t)                   │   │   │
-│  │  │        Conservation: ∂ρ/∂t + ∇·j = 0                        │   │   │
-│  │  └─────────────────────────────────────────────────────────────┘   │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                   │                                         │
-│                                   ▼                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    PHASE 2: PERFORMANCE & MLOPS                      │   │
-│  │  ┌────────────────────────┐  ┌────────────────────────────────┐    │   │
-│  │  │   2A: VECTORIZED       │  │     2B: MLOPS BRIDGE           │    │   │
-│  │  │   • Batch Evolution    │  │     • Prometheus Metrics       │    │   │
-│  │  │   • Spatial Indexing   │  │     • Structured Logging       │    │   │
-│  │  │   • O(log N) Queries   │  │     • Observable Hooks         │    │   │
-│  │  └────────────────────────┘  └────────────────────────────────┘    │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                   │                                         │
-│                                   ▼                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    PHASE C: QFT EXTENSIONS                           │   │
-│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌────────────┐ │   │
-│  │  │    C.1       │ │    C.2       │ │    C.3       │ │    C.4     │ │   │
-│  │  │   SECOND     │ │  ENTANGLE-   │ │    PATH      │ │   GAUGE    │ │   │
-│  │  │ QUANTIZATION │ │    MENT      │ │  INTEGRAL    │ │ SYMMETRIES │ │   │
-│  │  │              │ │              │ │              │ │            │ │   │
-│  │  │ â†/â ops    │ │ Bell States  │ │ S=∫L dt      │ │ U(1), ∇·j=0│ │   │
-│  │  │ Fock States  │ │ Φ±, Ψ±      │ │ Annealing    │ │ Noether    │ │   │
-│  │  │ TaskSpawner  │ │ Transactions │ │ Optimization │ │ Currents   │ │   │
-│  │  └──────────────┘ └──────────────┘ └──────────────┘ └────────────┘ │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+ QUANTUM-RELATIVISTIC-DIRAC ORCHESTRATOR 
+
+ 
+ 
+ PHASE 1: CORE PHYSICS 
+ 
+ SCHRÖDINGER KLEIN-GORDON DIRAC 
+ iℏ∂ψ/∂t=Ĥψ E²=p²c²+m²c⁴ iℏ∂ψ/∂t=-iℏα·∇ψ+βmc²ψ 
+ 4-Spinor States 
+ 
+ 
+ 
+ 
+ PROBABILITY CURRENT 
+ j = (iℏ/2mc²)(ψ*∂ψ/∂t - ψ∂ψ*/∂t) 
+ Conservation: ∂ρ/∂t + ∇·j = 0 
+ 
+ 
+ 
+ 
+ 
+ PHASE 2: PERFORMANCE & MLOPS 
+ 
+ 2A: VECTORIZED 2B: MLOPS BRIDGE 
+ • Batch Evolution • Prometheus Metrics 
+ • Spatial Indexing • Structured Logging 
+ • O(log N) Queries • Observable Hooks 
+ 
+ 
+ 
+ 
+ 
+ PHASE C: QFT EXTENSIONS 
+ 
+ C.1 C.2 C.3 C.4 
+ SECOND ENTANGLE- PATH GAUGE 
+ QUANTIZATION MENT INTEGRAL SYMMETRIES 
+ 
+ â†/â ops Bell States S=∫L dt U(1), ∇·j=0 
+ Fock States Φ±, Ψ± Annealing Noether 
+ TaskSpawner Transactions Optimization Currents 
+ 
+ 
+ 
+
 ```
 
 ## Key Components
@@ -98,62 +98,62 @@ The Quantum Orchestrator is a physics-inspired task scheduling and optimization 
 ## Data Flow
 
 ```
-User Request → CLI/API → QFTEnabledOrchestrator
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  Add Task(s)    │
-                    │  Configure      │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┴──────────────┐
-              │                             │
-              ▼                             ▼
-    ┌─────────────────┐           ┌─────────────────┐
-    │ Spawn (QFT C.1) │           │ Entangle (C.2)  │
-    │ â†|0⟩ → |1⟩     │           │ Φ⁺ = |00⟩+|11⟩ │
-    └────────┬────────┘           └────────┬────────┘
-             │                             │
-             └──────────────┬──────────────┘
-                            │
-                            ▼
-                  ┌─────────────────┐
-                  │    EVOLVE       │
-                  │                 │
-                  │ iℏ∂ψ/∂t = Ĥψ   │
-                  │ Klein-Gordon    │
-                  │ Dirac spinor    │
-                  └────────┬────────┘
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │  Path Integral  │
-                  │  Optimization   │
-                  │  (C.3)          │
-                  └────────┬────────┘
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │ Gauge Check     │
-                  │ (C.4)           │
-                  │ Conservation    │
-                  └────────┬────────┘
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │   MEASURE       │
-                  │   Collapse ψ    │
-                  │   Complete task │
-                  └────────┬────────┘
-                           │
-                           ▼
-              ┌────────────┴────────────┐
-              │                         │
-              ▼                         ▼
-    ┌─────────────────┐       ┌─────────────────┐
-    │ Metrics Export  │       │   Results       │
-    │ (MLOps Bridge)  │       │   (JSON/API)    │
-    └─────────────────┘       └─────────────────┘
+User Request CLI/API QFTEnabledOrchestrator
+ 
+ 
+ 
+ Add Task(s) 
+ Configure 
+ 
+ 
+ 
+ 
+ 
+ 
+ Spawn (QFT C.1) Entangle (C.2) 
+ â†|0⟩ |1⟩ Φ⁺ = |00⟩+|11⟩ 
+ 
+ 
+ 
+ 
+ 
+ 
+ EVOLVE 
+ 
+ iℏ∂ψ/∂t = Ĥψ 
+ Klein-Gordon 
+ Dirac spinor 
+ 
+ 
+ 
+ 
+ Path Integral 
+ Optimization 
+ (C.3) 
+ 
+ 
+ 
+ 
+ Gauge Check 
+ (C.4) 
+ Conservation 
+ 
+ 
+ 
+ 
+ MEASURE 
+ Collapse ψ 
+ Complete task 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Metrics Export Results 
+ (MLOps Bridge) (JSON/API) 
+ 
 ```
 
 ## Physics Principles
@@ -228,7 +228,7 @@ results = orch.run(max_iterations=100)
 
 ```python
 from codex.quantum_orchestrator.qft.second_quantization import (
-    TaskSpawner, ParticleStatistics
+ TaskSpawner, ParticleStatistics
 )
 
 spawner = TaskSpawner(orch.state, statistics=ParticleStatistics.BOSON)
@@ -241,7 +241,7 @@ new_ids = spawner.spawn("template_task", count=5)
 
 ```python
 from codex.quantum_orchestrator.qft.entanglement import (
-    EntanglementManager, BellState
+ EntanglementManager, BellState
 )
 
 manager = EntanglementManager()

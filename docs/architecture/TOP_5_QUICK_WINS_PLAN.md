@@ -1,12 +1,12 @@
 # Top 5 Quick Wins: Architectural Entropy Normalization Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
 **Date:2026-07-13
-**Branch:** `copilot/sub-pr-2750-one-more-time`  
-**Context:** Addressing "Split Brain" state between legacy `agents/` and modern `src/codex/`  
+**Branch:** `copilot/sub-pr-2750-one-more-time`
+**Context:** Addressing "Split Brain" state between legacy `agents/` and modern `src/codex/`
 **Goal:** Transform repository from collection of scripts into robust MLOps platform for SaaS workflow orchestration
 
 ---
@@ -34,7 +34,7 @@ This plan addresses the architectural entropy caused by the "Split Brain" state 
   ```bash
   $ find data/ -name "*zendesk*" -mtime +30
   data/zendesk_api_index.json  # Last modified: 2 months ago
-  ```
+ ```
 
 #### 2. Code Split Brain
 - **Problem:** Duplicate logic in `agents/zendesk_quantum_orchestrator.py` vs `src/codex/zendesk`
@@ -56,7 +56,7 @@ ticket_data = {"subject": "...", "priority": "urgent"}  # No validation!
   priority,response_time_hours,resolution_time_hours
   urgent,1,4
   high,4,24
-  ```
+ ```
 
 #### 4. Fragile Bridge
 - **Problem:** `temp/bridge_codex_copilot_bridge` uses insecure sockets
@@ -311,11 +311,11 @@ jobs:
 ```
 
 #### Success Criteria
--  Service runs on schedule (every 6 hours)
--  Only pulls changed articles (drift detection)
--  Updates local index atomically
--  Integrates with RAG pipeline
--  Monitors for failures and alerts
+- Service runs on schedule (every 6 hours)
+- Only pulls changed articles (drift detection)
+- Updates local index atomically
+- Integrates with RAG pipeline
+- Monitors for failures and alerts
 
 ---
 
@@ -669,17 +669,17 @@ from src.codex.zendesk.client import ZendeskClient
 ```python
 # Before (legacy - no validation)
 ticket_data = {
-    "subject": subject,
-    "priority": "urgent",  # Typo-prone
-    "invalid_field": "value"  # Silently ignored
+ "subject": subject,
+ "priority": "urgent", # Typo-prone
+ "invalid_field": "value" # Silently ignored
 }
 
 # After (modern - validated)
 ticket = Ticket(
-    subject=subject,
-    description=description,
-    requester_id=user_id,
-    priority=TicketPriority.URGENT  # Type-safe
+ subject=subject,
+ description=description,
+ requester_id=user_id,
+ priority=TicketPriority.URGENT # Type-safe
 )
 # Extra fields raise ValidationError
 ```
@@ -703,11 +703,11 @@ created_ticket = client.create_ticket(ticket)
 ```
 
 ### Success Criteria
--  All ticket operations use Pydantic models
--  Zero hardcoded dictionaries in production code
--  100% test coverage on schema validation
--  Legacy `agents/zendesk_quantum_orchestrator.py` deprecated
--  Migration guide complete
+- All ticket operations use Pydantic models
+- Zero hardcoded dictionaries in production code
+- 100% test coverage on schema validation
+- Legacy `agents/zendesk_quantum_orchestrator.py` deprecated
+- Migration guide complete
 
 ---
 
@@ -866,10 +866,10 @@ low,24,72
 ```
 
 ## Success Criteria
--  All SLA logic uses Policy Objects
--  CSV files deprecated with clear migration notes
--  Business rules validated at import time
--  Tests cover all SLA calculations
+- All SLA logic uses Policy Objects
+- CSV files deprecated with clear migration notes
+- Business rules validated at import time
+- Tests cover all SLA calculations
 
 ---
 
@@ -1047,11 +1047,11 @@ if __name__ == "__main__":
 ```
 
 ### Success Criteria
--  Named pipes use 0o600 permissions
--  Authentication token required for all operations
--  Legacy bridge archived and deprecated
--  Security audit passes
--  Repro workflows tested with new bridge
+- Named pipes use 0o600 permissions
+- Authentication token required for all operations
+- Legacy bridge archived and deprecated
+- Security audit passes
+- Repro workflows tested with new bridge
 
 ---
 
@@ -1214,11 +1214,11 @@ jobs:
 ```
 
 #### Success Criteria
--  `digest.md` auto-generated daily
--  Includes schema documentation
--  Includes API reference
--  Includes knowledge base summary
--  Agent training uses digest.md
+- `digest.md` auto-generated daily
+- Includes schema documentation
+- Includes API reference
+- Includes knowledge base summary
+- Agent training uses digest.md
 
 ---
 
@@ -1244,29 +1244,29 @@ jobs:
 ## Success Metrics
 
 ### Data Sovereignty
--  Knowledge sync drift detection <1 hour
--  Zero stale data in RAG pipeline
--  100% of SaaS changes captured
+- Knowledge sync drift detection <1 hour
+- Zero stale data in RAG pipeline
+- 100% of SaaS changes captured
 
 ### Schema Authority
--  Zero hardcoded dictionaries in production
--  100% type safety on ticket operations
--  <5 min to add new schema field
+- Zero hardcoded dictionaries in production
+- 100% type safety on ticket operations
+- <5 min to add new schema field
 
 ### Configuration Consolidation
--  Zero business logic in CSV files
--  All policies validated at import
--  Single source of truth established
+- Zero business logic in CSV files
+- All policies validated at import
+- Single source of truth established
 
 ### Bridge Security
--  Zero unauthorized IPC access
--  All bridges use authentication
--  Security audit passes
+- Zero unauthorized IPC access
+- All bridges use authentication
+- Security audit passes
 
 ### Documentation Quality
--  digest.md generated daily
--  Agent training aligned with code
--  <30 pages of essential docs
+- digest.md generated daily
+- Agent training aligned with code
+- <30 pages of essential docs
 
 ---
 
@@ -1297,22 +1297,22 @@ jobs:
 1. **Create Feature Branch**
    ```bash
    git checkout -b feature/top-5-quick-wins
-   ```
+ ```
 
 2. **Start with Quick Win #1**
-   - Implement `src/services/crawler/zendesk_sync.py`
-   - Test locally with mock data
-   - Deploy to staging
+ - Implement `src/services/crawler/zendesk_sync.py`
+ - Test locally with mock data
+ - Deploy to staging
 
 3. **Progressive Rollout**
-   - Win #1 → Win #2 → Win #3 → Win #4 → Win #5
-   - Each win validated before moving to next
-   - Daily progress reviews
+ - Win #1 Win #2 Win #3 Win #4 Win #5
+ - Each win validated before moving to next
+ - Daily progress reviews
 
 4. **Documentation**
-   - Update AGENTS_POLICY.md
-   - Update ARCHITECTURE.md
-   - Create migration guides
+ - Update AGENTS_POLICY.md
+ - Update ARCHITECTURE.md
+ - Create migration guides
 
 ---
 

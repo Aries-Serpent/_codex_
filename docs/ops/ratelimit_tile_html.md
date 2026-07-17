@@ -1,6 +1,6 @@
 # Ops: HTML Renderer for Rate-Limit Tile
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
  Roles: [Primary: Publisher], [Secondary: Integration Lead]  Energy: 5

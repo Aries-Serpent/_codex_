@@ -1,6 +1,6 @@
 # Comprehensive Token Usage Audit Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 # Phase 1: Complete Discovery & Analysis
 

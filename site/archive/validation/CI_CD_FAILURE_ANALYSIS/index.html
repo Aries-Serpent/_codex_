@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/validation/CI_CD_FAILURE_ANALYSIS/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI/CD Failure Analysis for PR #2968 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2420,7 +2420,7 @@
 <a class="md-nav__link" href="#10-checkpoint-provenance-p2">
 <span class="md-ellipsis">
       
-        10. Checkpoint Provenance (P2) ️
+        10. Checkpoint Provenance (P2)
       
     </span>
 </a>
@@ -2432,7 +2432,7 @@
 <a class="md-nav__link" href="#test-collection-warnings-p2">
 <span class="md-ellipsis">
       
-        Test Collection Warnings (P2) ️
+        Test Collection Warnings (P2)
       
     </span>
 </a>
@@ -2546,9 +2546,9 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Branch:</strong> <code>copilot/sub-pr-2968</code><br/>
-<strong>Commit:</strong> <code>ea7f255c2607c9832347e2c96d6005f6436049d3</code><br/>
-<strong>Python Version:</strong> 3.12.3<br/>
+<p><strong>Branch:</strong> <code>copilot/sub-pr-2968</code>
+<strong>Commit:</strong> <code>ea7f255c2607c9832347e2c96d6005f6436049d3</code>
+<strong>Python Version:</strong> 3.12.3
 **Analysis Date:2026-07-13</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Analysis reveals <strong>21+ distinct failing test cases</strong> and <strong>100+ linting violations</strong> across the codebase. The failures fall into 6 main categories:</p>
@@ -2578,13 +2578,13 @@
 </ol>
 <h3 id="p2-medium-flakyintermittent">P2 - Medium (Flaky/Intermittent)<a class="headerlink" href="#p2-medium-flakyintermittent" title="Permanent link">¶</a></h3>
 <ol>
-<li>️ <strong>Checkpoint Provenance</strong> - PyTorch serialization (passes in isolation)</li>
-<li>️ <strong>Test Collection Warnings</strong> - dataclass <strong>init</strong> constructors</li>
+<li><strong>Checkpoint Provenance</strong> - PyTorch serialization (passes in isolation)</li>
+<li><strong>Test Collection Warnings</strong> - dataclass <strong>init</strong> constructors</li>
 </ol>
 <hr/>
 <h2 id="detailed-failure-analysis">Detailed Failure Analysis<a class="headerlink" href="#detailed-failure-analysis" title="Permanent link">¶</a></h2>
 <h3 id="1-linting-violations-p0">1. Linting Violations (P0)<a class="headerlink" href="#1-linting-violations-p0" title="Permanent link">¶</a></h3>
-<p><strong>Count:</strong> 100+ violations<br/>
+<p><strong>Count:</strong> 100+ violations
 <strong>Files Affected:</strong>
 - <code>.codex/agents/rfc-compliance-checker/run.py</code> (50+ issues)
 - <code>.codex/agents/security-input-validator/run.py</code> (50+ issues)</p>
@@ -2602,17 +2602,17 @@
 <p><strong>Action Items:</strong>
 1. Run <code>ruff check --fix .</code> to auto-fix whitespace issues
 2. Manually fix:
-   - Line 250: Rename variable <code>l</code> to <code>line</code> or <code>lines</code>
-   - Line 388: Remove f-string or add placeholder
-   - Line 191: Use variable <code>e</code> or remove catch</p>
+ - Line 250: Rename variable <code>l</code> to <code>line</code> or <code>lines</code>
+ - Line 388: Remove f-string or add placeholder
+ - Line 191: Use variable <code>e</code> or remove catch</p>
 <hr/>
 <h3 id="2-f1-score-zero-division-handling-p0">2. F1 Score Zero Division Handling (P0)<a class="headerlink" href="#2-f1-score-zero-division-handling-p0" title="Permanent link">¶</a></h3>
 <p><strong>Test:</strong> <code>tests/metrics/test_f1_score.py::test_f1_micro_handles_zero_division</code></p>
 <p><strong>Failure:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">def</span> <span class="nf">test_f1_micro_handles_zero_division</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">metric</span> <span class="o">=</span> <span class="n">F1Score</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"micro"</span><span class="p">)</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># All predictions and labels are class 0</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>  <span class="c1">#  Returns 1.0</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="n">metric</span> <span class="o">=</span> <span class="n">F1Score</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"micro"</span><span class="p">)</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="c1"># All predictions and labels are class 0</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="c1"># Returns 1.0</span>
 </code></pre></div></p>
 <p><strong>Root Cause:</strong> When all predictions and labels are the same class, the F1 score returns 1.0 (perfect agreement) instead of handling zero division edge case.</p>
 <p><strong>Expected Behavior:</strong> Test expects 0.0 for zero division case
@@ -2635,8 +2635,8 @@
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>{'codex_requests_created', 'codex_requests', 'codex_requests_total'}
 </code></pre></div></p>
 <p><strong>Root Cause:</strong> Prometheus <code>CollectorRegistry</code> is a global singleton. Multiple test runs without proper cleanup cause metric re-registration errors.</p>
-<p><strong>Tests Pass In Isolation:</strong>  Yes - when run individually, all tests pass
-<strong>Tests Fail Together:</strong>  Yes - when run with other tests, they fail</p>
+<p><strong>Tests Pass In Isolation:</strong> Yes - when run individually, all tests pass
+<strong>Tests Fail Together:</strong> Yes - when run with other tests, they fail</p>
 <p><strong>Fix:</strong> Add proper teardown to clear Prometheus registry between tests.</p>
 <p><strong>File to Fix:</strong> <code>tests/test_prometheus_metrics.py</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">pytest</span>
@@ -2644,74 +2644,74 @@
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">autouse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="k">def</span> <span class="nf">clear_prometheus_registry</span><span class="p">():</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="sd">"""Clear Prometheus registry before each test."""</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="c1"># Save existing collectors</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">collectors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">REGISTRY</span><span class="o">.</span><span class="n">_collector_to_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w"> </span><span class="sd">"""Clear Prometheus registry before each test."""</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="c1"># Save existing collectors</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="n">collectors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">REGISTRY</span><span class="o">.</span><span class="n">_collector_to_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="k">yield</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="k">yield</span>
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="c1"># Clear all collectors added during test</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="k">for</span> <span class="n">collector</span> <span class="ow">in</span> <span class="n">collectors</span><span class="p">:</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>            <span class="n">REGISTRY</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">collector</span><span class="p">)</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>            <span class="k">pass</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> <span class="c1"># Clear all collectors added during test</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="k">for</span> <span class="n">collector</span> <span class="ow">in</span> <span class="n">collectors</span><span class="p">:</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="n">REGISTRY</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">collector</span><span class="p">)</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> <span class="k">pass</span>
 </code></pre></div>
 <p><strong>Alternative Fix:</strong> Use isolated registry per test:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">prometheus_client</span> <span class="kn">import</span> <span class="n">CollectorRegistry</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="k">def</span> <span class="nf">test_metrics_collector_initializes</span><span class="p">():</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">registry</span> <span class="o">=</span> <span class="n">CollectorRegistry</span><span class="p">()</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">collector</span> <span class="o">=</span> <span class="n">MetricsCollector</span><span class="p">(</span><span class="n">registry</span><span class="o">=</span><span class="n">registry</span><span class="p">)</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="k">assert</span> <span class="n">collector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="n">registry</span> <span class="o">=</span> <span class="n">CollectorRegistry</span><span class="p">()</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">collector</span> <span class="o">=</span> <span class="n">MetricsCollector</span><span class="p">(</span><span class="n">registry</span><span class="o">=</span><span class="n">registry</span><span class="p">)</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="k">assert</span> <span class="n">collector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="4-auditresult-api-mismatch-p0">4. AuditResult API Mismatch (P0)<a class="headerlink" href="#4-auditresult-api-mismatch-p0" title="Permanent link">¶</a></h3>
 <p><strong>Test:</strong> <code>tests/cognitive_brain/test_integration.py::test_end_to_end_compliance_workflow</code></p>
 <p><strong>Failure:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">audit</span> <span class="o">=</span> <span class="n">AuditResult</span><span class="p">(</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    <span class="n">repo_name</span><span class="o">=</span><span class="s2">"test/repo"</span><span class="p">,</span>  <span class="c1">#  Not in dataclass definition</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="n">compliance_score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>  <span class="c1">#  Called 'score' in dataclass</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="n">business_impact</span><span class="o">=</span><span class="s2">"moderate"</span>  <span class="c1">#  Should be float 0-1, not string</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> <span class="n">repo_name</span><span class="o">=</span><span class="s2">"test/repo"</span><span class="p">,</span> <span class="c1"># Not in dataclass definition</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="n">compliance_score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="c1"># Called 'score' in dataclass</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> <span class="n">business_impact</span><span class="o">=</span><span class="s2">"moderate"</span> <span class="c1"># Should be float 0-1, not string</span>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="p">)</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="c1"># TypeError: AuditResult.__init__() got an unexpected keyword argument 'repo_name'</span>
 </code></pre></div></p>
 <p><strong>Actual Definition:</strong> <code>src/cognitive_brain/integrations/compliance_integration.py:34</code>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nd">@dataclass</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">class</span> <span class="nc">AuditResult</span><span class="p">:</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">audit_id</span><span class="p">:</span> <span class="nb">str</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># 0.0 to 1.0 (not compliance_score)</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="n">risk_level</span><span class="p">:</span> <span class="nb">str</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    <span class="n">remediation_cost</span><span class="p">:</span> <span class="nb">float</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="n">business_impact</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># 0-1 float (not string)</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="n">violations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">audit_id</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="n">score</span><span class="p">:</span> <span class="nb">float</span> <span class="c1"># 0.0 to 1.0 (not compliance_score)</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="n">risk_level</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> <span class="n">remediation_cost</span><span class="p">:</span> <span class="nb">float</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="n">business_impact</span><span class="p">:</span> <span class="nb">float</span> <span class="c1"># 0-1 float (not string)</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="n">violations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div></p>
 <p><strong>Root Cause:</strong> Test uses outdated API signature or incorrect parameters.</p>
 <p><strong>Fix:</strong> Update test to match current API:</p>
 <p><strong>File to Fix:</strong> <code>tests/cognitive_brain/test_integration.py:197</code>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Change from:</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">audit</span> <span class="o">=</span> <span class="n">AuditResult</span><span class="p">(</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="n">repo_name</span><span class="o">=</span><span class="s2">"test/repo"</span><span class="p">,</span>  <span class="c1">#  Remove</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">compliance_score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>  <span class="c1">#  Rename to 'score'</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    <span class="n">business_impact</span><span class="o">=</span><span class="s2">"moderate"</span>  <span class="c1">#  Change to float</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="n">repo_name</span><span class="o">=</span><span class="s2">"test/repo"</span><span class="p">,</span> <span class="c1"># Remove</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">compliance_score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="c1"># Rename to 'score'</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="n">business_impact</span><span class="o">=</span><span class="s2">"moderate"</span> <span class="c1"># Change to float</span>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="p">)</span>
 <a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
 <a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="c1"># To:</span>
 <a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="n">audit</span> <span class="o">=</span> <span class="n">AuditResult</span><span class="p">(</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>    <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    <span class="n">score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>  <span class="c1">#  Correct parameter name</span>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>    <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>    <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>    <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>    <span class="n">business_impact</span><span class="o">=</span><span class="mf">0.5</span>  <span class="c1">#  Float between 0-1</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> <span class="n">score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="c1"># Correct parameter name</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> <span class="n">business_impact</span><span class="o">=</span><span class="mf">0.5</span> <span class="c1"># Float between 0-1</span>
 <a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
@@ -2777,13 +2777,13 @@
 <p><strong>Root Cause:</strong> Performance regression or incorrect test assertions.</p>
 <p><strong>Action Required:</strong> Review test expectations and actual performance metrics.</p>
 <hr/>
-<h3 id="10-checkpoint-provenance-p2">10. Checkpoint Provenance (P2) ️<a class="headerlink" href="#10-checkpoint-provenance-p2" title="Permanent link">¶</a></h3>
+<h3 id="10-checkpoint-provenance-p2">10. Checkpoint Provenance (P2)<a class="headerlink" href="#10-checkpoint-provenance-p2" title="Permanent link">¶</a></h3>
 <p><strong>Test:</strong> <code>tests/test_checkpoint_provenance.py::test_checkpoint_includes_commit_and_system</code></p>
 <p><strong>Failure (Intermittent):</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>CheckpointLoadError: failed to save checkpoint via pickle:
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>issubclass() arg 2 must be a class, a tuple of classes, or a union
 </code></pre></div></p>
-<p><strong>Status:</strong> ️ <strong>Passes in isolation</strong>, fails in full suite (flaky)</p>
+<p><strong>Status:</strong> <strong>Passes in isolation</strong>, fails in full suite (flaky)</p>
 <p><strong>Root Cause:</strong> PyTorch 2.10.0 serialization issue with <code>nn.Module</code> type checking when modules are imported in different order.</p>
 <p><strong>Investigation:</strong> This is a known PyTorch issue related to module import order and pickle protocol.</p>
 <p><strong>Fix Options:</strong>
@@ -2791,7 +2791,7 @@
 2. Isolate test with <code>pytest.mark.isolated</code>
 3. Update PyTorch pickle protocol usage</p>
 <hr/>
-<h2 id="test-collection-warnings-p2">Test Collection Warnings (P2) ️<a class="headerlink" href="#test-collection-warnings-p2" title="Permanent link">¶</a></h2>
+<h2 id="test-collection-warnings-p2">Test Collection Warnings (P2)<a class="headerlink" href="#test-collection-warnings-p2" title="Permanent link">¶</a></h2>
 <p><strong>Warnings:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>src/cognitive_brain/quantum/uncertainty.py:30: PytestCollectionWarning:
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>cannot collect test class 'TestExecutionMetrics' because it has a __init__ constructor
@@ -2801,8 +2801,8 @@
 </code></pre></div></p>
 <p><strong>Root Cause:</strong> Dataclasses named with "Test" prefix are being collected by pytest as test classes.</p>
 <p><strong>Fix:</strong> Rename dataclasses to avoid "Test" prefix:
-- <code>TestExecutionMetrics</code> → <code>ExecutionMetrics</code>
-- <code>TestExecutionPriority</code> → <code>ExecutionPriority</code></p>
+- <code>TestExecutionMetrics</code> <code>ExecutionMetrics</code>
+- <code>TestExecutionPriority</code> <code>ExecutionPriority</code></p>
 <hr/>
 <h2 id="fix-priority-roadmap">Fix Priority Roadmap<a class="headerlink" href="#fix-priority-roadmap" title="Permanent link">¶</a></h2>
 <h3 id="phase-1-critical-blockers-p0-1-2-hours">Phase 1: Critical Blockers (P0) - 1-2 hours<a class="headerlink" href="#phase-1-critical-blockers-p0-1-2-hours" title="Permanent link">¶</a></h3>
@@ -2813,7 +2813,7 @@
 <li>Create/fix Hydra config file</li>
 <li>Fix config validation errors</li>
 </ol>
-<p><strong>Estimated Time:</strong> 1-2 hours<br/>
+<p><strong>Estimated Time:</strong> 1-2 hours
 <strong>Impact:</strong> Unblocks 100+ linting checks, fixes 4 critical test failures</p>
 <h3 id="phase-2-high-priority-p1-2-3-hours">Phase 2: High Priority (P1) - 2-3 hours<a class="headerlink" href="#phase-2-high-priority-p1-2-3-hours" title="Permanent link">¶</a></h3>
 <ol>
@@ -2822,14 +2822,14 @@
 <li>Fix train loop <strong>version</strong> error</li>
 <li>Review/fix agent load tests</li>
 </ol>
-<p><strong>Estimated Time:</strong> 2-3 hours<br/>
+<p><strong>Estimated Time:</strong> 2-3 hours
 <strong>Impact:</strong> Fixes 13+ test failures</p>
 <h3 id="phase-3-medium-priority-p2-1-hour">Phase 3: Medium Priority (P2) - 1 hour<a class="headerlink" href="#phase-3-medium-priority-p2-1-hour" title="Permanent link">¶</a></h3>
 <ol>
-<li>️ Add flaky marker to checkpoint test</li>
-<li>️ Rename Test* dataclasses</li>
+<li>Add flaky marker to checkpoint test</li>
+<li>Rename Test* dataclasses</li>
 </ol>
-<p><strong>Estimated Time:</strong> 1 hour<br/>
+<p><strong>Estimated Time:</strong> 1 hour
 <strong>Impact:</strong> Resolves warnings and flaky tests</p>
 <hr/>
 <h2 id="recommended-actions">Recommended Actions<a class="headerlink" href="#recommended-actions" title="Permanent link">¶</a></h2>
@@ -2838,14 +2838,14 @@
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>ruff<span class="w"> </span>check<span class="w"> </span>--fix<span class="w"> </span>.
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="c1"># 2. Manual linting fixes</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>vim<span class="w"> </span>.codex/agents/rfc-compliance-checker/run.py<span class="w">  </span><span class="c1"># Line 250, 388</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>vim<span class="w"> </span>.codex/agents/security-input-validator/run.py<span class="w">  </span><span class="c1"># Line 191</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>vim<span class="w"> </span>.codex/agents/rfc-compliance-checker/run.py<span class="w"> </span><span class="c1"># Line 250, 388</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>vim<span class="w"> </span>.codex/agents/security-input-validator/run.py<span class="w"> </span><span class="c1"># Line 191</span>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="c1"># 3. Fix F1 Score test</span>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>vim<span class="w"> </span>tests/metrics/test_f1_score.py<span class="w">  </span><span class="c1"># Line 33: 0.0 → 1.0</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>vim<span class="w"> </span>tests/metrics/test_f1_score.py<span class="w"> </span><span class="c1"># Line 33: 0.0 1.0</span>
 <a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>
 <a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="c1"># 4. Fix AuditResult test</span>
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>vim<span class="w"> </span>tests/cognitive_brain/test_integration.py<span class="w">  </span><span class="c1"># Lines 197-205</span>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>vim<span class="w"> </span>tests/cognitive_brain/test_integration.py<span class="w"> </span><span class="c1"># Lines 197-205</span>
 <a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>
 <a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a><span class="c1"># 5. Run tests</span>
 <a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-x<span class="w"> </span>--tb<span class="o">=</span>short
@@ -2863,7 +2863,7 @@
 <li>All linting checks pass (<code>ruff check .</code>)</li>
 <li>All P0 tests pass (5 fixes)</li>
 <li>All P1 tests pass (13 fixes)</li>
-<li>️ P2 tests marked appropriately (flaky/warnings)</li>
+<li>P2 tests marked appropriately (flaky/warnings)</li>
 <li>CI/CD pipeline green (100% pass rate)</li>
 </ul>
 <hr/>
@@ -2921,6 +2921,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

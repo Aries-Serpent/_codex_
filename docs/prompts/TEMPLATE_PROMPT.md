@@ -1,16 +1,16 @@
 # [Prompt Title]
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version**: 1.0.0  
-**Last Updated**: YYYY-MM-DD  
-**Purpose**: [One-line description of what this prompt accomplishes]  
-**Target Agent**: [GitHub Copilot | ChatGPT | Claude | Custom]  
-**Status**:  Active
+**Version**: 1.0.0
+**Last Updated**: YYYY-MM-DD
+**Purpose**: [One-line description of what this prompt accomplishes]
+**Target Agent**: [GitHub Copilot | ChatGPT | Claude | Custom]
+**Status**: Active
 
 ---
 
-##  Context
+## Context
 
 ### Cognitive Brain References
 
@@ -33,7 +33,7 @@ Before starting, load the cognitive brain for full context:
 
 ---
 
-##  Objective
+## Objective
 
 [Clear, specific, measurable goal statement]
 
@@ -43,7 +43,7 @@ Before starting, load the cognitive brain for full context:
 
 ---
 
-##  Instructions
+## Instructions
 
 ### Phase 1: [Phase Name] (Estimated: XK tokens, Y minutes)
 
@@ -53,11 +53,11 @@ Before starting, load the cognitive brain for full context:
    ```bash
    # Example command
    command --with --flags
-   ```
+ ```
 
 2. **Step 2**: [Detailed instruction]
-   - Sub-step A
-   - Sub-step B
+ - Sub-step A
+ - Sub-step B
 
 3. **Step 3**: [Detailed instruction]
 
@@ -107,7 +107,7 @@ Before starting, load the cognitive brain for full context:
 
 ---
 
-##  Validation
+## Validation
 
 ### Acceptance Criteria
 
@@ -148,7 +148,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-##  Token Budget
+## Token Budget
 
 | Phase | Estimated Tokens | Duration | Priority |
 |-------|------------------|----------|----------|
@@ -159,7 +159,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-## 🚧 Known Issues & Mitigations
+## Known Issues & Mitigations
 
 | Issue | Impact | Mitigation | Status |
 |-------|--------|------------|--------|
@@ -168,7 +168,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-##  Related Resources
+## Related Resources
 
 **Documentation**:
 - Related Guide: `../path/to/guide.md` (placeholder) - Description
@@ -184,7 +184,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-##  Continuation Protocol
+## Continuation Protocol
 
 If work remains after session:
 
@@ -212,7 +212,7 @@ If work remains after session:
 
 ---
 
-##  Notes
+## Notes
 
 ### Tips
 - Tip 1: [Helpful hint]
@@ -236,7 +236,7 @@ If work remains after session:
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|
@@ -246,7 +246,7 @@ If work remains after session:
 
 ---
 
-##  Follow-Up
+## Follow-Up
 
 After completion:
 - [ ] Update cognitive brain (Dashboard, Roadmap)
@@ -259,6 +259,6 @@ After completion:
 **Version History**:
 - 1.0.0 (YYYY-MM-DD) - Initial version
 
-**Maintained by**: [Team/Owner Name]  
-**Last Tested**: [Date] with [Agent Name]  
+**Maintained by**: [Team/Owner Name]
+**Last Tested**: [Date] with [Agent Name]
 **Success Rate**: [X/Y sessions] ([Z]%)

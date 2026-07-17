@@ -1,9 +1,9 @@
 # ADR-002: Named Pipes vs TCP Sockets for IPC
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:2026-07-13
-**Status:** Accepted  
+**Status:** Accepted
 **Deciders:** mbaetiong, GitHub Copilot
 
 ## Context
@@ -21,17 +21,17 @@ Replace TCP sockets with Unix Domain Sockets + authentication tokens.
 ## Consequences
 
 ### Positive
--  Zero network vulnerabilities
--  50% better performance
--  Complete audit trail
--  10/10 security score
+- Zero network vulnerabilities
+- 50% better performance
+- Complete audit trail
+- 10/10 security score
 
 ### Negative
-- ️ Linux-only (not Windows native)
-- ️ Requires token management
+- Linux-only (not Windows native)
+- Requires token management
 
 ### Neutral
--  Same API surface as TCP
+- Same API surface as TCP
 
 ## Alternatives Considered
 1. **TLS over TCP:** Overhead, complexity

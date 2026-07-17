@@ -1,10 +1,10 @@
 # [Validation]: types-tomli removal and TOML compatibility
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Validation Architect], [Secondary: CI Reviewer]  Energy: 3  
-⚛️ Physics: Path️ [Assess → Patch → Verify] Fields [Packaging, TOML] Patterns️ [Stdlib over vendor, Compat shim] Redundancy [Unit test + CI] Balance️ [Simplicity vs portability]
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Validation Architect], [Secondary: CI Reviewer] Energy: 3
+ Physics: Path [Assess Patch Verify] Fields [Packaging, TOML] Patterns [Stdlib over vendor, Compat shim] Redundancy [Unit test + CI] Balance [Simplicity vs portability]
 
 ## Why change
 - Python ≥ 3.12 includes `tomllib`; `types-tomli` is obsolete and not on PyPI.

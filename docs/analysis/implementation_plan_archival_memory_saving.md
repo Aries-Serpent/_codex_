@@ -1,6 +1,6 @@
-# [Plan]: Archival‑Aligned, Memory‑Saving Implementation (CI/Dev)  
+# [Plan]: Archival‑Aligned, Memory‑Saving Implementation (CI/Dev)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -28,13 +28,13 @@ Ref Inputs:
 
 | Stage | Branch | Purpose | Merge Direction |
 |-------|--------|---------|-----------------|
-| A | 0C_base_ | Introduce segmentation (requirements), CI session changes, evidence logging enablers | 0C_base_ ➜ 0D_base_ |
-| B | 0D_base_ | Harden scripts (rc5), guardrails, env toggles, lock/prune logic, docs updates | 0D_base_ ➜ main |
+| A | 0C_base_ | Introduce segmentation (requirements), CI session changes, evidence logging enablers | 0C_base_ 0D_base_ |
+| B | 0D_base_ | Harden scripts (rc5), guardrails, env toggles, lock/prune logic, docs updates | 0D_base_ main |
 | C | main | Consolidate, finalize ADRs/CHANGELOG, enable selective minimal augmentation | — |
 
 Notes:
 - Feature work lands in 0C_base_. Integrations and guardrails stabilize in 0D_base_. Fast-forward or merge commits to main once green and signed off.
-- If a direct 0D_base_ ➜ main window is preferred, sequence A and B inside 0D_base_ before promoting.
+- If a direct 0D_base_ main window is preferred, sequence A and B inside 0D_base_ before promoting.
 
 ---
 
@@ -74,12 +74,12 @@ Impact:
 
 ### 4.4 Evidence-First Deps Hygiene (rc5)
 - setup.sh / maintenance.sh append JSONL records to .codex/evidence/dependency_ops.jsonl:
-  - DEPENDENCY_VENDOR_SCAN (pre/post)
-  - VENDOR_DETECTED_IN_SYNC_LOG
-  - DEPENDENCY_VENDOR_PURGE (fallback/primary)
-  - LOCK_PRUNE (dryrun/applied)
-  - TORCH_PREINSTALL / TORCH_REINSTALL
-  - MINIMAL_AUGMENT
+ - DEPENDENCY_VENDOR_SCAN (pre/post)
+ - VENDOR_DETECTED_IN_SYNC_LOG
+ - DEPENDENCY_VENDOR_PURGE (fallback/primary)
+ - LOCK_PRUNE (dryrun/applied)
+ - TORCH_PREINSTALL / TORCH_REINSTALL
+ - MINIMAL_AUGMENT
 - Actor: CODEX_EVIDENCE_ACTOR (defaults to $GITHUB_ACTOR, else “local”).
 
 ### 4.5 CPU Index & Minimal ML Mode
@@ -169,11 +169,11 @@ Impact:
 ## 11) Documentation & Agents Update
 
 - Update .codex/archive/deprecated/AGENTS.md with:
-  - Dependency Retention & Segmentation table
-  - Evidence stream: .codex/evidence/dependency_ops.jsonl
-  - Session usage examples (nox -s ...)
-  - Toggle matrix and purpose
-  - Reference canonical archive policy location
+ - Dependency Retention & Segmentation table
+ - Evidence stream: .codex/evidence/dependency_ops.jsonl
+ - Session usage examples (nox -s ...)
+ - Toggle matrix and purpose
+ - Reference canonical archive policy location
 - CHANGELOG.md entry summarizing segmentation and storage impact.
 - Link docs/analysis/dependency_space_triage.md inside PR descriptions (Ref: f40ff2…).
 
@@ -185,7 +185,7 @@ Impact:
 |------|---------|
 | W1 | Land PR-A1/A2/A3 into 0C_base_; validate CI disk deltas; confirm tests & evidence logs |
 | W2 | Promote to 0D_base_; land PR-B1/B2/B3; enable optional lock prune dry-run in CI; finalize ADR |
-| W3 | Merge 0D_base_ ➜ main; set CODEX_CPU_MINIMAL=1 in CI; monitor recurrence and adjust toggles |
+| W3 | Merge 0D_base_ main; set CODEX_CPU_MINIMAL=1 in CI; monitor recurrence and adjust toggles |
 
 ---
 
@@ -203,9 +203,9 @@ Impact:
 
 | Signal | Source | Action Threshold |
 |--------|--------|------------------|
-| Vendor recurrence | maintenance summary JSON | 2+ consecutive occurrences ➜ investigate lock/index |
+| Vendor recurrence | maintenance summary JSON | 2+ consecutive occurrences investigate lock/index |
 | Evidence growth | dependency_ops.jsonl size | Rotate per-phase; archive per policy |
-| CI time regression | job duration | +10% sustained ➜ review session composition |
+| CI time regression | job duration | +10% sustained review session composition |
 | Developer pain | feedback/issues | Add helper scripts; revisit defaults |
 
 ---

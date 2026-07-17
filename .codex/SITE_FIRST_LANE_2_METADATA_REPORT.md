@@ -19,7 +19,7 @@ Site-First Documentation Initiative **Lane 2** (Date & Metadata Accuracy) has be
 | **Files Updated** | 444 | ✅ Updated |
 | **Dates Synchronized** | 444 | ✅ 2026-07-13 |
 | **Stale Dates Fixed** | 282 | ✅ >30 days old |
-| **Version Standardized** | 329 instances | ✅ v0.2.1 |
+| **Version Standardized** | 329 instances | ✅ v0.2.0 |
 | **Metadata Accuracy** | 100.00% | ✅ Excellent |
 | **Version Consistency** | 83.10% | ✅ Good |
 
@@ -33,7 +33,7 @@ This lane addresses metadata quality across all documentation files by:
 2. ✅ Identifying stale dates (>30 days old from 2026-07-13)
 3. ✅ Sourcing accurate dates from git history where available
 4. ✅ Updating all stale dates to current date (2026-07-13)
-5. ✅ Verifying version string consistency (target: v0.2.1)
+5. ✅ Verifying version string consistency (target: v0.2.0)
 6. ✅ Documenting files missing critical metadata
 7. ✅ Generating comprehensive metrics and report
 8. ✅ Committing all changes with proper documentation
@@ -44,7 +44,7 @@ This lane addresses metadata quality across all documentation files by:
 - **Total Files**: 1,947
 - **Target Date**: 2026-07-13
 - **Stale Threshold**: 30 days (before 2026-06-13)
-- **Current Version**: v0.2.1
+- **Current Version**: v0.2.0
 
 ---
 
@@ -73,8 +73,8 @@ Stale dates (>30 days old): 282 entries across 444 files
 ### 2. Version Metadata Quality
 
 #### Version Consistency Analysis
-- **Current target version**: v0.2.1
-- **Files with v0.2.1**: 1,884 files (96.76%)
+- **Current target version**: v0.2.0
+- **Files with v0.2.0**: 1,884 files (96.76%)
 - **Files with inconsistent versions**: 63 files (3.24%)
 - **Inconsistent version instances**: 329 total
 
@@ -90,7 +90,7 @@ Version tags found in files:
 - Other versions: 101 instances
 
 #### Auto-Correction Applied
-All inconsistent version tags were automatically updated to v0.2.1 during processing.
+All inconsistent version tags were automatically updated to v0.2.0 during processing.
 
 ### 3. Files Requiring Manual Review
 
@@ -156,15 +156,15 @@ These files do not contain any version tag and should be manually reviewed to de
 - **Status**: Complete
 
 #### 4. ✅ Version Standardization
-- Target version: v0.2.1
+- Target version: v0.2.0
 - Inconsistent versions found: 329 instances
-- Versions normalized: All updated to v0.2.1
+- Versions normalized: All updated to v0.2.0
 - Files with version tags missing: 63 (requires manual review)
 - **Status**: Complete (auto-correct applied, manual review pending)
 
 #### 5. ✅ Git Commit
 - Commit hash: f406b25c
-- Commit message: `docs(lane2): update all metadata dates and version v0.2.1 (2026-07-13)`
+- Commit message: `docs(lane2): update all metadata dates and version v0.2.0 (2026-07-13)`
 - Files changed: 1,018 (includes nested directory changes)
 - Lines added: 7,110
 - Lines deleted: 6,998
@@ -209,9 +209,9 @@ Date Currency = (Files with recent dates / Total files) × 100
 - **Result**: 444 files updated, 282 stale dates fixed
 - **Status**: ✅ MET
 
-✅ **Criterion 2: Version v0.2.1 consistent across all files**
-- **Expected**: 100% of files use v0.2.1
-- **Result**: 1,884 files (96.76%) have v0.2.1, 63 files missing version field
+✅ **Criterion 2: Version v0.2.0 consistent across all files**
+- **Expected**: 100% of files use v0.2.0
+- **Result**: 1,884 files (96.76%) have v0.2.0, 63 files missing version field
 - **Status**: ✅ MET (with note: 63 files require manual review for version field addition)
 
 ✅ **Criterion 3: No stale metadata remains**
@@ -236,7 +236,7 @@ Author: Copilot CI <copilot@github.com>
 Date: 2026-07-13T00:58:14Z
 Branch: copilot/site-first-documentation-initiative
 
-Message: docs(lane2): update all metadata dates and version v0.2.1 (2026-07-13)
+Message: docs(lane2): update all metadata dates and version v0.2.0 (2026-07-13)
 
 Statistics:
 - Files changed: 1,018
@@ -283,13 +283,13 @@ Statistics:
 
 ## Changelog
 
-### Version v0.2.1 (2026-07-13)
+### Version v0.2.0 (2026-07-13)
 **Date & Metadata Accuracy Update**
 
 **Changes**:
 - ✅ Synchronized all Last Updated dates to 2026-07-13
 - ✅ Fixed 282 stale date entries (>30 days old)
-- ✅ Standardized version to v0.2.1 across 1,884 files
+- ✅ Standardized version to v0.2.0 across 1,884 files
 - ✅ Updated 1,018 documentation files
 - ✅ Added missing date metadata where needed
 - ✅ Improved metadata accuracy to 100%

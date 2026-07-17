@@ -1,8 +1,8 @@
 # PHASE 2: FINAL SECURITY SCAN REPORT
-## Release v0.2.1 - Pre-Publication Security Checkpoint
+## Release v0.2.0 - Pre-Publication Security Checkpoint
 
 **Report Generated:** 2026-07-11T07:52:35Z  
-**Release Version:** v0.2.1  
+**Release Version:** v0.2.0  
 **Package Name:** codex-ml  
 **Scan Status:** ✅ **APPROVED FOR PUBLICATION**
 
@@ -10,7 +10,7 @@
 
 ## EXECUTIVE SUMMARY
 
-The comprehensive final security scan for codex-ml v0.2.1 has been completed successfully. All critical and high-priority vulnerabilities have been mitigated through proper dependency pinning and security updates. The package is cleared for PyPI publication.
+The comprehensive final security scan for codex-ml v0.2.0 has been completed successfully. All critical and high-priority vulnerabilities have been mitigated through proper dependency pinning and security updates. The package is cleared for PyPI publication.
 
 ### ✅ Security Clearance Decision: **APPROVED**
 
@@ -245,7 +245,7 @@ Checked for:
 ### 5.2 Repository Health
 
 - ✅ Git repository clean (no uncommitted changes)
-- ✅ Version tag ready (v0.2.1)
+- ✅ Version tag ready (v0.2.0)
 - ✅ CHANGELOG.md updated
 - ✅ Documentation current
 - ✅ CI/CD passed
@@ -355,7 +355,7 @@ Checked for:
 
 **Security Scan Approved By:** Automated Security Pipeline  
 **Approval Timestamp:** 2026-07-11T07:52:35Z  
-**Release Version:** v0.2.1  
+**Release Version:** v0.2.0  
 **Package:** codex-ml  
 
 ### Phase 3 Approval Status
@@ -365,7 +365,7 @@ Checked for:
 │  PHASE 3 APPROVAL: ✅ APPROVED              │
 │                                             │
 │  Status: READY FOR TAG & RELEASE            │
-│  Next Step: Create v0.2.1 release tag       │
+│  Next Step: Create v0.2.0 release tag       │
 │            Publish to PyPI                  │
 │            Release notes generation         │
 └─────────────────────────────────────────────┘

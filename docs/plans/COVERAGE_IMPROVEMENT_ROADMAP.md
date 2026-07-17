@@ -1,13 +1,13 @@
 # Coverage Improvement Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Current Coverage**: 15.9%  
-**Target Coverage**: 90%  
-**Gap**: 74.1 percentage points  
-**Timeline**: 12 phases (3 phases)  
+**Current Coverage**: 15.9%
+**Target Coverage**: 90%
+**Gap**: 74.1 percentage points
+**Timeline**: 12 phases (3 phases)
 **Owner**: AI Assistant Autonomous System
 
 ## Executive Summary
@@ -24,56 +24,56 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 ### Modules to Cover (Priority Order)
 
 #### Pre-commit 1-2: Core Training (Target: 20%)
-- `src/codex_ml/train_loop.py` (Current: ~10% → Target: 70%)
-  - Test basic training iteration
-  - Test checkpoint saving/loading
-  - Test early stopping
-  - Test gradient accumulation
-- `src/codex_ml/training.py` (Current: ~5% → Target: 60%)
-  - Test training configuration
-  - Test optimizer setup
-  - Test learning rate scheduling
+- `src/codex_ml/train_loop.py` (Current: ~10% Target: 70%)
+ - Test basic training iteration
+ - Test checkpoint saving/loading
+ - Test early stopping
+ - Test gradient accumulation
+- `src/codex_ml/training.py` (Current: ~5% Target: 60%)
+ - Test training configuration
+ - Test optimizer setup
+ - Test learning rate scheduling
 
-**Estimated New Tests**: 25-30 tests  
+**Estimated New Tests**: 25-30 tests
 **Lines Covered**: ~500 lines
 
 #### Pre-commit 3-4: Data Processing (Target: 25%)
-- `src/codex_ml/data_utils.py` (Current: ~15% → Target: 75%)
-  - Test data loading
-  - Test preprocessing
-  - Test augmentation
-- `src/codex_ml/codex_data.py` (Current: ~10% → Target: 70%)
-  - Test dataset creation
-  - Test batching
-  - Test shuffling
+- `src/codex_ml/data_utils.py` (Current: ~15% Target: 75%)
+ - Test data loading
+ - Test preprocessing
+ - Test augmentation
+- `src/codex_ml/codex_data.py` (Current: ~10% Target: 70%)
+ - Test dataset creation
+ - Test batching
+ - Test shuffling
 
-**Estimated New Tests**: 20-25 tests  
+**Estimated New Tests**: 20-25 tests
 **Lines Covered**: ~400 lines
 
 #### Pre-commit 5-6: Model Management (Target: 28%)
-- `src/codex_ml/codex_model.py` (Current: ~12% → Target: 75%)
-  - Test model initialization
-  - Test model loading
-  - Test model saving
-- `src/codex_ml/model_registry.py` (Current: ~8% → Target: 65%)
-  - Test model registration
-  - Test versioning
-  - Test retrieval
+- `src/codex_ml/codex_model.py` (Current: ~12% Target: 75%)
+ - Test model initialization
+ - Test model loading
+ - Test model saving
+- `src/codex_ml/model_registry.py` (Current: ~8% Target: 65%)
+ - Test model registration
+ - Test versioning
+ - Test retrieval
 
-**Estimated New Tests**: 20 tests  
+**Estimated New Tests**: 20 tests
 **Lines Covered**: ~350 lines
 
 #### Pre-commit 7-8: Pipeline & Integration (Target: 30%)
-- `src/codex_ml/pipeline.py` (Current: ~5% → Target: 60%)
-  - Test pipeline creation
-  - Test step execution
-  - Test error handling
+- `src/codex_ml/pipeline.py` (Current: ~5% Target: 60%)
+ - Test pipeline creation
+ - Test step execution
+ - Test error handling
 - Integration tests for training workflow
-  - End-to-end training test
-  - Multi-GPU training test
-  - Resume from checkpoint test
+ - End-to-end training test
+ - Multi-GPU training test
+ - Resume from checkpoint test
 
-**Estimated New Tests**: 15-20 tests  
+**Estimated New Tests**: 15-20 tests
 **Lines Covered**: ~300 lines
 
 ### Infrastructure Setup
@@ -94,28 +94,28 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 ### Modules to Cover
 
 #### Pre-commit 9-12: Advanced Training Features (Target: 45%)
-- `src/codex_ml/callbacks/` (Current: ~8% → Target: 70%)
-- `src/codex_ml/checkpointing/` (Current: ~10% → Target: 75%)
-- `src/codex_ml/distributed/` (Current: ~5% → Target: 60%)
-- `src/codex_ml/peft/` (Current: ~3% → Target: 55%)
+- `src/codex_ml/callbacks/` (Current: ~8% Target: 70%)
+- `src/codex_ml/checkpointing/` (Current: ~10% Target: 75%)
+- `src/codex_ml/distributed/` (Current: ~5% Target: 60%)
+- `src/codex_ml/peft/` (Current: ~3% Target: 55%)
 
-**Estimated New Tests**: 40-50 tests  
+**Estimated New Tests**: 40-50 tests
 **Lines Covered**: ~800 lines
 
 #### Pre-commit 13-14: Evaluation & Metrics (Target: 52%)
-- `src/codex_ml/eval/` (Current: ~15% → Target: 80%)
-- `src/codex_ml/metrics/` (Current: ~20% → Target: 85%)
-- `src/codex_ml/evaluation/` (Current: ~12% → Target: 75%)
+- `src/codex_ml/eval/` (Current: ~15% Target: 80%)
+- `src/codex_ml/metrics/` (Current: ~20% Target: 85%)
+- `src/codex_ml/evaluation/` (Current: ~12% Target: 75%)
 
-**Estimated New Tests**: 30-35 tests  
+**Estimated New Tests**: 30-35 tests
 **Lines Covered**: ~600 lines
 
 #### Pre-commit 15-16: Integration & Connectors (Target: 60%)
-- `src/codex_ml/integrations/` (Current: ~10% → Target: 70%)
-- `src/codex_ml/connectors/` (Current: ~8% → Target: 65%)
-- `src/codex_ml/tracking/` (Current: ~18% → Target: 75%)
+- `src/codex_ml/integrations/` (Current: ~10% Target: 70%)
+- `src/codex_ml/connectors/` (Current: ~8% Target: 65%)
+- `src/codex_ml/tracking/` (Current: ~18% Target: 75%)
 
-**Estimated New Tests**: 25-30 tests  
+**Estimated New Tests**: 25-30 tests
 **Lines Covered**: ~500 lines
 
 ### Testing Enhancements
@@ -136,12 +136,12 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 ### Modules to Cover
 
 #### Pre-commit 17-20: Remaining Core Features (Target: 75%)
-- `src/codex_ml/cli/` (Current: ~25% → Target: 85%)
-- `src/codex_ml/config/` (Current: ~30% → Target: 90%)
-- `src/codex_ml/utils/` (Current: ~35% → Target: 85%)
-- `src/codex_ml/logging/` (Current: ~28% → Target: 80%)
+- `src/codex_ml/cli/` (Current: ~25% Target: 85%)
+- `src/codex_ml/config/` (Current: ~30% Target: 90%)
+- `src/codex_ml/utils/` (Current: ~35% Target: 85%)
+- `src/codex_ml/logging/` (Current: ~28% Target: 80%)
 
-**Estimated New Tests**: 35-40 tests  
+**Estimated New Tests**: 35-40 tests
 **Lines Covered**: ~700 lines
 
 #### Pre-commit 21-22: Edge Cases & Error Handling (Target: 83%)
@@ -150,7 +150,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 - Edge case scenarios
 - Failure recovery testing
 
-**Estimated New Tests**: 30-35 tests  
+**Estimated New Tests**: 30-35 tests
 **Lines Covered**: ~600 lines
 
 #### Pre-commit 23-24: Final Push & Optimization (Target: 90%)
@@ -159,7 +159,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 - Remove flaky tests
 - Final integration tests
 
-**Estimated New Tests**: 20-25 tests  
+**Estimated New Tests**: 20-25 tests
 **Lines Covered**: ~500 lines
 
 ### Quality Gates
@@ -175,20 +175,20 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ### Test Types Distribution
 - **Unit Tests**: 60% of total tests
-  - Fast, isolated, focused
-  - Mock external dependencies
+ - Fast, isolated, focused
+ - Mock external dependencies
 
 - **Integration Tests**: 25% of total tests
-  - Test component interactions
-  - Use real dependencies where possible
+ - Test component interactions
+ - Use real dependencies where possible
 
 - **End-to-End Tests**: 10% of total tests
-  - Full workflow tests
-  - Slower but comprehensive
+ - Full workflow tests
+ - Slower but comprehensive
 
 - **Property-Based Tests**: 5% of total tests
-  - Hypothesis-based testing
-  - Edge case discovery
+ - Hypothesis-based testing
+ - Edge case discovery
 
 ### Coverage Targets by Module Type
 
@@ -248,12 +248,12 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 | Week | Target | Actual | Delta | New Tests | Status |
 |------|--------|--------|-------|-----------|--------|
-| 1 | 20% | TBD | - | 0/25 |  Not Started |
-| 2 | 25% | TBD | - | 0/20 |  Not Started |
-| 3 | 28% | TBD | - | 0/20 |  Not Started |
-| 4 | 30% | TBD | - | 0/15 |  Not Started |
+| 1 | 20% | TBD | - | 0/25 | Not Started |
+| 2 | 25% | TBD | - | 0/20 | Not Started |
+| 3 | 28% | TBD | - | 0/20 | Not Started |
+| 4 | 30% | TBD | - | 0/15 | Not Started |
 | ... | ... | ... | ... | ... | ... |
-| 12 | 90% | TBD | - | 0/20 |  Not Started |
+| 12 | 90% | TBD | - | 0/20 | Not Started |
 
 ---
 
@@ -282,20 +282,20 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 ## Success Criteria
 
 **Phase 1 Success** (Pre-commit 7-8):
--  Coverage ≥ 30%
--  CI coverage gate working
--  All new tests passing
+- Coverage ≥ 30%
+- CI coverage gate working
+- All new tests passing
 
 **Phase 2 Success** (Pre-commit 15-16):
--  Coverage ≥ 60%
--  Property-based tests implemented
--  Coverage trending dashboard live
+- Coverage ≥ 60%
+- Property-based tests implemented
+- Coverage trending dashboard live
 
 **Phase 3 Success** (Pre-commit 23-24):
--  Coverage ≥ 90%
--  All quality gates met
--  Test suite execution time acceptable
--  Production-ready status achieved
+- Coverage ≥ 90%
+- All quality gates met
+- Test suite execution time acceptable
+- Production-ready status achieved
 
 ---
 
@@ -317,7 +317,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ---
 
-**Owner**: AI Assistant Autonomous Testing System  
-**Start Date**: TBD (After PR merge)  
-**Review Frequency**: per-phase  
-**Status**:  NOT STARTED - Waiting for approval and resource allocation
+**Owner**: AI Assistant Autonomous Testing System
+**Start Date**: TBD (After PR merge)
+**Review Frequency**: per-phase
+**Status**: NOT STARTED - Waiting for approval and resource allocation

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260313-userstore-persistence/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-20260313: UserStore Persistence Backend - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2417,21 +2417,21 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Status:</strong> Proposed<br/>
+<p><strong>Status:</strong> Proposed
 <strong>Date:2026-07-13
-</strong>Authors:<strong> GitHub Copilot (Session 32, PR #3572)<br/>
-</strong>Supersedes:<strong> N/A<br/>
+</strong>Authors:<strong> GitHub Copilot (Session 32, PR #3572)
+</strong>Supersedes:<strong> N/A
 </strong>Related:** <code>src/codex/auth/user_store.py</code>, <code>src/codex/auth/user_repository.py</code></p>
 <hr/>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
 <p><code>UserStore</code> (introduced in PR #3571, Session 26) is an in-memory, thread-safe
-(RLock-protected) user store.  It works correctly for single-process
+(RLock-protected) user store. It works correctly for single-process
 deployments but has two hard limitations:</p>
 <ol>
 <li><strong>No persistence</strong> — all users are lost on process restart.</li>
 <li><strong>No cross-process sharing</strong> — multiple uvicorn workers (e.g.
-   <code>uvicorn --workers 4</code>) each maintain an independent copy of the user table,
-   so a user created in worker A is invisible to worker B.</li>
+ <code>uvicorn --workers 4</code>) each maintain an independent copy of the user table,
+ so a user created in worker A is invisible to worker B.</li>
 </ol>
 <p>Production deployments require durable, shared storage.</p>
 <hr/>
@@ -2474,12 +2474,12 @@ deployments (beyond the scope of this ADR).</p>
 <ol>
 <li>
 <p><strong><code>src/codex/auth/user_repository.py</code></strong> — <code>UserRepository</code> ABC with 7
-   abstract methods: <code>create</code>, <code>update</code>, <code>delete</code>, <code>get_by_id</code>,
-   <code>get_by_username</code>, <code>get_by_email</code>, <code>list_all</code>.</p>
+ abstract methods: <code>create</code>, <code>update</code>, <code>delete</code>, <code>get_by_id</code>,
+ <code>get_by_username</code>, <code>get_by_email</code>, <code>list_all</code>.</p>
 </li>
 <li>
 <p><strong><code>src/codex/auth/in_memory_user_repository.py</code></strong> — Direct replacement for
-   the legacy <code>_users: dict</code> internals.  Thread-safe via <code>threading.RLock</code>.</p>
+ the legacy <code>_users: dict</code> internals. Thread-safe via <code>threading.RLock</code>.</p>
 </li>
 <li>
 <p><strong><code>src/codex/auth/sqlite_user_repository.py</code></strong> — SQLite backend with:</p>
@@ -2492,22 +2492,22 @@ deployments (beyond the scope of this ADR).</p>
 </li>
 <li>
 <p><strong><code>src/codex/auth/user_store.py</code></strong> — Refactored to delegate all I/O to the
-   selected repository.  Legacy <code>_lock</code> attribute preserved for
-   backward-compatibility.</p>
+ selected repository. Legacy <code>_lock</code> attribute preserved for
+ backward-compatibility.</p>
 </li>
 <li>
 <p><strong><code>scripts/migrations/001_userstore_to_sqlite.py</code></strong> — One-shot migration
-   script: export in-memory snapshot → import to SQLite → verify.</p>
+ script: export in-memory snapshot import to SQLite verify.</p>
 </li>
 <li>
 <p><strong><code>.env.example</code></strong> — Documents <code>CODEX_USERSTORE_BACKEND</code> and
-   <code>CODEX_USERSTORE_DB_PATH</code>.</p>
+ <code>CODEX_USERSTORE_DB_PATH</code>.</p>
 </li>
 </ol>
 <h3 id="phase-2-future-pr">Phase 2 (future PR)<a class="headerlink" href="#phase-2-future-pr" title="Permanent link">¶</a></h3>
 <ul>
 <li><code>PostgresUserRepository</code> using <code>asyncpg</code> or <code>psycopg3</code> for multi-node
-  deployments.</li>
+ deployments.</li>
 <li>Connection pooling.</li>
 <li>Schema migrations via Alembic.</li>
 </ul>
@@ -2540,19 +2540,19 @@ deployments (beyond the scope of this ADR).</p>
 <ul>
 <li><strong>Durability</strong> — Users survive process restarts when SQLite is enabled.</li>
 <li><strong>No breaking changes</strong> — All existing tests pass unchanged; <code>UserStore</code>
-  public API is identical.</li>
+ public API is identical.</li>
 <li><strong>Testability</strong> — <code>SQLiteUserRepository(":memory:")</code> provides fast, isolated
-  in-process tests without a real file.</li>
+ in-process tests without a real file.</li>
 <li><strong>Extensible</strong> — New backends only need to implement the 7-method ABC.</li>
 </ul>
 <h3 id="negative-risks">Negative / Risks<a class="headerlink" href="#negative-risks" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>SQLite single-writer</strong> — WAL mode allows concurrent reads but only one
-  write at a time.  Under heavy write load, use PostgreSQL (Phase 2).</li>
+ write at a time. Under heavy write load, use PostgreSQL (Phase 2).</li>
 <li><strong>Schema migrations</strong> — Adding columns to the <code>users</code> table requires manual
-  <code>ALTER TABLE</code> or a migration tool.  Covered in Phase 2 (Alembic).</li>
-<li><strong>No connection pooling</strong> — Each call opens/closes a connection.  Acceptable
-  for typical auth workloads; revisit if profiling reveals it as a bottleneck.</li>
+ <code>ALTER TABLE</code> or a migration tool. Covered in Phase 2 (Alembic).</li>
+<li><strong>No connection pooling</strong> — Each call opens/closes a connection. Acceptable
+ for typical auth workloads; revisit if profiling reveals it as a bottleneck.</li>
 </ul>
 <hr/>
 <h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">¶</a></h2>
@@ -2561,11 +2561,11 @@ deployments (beyond the scope of this ADR).</p>
 multi-worker problem.</p>
 <h3 id="2-direct-postgresql-dependency">2. Direct PostgreSQL dependency<a class="headerlink" href="#2-direct-postgresql-dependency" title="Permanent link">¶</a></h3>
 <p>Adds <code>psycopg3</code>/<code>asyncpg</code> as a mandatory runtime dependency and requires a
-running Postgres for development.  Higher operational overhead than SQLite.
+running Postgres for development. Higher operational overhead than SQLite.
 Deferred to Phase 2.</p>
 <h3 id="3-redis">3. Redis<a class="headerlink" href="#3-redis" title="Permanent link">¶</a></h3>
 <p>Good for session data but not an authoritative user store (no relational
-integrity, persistence requires tuning).  Not appropriate here.</p>
+integrity, persistence requires tuning). Not appropriate here.</p>
 <hr/>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
@@ -2605,6 +2605,6 @@ integrity, persistence requires tuning).  Not appropriate here.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

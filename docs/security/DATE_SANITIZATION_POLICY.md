@@ -1,10 +1,10 @@
 # Date Sanitization Policy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Module:** `scripts/security/date_sanitizer.py`  
-**Purpose:** Smart date pattern detection and replacement for documentation  
-**Created:** 2026-01-07  
+**Module:** `scripts/security/date_sanitizer.py`
+**Purpose:** Smart date pattern detection and replacement for documentation
+**Created:** 2026-01-07
 **Status:** Production Ready
 
 ---
@@ -26,47 +26,47 @@ Previously, over-aggressive date 2026-07-13
 Dates are **preserved** when they appear in these contexts:
 
 1. **Version Information**
-   - `Version: 1.2.3 Released: 2026-01-05`
-   - `v0.2.1 (2026-01-03)`
-   - `aiohttp 3.13.3 (released 2026-01-03)`
+ - `Version: 1.2.3 Released: 2026-01-05`
+ - `v0.2.0 (2026-01-03)`
+ - `aiohttp 3.13.3 (released 2026-01-03)`
 
 2. **Session Metadata**
-   - `**Session Date:2026-07-13`
-   - `Session Completed: 2026-01-06 05:30 UTC`
-   - `**Created:** 2026-01-05 (Session 9)`
+ - `**Session Date:2026-07-13`
+ - `Session Completed: 2026-01-06 05:30 UTC`
+ - `**Created:** 2026-01-05 (Session 9)`
 
 3. **Timestamps**
-   - `Timestamp: 2026-01-06T12:34:56Z`
-   - `**Completion Date:2026-07-13T05:30:00Z`
-   - ISO format: `2026-01-05T00:00:00Z`
+ - `Timestamp: 2026-01-06T12:34:56Z`
+ - `**Completion Date:2026-07-13T05:30:00Z`
+ - ISO format: `2026-01-05T00:00:00Z`
 
 4. **Document Metadata**
-   - `**Last Updated: 2026-07-11
-   - `**Report Generated**: 2026-01-04 05:39:00 UTC`
-   - `**Published:** 2026-01-05`
+ - `**Last Updated: 2026-07-11
+ - `**Report Generated**: 2026-01-04 05:39:00 UTC`
+ - `**Published:** 2026-01-05`
 
 5. **Historical Records**
-   - `Updated: 2026-06-22
-   - `Committed: 2026-01-04`
-   - `Date: 2026-01-06`
+ - `Updated: 2026-06-22
+ - `Committed: 2026-01-04`
+ - `Date: 2026-01-06`
 
 ### SANITIZED Contexts (Planning/Roadmap)
 
 Dates are **sanitized** when they appear in these contexts:
 
 1. **Quarter References**
-   - `Q1 2026` → `Current Cycle Q[n]`
-   - `Q2 2026` → `Current Cycle Q[n]`
-   - `by Q4 2026` → `by Current Cycle Q[n]`
+ - `Q1 2026` `Current Cycle Q[n]`
+ - `Q2 2026` `Current Cycle Q[n]`
+ - `by Q4 2026` `by Current Cycle Q[n]`
 
 2. **Phase/Cycle Planning**
-   - `Phase 2 (Q2 2026)` → `Phase [n] (Current Cycle)`
-   - `(Phase 2 (Q2 2026))` → `(Phase [n] (Current Cycle))`
-   - `through Phase 6 Q4 2026` → `through Phase [n] Current Cycle`
+ - `Phase 2 (Q2 2026)` `Phase [n] (Current Cycle)`
+ - `(Phase 2 (Q2 2026))` `(Phase [n] (Current Cycle))`
+ - `through Phase 6 Q4 2026` `through Phase [n] Current Cycle`
 
 3. **Month Names in Planning**
-   - `January 2026` → `Current Cycle [Month]`
-   - `Project deadline: March 2026` → `Project deadline: Current Cycle [Month]`
+ - `January 2026` `Current Cycle [Month]`
+ - `Project deadline: March 2026` `Project deadline: Current Cycle [Month]`
 
 ---
 
@@ -83,14 +83,14 @@ Dates are **sanitized** when they appear in these contexts:
 
 ```python
 PRESERVE_CONTEXTS = [
-    r"version\s*:?\s*",
-    r"v\d+\.\d+\.\d+\s*\(",
-    r"released?\s*:?\s*",
-    r"updated?\s*:?\s*",
-    r"created?\s*:?\s*",
-    r"session\s+(date|id|completed?)\s*:?\s*",
-    r"\*\*date\*\*\s*:?\s*",
-    # ... more patterns
+ r"version\s*:?\s*",
+ r"v\d+\.\d+\.\d+\s*\(",
+ r"released?\s*:?\s*",
+ r"updated?\s*:?\s*",
+ r"created?\s*:?\s*",
+ r"session\s+(date|id|completed?)\s*:?\s*",
+ r"\*\*date\*\*\s*:?\s*",
+ # ... more patterns
 ]
 ```
 
@@ -98,11 +98,11 @@ PRESERVE_CONTEXTS = [
 
 ```text
 PLANNING_PATTERNS = [
-    # Most specific patterns first
-    r"\((Phase|Cycle)\s+\d+\s*\(Q[1-4]\s*20\d{2}\)\)" → "(Phase [n] (Current Cycle))",
-    r"\b(Phase|Cycle)\s+\d+\s*\(Q[1-4]\s*20\d{2}\)" → "Phase [n] (Current Cycle)",
-    r"\bQ[1-4]\s+20\d{2}\b" → "Current Cycle Q[n]",
-    # ... more patterns
+ # Most specific patterns first
+ r"\((Phase|Cycle)\s+\d+\s*\(Q[1-4]\s*20\d{2}\)\)" "(Phase [n] (Current Cycle))",
+ r"\b(Phase|Cycle)\s+\d+\s*\(Q[1-4]\s*20\d{2}\)" "Phase [n] (Current Cycle)",
+ r"\bQ[1-4]\s+20\d{2}\b" "Current Cycle Q[n]",
+ # ... more patterns
 ]
 ```
 
@@ -146,18 +146,18 @@ print(replacements)
 from scripts.security.date_sanitizer import sanitize_planning_dates
 
 class DocumentProcessor:
-    def process_agent_output(self, text: str) -> str:
-        """Process agent-generated documentation."""
-        # Apply date sanitization
-        sanitized, replacements = sanitize_planning_dates(text)
+ def process_agent_output(self, text: str) -> str:
+ """Process agent-generated documentation."""
+ # Apply date sanitization
+ sanitized, replacements = sanitize_planning_dates(text)
 
-        # Log for audit trail
-        if replacements:
-            self.logger.info(f"Sanitized {len(replacements)} planning dates")
-            for repl in replacements:
-                self.logger.debug(f"  {repl}")
+ # Log for audit trail
+ if replacements:
+ self.logger.info(f"Sanitized {len(replacements)} planning dates")
+ for repl in replacements:
+ self.logger.debug(f" {repl}")
 
-        return sanitized
+ return sanitized
 ```
 
 ---
@@ -213,7 +213,7 @@ Completed migration tasks.
 **Last Updated: 2026-07-11
 
 ## Version History
-- v0.2.1 released 2026-01-03
+- v0.2.0 released 2026-01-03
 
 ## Roadmap
 - Phase 1: Q1 2026
@@ -227,7 +227,7 @@ Completed migration tasks.
 **Last Updated: 2026-07-11
 
 ## Version History
-- v0.2.1 released 2026-01-03
+- v0.2.0 released 2026-01-03
 
 ## Roadmap
 - Phase 1: Current Cycle Q[n]
@@ -250,12 +250,12 @@ pytest tests/security/test_date_sanitizer.py -v
 
 ### Test Coverage
 
--  8 tests for preserved contexts
--  5 tests for planning terminology replacement
--  2 tests for mixed content
--  4 tests for edge cases
--  4 tests for preservation functions
--  3 tests for real-world examples
+- 8 tests for preserved contexts
+- 5 tests for planning terminology replacement
+- 2 tests for mixed content
+- 4 tests for edge cases
+- 4 tests for preservation functions
+- 3 tests for real-world examples
 
 **Total: 26 tests, all passing**
 
@@ -268,11 +268,11 @@ from hypothesis import given, strategies as st
 
 @given(st.text())
 def test_no_data_loss(text):
-    """Sanitization should not lose information."""
-    sanitized, _ = sanitize_planning_dates(text)
-    # Count of important technical markers should remain the same
-    assert text.count("Version:") == sanitized.count("Version:")
-    assert text.count("Released:") == sanitized.count("Released:")
+ """Sanitization should not lose information."""
+ sanitized, _ = sanitize_planning_dates(text)
+ # Count of important technical markers should remain the same
+ assert text.count("Version:") == sanitized.count("Version:")
+ assert text.count("Released:") == sanitized.count("Released:")
 ```
 
 ---
@@ -285,9 +285,9 @@ To add new preservation contexts, edit `PRESERVE_CONTEXTS` in `date_sanitizer.py
 
 ```python
 PRESERVE_CONTEXTS = [
-    # ... existing patterns ...
-    r"deployed\s*:?\s*",  # Add "deployed:" context
-    r"milestone\s+\d+\s*:?\s*",  # Add "Milestone 1:" context
+ # ... existing patterns ...
+ r"deployed\s*:?\s*", # Add "deployed:" context
+ r"milestone\s+\d+\s*:?\s*", # Add "Milestone 1:" context
 ]
 ```
 
@@ -297,12 +297,12 @@ To add new planning patterns, edit `PLANNING_PATTERNS`:
 
 ```python
 PLANNING_PATTERNS = [
-    # ... existing patterns ...
-    ReplacementRule(
-        pattern=r"\bFY\s*20\d{2}\b",
-        replacement="Current Fiscal Year",
-        description="Fiscal year references",
-    ),
+ # ... existing patterns ...
+ ReplacementRule(
+ pattern=r"\bFY\s*20\d{2}\b",
+ replacement="Current Fiscal Year",
+ description="Fiscal year references",
+ ),
 ]
 ```
 
@@ -315,14 +315,14 @@ PLANNING_PATTERNS = [
 Add to `.pre-commit-config.yaml`:
 
 ```yaml
-  - repo: local
-    hooks:
-      - id: sanitize-planning-dates
-        name: Sanitize planning dates in docs
-        entry: python scripts/security/date_sanitizer.py
-        language: system
-        files: '^(docs/|\.codex/).*\.md$'
-        stages: [commit]
+ - repo: local
+ hooks:
+ - id: sanitize-planning-dates
+ name: Sanitize planning dates in docs
+ entry: python scripts/security/date_sanitizer.py
+ language: system
+ files: '^(docs/|\.codex/).*\.md$'
+ stages: [commit]
 ```
 
 ### 2. CI/CD Pipeline
@@ -331,11 +331,11 @@ Add to workflow YAML:
 
 ```yaml
 - name: Sanitize Documentation Dates
-  run: |
-    for file in $(find docs/ -name "*.md"); do
-      python scripts/security/date_sanitizer.py "$file" > "$file.tmp"
-      mv "$file.tmp" "$file"
-    done
+ run: |
+ for file in $(find docs/ -name "*.md"); do
+ python scripts/security/date_sanitizer.py "$file" > "$file.tmp"
+ mv "$file.tmp" "$file"
+ done
 ```
 
 ### 3. Document Generation
@@ -347,8 +347,8 @@ Integrate with MkDocs or other doc generators:
 from scripts.security.date_sanitizer import sanitize_planning_dates
 
 def on_page_markdown(markdown, **kwargs):
-    sanitized, _ = sanitize_planning_dates(markdown)
-    return sanitized
+ sanitized, _ = sanitize_planning_dates(markdown)
+ return sanitized
 ```
 
 ---
@@ -391,7 +391,7 @@ def on_page_markdown(markdown, **kwargs):
 Tested on typical documents:
 
 - **Small (1KB):** ~1ms
-- **Medium (10KB):** ~5ms  
+- **Medium (10KB):** ~5ms
 - **Large (100KB):** ~50ms
 - **XL (1MB):** ~500ms
 
@@ -424,7 +424,7 @@ All replacements are logged and returned:
 ```python
 _, replacements = sanitize_planning_dates(text)
 for repl in replacements:
-    audit_log.info(f"Date sanitization: {repl}")
+ audit_log.info(f"Date sanitization: {repl}")
 ```
 
 ---
@@ -457,6 +457,6 @@ for repl in replacements:
 
 ---
 
-**Status:** Production Ready  
-**Maintainer:** GitHub Copilot  
+**Status:** Production Ready
+**Maintainer:** GitHub Copilot
 **Next Review:** 2026-02-07 (Monthly)

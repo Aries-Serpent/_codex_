@@ -1,6 +1,6 @@
 # Research Note 10 — Determining Maturity When Novice Systems Consistently Meet Targets
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -83,18 +83,31 @@ Interpretation: Maturity rises when target success is repeatable, explainable, s
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Targets met, M_system'}}%%
+
 flowchart LR
+
     Targets[Targets met] --> Maturity[M_system]
+
     Consistency[R_consistency] --> Maturity
+
     Generalization[G_generalization] --> Maturity
+
     Observability[O_observability] --> Maturity
+
     Safety[S_safety] --> Maturity
+
     Adaptivity[A_adaptivity] --> Maturity
+
     Quality[Q_quality] --> Maturity
+
     Fragility[F_fragility] --> Penalty[Penalty denominator]
+
     Drift[D_drift] --> Penalty
+
     Hidden[C_hidden] --> Penalty
+
     Penalty --> Maturity
+
     Maturity --> Band[Maturity band]
 ```
 
@@ -177,18 +190,31 @@ These bands are illustrative. Each organization should calibrate them against sa
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Targets consistently met, Level 1: reliable novice'}}%%
+
 flowchart TD
+
     Target[Targets consistently met] --> Known{Only known conditions?}
+
     Known -->|yes| Novice[Level 1: reliable novice]
+
     Known -->|no| Variation[Scenario variation tested]
+
     Variation --> Transfer{Transfers to adjacent cases?}
+
     Transfer -->|no| Context[Level 2: context-aware but bounded]
+
     Transfer -->|yes| Adapt{Adapts without unsafe oscillation?}
+
     Adapt -->|no| Partial[Level 3 candidate: needs control hardening]
+
     Adapt -->|yes| Resilience{Handles faults and recovers?}
+
     Resilience -->|no| Adaptive[Level 3: adaptive]
+
     Resilience -->|yes| Audit{Observable, explainable, governed?}
+
     Audit -->|no| Resilient[Level 4: resilient but governance-limited]
+
     Audit -->|yes| Mature[Level 5: mature system]
 ```
 

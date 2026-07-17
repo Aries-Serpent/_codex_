@@ -1,12 +1,12 @@
 # Configuration & Setup Master Guide
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
-> **Consolidated Master Document** for Codex Configuration  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Configuration
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Consolidated from** 6 source files:
 - docs/CONSISTENCY_CHECKS_SETUP.md
@@ -42,7 +42,7 @@ cd _codex_
 
 # 2. Create virtual environment
 python3.11 -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
+source venv/bin/activate # or venv\Scripts\activate on Windows
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -108,7 +108,7 @@ pip install -r requirements.txt
 **Step 3: Install Development Tools**
 ```bash
 pip install -r requirements-dev.txt
-pip install -r requirements-test.txt  # for testing
+pip install -r requirements-test.txt # for testing
 ```
 
 **Step 4: Configure Environment Variables**
@@ -130,7 +130,7 @@ python scripts/migrate_db.py
 **Step 6: Validate Setup**
 ```bash
 python scripts/validate_setup.py
-# Output:  All checks passed
+# Output: All checks passed
 ```
 
 ### IDE Configuration
@@ -138,22 +138,22 @@ python scripts/validate_setup.py
 **VS Code Settings**:
 ```json
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
-  "python.linting.mypyEnabled": true,
-  "editor.formatOnSave": true,
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.python",
-    "editor.formatOnSave": true
-  }
+ "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+ "python.linting.enabled": true,
+ "python.linting.pylintEnabled": true,
+ "python.linting.mypyEnabled": true,
+ "editor.formatOnSave": true,
+ "[python]": {
+ "editor.defaultFormatter": "ms-python.python",
+ "editor.formatOnSave": true
+ }
 }
 ```
 
 **PyCharm Settings**:
 ```
-Settings → Project → Python Interpreter → Add Local
-  → Select: ./venv/bin/python
+Settings Project Python Interpreter Add Local
+ Select: ./venv/bin/python
 ```
 
 ---
@@ -170,22 +170,22 @@ Settings → Project → Python Interpreter → Add Local
 ```yaml
 # .codex/mcp_config.yaml
 mcp:
-  version: 1.0
-  tools:
-    - name: "bash"
-      enabled: true
-      
-    - name: "grep"
-      enabled: true
-      
-    - name: "view"
-      enabled: true
-      
-    - name: "edit"
-      enabled: true
-      
-    - name: "create"
-      enabled: true
+ version: 1.0
+ tools:
+ - name: "bash"
+ enabled: true
+ 
+ - name: "grep"
+ enabled: true
+ 
+ - name: "view"
+ enabled: true
+ 
+ - name: "edit"
+ enabled: true
+ 
+ - name: "create"
+ enabled: true
 ```
 
 **Step 2: Initialize MCP Server**
@@ -198,7 +198,7 @@ python scripts/mcp/init_server.py
 ```bash
 # In VS Code Copilot settings
 copilot.mcp.endpoints = [
-  "http://localhost:8765"
+ "http://localhost:8765"
 ]
 ```
 
@@ -207,7 +207,7 @@ copilot.mcp.endpoints = [
 import requests
 
 response = requests.get("http://localhost:8765/health")
-print(response.json())  # {"status": "healthy"}
+print(response.json()) # {"status": "healthy"}
 ```
 
 ### Common MCP Tools
@@ -233,53 +233,53 @@ name: my-agent
 description: Custom agent for specialized task
 model: claude-sonnet-4.5
 tools:
-  - bash
-  - grep
-  - view
+ - bash
+ - grep
+ - view
 capability_tags:
-  - code-analysis
-  - testing
+ - code-analysis
+ - testing
 ```
 
 **Step 2: Add to Agent Registry**
 ```yaml
 # agents/AGENT_REGISTRY.yaml
 agents:
-  - name: my-agent
-    type: custom
-    status: active
-    owner: your-team
-    capability_tags:
-      - code-analysis
-      - testing
-    activation_pattern: "@copilot Use my-agent for [task]"
+ - name: my-agent
+ type: custom
+ status: active
+ owner: your-team
+ capability_tags:
+ - code-analysis
+ - testing
+ activation_pattern: "@copilot Use my-agent for [task]"
 ```
 
 **Step 3: Deploy Agent**
 ```bash
 python scripts/agents/deploy_agent.py --agent my-agent
-# Output:  Agent deployed successfully
+# Output: Agent deployed successfully
 ```
 
 ### Agent Configuration Options
 
 ```yaml
 agent:
-  name: string
-  description: string
-  model: string (claude-sonnet-4.5, gpt-5.4, etc.)
-  tools:
-    - name: string
-      enabled: boolean
-  capabilities:
-    - string
-  constraints:
-    max_tokens: integer
-    timeout_seconds: integer
-    max_retries: integer
-  logging:
-    level: string (debug, info, warn, error)
-    destination: string (stdout, file, cloud)
+ name: string
+ description: string
+ model: string (claude-sonnet-4.5, gpt-5.4, etc.)
+ tools:
+ - name: string
+ enabled: boolean
+ capabilities:
+ - string
+ constraints:
+ max_tokens: integer
+ timeout_seconds: integer
+ max_retries: integer
+ logging:
+ level: string (debug, info, warn, error)
+ destination: string (stdout, file, cloud)
 ```
 
 ---
@@ -292,15 +292,15 @@ agent:
 ```bash
 # Enable branch protection
 gh api repos/{owner}/{repo}/branches/main/protection \
-  --input - << 'EOF'
+ --input - << 'EOF'
 {
-  "required_status_checks": {
-    "strict": true,
-    "contexts": ["build", "test", "lint"]
-  },
-  "enforce_admins": true,
-  "require_code_owner_reviews": true,
-  "required_approving_review_count": 1
+ "required_status_checks": {
+ "strict": true,
+ "contexts": ["build", "test", "lint"]
+ },
+ "enforce_admins": true,
+ "require_code_owner_reviews": true,
+ "required_approving_review_count": 1
 }
 EOF
 ```
@@ -363,29 +363,29 @@ pre-commit run black --all-files
 ```yaml
 # .pre-commit-config.yaml
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.1.0
-    hooks:
-      - id: black
-  
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
-  
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.0.0
-    hooks:
-      - id: mypy
-  
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: pytest
-        language: system
-        types: [python]
-        stages: [commit]
+ - repo: https://github.com/psf/black
+ rev: 23.1.0
+ hooks:
+ - id: black
+ 
+ - repo: https://github.com/PyCQA/flake8
+ rev: 6.0.0
+ hooks:
+ - id: flake8
+ 
+ - repo: https://github.com/pre-commit/mirrors-mypy
+ rev: v1.0.0
+ hooks:
+ - id: mypy
+ 
+ - repo: local
+ hooks:
+ - id: pytest
+ name: pytest
+ entry: pytest
+ language: system
+ types: [python]
+ stages: [commit]
 ```
 
 ### Run Consistency Checks
@@ -417,21 +417,21 @@ make check-all
 ```yaml
 # config/app_config.yaml
 defaults:
-  - _self_
-  - environment: local
+ - _self_
+ - environment: local
 
 app:
-  name: codex
-  version: 1.0.0
-  debug: true
+ name: codex
+ version: 1.0.0
+ debug: true
 
 database:
-  driver: sqlite
-  url: sqlite:///./data/codex.db
+ driver: sqlite
+ url: sqlite:///./data/codex.db
 
 logging:
-  level: DEBUG
-  format: json
+ level: DEBUG
+ format: json
 ```
 
 **Environment overrides**:
@@ -439,13 +439,13 @@ logging:
 # config/environment/local.yaml
 debug: true
 database:
-  driver: sqlite
-  
+ driver: sqlite
+ 
 # config/environment/production.yaml
 debug: false
 database:
-  driver: postgresql
-  url: ******host/db
+ driver: postgresql
+ url: ******host/db
 ```
 
 **Load configuration**:
@@ -454,8 +454,8 @@ from omegaconf import OmegaConf, DictConfig
 from hydra import compose, initialize
 
 with initialize(config_path="config", version_base="1.1"):
-    cfg = compose(config_name="app_config", overrides=["environment=local"])
-    print(OmegaConf.to_yaml(cfg))
+ cfg = compose(config_name="app_config", overrides=["environment=local"])
+ print(OmegaConf.to_yaml(cfg))
 ```
 
 ### NotebookLM Integration
@@ -468,16 +468,16 @@ NOTEBOOKLM_PROJECT_ID = "your-project-id"
 
 # Sources to process
 SOURCES = [
-    "docs/README.md",
-    "docs/ARCHITECTURE.md",
-    "docs/api/API_REFERENCE.md"
+ "docs/README.md",
+ "docs/ARCHITECTURE.md",
+ "docs/api/API_REFERENCE.md"
 ]
 
 # Output settings
 OUTPUT = {
-    "format": "markdown",
-    "include_citations": True,
-    "max_length": 2000
+ "format": "markdown",
+ "include_citations": True,
+ "max_length": 2000
 }
 ```
 
@@ -499,7 +499,7 @@ python scripts/notebooklm/generate_summary.py
 **Solution**:
 ```bash
 # Verify virtual environment is active
-which python  # Should show venv/bin/python
+which python # Should show venv/bin/python
 
 # Reinstall dependencies
 pip install --upgrade -r requirements.txt
@@ -538,7 +538,7 @@ echo $GITHUB_TOKEN
 curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
 
 # Regenerate token if needed
-# GitHub Settings → Developer settings → Personal access tokens
+# GitHub Settings Developer settings Personal access tokens
 ```
 
 ### MCP Connection Issues
@@ -595,20 +595,20 @@ MCP_PORT=8765
 
 ```bash
 # Development
-make dev          # Start dev server
-make test         # Run tests
-make lint         # Lint code
-make format       # Format code
+make dev # Start dev server
+make test # Run tests
+make lint # Lint code
+make format # Format code
 
 # Production
-make build        # Build package
-make deploy       # Deploy to production
-make release      # Create release
+make build # Build package
+make deploy # Deploy to production
+make release # Create release
 
 # Maintenance
-make clean        # Clean build artifacts
-make docs         # Generate documentation
-make check-all    # Run all checks
+make clean # Clean build artifacts
+make docs # Generate documentation
+make check-all # Run all checks
 ```
 
 ---
@@ -616,4 +616,4 @@ make check-all    # Run all checks
 **This document is the authoritative configuration and setup guide for Codex.**
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (6 files merged)*
+*Consolidation Status: Complete (6 files merged)*

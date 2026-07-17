@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/GOVERNANCE_PATTERNS_CONTRIBUTOR_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Governance Patterns Contributor Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -3067,9 +3067,9 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Purpose</strong>: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.<br/>
-<strong>Authority</strong>: Phase D Tier 2 operational guidance (autonomous execution)<br/>
-<strong>Version</strong>: 1.0<br/>
+<p><strong>Purpose</strong>: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.
+<strong>Authority</strong>: Phase D Tier 2 operational guidance (autonomous execution)
+<strong>Version</strong>: 1.0
 <strong>Last Updated</strong>: 2026-07-02</p>
 </blockquote>
 <hr/>
@@ -3169,10 +3169,10 @@
 <a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
 <a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>```yaml
 <a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>governance:
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>  pattern: [CATEGORY]-[SEQUENCE]
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>  enabled: true
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>  enforcement: [hard_block | soft_block | audit]
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>  # Pattern-specific config
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a> pattern: [CATEGORY]-[SEQUENCE]
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a> enabled: true
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a> enforcement: [hard_block | soft_block | audit]
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a> # Pattern-specific config
 </code></pre></div>
 <h2 id="4-dependencies">4. Dependencies<a class="headerlink" href="#4-dependencies" title="Permanent link">¶</a></h2>
 <h3 id="prerequisites-must-complete-first">Prerequisites (Must Complete First)<a class="headerlink" href="#prerequisites-must-complete-first" title="Permanent link">¶</a></h3>
@@ -3263,13 +3263,20 @@
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>```mermaid
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>graph TD
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    A["Is this pattern about&lt;br/&gt;POLICY or GOVERNANCE?"]
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    A --&gt;|Yes| B["Governance Policy&lt;br/&gt;&lt;strong&gt;Category: GP&lt;/strong&gt;&lt;br/&gt;Covers approval gates,&lt;br/&gt;code review rules,&lt;br/&gt;change control"]
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    A --&gt;|No| C["Is this about&lt;br/&gt;APPROVALS or WORKFLOWS?"]
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    C --&gt;|Yes| D["Approval &amp; Workflow&lt;br/&gt;&lt;strong&gt;Category: AP&lt;/strong&gt;&lt;br/&gt;Covers PR approvals,&lt;br/&gt;deployment gates,&lt;br/&gt;workflow automation"]
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    C --&gt;|No| E["Is this about&lt;br/&gt;COMPLIANCE or AUDIT?"]
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    E --&gt;|Yes| F["Compliance &amp; Audit&lt;br/&gt;&lt;strong&gt;Category: CP&lt;/strong&gt;&lt;br/&gt;Covers policy compliance,&lt;br/&gt;audit trails,&lt;br/&gt;access controls"]
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    E --&gt;|No| G["Advanced Integration&lt;br/&gt;&lt;strong&gt;Category: IP&lt;/strong&gt;&lt;br/&gt;Covers agent routing,&lt;br/&gt;cross-system patterns,&lt;br/&gt;orchestration"]
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    A["Is this pattern about&lt;br/&gt;POLICY or GOVERNANCE?"]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    A --&gt;|Yes| B["Governance Policy&lt;br/&gt;&lt;strong&gt;Category: GP&lt;/strong&gt;&lt;br/&gt;Covers approval gates,&lt;br/&gt;code review rules,&lt;br/&gt;change control"]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    A --&gt;|No| C["Is this about&lt;br/&gt;APPROVALS or WORKFLOWS?"]
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    C --&gt;|Yes| D["Approval &amp; Workflow&lt;br/&gt;&lt;strong&gt;Category: AP&lt;/strong&gt;&lt;br/&gt;Covers PR approvals,&lt;br/&gt;deployment gates,&lt;br/&gt;workflow automation"]
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>    C --&gt;|No| E["Is this about&lt;br/&gt;COMPLIANCE or AUDIT?"]
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>    E --&gt;|Yes| F["Compliance &amp; Audit&lt;br/&gt;&lt;strong&gt;Category: CP&lt;/strong&gt;&lt;br/&gt;Covers policy compliance,&lt;br/&gt;audit trails,&lt;br/&gt;access controls"]
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    E --&gt;|No| G["Advanced Integration&lt;br/&gt;&lt;strong&gt;Category: IP&lt;/strong&gt;&lt;br/&gt;Covers agent routing,&lt;br/&gt;cross-system patterns,&lt;br/&gt;orchestration"]
 </code></pre></div></li>
 </ul>
 <h3 id="category-definitions">Category Definitions<a class="headerlink" href="#category-definitions" title="Permanent link">¶</a></h3>
@@ -3349,10 +3356,10 @@
 <p><strong>Deliverables</strong>:
 - Branch: <code>feature/governance-pattern-[ID]-[name]</code>
 - Files modified:
-  - <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code> (add pattern entry)
-  - <code>.codex/GOVERNANCE_PATTERN_EXAMPLES.md</code> (add implementation example)
-  - Code implementation files (if agent-specific)
-  - Tests (unit + integration as per <a href="#testing-requirements">Testing Requirements</a>)</p>
+ - <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code> (add pattern entry)
+ - <code>.codex/GOVERNANCE_PATTERN_EXAMPLES.md</code> (add implementation example)
+ - Code implementation files (if agent-specific)
+ - Tests (unit + integration as per <a href="#testing-requirements">Testing Requirements</a>)</p>
 <p><strong>Success Criteria</strong>:
 - [ ] Pattern documented in reference guide
 - [ ] At least one code example provided
@@ -3785,7 +3792,7 @@
 <p>Avoid these mistakes when creating governance patterns:</p>
 <h3 id="pitfall-1-vague-problem-statements">Pitfall 1: Vague Problem Statements<a class="headerlink" href="#pitfall-1-vague-problem-statements" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern addresses a general concern but doesn't tie to specific failures.</p>
-<p><strong>Example of Pitfall</strong>: "We should improve code quality"<br/>
+<p><strong>Example of Pitfall</strong>: "We should improve code quality"
 <strong>Example of Fix</strong>: "Three code reviews this month missed security vulnerabilities because reviewers didn't check for hardcoded credentials. This pattern requires automated scanning before approval."</p>
 <p><strong>Prevention</strong>:
 - Reference specific failures or near-misses
@@ -3794,7 +3801,7 @@
 <hr/>
 <h3 id="pitfall-2-vague-enforcement-mechanism">Pitfall 2: Vague Enforcement Mechanism<a class="headerlink" href="#pitfall-2-vague-enforcement-mechanism" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern doesn't specify what happens when rule is violated.</p>
-<p><strong>Example of Pitfall</strong>: "Code review should happen"<br/>
+<p><strong>Example of Pitfall</strong>: "Code review should happen"
 <strong>Example of Fix</strong>: "Code review is a Hard Block. If PR lacks approval from authorized reviewer, reject PR automatically and notify submitter with link to review runbook."</p>
 <p><strong>Prevention</strong>:
 - Always specify: Hard Block / Soft Block / Audit Only
@@ -3804,7 +3811,7 @@
 <hr/>
 <h3 id="pitfall-3-missing-dependencies">Pitfall 3: Missing Dependencies<a class="headerlink" href="#pitfall-3-missing-dependencies" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern depends on another pattern but doesn't document it.</p>
-<p><strong>Example of Pitfall</strong>: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).<br/>
+<p><strong>Example of Pitfall</strong>: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).
 <strong>Example of Fix</strong>: AP-001 section states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."</p>
 <p><strong>Prevention</strong>:
 - Map all upstream dependencies (what must be true first)
@@ -3813,7 +3820,7 @@
 <hr/>
 <h3 id="pitfall-4-implementation-assumes-one-context">Pitfall 4: Implementation Assumes One Context<a class="headerlink" href="#pitfall-4-implementation-assumes-one-context" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern only works in one scenario but should be more general.</p>
-<p><strong>Example of Pitfall</strong>: Pattern documents GitHub Actions workflow but should apply to all CI/CD systems.<br/>
+<p><strong>Example of Pitfall</strong>: Pattern documents GitHub Actions workflow but should apply to all CI/CD systems.
 <strong>Example of Fix</strong>: Pattern documents generic governance principle with examples for GitHub Actions, GitLab CI, and local execution.</p>
 <p><strong>Prevention</strong>:
 - Separate "principle" from "implementation"
@@ -3822,7 +3829,7 @@
 <hr/>
 <h3 id="pitfall-5-no-validation-checklist">Pitfall 5: No Validation Checklist<a class="headerlink" href="#pitfall-5-no-validation-checklist" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern is vague about how to verify it's working.</p>
-<p><strong>Example of Pitfall</strong>: Pattern says "Monitor code review quality" without saying how.<br/>
+<p><strong>Example of Pitfall</strong>: Pattern says "Monitor code review quality" without saying how.
 <strong>Example of Fix</strong>: Pattern includes checklist: "Verify enforcement: [ ] Review comments present, [ ] Violations logged, [ ] Metrics populated"</p>
 <p><strong>Prevention</strong>:
 - Add validation checklist to pattern template
@@ -3831,7 +3838,7 @@
 <hr/>
 <h3 id="pitfall-6-hardcoded-secrets-or-credentials">Pitfall 6: Hardcoded Secrets or Credentials<a class="headerlink" href="#pitfall-6-hardcoded-secrets-or-credentials" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern examples include real secrets (API keys, passwords, tokens).</p>
-<p><strong>Example of Pitfall</strong>: Example shows <code>api_key: sk-1234567890abcdef</code><br/>
+<p><strong>Example of Pitfall</strong>: Example shows <code>api_key: sk-1234567890abcdef</code>
 <strong>Example of Fix</strong>: Example shows <code>api_key: ${API_KEY_PLACEHOLDER}</code> with note "Replace with your actual API key from secure store"</p>
 <p><strong>Prevention</strong>:
 - Use placeholder values (${PLACEHOLDER})
@@ -3880,7 +3887,7 @@
 </tr>
 <tr>
 <td>Change enforcement</td>
-<td>Hard Block → Soft Block</td>
+<td>Hard Block Soft Block</td>
 <td>2.0</td>
 </tr>
 <tr>
@@ -4017,6 +4024,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

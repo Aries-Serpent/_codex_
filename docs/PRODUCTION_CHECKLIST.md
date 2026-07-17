@@ -1,9 +1,9 @@
-# Production Checklist - Aries-Serpent v0.2.1
+# Production Checklist - Aries-Serpent v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Document Type:** Operations & Deployment Verification  
-**Audience:** DevOps Engineers, Release Managers, Operations Teams  
+**Document Type:** Operations & Deployment Verification
+**Audience:** DevOps Engineers, Release Managers, Operations Teams
 **Last Updated: 2026-07-16
 
 ## Pre-Deployment Checklist
@@ -125,11 +125,11 @@
 
 **Alerting:**
 - [ ] Alerts configured for:
-  - [ ] High CPU/memory
-  - [ ] Database connection errors
-  - [ ] API error rate >1%
-  - [ ] Response time >1s
-  - [ ] Disk space <20%
+ - [ ] High CPU/memory
+ - [ ] Database connection errors
+ - [ ] API error rate >1%
+ - [ ] Response time >1s
+ - [ ] Disk space <20%
 - [ ] On-call notification tested
 - [ ] Alert escalation paths defined
 
@@ -232,58 +232,58 @@
 ### Before Deployment
 
 - [ ] **T-30min:** Pre-flight checks
-  - [ ] All systems green
-  - [ ] Backups current
-  - [ ] Team assembled
+ - [ ] All systems green
+ - [ ] Backups current
+ - [ ] Team assembled
 
 - [ ] **T-15min:** Notifications
-  - [ ] Team notification sent
-  - [ ] Stakeholders notified
-  - [ ] Status page updated
+ - [ ] Team notification sent
+ - [ ] Stakeholders notified
+ - [ ] Status page updated
 
 - [ ] **T-5min:** Final checks
-  - [ ] Database backup verified
-  - [ ] Rollback plan confirmed
-  - [ ] Monitoring systems live
+ - [ ] Database backup verified
+ - [ ] Rollback plan confirmed
+ - [ ] Monitoring systems live
 
 ### During Deployment
 
 - [ ] **Phase 1:** Blue-Green Deployment
-  - [ ] Green environment healthy
-  - [ ] Health checks passing
-  - [ ] Smoke tests passing
-  - [ ] Sample traffic routing
+ - [ ] Green environment healthy
+ - [ ] Health checks passing
+ - [ ] Smoke tests passing
+ - [ ] Sample traffic routing
 
 - [ ] **Phase 2:** Gradual Rollout
-  - [ ] 10% traffic → monitor for 5 min
-  - [ ] 25% traffic → monitor for 5 min
-  - [ ] 50% traffic → monitor for 10 min
-  - [ ] 100% traffic → continue monitoring
+ - [ ] 10% traffic monitor for 5 min
+ - [ ] 25% traffic monitor for 5 min
+ - [ ] 50% traffic monitor for 10 min
+ - [ ] 100% traffic continue monitoring
 
 - [ ] **Phase 3:** Validation
-  - [ ] Error rates normal
-  - [ ] Response times acceptable
-  - [ ] Database replication healthy
-  - [ ] Cache hit rates normal
+ - [ ] Error rates normal
+ - [ ] Response times acceptable
+ - [ ] Database replication healthy
+ - [ ] Cache hit rates normal
 
 ### Post-Deployment
 
 - [ ] **T+30min:** Post-deploy checks
-  - [ ] All metrics green
-  - [ ] No error spikes
-  - [ ] User reports normal
-  - [ ] Database healthy
+ - [ ] All metrics green
+ - [ ] No error spikes
+ - [ ] User reports normal
+ - [ ] Database healthy
 
 - [ ] **T+4 hours:** Extended monitoring
-  - [ ] Continued stability
-  - [ ] No performance regressions
-  - [ ] Backup completed
+ - [ ] Continued stability
+ - [ ] No performance regressions
+ - [ ] Backup completed
 
 - [ ] **T+24 hours:** Final verification
-  - [ ] All systems stable
-  - [ ] All metrics within SLA
-  - [ ] No pending issues
-  - [ ] Post-deployment review
+ - [ ] All systems stable
+ - [ ] All metrics within SLA
+ - [ ] No pending issues
+ - [ ] Post-deployment review
 
 ## Rollback Procedure
 
@@ -310,13 +310,13 @@ curl http://service/health
 
 Deployment is successful when:
 
- All health checks pass for 30 minutes  
- Error rate < 0.1%  
- Response times < baseline + 10%  
- No customer-facing issues  
- All monitoring alerts normal  
- Database replication healthy  
- No security issues detected  
+ All health checks pass for 30 minutes
+ Error rate < 0.1%
+ Response times < baseline + 10%
+ No customer-facing issues
+ All monitoring alerts normal
+ Database replication healthy
+ No security issues detected
 
 ## Post-Deployment Review
 
@@ -353,5 +353,5 @@ kubectl rollout undo deployment/api
 
 ---
 
-**Status:**  COMPLETE  
+**Status:** COMPLETE
 **Last Updated: 2026-07-16

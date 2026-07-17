@@ -1,6 +1,6 @@
 # Contributing
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -130,9 +130,9 @@ builds also attach the SBOM to the published GitHub release as
 - **Dependency visibility:** quickly enumerate transitive Python packages.
 - **Licence compliance:** review the licence set via `jq` queries.
 - **Security posture:** feed the SBOM into scanners (Snyk, Dependency-Track,
-  etc.).
+ etc.).
 - **Regulatory readiness:** SBOMs are increasingly required by NTIA and EU CRA
-  guidance.
+ guidance.
 
 ## Workflow consolidation
 
@@ -179,19 +179,19 @@ See [docs/guides/.codex/archive/deprecated/AGENTS.md](../.github/.codex/archive/
 ## Extending Codex ML components
 
 Codex ML exposes registries for tokenizers, models, metrics, data loaders and
-trainers via :mod:`codex_ml.registry`.  When contributing a new component or
+trainers via :mod:`codex_ml.registry`. When contributing a new component or
 documenting a third-party plugin:
 
 - Register the implementation using the appropriate ``register_*`` helper so it
-  is available to in-process callers.
+ is available to in-process callers.
 - If the component ships in an external package, declare an entry point in the
-  relevant ``codex_ml.*`` group (for example ``codex_ml.metrics``) and ensure the
-  callable returns the fully configured object.
-- Add automated coverage that exercises registration and error handling.  See
-  ``tests/test_registry.py`` for examples that verify collisions and load
-  failures.
+ relevant ``codex_ml.*`` group (for example ``codex_ml.metrics``) and ensure the
+ callable returns the fully configured object.
+- Add automated coverage that exercises registration and error handling. See
+ ``tests/test_registry.py`` for examples that verify collisions and load
+ failures.
 - Provide user-facing documentation under ``docs/modules/plugins.md`` describing
-  configuration options and any additional dependencies.
+ configuration options and any additional dependencies.
 
 ## Local quality gates (no GitHub Actions)
 
@@ -203,9 +203,9 @@ documenting a third-party plugin:
 
 - Minimum coverage gate: **3.5%** (enforced via `configs/development/pytest.ini`, `configs/development/Makefile`, `configs/development/noxfile.py`, and `.github/workflows/` pipelines).
 - Local commands respecting the gate:
-  - `pytest --cov=src/codex_ml --cov-fail-under=3.5`
-  - `make -C config test`
-  - `nox -s tests`
+ - `pytest --cov=src/codex_ml --cov-fail-under=3.5`
+ - `make -C config test`
+ - `nox -s tests`
 - Update README badges and contributor docs when the gate changes.
 
 ## Optional Dependencies
@@ -266,7 +266,7 @@ jq '.components[] | select(.name == "pytest")' dist/sbom.json
 
 Use the SBOM to perform license audits, vulnerability scans, and downstream reporting.
 
-## Error capture → commit comment (optional)
+## Error capture commit comment (optional)
 
 Errors are appended to `docs/reference/codex_questions.md` with the header:
 

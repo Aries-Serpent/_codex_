@@ -1,6 +1,6 @@
 # User Onboarding Metrics Dashboard
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Real-Time Metrics (Phase 9+)
 
@@ -10,50 +10,50 @@ Track the following metrics to measure onboarding success:
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| % users setting CODEX_REDIS_HOST | 80% | TBD |  |
-| % users setting CODEX_OLLAMA_HOST | 80% | TBD |  |
-| % users setting CODEX_MASTER_ADDR | 70% | TBD |  |
-| % users setting CODEX_MASTER_PORT | 70% | TBD |  |
-| % users setting CODEX_INFERENCE_SERVICE_HOST | 60% | TBD |  |
-| % users setting CODEX_INFERENCE_SERVICE_PORT | 60% | TBD |  |
-| % users setting CODEX_TRUSTED_HOSTS | 75% | TBD |  |
-| % users setting CODEX_LOCAL_LOOPBACK | 85% | TBD |  |
+| % users setting CODEX_REDIS_HOST | 80% | TBD | |
+| % users setting CODEX_OLLAMA_HOST | 80% | TBD | |
+| % users setting CODEX_MASTER_ADDR | 70% | TBD | |
+| % users setting CODEX_MASTER_PORT | 70% | TBD | |
+| % users setting CODEX_INFERENCE_SERVICE_HOST | 60% | TBD | |
+| % users setting CODEX_INFERENCE_SERVICE_PORT | 60% | TBD | |
+| % users setting CODEX_TRUSTED_HOSTS | 75% | TBD | |
+| % users setting CODEX_LOCAL_LOOPBACK | 85% | TBD | |
 
 ### 2. Setup Success Rate
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Setup completion without errors | 95% | TBD |  |
-| Configuration validation passes | 98% | TBD |  |
-| First-run success rate | 90% | TBD |  |
-| Support tickets (env var related) | <5/week | TBD |  |
+| Setup completion without errors | 95% | TBD | |
+| Configuration validation passes | 98% | TBD | |
+| First-run success rate | 90% | TBD | |
+| Support tickets (env var related) | <5/week | TBD | |
 
 ### 3. User Satisfaction
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Configuration clarity score | 4.5/5 | TBD |  |
-| Documentation usefulness | 4.2/5 | TBD |  |
-| Time-to-configure (minutes) | <10 min | TBD |  |
-| Onboarding completion rate | 85% | TBD |  |
+| Configuration clarity score | 4.5/5 | TBD | |
+| Documentation usefulness | 4.2/5 | TBD | |
+| Time-to-configure (minutes) | <10 min | TBD | |
+| Onboarding completion rate | 85% | TBD | |
 
 ### 4. Deployment Environment Distribution
 
 ```
-Development:  CODEX_LOCAL_LOOPBACK=true
-├─ Default (localhost): 70%
-├─ Custom local services: 20%
-└─ Docker Compose: 10%
+Development: CODEX_LOCAL_LOOPBACK=true
+ Default (localhost): 70%
+ Custom local services: 20%
+ Docker Compose: 10%
 
-Staging:      CODEX_LOCAL_LOOPBACK=false
-├─ Kubernetes: 60%
-├─ VM/Cloud: 30%
-└─ Bare metal: 10%
+Staging: CODEX_LOCAL_LOOPBACK=false
+ Kubernetes: 60%
+ VM/Cloud: 30%
+ Bare metal: 10%
 
-Production:   CODEX_LOCAL_LOOPBACK=false
-├─ Kubernetes: 80%
-├─ High availability: 15%
-└─ Single node: 5%
+Production: CODEX_LOCAL_LOOPBACK=false
+ Kubernetes: 80%
+ High availability: 15%
+ Single node: 5%
 ```
 
 ## Metrics Collection
@@ -120,14 +120,14 @@ Production:   CODEX_LOCAL_LOOPBACK=false
 
 All of the following must be true to declare Phase 9 complete:
 
-1. **Adoption:**  80%+ of target users have set key environment variables
-2. **Success Rate:**  95%+ of setup attempts succeed without errors
-3. **Support:**  <5 weekly support tickets about environment configuration
-4. **Satisfaction:**  4.5/5 average clarity rating from user surveys
-5. **Completion:**  85%+ users successfully complete onboarding flow
-6. **Documentation:**  All 5 user profiles have dedicated quick-start guides
-7. **FAQ:**  FAQ addresses >90% of unique support issues encountered
-8. **Dashboards:**  Real-time metrics dashboard operational and accessible
+1. **Adoption:** 80%+ of target users have set key environment variables
+2. **Success Rate:** 95%+ of setup attempts succeed without errors
+3. **Support:** <5 weekly support tickets about environment configuration
+4. **Satisfaction:** 4.5/5 average clarity rating from user surveys
+5. **Completion:** 85%+ users successfully complete onboarding flow
+6. **Documentation:** All 5 user profiles have dedicated quick-start guides
+7. **FAQ:** FAQ addresses >90% of unique support issues encountered
+8. **Dashboards:** Real-time metrics dashboard operational and accessible
 
 ---
 

@@ -1,10 +1,10 @@
 # Security Policy (Offline-First)
 **Last Updated:** 2026-07-14
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Phase 4 CodeQL Security Resolution (2026-07-14)
 
-**Status:** ✅ COMPLETE - All CodeQL security alerts resolved
+**Status:** COMPLETE - All CodeQL security alerts resolved
 
 Phase 4 has successfully eliminated all CodeQL security vulnerabilities through comprehensive remediation of untrusted code patterns in `workflow_run` privileged contexts. All 2 CRITICAL + 1 MEDIUM alerts have been definitively resolved.
 

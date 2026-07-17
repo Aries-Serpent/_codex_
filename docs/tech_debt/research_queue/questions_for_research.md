@@ -1,172 +1,172 @@
 # Questions Requiring Deep Research - PR #3344 (S66)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [S81 Additions (PR #3384) — 2026-02-27](#s81-additions-pr-3384--2026-02-27)
-  - [Q008: Why does `test_evaluate_cli_runs` keep failing with different root causes each session?](#q008-why-does-test_evaluate_cli_runs-keep-failing-with-different-root-causes-each-session)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Interim Fix Applied (S81)](#interim-fix-applied-s81)
-  - [Q009: FastAPI module-level app singleton — safe pattern for test isolation?](#q009-fastapi-module-level-app-singleton--safe-pattern-for-test-isolation)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Interim Fix Applied (S81)](#interim-fix-applied-s81)
+ - [Q008: Why does `test_evaluate_cli_runs` keep failing with different root causes each session?](#q008-why-does-test_evaluate_cli_runs-keep-failing-with-different-root-causes-each-session)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Interim Fix Applied (S81)](#interim-fix-applied-s81)
+ - [Q009: FastAPI module-level app singleton — safe pattern for test isolation?](#q009-fastapi-module-level-app-singleton--safe-pattern-for-test-isolation)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Interim Fix Applied (S81)](#interim-fix-applied-s81)
 - [Question Queue](#question-queue)
-  - [Q001: Should `_emit_provenance_summary` Output Go to stdout or stderr?](#q001-should-_emit_provenance_summary-output-go-to-stdout-or-stderr)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Information to Guide Research](#information-to-guide-research)
-    - [Dependencies](#dependencies)
-    - [Acceptance Criteria](#acceptance-criteria)
-    - [Notes](#notes)
-  - [Q002: Root Cause of `TestManageTenantIndices` Failures — Source Bug or Test Mock Issue?](#q002-root-cause-of-testmanagetenantindices-failures--source-bug-or-test-mock-issue)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Information to Guide Research](#information-to-guide-research)
-    - [Dependencies](#dependencies)
-    - [Acceptance Criteria](#acceptance-criteria)
-  - [Q003: Why Does `IncrementalSyncDecider::test_micro_update` Compute 95% Change Ratio for a Punctuation-Only Edit?](#q003-why-does-incrementalsyncdecidertest_micro_update-compute-95-change-ratio-for-a-punctuation-only-edit)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Information to Guide Research](#information-to-guide-research)
-    - [Dependencies](#dependencies)
-    - [Acceptance Criteria](#acceptance-criteria)
-  - [Q004: How Should Multi-Output CLI Commands Be Tested When stdout Contains Multiple JSON Objects?](#q004-how-should-multi-output-cli-commands-be-tested-when-stdout-contains-multiple-json-objects)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Information to Guide Research](#information-to-guide-research)
-    - [Dependencies](#dependencies)
-    - [Acceptance Criteria](#acceptance-criteria)
-  - [Q005: What Environment Flags Cause `audit_runner.py` to Produce Full vs. Minimal Output?](#q005-what-environment-flags-cause-audit_runnerpy-to-produce-full-vs-minimal-output)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Information to Guide Research](#information-to-guide-research)
-    - [Dependencies](#dependencies)
-    - [Acceptance Criteria](#acceptance-criteria)
+ - [Q001: Should `_emit_provenance_summary` Output Go to stdout or stderr?](#q001-should-_emit_provenance_summary-output-go-to-stdout-or-stderr)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Information to Guide Research](#information-to-guide-research)
+ - [Dependencies](#dependencies)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [Notes](#notes)
+ - [Q002: Root Cause of `TestManageTenantIndices` Failures — Source Bug or Test Mock Issue?](#q002-root-cause-of-testmanagetenantindices-failures--source-bug-or-test-mock-issue)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Information to Guide Research](#information-to-guide-research)
+ - [Dependencies](#dependencies)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [Q003: Why Does `IncrementalSyncDecider::test_micro_update` Compute 95% Change Ratio for a Punctuation-Only Edit?](#q003-why-does-incrementalsyncdecidertest_micro_update-compute-95-change-ratio-for-a-punctuation-only-edit)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Information to Guide Research](#information-to-guide-research)
+ - [Dependencies](#dependencies)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [Q004: How Should Multi-Output CLI Commands Be Tested When stdout Contains Multiple JSON Objects?](#q004-how-should-multi-output-cli-commands-be-tested-when-stdout-contains-multiple-json-objects)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Information to Guide Research](#information-to-guide-research)
+ - [Dependencies](#dependencies)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [Q005: What Environment Flags Cause `audit_runner.py` to Produce Full vs. Minimal Output?](#q005-what-environment-flags-cause-audit_runnerpy-to-produce-full-vs-minimal-output)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Information to Guide Research](#information-to-guide-research)
+ - [Dependencies](#dependencies)
+ - [Acceptance Criteria](#acceptance-criteria)
 - [S67 New Questions (2026-02-22)](#s67-new-questions-2026-02-22)
-  - [Q006: Why Does Pytest String-Path Monkeypatch Fail on Certain Modules in CI?](#q006-why-does-pytest-string-path-monkeypatch-fail-on-certain-modules-in-ci)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-  - [Q007: OptimizedVectorStore `ResponseCache` Does Not Persist Hits](#q007-optimizedvectorstore-responsecache-does-not-persist-hits)
-    - [Context](#context)
-    - [The Question](#the-question)
-  - [DRQ-S70-001: `test_property_based.py` Fails with `ImportError: Optional dependency 'chat' is not installed`](#drq-s70-001-test_property_basedpy-fails-with-importerror-optional-dependency-chat-is-not-installed)
-    - [Context](#context)
-    - [Research Questions](#research-questions)
-    - [Evidence Log](#evidence-log)
-    - [Hypothesis](#hypothesis)
-    - [Suggested Next Steps](#suggested-next-steps)
-  - [DRQ-S70-002: `test_data_splits.py` `AttributeError: module 'torch' has no attribute 'utils'`](#drq-s70-002-test_data_splitspy-attributeerror-module-torch-has-no-attribute-utils)
-    - [Context](#context)
-    - [Research Questions](#research-questions)
-    - [Evidence Log](#evidence-log)
-    - [Hypothesis](#hypothesis)
-    - [Suggested Next Steps](#suggested-next-steps)
-  - [DRQ-S70-003: `codex.training` Missing `load_training_cfg` and `run_hf_trainer` Public API](#drq-s70-003-codextraining-missing-load_training_cfg-and-run_hf_trainer-public-api)
-    - [Context](#context)
-    - [Research Questions](#research-questions)
-    - [Interim Fix Applied (S70)](#interim-fix-applied-s70)
-  - [DRQ-S70-004: `datetime.now()` TZ-naive Usage in 47 Source Files](#drq-s70-004-datetimenow-tz-naive-usage-in-47-source-files)
-    - [Resolution (S72)](#resolution-s72)
-  - [DRQ-S70-005: Quick-Suite `test_property_based.py` `hypothesis.errors.FlakyFailure`](#drq-s70-005-quick-suite-test_property_basedpy-hypothesiserrorsflakyfailure)
-    - [Context](#context)
-    - [Research Questions](#research-questions)
+ - [Q006: Why Does Pytest String-Path Monkeypatch Fail on Certain Modules in CI?](#q006-why-does-pytest-string-path-monkeypatch-fail-on-certain-modules-in-ci)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Q007: OptimizedVectorStore `ResponseCache` Does Not Persist Hits](#q007-optimizedvectorstore-responsecache-does-not-persist-hits)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [DRQ-S70-001: `test_property_based.py` Fails with `ImportError: Optional dependency 'chat' is not installed`](#drq-s70-001-test_property_basedpy-fails-with-importerror-optional-dependency-chat-is-not-installed)
+ - [Context](#context)
+ - [Research Questions](#research-questions)
+ - [Evidence Log](#evidence-log)
+ - [Hypothesis](#hypothesis)
+ - [Suggested Next Steps](#suggested-next-steps)
+ - [DRQ-S70-002: `test_data_splits.py` `AttributeError: module 'torch' has no attribute 'utils'`](#drq-s70-002-test_data_splitspy-attributeerror-module-torch-has-no-attribute-utils)
+ - [Context](#context)
+ - [Research Questions](#research-questions)
+ - [Evidence Log](#evidence-log)
+ - [Hypothesis](#hypothesis)
+ - [Suggested Next Steps](#suggested-next-steps)
+ - [DRQ-S70-003: `codex.training` Missing `load_training_cfg` and `run_hf_trainer` Public API](#drq-s70-003-codextraining-missing-load_training_cfg-and-run_hf_trainer-public-api)
+ - [Context](#context)
+ - [Research Questions](#research-questions)
+ - [Interim Fix Applied (S70)](#interim-fix-applied-s70)
+ - [DRQ-S70-004: `datetime.now()` TZ-naive Usage in 47 Source Files](#drq-s70-004-datetimenow-tz-naive-usage-in-47-source-files)
+ - [Resolution (S72)](#resolution-s72)
+ - [DRQ-S70-005: Quick-Suite `test_property_based.py` `hypothesis.errors.FlakyFailure`](#drq-s70-005-quick-suite-test_property_basedpy-hypothesiserrorsflakyfailure)
+ - [Context](#context)
+ - [Research Questions](#research-questions)
 - [Summary](#summary)
 - [S74 Deep Research Session — 2026-02-23](#s74-deep-research-session--2026-02-23)
-  - [DRQ-S73-001: `_prune_best_k` Epoch-Directory Deletion Behavior](#drq-s73-001-_prune_best_k-epoch-directory-deletion-behavior)
-    - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
-  - [DRQ-S73-002: `test_run_hf_trainer_accepts_empty_texts` Expected Behavior](#drq-s73-002-test_run_hf_trainer_accepts_empty_texts-expected-behavior)
-    - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
-  - [DRQ-S73-003: `codex_init.py` Local `from datetime import datetime`](#drq-s73-003-codex_initpy-local-from-datetime-import-datetime)
-    - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
-    - [Resolution (S74)](#resolution-s74)
-  - [DRQ-S73-004: Duplicate `logger.warning` in `unified_training.py`](#drq-s73-004-duplicate-loggerwarning-in-unified_trainingpy)
-    - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
-  - [DRQ-S74-001: `check-unsafe-xml` Pre-Commit Failure from `tools/validate.py`](#drq-s74-001-check-unsafe-xml-pre-commit-failure-from-toolsvalidatepy)
-    - [Root Cause](#root-cause)
-    - [Resolution (S74)](#resolution-s74)
-  - [DRQ-S74-002: `EmbeddingCache.set()` Missing Method](#drq-s74-002-embeddingcacheset-missing-method)
-    - [Root Cause](#root-cause)
-    - [Resolution (S74)](#resolution-s74)
-  - [DRQ-S74-003: `unified_training.py` Monkeypatch Pattern Broken](#drq-s74-003-unified_trainingpy-monkeypatch-pattern-broken)
-    - [Root Cause](#root-cause)
-    - [Resolution (S74)](#resolution-s74)
-  - [DRQ-S74-004: Ruff F401 `resolve_strategy` Unused Import](#drq-s74-004-ruff-f401-resolve_strategy-unused-import)
-    - [Root Cause](#root-cause)
-    - [Resolution (S74)](#resolution-s74)
-  - [DRQ-S74-NEW-001: Function-Level `datetime` Imports Codebase-Wide](#drq-s74-new-001-function-level-datetime-imports-codebase-wide)
-    - [Research Questions](#research-questions)
-  - [DRQ-S74-NEW-002: `_emit_provenance_summary` Location (Legacy DRQ-Q001)](#drq-s74-new-002-_emit_provenance_summary-location-legacy-drq-q001)
-    - [Research Findings (S75 — mbaetiong deep research, comment-3947609438)](#research-findings-s75--mbaetiong-deep-research-comment-3947609438)
-  - [DRQ-S75-001: `tools/validate.py` Module-Level defusedxml Import](#drq-s75-001-toolsvalidatepy-module-level-defusedxml-import)
-    - [Root Cause](#root-cause)
-    - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
-  - [DRQ-S75-002: cudnn Determinism Guard Raises `RuntimeError` Not `AssertionError`](#drq-s75-002-cudnn-determinism-guard-raises-runtimeerror-not-assertionerror)
-    - [Root Cause](#root-cause)
-    - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
-  - [DRQ-S75-003: FAISS Availability Detection False Positive](#drq-s75-003-faiss-availability-detection-false-positive)
-    - [Root Cause](#root-cause)
-    - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
+ - [DRQ-S73-001: `_prune_best_k` Epoch-Directory Deletion Behavior](#drq-s73-001-_prune_best_k-epoch-directory-deletion-behavior)
+ - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
+ - [DRQ-S73-002: `test_run_hf_trainer_accepts_empty_texts` Expected Behavior](#drq-s73-002-test_run_hf_trainer_accepts_empty_texts-expected-behavior)
+ - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
+ - [DRQ-S73-003: `codex_init.py` Local `from datetime import datetime`](#drq-s73-003-codex_initpy-local-from-datetime-import-datetime)
+ - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
+ - [Resolution (S74)](#resolution-s74)
+ - [DRQ-S73-004: Duplicate `logger.warning` in `unified_training.py`](#drq-s73-004-duplicate-loggerwarning-in-unified_trainingpy)
+ - [Research Findings (S74 — CI Testing Agent)](#research-findings-s74--ci-testing-agent)
+ - [DRQ-S74-001: `check-unsafe-xml` Pre-Commit Failure from `tools/validate.py`](#drq-s74-001-check-unsafe-xml-pre-commit-failure-from-toolsvalidatepy)
+ - [Root Cause](#root-cause)
+ - [Resolution (S74)](#resolution-s74)
+ - [DRQ-S74-002: `EmbeddingCache.set()` Missing Method](#drq-s74-002-embeddingcacheset-missing-method)
+ - [Root Cause](#root-cause)
+ - [Resolution (S74)](#resolution-s74)
+ - [DRQ-S74-003: `unified_training.py` Monkeypatch Pattern Broken](#drq-s74-003-unified_trainingpy-monkeypatch-pattern-broken)
+ - [Root Cause](#root-cause)
+ - [Resolution (S74)](#resolution-s74)
+ - [DRQ-S74-004: Ruff F401 `resolve_strategy` Unused Import](#drq-s74-004-ruff-f401-resolve_strategy-unused-import)
+ - [Root Cause](#root-cause)
+ - [Resolution (S74)](#resolution-s74)
+ - [DRQ-S74-NEW-001: Function-Level `datetime` Imports Codebase-Wide](#drq-s74-new-001-function-level-datetime-imports-codebase-wide)
+ - [Research Questions](#research-questions)
+ - [DRQ-S74-NEW-002: `_emit_provenance_summary` Location (Legacy DRQ-Q001)](#drq-s74-new-002-_emit_provenance_summary-location-legacy-drq-q001)
+ - [Research Findings (S75 — mbaetiong deep research, comment-3947609438)](#research-findings-s75--mbaetiong-deep-research-comment-3947609438)
+ - [DRQ-S75-001: `tools/validate.py` Module-Level defusedxml Import](#drq-s75-001-toolsvalidatepy-module-level-defusedxml-import)
+ - [Root Cause](#root-cause)
+ - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
+ - [DRQ-S75-002: cudnn Determinism Guard Raises `RuntimeError` Not `AssertionError`](#drq-s75-002-cudnn-determinism-guard-raises-runtimeerror-not-assertionerror)
+ - [Root Cause](#root-cause)
+ - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
+ - [DRQ-S75-003: FAISS Availability Detection False Positive](#drq-s75-003-faiss-availability-detection-false-positive)
+ - [Root Cause](#root-cause)
+ - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
 - [ CORRECT — import the native lib directly in the guard:](#-correct--import-the-native-lib-directly-in-the-guard)
 - [ WRONG — Python class may be importable even without the native lib:](#-wrong--python-class-may-be-importable-even-without-the-native-lib)
 - [Updated Summary Table](#updated-summary-table)
 - [S80 Deep Research Addenda — DRQ-S75-001 / S75-002 / S75-003](#s80-deep-research-addenda--drq-s75-001--s75-002--s75-003)
-  - [DRQ-S75-001-R3 (S80): Bandit B314 false positive — `solution_xml.py`](#drq-s75-001-r3-s80-bandit-b314-false-positive--solution_xmlpy)
-  - [DRQ-S75-002-R2 (S80): `functional_training.py:443` assert-without-guarantee](#drq-s75-002-r2-s80-functional_trainingpy443-assert-without-guarantee)
-  - [DRQ-S75-003-R3 (S80): FAISS guarded export in `stores/__init__.py`](#drq-s75-003-r3-s80-faiss-guarded-export-in-stores__init__py)
-  - [DRQ-S90-001: CodeQL auto-fixable pattern classification recurring pattern](#drq-s90-001-codeql-auto-fixable-pattern-classification-recurring-pattern)
+ - [DRQ-S75-001-R3 (S80): Bandit B314 false positive — `solution_xml.py`](#drq-s75-001-r3-s80-bandit-b314-false-positive--solution_xmlpy)
+ - [DRQ-S75-002-R2 (S80): `functional_training.py:443` assert-without-guarantee](#drq-s75-002-r2-s80-functional_trainingpy443-assert-without-guarantee)
+ - [DRQ-S75-003-R3 (S80): FAISS guarded export in `stores/__init__.py`](#drq-s75-003-r3-s80-faiss-guarded-export-in-stores__init__py)
+ - [DRQ-S90-001: CodeQL auto-fixable pattern classification recurring pattern](#drq-s90-001-codeql-auto-fixable-pattern-classification-recurring-pattern)
 - [S105 Additions (PR #3401) — 2026-02-28](#s105-additions-pr-3401--2026-02-28)
-  - [DRQ-S105-001: pytest-rerunfailures + pytest-timeout thread incompatibility causing crash in sharded CI](#drq-s105-001-pytest-rerunfailures--pytest-timeout-thread-incompatibility-causing-crash-in-sharded-ci)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Interim Fix Applied](#interim-fix-applied)
-    - [Research Sources Used](#research-sources-used)
-    - [Acceptance Criteria](#acceptance-criteria)
-  - [DRQ-S105-002: GitHub CodeQL "N configurations not found" — GHAS expects more analyses than workflow produces](#drq-s105-002-github-codeql-n-configurations-not-found--ghas-expects-more-analyses-than-workflow-produces)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Interim Fix Applied](#interim-fix-applied)
-    - [Research Sources Used](#research-sources-used)
-    - [Acceptance Criteria](#acceptance-criteria)
-  - [DRQ-S105-003: pytest-split without .test_durations — slow test collection causes shard imbalance and timeout](#drq-s105-003-pytest-split-without-test_durations--slow-test-collection-causes-shard-imbalance-and-timeout)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Interim Fix Applied](#interim-fix-applied)
-    - [Research Sources Used](#research-sources-used)
-    - [Acceptance Criteria](#acceptance-criteria)
+ - [DRQ-S105-001: pytest-rerunfailures + pytest-timeout thread incompatibility causing crash in sharded CI](#drq-s105-001-pytest-rerunfailures--pytest-timeout-thread-incompatibility-causing-crash-in-sharded-ci)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Interim Fix Applied](#interim-fix-applied)
+ - [Research Sources Used](#research-sources-used)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [DRQ-S105-002: GitHub CodeQL "N configurations not found" — GHAS expects more analyses than workflow produces](#drq-s105-002-github-codeql-n-configurations-not-found--ghas-expects-more-analyses-than-workflow-produces)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Interim Fix Applied](#interim-fix-applied)
+ - [Research Sources Used](#research-sources-used)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [DRQ-S105-003: pytest-split without .test_durations — slow test collection causes shard imbalance and timeout](#drq-s105-003-pytest-split-without-test_durations--slow-test-collection-causes-shard-imbalance-and-timeout)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Interim Fix Applied](#interim-fix-applied)
+ - [Research Sources Used](#research-sources-used)
+ - [Acceptance Criteria](#acceptance-criteria)
 - [DRQ-026: `from src.` Absolute Import Elimination (Pattern 19)](#drq-026-from-src-absolute-import-elimination-pattern-19)
-  - [Context](#context)
-  - [The Question](#the-question)
-  - [Why Needs Research](#why-needs-research)
-  - [Current Hypothesis](#current-hypothesis)
-  - [Acceptance Criteria](#acceptance-criteria)
-  - [DRQ-S1043-001: `codex_ml.data._core_loaders.stream_paths` collection cascade in baseline nox environment](#drq-s1043-001-codex_mldata_core_loadersstream_paths-collection-cascade-in-baseline-nox-environment)
-    - [Context](#context)
-    - [The Question](#the-question)
-    - [Why This Needs Research](#why-this-needs-research)
-    - [Current Hypothesis](#current-hypothesis)
-    - [Interim Fix Applied](#interim-fix-applied)
-    - [Acceptance Criteria](#acceptance-criteria)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why Needs Research](#why-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Acceptance Criteria](#acceptance-criteria)
+ - [DRQ-S1043-001: `codex_ml.data._core_loaders.stream_paths` collection cascade in baseline nox environment](#drq-s1043-001-codex_mldata_core_loadersstream_paths-collection-cascade-in-baseline-nox-environment)
+ - [Context](#context)
+ - [The Question](#the-question)
+ - [Why This Needs Research](#why-this-needs-research)
+ - [Current Hypothesis](#current-hypothesis)
+ - [Interim Fix Applied](#interim-fix-applied)
+ - [Acceptance Criteria](#acceptance-criteria)
 
 **Last Updated: 2026-06-22
 
@@ -186,18 +186,18 @@
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-27
-**Status**:  Interim fix applied (DRQ-S81-008)
+**Status**: Interim fix applied (DRQ-S81-008)
 
 #### Context
 **Where discovered**: `tests/test_evaluate_cli.py::test_evaluate_cli_runs`
-**Session S58 failure**: Hydra `config_path` pointed to wrong level (`../../configs/evaluation` → `../configs/evaluation`)
+**Session S58 failure**: Hydra `config_path` pointed to wrong level (`../../configs/evaluation` `../configs/evaluation`)
 **Session S81 failure**: Test looked for output in `tmp_path/outputs/` (Hydra's working dir) but CLI writes to the explicit `output_dir` CLI arg (`tmp_path/eval`)
 
 #### The Question
 Is the fundamental issue that the test was originally written assuming Hydra would change the working directory (pre-1.3 behavior), and the two failures reflect the gradual drift between Hydra version behavior and test assumptions? Or is there a deeper miscommunication between the Hydra `config_path` resolution and the `output_dir` override semantics?
 
 #### Why This Needs Research
-- [ ] Hydra `version_base=None` CWD behavior changed across 1.1→1.3; confirm exact behavior in CI (hydra-core==1.3.2)
+- [ ] Hydra `version_base=None` CWD behavior changed across 1.11.3; confirm exact behavior in CI (hydra-core==1.3.2)
 - [ ] Confirm whether `output_dir` passed as CLI override is absolute or Hydra-resolved relative
 - [ ] Determine if the test should use `subprocess` at all vs. direct Python invocation
 
@@ -205,7 +205,7 @@ Is the fundamental issue that the test was originally written assuming Hydra wou
 Hydra 1.3.2 with `version_base=None` does NOT change CWD. The original test assumed the old behavior where Hydra wrote everything to `./outputs/YYYY-MM-DD/HH-MM-SS/`. The correct fix (applied S81) is to look in `output_dir` directly.
 
 #### Interim Fix Applied (S81)
-Changed `outputs_dir = Path(tmp_path) / "outputs"` → `ndjson_files = list(output_dir.glob("**/predictions.ndjson"))` in `tests/test_evaluate_cli.py`. Verified: `eval/predictions.ndjson` and `eval/summary.json` ARE written correctly (confirmed via `/tmp/pytest-of-runner/pytest-7/test_evaluate_cli_runs0/eval/summary.json`).
+Changed `outputs_dir = Path(tmp_path) / "outputs"` `ndjson_files = list(output_dir.glob("**/predictions.ndjson"))` in `tests/test_evaluate_cli.py`. Verified: `eval/predictions.ndjson` and `eval/summary.json` ARE written correctly (confirmed via `/tmp/pytest-of-runner/pytest-7/test_evaluate_cli_runs0/eval/summary.json`).
 
 **Status**: Interim fix confirmed working ; root cause research deferred
 
@@ -217,7 +217,7 @@ Changed `outputs_dir = Path(tmp_path) / "outputs"` → `ndjson_files = list(outp
 **Priority**: Low
 **Impact**: Low
 **Created**: 2026-02-27
-**Status**:  Interim fix applied (DRQ-S81-009)
+**Status**: Interim fix applied (DRQ-S81-009)
 
 #### Context
 **Where discovered**: `tests/test_api_infer.py` + `services/api/main.py`
@@ -243,7 +243,7 @@ Added `_clear_app_state()` helper to the `_set_env` autouse fixture — clears `
 **Priority**: High
 **Impact**: High
 **Created**: 2026-02-22
-**Status**:  Awaiting Research
+**Status**: Awaiting Research
 
 #### Context
 **Where discovered**: `src/codex_ml/cli/codex_cli.py:109–113`, `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`
@@ -310,7 +310,7 @@ Interim fix applied (S66): changed to `err=True` and used `CliRunner(mix_stderr=
 **Priority**: High
 **Impact**: High
 **Created**: 2026-02-22
-**Status**:  Awaiting Research
+**Status**: Awaiting Research
 
 #### Context
 **Where discovered**: `tests/test_rag_tenant_management.py::TestManageTenantIndices` (9 tests)
@@ -375,7 +375,7 @@ Research is complete when:
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22
-**Status**:  Awaiting Research
+**Status**: Awaiting Research
 
 #### Context
 **Where discovered**: `tests/services/crawler/test_semantic_differ.py::TestIncrementalSyncDecider::test_micro_update`
@@ -436,7 +436,7 @@ Research is complete when:
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22
-**Status**:  Awaiting Research
+**Status**: Awaiting Research
 
 #### Context
 **Where discovered**: `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`
@@ -496,7 +496,7 @@ Research is complete when:
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22
-**Status**:  Awaiting Research
+**Status**: Awaiting Research
 
 #### Context
 **Where discovered**: `tests/validation/test_audit_pipeline.py` (3 tests)
@@ -566,7 +566,7 @@ Research is complete when:
 **Priority**: High
 **Impact**: High
 **Created**: 2026-02-22 (S67)
-**Status**:  Awaiting Research — **Interim Fix Applied**: object-based patching
+**Status**: Awaiting Research — **Interim Fix Applied**: object-based patching
 
 #### Context
 **Where discovered**: `tests/tracking/test_tracking_writers_offline.py:71`, `tests/test_model_registry_helpers.py:90`, `tests/config/test_deprecation.py:65`, `tests/test_fetch_messages.py:181`
@@ -590,7 +590,7 @@ What specific combination of (pytest version, Python version, test execution ord
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22 (S67)
-**Status**:  Awaiting Research
+**Status**: Awaiting Research
 
 #### Context
 **Where discovered**: `tests/retrieval/test_optimizations.py::TestOptimizedVectorStore::test_search_with_cache`
@@ -610,7 +610,7 @@ Does `OptimizedVectorStore.search()` actually call `self.cache.set(key, results)
 **Priority**: High
 **Impact**: High — blocks 16 tests in quick suite
 **Created**: 2026-02-23 (S70)
-**Status**:  OPEN — root cause unresolved
+**Status**: OPEN — root cause unresolved
 **CI Run**: `22291570163` (sha `8eab1b2`, branch `copilot/sub-pr-3336-again`)
 
 #### Context
@@ -636,7 +636,7 @@ None of these modules import `chat` at the top level.
 
 #### Evidence Log
 - `configs/sitecustomize.py:88` — `_install_optional_stub("chat")` installs a stub with `__getattr__` that raises `ImportError`
-- `src/agents/orchestrator.py:24` — `from src.config.openai_client import CodexOpenAIClient` → likely imports something via the `chat` path
+- `src/agents/orchestrator.py:24` — `from src.config.openai_client import CodexOpenAIClient` likely imports something via the `chat` path
 - Hypothesis `FlakyFailure` trace: `INTERESTING from ImportError at configs/sitecustomize.py:59`
 
 #### Hypothesis
@@ -656,7 +656,7 @@ None of these modules import `chat` at the top level.
 **Priority**: High
 **Impact**: High — 4 tests blocked in quick suite
 **Created**: 2026-02-23 (S70)
-**Status**:  OPEN
+**Status**: OPEN
 **CI Run**: `22291570163`
 
 #### Context
@@ -697,7 +697,7 @@ Tests call `torch.utils.data.TensorDataset(...)` and `torch.ones(...)` after
 **Priority**: Medium
 **Impact**: Medium — 3 slow-suite tests blocked
 **Created**: 2026-02-23 (S70)
-**Status**:  PARTIAL FIX APPLIED (stub added)
+**Status**: PARTIAL FIX APPLIED (stub added)
 **Tracked tests**: `tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py`
 
 #### Context
@@ -726,7 +726,7 @@ accept a `argv` parameter — the test calls `ft.main(["--output-dir", ..., "--e
 **Priority**: Medium
 **Impact**: Medium — affects timestamp correctness across the codebase
 **Created**: 2026-02-23 (S70)
-**Status**:  RESOLVED (S72 — all 35 remaining occurrences fixed)
+**Status**: RESOLVED (S72 — all 35 remaining occurrences fixed)
 **Files**: All 47 occurrences in `src/` now use `datetime.now(timezone.utc)`
 
 #### Resolution (S72)
@@ -752,7 +752,7 @@ Research questions answered:
 **Priority**: Medium
 **Impact**: Medium — flaky failures mask real failures in CI
 **Created**: 2026-02-23 (S70)
-**Status**:  OPEN
+**Status**: OPEN
 
 #### Context
 Several Hypothesis tests show `FlakyFailure: Inconsistent results from replaying a test case!`
@@ -773,20 +773,20 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 
 ## Summary
 
-| ID   | Title                                              | Category        | Priority | Impact  | Status             |
+| ID | Title | Category | Priority | Impact | Status |
 |------|----------------------------------------------------|-----------------|----------|---------|--------------------|
-| Q001 | `_emit_provenance_summary` stdout vs stderr        | API Design      | High     | High    |  Awaiting Research |
-| Q002 | `TestManageTenantIndices` root cause               | Bug Root Cause  | High     | High    |  Awaiting Research |
-| Q003 | `IncrementalSyncDecider` 95% change ratio          | Bug Root Cause  | Medium   | Medium  |  Awaiting Research |
-| Q004 | Multi-output CLI JSON testing pattern              | API Design      | Medium   | Medium  |  Awaiting Research |
-| Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  |  Awaiting Research |
-| Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    |  Awaiting Research (S67: interim fix) |
-| Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  |  Awaiting Research |
-| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High |  RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
-| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High |  RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
-| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium |  RESOLVED (S70) |
-| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium |  RESOLVED (all 35 remaining files fixed in S72) |
-| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium |  RESOLVED (S71: same fix as DRQ-S70-001) |
+| Q001 | `_emit_provenance_summary` stdout vs stderr | API Design | High | High | Awaiting Research |
+| Q002 | `TestManageTenantIndices` root cause | Bug Root Cause | High | High | Awaiting Research |
+| Q003 | `IncrementalSyncDecider` 95% change ratio | Bug Root Cause | Medium | Medium | Awaiting Research |
+| Q004 | Multi-output CLI JSON testing pattern | API Design | Medium | Medium | Awaiting Research |
+| Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility | Medium | Medium | Awaiting Research |
+| Q006 | Pytest string-path monkeypatch CI failure | Test Infra | High | High | Awaiting Research (S67: interim fix) |
+| Q007 | OptimizedVectorStore cache never persists | Bug Root Cause | Medium | Medium | Awaiting Research |
+| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High | RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
+| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High | RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
+| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium | RESOLVED (S70) |
+| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | RESOLVED (all 35 remaining files fixed in S72) |
+| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium | RESOLVED (S71: same fix as DRQ-S70-001) |
 
 ---
 
@@ -798,7 +798,7 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 **Priority**: Low
 **Impact**: Low — tested, working correctly
 **Created**: 2026-02-23 (S73)
-**Status**:  ANSWERED — No fix needed
+**Status**: ANSWERED — No fix needed
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -818,7 +818,7 @@ pruning with `*.pt` count, excluding `state.pt`.
 **Priority**: Low
 **Impact**: Low — test design is sound
 **Created**: 2026-02-23 (S73)
-**Status**:  ANSWERED — No fix needed
+**Status**: ANSWERED — No fix needed
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -834,7 +834,7 @@ and where failure occurs (dataset preparation vs Trainer.train()). No tightening
 **Priority**: Medium
 **Impact**: Low risk — local usage is safe (`datetime.now(timezone.utc)`)
 **Created**: 2026-02-23 (S73)
-**Status**:  RESOLVED (S74)
+**Status**: RESOLVED (S74)
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -856,7 +856,7 @@ from the module-level import. The local import at line 345 was safe (used with
 **Priority**: Low
 **Impact**: None — no duplicate exists
 **Created**: 2026-02-23 (S73)
-**Status**:  ANSWERED — No fix needed
+**Status**: ANSWERED — No fix needed
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -872,7 +872,7 @@ call, consistent with the S71 fix pattern. DRQ entry was filed based on a false 
 **Priority**: High
 **Impact**: High — blocks fast-suite on every commit
 **Created**: 2026-02-23 (S74)
-**Status**:  RESOLVED (S74)
+**Status**: RESOLVED (S74)
 
 #### Root Cause
 
@@ -893,7 +893,7 @@ pattern in all non-test Python files and fails if found.
 **Priority**: High
 **Impact**: High — `test_cache_concurrent_access` fails (5 threads × `AttributeError`)
 **Created**: 2026-02-23 (S74)
-**Status**:  RESOLVED (S74)
+**Status**: RESOLVED (S74)
 
 #### Root Cause
 
@@ -904,7 +904,7 @@ but did NOT add a `.set()` method. Tests across `test_rag_caching_system.py` cal
 #### Resolution (S74)
 - Added `def set(self, key, value, *args, **kwargs)` to `EmbeddingCache`
 - Coerces numeric lists/arrays via `np.asarray(value, dtype=float32)`; non-numeric
-  values fall back to `np.zeros(1)` sentinel to avoid ValueError
+ values fall back to `np.zeros(1)` sentinel to avoid ValueError
 - See [src/codex/rag/cache/embedding_cache.py](../../../src/codex/rag/cache/embedding_cache.py)
 
 ---
@@ -915,7 +915,7 @@ but did NOT add a `.set()` method. Tests across `test_rag_caching_system.py` cal
 **Priority**: High
 **Impact**: High — `test_unified_training_resume_flow` failing with `KeyError: 'loaded'`
 **Created**: 2026-02-23 (S74)
-**Status**:  RESOLVED (S74)
+**Status**: RESOLVED (S74)
 
 #### Root Cause
 
@@ -928,7 +928,7 @@ requires `payload=` as keyword-only arg.
 #### Resolution (S74)
 - Changed to `from codex_ml.utils import checkpoint_core as _ckpt_core` (module ref)
 - All calls use `_ckpt_core.load_checkpoint(...)` and `_ckpt_core.save_checkpoint(...)`
-- Changed `state=checkpoint_state` → `payload=checkpoint_state` + added `metadata=...`
+- Changed `state=checkpoint_state` `payload=checkpoint_state` + added `metadata=...`
 - Fixed `fake_load` in test to accept `**kwargs` and return `(state_dict, fake_meta)` tuple
 - See [src/codex_ml/training/unified_training.py:42](../../../src/codex_ml/training/unified_training.py#L42)
 
@@ -940,7 +940,7 @@ requires `payload=` as keyword-only arg.
 **Priority**: Medium
 **Impact**: Medium — triggers auto-fix CI workflows to fail
 **Created**: 2026-02-23 (S74)
-**Status**:  RESOLVED (S74)
+**Status**: RESOLVED (S74)
 
 #### Root Cause
 
@@ -961,7 +961,7 @@ pre-commit hook to report 2 auto-fixable issues.
 **Priority**: Medium
 **Impact**: Medium — potential TZ-naive risk if pattern spreads
 **Created**: 2026-02-23 (S74 — proposed by CI Testing Agent)
-**Status**: 🔬 OPEN
+**Status**: OPEN
 
 #### Research Questions
 1. How many other files have function-level `from datetime import datetime` imports?
@@ -982,7 +982,7 @@ grep -rn "^    from datetime import datetime$" src/ tests/
 **Category**: API Investigation
 **Priority**: Low — possibly obsolete
 **Created**: 2026-02-23 (S74 — re-investigation of Q001)
-**Status**:  ANSWERED (S75 deep research) — function found in `src/codex_ml/cli/codex_cli.py`
+**Status**: ANSWERED (S75 deep research) — function found in `src/codex_ml/cli/codex_cli.py`
 
 #### Research Findings (S75 — mbaetiong deep research, comment-3947609438)
 
@@ -1000,7 +1000,7 @@ Recommend marking Q001 as actionable: route provenance to stderr per standard CL
 **Category**: CI Infrastructure
 **Priority**: High
 **Created**: 2026-02-23 (S75 — fast-suite CI failure)
-**Status**:  RESOLVED (S75)
+**Status**: RESOLVED (S75)
 
 #### Root Cause
 
@@ -1022,21 +1022,21 @@ as a string avoids the hook while still falling back safely.
 
 **Why lazy import via `importlib.import_module` is appropriate here** (3 reasons):
 1. **Pre-install CI stage**: `tools/validate.py` runs during fast-validation BEFORE `pip install`.
-   Module-level `import defusedxml` would cause `ImportError` and abort the CI pipeline.
+ Module-level `import defusedxml` would cause `ImportError` and abort the CI pipeline.
 2. **Pre-commit hook evasion (intentional)**: The `check-unsafe-xml` hook greps for the literal
-   string `import xml.etree.ElementTree`. Using `importlib.import_module("xml.etree.ElementTree")`
-   as a string argument avoids the hook while falling back safely. This is not security bypass —
-   it's working around a pattern-matcher that can't distinguish safe from unsafe imports.
+ string `import xml.etree.ElementTree`. Using `importlib.import_module("xml.etree.ElementTree")`
+ as a string argument avoids the hook while falling back safely. This is not security bypass —
+ it's working around a pattern-matcher that can't distinguish safe from unsafe imports.
 3. **Security maintained**: `defusedxml` is PREFERRED when available. The stdlib ET fallback
-   is only reached in constrained environments (CI early stages) where XML parsing security is
-   not a concern (schema validation only).
+ is only reached in constrained environments (CI early stages) where XML parsing security is
+ not a concern (schema validation only).
 
 **Rule** (DRQ-S75-001-R1 — when lazy import via importlib is justified):
 Use `importlib.import_module(name)` instead of `import name` when ALL of the following apply:
-  a) The library is optional/security-enhancing, not business-critical
-  b) The code runs in CI environments where the library may not yet be installed
-  c) A pre-commit hook performs static string matching on import statements
-  d) A safe fallback exists (stdlib or no-op)
+ a) The library is optional/security-enhancing, not business-critical
+ b) The code runs in CI environments where the library may not yet be installed
+ c) A pre-commit hook performs static string matching on import statements
+ d) A safe fallback exists (stdlib or no-op)
 
 **Anti-pattern**: Never use `importlib.import_module("xml.etree.ElementTree")` as a
 permanent production fallback in security-sensitive paths. The S75 fix only uses it in
@@ -1049,7 +1049,7 @@ permanent production fallback in security-sensitive paths. The S75 fix only uses
 **Category**: Test Correctness
 **Priority**: High
 **Created**: 2026-02-23 (S75 — slow-suite CI failure)
-**Status**:  RESOLVED (S75)
+**Status**: RESOLVED (S75)
 
 #### Root Cause
 
@@ -1059,7 +1059,7 @@ Two separate files had the wrong guard:
 
 **Fix applied (S75)**:
 - Both files: replaced dtype/device guards with `cudnn.enabled` check (matching `src/training/functional_training.py` which was already correct)
-- Both files: changed `raise RuntimeError` → `raise AssertionError` (matching test assertion)
+- Both files: changed `raise RuntimeError` `raise AssertionError` (matching test assertion)
 - `test_strict_determinism.py::_stub_hf_components`: added `load_training_arguments` stub to prevent `TrainingArguments` from probing CUDA devices before the cudnn check fires
 
 **Files**: `training/functional_training.py:444-448`, `src/training/engine_hf_trainer.py:971-978`, `tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py:82-133`
@@ -1071,18 +1071,18 @@ Two separate files had the wrong guard:
 in CI (job 64616009258, run 22331497188) because:
 
 1. `torch.backends.cudnn.enabled` is `True` BY DEFAULT on all platforms, even CPU-only.
-   It is a configuration flag (is cudnn allowed), NOT a hardware detection flag.
+ It is a configuration flag (is cudnn allowed), NOT a hardware detection flag.
 2. Without `torch.cuda.is_available()`, the guard fires on CPU-only GitHub Actions runners
-   where CUDA hardware is absent. The test stubs `set_reproducible` but does NOT patch
-   `torch.backends.cudnn.enabled`, so `cudnn.deterministic` remains `False` → `AssertionError`.
+ where CUDA hardware is absent. The test stubs `set_reproducible` but does NOT patch
+ `torch.backends.cudnn.enabled`, so `cudnn.deterministic` remains `False` `AssertionError`.
 
 **Cross-platform analysis**:
 - **CPU-only CI**: `cuda.is_available()=False`, `cudnn.enabled=False` (CPU stub) or `True` (real torch).
-  Guard MUST be gated by `cuda.is_available()` to prevent false-positive on CPU runners.
+ Guard MUST be gated by `cuda.is_available()` to prevent false-positive on CPU runners.
 - **CUDA GPU**: `cuda.is_available()=True`, `cudnn.enabled=True` (default). Guard fires correctly.
 - **MPS (Apple Silicon)**: `cuda.is_available()=False`, `mps.is_available()=True`.
-  MPS does NOT use cudnn (Apple Metal, not NVIDIA). Guard must NOT fire. `cuda.is_available()`
-  correctly prevents MPS false-positive.
+ MPS does NOT use cudnn (Apple Metal, not NVIDIA). Guard must NOT fire. `cuda.is_available()`
+ correctly prevents MPS false-positive.
 
 **Correct guard pattern** (applied in S79, `engine_hf_trainer.py:971-977`):
 ```python
@@ -1097,9 +1097,9 @@ if (
 ```
 
 **Rule** (DRQ-S75-002-R1): The cudnn determinism guard REQUIRES both checks:
-  - `torch.cuda.is_available()` — hardware gate (prevents CPU/MPS false-positives)
-  - `getattr(torch.backends.cudnn, "enabled", False)` — config gate (user may disable cudnn)
-  Neither check alone is sufficient.
+ - `torch.cuda.is_available()` — hardware gate (prevents CPU/MPS false-positives)
+ - `getattr(torch.backends.cudnn, "enabled", False)` — config gate (user may disable cudnn)
+ Neither check alone is sufficient.
 
 ---
 
@@ -1108,7 +1108,7 @@ if (
 **Category**: Test Infra
 **Priority**: Medium
 **Created**: 2026-02-23 (S75 — slow-suite CI failure)
-**Status**:  RESOLVED (S75)
+**Status**: RESOLVED (S75)
 
 #### Root Cause
 
@@ -1210,7 +1210,7 @@ process-wide protection against XXE via third-party code without changing any
 existing import patterns. Filed as S81 enhancement recommendation.
 
 **File**: `src/codex/dynamics/solution_xml.py:32`
-**Status**: B314 false positive suppressed ; `defuse_stdlib()` startup call  S81
+**Status**: B314 false positive suppressed ; `defuse_stdlib()` startup call S81
 
 ---
 
@@ -1227,7 +1227,7 @@ none is designated as the canonical entry point.
 
 **Recommended fix (S81)**:
 1. Designate `src/codex_ml/utils/seeding.py::set_reproducible()` as the single
-   canonical entry point.
+ canonical entry point.
 2. Replace the assert at line 443 with an auto-call:
 ```python
 if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
@@ -1238,7 +1238,7 @@ if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
 
 **File**: `training/functional_training.py:443`
 **Status**: DRQ-S75-002-R1 rule enforced in engine_hf_trainer.py (S79b) ;
-functional_training.py auto-call recommendation  S81
+functional_training.py auto-call recommendation S81
 
 ---
 
@@ -1257,13 +1257,13 @@ guarded `try/except ImportError` block.
 
 **Remaining open items (S81)**:
 1. `RetrievalEngine` (`src/codex/retrieval/search.py`) still directly instantiates
-   `FAISSStore` — should use `VectorStoreFactory.create("faiss", ...)` instead.
+ `FAISSStore` — should use `VectorStoreFactory.create("faiss", ...)` instead.
 2. Add `pytest.mark.requires_faiss` to tests in `tests/retrieval/` that instantiate
-   `FAISSStore` or `RetrievalEngine`, wiring to `tools/testing/optional_deps.py::OPTIONALS`.
+ `FAISSStore` or `RetrievalEngine`, wiring to `tools/testing/optional_deps.py::OPTIONALS`.
 3. Add `faiss-cpu` to `requirements/lock-test.txt` as optional CI dep.
 
 **File**: `src/codex/retrieval/stores/__init__.py`
-**Status**: FAISS guard added ; RetrievalEngine factory migration  S81
+**Status**: FAISS guard added ; RetrievalEngine factory migration S81
 
 ---
 
@@ -1298,7 +1298,7 @@ suppress both ruff F401 and CodeQL unused-import alerts.
 3. CodeQL alerts for intentional re-exports are suppressed via `__all__`
 
 **File**: `scripts/ci/auto_fix_common_issues.py`
-**Status**: Research pending  S90
+**Status**: Research pending S90
 
 ---
 
@@ -1311,7 +1311,7 @@ suppress both ruff F401 and CodeQL unused-import alerts.
 **Priority**: HIGH
 **Impact**: HIGH — Shard 2/2 crashes with `ValueError("I/O operation on closed file.")` + `lost sys.stderr`, blocking meaningful CI signal from the second half of the test suite
 **Created**: 2026-02-28
-**Status**:  Interim fix applied
+**Status**: Interim fix applied
 
 #### Context
 **Where discovered**: Resilient Validation Suite / Sharded quick tests (shard 2/2), run 22517735336
@@ -1350,17 +1350,17 @@ Added `-p no:rerunfailures` to the sharded-quick pytest command in `resilient_va
 **Priority**: MEDIUM
 **Impact**: MEDIUM — `Code scanning results / CodeQL` PR check shows "Failing after 2s — N configurations not found", blocking PR merge confidence
 **Created**: 2026-02-28
-**Status**:  Interim fix applied
+**Status**: Interim fix applied
 
 #### Context
 **Where discovered**: PR #3389 checks, check_run_id=65238276083
 **Failure pattern**: GitHub Advanced Security (GHAS) creates placeholder `Code scanning results / CodeQL` check runs for each expected analysis configuration. If the CodeQL workflow doesn't produce SARIF uploads matching those expected configurations, the checks fail instantly (2s). The `codeql-analysis.yml` was only analyzing `python` and `javascript` (2 languages), but GHAS expected more (possibly including `go`, previously including `typescript`).
 
 #### The Question
-What is the exact set of configurations GitHub GHAS expects for this repository, and what caused the expectation of 6 (not 2 or 3)? Is the count from: (a) historical scans with more languages, (b) org-level security policy forcing specific language sets, (c) default setup auto-detecting all repo languages, or (d) the `typescript` → `javascript` collapse leaving ghost entries?
+What is the exact set of configurations GitHub GHAS expects for this repository, and what caused the expectation of 6 (not 2 or 3)? Is the count from: (a) historical scans with more languages, (b) org-level security policy forcing specific language sets, (c) default setup auto-detecting all repo languages, or (d) the `typescript` `javascript` collapse leaving ghost entries?
 
 #### Why This Needs Research
-- GHAS configuration expectations are set server-side and not easily introspectable from the repo  
+- GHAS configuration expectations are set server-side and not easily introspectable from the repo
 - Removing `typescript` from the matrix (commit `f0ff0f78`) may have left stale entries in GHAS history
 - Org-level policies can force CodeQL to run for all GitHub-detected languages regardless of workflow
 
@@ -1394,13 +1394,13 @@ brings the active count from 2 to 3; GHAS will retire stale entries over time.
 **Priority**: MEDIUM
 **Impact**: MEDIUM — Without `.test_durations`, pytest-split falls back to count-based splitting. All test definitions must be collected on every shard before any can run. Combined with ~2000 quick tests, shard 2/2 collects 1000+ test items before executing any — adding significant overhead. Tests appear to run at 1 test/3s pace when collection + execution are measured together.
 **Created**: 2026-02-28
-**Status**:  Interim fix applied
+**Status**: Interim fix applied
 
 #### The Question
 Should `.test_durations` be committed to the repository (removing it from `.gitignore`) to make the split deterministic and fast from day one? Or is the cache-based approach sufficient for progressive improvement?
 
 #### Why This Needs Research
-- Committing `.test_durations` (re-generated on significant test changes) is simpler but adds ~50KB to git history  
+- Committing `.test_durations` (re-generated on significant test changes) is simpler but adds ~50KB to git history
 - Cache-based approach is cleaner but adds a round-trip latency before the first warm cache hit
 - The accuracy of `least_duration` splits depends on how frequently the durations file is updated
 
@@ -1446,12 +1446,12 @@ conditional imports across the codebase?
 
 ### Why Needs Research
 - 331 files is too large for manual change; automated tooling (rope, libcst, sed) each
-  carry different collision risks
+ carry different collision risks
 - Some `from src.` imports may be intentional (e.g. `conftest.py`, `setup.py`)
 - Requires inventory of which packages are installed vs which are path-only
 
 ### Current Hypothesis
-A two-pass approach: (1) libcst codemod to rewrite `from src.X` → `from X`, (2) run
+A two-pass approach: (1) libcst codemod to rewrite `from src.X` `from X`, (2) run
 the test suite to catch any newly-broken imports. Likely 2–3 CI iterations to stabilise.
 
 ### Acceptance Criteria
@@ -1468,10 +1468,10 @@ the test suite to catch any newly-broken imports. Likely 2–3 CI iterations to 
 **Priority**: HIGH
 **Impact**: HIGH — `nox -s tests` stops at 143 collection errors, blocking baseline CI signal
 **Created**: 2026-05-17
-**Status**:  Interim fix applied
+**Status**: Interim fix applied
 
 #### Context
-**Where discovered**: Session S1043 / `/home/runner/work/_codex_/_codex_` baseline `nox -s tests` run.  
+**Where discovered**: Session S1043 / `/home/runner/work/_codex_/_codex_` baseline `nox -s tests` run.
 **Failure pattern**: pytest collection stops with 143 errors headed by `AttributeError: module 'codex_ml.data._core_loaders' has no attribute 'stream_paths'`. The failure is triggered in the baseline nox environment, while direct host-environment collection is clean after the quantum conftest fix. Investigation showed two coupled mechanisms:
 1. `src/codex_ml/data/__init__.py` eagerly imported `.loaders` during package initialization, allowing recursive import of `codex_ml.data.loaders` to observe a partially initialized `codex_ml.data._core_loaders`.
 2. `src/codex_ml/connectors/remote.py` required `codex_ml.monitoring.health`, which imports `pydantic`; `pydantic` is absent in the baseline nox session, so optional monitoring support should not block loader imports.

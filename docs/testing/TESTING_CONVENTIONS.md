@@ -1,6 +1,6 @@
 # Testing Conventions
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -56,7 +56,7 @@ filterwarnings =
 
 ## Centralized vs. Workflow-Specific Settings
 
-###  Settings That Belong in pytest.ini
+### Settings That Belong in pytest.ini
 
 These settings should **always** be in `pytest.ini`, never duplicated in workflow files:
 
@@ -69,7 +69,7 @@ These settings should **always** be in `pytest.ini`, never duplicated in workflo
 | `filterwarnings` | Warning filters | `ignore::DeprecationWarning` |
 | `testpaths` | Default test discovery paths | `tests` |
 
-###  Settings That Belong in Workflows
+### Settings That Belong in Workflows
 
 These settings are **appropriate for workflow-specific configuration**:
 
@@ -85,7 +85,7 @@ These settings are **appropriate for workflow-specific configuration**:
 | `-k` | Test selection | `-k "not slow"` |
 | `-m` | Marker selection | `-m "smoke"` |
 
-### ️ Per-Workflow Overrides (Use Sparingly)
+### Per-Workflow Overrides (Use Sparingly)
 
 If a workflow truly needs to override a global setting:
 
@@ -117,9 +117,9 @@ Install these pytest plugins as specified in workflows:
 | `pytest-timeout` | `--timeout`, `--timeout-method` | Test timeouts |
 | `pytest-rerunfailures` | `--reruns`, `--reruns-delay` | Test retries |
 
-### ️ Common Plugin Name Confusion
+### Common Plugin Name Confusion
 
-**CORRECT**: `pytest-rerunfailures`  
+**CORRECT**: `pytest-rerunfailures`
 **WRONG**: `pytest-retry` (different package)
 
 The `--reruns` and `--reruns-delay` flags are provided by **pytest-rerunfailures**, not pytest-retry.
@@ -170,7 +170,7 @@ Override the global timeout only for:
       --timeout-method=thread
 ```
 
-###  DON'T Duplicate Global Settings
+### DON'T Duplicate Global Settings
 
 **BAD** - Duplicates pytest.ini settings:
 ```yaml
@@ -194,7 +194,7 @@ Override the global timeout only for:
 
 ### Repository-Wide Coverage Target
 
-**Current**: ~27.5%  
+**Current**: ~27.5%
 **Target**: 70%
 
 ### Module-Specific Targets
@@ -348,7 +348,7 @@ jobs:
 
 ## Common Pitfalls
 
-###  Pitfall 1: Duplicate Timeout Arguments
+### Pitfall 1: Duplicate Timeout Arguments
 
 **Problem**: Specifying `--timeout` in workflow when it's already in `pytest.ini`
 
@@ -370,7 +370,7 @@ pytest tests/
 
 ---
 
-##  Pitfall 2: Wrong Plugin Package Name
+## Pitfall 2: Wrong Plugin Package Name
 
 **Problem**: Installing `pytest-retry` instead of `pytest-rerunfailures`
 
@@ -390,7 +390,7 @@ pip install pytest-rerunfailures
 
 ---
 
-##  Pitfall 3: Conflicting Coverage Configurations
+## Pitfall 3: Conflicting Coverage Configurations
 
 **Problem**: Multiple coverage configurations in different places
 
@@ -537,8 +537,8 @@ pytest --collect-only
 
 - **Pytest Configuration**: `/pytest.ini`
 - **Workflow Files**:
-  - `.github/workflows/test-comprehensive.yml`
-  - `.github/workflows/test-rag.yml`
+ - `.github/workflows/test-comprehensive.yml`
+ - `.github/workflows/test-rag.yml`
 - **Custom Actions**: `.github/actions/setup-python-cached/`
 - **Cognitive Brain**: `.codex/cognitive_brain/CI_WORKFLOW_FIXES_2026_01_17.md`
 
@@ -553,5 +553,5 @@ This document should be updated when:
 - New testing patterns emerge
 - Plugin requirements change
 
-**Last Updated**: 2026-01-17  
+**Last Updated**: 2026-01-17
 **Maintained By**: AI Agent (@copilot) + Human Admin (@mbaetiong)

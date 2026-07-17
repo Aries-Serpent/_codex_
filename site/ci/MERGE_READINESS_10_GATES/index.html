@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/MERGE_READINESS_10_GATES/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Pre-Merge Validation Gates — Complete Reference - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2457,7 +2457,7 @@
 <h1 id="pre-merge-validation-gates-complete-reference">Pre-Merge Validation Gates — Complete Reference<a class="headerlink" href="#pre-merge-validation-gates-complete-reference" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong>  Authoritative Gate Definitions<br/>
+<p><strong>Status:</strong> Authoritative Gate Definitions
 <strong>Last Updated: 2026-06-25
 </strong>Audience:** PR reviewers, CI/CD engineers, Copilot agents</p>
 <hr/>
@@ -2471,9 +2471,9 @@
 <p><strong>Purpose:</strong> Ensure code follows style, type, and complexity standards.</p>
 <p><strong>Validation Steps:</strong>
 1. Run Ruff linter: <code>python -m ruff check src/ tests/ --fix</code>
-   - Must pass with 0 violations
-   - Checks only E (error), F (Pyflakes), I (isort) rules
-   - Per-file ignores: E402, F811 (test-only exceptions)</p>
+ - Must pass with 0 violations
+ - Checks only E (error), F (Pyflakes), I (isort) rules
+ - Per-file ignores: E402, F811 (test-only exceptions)</p>
 <ol>
 <li>Run MyPy type checker: <code>python -m mypy src/ --ignore-missing-imports</code></li>
 <li>Must pass with all types covered</li>
@@ -2504,13 +2504,13 @@
 <p><strong>Purpose:</strong> Prevent accidental credential commits and catch code vulnerabilities.</p>
 <p><strong>Validation Steps:</strong>
 1. Detect-secrets check:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>detect-secrets-hook<span class="w"> </span>--baseline<span class="w"> </span>.secrets.baseline<span class="w"> </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="k">)</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>detect-secrets-hook<span class="w"> </span>--baseline<span class="w"> </span>.secrets.baseline<span class="w"> </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="k">)</span>
 </code></pre></div>
-   - Exit code 0 = pass (no new secrets)
-   - Exit code ≠ 0 = fail (new secrets detected)</p>
+ - Exit code 0 = pass (no new secrets)
+ - Exit code ≠ 0 = fail (new secrets detected)</p>
 <ol>
 <li>CodeQL alert count:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>gh<span class="w"> </span>api<span class="w"> </span>/repos/Aries-Serpent/_codex_/code-scanning/alerts?state<span class="o">=</span>open<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.[] | select(.rule.severity=="error" or .rule.severity=="warning") | .number'</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>gh<span class="w"> </span>api<span class="w"> </span>/repos/Aries-Serpent/_codex_/code-scanning/alerts?state<span class="o">=</span>open<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.[] | select(.rule.severity=="error" or .rule.severity=="warning") | .number'</span>
 </code></pre></div></li>
 <li>Count open alerts</li>
 <li>
@@ -2518,7 +2518,7 @@
 </li>
 <li>
 <p>Pip audit (CVE check):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip_audit<span class="w"> </span>--skip-editable<span class="w"> </span>--desc
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip_audit<span class="w"> </span>--skip-editable<span class="w"> </span>--desc
 </code></pre></div></p>
 </li>
 <li>Exit code 0 = pass (no vulnerabilities)</li>
@@ -2533,17 +2533,17 @@
 <p><strong>Workflow:</strong> <code>workflow-execution-gate.yml</code> (always-checked + orchestrator)</p>
 <p><strong>Purpose:</strong> Ensure Workflow Execution Checklist (WEC) is present and valid.</p>
 <p><strong>Validation Steps:</strong>
-1. Check WEC section exists: <code>grep "##  Workflow Execution Checklist" pr_body</code>
+1. Check WEC section exists: <code>grep "## Workflow Execution Checklist" pr_body</code>
 2. Validate all 9 items present:
-   - pre-merge-validation.yml
-   - comment-review-gate.yml
-   - deferral-language-gate.yml
-   - agent-auth-delegation.yml
-   - workflow-execution-gate.yml
-   - copilot-agent-checkin.yml
-   - copilot-agent-session-done.yml
-   - copilot-iterative-self-healing.yml
-   - cost-gate.yml</p>
+ - pre-merge-validation.yml
+ - comment-review-gate.yml
+ - deferral-language-gate.yml
+ - agent-auth-delegation.yml
+ - workflow-execution-gate.yml
+ - copilot-agent-checkin.yml
+ - copilot-agent-session-done.yml
+ - copilot-iterative-self-healing.yml
+ - cost-gate.yml</p>
 <ol>
 <li>Validate always-required items are <code>[x]</code>:</li>
 <li>pre-merge-validation.yml: MUST be <code>[x]</code></li>
@@ -2553,7 +2553,7 @@
 <li>workflow-execution-gate.yml: MUST be <code>[x]</code></li>
 <li>cost-gate.yml: MUST be <code>[x]</code></li>
 </ol>
-<p><strong>Failure Criterion:</strong> Missing WEC section OR incomplete items OR always-required items unchecked → blocks merge</p>
+<p><strong>Failure Criterion:</strong> Missing WEC section OR incomplete items OR always-required items unchecked blocks merge</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " WEC Integrity (14/14): All 9 items present, all always-required checked"
 - Or: " WEC Integrity (0/14): WEC section missing or incomplete. Add canonical WEC block."</p>
@@ -2575,7 +2575,7 @@
 1. Scan PR body, commits, comments for prohibited phrases
 2. Use regex + optional ML classifier (TF-IDF)
 3. Report any matches</p>
-<p><strong>Failure Criterion:</strong> Any prohibited phrase detected → blocks merge</p>
+<p><strong>Failure Criterion:</strong> Any prohibited phrase detected blocks merge</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " Deferral Language (10/10): No prohibited phrases detected"
 - Or: " Deferral Language (0/10): Phrase detected: 'These are pre-existing issues' in commit message. Reword to use affirmative language."</p>
@@ -2597,10 +2597,10 @@
 1. Fetch all PR comments via GitHub API
 2. Filter by author (blocking list)
 3. Check for resolution:
-   - Comment marked as "Resolved" in conversation
-   - OR agent replied with commit SHA pointing to fix
-   - OR maintainer explicitly approved</p>
-<p><strong>Failure Criterion:</strong> Unresolved blocking comment from maintainer or security bot → blocks merge</p>
+ - Comment marked as "Resolved" in conversation
+ - OR agent replied with commit SHA pointing to fix
+ - OR maintainer explicitly approved</p>
+<p><strong>Failure Criterion:</strong> Unresolved blocking comment from maintainer or security bot blocks merge</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " Comment Review (12/12): All 2 blocking comments resolved"
 - Or: " Comment Review (0/12): 1 unresolved comment from @mbaetiong: 'Fix the type error in line 123.' [Link to comment]"</p>
@@ -2611,12 +2611,12 @@
 <p><strong>Purpose:</strong> Maintain audit trail of changes and session responsibility.</p>
 <p><strong>Validation Steps:</strong>
 1. Check <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> updated in last commit
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"</span>
 </code></pre></div></p>
 <ol>
 <li>
 <p>Check <code>CHANGELOG.md</code> updated in last commit
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"CHANGELOG.md"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"CHANGELOG.md"</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2630,10 +2630,10 @@
 <p><strong>Auto-Fix Mechanism:</strong>
 - If either file missing from last commit, <code>session_wrapup_autofix.py --fix</code> runs automatically
 - Appends minimal entry if needed (marks as "[auto-generated]")</p>
-<p><strong>Failure Criterion:</strong> Either file missing after auto-fix attempt → manual update required OR auto-fix succeeds (no blocking failure)</p>
+<p><strong>Failure Criterion:</strong> Either file missing after auto-fix attempt manual update required OR auto-fix succeeds (no blocking failure)</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated 2026-07-13
-- Or: "️ Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"</p>
+- Or: " Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"</p>
 <p><strong>Weight:</strong> 8 points</p>
 <hr/>
 <h3 id="gate-8-action-versions-enforcement-7-pts">Gate 8: Action Versions Enforcement (7 pts)<a class="headerlink" href="#gate-8-action-versions-enforcement-7-pts" title="Permanent link">¶</a></h3>
@@ -2650,10 +2650,10 @@
 2. Extract GitHub Actions (format: <code>owner/action@version</code>)
 3. Compare version against approved list
 4. Auto-fix via: <code>python scripts/ci/enforce_actions_versions.py --fix</code></p>
-<p><strong>Failure Criterion:</strong> Unapproved action version detected after auto-fix → blocks merge</p>
+<p><strong>Failure Criterion:</strong> Unapproved action version detected after auto-fix blocks merge</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " Action Versions (7/7): All actions use approved versions"
-- Or: " Action Versions (7/7): Auto-fixed 2 action versions (actions/checkout v4→v5, actions/setup-python v5→v6)"</p>
+- Or: " Action Versions (7/7): Auto-fixed 2 action versions (actions/checkout v4v5, actions/setup-python v5v6)"</p>
 <p><strong>Weight:</strong> 7 points</p>
 <hr/>
 <h3 id="gate-9-yaml-workflow-syntax-indentation-7-pts">Gate 9: YAML Workflow Syntax &amp; Indentation (7 pts)<a class="headerlink" href="#gate-9-yaml-workflow-syntax-indentation-7-pts" title="Permanent link">¶</a></h3>
@@ -2661,13 +2661,13 @@
 <p><strong>Purpose:</strong> Catch YAML parse errors and indentation issues before merge.</p>
 <p><strong>Validation Steps:</strong>
 1. Run actionlint on all workflow files:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>actionlint<span class="w"> </span>.github/workflows/*.yml<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-c<span class="w"> </span>error
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>actionlint<span class="w"> </span>.github/workflows/*.yml<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-c<span class="w"> </span>error
 </code></pre></div>
-   - Exit code 0 = pass (0 errors)
-   - Exit code ≠ 0 = fail (errors found)</p>
+ - Exit code 0 = pass (0 errors)
+ - Exit code ≠ 0 = fail (errors found)</p>
 <ol>
 <li>Run yamllint:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>yamllint<span class="w"> </span>.github/workflows/<span class="w"> </span>--config-file<span class="w"> </span>.yamllint.yml
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>yamllint<span class="w"> </span>.github/workflows/<span class="w"> </span>--config-file<span class="w"> </span>.yamllint.yml
 </code></pre></div></li>
 <li>Checks indentation, key ordering, line length</li>
 </ol>
@@ -2676,7 +2676,7 @@
 - Incorrect indentation under <code>steps:</code>, <code>branches:</code>, <code>paths:</code>
 - Unquoted long strings with special characters
 - Shell braces in flow scalars (must use <code>run: |</code>)</p>
-<p><strong>Failure Criterion:</strong> Any actionlint error OR yamllint error → blocks merge</p>
+<p><strong>Failure Criterion:</strong> Any actionlint error OR yamllint error blocks merge</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " Workflow Syntax (7/7): 0 actionlint errors, 0 yamllint errors"
 - Or: " Workflow Syntax (0/7): 2 actionlint errors in test.yml, 1 yamllint error in build.yml. Run actionlint and yamllint locally to fix."</p>
@@ -2687,9 +2687,9 @@
 <p><strong>Purpose:</strong> Verify branch is clean and ready for merge.</p>
 <p><strong>Validation Steps:</strong>
 1. Check for unresolved merge conflicts:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>--diff-filter<span class="o">=</span>U
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>--diff-filter<span class="o">=</span>U
 </code></pre></div>
-   - Must return empty (no unmerged files)</p>
+ - Must return empty (no unmerged files)</p>
 <ol>
 <li>Verify branch up-to-date:</li>
 <li>Compare PR base (usually <code>main</code>) to current branch</li>
@@ -2703,7 +2703,7 @@
 <li>All required reviews completed</li>
 <li>No blocking dismissals</li>
 </ol>
-<p><strong>Failure Criterion:</strong> Unresolved conflicts OR outdated branch (without documented reason) → blocks merge</p>
+<p><strong>Failure Criterion:</strong> Unresolved conflicts OR outdated branch (without documented reason) blocks merge</p>
 <p><strong>PR Body Impact:</strong>
 - Record: " Merge Dependencies (3/3): Branch clean, up-to-date with main, all protections satisfied"
 - Or: " Merge Dependencies (0/3): 2 unresolved merge conflicts in src/module.py. Resolve conflicts before merge."</p>
@@ -2714,9 +2714,9 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>merge_readiness_score = Σ(gate_weight × gate_pass_rate)
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>where:
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>  gate_pass_rate = 1.0 if gate passes
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>                 = 0.5 if gate partially passes (with documented gap)
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>                 = 0.0 if gate fails
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> gate_pass_rate = 1.0 if gate passes
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> = 0.5 if gate partially passes (with documented gap)
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> = 0.0 if gate fails
 </code></pre></div>
 <h3 id="example-score-calculation">Example Score Calculation<a class="headerlink" href="#example-score-calculation" title="Permanent link">¶</a></h3>
 <table>
@@ -2747,7 +2747,7 @@
 <tr>
 <td>Security</td>
 <td>15</td>
-<td>️ Partial</td>
+<td>Partial</td>
 <td>0.5</td>
 <td>7.5</td>
 </tr>
@@ -2811,30 +2811,30 @@
 </table>
 <h3 id="interpretation">Interpretation<a class="headerlink" href="#interpretation" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>0–29/100:</strong>  Critical issues — cannot merge</li>
-<li><strong>30–69/100:</strong>  Major issues — significant remediation needed</li>
-<li><strong>70–89/100:</strong>  Moderate issues — address before merge</li>
-<li><strong>90–94/100:</strong>  Minor issues — close to ready</li>
-<li><strong>95–99/100:</strong>  Merge-ready (A+ grade)</li>
-<li><strong>100/100:</strong>  Perfect — all gates pass</li>
+<li><strong>0–29/100:</strong> Critical issues — cannot merge</li>
+<li><strong>30–69/100:</strong> Major issues — significant remediation needed</li>
+<li><strong>70–89/100:</strong> Moderate issues — address before merge</li>
+<li><strong>90–94/100:</strong> Minor issues — close to ready</li>
+<li><strong>95–99/100:</strong> Merge-ready (A+ grade)</li>
+<li><strong>100/100:</strong> Perfect — all gates pass</li>
 </ul>
 <hr/>
 <h2 id="pr-body-documentation-format">PR Body Documentation Format<a class="headerlink" href="#pr-body-documentation-format" title="Permanent link">¶</a></h2>
 <p>Use this format in every PR body to document gate status:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="gu">##  Merge Readiness Summary</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="gu">## Merge Readiness Summary</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>| Gate | Weight | Status | Score |
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>|------|--------|--------|-------|
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>| Code Quality | 12 |  | 12/12 |
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>| Test Coverage | 12 |  | 12/12 |
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>| Security &amp; Secrets | 15 | ️ Partial | 7.5/15 |
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>| WEC Integrity | 14 |  | 14/14 |
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>| Deferral Language | 10 |  | 10/10 |
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>| Comment Review | 12 |  | 0/12 |
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>| Accountability Report | 8 |  | 8/8 |
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>| Action Versions | 7 |  | 7/7 |
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>| Workflow Syntax | 7 |  | 7/7 |
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>| Merge Dependencies | 3 |  | 3/3 |
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>| Code Quality | 12 | | 12/12 |
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>| Test Coverage | 12 | | 12/12 |
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>| Security &amp; Secrets | 15 | Partial | 7.5/15 |
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>| WEC Integrity | 14 | | 14/14 |
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>| Deferral Language | 10 | | 10/10 |
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>| Comment Review | 12 | | 0/12 |
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>| Accountability Report | 8 | | 8/8 |
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>| Action Versions | 7 | | 7/7 |
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>| Workflow Syntax | 7 | | 7/7 |
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>| Merge Dependencies | 3 | | 3/3 |
 <a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>| <span class="gs">**TOTAL**</span> | <span class="gs">**100**</span> | <span class="gs">**8/10**</span> | <span class="gs">**80.5/100**</span> |
 <a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>
 <a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="gu">### Failing Gates (Remediation Required)</span>
@@ -2860,8 +2860,8 @@
 <p>Use this checklist when reviewing PRs against the 10-gate model:</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 1:</strong> Run <code>ruff check</code> + <code>mypy</code> locally on changed files?</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 2:</strong> Coverage ≥ 95%? (Check Actions → test report)</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 3:</strong> No new CodeQL alerts? (Check Actions → CodeQL report)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 2:</strong> Coverage ≥ 95%? (Check Actions test report)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 3:</strong> No new CodeQL alerts? (Check Actions CodeQL report)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 4:</strong> WEC section present with 9 items, all always-required <code>[x]</code>?</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 5:</strong> No deferral language detected? (Check Comments)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Gate 6:</strong> All blocking comments resolved or replied to with commit SHA?</li>
@@ -2879,7 +2879,7 @@
 <li><strong>Session Wrapup Autofix:</strong> <a href="../../scripts/ci/session_wrapup_autofix.py">scripts/ci/session_wrapup_autofix.py</a></li>
 </ul>
 <hr/>
-<p><strong>Status:</strong>  Ready for Production Use<br/>
+<p><strong>Status:</strong> Ready for Production Use
 <strong>Last Validated:</strong> 2026-06-25T15:50:00Z</p>
 </article>
 </div>
@@ -2910,6 +2910,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

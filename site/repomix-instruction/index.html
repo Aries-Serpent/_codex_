@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/repomix-instruction/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>codex Repository Architecture &amp; Global Coding Guidelines - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2612,7 +2612,7 @@
 <h1 id="codex-repository-architecture-global-coding-guidelines"><em>codex</em> Repository Architecture &amp; Global Coding Guidelines<a class="headerlink" href="#codex-repository-architecture-global-coding-guidelines" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p>**Last Updated: 2026-06-22</p>
+<p>**Last Updated: 2026-07-16</p>
 <h2 id="project-overview">Project Overview<a class="headerlink" href="#project-overview" title="Permanent link">¶</a></h2>
 <p><strong><em>codex</em></strong> is an advanced AI-powered development automation platform featuring:
 - Autonomous code remediation with ML-based fix generation
@@ -2631,15 +2631,15 @@
 </ol>
 <h3 id="system-components">System Components<a class="headerlink" href="#system-components" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>_codex_/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── tools/auto_remediation/     # Intelligent fix generation &amp; PR automation
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── monitoring/                 # Real-time CI/CD &amp; security metrics
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── services/msp_gateway/       # API gateway with CORS security
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── .github/agents/             # Custom GitHub Copilot agents
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│   ├── ci-diagnostic-agent/    # CI failure analysis
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   └── ml-threat-detector/     # ML-based vulnerability detection
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├── src/codex/                  # Core Python codebase
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├── tests/                      # Comprehensive test suite
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└── rust_swarm/                 # Rust performance-critical components
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> tools/auto_remediation/ # Intelligent fix generation &amp; PR automation
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> monitoring/ # Real-time CI/CD &amp; security metrics
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> services/msp_gateway/ # API gateway with CORS security
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> .github/agents/ # Custom GitHub Copilot agents
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> ci-diagnostic-agent/ # CI failure analysis
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> ml-threat-detector/ # ML-based vulnerability detection
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> src/codex/ # Core Python codebase
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> tests/ # Comprehensive test suite
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> rust_swarm/ # Rust performance-critical components
 </code></pre></div>
 <h2 id="global-coding-guidelines">Global Coding Guidelines<a class="headerlink" href="#global-coding-guidelines" title="Permanent link">¶</a></h2>
 <h3 id="python-code-standards">Python Code Standards<a class="headerlink" href="#python-code-standards" title="Permanent link">¶</a></h3>
@@ -2651,24 +2651,24 @@
 - Docstrings in Google style</p>
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">def</span> <span class="nf">analyze_vulnerability</span><span class="p">(</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">patterns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">confidence_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="n">patterns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="n">confidence_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="sd">"""Analyze code for vulnerability patterns.</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="sd">"""Analyze code for vulnerability patterns.</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="sd">    Args:</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="sd">        code: Source code to analyze</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="sd">        patterns: List of vulnerability patterns</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="sd">        confidence_threshold: Minimum confidence for detection</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="sd"> code: Source code to analyze</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="sd"> patterns: List of vulnerability patterns</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="sd"> confidence_threshold: Minimum confidence for detection</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="sd">    Returns:</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="sd">        Tuple of (is_vulnerable, confidence_score)</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="sd"> Returns:</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="sd"> Tuple of (is_vulnerable, confidence_score)</span>
 <a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="sd">    Raises:</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="sd">        ValueError: If code is empty or patterns invalid</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="sd">    """</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="c1"># Implementation</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="sd"> Raises:</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="sd"> ValueError: If code is empty or patterns invalid</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="sd"> """</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> <span class="c1"># Implementation</span>
 </code></pre></div></p>
 <p><strong>Security Best Practices</strong>:
 - Never hardcode credentials or secrets
@@ -2678,11 +2678,11 @@
 - Sanitize user inputs to prevent XSS/injection</p>
 <p><strong>Error Handling</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">risky_operation</span><span class="p">()</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">risky_operation</span><span class="p">()</span>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">except</span> <span class="n">SpecificException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="c1"># Graceful degradation or raise</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="k">raise</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="c1"># Graceful degradation or raise</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="k">raise</span>
 </code></pre></div></p>
 <h3 id="rust-code-standards">Rust Code Standards<a class="headerlink" href="#rust-code-standards" title="Permanent link">¶</a></h3>
 <p><strong>Formatting &amp; Linting</strong>:
@@ -2703,10 +2703,10 @@
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="sd">/// # Errors</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="sd">/// Returns `AnalysisError` if code parsing fails</span>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">analyze_performance</span><span class="p">(</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="n">code</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">    </span><span class="n">threshold</span>: <span class="kt">f64</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w"> </span><span class="n">code</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w"> </span><span class="n">threshold</span>: <span class="kt">f64</span>
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">AnalysisError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">    </span><span class="c1">// Implementation</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w"> </span><span class="c1">// Implementation</span>
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="yaml-workflows-configuration">YAML (Workflows &amp; Configuration)<a class="headerlink" href="#yaml-workflows-configuration" title="Permanent link">¶</a></h3>
@@ -2720,50 +2720,50 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Security Scan</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">develop</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w"> </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">develop</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w"> </span><span class="nt">pull_request</span><span class="p">:</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">  </span><span class="nt">security-events</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w"> </span><span class="nt">security-events</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">  </span><span class="nt">scan</span><span class="p">:</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Security Analysis</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w"> </span><span class="nt">scan</span><span class="p">:</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Security Analysis</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 <a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run CodeQL</span>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github/codeql-action/analyze@v2</span>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w">          </span><span class="nt">languages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python, javascript</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run CodeQL</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github/codeql-action/analyze@v2</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w"> </span><span class="nt">languages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python, javascript</span>
 </code></pre></div></p>
 <h2 id="key-design-patterns">Key Design Patterns<a class="headerlink" href="#key-design-patterns" title="Permanent link">¶</a></h2>
 <h3 id="1-auto-remediation-pattern">1. Auto-Remediation Pattern<a class="headerlink" href="#1-auto-remediation-pattern" title="Permanent link">¶</a></h3>
-<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Detection → Analysis → Fix Generation → Verification → PR Creation
+<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Detection Analysis Fix Generation Verification PR Creation
 </code></pre></div>
 - Use AST parsing for precise code modification
 - Validate fixes before and after application
 - Generate comprehensive test coverage for fixes
 - Include rollback procedures</p>
 <h3 id="2-ci-diagnostic-pattern">2. CI Diagnostic Pattern<a class="headerlink" href="#2-ci-diagnostic-pattern" title="Permanent link">¶</a></h3>
-<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Log Collection → Pattern Matching → Root Cause Analysis → Remediation Suggestion
+<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Log Collection Pattern Matching Root Cause Analysis Remediation Suggestion
 </code></pre></div>
 - Analyze workflow logs for known failure patterns
 - Calculate confidence scores for diagnoses
 - Suggest auto-fixes for common issues
 - Learn from historical failures</p>
 <h3 id="3-monitoring-pattern">3. Monitoring Pattern<a class="headerlink" href="#3-monitoring-pattern" title="Permanent link">¶</a></h3>
-<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Metrics Collection → Aggregation → Visualization → Alerting
+<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Metrics Collection Aggregation Visualization Alerting
 </code></pre></div>
 - Collect from GitHub APIs (workflows, security, releases)
 - Store time-series data for trending
 - Real-time dashboard updates
 - Threshold-based alerting</p>
 <h3 id="4-security-scanning-pattern">4. Security Scanning Pattern<a class="headerlink" href="#4-security-scanning-pattern" title="Permanent link">¶</a></h3>
-<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Pre-commit → Static Analysis → Dynamic Analysis → Vulnerability DB Check
+<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Pre-commit Static Analysis Dynamic Analysis Vulnerability DB Check
 </code></pre></div>
 - Multi-layer scanning (Semgrep, CodeQL, Bandit)
 - Custom rules for <em>codex</em>-specific patterns
@@ -2772,10 +2772,10 @@
 <h2 id="testing-standards">Testing Standards<a class="headerlink" href="#testing-standards" title="Permanent link">¶</a></h2>
 <h3 id="test-organization">Test Organization<a class="headerlink" href="#test-organization" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>tests/
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>├── unit/           # Fast, isolated tests
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>├── integration/    # Multi-component tests
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>├── e2e/            # End-to-end workflow tests
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>└── fixtures/       # Test data and mocks
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> unit/ # Fast, isolated tests
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> integration/ # Multi-component tests
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> e2e/ # End-to-end workflow tests
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> fixtures/ # Test data and mocks
 </code></pre></div>
 <h3 id="test-quality-requirements">Test Quality Requirements<a class="headerlink" href="#test-quality-requirements" title="Permanent link">¶</a></h3>
 <ul>
@@ -2787,15 +2787,15 @@
 </ul>
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">def</span> <span class="nf">test_fix_generator_handles_sql_injection_with_parameterized_queries</span><span class="p">():</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">    </span><span class="sd">"""Fix generator should convert string interpolation to parameterized queries."""</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">vulnerable_code</span> <span class="o">=</span> <span class="s1">'cursor.execute(f"SELECT * FROM users WHERE id=</span><span class="si">{user_id}</span><span class="s1">")'</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="sd">"""Fix generator should convert string interpolation to parameterized queries."""</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">vulnerable_code</span> <span class="o">=</span> <span class="s1">'cursor.execute(f"SELECT * FROM users WHERE id=</span><span class="si">{user_id}</span><span class="s1">")'</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="n">fix</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">generate_fix</span><span class="p">(</span><span class="n">vulnerable_code</span><span class="p">,</span> <span class="n">VulnType</span><span class="o">.</span><span class="n">SQL_INJECTION</span><span class="p">)</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="n">fix</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">generate_fix</span><span class="p">(</span><span class="n">vulnerable_code</span><span class="p">,</span> <span class="n">VulnType</span><span class="o">.</span><span class="n">SQL_INJECTION</span><span class="p">)</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    <span class="k">assert</span> <span class="s2">"execute("</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    <span class="k">assert</span> <span class="s2">"?"</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span> <span class="ow">or</span> <span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    <span class="k">assert</span> <span class="s2">"f</span><span class="se">\"</span><span class="s2">"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    <span class="k">assert</span> <span class="n">fix</span><span class="o">.</span><span class="n">confidence</span> <span class="o">&gt;</span> <span class="mf">0.9</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> <span class="k">assert</span> <span class="s2">"execute("</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="k">assert</span> <span class="s2">"?"</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span> <span class="ow">or</span> <span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="k">assert</span> <span class="s2">"f</span><span class="se">\"</span><span class="s2">"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fix</span><span class="o">.</span><span class="n">fixed_code</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="k">assert</span> <span class="n">fix</span><span class="o">.</span><span class="n">confidence</span> <span class="o">&gt;</span> <span class="mf">0.9</span>
 </code></pre></div></p>
 <h2 id="documentation-standards">Documentation Standards<a class="headerlink" href="#documentation-standards" title="Permanent link">¶</a></h2>
 <h3 id="code-documentation">Code Documentation<a class="headerlink" href="#code-documentation" title="Permanent link">¶</a></h3>
@@ -2989,6 +2989,6 @@ Structure findings:
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

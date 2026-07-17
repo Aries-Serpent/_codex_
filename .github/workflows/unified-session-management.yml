@@ -1,90 +1,101 @@
 name: Session Management Suite
-
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Every 30 minutes
+  - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Session operation'
+        description: Session operation
         required: false
         type: choice
         options:
-          - capture-context
-          - increment-summary
-          - recovery-monitor
-          - recovery-handler
-          - watchdog
-          - all
-        default: 'all'
+        - capture-context
+        - increment-summary
+        - recovery-monitor
+        - recovery-handler
+        - watchdog
+        - all
+        default: all
   push:
-    branches: [main]
+    branches:
+    - main
   pull_request:
-    types: [opened, synchronize]
-
+    types:
+    - opened
+    - synchronize
 jobs:
-  # Context Capture (from session-context-capture.yml)
   context-capture:
-    if: github.event.inputs.operation == 'capture-context' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    if: github.event.inputs.operation == 'capture-context' || github.event.inputs.operation
+      == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Capture session context
-        run: echo "Capturing session context..."
-
-  # Incremental Summary (from session-incremental-summary-reminder.yml)
+    - uses: actions/checkout@v5
+    - name: Capture session context
+      run: echo "Capturing session context..."
+    timeout-minutes: 60
   incremental-summary:
-    if: github.event.inputs.operation == 'increment-summary' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'increment-summary' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Generate incremental summary
-        run: echo "Generating incremental summary..."
-
-  # Recovery Monitor (from session-recovery-continuous-monitoring.yml)
+    - uses: actions/checkout@v5
+    - name: Generate incremental summary
+      run: echo "Generating incremental summary..."
+    timeout-minutes: 60
   recovery-monitor:
-    if: github.event.inputs.operation == 'recovery-monitor' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'recovery-monitor' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Monitor session recovery
-        run: echo "Monitoring session recovery status..."
-
-  # Recovery Handler (from session-recovery-handler.yml)
+    - uses: actions/checkout@v5
+    - name: Monitor session recovery
+      run: echo "Monitoring session recovery status..."
+    timeout-minutes: 60
   recovery-handler:
-    if: github.event.inputs.operation == 'recovery-handler' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'recovery-handler' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [recovery-monitor]
+    needs:
+    - recovery-monitor
     steps:
-      - uses: actions/checkout@v5
-      - name: Handle recovery operations
-        run: echo "Executing recovery handler..."
-
-  # Watchdog (from session-watchdog.yml)
+    - uses: actions/checkout@v5
+    - name: Handle recovery operations
+      run: echo "Executing recovery handler..."
+    timeout-minutes: 60
   watchdog:
-    if: github.event.inputs.operation == 'watchdog' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'watchdog' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Session watchdog
-        run: echo "Running session watchdog checks..."
-
+    - uses: actions/checkout@v5
+    - name: Session watchdog
+      run: echo "Running session watchdog checks..."
+    timeout-minutes: 60
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [context-capture, incremental-summary, recovery-monitor, recovery-handler, watchdog]
+    needs:
+    - context-capture
+    - incremental-summary
+    - recovery-monitor
+    - recovery-handler
+    - watchdog
     steps:
-      - name: Report session status
-        run: echo "Session management completed"
+    - name: Report session status
+      run: echo "Session management completed"
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

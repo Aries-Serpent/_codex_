@@ -1,6 +1,6 @@
 # Token Rotation Manual Procedure
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-16
 
@@ -8,7 +8,7 @@
 
 This document provides step-by-step instructions for manually rotating authentication tokens and secrets in the _codex_ repository.
 
-**️ IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.
+** IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.
 
 ---
 
@@ -17,9 +17,9 @@ This document provides step-by-step instructions for manually rotating authentic
 ### 1. Required Access
 - Repository admin access
 - GitHub Personal Access Token with scopes:
-  - `repo` (full repository access)
-  - `workflow` (update GitHub Actions workflows)
-  - `admin:repo_hook` (if webhook secrets are used)
+ - `repo` (full repository access)
+ - `workflow` (update GitHub Actions workflows)
+ - `admin:repo_hook` (if webhook secrets are used)
 
 ### 2. Required Environment Variables
 ```bash
@@ -75,9 +75,9 @@ python3 scripts/rotate_jwt_secret.py
 python3 scripts/rotate_jwt_secret.py --verify
 
 # Expected output:
-#  TOKEN_SECRET_KEY is set
-#  CODEX_MASTER_KEY is set
-#  Backup directory exists
+# TOKEN_SECRET_KEY is set
+# CODEX_MASTER_KEY is set
+# Backup directory exists
 ```
 
 ## Step 3: Perform Rotation
@@ -115,8 +115,8 @@ import jwt
 
 secret = os.getenv('TOKEN_SECRET_KEY')
 payload = {
-    'sub': 'test-user',
-    'exp': datetime.utcnow() + timedelta(hours=1)
+ 'sub': 'test-user',
+ 'exp': datetime.utcnow() + timedelta(hours=1)
 }
 token = jwt.encode(payload, secret, algorithm='HS256')
 print(f' JWT generated: {token[:50]}...')
@@ -200,9 +200,9 @@ python3 scripts/github_secrets_sync.py --rotate
 python3 scripts/github_secrets_sync.py --validate
 
 # Expected output:
-#  TOKEN_SECRET_KEY: accessible
-#  GITHUB_OAUTH_CLIENT_SECRET: accessible
-#  SESSION_ENCRYPTION_KEY: accessible
+# TOKEN_SECRET_KEY: accessible
+# GITHUB_OAUTH_CLIENT_SECRET: accessible
+# SESSION_ENCRYPTION_KEY: accessible
 ```
 
 ## Step 5: Sync to Downstream Systems
@@ -238,9 +238,9 @@ Manually set or update individual secrets via Copilot Agent automation.
 ```bash
 # Generate a new secure secret (32 bytes = 256 bits)
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action generate-key \
-  --name NEW_SECRET_NAME \
-  --key-length 32
+ --action generate-key \
+ --name NEW_SECRET_NAME \
+ --key-length 32
 
 # The script will:
 # 1. Generate cryptographically secure random key
@@ -252,10 +252,10 @@ python3 scripts/phase10/automated_secrets_manager.py \
 ```bash
 # Set secret with specific value
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action set \
-  --name SECRET_NAME \
-  --value "your-secret-value" \
-  --method api
+ --action set \
+ --name SECRET_NAME \
+ --value "your-secret-value" \
+ --method api
 
 # Methods:
 # - api: Direct GitHub REST API (requires PyNaCl)
@@ -267,18 +267,18 @@ python3 scripts/phase10/automated_secrets_manager.py \
 ```bash
 # Verify secret exists in GitHub
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action verify \
-  --name SECRET_NAME
+ --action verify \
+ --name SECRET_NAME
 
 # Expected output:
-#  SECRET_NAME exists in GitHub Secrets
+# SECRET_NAME exists in GitHub Secrets
 ```
 
 ## Step 4: List All Secrets
 ```bash
 # List all configured secrets (names only, no values)
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action list
+ --action list
 
 # Output example:
 # Secrets in Aries-Serpent/_codex_:
@@ -353,8 +353,8 @@ cat .codex/secrets/backups/*.log
 1. Go to: https://github.com/settings/tokens
 2. Edit your token
 3. Ensure these scopes are checked:
-   - `repo` (full control)
-   - `workflow` (update workflows)
+ - `repo` (full control)
+ - `workflow` (update workflows)
 4. Regenerate token
 5. Update `GITHUB_TOKEN` environment variable
 
@@ -363,34 +363,34 @@ cat .codex/secrets/backups/*.log
 ## Security Best Practices
 
 ### 1. Secure Key Storage
--  Store `CODEX_MASTER_KEY` in password manager (1Password, LastPass)
--  Never commit `CODEX_MASTER_KEY` to version control
--  Rotate `CODEX_MASTER_KEY` annually
--  Use different master keys for dev/staging/production
+- Store `CODEX_MASTER_KEY` in password manager (1Password, LastPass)
+- Never commit `CODEX_MASTER_KEY` to version control
+- Rotate `CODEX_MASTER_KEY` annually
+- Use different master keys for dev/staging/production
 
 ### 2. GitHub Token Hygiene
--  Use fine-grained PATs with minimal scopes
--  Set expiration dates (30-90 days recommended)
--  Rotate tokens regularly
--  Revoke unused tokens immediately
+- Use fine-grained PATs with minimal scopes
+- Set expiration dates (30-90 days recommended)
+- Rotate tokens regularly
+- Revoke unused tokens immediately
 
 ### 3. Backup Management
--  Verify `.codex/secrets/backups/` in `.gitignore`
--  Keep backups encrypted
--  Store off-site backup of `CODEX_MASTER_KEY`
--  Test backup restoration quarterly
+- Verify `.codex/secrets/backups/` in `.gitignore`
+- Keep backups encrypted
+- Store off-site backup of `CODEX_MASTER_KEY`
+- Test backup restoration quarterly
 
 ### 4. Audit Logging
--  Review rotation logs after each operation
--  Monitor GitHub audit log for secret access
--  Set up alerts for unexpected secret changes
--  Keep rotation logs for compliance (1+ year)
+- Review rotation logs after each operation
+- Monitor GitHub audit log for secret access
+- Set up alerts for unexpected secret changes
+- Keep rotation logs for compliance (1+ year)
 
 ### 5. Emergency Procedures
--  Document rollback steps (see above)
--  Have backup contact for emergencies
--  Test rollback procedure quarterly
--  Keep offline copy of recovery procedures
+- Document rollback steps (see above)
+- Have backup contact for emergencies
+- Test rollback procedure quarterly
+- Keep offline copy of recovery procedures
 
 ---
 
@@ -430,13 +430,13 @@ After automated rotation:
 
 ```bash
 # JWT rotation
-python3 scripts/rotate_jwt_secret.py              # Rotate
-python3 scripts/rotate_jwt_secret.py --verify     # Verify
-python3 scripts/rotate_jwt_secret.py --rollback   # Rollback
+python3 scripts/rotate_jwt_secret.py # Rotate
+python3 scripts/rotate_jwt_secret.py --verify # Verify
+python3 scripts/rotate_jwt_secret.py --rollback # Rollback
 
 # Secrets sync
-python3 scripts/github_secrets_sync.py --backup   # Backup
-python3 scripts/github_secrets_sync.py --rotate   # Rotate all
+python3 scripts/github_secrets_sync.py --backup # Backup
+python3 scripts/github_secrets_sync.py --rotate # Rotate all
 python3 scripts/github_secrets_sync.py --validate # Validate
 
 # Manual injection
@@ -449,18 +449,18 @@ python3 scripts/phase10/automated_secrets_manager.py --action verify --name SECR
 
 ```
 .codex/
-├── secrets/  # pragma: allowlist secret
-│   └── backups/          # Encrypted secret backups  # pragma: allowlist secret
-│       ├── jwt_secret_<timestamp>.enc  # pragma: allowlist secret
-│       └── secrets_backup_<timestamp>.json.enc  # pragma: allowlist secret
-└── audit/
-    └── phase10/          # Audit logs
-        └── secrets-rotation-<timestamp>.log  # pragma: allowlist secret
+ secrets/ # pragma: allowlist secret
+ backups/ # Encrypted secret backups # pragma: allowlist secret
+ jwt_secret_<timestamp>.enc # pragma: allowlist secret
+ secrets_backup_<timestamp>.json.enc # pragma: allowlist secret
+ audit/
+ phase10/ # Audit logs
+ secrets-rotation-<timestamp>.log # pragma: allowlist secret
 
 .github/workflows/
-├── auth-token-rotation.yml      # JWT rotation workflow  # pragma: allowlist secret
-├── auth-secret-rotation.yml     # Multi-secret rotation  # pragma: allowlist secret
-└── phase10-automated-secrets-setup.yml  # Initial setup  # pragma: allowlist secret
+ auth-token-rotation.yml # JWT rotation workflow # pragma: allowlist secret
+ auth-secret-rotation.yml # Multi-secret rotation # pragma: allowlist secret
+ phase10-automated-secrets-setup.yml # Initial setup # pragma: allowlist secret
 ```
 
 ---
@@ -479,6 +479,6 @@ python3 scripts/phase10/automated_secrets_manager.py --action verify --name SECR
 
 ---
 
-**Last Updated**: 2026-01-17  
-**Version**: 1.0  
+**Last Updated**: 2026-01-17
+**Version**: 1.0
 **Status**: Approved for Production Use

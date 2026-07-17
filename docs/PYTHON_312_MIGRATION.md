@@ -1,6 +1,6 @@
 # Python 3.12 Migration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version:** 1.0.0
 > **Status:** Production Ready
@@ -162,9 +162,9 @@ The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.
 
 ---
 
-## ️ Breaking Changes
+## Breaking Changes
 
-**GOOD NEWS: Zero Breaking Changes Required!** 
+**GOOD NEWS: Zero Breaking Changes Required!**
 
 The _codex_ codebase is already compatible with Python 3.12. The following have been verified:
 
@@ -221,7 +221,7 @@ pytest tests/performance/test_py312_benchmarks.py -v
 
 ---
 
-## 🧪 Testing & Validation
+## Testing & Validation
 
 ### Test Suite Overview
 

@@ -1,6 +1,6 @@
 # Environment Variables FAQ
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## General Questions
 
@@ -8,14 +8,14 @@
 
 **A:** No! All have safe localhost defaults. Set only what you customize.
 
-- **CODEX_REDIS_HOST** → defaults to `localhost`
-- **CODEX_OLLAMA_HOST** → defaults to `http://localhost:11434`
-- **CODEX_MASTER_ADDR** → defaults to `localhost`
-- **CODEX_MASTER_PORT** → defaults to `5000`
-- **CODEX_INFERENCE_SERVICE_HOST** → defaults to `localhost`
-- **CODEX_INFERENCE_SERVICE_PORT** → defaults to `8000`
-- **CODEX_TRUSTED_HOSTS** → defaults to `localhost,127.0.0.1`
-- **CODEX_LOCAL_LOOPBACK** → defaults to `true` (development mode)
+- **CODEX_REDIS_HOST** defaults to `localhost`
+- **CODEX_OLLAMA_HOST** defaults to `http://localhost:11434`
+- **CODEX_MASTER_ADDR** defaults to `localhost`
+- **CODEX_MASTER_PORT** defaults to `5000`
+- **CODEX_INFERENCE_SERVICE_HOST** defaults to `localhost`
+- **CODEX_INFERENCE_SERVICE_PORT** defaults to `8000`
+- **CODEX_TRUSTED_HOSTS** defaults to `localhost,127.0.0.1`
+- **CODEX_LOCAL_LOOPBACK** defaults to `true` (development mode)
 
 ### Q: Can I mix environment variables and code defaults?
 
@@ -30,17 +30,17 @@ redis_host = os.getenv('CODEX_REDIS_HOST', 'localhost')
 
 **A:** No, these are configuration (not credentials). Safe to commit/version control.
 
--  Don't put passwords/tokens here
--  These are just hostnames and port numbers
--  Safe to include in git repos
--  Can be public in GitHub Settings → Variables
+- Don't put passwords/tokens here
+- These are just hostnames and port numbers
+- Safe to include in git repos
+- Can be public in GitHub Settings Variables
 
 ### Q: How are these deployed?
 
-**A:** Via GitHub Settings → Variables (repository-level configuration).
+**A:** Via GitHub Settings Variables (repository-level configuration).
 
 Steps:
-1. Go to Settings → Variables
+1. Go to Settings Variables
 2. Add each CODEX_* variable
 3. GitHub Actions automatically injects them into workflows
 4. Applications read them via `os.getenv('CODEX_*')`
@@ -48,7 +48,7 @@ Steps:
 ### Q: Can these be different per branch?
 
 **A:** Yes, via GitHub Environments:
-1. Settings → Environments
+1. Settings Environments
 2. Create environment (dev, staging, production)
 3. Set environment-specific variables
 4. Reference in workflows: `environment: name: production`
@@ -319,10 +319,10 @@ tail -f logs/codex.log | grep -i "redis\|ollama\|master"
 
 **A:** Yes! They're configuration endpoints, not credentials.
 
--  Safe to commit to git
--  Safe to include in public repos
--  No sensitive data should be here
--  Never put passwords/tokens here
+- Safe to commit to git
+- Safe to include in public repos
+- No sensitive data should be here
+- Never put passwords/tokens here
 
 ```bash
 # Good - just hostnames
@@ -427,8 +427,8 @@ redis_host = os.getenv('CODEX_REDIS_CONNECTION_HOST') or os.getenv('CODEX_REDIS_
 - **Configuration Issues:** See `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md`
 - **Deployment Questions:** See `docs/KUBERNETES_DEPLOYMENT.md` or `docs/DOCKER_SETUP.md`
 - **Metrics/Adoption:** See `docs/ONBOARDING_METRICS_DASHBOARD.md`
-- **Community:** GitHub Discussions → `Environment Configuration`
-- **Bugs:** GitHub Issues → tag `env-var-config`
+- **Community:** GitHub Discussions `Environment Configuration`
+- **Bugs:** GitHub Issues tag `env-var-config`
 
 ---
 

@@ -1,6 +1,6 @@
-# Aries-Serpent ML v0.2.1-beta3 Quick Start Guide
+# Aries-Serpent ML v0.2.0-beta3 Quick Start Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Welcome! This guide shows you how to get started with the Aries-Serpent ML package.
 

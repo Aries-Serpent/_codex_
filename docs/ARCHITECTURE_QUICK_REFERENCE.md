@@ -1,9 +1,9 @@
 # Architecture Quick Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-06-22 
-**Status**: Consolidated 
+**Last Updated**: 2026-06-22
+**Status**: Consolidated
 **Full Reference**: [Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)
 
 ---
@@ -20,24 +20,24 @@
 
 ---
 
-## ️ Core Architecture
+## Core Architecture
 
 ### System Layers
 
 ```
-┌─────────────────────────────────────────┐
-│ User Applications (API) │
-├─────────────────────────────────────────┤
-│ Framework Layer (Hydra, OmegaConf) │
-├─────────────────────────────────────────┤
-│ ML Training & Evaluation Pipeline │
-├─────────────────────────────────────────┤
-│ Plugin System & Extensibility │
-├─────────────────────────────────────────┤
-│ Data Processing & Infrastructure │
-├─────────────────────────────────────────┤
-│ Storage & Persistence │
-└─────────────────────────────────────────┘
+
+ User Applications (API) 
+
+ Framework Layer (Hydra, OmegaConf) 
+
+ ML Training & Evaluation Pipeline 
+
+ Plugin System & Extensibility 
+
+ Data Processing & Infrastructure 
+
+ Storage & Persistence 
+
 ```
 
 ### Key Components
@@ -56,16 +56,16 @@
 
 ```
 _codex_/
-├── src/
-│ ├── codex_ml/ # Main ML framework
-│ ├── codex_utils/ # Utilities library
-│ ├── codex/ # Core package
-│ └── ...
-├── tests/ # Test suite
-├── docs/ # Documentation hub
-├── .github/ # GitHub Actions workflows
-├── pyproject.toml # Package configuration
-└── README.md # Main readme
+ src/
+ codex_ml/ # Main ML framework
+ codex_utils/ # Utilities library
+ codex/ # Core package
+ ...
+ tests/ # Test suite
+ docs/ # Documentation hub
+ .github/ # GitHub Actions workflows
+ pyproject.toml # Package configuration
+ README.md # Main readme
 ```
 
 ---
@@ -73,14 +73,14 @@ _codex_/
 ## Data Flow
 
 ```
-Config (YAML) → Hydra → Framework
- ↓
+Config (YAML) Hydra Framework
+ 
  Plugin System
- ↓
+ 
  ML Pipeline
- ↓
+ 
  Data Processing
- ↓
+ 
  Storage
 ```
 
@@ -122,11 +122,11 @@ training:
 
 ```
 Load Balancer
- ↓
+ 
  [API Servers]
- ↓
+ 
  [Workers]
- ↓
+ 
  [Database]
  [Cache]
  [Storage]
@@ -246,6 +246,6 @@ Load Balancer
 
 ---
 
-**Status**: Complete 
-**Consolidated Date**: 2026-06-22 
+**Status**: Complete
+**Consolidated Date**: 2026-06-22
 **For Updates**: See [Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)

@@ -1,9 +1,9 @@
 # Token Hierarchy & Scopes Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Production Ready  
-**Version:** 1.0.0  
+**Status:** Production Ready
+**Version:** 1.0.0
 **Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
@@ -28,28 +28,28 @@
 The Codex token system provides multiple token types, each with specific purposes, lifetimes, and scopes:
 
 ```
-┌─────────────────────────────────────────────┐
-│         Token Management System             │
-├─────────────────────────────────────────────┤
-│                                             │
-│  ┌──────────────┐  ┌──────────────┐       │
-│  │ Access Token │  │ Refresh Token│       │
-│  │ (15 min TTL) │  │ (30 day TTL) │       │
-│  └──────────────┘  └──────────────┘       │
-│         │                  │               │
-│         └──────────┬───────┘               │
-│                    │                       │
-│          ┌─────────▼────────┐             │
-│          │  Session Token   │             │
-│          │  (24 hour TTL)   │             │
-│          └──────────────────┘             │
-│                    │                       │
-│          ┌─────────▼────────┐             │
-│          │   API Token      │             │
-│          │  (90 day TTL)    │             │
-│          └──────────────────┘             │
-│                                             │
-└─────────────────────────────────────────────┘
+
+ Token Management System 
+
+ 
+ 
+ Access Token Refresh Token 
+ (15 min TTL) (30 day TTL) 
+ 
+ 
+ 
+ 
+ 
+ Session Token 
+ (24 hour TTL) 
+ 
+ 
+ 
+ API Token 
+ (90 day TTL) 
+ 
+ 
+
 ```
 
 ### Key Principles
@@ -77,34 +77,34 @@ The Codex token system provides multiple token types, each with specific purpose
 **Content:**
 ```json
 {
-  "user_id": "alice@company.com",
-  "username": "alice",
-  "roles": ["agent_operator", "ci_operator"],
-  "scopes": [
-    "api:agents:read",
-    "api:agents:write",
-    "api:workflows:exec"
-  ],
-  "issued_at": 1720000000,
-  "expires_at": 1720000900,
-  "iss": "codex-auth",
-  "sub": "alice@company.com"
+ "user_id": "alice@company.com",
+ "username": "alice",
+ "roles": ["agent_operator", "ci_operator"],
+ "scopes": [
+ "api:agents:read",
+ "api:agents:write",
+ "api:workflows:exec"
+ ],
+ "issued_at": 1720000000,
+ "expires_at": 1720000900,
+ "iss": "codex-auth",
+ "sub": "alice@company.com"
 }
 ```
 
 **Usage:**
 ```bash
 curl -H "Authorization: ******" \
-  https://api.codex.local/v1/agents
+ https://api.codex.local/v1/agents
 ```
 
 **Refresh:** Via refresh token
 ```bash
 POST /api/v1/auth/token/refresh
 {
-  "refresh_token": "refresh_token_value"
+ "refresh_token": "refresh_token_value"
 }
-→ Returns new access_token
+ Returns new access_token
 ```
 
 ### Refresh Token
@@ -127,12 +127,12 @@ POST /api/v1/auth/token/refresh
 ```python
 # Client obtains access token
 response = requests.post("/api/v1/auth/login", json={
-    "username": "alice",
-    "password": "secret123"
+ "username": "alice",
+ "password": "secret123"
 })
 
 access_token = response.json()["access_token"]
-refresh_token = response.json()["refresh_token"]  # Store securely
+refresh_token = response.json()["refresh_token"] # Store securely
 
 # Use access token for API calls (15 min)
 headers = {"Authorization": f"******"}
@@ -140,7 +140,7 @@ response = requests.get("/api/v1/agents", headers=headers)
 
 # Access token expires, refresh it
 response = requests.post("/api/v1/auth/token/refresh", json={
-    "refresh_token": refresh_token
+ "refresh_token": refresh_token
 })
 
 new_access_token = response.json()["access_token"]
@@ -165,15 +165,15 @@ new_access_token = response.json()["access_token"]
 **Content:**
 ```json
 {
-  "session_id": "sess-uuid-12345",
-  "user_id": "alice@company.com",
-  "username": "alice",
-  "roles": ["agent_operator"],
-  "issued_at": 1720000000,
-  "expires_at": 1720086400,
-  "ip_address": "10.20.30.40",
-  "user_agent": "Mozilla/5.0...",
-  "iss": "codex-session"
+ "session_id": "sess-uuid-12345",
+ "user_id": "alice@company.com",
+ "username": "alice",
+ "roles": ["agent_operator"],
+ "issued_at": 1720000000,
+ "expires_at": 1720086400,
+ "ip_address": "10.20.30.40",
+ "user_agent": "Mozilla/5.0...",
+ "iss": "codex-session"
 }
 ```
 
@@ -188,10 +188,10 @@ new_access_token = response.json()["access_token"]
 # Logout revokes session
 POST /api/v1/auth/logout
 {
-  "session_token": "session_token_value"
+ "session_token": "session_token_value"
 }
-→ Session marked as revoked
-→ Token is blacklisted
+ Session marked as revoked
+ Token is blacklisted
 ```
 
 ### API Token
@@ -208,16 +208,16 @@ POST /api/v1/auth/logout
 ```bash
 POST /api/v1/auth/tokens
 {
-  "name": "DataPipeline Service",
-  "scopes": ["api:agents:read", "api:workflows:exec"],
-  "expires_in": 7776000  # 90 days in seconds
+ "name": "DataPipeline Service",
+ "scopes": ["api:agents:read", "api:workflows:exec"],
+ "expires_in": 7776000 # 90 days in seconds
 }
 
-→ {
-  "token": "codex_pat_abc123def456ghi789",
-  "created_at": 1720000000,
-  "expires_at": 1727776000,
-  "scopes": ["api:agents:read", "api:workflows:exec"]
+ {
+ "token": "codex_pat_abc123def456ghi789",
+ "created_at": 1720000000,
+ "expires_at": 1727776000,
+ "scopes": ["api:agents:read", "api:workflows:exec"]
 }
 ```
 
@@ -225,7 +225,7 @@ POST /api/v1/auth/tokens
 ```bash
 # Service makes API call with API token
 curl -H "Authorization: ******" \
-  https://api.codex.local/v1/agents
+ https://api.codex.local/v1/agents
 ```
 
 **Security:**
@@ -254,46 +254,46 @@ DELETE /api/v1/auth/tokens/{old_token_id}
 
 ```
 User Login
-    ↓
-┌───────────────────────────────────────┐
-│ Issue Tokens                          │
-│ - Access Token (15 min)               │
-│ - Refresh Token (30 days)             │
-│ - Session Token (24 hours)            │
-└───────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────┐
-│ Access Token Active                   │
-│ - Use for all API calls               │
-│ - Verify signature on each request    │
-│ - Check expiration time               │
-└───────────────────────────────────────┘
-    ↓
+ 
+
+ Issue Tokens 
+ - Access Token (15 min) 
+ - Refresh Token (30 days) 
+ - Session Token (24 hours) 
+
+ 
+
+ Access Token Active 
+ - Use for all API calls 
+ - Verify signature on each request 
+ - Check expiration time 
+
+ 
 [15 minutes]
-    ↓
-┌───────────────────────────────────────┐
-│ Access Token Expired                  │
-│ - API calls with expired token fail   │
-│ - Return 401 Unauthorized             │
-└───────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────┐
-│ Refresh Access Token                  │
-│ - Use refresh token to get new token  │
-│ - Issue new access token (15 min)     │
-│ - Refresh token refreshed (30 days)   │
-└───────────────────────────────────────┘
-    ↓
+ 
+
+ Access Token Expired 
+ - API calls with expired token fail 
+ - Return 401 Unauthorized 
+
+ 
+
+ Refresh Access Token 
+ - Use refresh token to get new token 
+ - Issue new access token (15 min) 
+ - Refresh token refreshed (30 days) 
+
+ 
 [Continue using new access token]
-    ↓
+ 
 [After 30 days of no refresh activity]
-    ↓
-┌───────────────────────────────────────┐
-│ Refresh Token Expired                 │
-│ - User must re-authenticate           │
-│ - New login required                  │
-└───────────────────────────────────────┘
-    ↓
+ 
+
+ Refresh Token Expired 
+ - User must re-authenticate 
+ - New login required 
+
+ 
 User Login Again
 ```
 
@@ -301,39 +301,39 @@ User Login Again
 
 ```python
 class TokenManager:
-    """Manage token lifecycle."""
-    
-    def validate_token(self, token: str) -> dict:
-        """Validate token and return claims."""
-        try:
-            payload = jwt.decode(token, self.public_key, algorithms=["RS256"])
-            
-            # Check expiration
-            if payload["exp"] < time.time():
-                raise TokenExpiredError("Token expired")
-            
-            return payload
-            
-        except jwt.InvalidSignatureError:
-            raise TokenInvalidError("Invalid signature")
-        except jwt.DecodeError:
-            raise TokenInvalidError("Invalid token")
-    
-    def refresh_access_token(self, refresh_token: str) -> str:
-        """Get new access token from refresh token."""
-        # Validate refresh token
-        if not self._validate_refresh_token(refresh_token):
-            raise TokenInvalidError("Invalid refresh token")
-        
-        # Check if refresh token has been revoked
-        if self._is_revoked(refresh_token):
-            raise TokenRevokedError("Refresh token revoked")
-        
-        # Issue new access token
-        return self.issue_token(
-            user_id=self.refresh_token_user(refresh_token),
-            ttl=900  # 15 minutes
-        )
+ """Manage token lifecycle."""
+ 
+ def validate_token(self, token: str) -> dict:
+ """Validate token and return claims."""
+ try:
+ payload = jwt.decode(token, self.public_key, algorithms=["RS256"])
+ 
+ # Check expiration
+ if payload["exp"] < time.time():
+ raise TokenExpiredError("Token expired")
+ 
+ return payload
+ 
+ except jwt.InvalidSignatureError:
+ raise TokenInvalidError("Invalid signature")
+ except jwt.DecodeError:
+ raise TokenInvalidError("Invalid token")
+ 
+ def refresh_access_token(self, refresh_token: str) -> str:
+ """Get new access token from refresh token."""
+ # Validate refresh token
+ if not self._validate_refresh_token(refresh_token):
+ raise TokenInvalidError("Invalid refresh token")
+ 
+ # Check if refresh token has been revoked
+ if self._is_revoked(refresh_token):
+ raise TokenRevokedError("Refresh token revoked")
+ 
+ # Issue new access token
+ return self.issue_token(
+ user_id=self.refresh_token_user(refresh_token),
+ ttl=900 # 15 minutes
+ )
 ```
 
 ---
@@ -345,78 +345,78 @@ class TokenManager:
 Scopes are organized in a hierarchical structure:
 
 ```
-api:*                        (All API scopes)
-  ├── api:agents:*           (All agent scopes)
-  │   ├── api:agents:read    (Read agents)
-  │   ├── api:agents:write   (Create/update agents)
-  │   └── api:agents:exec    (Execute agents)
-  ├── api:workflows:*        (All workflow scopes)
-  │   ├── api:workflows:read
-  │   ├── api:workflows:exec
-  │   └── api:workflows:approve
-  └── api:secrets:*          (All secret scopes)
-      ├── api:secrets:read
-      └── api:secrets:rotate
+api:* (All API scopes)
+ api:agents:* (All agent scopes)
+ api:agents:read (Read agents)
+ api:agents:write (Create/update agents)
+ api:agents:exec (Execute agents)
+ api:workflows:* (All workflow scopes)
+ api:workflows:read
+ api:workflows:exec
+ api:workflows:approve
+ api:secrets:* (All secret scopes)
+ api:secrets:read
+ api:secrets:rotate
 
-governance:*                 (All governance scopes)
-  ├── governance:approve     (Approve requests)
-  └── governance:audit       (Access audit logs)
+governance:* (All governance scopes)
+ governance:approve (Approve requests)
+ governance:audit (Access audit logs)
 
-admin:*                      (Admin scopes)
-  ├── admin:users:*
-  ├── admin:roles:*
-  └── admin:config:*
+admin:* (Admin scopes)
+ admin:users:*
+ admin:roles:*
+ admin:config:*
 ```
 
 ### Scope Definitions
 
 #### api:agents:read
-**Permission:** Read agent definitions and status  
-**Resources:** Agent metadata, configurations, logs  
+**Permission:** Read agent definitions and status
+**Resources:** Agent metadata, configurations, logs
 **Denied:** Agent modification, execution (unless write scope)
 
 #### api:agents:write
-**Permission:** Create, update, delete agents  
-**Requires:** api:agents:read (implied)  
-**Resources:** Agent metadata, parameters  
+**Permission:** Create, update, delete agents
+**Requires:** api:agents:read (implied)
+**Resources:** Agent metadata, parameters
 **Denied:** Agent execution, role assignment
 
 #### api:agents:exec
-**Permission:** Execute agents and run tasks  
-**Requires:** api:agents:read (implied)  
-**Resources:** Agent executions, task runs  
+**Permission:** Execute agents and run tasks
+**Requires:** api:agents:read (implied)
+**Resources:** Agent executions, task runs
 **Denied:** Agent definition modification
 
 #### api:workflows:read
-**Permission:** Read workflow definitions  
-**Resources:** Workflow metadata, execution history  
+**Permission:** Read workflow definitions
+**Resources:** Workflow metadata, execution history
 
 #### api:workflows:exec
-**Permission:** Trigger workflow execution  
-**Requires:** api:workflows:read (implied)  
+**Permission:** Trigger workflow execution
+**Requires:** api:workflows:read (implied)
 
 #### api:workflows:approve
-**Permission:** Approve pending workflow approvals  
-**Resources:** Approval requests  
+**Permission:** Approve pending workflow approvals
+**Resources:** Approval requests
 
 #### api:secrets:read
-**Permission:** Read secrets (metadata only, not values)  
-**Resources:** Secret metadata (name, type, rotation date)  
+**Permission:** Read secrets (metadata only, not values)
+**Resources:** Secret metadata (name, type, rotation date)
 **Never:** Secret values in logs
 
 #### api:secrets:rotate
-**Permission:** Rotate/update secrets  
-**Requires:** api:secrets:read (implied)  
+**Permission:** Rotate/update secrets
+**Requires:** api:secrets:read (implied)
 **Audit:** All rotations logged with details
 
 #### governance:approve
-**Permission:** Approve governance requests  
-**Scope:** Approval workflows  
+**Permission:** Approve governance requests
+**Scope:** Approval workflows
 **Authority:** Limited to policy scope
 
 #### governance:audit
-**Permission:** Read audit logs  
-**Resources:** Complete audit trail  
+**Permission:** Read audit logs
+**Resources:** Complete audit trail
 **Retention:** 90 days (configurable)
 
 ### Scope Assignment Rules
@@ -425,44 +425,44 @@ Scopes are assigned based on user roles:
 
 ```python
 ROLE_SCOPE_MAPPING = {
-    CodexRole.SYSTEM_ADMIN: [
-        "api:*",
-        "governance:*",
-        "admin:*"
-    ],
-    CodexRole.AGENT_OPERATOR: [
-        "api:agents:read",
-        "api:agents:write",
-        "api:agents:exec",
-        "api:workflows:read",
-        "api:workflows:exec",
-        "governance:audit"
-    ],
-    CodexRole.CI_OPERATOR: [
-        "api:workflows:read",
-        "api:workflows:exec",
-        "api:workflows:approve",
-        "governance:audit"
-    ],
-    CodexRole.SECURITY_REVIEWER: [
-        "api:agents:read",
-        "api:workflows:read",
-        "api:workflows:approve",
-        "api:secrets:read",
-        "governance:approve",
-        "governance:audit"
-    ],
-    CodexRole.DOC_MAINTAINER: [
-        "api:docs:*"
-    ],
-    CodexRole.AGENT_READER: [
-        "api:agents:read",
-        "api:workflows:read",
-        "governance:audit"
-    ],
-    CodexRole.GUEST: [
-        "api:public:read"
-    ]
+ CodexRole.SYSTEM_ADMIN: [
+ "api:*",
+ "governance:*",
+ "admin:*"
+ ],
+ CodexRole.AGENT_OPERATOR: [
+ "api:agents:read",
+ "api:agents:write",
+ "api:agents:exec",
+ "api:workflows:read",
+ "api:workflows:exec",
+ "governance:audit"
+ ],
+ CodexRole.CI_OPERATOR: [
+ "api:workflows:read",
+ "api:workflows:exec",
+ "api:workflows:approve",
+ "governance:audit"
+ ],
+ CodexRole.SECURITY_REVIEWER: [
+ "api:agents:read",
+ "api:workflows:read",
+ "api:workflows:approve",
+ "api:secrets:read",
+ "governance:approve",
+ "governance:audit"
+ ],
+ CodexRole.DOC_MAINTAINER: [
+ "api:docs:*"
+ ],
+ CodexRole.AGENT_READER: [
+ "api:agents:read",
+ "api:workflows:read",
+ "governance:audit"
+ ],
+ CodexRole.GUEST: [
+ "api:public:read"
+ ]
 }
 ```
 
@@ -470,24 +470,24 @@ ROLE_SCOPE_MAPPING = {
 
 ```python
 def check_scope(token: str, required_scope: str) -> bool:
-    """Check if token has required scope."""
-    
-    payload = jwt.decode(token, PUBLIC_KEY, algorithms=["RS256"])
-    token_scopes = payload.get("scopes", [])
-    
-    # Direct scope match
-    if required_scope in token_scopes:
-        return True
-    
-    # Wildcard scope match
-    # e.g., "api:*" matches "api:agents:read"
-    parts = required_scope.split(":")
-    for i in range(len(parts)):
-        wildcard = ":".join(parts[:i+1]) + ":*"
-        if wildcard in token_scopes:
-            return True
-    
-    return False
+ """Check if token has required scope."""
+ 
+ payload = jwt.decode(token, PUBLIC_KEY, algorithms=["RS256"])
+ token_scopes = payload.get("scopes", [])
+ 
+ # Direct scope match
+ if required_scope in token_scopes:
+ return True
+ 
+ # Wildcard scope match
+ # e.g., "api:*" matches "api:agents:read"
+ parts = required_scope.split(":")
+ for i in range(len(parts)):
+ wildcard = ":".join(parts[:i+1]) + ":*"
+ if wildcard in token_scopes:
+ return True
+ 
+ return False
 ```
 
 ---
@@ -501,19 +501,19 @@ POST /api/v1/auth/token
 Content-Type: application/json
 
 {
-  "username": "alice@company.com",
-  "password": "secure_password_123",
-  "mfa_code": "123456"  # Optional if MFA enabled
+ "username": "alice@company.com",
+ "password": "secure_password_123",
+ "mfa_code": "123456" # Optional if MFA enabled
 }
 
 # Response
 {
-  "access_token": "eyJhbGc...",
-  "refresh_token": "opaque_token_xyz",
-  "session_token": "eyJzZXNz...",
-  "token_type": "Bearer",
-  "expires_in": 900,
-  "scope": "api:agents:read api:agents:write api:workflows:exec"
+ "access_token": "eyJhbGc...",
+ "refresh_token": "opaque_token_xyz",
+ "session_token": "eyJzZXNz...",
+ "token_type": "Bearer",
+ "expires_in": 900,
+ "scope": "api:agents:read api:agents:write api:workflows:exec"
 }
 ```
 
@@ -525,18 +525,18 @@ Content-Type: application/json
 Authorization: ******
 
 {
-  "name": "DataPipeline Service",
-  "scopes": ["api:agents:read", "api:workflows:exec"],
-  "expires_in": 7776000  # 90 days
+ "name": "DataPipeline Service",
+ "scopes": ["api:agents:read", "api:workflows:exec"],
+ "expires_in": 7776000 # 90 days
 }
 
 # Response
 {
-  "token": "codex_pat_abc123def456ghi789",
-  "name": "DataPipeline Service",
-  "scopes": ["api:agents:read", "api:workflows:exec"],
-  "created_at": 1720000000,
-  "expires_at": 1727776000
+ "token": "codex_pat_abc123def456ghi789",
+ "name": "DataPipeline Service",
+ "scopes": ["api:agents:read", "api:workflows:exec"],
+ "created_at": 1720000000,
+ "expires_at": 1727776000
 }
 ```
 
@@ -547,23 +547,23 @@ POST /api/v1/auth/token/validate
 Content-Type: application/json
 
 {
-  "token": "eyJhbGc..."
+ "token": "eyJhbGc..."
 }
 
 # Response (valid token)
 {
-  "valid": true,
-  "user_id": "alice@company.com",
-  "roles": ["agent_operator"],
-  "scopes": ["api:agents:*", "api:workflows:exec"],
-  "expires_at": 1720000900
+ "valid": true,
+ "user_id": "alice@company.com",
+ "roles": ["agent_operator"],
+ "scopes": ["api:agents:*", "api:workflows:exec"],
+ "expires_at": 1720000900
 }
 
 # Response (invalid/expired token)
 {
-  "valid": false,
-  "error": "Token expired",
-  "error_code": "TOKEN_EXPIRED"
+ "valid": false,
+ "error": "Token expired",
+ "error_code": "TOKEN_EXPIRED"
 }
 ```
 
@@ -574,14 +574,14 @@ POST /api/v1/auth/token/refresh
 Content-Type: application/json
 
 {
-  "refresh_token": "opaque_token_xyz"
+ "refresh_token": "opaque_token_xyz"
 }
 
 # Response
 {
-  "access_token": "eyJhbGc...",
-  "token_type": "Bearer",
-  "expires_in": 900
+ "access_token": "eyJhbGc...",
+ "token_type": "Bearer",
+ "expires_in": 900
 }
 ```
 
@@ -593,15 +593,15 @@ Content-Type: application/json
 Authorization: ******
 
 {
-  "token": "codex_pat_abc123def456ghi789"  # For API tokens
-  # OR
-  "session_token": "eyJzZXNz..."  # For session tokens
+ "token": "codex_pat_abc123def456ghi789" # For API tokens
+ # OR
+ "session_token": "eyJzZXNz..." # For session tokens
 }
 
 # Response
 {
-  "revoked": true,
-  "revoked_at": 1720000100
+ "revoked": true,
+ "revoked_at": 1720000100
 }
 ```
 
@@ -613,17 +613,17 @@ Authorization: ******
 
 # Response
 {
-  "tokens": [
-    {
-      "token_id": "token_001",
-      "name": "DataPipeline Service",
-      "type": "api_token",
-      "created_at": 1720000000,
-      "expires_at": 1727776000,
-      "last_used_at": 1720086400,
-      "scopes": ["api:agents:read", "api:workflows:exec"]
-    }
-  ]
+ "tokens": [
+ {
+ "token_id": "token_001",
+ "name": "DataPipeline Service",
+ "type": "api_token",
+ "created_at": 1720000000,
+ "expires_at": 1727776000,
+ "last_used_at": 1720086400,
+ "scopes": ["api:agents:read", "api:workflows:exec"]
+ }
+ ]
 }
 ```
 
@@ -638,55 +638,55 @@ import requests
 from datetime import datetime
 
 class CodexClient:
-    def __init__(self, base_url: str, username: str, password: str):
-        self.base_url = base_url
-        self.username = username
-        self.password = password
-        self.access_token = None
-        self.refresh_token = None
-        self.token_expires_at = None
-    
-    def login(self):
-        """Authenticate and obtain tokens."""
-        response = requests.post(
-            f"{self.base_url}/api/v1/auth/token",
-            json={"username": self.username, "password": self.password}
-        )
-        response.raise_for_status()
-        
-        data = response.json()
-        self.access_token = data["access_token"]
-        self.refresh_token = data["refresh_token"]
-        self.token_expires_at = datetime.now().timestamp() + data["expires_in"]
-    
-    def _refresh_if_needed(self):
-        """Refresh access token if expiring soon."""
-        if datetime.now().timestamp() >= self.token_expires_at - 60:
-            response = requests.post(
-                f"{self.base_url}/api/v1/auth/token/refresh",
-                json={"refresh_token": self.refresh_token}
-            )
-            response.raise_for_status()
-            
-            data = response.json()
-            self.access_token = data["access_token"]
-            self.token_expires_at = datetime.now().timestamp() + data["expires_in"]
-    
-    def get_agents(self) -> list:
-        """Fetch agents (refreshes token automatically)."""
-        self._refresh_if_needed()
-        
-        response = requests.get(
-            f"{self.base_url}/api/v1/agents",
-            headers={"Authorization": f"******"}
-        )
-        response.raise_for_status()
-        return response.json()["agents"]
+ def __init__(self, base_url: str, username: str, password: str):
+ self.base_url = base_url
+ self.username = username
+ self.password = password
+ self.access_token = None
+ self.refresh_token = None
+ self.token_expires_at = None
+ 
+ def login(self):
+ """Authenticate and obtain tokens."""
+ response = requests.post(
+ f"{self.base_url}/api/v1/auth/token",
+ json={"username": self.username, "password": self.password}
+ )
+ response.raise_for_status()
+ 
+ data = response.json()
+ self.access_token = data["access_token"]
+ self.refresh_token = data["refresh_token"]
+ self.token_expires_at = datetime.now().timestamp() + data["expires_in"]
+ 
+ def _refresh_if_needed(self):
+ """Refresh access token if expiring soon."""
+ if datetime.now().timestamp() >= self.token_expires_at - 60:
+ response = requests.post(
+ f"{self.base_url}/api/v1/auth/token/refresh",
+ json={"refresh_token": self.refresh_token}
+ )
+ response.raise_for_status()
+ 
+ data = response.json()
+ self.access_token = data["access_token"]
+ self.token_expires_at = datetime.now().timestamp() + data["expires_in"]
+ 
+ def get_agents(self) -> list:
+ """Fetch agents (refreshes token automatically)."""
+ self._refresh_if_needed()
+ 
+ response = requests.get(
+ f"{self.base_url}/api/v1/agents",
+ headers={"Authorization": f"******"}
+ )
+ response.raise_for_status()
+ return response.json()["agents"]
 
 # Usage
 client = CodexClient("https://api.codex.local", "alice", "password")
 client.login()
-agents = client.get_agents()  # Token auto-refreshes if needed
+agents = client.get_agents() # Token auto-refreshes if needed
 ```
 
 ### Example 2: Service Account with API Token
@@ -696,28 +696,28 @@ import os
 import requests
 
 class CodexService:
-    def __init__(self, service_name: str, api_token: str = None):
-        self.base_url = os.getenv("CODEX_API_URL", "https://api.codex.local")
-        self.api_token = api_token or os.getenv("CODEX_API_TOKEN")
-        self.service_name = service_name
-    
-    def execute_agent(self, agent_id: str) -> dict:
-        """Execute an agent."""
-        response = requests.post(
-            f"{self.base_url}/api/v1/agents/{agent_id}/execute",
-            headers={"Authorization": f"******"}
-        )
-        response.raise_for_status()
-        return response.json()
-    
-    def trigger_workflow(self, workflow_id: str) -> dict:
-        """Trigger a workflow."""
-        response = requests.post(
-            f"{self.base_url}/api/v1/workflows/{workflow_id}/execute",
-            headers={"Authorization": f"******"}
-        )
-        response.raise_for_status()
-        return response.json()
+ def __init__(self, service_name: str, api_token: str = None):
+ self.base_url = os.getenv("CODEX_API_URL", "https://api.codex.local")
+ self.api_token = api_token or os.getenv("CODEX_API_TOKEN")
+ self.service_name = service_name
+ 
+ def execute_agent(self, agent_id: str) -> dict:
+ """Execute an agent."""
+ response = requests.post(
+ f"{self.base_url}/api/v1/agents/{agent_id}/execute",
+ headers={"Authorization": f"******"}
+ )
+ response.raise_for_status()
+ return response.json()
+ 
+ def trigger_workflow(self, workflow_id: str) -> dict:
+ """Trigger a workflow."""
+ response = requests.post(
+ f"{self.base_url}/api/v1/workflows/{workflow_id}/execute",
+ headers={"Authorization": f"******"}
+ )
+ response.raise_for_status()
+ return response.json()
 
 # Usage
 service = CodexService("DataPipeline")
@@ -732,64 +732,64 @@ from functools import wraps
 import jwt
 
 def require_scope(*required_scopes):
-    """Decorator to check token has required scope."""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(request, *args, **kwargs):
-            # Extract token from header
-            auth_header = request.headers.get("Authorization", "")
-            if not auth_header.startswith("Bearer "):
-                return {"error": "Missing token"}, 401
-            
-            token = auth_header[7:]  # Remove "Bearer " prefix
-            
-            try:
-                # Decode and validate token
-                payload = jwt.decode(token, PUBLIC_KEY, algorithms=["RS256"])
-                token_scopes = payload.get("scopes", [])
-                
-                # Check if token has required scopes
-                has_scope = False
-                for required_scope in required_scopes:
-                    if required_scope in token_scopes:
-                        has_scope = True
-                        break
-                    
-                    # Check for wildcard scopes
-                    parts = required_scope.split(":")
-                    for i in range(len(parts)):
-                        wildcard = ":".join(parts[:i+1]) + ":*"
-                        if wildcard in token_scopes:
-                            has_scope = True
-                            break
-                
-                if not has_scope:
-                    return {"error": f"Insufficient scope"}, 403
-                
-                # Attach user info to request
-                request.user_id = payload["user_id"]
-                request.roles = payload["roles"]
-                
-                return func(request, *args, **kwargs)
-            
-            except jwt.ExpiredSignatureError:
-                return {"error": "Token expired"}, 401
-            except jwt.InvalidSignatureError:
-                return {"error": "Invalid token"}, 401
-        
-        return wrapper
-    return decorator
+ """Decorator to check token has required scope."""
+ def decorator(func):
+ @wraps(func)
+ def wrapper(request, *args, **kwargs):
+ # Extract token from header
+ auth_header = request.headers.get("Authorization", "")
+ if not auth_header.startswith("Bearer "):
+ return {"error": "Missing token"}, 401
+ 
+ token = auth_header[7:] # Remove "Bearer " prefix
+ 
+ try:
+ # Decode and validate token
+ payload = jwt.decode(token, PUBLIC_KEY, algorithms=["RS256"])
+ token_scopes = payload.get("scopes", [])
+ 
+ # Check if token has required scopes
+ has_scope = False
+ for required_scope in required_scopes:
+ if required_scope in token_scopes:
+ has_scope = True
+ break
+ 
+ # Check for wildcard scopes
+ parts = required_scope.split(":")
+ for i in range(len(parts)):
+ wildcard = ":".join(parts[:i+1]) + ":*"
+ if wildcard in token_scopes:
+ has_scope = True
+ break
+ 
+ if not has_scope:
+ return {"error": f"Insufficient scope"}, 403
+ 
+ # Attach user info to request
+ request.user_id = payload["user_id"]
+ request.roles = payload["roles"]
+ 
+ return func(request, *args, **kwargs)
+ 
+ except jwt.ExpiredSignatureError:
+ return {"error": "Token expired"}, 401
+ except jwt.InvalidSignatureError:
+ return {"error": "Invalid token"}, 401
+ 
+ return wrapper
+ return decorator
 
 # Usage
 @require_scope("api:agents:read")
 def get_agents(request):
-    """Get agents (requires api:agents:read scope)."""
-    return {"agents": [...]}, 200
+ """Get agents (requires api:agents:read scope)."""
+ return {"agents": [...]}, 200
 
 @require_scope("api:agents:write", "admin:*")
 def create_agent(request):
-    """Create agent (requires write scope or admin)."""
-    return {"agent_id": "new_agent"}, 201
+ """Create agent (requires write scope or admin)."""
+ return {"agent_id": "new_agent"}, 201
 ```
 
 ---
@@ -814,45 +814,45 @@ def create_agent(request):
 
 **Always use HTTPS:**
 ```bash
-#  GOOD
+# GOOD
 curl -H "Authorization: ******" https://api.codex.local/...
 
-#  BAD
+# BAD
 curl -H "Authorization: ******" http://api.codex.local/...
 ```
 
 **Never in URLs:**
 ```bash
-#  BAD
+# BAD
 https://api.codex.local/api/v1/agents?token=secret_token
 
-#  GOOD
+# GOOD
 curl -H "Authorization: ******" https://api.codex.local/api/v1/agents
 ```
 
 ### 3. Token Rotation
 
-**Access Tokens:** Auto-refresh every 15 minutes  
-**Refresh Tokens:** Rotate on every refresh (old token revoked)  
+**Access Tokens:** Auto-refresh every 15 minutes
+**Refresh Tokens:** Rotate on every refresh (old token revoked)
 **API Tokens:** Rotate monthly (manual process)
 
 ```python
 # Monthly rotation for API tokens
 def rotate_api_token():
-    # Create new token with same scopes
-    new_token = api_client.create_token(
-        name="DataPipeline Service (rotated)",
-        scopes=old_token_scopes
-    )
-    
-    # Update service configuration
-    update_environment("CODEX_API_TOKEN", new_token)
-    
-    # Verify service works
-    test_service_connectivity()
-    
-    # Revoke old token
-    api_client.revoke_token(old_token)
+ # Create new token with same scopes
+ new_token = api_client.create_token(
+ name="DataPipeline Service (rotated)",
+ scopes=old_token_scopes
+ )
+ 
+ # Update service configuration
+ update_environment("CODEX_API_TOKEN", new_token)
+ 
+ # Verify service works
+ test_service_connectivity()
+ 
+ # Revoke old token
+ api_client.revoke_token(old_token)
 ```
 
 ### 4. Scope Minimization
@@ -860,13 +860,13 @@ def rotate_api_token():
 Always request minimum scopes needed:
 
 ```python
-#  GOOD: Specific scopes
+# GOOD: Specific scopes
 scopes = ["api:agents:read", "api:workflows:exec"]
 
-#  BAD: Overly broad
+# BAD: Overly broad
 scopes = ["api:*"]
 
-#  WORSE: Admin scope for non-admin task
+# WORSE: Admin scope for non-admin task
 scopes = ["admin:*"]
 ```
 
@@ -876,17 +876,17 @@ Always revoke session tokens on logout:
 
 ```python
 def logout(session_token: str):
-    """Revoke session token on logout."""
-    revoke_response = requests.post(
-        "/api/v1/auth/token/revoke",
-        json={"session_token": session_token}
-    )
-    
-    if revoke_response.status_code == 200:
-        # Clear local session
-        clear_session()
-    else:
-        logger.error("Failed to revoke session token")
+ """Revoke session token on logout."""
+ revoke_response = requests.post(
+ "/api/v1/auth/token/revoke",
+ json={"session_token": session_token}
+ )
+ 
+ if revoke_response.status_code == 200:
+ # Clear local session
+ clear_session()
+ else:
+ logger.error("Failed to revoke session token")
 ```
 
 ---
@@ -901,5 +901,5 @@ def logout(session_token: str):
 ---
 
 **Last Updated: 2026-07-08
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Status:** Production Ready

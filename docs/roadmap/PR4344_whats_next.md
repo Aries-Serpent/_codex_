@@ -1,6 +1,6 @@
 # PR #4344 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 > **Status:**  In progress — additional bot findings remediated, CI rescue checks re-validated

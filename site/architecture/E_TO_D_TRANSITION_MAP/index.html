@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/architecture/E_TO_D_TRANSITION_MAP/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
-<title>E→D Transition Architecture Map - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>ED Transition Architecture Map - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              E→D Transition Architecture Map
+              ED Transition Architecture Map
             
           </span>
 </div>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2351,7 +2351,7 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="ed-transition-architecture-map">E→D Transition Architecture Map<a class="headerlink" href="#ed-transition-architecture-map" title="Permanent link">¶</a></h1>
+<h1 id="ed-transition-architecture-map">ED Transition Architecture Map<a class="headerlink" href="#ed-transition-architecture-map" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
@@ -2403,7 +2403,7 @@ Source: <code>docs/plans/Agentic_AI_System/soft_to_GROUNDED.md</code> Domain 5</
 <tr>
 <td><strong>C3</strong></td>
 <td>Tier-3 policy count ≤ 2</td>
-<td>Phase 2–3: Promote SOFT→GROUNDED</td>
+<td>Phase 2–3: Promote SOFTGROUNDED</td>
 <td>Phases 2–3</td>
 </tr>
 <tr>
@@ -2420,50 +2420,51 @@ Source: <code>docs/plans/Agentic_AI_System/soft_to_GROUNDED.md</code> Domain 5</
 </tr>
 </tbody>
 </table>
-<p>**Current score: 5/5 ** ← All phases complete (updated 2026-06-22)</p>
+<p>**Current score: 5/5 ** All phases complete (updated 2026-06-22)</p>
 <hr/>
 <h2 id="fsm-state-diagram">FSM State Diagram<a class="headerlink" href="#fsm-state-diagram" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>stateDiagram-v2
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    [*] --&gt; ModelE : initial state
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>stateDiagram-v2
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    ModelE --&gt; ModelD_READY : All 5 conditions met\n(C1 ∧ C2 ∧ C3 ∧ C4 ∧ C5)
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    ModelD_READY --&gt; ModelE : Any condition fails
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    ModelD_READY --&gt; ModelD : CODEX_AGENT_AUTONOMY_LEVEL\n= D_CAPABLE (repo var set)
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    ModelD --&gt; D_SUSPENDED : violation_count &gt; threshold\nOR condition regression
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    D_SUSPENDED --&gt; ModelE : Auto-revert on\nemergency lockdown
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> [*] --&gt; ModelE : initial state
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> ModelE --&gt; ModelD_READY : All 5 conditions met\n(C1 ∧ C2 ∧ C3 ∧ C4 ∧ C5)
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> ModelD_READY --&gt; ModelE : Any condition fails
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> ModelD_READY --&gt; ModelD : CODEX_AGENT_AUTONOMY_LEVEL\n= D_CAPABLE (repo var set)
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> ModelD --&gt; D_SUSPENDED : violation_count &gt; threshold\nOR condition regression
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> D_SUSPENDED --&gt; ModelE : Auto-revert on\nemergency lockdown
 </code></pre></div>
 <h3 id="ascii-representation">ASCII Representation<a class="headerlink" href="#ascii-representation" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>          ┌─────────────────────────────────────────┐
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>          │         OPERATING MODEL FSM              │
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>          │                                          │
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    ┌─────▼──────┐   All 5 conditions met   ┌───────▼──────┐
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    │            │ ──────────────────────► │              │
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    │  Model E   │                         │ Model D_READY │
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    │ (current)  │ ◄────────────────────── │  (validated) │
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    │            │   Any condition fails    │              │
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    └────────────┘                         └──────┬───────┘
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>                                                  │
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>                                    CODEX_AGENT_AUTONOMY_LEVEL
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>                                    = D_CAPABLE (repo variable)
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>                                                  │
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>                                           ┌──────▼───────┐
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>                                           │   Model D    │
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>                                           │ (Orchestrator│
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>                                           │  Active)     │
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>                                           └──────┬───────┘
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>                                                  │
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>                                    violation_count &gt; threshold
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>                                    OR condition regression
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>                                                  │
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>                                           ┌──────▼───────┐
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>                                           │  D_SUSPENDED │
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>                                           │ (auto-reverts│
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>                                           │    to E)     │
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>                                           └──────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a> OPERATING MODEL FSM 
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> All 5 conditions met 
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> Model E Model D_READY 
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> (current) (validated) 
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> Any condition fails 
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> CODEX_AGENT_AUTONOMY_LEVEL
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> = D_CAPABLE (repo variable)
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> Model D 
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> (Orchestrator
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> Active) 
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> violation_count &gt; threshold
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> OR condition regression
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> D_SUSPENDED 
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> (auto-reverts
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> to E) 
 </code></pre></div>
 <hr/>
 <h2 id="per-phase-condition-satisfaction-map">Per-Phase Condition Satisfaction Map<a class="headerlink" href="#per-phase-condition-satisfaction-map" title="Permanent link">¶</a></h2>
@@ -2504,7 +2505,7 @@ Source: <code>docs/plans/Agentic_AI_System/soft_to_GROUNDED.md</code> Domain 5</
 <tr>
 <td><strong>Phase 4</strong></td>
 <td>Orchestrator activation</td>
-<td>→ <code>D_CAPABLE</code></td>
+<td><code>D_CAPABLE</code></td>
 <td><strong>Model D</strong></td>
 </tr>
 </tbody>
@@ -2515,25 +2516,25 @@ Source: <code>docs/plans/Agentic_AI_System/soft_to_GROUNDED.md</code> Domain 5</
 the 5-condition check as a GitHub Actions job:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># .github/workflows/e-to-d-transition-gate.yml (Phase 4)</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># Checks C1–C5; posts readiness score as job summary</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1"># Canary: Tier-2 (warn) for 2 sprints → Tier-1 (exit 1) after observation</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1"># Canary: Tier-2 (warn) for 2 sprints Tier-1 (exit 1) after observation</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">pull_request</span><span class="p">:</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="nt">transition-readiness</span><span class="p">:</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="nv"> </span><span class="s">E→D</span><span class="nv"> </span><span class="s">Transition</span><span class="nv"> </span><span class="s">Readiness</span><span class="nv"> </span><span class="s">Check"</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="c1"># ... 5-condition JavaScript check via actions/github-script</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="nt">transition-readiness</span><span class="p">:</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"</span><span class="nv"> </span><span class="s">ED</span><span class="nv"> </span><span class="s">Transition</span><span class="nv"> </span><span class="s">Readiness</span><span class="nv"> </span><span class="s">Check"</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="c1"># ... 5-condition JavaScript check via actions/github-script</span>
 </code></pre></div>
 <hr/>
 <h2 id="phase-0-gap-summary">Phase 0 Gap Summary<a class="headerlink" href="#phase-0-gap-summary" title="Permanent link">¶</a></h2>
 <p>Based on the <code>AGENTIC_BASELINE_AUDIT_v2.md</code> classification:</p>
 <ul>
-<li><strong>C1 (Registry coverage)</strong>: AGENT_REGISTRY.yaml has 128/151 agents → gap of 23</li>
-<li><strong>C2 (Manifest freshness)</strong>: <code>CODEX_MANIFEST.json</code> does not exist yet → blocked on Phase 1</li>
-<li><strong>C3 (Tier-3 ≤ 2)</strong>: 21 SOFT-tier agents + 52 SOFT-tier workflows → far above threshold</li>
-<li><strong>C4 (Handoff gate)</strong>: <code>agent-handoff-gate.yml</code> does not exist → blocked on Phase 2</li>
-<li><strong>C5 (≥ 8 Tier-1 gates)</strong>: Current GROUNDED agent count = 5 → below threshold</li>
+<li><strong>C1 (Registry coverage)</strong>: AGENT_REGISTRY.yaml has 128/151 agents gap of 23</li>
+<li><strong>C2 (Manifest freshness)</strong>: <code>CODEX_MANIFEST.json</code> does not exist yet blocked on Phase 1</li>
+<li><strong>C3 (Tier-3 ≤ 2)</strong>: 21 SOFT-tier agents + 52 SOFT-tier workflows far above threshold</li>
+<li><strong>C4 (Handoff gate)</strong>: <code>agent-handoff-gate.yml</code> does not exist blocked on Phase 2</li>
+<li><strong>C5 (≥ 8 Tier-1 gates)</strong>: Current GROUNDED agent count = 5 below threshold</li>
 </ul>
 <p><strong>Action</strong>: Proceed through Phases 1–3 to satisfy all 5 conditions before Phase 4 activation.</p>
 <hr/>
@@ -2568,6 +2569,6 @@ the 5-condition check as a GitHub Actions job:</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

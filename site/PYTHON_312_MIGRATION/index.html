@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PYTHON_312_MIGRATION/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Python 3.12 Migration Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2419,11 +2419,11 @@
 <a class="md-nav__link" href="#breaking-changes">
 <span class="md-ellipsis">
       
-        ️ Breaking Changes
+        Breaking Changes
       
     </span>
 </a>
-<nav aria-label="️ Breaking Changes" class="md-nav">
+<nav aria-label="Breaking Changes" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#verified-compatible">
@@ -2481,11 +2481,11 @@
 <a class="md-nav__link" href="#testing-validation">
 <span class="md-ellipsis">
       
-        🧪 Testing &amp; Validation
+        Testing &amp; Validation
       
     </span>
 </a>
-<nav aria-label="🧪 Testing &amp; Validation" class="md-nav">
+<nav aria-label="Testing &amp; Validation" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#test-suite-overview">
@@ -2779,7 +2779,7 @@
 <a class="md-nav__link" href="#success-metrics">
 <span class="md-ellipsis">
       
-        🎉 Success Metrics
+        Success Metrics
       
     </span>
 </a>
@@ -2828,7 +2828,7 @@
 <a class="md-nav__link" href="#support">
 <span class="md-ellipsis">
       
-        📞 Support
+        Support
       
     </span>
 </a>
@@ -2941,9 +2941,9 @@
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv_312
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># Activate environment</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nb">source</span><span class="w"> </span>venv_312/bin/activate<span class="w">  </span><span class="c1"># Linux/macOS</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nb">source</span><span class="w"> </span>venv_312/bin/activate<span class="w"> </span><span class="c1"># Linux/macOS</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="c1"># OR</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>venv_312<span class="se">\S</span>cripts<span class="se">\a</span>ctivate<span class="w">     </span><span class="c1"># Windows</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>venv_312<span class="se">\S</span>cripts<span class="se">\a</span>ctivate<span class="w"> </span><span class="c1"># Windows</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="c1"># Verify Python version</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>python<span class="w"> </span>--version
@@ -2957,9 +2957,9 @@
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>pip<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"(torch|transformers|pytest)"</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="c1"># Expected output should include:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="c1"># torch         &gt;=2.6.0</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="c1"># transformers  &gt;=4.48.0</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># pytest        &gt;=7.4</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="c1"># torch &gt;=2.6.0</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="c1"># transformers &gt;=4.48.0</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># pytest &gt;=7.4</span>
 </code></pre></div>
 <h2 id="step-3-run-compatibility-tests">Step 3: Run Compatibility Tests<a class="headerlink" href="#step-3-run-compatibility-tests" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Run Python 3.12-specific tests</span>
@@ -2994,8 +2994,8 @@
 </code></pre></div>
 <p>The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.</p>
 <hr/>
-<h2 id="breaking-changes">️ Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">¶</a></h2>
-<p><strong>GOOD NEWS: Zero Breaking Changes Required!</strong> 🎉</p>
+<h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">¶</a></h2>
+<p><strong>GOOD NEWS: Zero Breaking Changes Required!</strong></p>
 <p>The <em>codex</em> codebase is already compatible with Python 3.12. The following have been verified:</p>
 <h3 id="verified-compatible">Verified Compatible<a class="headerlink" href="#verified-compatible" title="Permanent link">¶</a></h3>
 <table>
@@ -3102,7 +3102,7 @@
 </code></pre></div>
 <p><strong>Estimated Overall Performance Gain:</strong> 5-8% for typical workloads</p>
 <hr/>
-<h2 id="testing-validation">🧪 Testing &amp; Validation<a class="headerlink" href="#testing-validation" title="Permanent link">¶</a></h2>
+<h2 id="testing-validation">Testing &amp; Validation<a class="headerlink" href="#testing-validation" title="Permanent link">¶</a></h2>
 <h3 id="test-suite-overview">Test Suite Overview<a class="headerlink" href="#test-suite-overview" title="Permanent link">¶</a></h3>
 <p>The migration includes a comprehensive test suite:</p>
 <table>
@@ -3180,9 +3180,9 @@
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>--cov<span class="o">=</span>src<span class="w"> </span>--cov-report<span class="o">=</span>term-missing<span class="w"> </span>--cov-report<span class="o">=</span>html
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># View HTML report</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>open<span class="w"> </span>htmlcov/index.html<span class="w">  </span><span class="c1"># macOS</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>xdg-open<span class="w"> </span>htmlcov/index.html<span class="w">  </span><span class="c1"># Linux</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>start<span class="w"> </span>htmlcov/index.html<span class="w">  </span><span class="c1"># Windows</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>open<span class="w"> </span>htmlcov/index.html<span class="w"> </span><span class="c1"># macOS</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>xdg-open<span class="w"> </span>htmlcov/index.html<span class="w"> </span><span class="c1"># Linux</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>start<span class="w"> </span>htmlcov/index.html<span class="w"> </span><span class="c1"># Windows</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="c1"># Check coverage threshold</span>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>coverage<span class="w"> </span>report<span class="w"> </span>--fail-under<span class="o">=</span><span class="m">70</span>
@@ -3191,9 +3191,9 @@
 <p>The GitHub Actions workflow already tests Python 3.12:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># .github/workflows/test-comprehensive.yml</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nt">strategy</span><span class="p">:</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">  </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">  </span><span class="nt">matrix</span><span class="p">:</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'3.11'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'3.12'</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w"> </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w"> </span><span class="nt">matrix</span><span class="p">:</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w"> </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'3.11'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'3.12'</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p><strong>No changes needed</strong> - CI is already configured correctly.</p>
 <hr/>
@@ -3204,7 +3204,7 @@
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>deactivate
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># 2. Reactivate Python 3.12 environment</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># Your original Python 3.12 venv</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w"> </span><span class="c1"># Your original Python 3.12 venv</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># 3. Verify Python version</span>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>python<span class="w"> </span>--version
@@ -3236,7 +3236,7 @@
 <p>If rollback is needed, please report the issue:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Create GitHub issue with details</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>gh<span class="w"> </span>issue<span class="w"> </span>create<span class="w"> </span>--title<span class="w"> </span><span class="s2">"Python 3.12 Migration Issue: [brief description]"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"### Issue Description</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"### Issue Description</span>
 <a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="s2">[Describe the problem]</span>
 <a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="s2">## Steps to Reproduce</span>
@@ -3341,7 +3341,7 @@
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="c1"># Should be 3.11 or higher</span>
 <a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="c1"># If not, upgrade Python or use fallback:</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>pip<span class="w"> </span>install<span class="w"> </span>tomli<span class="w">  </span><span class="c1"># Fallback for Python &lt; 3.11</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>pip<span class="w"> </span>install<span class="w"> </span>tomli<span class="w"> </span><span class="c1"># Fallback for Python &lt; 3.11</span>
 </code></pre></div></p>
 <h2 id="issue-2-deprecation-warnings">Issue 2: Deprecation Warnings<a class="headerlink" href="#issue-2-deprecation-warnings" title="Permanent link">¶</a></h2>
 <p><strong>Symptom:</strong>
@@ -3353,9 +3353,9 @@
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="c1"># NEW:</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>  <span class="c1"># Inside async context</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span> <span class="c1"># Inside async context</span>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="c1"># OR</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_function</span><span class="p">())</span>  <span class="c1"># From sync context</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_function</span><span class="p">())</span> <span class="c1"># From sync context</span>
 </code></pre></div></p>
 <h2 id="issue-3-type-hint-errors">Issue 3: Type Hint Errors<a class="headerlink" href="#issue-3-type-hint-errors" title="Permanent link">¶</a></h2>
 <p><strong>Symptom:</strong>
@@ -3367,7 +3367,7 @@
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># This enables string-based type hints</span>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="k">pass</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <h2 id="issue-4-test-failures">Issue 4: Test Failures<a class="headerlink" href="#issue-4-test-failures" title="Permanent link">¶</a></h2>
 <p><strong>Symptom:</strong>
@@ -3418,8 +3418,8 @@ Target: <strong>100%</strong> (future iteration)</p>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a>
 <a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>@given<span class="o">(</span>st.lists<span class="o">(</span>st.integers<span class="o">()))</span>
 <a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>def<span class="w"> </span>test_sort_property<span class="o">(</span>lst<span class="o">)</span>:
-<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a><span class="w">    </span><span class="nv">sorted_lst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sorted<span class="o">(</span>lst<span class="o">)</span>
-<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a><span class="w">    </span>assert<span class="w"> </span>all<span class="o">(</span>sorted_lst<span class="o">[</span>i<span class="o">]</span><span class="w"> </span>&lt;<span class="o">=</span><span class="w"> </span>sorted_lst<span class="o">[</span>i+1<span class="o">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>range<span class="o">(</span>len<span class="o">(</span>sorted_lst<span class="o">)</span>-1<span class="o">))</span>
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a><span class="w"> </span><span class="nv">sorted_lst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sorted<span class="o">(</span>lst<span class="o">)</span>
+<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a><span class="w"> </span>assert<span class="w"> </span>all<span class="o">(</span>sorted_lst<span class="o">[</span>i<span class="o">]</span><span class="w"> </span>&lt;<span class="o">=</span><span class="w"> </span>sorted_lst<span class="o">[</span>i+1<span class="o">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>range<span class="o">(</span>len<span class="o">(</span>sorted_lst<span class="o">)</span>-1<span class="o">))</span>
 </code></pre></div>
 <h2 id="phase-7-mutation-testing-future">Phase 7: Mutation Testing (Future)<a class="headerlink" href="#phase-7-mutation-testing-future" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># Install mutmut for mutation testing</span>
@@ -3433,7 +3433,7 @@ Target: <strong>100%</strong> (future iteration)</p>
 </code></pre></div>
 <h2 id="phase-8-fuzz-testing-future">Phase 8: Fuzz Testing (Future)<a class="headerlink" href="#phase-8-fuzz-testing-future" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1"># Add fuzzing for parser/config code</span>
-<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>pip<span class="w"> </span>install<span class="w"> </span>atheris<span class="w">  </span><span class="c1"># For Python fuzzing</span>
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>pip<span class="w"> </span>install<span class="w"> </span>atheris<span class="w"> </span><span class="c1"># For Python fuzzing</span>
 <a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>
 <a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="c1"># Example fuzz test for TOML parsing</span>
 </code></pre></div>
@@ -3483,7 +3483,7 @@ Target: <strong>100%</strong> (future iteration)</p>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Plan 100% coverage</strong> (future phases)</li>
 </ul>
 <hr/>
-<h2 id="success-metrics">🎉 Success Metrics<a class="headerlink" href="#success-metrics" title="Permanent link">¶</a></h2>
+<h2 id="success-metrics">Success Metrics<a class="headerlink" href="#success-metrics" title="Permanent link">¶</a></h2>
 <p>After completing migration, verify these metrics:</p>
 <table>
 <thead>
@@ -3548,7 +3548,7 @@ Target: <strong>100%</strong> (future iteration)</p>
 <li><strong>mutmut</strong>: Mutation testing (future)</li>
 </ul>
 <hr/>
-<h2 id="support">📞 Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <p>For questions or issues:</p>
 <ol>
 <li><strong>Documentation</strong>: Start with this guide and the migration audit</li>
@@ -3556,7 +3556,7 @@ Target: <strong>100%</strong> (future iteration)</p>
 <li><strong>Maintainers</strong>: Contact @mbaetiong for urgent issues</li>
 </ol>
 <hr/>
-<p><strong>Document Status:</strong>  Production Ready
+<p><strong>Document Status:</strong> Production Ready
 <strong>Last Updated: 2026-07-11
 </strong>Next Review:** After Phase 6 (100% coverage) completion</p>
 </article>
@@ -3588,6 +3588,6 @@ Target: <strong>100%</strong> (future iteration)</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 # Coverage Physics Toolkit - User Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 **Version**: 1.0.0
@@ -123,9 +123,9 @@ python tools/coverage_physics_toolkit.py --mode generate \
 **Location**: `docs/plans/Physics_Equations_Time_Constraints_Plan_Prompts.md`
 
 **Key Equations**:
-- **Eq #1**: iħ ∂ψ/∂t = Ĥ ψ (Schrödinger) → Initialization + short-evolution tests
-- **Eq #49**: J = Coverage/Runtime → High-yield test selection
-- **Eq #56**: Invariants checklist → Minimal validation approach
+- **Eq #1**: iħ ∂ψ/∂t = Ĥ ψ (Schrödinger) Initialization + short-evolution tests
+- **Eq #49**: J = Coverage/Runtime High-yield test selection
+- **Eq #56**: Invariants checklist Minimal validation approach
 
 **Use When**: Starting coverage campaign, need quick wins
 
@@ -136,8 +136,8 @@ python tools/coverage_physics_toolkit.py --mode generate \
 **Location**: `docs/plans/Physics_Equations_Monitor_Behavior_Plan_Prompts.md`
 
 **Key Equations**:
-- **Eq #1**: Import guards with try/except → All modules protected
-- **Eq #6**: Standardized exception blocks → Consistent error handling
+- **Eq #1**: Import guards with try/except All modules protected
+- **Eq #6**: Standardized exception blocks Consistent error handling
 
 **Use When**: Improving import robustness, production monitoring
 
@@ -148,9 +148,9 @@ python tools/coverage_physics_toolkit.py --mode generate \
 **Location**: `docs/plans/Physics_Equations_Multi_Orchestrator_Patterns.md` (to be created)
 
 **Key Equations**:
-- **Eq #4**: Sentinel agents → Cross-module conservation audits
-- **Eq #15**: Coherence-arbiter → Test consistency enforcement
-- **Eq #49**: Coverage-agents → Optimal cross-orchestrator test selection
+- **Eq #4**: Sentinel agents Cross-module conservation audits
+- **Eq #15**: Coherence-arbiter Test consistency enforcement
+- **Eq #49**: Coverage-agents Optimal cross-orchestrator test selection
 
 **Use When**: Phase 2/3, integration testing, multi-module workflows
 
@@ -253,7 +253,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
 
 ## Workflow Examples
 
-### Workflow 1: Completing Phase 1 (27.57% → 30%)
+### Workflow 1: Completing Phase 1 (27.57% 30%)
 
 **Goal**: Add 2.43% coverage in 15-20 minutes
 
@@ -262,104 +262,104 @@ python tools/coverage_physics_toolkit.py --mode generate \
 1. **Validate toolkit**:
    ```bash
    python tools/coverage_physics_toolkit.py --mode validate
-   ```
+ ```
 
 2. **Calculate velocity**:
    ```bash
    python tools/coverage_physics_toolkit.py --mode velocity
-   ```
+ ```
 
 3. **Identify target modules** (from coverage.json):
-   - physics_orchestrator.py (24.05%, 1264 stmts)
-   - quantum_game_theory.py (24.18%, 375 stmts)
+ - physics_orchestrator.py (24.05%, 1264 stmts)
+ - quantum_game_theory.py (24.18%, 375 stmts)
 
 4. **Analyze modules**:
    ```bash
    python tools/coverage_physics_toolkit.py --mode analyze \
        --module agents.physics_orchestrator
-   ```
+ ```
 
 5. **Apply recommended strategies** (manual):
-   - Eq #1: Add 3-5 initialization tests
-   - Eq #2: Add 2-3 enum validation tests
-   - Eq #3: Add 2-3 property tests
+ - Eq #1: Add 3-5 initialization tests
+ - Eq #2: Add 2-3 enum validation tests
+ - Eq #3: Add 2-3 property tests
 
 6. **Run coverage**:
    ```bash
    python -m pytest tests/agents/ --cov=agents --cov-report=json -q
-   ```
+ ```
 
 7. **Verify 30%+ achieved**
 
 **Expected Time**: 15-20 minutes
-**Expected Gain**: +2.43% (27.57% → 30%)
+**Expected Gain**: +2.43% (27.57% 30%)
 
-### Workflow 2: Phase 2 (30% → 50%)
+### Workflow 2: Phase 2 (30% 50%)
 
 **Goal**: Add 20% coverage in 8-10 hours
 
 **Steps**:
 
 1. **Focus on large modules**:
-   - physics_orchestrator.py (1264 stmts)
-   - quantum_game_theory.py (375 stmts)
-   - mental_mapping.py (347 stmts)
+ - physics_orchestrator.py (1264 stmts)
+ - quantum_game_theory.py (375 stmts)
+ - mental_mapping.py (347 stmts)
 
 2. **Apply Table 4 strategies extensively**:
-   - Eq #1: Initialization tests for all classes
-   - Eq #2: All enum validations
-   - Eq #3: All property/getter coverage
-   - Eq #6: Operator wiring tests
-   - Eq #7-#20: Deep module patterns
+ - Eq #1: Initialization tests for all classes
+ - Eq #2: All enum validations
+ - Eq #3: All property/getter coverage
+ - Eq #6: Operator wiring tests
+ - Eq #7-#20: Deep module patterns
 
 3. **Generate base tests**:
    ```bash
    python tools/coverage_physics_toolkit.py --mode generate \
        --module agents.physics_orchestrator \
        --output tests/agents/test_physics_phase2.py
-   ```
+ ```
 
 4. **Enhance generated tests** (manual):
-   - Add advanced patterns (DiffusionFlowModel, EnergyLandscape)
-   - Add game engine tests
-   - Add graph operation tests
+ - Add advanced patterns (DiffusionFlowModel, EnergyLandscape)
+ - Add game engine tests
+ - Add graph operation tests
 
 5. **Iterative testing**:
-   - Test after every 5-10 test cases
-   - Track coverage gains
-   - Adjust strategy based on velocity
+ - Test after every 5-10 test cases
+ - Track coverage gains
+ - Adjust strategy based on velocity
 
 **Expected Time**: 8-10 hours
-**Expected Gain**: +20% (30% → 50%)
+**Expected Gain**: +20% (30% 50%)
 
-### Workflow 3: Phase 3 (50% → 70%)
+### Workflow 3: Phase 3 (50% 70%)
 
 **Goal**: Add 20% coverage in 10-12 hours
 
 **Steps**:
 
 1. **Apply Table 3 (Multi-Orchestrator patterns)**:
-   - Eq #4: Cross-module integration tests
-   - Eq #15: Coherence enforcement tests
-   - Eq #49: Optimal test selection
+ - Eq #4: Cross-module integration tests
+ - Eq #15: Coherence enforcement tests
+ - Eq #49: Optimal test selection
 
 2. **Focus on integration**:
-   - physics_orchestrator ↔ quantum_game_theory
-   - physics_orchestrator ↔ mental_mapping
-   - codex_client ↔ all orchestrators
+ - physics_orchestrator quantum_game_theory
+ - physics_orchestrator mental_mapping
+ - codex_client all orchestrators
 
 3. **Error path testing**:
-   - Invalid inputs
-   - Edge cases
-   - Boundary conditions
+ - Invalid inputs
+ - Edge cases
+ - Boundary conditions
 
 4. **Continuous validation**:
    ```bash
    python tools/coverage_physics_toolkit.py --mode velocity
-   ```
+ ```
 
 **Expected Time**: 10-12 hours
-**Expected Gain**: +20% (50% → 70%)
+**Expected Gain**: +20% (50% 70%)
 
 ---
 
@@ -381,10 +381,10 @@ python tools/coverage_physics_toolkit.py --mode velocity
 
 ### 3. Apply Strategies in Order
 
-**For 0% → 30%**: Table 1 + Table 4 (Eq #1, #2, #3, #49, #56)
-**For 30% → 50%**: Table 4 extensively (Eq #1-#20)
-**For 50% → 70%**: Table 3 + Table 4 (Eq #21-#40)
-**For 70% → 95%**: All tables (Eq #41-#53 + integration)
+**For 0% 30%**: Table 1 + Table 4 (Eq #1, #2, #3, #49, #56)
+**For 30% 50%**: Table 4 extensively (Eq #1-#20)
+**For 50% 70%**: Table 3 + Table 4 (Eq #21-#40)
+**For 70% 95%**: All tables (Eq #41-#53 + integration)
 
 ### 4. Measure After Each Session
 
@@ -417,7 +417,7 @@ Compare to toolkit predictions (20.65% per hour theoretical)
 
 ### Issue: "Validation Failed"
 
-**Symptom**: One or more tables show  FAIL
+**Symptom**: One or more tables show FAIL
 
 **Solution**:
 1. Check toolkit file: `tools/coverage_physics_toolkit.py`
@@ -471,11 +471,11 @@ Compare to toolkit predictions (20.65% per hour theoretical)
 
 | Phase | Target | Estimated Time | Strategies Used |
 |-------|--------|----------------|-----------------|
-| Phase 1 | 22% → 30% | 2-4 Commits | Table 1, 4 (Eq #1, #2, #3, #49) |
-| Phase 2 | 30% → 50% | 8-10 Commits | Table 4 extensively (Eq #1-#20) |
-| Phase 3 | 50% → 70% | 10-12 Commits | Table 3, 4 (Eq #21-#40) |
-| Phase 4 | 70% → 80% | 1 phase | All tables (error paths) |
-| Phase 5 | 80% → 95% | 3 phases | All tables (edge cases, security) |
+| Phase 1 | 22% 30% | 2-4 Commits | Table 1, 4 (Eq #1, #2, #3, #49) |
+| Phase 2 | 30% 50% | 8-10 Commits | Table 4 extensively (Eq #1-#20) |
+| Phase 3 | 50% 70% | 10-12 Commits | Table 3, 4 (Eq #21-#40) |
+| Phase 4 | 70% 80% | 1 phase | All tables (error paths) |
+| Phase 5 | 80% 95% | 3 phases | All tables (edge cases, security) |
 
 ---
 

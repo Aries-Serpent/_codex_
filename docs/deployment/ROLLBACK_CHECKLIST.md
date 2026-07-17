@@ -1,12 +1,12 @@
 # Rollback Checklist - Release Deployment
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status Indicator**:  **EMERGENCY** |  **WARNING** |  **NORMAL**
+**Status Indicator**: **EMERGENCY** | **WARNING** | **NORMAL**
 
-**Current Time**: [To be filled during rollback]  
-**Release Version**: [e.g., v0.2.1]  
-**Target Rollback Version**: [e.g., v0.2.1]
+**Current Time**: [To be filled during rollback]
+**Release Version**: [e.g., v0.2.0]
+**Target Rollback Version**: [e.g., v0.2.0]
 
 ---
 
@@ -27,77 +27,77 @@
 
 ```
 START
-  │
-  ├─ Is core profile unable to import?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  ├─ Do smoke tests show > 2 profile failures?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  ├─ Was a critical CVE discovered?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  ├─ Are PyPI downloads failing for > 50% of users?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  └─ Is performance degraded > 50% vs previous release?
-     └─ YES → DISCUSS WITH TEAM → Decide
-     └─ NO → CONTINUE WITH RELEASE
+ 
+ Is core profile unable to import?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Do smoke tests show > 2 profile failures?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Was a critical CVE discovered?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Are PyPI downloads failing for > 50% of users?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Is performance degraded > 50% vs previous release?
+ YES DISCUSS WITH TEAM Decide
+ NO CONTINUE WITH RELEASE
 ```
 
 ### Timeline for Rollback Decision
 
 | Issue Severity | Decision Timeline | Escalation |
 |---|---|---|
-|  **Critical** (imports fail, crashes) | < 15 min | Immediate |
-|  **High** (smoke tests fail, CVE) | < 1 hour | VP Engineering |
-|  **Medium** (performance issue, partial failure) | < 4 hours | Engineering Lead |
-|  **Low** (minor bugs, non-blocking issues) | 24+ hours | Team discussion |
+| **Critical** (imports fail, crashes) | < 15 min | Immediate |
+| **High** (smoke tests fail, CVE) | < 1 hour | VP Engineering |
+| **Medium** (performance issue, partial failure) | < 4 hours | Engineering Lead |
+| **Low** (minor bugs, non-blocking issues) | 24+ hours | Team discussion |
 
 ---
 
 ## Pre-Rollback Verification
 
-**Timeline**: < 5 minutes  
+**Timeline**: < 5 minutes
 **Owner**: Release manager (with engineering lead approval for non-critical issues)
 
-###  Verify Issue Severity
+### Verify Issue Severity
 
 **Checklist**:
 
 - [ ] **Reproduction confirmed**: Issue reproducible in 2+ environments
-  - Test environment 1: `[system/Python/profile]`
-  - Test environment 2: `[system/Python/profile]`
-  - Edge case: `[description]`
+ - Test environment 1: `[system/Python/profile]`
+ - Test environment 2: `[system/Python/profile]`
+ - Edge case: `[description]`
 
 - [ ] **Scope understood**: Number of affected users
-  - % of users affected: `___`
-  - Impact type: Core / Runtime / Full / All profiles
-  - Critical customer impact: Yes / No
+ - % of users affected: `___`
+ - Impact type: Core / Runtime / Full / All profiles
+ - Critical customer impact: Yes / No
 
 - [ ] **Root cause identified** (if time permits)
-  - Root cause: `[description]`
-  - Quick fix possible: Yes / No
-  - Would fix take > 1 hour: Yes / No
+ - Root cause: `[description]`
+ - Quick fix possible: Yes / No
+ - Would fix take > 1 hour: Yes / No
 
 - [ ] **Alternative mitigation explored**
-  - Workaround available: Yes / No (if yes, describe: `___`)
-  - Can wait for v0.2.1 patch: Yes / No
-  - Requires immediate action: Yes / No
+ - Workaround available: Yes / No (if yes, describe: `___`)
+ - Can wait for v0.2.0 patch: Yes / No
+ - Requires immediate action: Yes / No
 
-###  Decision Documentation
+### Decision Documentation
 
-**Rollback Decision**: 
+**Rollback Decision**:
 - [ ] Yes, proceed with rollback
 - [ ] No, proceed with fix (patch release)
 - [ ] Hold, under investigation
 
-**Decision Made By**: `[Name]`  
-**Approval From**: `[Name]` (if non-critical)  
+**Decision Made By**: `[Name]`
+**Approval From**: `[Name]` (if non-critical)
 **Timestamp**: `[ISO8601]`
 
 **Rationale**:
@@ -120,16 +120,16 @@ START
 # This stops the release workflow from triggering on new tags
 
 # If using GitHub Actions:
-# 1. Go to Settings → Environments
+# 1. Go to Settings Environments
 # 2. Disable "pypi" environment
 # 3. Approve PRs will require manual intervention
 
 # Or via CLI:
 gh repo edit \
-  --enable-branch-protection \
-  --require-pr-reviews \
-  --dismiss-stale-reviews \
-  main
+ --enable-branch-protection \
+ --require-pr-reviews \
+ --dismiss-stale-reviews \
+ main
 
 echo " Deployments stopped"
 ```
@@ -139,14 +139,14 @@ echo " Deployments stopped"
 ```bash
 # Check current PyPI status
 curl -s https://pypi.org/pypi/codex-ml/json | \
-  jq '.releases | keys[-1] as $latest | {latest: $latest}'
+ jq '.releases | keys[-1] as $latest | {latest: $latest}'
 
 # Expected output:
 # { "latest": "0.1.0" }
 
 # Check for yanked status (if it exists)
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | \
-  jq '.urls[0].yanked'
+ jq '.urls[0].yanked'
 
 # Expected output: false (not yet yanked)
 ```
@@ -168,33 +168,33 @@ PYPI_API_TOKEN = os.getenv("PYPI_API_TOKEN")
 # Note: This requires PYPI_API_TOKEN with permission to yank versions
 
 headers = {
-    "Authorization": f"******"
+ "Authorization": f"******"
 }
 
 # Use twine for yanking (more reliable)
 import subprocess
 result = subprocess.run([
-    "python", "-m", "twine",
-    "remove", f"codex-ml=={VERSION}",
-    "--skip-existing",
-    "--verbose"
+ "python", "-m", "twine",
+ "remove", f"codex-ml=={VERSION}",
+ "--skip-existing",
+ "--verbose"
 ], env={
-    **os.environ,
-    "TWINE_USERNAME": "__token__",
-    "TWINE_PASSWORD": PYPI_API_TOKEN
+ **os.environ,
+ "TWINE_USERNAME": "__token__",
+ "TWINE_PASSWORD": PYPI_API_TOKEN
 })
 
 if result.returncode == 0:
-    print(f" Version {VERSION} marked as yanked on PyPI")
+ print(f" Version {VERSION} marked as yanked on PyPI")
 else:
-    print(f"️  Note: Yanking requires PyPI token with proper permissions")
+ print(f" Note: Yanking requires PyPI token with proper permissions")
 
 EOF
 
 # Alternative: Manually yank via PyPI web interface
 # 1. Go to: https://pypi.org/project/codex-ml/
 # 2. Click on version 0.1.0
-# 3. Click "Options" → "Mark as yanked"
+# 3. Click "Options" "Mark as yanked"
 ```
 
 ### Step 4: Delete Release Tag (2 min)
@@ -203,17 +203,17 @@ EOF
 
 ```bash
 # Delete local tag (if exists)
-git tag -d v0.2.1 || true
+git tag -d v0.2.0 || true
 
 # Delete remote tag
-git push origin --delete v0.2.1
+git push origin --delete v0.2.0
 
 # Verify deletion
-git tag | grep v0.2.1
+git tag | grep v0.2.0
 
 # Expected: No output (tag deleted)
 
-echo " Release tag v0.2.1 deleted"
+echo " Release tag v0.2.0 deleted"
 ```
 
 ### Step 5: Restore Previous Version (2 min)
@@ -222,20 +222,20 @@ echo " Release tag v0.2.1 deleted"
 
 ```bash
 # Identify previous stable version
-PREVIOUS_VERSION="v0.2.1"
+PREVIOUS_VERSION="v0.2.0"
 
 # If not already tagged and released
 git tag -a ${PREVIOUS_VERSION} \
-  -m "Rollback to previous stable release"
+ -m "Rollback to previous stable release"
 
 # Push previous version tag (if new)
 git push origin ${PREVIOUS_VERSION}
 
 # Verify on PyPI
-sleep 5  # Wait for PyPI to index
+sleep 5 # Wait for PyPI to index
 pip index versions codex-ml | head -3
 
-# Expected output shows v0.2.1 as latest (not yanked)
+# Expected output shows v0.2.0 as latest (not yanked)
 
 echo " Previous version ${PREVIOUS_VERSION} restored as latest"
 ```
@@ -247,25 +247,25 @@ echo " Previous version ${PREVIOUS_VERSION} restored as latest"
 ```bash
 # Check PyPI shows correct version as latest
 curl -s https://pypi.org/pypi/codex-ml/json | \
-  jq '{latest: .info.version, yanked: .info.yanked}'
+ jq '{latest: .info.version, yanked: .info.yanked}'
 
 # Expected output:
 # {
-#   "latest": "0.0.9",
-#   "yanked": false
+# "latest": "0.0.9",
+# "yanked": false
 # }
 
 # Verify broken version is marked yanked
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | \
-  jq '{version: .info.version, yanked: .info.yanked}'
+ jq '{version: .info.version, yanked: .info.yanked}'
 
 # Expected output:
 # {
-#   "version": "0.1.0",
-#   "yanked": true
+# "version": "0.1.0",
+# "yanked": true
 # }
 
-echo " PyPI correctly shows v0.2.1 as latest, v0.2.1 as yanked"
+echo " PyPI correctly shows v0.2.0 as latest, v0.2.0 as yanked"
 ```
 
 ### Step 7: Notify Users (2 min)
@@ -275,30 +275,30 @@ echo " PyPI correctly shows v0.2.1 as latest, v0.2.1 as yanked"
 Create GitHub release documenting the rollback:
 
 ```bash
-gh release create rollback-v0.2.1 \
-  --notes "
-## ️ Release Rollback: v0.2.1
+gh release create rollback-v0.2.0 \
+ --notes "
+## Release Rollback: v0.2.0
 
-**Status**: Yanked from PyPI  
-**Timestamp**: $(date -Iseconds)  
+**Status**: Yanked from PyPI 
+**Timestamp**: $(date -Iseconds) 
 **Reason**: [COPY FROM PRE-ROLLBACK VERIFICATION]
 
 ### Action Required
-- **If you installed v0.2.1**: 
-  \`\`\`bash
-  pip install --upgrade codex-ml
-  # This will downgrade to v0.2.1
-  \`\`\`
+- **If you installed v0.2.0**: 
+ \`\`\`bash
+ pip install --upgrade codex-ml
+ # This will downgrade to v0.2.0
+ \`\`\`
 
 - **If you haven't installed yet**:
-  Skip v0.2.1 and install latest stable version.
+ Skip v0.2.0 and install latest stable version.
 
 ### Root Cause
 [To be filled after incident investigation]
 
 ### Fix Timeline
-- **Next patch release (v0.2.1)**: Expected [DATE]
-- **Next minor release (v0.2.1)**: Expected [DATE]
+- **Next patch release (v0.2.0)**: Expected [DATE]
+- **Next minor release (v0.2.0)**: Expected [DATE]
 
 ### Impact
 - **Users affected**: ~[N] (based on download stats)
@@ -311,8 +311,8 @@ For questions or issues:
 - [ ] Email support: support@[domain]
 - [ ] Slack: #incident-response
 " \
-  --target main \
-  --draft
+ --target main \
+ --draft
 ```
 
 ### Step 8: Re-enable Deployments (1 min)
@@ -324,8 +324,8 @@ Once rollback verified:
 ```bash
 # Re-enable deployments
 gh repo edit \
-  --disable-branch-protection \
-  main
+ --disable-branch-protection \
+ main
 
 # Resume normal operations
 echo " Deployment pipeline resumed"
@@ -335,47 +335,47 @@ echo " Deployment pipeline resumed"
 
 ## Post-Rollback Validation
 
-**Timeline**: 10-15 minutes total  
+**Timeline**: 10-15 minutes total
 **Owner**: Release manager + QA
 
-###  Verify Previous Version Works
+### Verify Previous Version Works
 
 ```bash
 # Test all three profiles from PyPI
 for PROFILE in core runtime full; do
-  python -m venv test-${PROFILE}
-  source test-${PROFILE}/bin/activate
-  pip install codex-ml[${PROFILE}]
-  
-  # Quick import test
-  python -c "from cognitive_brain.ooda import OODALoop; print(' ${PROFILE} works')"
-  
-  deactivate
-  rm -rf test-${PROFILE}
+ python -m venv test-${PROFILE}
+ source test-${PROFILE}/bin/activate
+ pip install codex-ml[${PROFILE}]
+ 
+ # Quick import test
+ python -c "from cognitive_brain.ooda import OODALoop; print(' ${PROFILE} works')"
+ 
+ deactivate
+ rm -rf test-${PROFILE}
 done
 
 echo " All profiles verified"
 ```
 
-###  Verify PyPI State
+### Verify PyPI State
 
 ```bash
-# Confirm v0.2.1 is latest
+# Confirm v0.2.0 is latest
 pip index versions codex-ml | head -1
-# Should show v0.2.1
+# Should show v0.2.0
 
-# Confirm v0.2.1 is yanked
+# Confirm v0.2.0 is yanked
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | jq .info.yanked
 # Should show true
 
 echo " PyPI state verified"
 ```
 
-###  Verify GitHub State
+### Verify GitHub State
 
 ```bash
 # Confirm tag deleted
-git tag | grep v0.2.1
+git tag | grep v0.2.0
 # Should show no output
 
 # Confirm release marked with rollback tag
@@ -385,7 +385,7 @@ gh release list | grep rollback
 echo " GitHub state verified"
 ```
 
-###  Monitor Download Recovery
+### Monitor Download Recovery
 
 ```bash
 # Check downloads resume
@@ -402,11 +402,11 @@ curl -s "https://pypistats.org/api/packages/codex-ml/recent?period=day" | jq .da
 ### Template 1: Internal Team Notification
 
 ```
-Subject:  ROLLBACK INITIATED: codex-ml v0.2.1
+Subject: ROLLBACK INITIATED: codex-ml v0.2.0
 
 Team,
 
-A critical issue was discovered in v0.2.1 and a rollback is underway.
+A critical issue was discovered in v0.2.0 and a rollback is underway.
 
 **Issue**: [Brief description]
 **Severity**: Critical / High / Medium
@@ -414,15 +414,15 @@ A critical issue was discovered in v0.2.1 and a rollback is underway.
 **Rollback Time**: ~5 minutes
 
 **Actions Taken**:
- v0.2.1 marked as yanked on PyPI
+ v0.2.0 marked as yanked on PyPI
  Release tag deleted
- v0.2.1 restored as latest
+ v0.2.0 restored as latest
  Users notified via GitHub release
 
 **Next Steps**:
 [ ] Investigate root cause (ETA: [TIME])
 [ ] Develop fix (ETA: [TIME])
-[ ] Release v0.2.1 patch (ETA: [TIME])
+[ ] Release v0.2.0 patch (ETA: [TIME])
 
 **Standby**: Incident channel for updates.
 
@@ -432,9 +432,9 @@ A critical issue was discovered in v0.2.1 and a rollback is underway.
 ### Template 2: Public Announcement (GitHub)
 
 ```
-## ️ Immediate Action: Please upgrade to stable version
+## Immediate Action: Please upgrade to stable version
 
-**Status**: v0.2.1 has been recalled from PyPI
+**Status**: v0.2.0 has been recalled from PyPI
 
 If you installed `codex-ml==0.1.0` in the last 2 hours, please run:
 
@@ -442,15 +442,15 @@ If you installed `codex-ml==0.1.0` in the last 2 hours, please run:
 pip install --upgrade codex-ml
 ```
 
-This will downgrade you to v0.2.1 (last stable release).
+This will downgrade you to v0.2.0 (last stable release).
 
 **What happened?**
 - Issue: [Specific problem that affects users]
-- Impact: [What breaks when using v0.2.1]
+- Impact: [What breaks when using v0.2.0]
 - Workaround: [Is there a workaround? If so, describe]
 
 **Fix timeline?**
-- v0.2.1 patch: Expected [DATE]
+- v0.2.0 patch: Expected [DATE]
 - Root cause analysis: Complete by [DATE]
 
 **Questions?**
@@ -462,16 +462,16 @@ We apologize for the inconvenience.
 ### Template 3: Executive Summary
 
 ```
-INCIDENT REPORT: v0.2.1 Release Rollback
+INCIDENT REPORT: v0.2.0 Release Rollback
 
 EXECUTIVE SUMMARY:
-v0.2.1 was released and subsequently rolled back due to [ISSUE].
+v0.2.0 was released and subsequently rolled back due to [ISSUE].
 
 TIMELINE:
-- 15:30: v0.2.1 released to PyPI
+- 15:30: v0.2.0 released to PyPI
 - 15:42: Issue detected in smoke tests
 - 15:47: Rollback decision made
-- 15:52: v0.2.1 yanked, v0.2.1 restored
+- 15:52: v0.2.0 yanked, v0.2.0 restored
 - 16:00: All verification complete
 
 IMPACT:
@@ -496,49 +496,49 @@ BUSINESS IMPACT:
 
 ## Incident Post-Mortem
 
-**Timeline**: 24-48 hours after rollback  
-**Owner**: Release manager + engineering lead  
+**Timeline**: 24-48 hours after rollback
+**Owner**: Release manager + engineering lead
 **Participants**: Everyone involved in release
 
-###  Post-Mortem Meeting
+### Post-Mortem Meeting
 
 1. **Gather facts** (15 min)
-   - What was released? `v0.2.1`
-   - When did issue occur? `[TIME]`
-   - How long to detect? `[DURATION]`
-   - How long to rollback? `[DURATION]`
-   - Who helped? `[NAMES]`
+ - What was released? `v0.2.0`
+ - When did issue occur? `[TIME]`
+ - How long to detect? `[DURATION]`
+ - How long to rollback? `[DURATION]`
+ - Who helped? `[NAMES]`
 
 2. **Timeline reconstruction** (15 min)
-   - Create detailed timeline from logs
-   - Identify key decision points
-   - Note any delays or obstacles
+ - Create detailed timeline from logs
+ - Identify key decision points
+ - Note any delays or obstacles
 
 3. **Root cause analysis** (20 min)
-   - What was the bug?
-   - Why did it pass testing?
-   - How can we detect it earlier?
+ - What was the bug?
+ - Why did it pass testing?
+ - How can we detect it earlier?
 
 4. **Contributing factors** (15 min)
-   - Did testing miss something?
-   - Was there a process gap?
-   - Were communication breakdowns?
+ - Did testing miss something?
+ - Was there a process gap?
+ - Were communication breakdowns?
 
 5. **Action items** (15 min)
 
-###  Post-Mortem Document
+### Post-Mortem Document
 
-Create `.codex/incidents/rollback-v0.2.1-postmortem.md`:
+Create `.codex/incidents/rollback-v0.2.0-postmortem.md`:
 
 ```markdown
-# Post-Mortem: v0.2.1 Release Rollback
+# Post-Mortem: v0.2.0 Release Rollback
 
-**Date**: 2026-07-07  
-**Duration**: 15 minutes (detection + rollback)  
+**Date**: 2026-07-07 
+**Duration**: 15 minutes (detection + rollback) 
 **Severity**: P1 Critical
 
 ## Summary
-v0.2.1 failed immediately after release due to [ISSUE].
+v0.2.0 failed immediately after release due to [ISSUE].
 Rollback completed in [TIME] minutes.
 
 ## Timeline
@@ -561,7 +561,7 @@ How was the issue found?
 ## Resolution
 - Rollback time: 5 minutes 
 - User impact: [N users, [TIME] downtime]
-- Data integrity:  No data loss
+- Data integrity: No data loss
 
 ## Contributing Factors
 1. [Factor 1]
@@ -611,16 +611,16 @@ curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | jq .info.yanked
 
 ```bash
 # Delete local tag
-git tag -d v0.2.1
+git tag -d v0.2.0
 
 # Delete remote tag
-git push origin --delete v0.2.1
+git push origin --delete v0.2.0
 
 # Create new tag
-git tag -a v0.2.1 -m "Release v0.2.1"
+git tag -a v0.2.0 -m "Release v0.2.0"
 
 # Push tag
-git push origin v0.2.1
+git push origin v0.2.0
 ```
 
 ### Testing Previous Version
@@ -640,12 +640,12 @@ pip show codex-ml
 
 ## Approval & Sign-Off
 
-**Rollback Approved By**: `[Name]` (Release Manager)  
-**Timestamp**: `[ISO8601]`  
-**Final Status**:  Complete /  In Progress
+**Rollback Approved By**: `[Name]` (Release Manager)
+**Timestamp**: `[ISO8601]`
+**Final Status**: Complete / In Progress
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-07-07  
+**Document Version**: 1.0
+**Last Updated**: 2026-07-07
 **Next Review**: 2026-08-07

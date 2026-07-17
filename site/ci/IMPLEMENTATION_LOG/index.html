@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/IMPLEMENTATION_LOG/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI Optimization Implementation Log - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2521,7 +2521,7 @@
 <blockquote>
 <p><strong>Document Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-11
-</strong>Status:** Phase 1 Complete </p>
+</strong>Status:** Phase 1 Complete</p>
 </blockquote>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2531,7 +2531,7 @@
 - Plansets: <a href="../../.codex/CI_OPTIMIZATION_PLANSETS.md"><code>.codex/CI_OPTIMIZATION_PLANSETS.md</code></a>
 - Implementation Prompt: <a href="../../.codex/reports/FOLLOWUP_IMPLEMENTATION_PROMPT.md"><code>FOLLOWUP_IMPLEMENTATION_PROMPT.md</code></a></p>
 <hr/>
-<h2 id="phase-1-foundation-components-complete">Phase 1: Foundation Components  COMPLETE<a class="headerlink" href="#phase-1-foundation-components-complete" title="Permanent link">¶</a></h2>
+<h2 id="phase-1-foundation-components-complete">Phase 1: Foundation Components COMPLETE<a class="headerlink" href="#phase-1-foundation-components-complete" title="Permanent link">¶</a></h2>
 <p><strong>Implemented:</strong> 2026-02-15
 <strong>Commit:</strong> <code>2bb06bfc</code> - "feat: Implement Phase 1 CI optimization components (all 5 components)"
 <strong>Status:</strong> All components delivered and tested</p>
@@ -2541,10 +2541,10 @@
 <p><strong>Purpose:</strong> Automatically categorize PRs by size and determine appropriate validation strategy.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Size Categories:</strong>
-  - Small (&lt;20 files): Full validation
-  - Medium (20-99 files): Targeted tests
-  - Large (100-499 files): Smoke tests
-  - Refactor (500+ files): Import validation
+ - Small (&lt;20 files): Full validation
+ - Medium (20-99 files): Targeted tests
+ - Large (100-499 files): Smoke tests
+ - Refactor (500+ files): Import validation
 - <strong>Outputs:</strong> <code>pr_size</code>, <code>changed_files_count</code>, <code>validation_strategy</code>
 - <strong>Integration:</strong> Posts PR comment with size analysis and recommendations
 - <strong>Testing:</strong> 15 tests covering all boundaries and edge cases</p>
@@ -2554,24 +2554,24 @@
 - Reusable outputs for downstream workflows
 - Size thresholds documentation in PR comments</p>
 <p><strong>Success Metrics:</strong>
--  Accurate categorization for all PR sizes
--  Clear communication via PR comments
--  Reusable workflow outputs</p>
+- Accurate categorization for all PR sizes
+- Clear communication via PR comments
+- Reusable workflow outputs</p>
 <hr/>
 <h4 id="2-telemetry-collection-script">2. Telemetry Collection Script<a class="headerlink" href="#2-telemetry-collection-script" title="Permanent link">¶</a></h4>
 <p><strong>File:</strong> <code>scripts/ci/collect_telemetry.py</code></p>
 <p><strong>Purpose:</strong> Collect and analyze CI telemetry data from GitHub Actions with automatic pattern classification.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Data Collection:</strong>
-  - Workflow runs (with pagination support)
-  - Job details (status, conclusion, timing)
-  - Artifacts (size, retention, expiry status)
+ - Workflow runs (with pagination support)
+ - Job details (status, conclusion, timing)
+ - Artifacts (size, retention, expiry status)
 - <strong>Pattern Classification:</strong> Auto-classify into 5 patterns
-  1. Auto-fix loop failures
-  2. Test infrastructure issues
-  3. Coverage generation timeouts
-  4. Filesystem operation deadlocks
-  5. Pre-merge validation cascades
+ 1. Auto-fix loop failures
+ 2. Test infrastructure issues
+ 3. Coverage generation timeouts
+ 4. Filesystem operation deadlocks
+ 5. Pre-merge validation cascades
 - <strong>Output Format:</strong> Comprehensive JSON report with pattern distribution</p>
 <p><strong>Usage:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>scripts/ci/collect_telemetry.py<span class="w"> </span><span class="se">\</span>
@@ -2594,21 +2594,21 @@
 - Error scenarios
 - Report structure validation</p>
 <p><strong>Success Metrics:</strong>
--  Accurate pattern classification (&gt;90% accuracy expected)
--  Complete telemetry data collection
--  Actionable JSON reports for analysis</p>
+- Accurate pattern classification (&gt;90% accuracy expected)
+- Complete telemetry data collection
+- Actionable JSON reports for analysis</p>
 <hr/>
 <h4 id="3-auto-fix-with-rollback">3. Auto-Fix with Rollback<a class="headerlink" href="#3-auto-fix-with-rollback" title="Permanent link">¶</a></h4>
 <p><strong>File:</strong> <code>scripts/ci/auto_fix_with_rollback.py</code></p>
 <p><strong>Purpose:</strong> Safe auto-fix implementation with comprehensive rollback support and pre-flight validation.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Pre-flight Checks:</strong>
-  1. Git repository validation
-  2. Clean working tree check
-  3. File writability verification
-  4. Branch validity (not detached HEAD)
-  5. Python availability
-  6. Tool availability (ruff, black, isort)</p>
+ 1. Git repository validation
+ 2. Clean working tree check
+ 3. File writability verification
+ 4. Branch validity (not detached HEAD)
+ 5. Python availability
+ 6. Tool availability (ruff, black, isort)</p>
 <ul>
 <li><strong>Rollback Mechanism:</strong></li>
 <li>Context manager for automatic rollback</li>
@@ -2647,18 +2647,18 @@
 - Retry logic
 - Metrics tracking</p>
 <p><strong>Success Metrics:</strong>
--  100% rollback success rate on errors
--  No broken code committed
--  Comprehensive logging for debugging</p>
+- 100% rollback success rate on errors
+- No broken code committed
+- Comprehensive logging for debugging</p>
 <hr/>
 <h2 id="4-coverage-timeout-guards-workflow">4. Coverage Timeout Guards Workflow<a class="headerlink" href="#4-coverage-timeout-guards-workflow" title="Permanent link">¶</a></h2>
 <p><strong>File:</strong> <code>.github/workflows/coverage-with-timeout.yml</code></p>
 <p><strong>Purpose:</strong> Prevent coverage hangs with timeout protection and graceful degradation.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Timeout Protection:</strong>
-  - Per-test timeout: 7 minutes (pytest-timeout)
-  - Job timeout: 30 minutes (GitHub Actions)
-  - Timeout method: thread-based interruption</p>
+ - Per-test timeout: 7 minutes (pytest-timeout)
+ - Job timeout: 30 minutes (GitHub Actions)
+ - Timeout method: thread-based interruption</p>
 <ul>
 <li><strong>Shard Isolation:</strong></li>
 <li>4 parallel shards for test execution</li>
@@ -2688,9 +2688,9 @@
 - Parallel execution for speed
 - Configurable shard count via workflow_dispatch</p>
 <p><strong>Success Metrics:</strong>
--  Zero coverage hangs (100% completion)
--  Useful partial results even on timeout
--  Clear diagnostic information</p>
+- Zero coverage hangs (100% completion)
+- Useful partial results even on timeout
+- Clear diagnostic information</p>
 <hr/>
 <h3 id="5-validation-test-suite">5. Validation Test Suite<a class="headerlink" href="#5-validation-test-suite" title="Permanent link">¶</a></h3>
 <p><strong>Files:</strong>
@@ -2705,9 +2705,9 @@
 - Integration testing
 - Mock/stub validation</p>
 <p><strong>Success Metrics:</strong>
--  All tests passing
--  Comprehensive coverage of new code
--  Clear test documentation</p>
+- All tests passing
+- Comprehensive coverage of new code
+- Clear test documentation</p>
 <hr/>
 <h2 id="implementation-quality-metrics">Implementation Quality Metrics<a class="headerlink" href="#implementation-quality-metrics" title="Permanent link">¶</a></h2>
 <h3 id="code-quality">Code Quality<a class="headerlink" href="#code-quality" title="Permanent link">¶</a></h3>
@@ -2744,7 +2744,7 @@
 <p>Clear communication to developers</p>
 </li>
 <li>
-<p><strong>Telemetry Collection:</strong> Manual 15min → Automated 2min</p>
+<p><strong>Telemetry Collection:</strong> Manual 15min Automated 2min</p>
 </li>
 <li>Pattern recognition automation</li>
 <li>Actionable failure analysis</li>
@@ -2752,7 +2752,7 @@
 <p>Data-driven optimization decisions</p>
 </li>
 <li>
-<p><strong>Safe Auto-Fix:</strong> 0% → 90%+ success rate (estimated)</p>
+<p><strong>Safe Auto-Fix:</strong> 0% 90%+ success rate (estimated)</p>
 </li>
 <li>Zero risk of broken commits</li>
 <li>Automatic rollback on errors</li>
@@ -2760,7 +2760,7 @@
 <p>Comprehensive audit trail</p>
 </li>
 <li>
-<p><strong>Coverage Reliability:</strong> Timeout rate 100% → 5% (estimated)</p>
+<p><strong>Coverage Reliability:</strong> Timeout rate 100% 5% (estimated)</p>
 </li>
 <li>Graceful degradation</li>
 <li>Partial results always available</li>
@@ -2774,19 +2774,19 @@
 </ul>
 <hr/>
 <h2 id="next-phases">Next Phases<a class="headerlink" href="#next-phases" title="Permanent link">¶</a></h2>
-<h3 id="phase-2-core-improvements-complete-2026-02-15">Phase 2: Core Improvements  COMPLETE (2026-02-15)<a class="headerlink" href="#phase-2-core-improvements-complete-2026-02-15" title="Permanent link">¶</a></h3>
+<h3 id="phase-2-core-improvements-complete-2026-02-15">Phase 2: Core Improvements COMPLETE (2026-02-15)<a class="headerlink" href="#phase-2-core-improvements-complete-2026-02-15" title="Permanent link">¶</a></h3>
 <p><strong>Implemented:</strong> 2026-02-15
 <strong>Commit:</strong> <code>e369c2b</code> - "feat: Implement Phase 2 core improvements (progressive validation + telemetry orchestration)"
 <strong>Status:</strong> All components delivered and tested</p>
 <h4 id="components-delivered_1">Components Delivered<a class="headerlink" href="#components-delivered_1" title="Permanent link">¶</a></h4>
-<p><strong>1. Progressive Validation Suite</strong> </p>
+<p><strong>1. Progressive Validation Suite</strong></p>
 <p><strong>File:</strong> <code>.github/workflows/progressive-validation.yml</code></p>
 <p><strong>Purpose:</strong> Intelligent test execution based on PR size with 4-layer architecture.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Layer 1: Smoke Tests</strong> (Always run, &lt;10 min)
-  - Import validation
-  - Quick functionality tests
-  - Syntax validation</p>
+ - Import validation
+ - Quick functionality tests
+ - Syntax validation</p>
 <ul>
 <li><strong>Layer 2: Unit Tests</strong> (Small/Medium PRs, &lt;20 min)</li>
 <li>3-shard parallel execution</li>
@@ -2827,35 +2827,35 @@
 - GitHub Step Summary for each layer
 - Force full validation via workflow_dispatch</p>
 <p><strong>Success Metrics:</strong>
--  50% CI time reduction for medium PRs
--  75% CI time reduction for large PRs
--  Zero false negatives (all critical tests run)</p>
+- 50% CI time reduction for medium PRs
+- 75% CI time reduction for large PRs
+- Zero false negatives (all critical tests run)</p>
 <hr/>
-<p><strong>2. Workflow Orchestrator</strong> </p>
+<p><strong>2. Workflow Orchestrator</strong></p>
 <p><strong>File:</strong> <code>scripts/ci/workflow_orchestrator.py</code></p>
 <p><strong>Purpose:</strong> Telemetry-driven workflow selection and orchestration.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Workflow Categories:</strong>
-  1. Critical (always run): smoke-tests, pr-size-analyzer, security-scan
-  2. Standard (small/medium): unit-tests, linting, type-checking
-  3. Comprehensive (small only): integration-tests, coverage-report, performance
-  4. On-demand (manual): slow-tests, e2e-tests, load-testing</p>
+ 1. Critical (always run): smoke-tests, pr-size-analyzer, security-scan
+ 2. Standard (small/medium): unit-tests, linting, type-checking
+ 3. Comprehensive (small only): integration-tests, coverage-report, performance
+ 4. On-demand (manual): slow-tests, e2e-tests, load-testing</p>
 <ul>
 <li><strong>Pattern-Based Adjustments:</strong></li>
-<li>Auto-fix failures → add auto-fix-validation, linting-extra</li>
-<li>Coverage timeouts → add coverage-with-timeout, test-profiling</li>
-<li>Test infrastructure → add import-validation, dependency-audit</li>
-<li>Filesystem deadlock → add filesystem-validation, concurrent-ops-test</li>
+<li>Auto-fix failures add auto-fix-validation, linting-extra</li>
+<li>Coverage timeouts add coverage-with-timeout, test-profiling</li>
+<li>Test infrastructure add import-validation, dependency-audit</li>
+<li>Filesystem deadlock add filesystem-validation, concurrent-ops-test</li>
 <li>
-<p>Pre-merge cascade → add integration-tests, dependency-graph</p>
+<p>Pre-merge cascade add integration-tests, dependency-graph</p>
 </li>
 <li>
 <p><strong>File Change Analysis:</strong></p>
 </li>
-<li>Python files → python-tests, type-checking, linting</li>
-<li>YAML files → yaml-validation</li>
-<li>Docker files → container-build</li>
-<li>Documentation → docs-build</li>
+<li>Python files python-tests, type-checking, linting</li>
+<li>YAML files yaml-validation</li>
+<li>Docker files container-build</li>
+<li>Documentation docs-build</li>
 </ul>
 <p><strong>Usage:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>python<span class="w"> </span>scripts/ci/workflow_orchestrator.py<span class="w"> </span><span class="se">\</span>
@@ -2889,26 +2889,26 @@
 - Duration estimation
 - Edge cases and empty data</p>
 <p><strong>Success Metrics:</strong>
--  Accurate pattern classification
--  Smart workflow selection
--  Duration estimates within 15% accuracy</p>
+- Accurate pattern classification
+- Smart workflow selection
+- Duration estimates within 15% accuracy</p>
 <hr/>
-<p><strong>3. Telemetry Collection Workflow</strong> </p>
+<p><strong>3. Telemetry Collection Workflow</strong></p>
 <p><strong>File:</strong> <code>.github/workflows/telemetry-collection.yml</code></p>
 <p><strong>Purpose:</strong> Automated CI health monitoring with pattern detection and alerting.</p>
 <p><strong>Implementation Details:</strong>
 - <strong>Schedule:</strong> Daily at 2 AM UTC (configurable via workflow_dispatch)
 - <strong>Data Collection:</strong>
-  - Workflow runs (7-day default, configurable)
-  - Pattern classification
-  - Failure rate calculation
-  - Trend analysis</p>
+ - Workflow runs (7-day default, configurable)
+ - Pattern classification
+ - Failure rate calculation
+ - Trend analysis</p>
 <ul>
 <li><strong>Automatic Alerting:</strong></li>
-<li>Failure rate &gt; 20% → Create/update CI health issue</li>
-<li>Auto-fix failures &gt; 5 → Warning annotation</li>
+<li>Failure rate &gt; 20% Create/update CI health issue</li>
+<li>Auto-fix failures &gt; 5 Warning annotation</li>
 <li>
-<p>Coverage timeouts &gt; 3 → Warning annotation</p>
+<p>Coverage timeouts &gt; 3 Warning annotation</p>
 </li>
 <li>
 <p><strong>Reporting:</strong></p>
@@ -2939,9 +2939,9 @@
 - Configurable thresholds for alerting
 - Integration with workflow orchestrator</p>
 <p><strong>Success Metrics:</strong>
--  Proactive CI health monitoring
--  Early pattern detection
--  Reduced manual monitoring overhead</p>
+- Proactive CI health monitoring
+- Early pattern detection
+- Reduced manual monitoring overhead</p>
 <hr/>
 <h3 id="phase-2-impact-summary">Phase 2 Impact Summary<a class="headerlink" href="#phase-2-impact-summary" title="Permanent link">¶</a></h3>
 <p><strong>Resource Optimization:</strong>
@@ -2950,9 +2950,9 @@
 - Large PRs: 75% reduction (~15 min)
 - Refactor PRs: 90% reduction (~5 min)</p>
 <p><strong>Automation Improvements:</strong>
-- Telemetry collection: Manual 15min → Automated 2min
-- Workflow selection: Manual analysis → Automated based on patterns
-- CI health monitoring: Reactive → Proactive with alerts</p>
+- Telemetry collection: Manual 15min Automated 2min
+- Workflow selection: Manual analysis Automated based on patterns
+- CI health monitoring: Reactive Proactive with alerts</p>
 <p><strong>Developer Experience:</strong>
 - Faster feedback for large PRs
 - Clear test layer progression
@@ -2961,12 +2961,12 @@
 <hr/>
 <h3 id="phase-3-advanced-optimizations-not-started">Phase 3: Advanced Optimizations (Not Started)<a class="headerlink" href="#phase-3-advanced-optimizations-not-started" title="Permanent link">¶</a></h3>
 <p><strong>Components:</strong>
-1. Test layer architecture (Smoke → Unit → Integration → Slow)
+1. Test layer architecture (Smoke Unit Integration Slow)
 2. Progressive validation integration (use PR size analyzer)
 3. Workflow consolidation (telemetry-based triggers)
 4. Monitoring dashboard (visualize telemetry data)</p>
 <p><strong>Expected Duration:</strong> 45-60 minutes
-<strong>Prerequisites:</strong> Phase 1 complete </p>
+<strong>Prerequisites:</strong> Phase 1 complete</p>
 <hr/>
 <h3 id="phase-3-advanced-optimizations-not-started_1">Phase 3: Advanced Optimizations (Not Started)<a class="headerlink" href="#phase-3-advanced-optimizations-not-started_1" title="Permanent link">¶</a></h3>
 <p><strong>Components:</strong>
@@ -3073,6 +3073,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

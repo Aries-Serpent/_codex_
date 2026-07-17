@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/LOCAL_DEV_ENV_SETUP/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Local Development Environment Setup (Phase 6.2+) - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2533,10 +2533,10 @@
 <p><strong>Version</strong>: v0.2.1
 <strong>Last Updated:</strong> 2026-07-11</p>
 <blockquote>
-<p><strong>Version</strong>: 2.0.0 (Phase 6.2 Update)<br/>
-<strong>Last Updated</strong>: 2026-07-06<br/>
-<strong>Status</strong>: Phase 7 Ready (Groundwork Prepared)<br/>
-<strong>Timeline</strong>: Phase 6.2 → Phase 7 (2026-07-08)  </p>
+<p><strong>Version</strong>: 2.0.0 (Phase 6.2 Update)
+<strong>Last Updated</strong>: 2026-07-06
+<strong>Status</strong>: Phase 7 Ready (Groundwork Prepared)
+<strong>Timeline</strong>: Phase 6.2 Phase 7 (2026-07-08)</p>
 </blockquote>
 <hr/>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2795,69 +2795,69 @@
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="connection-refused-for-redisollama">"Connection refused" for Redis/Ollama<a class="headerlink" href="#connection-refused-for-redisollama" title="Permanent link">¶</a></h3>
-<p><strong>Problem</strong>: Services won't connect<br/>
+<p><strong>Problem</strong>: Services won't connect
 <strong>Solution</strong>:</p>
 <ol>
 <li>
 <p>Check if services are running:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>redis-cli<span class="w"> </span>ping<span class="w">        </span><span class="c1"># Should return PONG</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>curl<span class="w"> </span>http://localhost:11434<span class="w">  </span><span class="c1"># Should return response</span>
-</code></pre></div></p>
+   <code>bash
+   redis-cli ping        # Should return PONG
+   curl http://localhost:11434  # Should return response</code></p>
 </li>
 <li>
 <p>Update environment variables to correct host:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_REDIS_HOST</span><span class="o">=</span>your-redis-host
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_OLLAMA_HOST</span><span class="o">=</span>http://your-ollama-host:11434
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>bash<span class="w"> </span>.codex/validate_local_env.sh
-</code></pre></div></p>
+   <code>bash
+   export CODEX_REDIS_HOST=your-redis-host
+   export CODEX_OLLAMA_HOST=http://your-ollama-host:11434
+   bash .codex/validate_local_env.sh</code></p>
 </li>
 <li>
 <p>Or start services locally:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>redis-server<span class="w"> </span><span class="p">&amp;</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>ollama<span class="w"> </span>serve<span class="w"> </span><span class="p">&amp;</span>
-</code></pre></div></p>
+   <code>bash
+   redis-server &amp;
+   ollama serve &amp;</code></p>
 </li>
 </ol>
 <h3 id="tests-fail-with-localhost-not-resolvable">Tests fail with "localhost: not resolvable"<a class="headerlink" href="#tests-fail-with-localhost-not-resolvable" title="Permanent link">¶</a></h3>
-<p><strong>Problem</strong>: Hostname resolution issues<br/>
+<p><strong>Problem</strong>: Hostname resolution issues
 <strong>Solution</strong>:</p>
 <ol>
 <li>
 <p>Ensure <code>CODEX_LOCAL_LOOPBACK=true</code> (default):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_LOCAL_LOOPBACK</span><span class="o">=</span><span class="nb">true</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
-</code></pre></div></p>
+   <code>bash
+   export CODEX_LOCAL_LOOPBACK=true
+   pytest tests/ -v</code></p>
 </li>
 <li>
 <p>Check <code>/etc/hosts</code> includes localhost:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>grep<span class="w"> </span>localhost<span class="w"> </span>/etc/hosts
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="c1"># Should show: 127.0.0.1 localhost</span>
-</code></pre></div></p>
+   <code>bash
+   grep localhost /etc/hosts
+   # Should show: 127.0.0.1 localhost</code></p>
 </li>
 </ol>
 <h3 id="host-header-not-in-codex_trusted_hosts">"Host header not in CODEX_TRUSTED_HOSTS"<a class="headerlink" href="#host-header-not-in-codex_trusted_hosts" title="Permanent link">¶</a></h3>
-<p><strong>Problem</strong>: Request rejected by host validation<br/>
+<p><strong>Problem</strong>: Request rejected by host validation
 <strong>Solution</strong>:</p>
 <ol>
 <li>
 <p>Add your hostname to trusted hosts:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_TRUSTED_HOSTS</span><span class="o">=</span>localhost,127.0.0.1,testserver,my-hostname
-</code></pre></div></p>
+   <code>bash
+   export CODEX_TRUSTED_HOSTS=localhost,127.0.0.1,testserver,my-hostname</code></p>
 </li>
 <li>
 <p>Or disable feature gate for local dev:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_LOCAL_LOOPBACK</span><span class="o">=</span><span class="nb">true</span>
-</code></pre></div></p>
+   <code>bash
+   export CODEX_LOCAL_LOOPBACK=true</code></p>
 </li>
 </ol>
 <h3 id="production-mode-issues-in-dev">"Production mode issues in dev"<a class="headerlink" href="#production-mode-issues-in-dev" title="Permanent link">¶</a></h3>
-<p><strong>Problem</strong>: Security checks too strict for development<br/>
+<p><strong>Problem</strong>: Security checks too strict for development
 <strong>Solution</strong>:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># Enable localhost feature gate (development mode)</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_LOCAL_LOOPBACK</span><span class="o">=</span><span class="nb">true</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># For localhost development, this bypasses some security checks</span>
-<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="c1"># NEVER set to 'false' in actual development!</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Enable localhost feature gate (development mode)</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_LOCAL_LOOPBACK</span><span class="o">=</span><span class="nb">true</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="c1"># For localhost development, this bypasses some security checks</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="c1"># NEVER set to 'false' in actual development!</span>
 </code></pre></div>
 <hr/>
 <h2 id="phase-7-integration-testing">Phase 7 Integration Testing<a class="headerlink" href="#phase-7-integration-testing" title="Permanent link">¶</a></h2>
@@ -2866,19 +2866,19 @@
 <ol>
 <li>
 <p><strong>Copy environment template:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
-</code></pre></div></p>
+<code>bash
+   cp .env.example .env</code></p>
 </li>
 <li>
 <p><strong>Run validation script:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a>bash<span class="w"> </span>.codex/validate_local_env.sh
-</code></pre></div></p>
+<code>bash
+   bash .codex/validate_local_env.sh</code></p>
 </li>
 <li>
 <p><strong>Review Phase 7 test plan:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c1"># See: tests/test_phase_6_2_b_env_vars.py</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="c1"># See: tests/config/test_env_vars_comprehensive.py</span>
-</code></pre></div></p>
+<code>bash
+   # See: tests/test_phase_6_2_b_env_vars.py
+   # See: tests/config/test_env_vars_comprehensive.py</code></p>
 </li>
 </ol>
 <h3 id="phase-7-execution-automated">Phase 7 Execution (Automated)<a class="headerlink" href="#phase-7-execution-automated" title="Permanent link">¶</a></h3>
@@ -2887,14 +2887,14 @@
 <li><strong>All 8 variables live in GitHub Settings</strong></li>
 <li>
 <p><strong>Validation script runs automatically:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>bash<span class="w"> </span>.codex/validate_local_env.sh
-</code></pre></div></p>
+<code>bash
+   bash .codex/validate_local_env.sh</code></p>
 </li>
 <li>
 <p><strong>Integration tests execute:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>pytest<span class="w"> </span>tests/test_phase_6_2_b_env_vars.py<span class="w"> </span>-v
-<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>pytest<span class="w"> </span>tests/config/test_env_vars_comprehensive.py<span class="w"> </span>-v
-</code></pre></div></p>
+<code>bash
+   pytest tests/test_phase_6_2_b_env_vars.py -v
+   pytest tests/config/test_env_vars_comprehensive.py -v</code></p>
 </li>
 <li>
 <p><strong>Phase 7 completion report generated:</strong></p>
@@ -2961,7 +2961,7 @@
 </tbody>
 </table>
 <hr/>
-<p><strong>Last Updated</strong>: 2026-07-06<br/>
+<p><strong>Last Updated</strong>: 2026-07-06
 <strong>Status</strong>: Phase 7 Groundwork Complete (Ready for 2026-07-08 Execution)</p>
 </article>
 </div>
@@ -2992,6 +2992,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

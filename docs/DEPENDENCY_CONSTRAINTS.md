@@ -1,6 +1,6 @@
 # Dependency Version Constraints
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This document explains critical version constraints in the _codex_ project dependencies.
 

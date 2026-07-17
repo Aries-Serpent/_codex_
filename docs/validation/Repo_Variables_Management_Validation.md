@@ -1,6 +1,6 @@
 # [Validation]: Repo Actions variables — create/update/delete/list via Codex
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -43,5 +43,5 @@ make vars-delete OWNER=Aries-Serpent REPO=_codex_ NAMES="FEATURE_FLAG DEPLOY_ENV
 
 Troubleshooting
 - 401/403: token must have repo admin + actions variables permissions.
-- Values with spaces: quote appropriately, e.g., SETS=$'MESSAGE=Hello World' → SETS="MESSAGE=Hello World".
+- Values with spaces: quote appropriately, e.g., SETS=$'MESSAGE=Hello World' SETS="MESSAGE=Hello World".
 - Pagination: list_repo_vars fetches up to 100 variables per call (sufficient for most repos). Repeat if needed.

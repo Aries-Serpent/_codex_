@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/checklists/MERGE_READINESS_VALIDATION_CHECKLIST/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Merge Readiness Validation Checklist - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2408,15 +2408,15 @@
 <h1 id="merge-readiness-validation-checklist">Merge Readiness Validation Checklist<a class="headerlink" href="#merge-readiness-validation-checklist" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Purpose:</strong> Quick reference for validating PR merge readiness against the 10-gate model<br/>
-<strong>Audience:</strong> PR reviewers, maintainers, quality gates<br/>
-<strong>Status:</strong>  Production Ready<br/>
+<p><strong>Purpose:</strong> Quick reference for validating PR merge readiness against the 10-gate model
+<strong>Audience:</strong> PR reviewers, maintainers, quality gates
+<strong>Status:</strong> Production Ready
 **Last Updated: 2026-06-25</p>
 <hr/>
 <h2 id="pre-merge-validation-checklist-all-10-gates">Pre-Merge Validation Checklist (All 10 Gates)<a class="headerlink" href="#pre-merge-validation-checklist-all-10-gates" title="Permanent link">¶</a></h2>
 <p>Use this checklist when reviewing a PR for merge readiness. All items must pass for 100% readiness.</p>
 <h3 id="gate-1-code-quality-12-pts-must-pass">Gate 1: Code Quality (12 pts) — MUST PASS<a class="headerlink" href="#gate-1-code-quality-12-pts-must-pass" title="Permanent link">¶</a></h3>
-<p><strong>Responsibility:</strong> CI/CD (<code>pre-merge-validation.yml</code>)<br/>
+<p><strong>Responsibility:</strong> CI/CD (<code>pre-merge-validation.yml</code>)
 <strong>Local Validation:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Run locally before pushing</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>python<span class="w"> </span>-m<span class="w"> </span>ruff<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>tests/<span class="w"> </span>--fix
@@ -2427,10 +2427,10 @@
 - [ ] All types covered (run: <code>mypy src/</code>)
 - [ ] No E402 or F811 violations in src/ (per-file ignores OK in tests/)
 - [ ] PR body documents: " Code Quality (12/12): X ruff errors, Y mypy errors"</p>
-<p><strong>Evidence:</strong> GitHub Actions → pre-merge-validation.yml → Code Quality step</p>
+<p><strong>Evidence:</strong> GitHub Actions pre-merge-validation.yml Code Quality step</p>
 <hr/>
 <h3 id="gate-2-test-coverage-12-pts-must-pass">Gate 2: Test Coverage (12 pts) — MUST PASS<a class="headerlink" href="#gate-2-test-coverage-12-pts-must-pass" title="Permanent link">¶</a></h3>
-<p><strong>Responsibility:</strong> CI/CD (<code>pre-merge-validation.yml</code>)<br/>
+<p><strong>Responsibility:</strong> CI/CD (<code>pre-merge-validation.yml</code>)
 <strong>Threshold:</strong> ≥95% code coverage</p>
 <p><strong>Local Validation:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Generate coverage report</span>
@@ -2443,7 +2443,7 @@
 - [ ] Coverage delta documented (e.g., "+1.2% from baseline" or "-0.5%")
 - [ ] New test cases added for new code (verify in PR diff)
 - [ ] PR body shows: " Test Coverage (12/12): 96.5% (+1.7% delta)"</p>
-<p><strong>Evidence:</strong> GitHub Actions → pre-merge-validation.yml → Test Coverage step</p>
+<p><strong>Evidence:</strong> GitHub Actions pre-merge-validation.yml Test Coverage step</p>
 <hr/>
 <h3 id="gate-3-security-secrets-15-pts-highest-weight">Gate 3: Security &amp; Secrets (15 pts) — HIGHEST WEIGHT<a class="headerlink" href="#gate-3-security-secrets-15-pts-highest-weight" title="Permanent link">¶</a></h3>
 <p><strong>Responsibility:</strong> CI/CD (<code>pre-merge-validation.yml</code>) + agents</p>
@@ -2467,45 +2467,45 @@
 - [ ] CodeQL error fix committed (with commit SHA in PR body)
 - [ ] Security findings documented with remediation status
 - [ ] Partial credit (7.5/15) for addressing major findings</p>
-<p><strong>Evidence:</strong> GitHub Actions → Security steps + CodeQL report artifact</p>
+<p><strong>Evidence:</strong> GitHub Actions Security steps + CodeQL report artifact</p>
 <hr/>
 <h3 id="gate-4-wec-integrity-14-pts-critical-orchestration">Gate 4: WEC Integrity (14 pts) — CRITICAL ORCHESTRATION<a class="headerlink" href="#gate-4-wec-integrity-14-pts-critical-orchestration" title="Permanent link">¶</a></h3>
-<p><strong>Responsibility:</strong> Agent + <code>workflow-execution-gate.yml</code><br/>
+<p><strong>Responsibility:</strong> Agent + <code>workflow-execution-gate.yml</code>
 <strong>Must Be Present:</strong> Workflow Execution Checklist section in PR body</p>
 <p><strong>Checklist:</strong>
-- [ ] WEC section header exists: <code>##  Workflow Execution Checklist</code>
+- [ ] WEC section header exists: <code>## Workflow Execution Checklist</code>
 - [ ] All 9 items present (see list below)
 - [ ] Always-required items are <code>[x]</code> (6 items):
-  - [ ] <code>pre-merge-validation.yml</code> ← Must be <code>[x]</code>
-  - [ ] <code>comment-review-gate.yml</code> ← Must be <code>[x]</code>
-  - [ ] <code>deferral-language-gate.yml</code> ← Must be <code>[x]</code>
-  - [ ] <code>agent-auth-delegation.yml</code> ← Must be <code>[x]</code>
-  - [ ] <code>workflow-execution-gate.yml</code> ← Must be <code>[x]</code>
-  - [ ] <code>cost-gate.yml</code> ← Must be <code>[x]</code>
+ - [ ] <code>pre-merge-validation.yml</code> Must be <code>[x]</code>
+ - [ ] <code>comment-review-gate.yml</code> Must be <code>[x]</code>
+ - [ ] <code>deferral-language-gate.yml</code> Must be <code>[x]</code>
+ - [ ] <code>agent-auth-delegation.yml</code> Must be <code>[x]</code>
+ - [ ] <code>workflow-execution-gate.yml</code> Must be <code>[x]</code>
+ - [ ] <code>cost-gate.yml</code> Must be <code>[x]</code>
 - [ ] Optional items are documented (3 items):
-  - [ ] <code>copilot-agent-checkin.yml</code> (checked/unchecked documented)
-  - [ ] <code>copilot-agent-session-done.yml</code> (checked/unchecked documented)
-  - [ ] <code>copilot-iterative-self-healing.yml</code> (checked/unchecked documented)</p>
+ - [ ] <code>copilot-agent-checkin.yml</code> (checked/unchecked documented)
+ - [ ] <code>copilot-agent-session-done.yml</code> (checked/unchecked documented)
+ - [ ] <code>copilot-iterative-self-healing.yml</code> (checked/unchecked documented)</p>
 <p><strong>Full WEC Block:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="gu">##  Workflow Execution Checklist</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="gu">## Workflow Execution Checklist</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>Workflows can be skipped/dispatched by updating these checkboxes:
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">- [x]</span> pre-merge-validation.yml        ← Always-required
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">- [x]</span> comment-review-gate.yml         ← Always-required
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="k">- [x]</span> deferral-language-gate.yml      ← Always-required
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">- [x]</span> agent-auth-delegation.yml       ← Always-required
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="k">- [x]</span> workflow-execution-gate.yml     ← Always-required (orchestrator)
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="k">- [ ]</span> copilot-agent-checkin.yml       ← Optional (checked if session active)
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="k">- [ ]</span> copilot-agent-session-done.yml  ← Optional (checked if awaiting closure)
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="k">- [ ]</span> copilot-iterative-self-healing.yml ← Optional (checked if fixing flaky tests)
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="k">- [x]</span> cost-gate.yml                   ← Always-required
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">- [x]</span> pre-merge-validation.yml Always-required
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">- [x]</span> comment-review-gate.yml Always-required
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="k">- [x]</span> deferral-language-gate.yml Always-required
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">- [x]</span> agent-auth-delegation.yml Always-required
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="k">- [x]</span> workflow-execution-gate.yml Always-required (orchestrator)
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="k">- [ ]</span> copilot-agent-checkin.yml Optional (checked if session active)
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="k">- [ ]</span> copilot-agent-session-done.yml Optional (checked if awaiting closure)
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="k">- [ ]</span> copilot-iterative-self-healing.yml Optional (checked if fixing flaky tests)
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="k">- [x]</span> cost-gate.yml Always-required
 </code></pre></div></p>
 <p><strong>If Failed:</strong> PR cannot merge — agent must add canonical WEC block</p>
 <hr/>
 <h3 id="gate-5-deferral-language-policy-10-pts">Gate 5: Deferral Language Policy (10 pts)<a class="headerlink" href="#gate-5-deferral-language-policy-10-pts" title="Permanent link">¶</a></h3>
 <p><strong>Responsibility:</strong> <code>deferral-language-gate.yml</code> + agent</p>
-<p><strong>Scan Locations:</strong> PR body, commits, comments<br/>
+<p><strong>Scan Locations:</strong> PR body, commits, comments
 <strong>Prohibited Phrases:</strong> 20+ patterns (see list in <a href="../../ci/MERGE_READINESS_10_GATES/">MERGE_READINESS_10_GATES.md</a>)</p>
 <p><strong>Manual Checklist:</strong>
 - [ ] PR body uses affirmative language (no "will defer", "pre-existing", etc.)
@@ -2513,13 +2513,13 @@
 - [ ] PR comments address issues directly (no deferral phrases)
 - [ ] Run: <code>deferral-language-gate.yml</code> passes in Actions</p>
 <p><strong>Examples:</strong>
--  "These are pre-existing issues"
--  "These issues are fixed in commit abc1234"
--  "Will address in a future PR"
--  "Addressed in this PR via refactor at line 123"</p>
+- "These are pre-existing issues"
+- "These issues are fixed in commit abc1234"
+- "Will address in a future PR"
+- "Addressed in this PR via refactor at line 123"</p>
 <hr/>
 <h3 id="gate-6-comment-review-policy-12-pts">Gate 6: Comment Review Policy (12 pts)<a class="headerlink" href="#gate-6-comment-review-policy-12-pts" title="Permanent link">¶</a></h3>
-<p><strong>Responsibility:</strong> <code>comment-review-gate.yml</code> + agent<br/>
+<p><strong>Responsibility:</strong> <code>comment-review-gate.yml</code> + agent
 <strong>Scope:</strong> Blocking comments from maintainers, security bots, code review bots</p>
 <p><strong>Checklist:</strong>
 - [ ] All comments from @mbaetiong reviewed and addressed or resolved
@@ -2531,23 +2531,23 @@
 <p><strong>If Unaddressed Comment:</strong>
 - [ ] Create reply comment: "@copilot Addressed in commit [SHA]" (with fix link)
 - [ ] Or: "Documented as known gap: [reason]"</p>
-<p><strong>Evidence:</strong> PR conversation tab shows  Resolved next to resolved comments</p>
+<p><strong>Evidence:</strong> PR conversation tab shows Resolved next to resolved comments</p>
 <hr/>
 <h3 id="gate-7-accountability-report-changelog-8-pts">Gate 7: Accountability Report &amp; CHANGELOG (8 pts)<a class="headerlink" href="#gate-7-accountability-report-changelog-8-pts" title="Permanent link">¶</a></h3>
 <p><strong>Responsibility:</strong> Agent + auto-fix (<code>session_wrapup_autofix.py</code>)</p>
 <p><strong>Checklist:</strong>
 - [ ] <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> updated in latest commit
-  <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"</span>
 </code></pre></div>
 - [ ] <code>CHANGELOG.md</code> updated in latest commit
-  <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"CHANGELOG.md"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD~1<span class="w"> </span>HEAD<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"CHANGELOG.md"</span>
 </code></pre></div>
 - [ ] Entry format validated:
-  - [ ] Timestamp: ISO-8601 format (YYYY-MM-DDTHH:MM:SSZ)
-  - [ ] Session ID recorded (e.g., "S_12345")
-  - [ ] Changes summarized (2–5 bullet points)
-  - [ ] Author/agent recorded</p>
-<p><strong>If Missing:</strong> Auto-fix runs and appends minimal entry (marked <code>[auto-generated]</code>)<br/>
+ - [ ] Timestamp: ISO-8601 format (YYYY-MM-DDTHH:MM:SSZ)
+ - [ ] Session ID recorded (e.g., "S_12345")
+ - [ ] Changes summarized (2–5 bullet points)
+ - [ ] Author/agent recorded</p>
+<p><strong>If Missing:</strong> Auto-fix runs and appends minimal entry (marked <code>[auto-generated]</code>)
 <strong>If Auto-Fixed:</strong> Still counts as pass (score: 8/8)</p>
 <p><strong>Entry Example:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="gu">### Fixed (2026-06-25, S_SESSION)</span>
@@ -2559,23 +2559,23 @@
 <h3 id="gate-8-action-versions-enforcement-7-pts">Gate 8: Action Versions Enforcement (7 pts)<a class="headerlink" href="#gate-8-action-versions-enforcement-7-pts" title="Permanent link">¶</a></h3>
 <p><strong>Responsibility:</strong> <code>pre-merge-validation.yml</code> + auto-fix (<code>enforce_actions_versions.py</code>)</p>
 <p><strong>Approved Versions (as of 2026-06-22):</strong>
-- <code>actions/checkout@v5</code>  (not v3, v4)
-- <code>actions/setup-node@v5</code>  (not v3, v4)
-- <code>actions/github-script@v8</code>  (not v7 or older)
-- <code>actions/setup-python@v6</code>  (not v4, v5)
-- <code>actions/upload-artifact@v5</code>  (not v3, v4)</p>
+- <code>actions/checkout@v5</code> (not v3, v4)
+- <code>actions/setup-node@v5</code> (not v3, v4)
+- <code>actions/github-script@v8</code> (not v7 or older)
+- <code>actions/setup-python@v6</code> (not v4, v5)
+- <code>actions/upload-artifact@v5</code> (not v3, v4)</p>
 <p><strong>Checklist:</strong>
 - [ ] All GitHub Actions in <code>.github/workflows/</code> use approved versions
-  <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"uses: actions/"</span><span class="w"> </span>.github/workflows/<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"@v5\|@v8\|@v6"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"uses: actions/"</span><span class="w"> </span>.github/workflows/<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"@v5\|@v8\|@v6"</span>
 </code></pre></div>
-  Should return: No results (empty)</p>
+ Should return: No results (empty)</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> If violations found, auto-fix applied:
-  <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>python<span class="w"> </span>scripts/ci/enforce_actions_versions.py<span class="w"> </span>--fix
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>python<span class="w"> </span>scripts/ci/enforce_actions_versions.py<span class="w"> </span>--fix
 </code></pre></div></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Commit includes updated actions with new versions</li>
 </ul>
-<p><strong>Evidence:</strong> GitHub Actions → pre-merge-validation.yml → Action Versions step</p>
+<p><strong>Evidence:</strong> GitHub Actions pre-merge-validation.yml Action Versions step</p>
 <hr/>
 <h3 id="gate-9-yaml-workflow-syntax-indentation-7-pts">Gate 9: YAML Workflow Syntax &amp; Indentation (7 pts)<a class="headerlink" href="#gate-9-yaml-workflow-syntax-indentation-7-pts" title="Permanent link">¶</a></h3>
 <p><strong>Responsibility:</strong> <code>pre-merge-validation.yml</code></p>
@@ -2590,17 +2590,17 @@
 </code></pre></div>
 <p><strong>Checklist:</strong>
 - [ ] actionlint: 0 errors
-  - No invalid GitHub Actions syntax
-  - No missing required fields
-  - No unsupported constructs
+ - No invalid GitHub Actions syntax
+ - No missing required fields
+ - No unsupported constructs
 - [ ] yamllint: 0 errors
-  - Indentation correct (2-space increments)
-  - Keys properly quoted
-  - No trailing whitespace
+ - Indentation correct (2-space increments)
+ - Keys properly quoted
+ - No trailing whitespace
 - [ ] If modified <code>.github/workflows/*.yml</code> files: Each passes both checks
 - [ ] PR body shows: " Workflow Syntax (7/7): 0 actionlint, 0 yamllint errors"</p>
 <p><strong>Common Fixes:</strong>
-- Add spaces after list markers: <code>-</code> → <code>-</code> (before <code>name:</code>)
+- Add spaces after list markers: <code>-</code> <code>-</code> (before <code>name:</code>)
 - Fix indentation under <code>steps:</code> (must be N+2 from parent)
 - Escape special characters or use quotes
 - Use <code>run: |</code> (block scalar) for multi-line shell commands</p>
@@ -2609,20 +2609,20 @@
 <p><strong>Responsibility:</strong> <code>pre-merge-validation.yml</code> + maintainer</p>
 <p><strong>Checklist:</strong>
 - [ ] No unresolved merge conflicts
-  <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>--diff-filter<span class="o">=</span>U
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>--diff-filter<span class="o">=</span>U
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="c1"># Should return: (empty)</span>
 </code></pre></div>
 - [ ] Branch is up-to-date with <code>main</code> (or documented reason for divergence)
-  <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>git<span class="w"> </span>merge-base<span class="w"> </span>--is-ancestor<span class="w"> </span>main<span class="w"> </span>HEAD
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>git<span class="w"> </span>merge-base<span class="w"> </span>--is-ancestor<span class="w"> </span>main<span class="w"> </span>HEAD
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="c1"># Exit 0 = ancestor (up-to-date or ahead)</span>
 </code></pre></div>
 - [ ] All required branch protection rules satisfied
-  - [ ] All status checks passing (green checkmarks)
-  - [ ] All required reviewers approved (if configured)
-  - [ ] No blocking dismissals
+ - [ ] All status checks passing (green checkmarks)
+ - [ ] All required reviewers approved (if configured)
+ - [ ] No blocking dismissals
 - [ ] PR body confirms: " Merge Dependencies (3/3): Branch clean, up-to-date, all protections OK"</p>
 <p><strong>If Conflicts Detected:</strong>
-- [ ] Resolve conflicts locally and push: <code>git merge main</code> → fix conflicts → <code>git commit</code> → <code>git push</code></p>
+- [ ] Resolve conflicts locally and push: <code>git merge main</code> fix conflicts <code>git commit</code> <code>git push</code></p>
 <hr/>
 <h2 id="merge-readiness-score-calculation">Merge Readiness Score Calculation<a class="headerlink" href="#merge-readiness-score-calculation" title="Permanent link">¶</a></h2>
 <table>
@@ -2730,7 +2730,7 @@
 <hr/>
 <h2 id="final-merge-readiness-confirmation">Final Merge Readiness Confirmation<a class="headerlink" href="#final-merge-readiness-confirmation" title="Permanent link">¶</a></h2>
 <p>Before clicking "Merge", confirm:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="gu">##  Ready for Merge</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="gu">## Ready for Merge</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="k">- [ ]</span> All 10 gates passing (score = 100/100)
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="k">- [ ]</span> WEC section present with canonical format (9 items)
@@ -2741,7 +2741,7 @@
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="k">- [ ]</span> AAIS V4.0 composite score ≥ 95/100
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="k">- [ ]</span> .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
 <a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="gs">**Merge Status:**</span>  APPROVED FOR MERGE
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="gs">**Merge Status:**</span> APPROVED FOR MERGE
 </code></pre></div>
 <hr/>
 <h2 id="quick-reference-links">Quick Reference Links<a class="headerlink" href="#quick-reference-links" title="Permanent link">¶</a></h2>
@@ -2776,9 +2776,9 @@
 </tbody>
 </table>
 <hr/>
-<p><strong>Last Updated: 2026-06-25T15:50:00Z<br/>
-</strong>Maintained By:<strong> Copilot Agents + Maintainer<br/>
-</strong>Status:**  Production Ready</p>
+<p><strong>Last Updated: 2026-06-25T15:50:00Z
+</strong>Maintained By:<strong> Copilot Agents + Maintainer
+</strong>Status:** Production Ready</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2808,6 +2808,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Threat Model
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -23,9 +23,9 @@ This document captures the major threats to the Codex platform and the controls 
 | Configuration | Environment variables, secrets injection | Entropy checks, rotation policy, detect-secrets gating |
 
 ## Trust Boundaries
-- **User Input → API Gateway**: validated by `src.security.core.validate_input` and content filters.
-- **API Gateway → Model Runtime**: sanitized prompts prevent injection and output masking hides sensitive content.
-- **CI/CD → Cluster**: orchestrator script ensures reproducible builds; Helm validation prevents malformed releases.
+- **User Input API Gateway**: validated by `src.security.core.validate_input` and content filters.
+- **API Gateway Model Runtime**: sanitized prompts prevent injection and output masking hides sensitive content.
+- **CI/CD Cluster**: orchestrator script ensures reproducible builds; Helm validation prevents malformed releases.
 
 ## Data Flow
 1. Client request hits API and passes through security middleware (API key enforcement, CSRF/session checks).
@@ -34,9 +34,9 @@ This document captures the major threats to the Codex platform and the controls 
 
 ### Verification
 - `pytest tests/services/api/test_middleware_security.py -q` exercises API key enforcement and the 60-second rate limiter to
-  ensure abusive clients are rejected offline.
+ ensure abusive clients are rejected offline.
 - `pytest tests/services/api/test_infer_limits.py -q` validates context-length checks and secret masking so inference payloads
-  stay bounded and sanitized.
+ stay bounded and sanitized.
 
 ## Threat Scenarios
 - **Injection Attacks**: Mitigated via strict input validation (SQL, path traversal, XSS) and Semgrep rules.

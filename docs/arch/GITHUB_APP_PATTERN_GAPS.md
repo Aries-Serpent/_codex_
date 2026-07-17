@@ -1,6 +1,6 @@
 # GitHub App Design-Pattern Gap Analysis
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -18,10 +18,10 @@ identifies what is complete vs. what remains to be done.
 
 | Pattern | Code Layer | Operational Layer | Overall |
 |---------|-----------|-------------------|---------|
-| 1. Act on behalf of a user (user-to-server) |  Complete | ️ App not registered | ️ Partial |
-| 2. Act on its own behalf (server-to-server) |  Complete | ️ App not registered | ️ Partial |
-| 3. Respond to webhooks |  Complete | ️ No live receiver URL | ️ Partial |
-| 4. Take certain actions (permissions) |  Complete | ️ App not registered | ️ Partial |
+| 1. Act on behalf of a user (user-to-server) | Complete | App not registered | Partial |
+| 2. Act on its own behalf (server-to-server) | Complete | App not registered | Partial |
+| 3. Respond to webhooks | Complete | No live receiver URL | Partial |
+| 4. Take certain actions (permissions) | Complete | App not registered | Partial |
 
 **Root cause of all gaps:** The GitHub App has not been registered yet.
 Once registered via `scripts/ci/github_app_bootstrap.py`, all four patterns
@@ -37,7 +37,7 @@ The app authenticates with a **user access token** obtained through the OAuth
 authorization code flow. The app is limited by both the app's permissions and
 the authorizing user's permissions.
 
-###  What is implemented
+### What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -48,15 +48,15 @@ the authorizing user's permissions.
 | `examples/authentication/04_complete_flow.py` | Complete auth flow demo (GitHub OAuth + MFA + token management) |
 | `tests/auth/test_oauth_flow.py` | OAuth flow tests |
 
-### ️ What is missing
+### What is missing
 
 - **GitHub App not registered** — `GITHUB_APP_ID`, `GITHUB_CLIENT_ID`,
-  `GITHUB_CLIENT_SECRET` are still placeholder env vars; the App must be
-  registered via `scripts/ci/github_app_bootstrap.py --generate-manifest-url`
-  before the OAuth callback URL is functional.
+ `GITHUB_CLIENT_SECRET` are still placeholder env vars; the App must be
+ registered via `scripts/ci/github_app_bootstrap.py --generate-manifest-url`
+ before the OAuth callback URL is functional.
 - `src/integrations/github_app_auth.py` does not expose a
-  `get_user_info_with_user_token()` helper — callers must use `OAuthManager`
-  directly.
+ `get_user_info_with_user_token()` helper — callers must use `OAuthManager`
+ directly.
 
 ### Action required
 
@@ -65,7 +65,7 @@ the authorizing user's permissions.
 python scripts/ci/github_app_bootstrap.py --generate-manifest-url
 
 # Step 2: Admin completes registration in browser, receives one-time code
-# Step 3: Convert code → credentials
+# Step 3: Convert code credentials
 python scripts/ci/github_app_bootstrap.py --convert-code <ONE_TIME_CODE>
 ```
 
@@ -79,7 +79,7 @@ The app authenticates with an **installation access token**, exchanged from
 a short-lived App JWT (RS256). The app is limited only by its configured
 permissions, not by any user's permissions.
 
-###  What is implemented
+### What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -90,14 +90,14 @@ permissions, not by any user's permissions.
 | `tests/github/test_app_token.py` | JWT build + header/payload validation |
 | `tests/github/test_app_token_cli.py` | CLI token helper tests |
 
-### ️ What is missing
+### What is missing
 
 - **GitHub App not registered** — `GITHUB_APP_ID`, `GITHUB_APP_INSTALLATION_ID`
-  are unset. All helper functions will `raise AuthError` / `raise SystemExit`
-  until the App is registered and credentials stored in `.codex/github_app/`.
+ are unset. All helper functions will `raise AuthError` / `raise SystemExit`
+ until the App is registered and credentials stored in `.codex/github_app/`.
 - `GITHUB_APP_INSTALLATION_ID` is not documented in
-  `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md` — should be added
-  alongside `GITHUB_APP_ID`.
+ `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md` — should be added
+ alongside `GITHUB_APP_ID`.
 
 ---
 
@@ -109,7 +109,7 @@ The app subscribes to GitHub events (push, pull_request, issue_comment, etc.)
 and receives HTTP POST payloads to a registered URL. Payloads are authenticated
 with `X-Hub-Signature-256` (HMAC-SHA256).
 
-###  What is implemented
+### What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -118,13 +118,13 @@ with `X-Hub-Signature-256` (HMAC-SHA256).
 | `scripts/space_traversal/webhooks.py` | Generic webhook delivery with HMAC signing + retry/backoff |
 | `tests/space_traversal/test_webhooks.py` | Webhook delivery tests |
 
-### ️ What is missing
+### What is missing
 
 - **No live webhook receiver deployed** — `hook_attributes.url` in
-  `APP_MANIFEST` (see `scripts/ci/github_app_bootstrap.py`) defaults to
-  `https://placeholder.example.com/github-hook`. A real server (e.g., a Cloud
-  Run instance running `CodexReviewerApp`) must be deployed and the URL updated
-  via `github_app_bootstrap.py --update-webhook <URL>`.
+ `APP_MANIFEST` (see `scripts/ci/github_app_bootstrap.py`) defaults to
+ `https://placeholder.example.com/github-hook`. A real server (e.g., a Cloud
+ Run instance running `CodexReviewerApp`) must be deployed and the URL updated
+ via `github_app_bootstrap.py --update-webhook <URL>`.
 - **`CODEX_WEBHOOK_SECRET`** must be set after App registration.
 
 ### Action required
@@ -148,7 +148,7 @@ When registering the GitHub App, specific permissions are configured (e.g.,
 `contents: write`, `pull_requests: write`). These determine what the app can
 do via the GitHub API and what webhook events it can receive.
 
-###  What is implemented
+### What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -157,17 +157,17 @@ do via the GitHub API and what webhook events it can receive.
 | `.github/workflows/*.yml` | Explicit `permissions:` blocks (e.g., `contents: read`, `pull-requests: write`) on all workflows |
 | `agent-auth-delegation.yml` | Granular per-job permission scoping |
 
-### ️ What is missing
+### What is missing
 
 - **App permissions take effect only after registration.** The manifest is
-  defined but not applied.
+ defined but not applied.
 - `administration: read` in `APP_MANIFEST` may exceed the principle of least
-  privilege. This permission allows the App to read repository settings,
-  deploy keys, and repository metadata — it does **not** grant write/admin
-  access, but it should still be removed if the App only needs to read
-  code and post comments. **Audit before registration**: if runner
-  registration tokens (`create_runner_registration_token()`) are not
-  needed at app level, remove this permission from the manifest.
+ privilege. This permission allows the App to read repository settings,
+ deploy keys, and repository metadata — it does **not** grant write/admin
+ access, but it should still be removed if the App only needs to read
+ code and post comments. **Audit before registration**: if runner
+ registration tokens (`create_runner_registration_token()`) are not
+ needed at app level, remove this permission from the manifest.
 
 ---
 
@@ -180,7 +180,7 @@ been registered.
 
 - [ ] Admin runs `python scripts/ci/github_app_bootstrap.py --generate-manifest-url`
 - [ ] Admin opens generated URL in browser while signed in as org owner
-- [ ] Admin authorizes → receives one-time code
+- [ ] Admin authorizes receives one-time code
 - [ ] Admin runs `python scripts/ci/github_app_bootstrap.py --convert-code <CODE>`
 - [ ] `.codex/github_app/app_credentials.json` created (app_id, client_id)
 - [ ] `.codex/github_app/private_key.pem` created (keep secret, never commit)
@@ -194,7 +194,7 @@ been registered.
 | Variable | Pattern | Source |
 |----------|---------|--------|
 | `GITHUB_APP_ID` | 1, 2, 3, 4 | `app_credentials.json` after registration |
-| `GITHUB_APP_INSTALLATION_ID` | 2 | GitHub App → Installations |
+| `GITHUB_APP_INSTALLATION_ID` | 2 | GitHub App Installations |
 | `GITHUB_APP_PRIVATE_KEY_PEM` | 2 | `private_key.pem` after registration (store as secret) |
 | `GITHUB_CLIENT_ID` | 1 | `app_credentials.json` after registration |
 | `GITHUB_CLIENT_SECRET` | 1 | `app_credentials.json` after registration (store as secret) |

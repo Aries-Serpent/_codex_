@@ -108,14 +108,14 @@ grep -i "dependency\|version\|requirement" /var/log/pip-install-*.log
 [dependencies]
 torch = ">=1.9.0,<3.0.0"  # Was: >=2.0.0
 
-# Option B: Release v0.2.1 patch
+# Option B: Release v0.2.0 patch
 ```
 
 **Estimated Time**: 30 minutes (includes testing + release)
 
 **Communication**: 
 - GitHub issue: "Installation failure on Python 3.8"
-- Solution: v0.2.1 patch release
+- Solution: v0.2.0 patch release
 
 ---
 
@@ -251,14 +251,14 @@ dependencies = [
 # Option B: Update code to use new API
 from transformers import AutoTokenizer  # Old: from transformers import TransformerModel  # pragma: allowlist secret
 
-# Option C: Release v0.2.1 with fixes
+# Option C: Release v0.2.0 with fixes
 ```
 
 **Estimated Time**: 1-2 hours (includes investigation + fix + testing)
 
 **Communication**:
 - GitHub issue: "Incompatible with transformers v4.30.0"
-- Solution: v0.2.1 patch or recommend pinned dependency
+- Solution: v0.2.0 patch or recommend pinned dependency
 
 ---
 
@@ -341,13 +341,13 @@ def old_function_name(param):
 # Option B: Rollback if critical
 # Execute rollback procedure from runbook
 
-# Option C: Release v0.2.1 with compatibility shim
+# Option C: Release v0.2.0 with compatibility shim
 ```
 
 **Communication**:
 - GitHub Issues: Acknowledge and apologize
 - Migration guide: Provide step-by-step fix
-- v0.2.1 release: Quick patch to restore compatibility
+- v0.2.0 release: Quick patch to restore compatibility
 
 ---
 
@@ -408,7 +408,7 @@ results = vectorized_expensive_operation(large_list)  # O(n) total
 
 **Communication**:
 - GitHub Discussions: "Performance regression in v0.2.0"
-- Solution: v0.2.1 patch with optimization
+- Solution: v0.2.0 patch with optimization
 
 ---
 
@@ -507,7 +507,7 @@ transformers = ">=4.30.1"  # Patch available
 
 # Option B: Yank v0.2.0 if critical and revert to v0.1.0-final
 
-# Option C: Release v0.2.1 with updated dependency
+# Option C: Release v0.2.0 with updated dependency
 ```
 
 **Timeline**:
@@ -641,7 +641,7 @@ Escalate to rollback decision (15 min)
 **Example Escalation**:
 ```
 Alert (0 min) → Investigation (0-15 min) → Root cause identified (15-30 min)
-  ↓ [Plan v0.2.1 patch release]
+  ↓ [Plan v0.2.0 patch release]
 Patch development (1-2 hours)
 ```
 
@@ -721,7 +721,7 @@ Expected Resolution: 19:00 UTC (25 min remaining)
 ✅ RESOLVED: v0.2.0 Installation Issue
 
 Root Cause: Dependency version constraint too restrictive
-Resolution: Released v0.2.1 patch
+Resolution: Released v0.2.0 patch
 
 Impact: 50 users affected, now resolved
 Duration: 27 minutes
@@ -733,7 +733,7 @@ ETA: 2026-07-17T14:00:00Z
 **Status Page**:
 ```
 ✅ Resolved
-Resolution: Released v0.2.1 patch with dependency constraint fix
+Resolution: Released v0.2.0 patch with dependency constraint fix
 Duration: 27 minutes
 Impact: Service restored at 2026-07-16T19:00:00Z
 ```
@@ -749,11 +749,11 @@ from 2026-07-16 18:32 UTC to 19:00 UTC (27 minutes).
 
 Root Cause: Dependency version constraint was too restrictive.
 
-Resolution: We released v0.2.1 with corrected constraints.
+Resolution: We released v0.2.0 with corrected constraints.
 
 Action Required: 
-- If you have v0.2.0 installed, upgrade to v0.2.1: `pip install --upgrade codex_ml`
-- v0.2.1 is recommended for all users
+- If you have v0.2.0 installed, upgrade to v0.2.0: `pip install --upgrade codex_ml`
+- v0.2.0 is recommended for all users
 
 Thank you for your patience.
 ```
@@ -785,7 +785,7 @@ Thank you for your patience.
 | 18:32 | Installation failure alert triggered |
 | 18:35 | Incident commander engaged |
 | 18:42 | Root cause identified |
-| 18:50 | v0.2.1 patch released |
+| 18:50 | v0.2.0 patch released |
 | 19:00 | All installations succeeding |
 
 ## Root Cause Analysis

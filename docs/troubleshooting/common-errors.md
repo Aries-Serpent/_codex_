@@ -1,6 +1,6 @@
 # Common Error Troubleshooting Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Comprehensive troubleshooting guide for common errors and their solutions  
 > **Level**: Beginner to Intermediate | **Prerequisites**: Basic Python knowledge  

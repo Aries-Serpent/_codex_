@@ -1,20 +1,20 @@
 # NotebookLM Grounding Engine Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Generated:** 2026-01-23T19:00:00Z  
-**Branch:** copilot/sub-pr-3020  
-**Status:**  Complete
+**Generated:** 2026-01-23T19:00:00Z
+**Branch:** copilot/sub-pr-3020
+**Status:** Complete
 
 ---
 
-##  Overview
+## Overview
 
 This guide provides instructions for ingesting the Aries-Serpent `_codex_` repository into NotebookLM's Grounding Engine. Three artifacts have been created to bridge the Python "Cognitive Brain" and Rust "Orchestration Layer."
 
 ---
 
-## 📦 Artifacts Created
+## Artifacts Created
 
 ### 1. `skeleton_map.json` (12KB)
 
@@ -22,19 +22,19 @@ This guide provides instructions for ingesting the Aries-Serpent `_codex_` repos
 
 **Contents:**
 - **4 Architectural Layers:**
-  - Logic Layer: Python Cognitive Brain (40+ modules), Agent Swarm (26 agents), Core Modules (30+ packages)
-  - Performance Layer: Rust Orchestration Engine (Cargo.toml, 20+ source files)
-  - Bridge Layer: Schemas (15+), Manifests, Mappings
-  - Documentation Layer: Guides (60+), Prompts (30+), Index (693+ files)
+ - Logic Layer: Python Cognitive Brain (40+ modules), Agent Swarm (26 agents), Core Modules (30+ packages)
+ - Performance Layer: Rust Orchestration Engine (Cargo.toml, 20+ source files)
+ - Bridge Layer: Schemas (15+), Manifests, Mappings
+ - Documentation Layer: Guides (60+), Prompts (30+), Index (693+ files)
 
 - **Integration Points:**
-  - Python-Rust FFI via PyO3 (abi3-py38)
-  - Cognitive-to-Rust dispatcher
-  - Agent orchestration registry
+ - Python-Rust FFI via PyO3 (abi3-py38)
+ - Cognitive-to-Rust dispatcher
+ - Agent orchestration registry
 
 - **Traversal Summary:**
-  - Verified paths for all major components
-  - Statistics: 500+ files cataloged
+ - Verified paths for all major components
+ - Statistics: 500+ files cataloged
 
 **Usage:** Ingest first to provide structural context to NotebookLM.
 
@@ -68,13 +68,13 @@ This guide provides instructions for ingesting the Aries-Serpent `_codex_` repos
 - Dynamic repository root detection (`git rev-parse` + fallback)
 - Efficient `find` commands with exclusions (tests, node_modules, target, .git)
 - Collects:
-  - Documentation (*.md from docs/, guides/)
-  - Python source (*.py, excluding test directories)
-  - Rust source (*.rs, excluding test/target directories)
-  - Configuration files (Cargo.toml, pyproject.toml, etc.)
-  - Schemas (JSON, YAML)
-  - Prompts (all prompt directories)
-  - Agent definitions (26 agents from .github/agents)
+ - Documentation (*.md from docs/, guides/)
+ - Python source (*.py, excluding test directories)
+ - Rust source (*.rs, excluding test/target directories)
+ - Configuration files (Cargo.toml, pyproject.toml, etc.)
+ - Schemas (JSON, YAML)
+ - Prompts (all prompt directories)
+ - Agent definitions (26 agents from .github/agents)
 
 **Usage:**
 ```bash
@@ -87,7 +87,7 @@ This guide provides instructions for ingesting the Aries-Serpent `_codex_` repos
 
 ---
 
-##  Ingestion Workflow
+## Ingestion Workflow
 
 ### Step 1: Ingest Skeleton Map
 
@@ -159,7 +159,7 @@ Result: NotebookLM can answer questions with specific file references
 
 ---
 
-##  Query Examples
+## Query Examples
 
 Once ingestion is complete, you can ask NotebookLM:
 
@@ -182,7 +182,7 @@ Once ingestion is complete, you can ask NotebookLM:
 **Expected A:**
 - Cites `Cargo.toml` (PyO3 configuration)
 - References `rust_swarm/ffi_bridge.rs` (bridge code)
-- Shows data flow: Python → PyO3 → Rust → MessagePack → LZ4
+- Shows data flow: Python PyO3 Rust MessagePack LZ4
 - References schemas for validation
 
 ---
@@ -193,15 +193,15 @@ Once ingestion is complete, you can ask NotebookLM:
 
 **Expected A:**
 - Lists from AGENT_REGISTRY.yaml:
-  - bridge-security-monitor
-  - dependency-vulnerability-scanner
-  - codeql-alert-resolution-agent
-  - security-vulnerability-patcher
+ - bridge-security-monitor
+ - dependency-vulnerability-scanner
+ - codeql-alert-resolution-agent
+ - security-vulnerability-patcher
 - Explains capabilities and integration points
 
 ---
 
-##  Verification
+## Verification
 
 ### Skeleton Map Validation
 
@@ -239,19 +239,19 @@ bash -n prepare_notebooklm.sh
 
 ---
 
-##  Success Criteria
+## Success Criteria
 
--  Skeleton map provides 4-layer architectural overview
--  GEM instructions establish Four Pillars response format
--  Script generates full context with 500+ files
--  NotebookLM can answer questions with file path citations
--  Responses include evidence trails and cross-references
--  Integration points between Python and Rust are clear
--  Agent capabilities and orchestration are documented
+- Skeleton map provides 4-layer architectural overview
+- GEM instructions establish Four Pillars response format
+- Script generates full context with 500+ files
+- NotebookLM can answer questions with file path citations
+- Responses include evidence trails and cross-references
+- Integration points between Python and Rust are clear
+- Agent capabilities and orchestration are documented
 
 ---
 
-## 🛡️ Safety & Constraints
+## Safety & Constraints
 
 **Pre-Genesis Mode:**
 - Autonomous actions disabled
@@ -265,7 +265,7 @@ bash -n prepare_notebooklm.sh
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **Repository Overview:** `README.md`
 - **Agent Operations:** `.codex/archive/deprecated/AGENTS.md`
@@ -277,7 +277,7 @@ bash -n prepare_notebooklm.sh
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: Script fails to find files
 
@@ -315,7 +315,7 @@ jq . skeleton_map.json | head -20
 
 ---
 
-## 📞 Support
+## Support
 
 - **Issues:** https://github.com/Aries-Serpent/_codex_/issues
 - **Maintainer:** @mbaetiong
@@ -323,7 +323,7 @@ jq . skeleton_map.json | head -20
 
 ---
 
-##  Completion Checklist
+## Completion Checklist
 
 - [x] Artifacts created (skeleton_map.json, GEM_INSTRUCTIONS.md, prepare_notebooklm.sh)
 - [x] Code review feedback addressed
@@ -334,8 +334,8 @@ jq . skeleton_map.json | head -20
 
 ---
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Last Updated: 2026-07-11
-**Status:**  Production Ready
+**Status:** Production Ready
 
-**Next Step:** Ingest artifacts into NotebookLM in order: skeleton_map.json → GEM_INSTRUCTIONS.md → full_context.txt
+**Next Step:** Ingest artifacts into NotebookLM in order: skeleton_map.json GEM_INSTRUCTIONS.md full_context.txt

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/GITHUB_APP_CLI_MAPPING/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
-<title>GitHub App ↔ cognitive_app CLI — Integration Mapping Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>GitHub App cognitive_app CLI — Integration Mapping Guide - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              GitHub App ↔ cognitive_app CLI — Integration Mapping Guide
+              GitHub App cognitive_app CLI — Integration Mapping Guide
             
           </span>
 </div>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2321,7 +2321,7 @@
 <a class="md-nav__link" href="#3-calling-github-with-pat-fallback-codex_master_key-codex_backup_key">
 <span class="md-ellipsis">
       
-        3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY → CODEX_BACKUP_KEY)
+        3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY CODEX_BACKUP_KEY)
       
     </span>
 </a>
@@ -2339,7 +2339,7 @@
 <a class="md-nav__link" href="#5-cli-github-app-session-quick-start">
 <span class="md-ellipsis">
       
-        5 · CLI ↔ GitHub App — Session Quick-Start
+        5 · CLI GitHub App — Session Quick-Start
       
     </span>
 </a>
@@ -2378,13 +2378,13 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="github-app-cognitive_app-cli-integration-mapping-guide">GitHub App ↔ cognitive_app CLI — Integration Mapping Guide<a class="headerlink" href="#github-app-cognitive_app-cli-integration-mapping-guide" title="Permanent link">¶</a></h1>
+<h1 id="github-app-cognitive_app-cli-integration-mapping-guide">GitHub App cognitive_app CLI — Integration Mapping Guide<a class="headerlink" href="#github-app-cognitive_app-cli-integration-mapping-guide" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Status:</strong>  NEW (PR #3503 W-126, 2026-03-05)<br/>
-<strong>Audience:</strong> Copilot Coding Agent sessions, integration engineers<br/>
+<p><strong>Status:</strong> NEW (PR #3503 W-126, 2026-03-05)
+<strong>Audience:</strong> Copilot Coding Agent sessions, integration engineers
 <strong>Related:</strong> <code>docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md</code>, <code>src/codex/auth/github_app.py</code>,
 <code>cognitive_app/src/server/cli_api_server.py</code>, <code>src/codex/agents/brain_client.py</code></p>
 </blockquote>
@@ -2414,7 +2414,7 @@
 <tr>
 <td><strong>Outbound auth fallback</strong></td>
 <td><code>GitHubApp.pat_api_get()</code></td>
-<td>PAT-authenticated GET with automatic <code>CODEX_MASTER_KEY → CODEX_BACKUP_KEY</code> retry</td>
+<td>PAT-authenticated GET with automatic <code>CODEX_MASTER_KEY CODEX_BACKUP_KEY</code> retry</td>
 </tr>
 <tr>
 <td><strong>Proxy gateway</strong></td>
@@ -2433,31 +2433,30 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GitHub → webhook delivery
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>         │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>         ▼  X-Hub-Signature-256 verified
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>  ┌─────────────────────────────────┐
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>  │  WebhookVerifier.verify()       │  ← src/codex/auth/github_app.py
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>  └───────────────┬─────────────────┘
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>                  │ payload (bytes)
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>                  ▼
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>  ┌─────────────────────────────────┐
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>  │  POST /api/ooda/process         │  ← cli_api_server.py
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>  │  CognitiveAppMain.process()     │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>  └───────────────┬─────────────────┘
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>                  │ ActionResult
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>                  ▼
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>  ┌─────────────────────────────────┐
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>  │  POST /api/cli/run              │  ← cli_api_server.py
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>  │  (e.g. gh pr comment, git push) │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>  └─────────────────────────────────┘
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>                  │
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>                  ▼
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>  ┌─────────────────────────────────┐
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>  │  GitHubApp.pat_api_get()        │  ← github_app.py
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>  │  CODEX_MASTER_KEY               │
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>  │    └─ 401/403 → CODEX_BACKUP_KEY│
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>  └─────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GitHub webhook delivery
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> X-Hub-Signature-256 verified
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> WebhookVerifier.verify() src/codex/auth/github_app.py
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> payload (bytes)
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> POST /api/ooda/process cli_api_server.py
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> CognitiveAppMain.process() 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> ActionResult
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> POST /api/cli/run cli_api_server.py
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> (e.g. gh pr comment, git push) 
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> GitHubApp.pat_api_get() github_app.py
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> CODEX_MASTER_KEY 
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> 401/403 CODEX_BACKUP_KEY
 </code></pre></div>
 <hr/>
 <h2 id="token-resolution-unified-priority-chain">Token Resolution — Unified Priority Chain<a class="headerlink" href="#token-resolution-unified-priority-chain" title="Permanent link">¶</a></h2>
@@ -2500,7 +2499,7 @@
 </table>
 <blockquote>
 <p><strong>GitHub App JWT auth</strong> (used by <code>GitHubApp.generate_jwt()</code> /
-<code>get_installation_token()</code>) is <strong>separate</strong> from PAT auth.<br/>
+<code>get_installation_token()</code>) is <strong>separate</strong> from PAT auth.
 The RSA private key (<code>GITHUB_APP_PRIVATE_KEY</code> env var) is used exclusively
 for JWT signing — it never falls through to PAT tokens.</p>
 </blockquote>
@@ -2513,26 +2512,26 @@ for JWT signing — it never falls through to PAT tokens.</p>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a># In your HTTP handler (FastAPI / Flask / plain WSGI):
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>raw_body: bytes = await request.body()
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>sig_header: str  = request.headers["X-Hub-Signature-256"]
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>sig_header: str = request.headers["X-Hub-Signature-256"]
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>if not verifier.verify(raw_body, sig_header):
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    raise HTTPException(status_code=401, detail="Invalid webhook signature")
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> raise HTTPException(status_code=401, detail="Invalid webhook signature")
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>event = json.loads(raw_body)
 </code></pre></div>
 <p><strong>Wire to the CLI server</strong> — forward verified payloads into the OODA loop:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">codex.agents.brain_client</span> <span class="kn">import</span> <span class="n">BrainClient</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">brain</span> <span class="o">=</span> <span class="n">BrainClient</span><span class="p">()</span>   <span class="c1"># points to localhost:8765</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">brain</span> <span class="o">=</span> <span class="n">BrainClient</span><span class="p">()</span> <span class="c1"># points to localhost:8765</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">ooda_process</span><span class="p">(</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">input_data</span><span class="o">=</span><span class="p">{</span><span class="s2">"event"</span><span class="p">:</span> <span class="n">event</span><span class="p">,</span> <span class="s2">"event_type"</span><span class="p">:</span> <span class="s2">"pull_request"</span><span class="p">},</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"github_webhook"</span><span class="p">},</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="n">input_data</span><span class="o">=</span><span class="p">{</span><span class="s2">"event"</span><span class="p">:</span> <span class="n">event</span><span class="p">,</span> <span class="s2">"event_type"</span><span class="p">:</span> <span class="s2">"pull_request"</span><span class="p">},</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"github_webhook"</span><span class="p">},</span>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="p">)</span>
 </code></pre></div>
 <p>Equivalent via curl (from within a CLI step):</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/ooda/process<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s2">"{\"input\": </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$EVENT_JSON</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="se">\"</span>import<span class="w"> </span>json,sys<span class="p">;</span><span class="w"> </span>print<span class="o">(</span>json.dumps<span class="o">({</span><span class="s1">'event'</span>:<span class="w"> </span>json.load<span class="o">(</span>sys.stdin<span class="k">)</span><span class="s2">}))\"), \"context\": {\"source\": \"github_webhook\"}}"</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s2">"{\"input\": </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$EVENT_JSON</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="se">\"</span>import<span class="w"> </span>json,sys<span class="p">;</span><span class="w"> </span>print<span class="o">(</span>json.dumps<span class="o">({</span><span class="s1">'event'</span>:<span class="w"> </span>json.load<span class="o">(</span>sys.stdin<span class="k">)</span><span class="s2">}))\"), \"context\": {\"source\": \"github_webhook\"}}"</span>
 </code></pre></div>
 <hr/>
 <h2 id="2-calling-github-as-the-app-jwt-auth">2 · Calling GitHub as the App (JWT auth)<a class="headerlink" href="#2-calling-github-as-the-app-jwt-auth" title="Permanent link">¶</a></h2>
@@ -2540,42 +2539,42 @@ for JWT signing — it never falls through to PAT tokens.</p>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">codex.auth.github_app</span> <span class="kn">import</span> <span class="n">GitHubApp</span><span class="p">,</span> <span class="n">GitHubAppConfig</span>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">config</span> <span class="o">=</span> <span class="n">GitHubAppConfig</span><span class="p">(</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">app_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GITHUB_APP_ID"</span><span class="p">]),</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">private_key_pem</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GITHUB_APP_PRIVATE_KEY"</span><span class="p">],</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">webhook_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"WEBHOOK_SECRET"</span><span class="p">),</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="n">app_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GITHUB_APP_ID"</span><span class="p">]),</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="n">private_key_pem</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GITHUB_APP_PRIVATE_KEY"</span><span class="p">],</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="n">webhook_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"WEBHOOK_SECRET"</span><span class="p">),</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="n">app</span> <span class="o">=</span> <span class="n">GitHubApp</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="c1"># Get an installation access token (cached, auto-refreshed)</span>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="n">token</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_installation_token</span><span class="p">(</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="n">installation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GITHUB_APP_INSTALLATION_ID"</span><span class="p">]),</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="n">permissions</span><span class="o">=</span><span class="p">{</span><span class="s2">"contents"</span><span class="p">:</span> <span class="s2">"read"</span><span class="p">,</span> <span class="s2">"pull_requests"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">},</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="n">installation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GITHUB_APP_INSTALLATION_ID"</span><span class="p">]),</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="n">permissions</span><span class="o">=</span><span class="p">{</span><span class="s2">"contents"</span><span class="p">:</span> <span class="s2">"read"</span><span class="p">,</span> <span class="s2">"pull_requests"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">},</span>
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="p">)</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>          <span class="c1"># ghs_xxxx — use as Bearer token</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">is_expired</span><span class="p">())</span>   <span class="c1"># False</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">token</span><span class="p">)</span> <span class="c1"># ghs_xxxx — use as Bearer token</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">is_expired</span><span class="p">())</span> <span class="c1"># False</span>
 </code></pre></div>
 <p>Pass the installation token to <code>BrainClient</code> for the remainder of the session:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Override the auth header for this specific request</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="s2">"GET"</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/pulls"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">},</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> <span class="s2">"GET"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/pulls"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">},</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
-<h2 id="3-calling-github-with-pat-fallback-codex_master_key-codex_backup_key">3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY → CODEX_BACKUP_KEY)<a class="headerlink" href="#3-calling-github-with-pat-fallback-codex_master_key-codex_backup_key" title="Permanent link">¶</a></h2>
+<h2 id="3-calling-github-with-pat-fallback-codex_master_key-codex_backup_key">3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY CODEX_BACKUP_KEY)<a class="headerlink" href="#3-calling-github-with-pat-fallback-codex_master_key-codex_backup_key" title="Permanent link">¶</a></h2>
 <p>For endpoints that require PAT scope (e.g. Actions Variables API):</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Automatic retry: tries CODEX_MASTER_KEY first, falls back to CODEX_BACKUP_KEY</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="c1"># on 401/403, then AGENT_GITHUB_TOKEN, then GITHUB_TOKEN.</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">data</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">pat_api_get</span><span class="p">(</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="p">)</span>
 </code></pre></div>
 <p>The same fallback is available through <code>BrainClient</code> (which already implements
 the same chain internally):</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="n">vars_resp</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="s2">"GET"</span><span class="p">,</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">,</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="s2">"GET"</span><span class="p">,</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">,</span>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -2584,41 +2583,41 @@ the same chain internally):</p>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="kn">import</span> <span class="nn">json</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="n">manifest</span> <span class="o">=</span> <span class="n">build_app_manifest</span><span class="p">(</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"codex-cognitive-bot"</span><span class="p">,</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">url</span><span class="o">=</span><span class="s2">"https://aries-serpent.github.io/_codex_/"</span><span class="p">,</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="n">webhook_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"WEBHOOK_RECEIVER_URL"</span><span class="p">,</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>                               <span class="s2">"https://api.your-cognitive-brain-server.com/webhook/github"</span><span class="p">),</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Cognitive Brain CI feedback + OODA loop automation agent"</span><span class="p">,</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="n">callback_urls</span><span class="o">=</span><span class="p">[</span><span class="s2">"https://aries-serpent.github.io/_codex_/auth/callback"</span><span class="p">],</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="n">default_events</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>        <span class="s2">"push"</span><span class="p">,</span> <span class="s2">"pull_request"</span><span class="p">,</span> <span class="s2">"pull_request_review"</span><span class="p">,</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>        <span class="s2">"issue_comment"</span><span class="p">,</span> <span class="s2">"workflow_run"</span><span class="p">,</span> <span class="s2">"check_run"</span><span class="p">,</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>    <span class="p">],</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    <span class="n">default_permissions</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>        <span class="s2">"contents"</span><span class="p">:</span> <span class="s2">"read"</span><span class="p">,</span>
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>        <span class="s2">"pull_requests"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>        <span class="s2">"checks"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>        <span class="s2">"statuses"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>        <span class="s2">"issues"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>        <span class="s2">"metadata"</span><span class="p">:</span> <span class="s2">"read"</span><span class="p">,</span>
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>    <span class="p">},</span>
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>    <span class="n">public</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"codex-cognitive-bot"</span><span class="p">,</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">url</span><span class="o">=</span><span class="s2">"https://aries-serpent.github.io/_codex_/"</span><span class="p">,</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">webhook_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"WEBHOOK_RECEIVER_URL"</span><span class="p">,</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="s2">"https://api.your-cognitive-brain-server.com/webhook/github"</span><span class="p">),</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Cognitive Brain CI feedback + OODA loop automation agent"</span><span class="p">,</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="n">callback_urls</span><span class="o">=</span><span class="p">[</span><span class="s2">"https://aries-serpent.github.io/_codex_/auth/callback"</span><span class="p">],</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="n">default_events</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="s2">"push"</span><span class="p">,</span> <span class="s2">"pull_request"</span><span class="p">,</span> <span class="s2">"pull_request_review"</span><span class="p">,</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> <span class="s2">"issue_comment"</span><span class="p">,</span> <span class="s2">"workflow_run"</span><span class="p">,</span> <span class="s2">"check_run"</span><span class="p">,</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="p">],</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> <span class="n">default_permissions</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> <span class="s2">"contents"</span><span class="p">:</span> <span class="s2">"read"</span><span class="p">,</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> <span class="s2">"pull_requests"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> <span class="s2">"checks"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> <span class="s2">"statuses"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> <span class="s2">"issues"</span><span class="p">:</span> <span class="s2">"write"</span><span class="p">,</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> <span class="s2">"metadata"</span><span class="p">:</span> <span class="s2">"read"</span><span class="p">,</span>
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a> <span class="p">},</span>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a> <span class="n">public</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="p">)</span>
 <a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>
 <a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="c1"># Embed in HTML form for the manifest flow:</span>
 <a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">manifest</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </code></pre></div>
 <hr/>
-<h2 id="5-cli-github-app-session-quick-start">5 · CLI ↔ GitHub App — Session Quick-Start<a class="headerlink" href="#5-cli-github-app-session-quick-start" title="Permanent link">¶</a></h2>
+<h2 id="5-cli-github-app-session-quick-start">5 · CLI GitHub App — Session Quick-Start<a class="headerlink" href="#5-cli-github-app-session-quick-start" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># 1. Verify CLI server is up</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>curl<span class="w"> </span>-sf<span class="w"> </span>http://localhost:8765/api/health
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="c1"># 2. Confirm token chain (MASTER → BACKUP)</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="c1"># 2. Confirm token chain (MASTER BACKUP)</span>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>python3<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="s">from codex.auth.github_app import _resolve_github_token</span>
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="s">for val, name in _resolve_github_token():</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="s">    status = " set" if val else " missing"</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="s">    print(f"  {name}: {status}")</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="s"> status = " set" if val else " missing"</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="s"> print(f" {name}: {status}")</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="s">EOF</span>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>
 <a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="c1"># 3. Test GitHub App JWT generation</span>
@@ -2626,8 +2625,8 @@ the same chain internally):</p>
 <a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="s">import os</span>
 <a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="s">from codex.auth.github_app import GitHubApp, GitHubAppConfig</span>
 <a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="s">cfg = GitHubAppConfig(</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="s">    app_id=int(os.environ.get("GITHUB_APP_ID", "1")),</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="s">    private_key_pem=os.environ.get("GITHUB_APP_PRIVATE_KEY", ""),</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="s"> app_id=int(os.environ.get("GITHUB_APP_ID", "1")),</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="s"> private_key_pem=os.environ.get("GITHUB_APP_PRIVATE_KEY", ""),</span>
 <a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="s">)</span>
 <a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="s">app = GitHubApp(cfg)</span>
 <a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="s">jwt = app.generate_jwt()</span>
@@ -2636,9 +2635,9 @@ the same chain internally):</p>
 <a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
 <a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="c1"># 4. Test PAT fallback via proxy</span>
 <a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json,sys; d=json.load(sys.stdin); print('status:', d['status_code'])"</span>
+<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json,sys; d=json.load(sys.stdin); print('status:', d['status_code'])"</span>
 </code></pre></div>
 <hr/>
 <h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">¶</a></h2>
@@ -2764,6 +2763,6 @@ the same chain internally):</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

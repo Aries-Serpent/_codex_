@@ -1,9 +1,9 @@
-# [How-to]: Dataset Manifest & Shard Integrity  
+# [How-to]: Dataset Manifest & Shard Integrity
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Purpose
 - Ensure reproducible dataset loading with per-shard SHA256 verification.
@@ -14,11 +14,11 @@ The `codex_ml.data.registry` module now exposes ready-to-use JSONL and CSV
 loaders that integrate with manifest generation and deterministic splitting.
 
 - **JSONL** — `codex_ml.data.registry.load_jsonl(path, split=(0.8,0.1,0.1))`
-  normalises each record into `{text,input,target}` entries, records the source
-  checksum and optionally writes cache manifests under `artifacts/data_cache/`.
+ normalises each record into `{text,input,target}` entries, records the source
+ checksum and optionally writes cache manifests under `artifacts/data_cache/`.
 - **CSV** — `codex_ml.data.registry.load_csv(path, delimiter=",")` uses the
-  header row to resolve columns and mirrors the JSONL deterministic splitting
-  utilities. TSV files are supported by setting `delimiter="\t"`.
+ header row to resolve columns and mirrors the JSONL deterministic splitting
+ utilities. TSV files are supported by setting `delimiter="\t"`.
 
 Both loaders accept `seed` and `shuffle` parameters, ensuring reproducible
 train/validation/test splits that align with the manifest checksums described
@@ -46,6 +46,6 @@ man2.verify("data_root")
 
 Notes
 - Verification raises ValueError on missing shard or checksum mismatch.
-- Writing uses atomic IO (tmpfile→fsync→os.replace).
+- Writing uses atomic IO (tmpfilefsyncos.replace).
 
 *End*

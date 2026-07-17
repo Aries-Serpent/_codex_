@@ -1,11 +1,11 @@
 # RBAC Specification
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version**: 1.0.0  
-**Effective Date**: 2026-06-14  
-**Classification**: Internal — Security Sensitive  
-**Owner**: Security & Access Management Team  
+**Version**: 1.0.0
+**Effective Date**: 2026-06-14
+**Classification**: Internal — Security Sensitive
+**Owner**: Security & Access Management Team
 **Last Updated**: 2026-06-14
 
 ---
@@ -51,59 +51,59 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 ### Role Definitions
 
 ```
-┌──────────────────────────────────────────────────┐
-│              RBAC Role Hierarchy                 │
-├──────────────────────────────────────────────────┤
-│                                                  │
-│  Level 0 (Unrestricted)                         │
-│  ├─ Owner                                        │
-│  │  • Full repository control                    │
-│  │  • All permissions                            │
-│  │  • Cannot be revoked                          │
-│  │  • Audit everything                           │
-│  │                                               │
-│  Level 1 (Privileged)                           │
-│  ├─ Admin (system)                              │
-│  │  • Deployment                                 │
-│  │  • Secrets management                         │  # pragma: allowlist secret
-│  │  • Security policies                          │
-│  │  • 4-hour time limit (auto-expiry)            │
-│  │  • Requires MFA + approval                    │
-│  │                                               │
-│  Level 2 (Elevated)                             │
-│  ├─ Editor (write access)                       │
-│  │  • Pull requests                              │
-│  │  • Code commits                               │
-│  │  • Branch protection bypass                   │
-│  │  • Standard MFA required                      │
-│  │                                               │
-│  ├─ Reviewer (review access)                    │
-│  │  • Code review                                │
-│  │  • PR approval                                │
-│  │  • Compliance sign-off                        │
-│  │  • Standard MFA required                      │
-│  │                                               │
-│  ├─ Operator (operations)                       │
-│  │  • Deploy to prod                             │
-│  │  • View logs/metrics                          │
-│  │  • Alert management                           │
-│  │  • Standard MFA required                      │
-│  │                                               │
-│  Level 3 (Standard)                             │
-│  ├─ Viewer (read-only)                          │
-│  │  • View documentation                         │
-│  │  • Read public files                          │
-│  │  • View metrics/logs (non-sensitive)          │
-│  │  • No secrets access                          │  # pragma: allowlist secret
-│  │                                               │
-│  Level 4 (Service Accounts)                     │
-│  ├─ Service Account (scoped)                    │
-│  │  • Specific actions only                      │
-│  │  • No human access                            │
-│  │  • Time-limited tokens                        │  # pragma: allowlist secret
-│  │  • Automatic rotation                         │
-│  │                                               │
-└──────────────────────────────────────────────────┘
+
+ RBAC Role Hierarchy 
+
+ 
+ Level 0 (Unrestricted) 
+ Owner 
+ • Full repository control 
+ • All permissions 
+ • Cannot be revoked 
+ • Audit everything 
+ 
+ Level 1 (Privileged) 
+ Admin (system) 
+ • Deployment 
+ • Secrets management # pragma: allowlist secret
+ • Security policies 
+ • 4-hour time limit (auto-expiry) 
+ • Requires MFA + approval 
+ 
+ Level 2 (Elevated) 
+ Editor (write access) 
+ • Pull requests 
+ • Code commits 
+ • Branch protection bypass 
+ • Standard MFA required 
+ 
+ Reviewer (review access) 
+ • Code review 
+ • PR approval 
+ • Compliance sign-off 
+ • Standard MFA required 
+ 
+ Operator (operations) 
+ • Deploy to prod 
+ • View logs/metrics 
+ • Alert management 
+ • Standard MFA required 
+ 
+ Level 3 (Standard) 
+ Viewer (read-only) 
+ • View documentation 
+ • Read public files 
+ • View metrics/logs (non-sensitive) 
+ • No secrets access # pragma: allowlist secret
+ 
+ Level 4 (Service Accounts) 
+ Service Account (scoped) 
+ • Specific actions only 
+ • No human access 
+ • Time-limited tokens # pragma: allowlist secret
+ • Automatic rotation 
+ 
+
 ```
 
 ### Role Characteristics
@@ -126,21 +126,21 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Editor | Reviewer | Operator | Viewer | Service |
 |---|---|---|---|---|---|---|---|---|
-| `repo:read` | Read repository |  |  |  |  |  |  | * |
-| `repo:write` | Write to repository |  |  |  |  |  |  |  |
-| `repo:admin` | Repository administration |  |  |  |  |  |  |  |
-| `branch:protect:write` | Modify branch protection |  |  |  |  |  |  |  |
-| `branch:protect:bypass` | Bypass protection |  |  |  |  |  |  |  |
+| `repo:read` | Read repository | | | | | | | * |
+| `repo:write` | Write to repository | | | | | | | |
+| `repo:admin` | Repository administration | | | | | | | |
+| `branch:protect:write` | Modify branch protection | | | | | | | |
+| `branch:protect:bypass` | Bypass protection | | | | | | | |
 
 ### Deployment Permissions
 
 | Permission | Description | Owner | Admin | Editor | Operator |
 |---|---|---|---|---|---|
-| `deploy:read` | View deployments |  |  |  |  |
-| `deploy:write` | Deploy (staging) |  |  |  |  |
-| `deploy:prod` | Deploy to production |  | * |  | * |
-| `deploy:rollback` | Rollback deployment |  | * |  | * |
-| `deploy:approve` | Approve deployment |  |  |  |  |
+| `deploy:read` | View deployments | | | | |
+| `deploy:write` | Deploy (staging) | | | | |
+| `deploy:prod` | Deploy to production | | * | | * |
+| `deploy:rollback` | Rollback deployment | | * | | * |
+| `deploy:approve` | Approve deployment | | | | |
 
 *Requires secondary approval
 
@@ -148,19 +148,19 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Others |
 |---|---|---|---|---|
-| `secret:read` | Read secrets |  |  |  | <!-- pragma: allowlist secret -->
-| `secret:write` | Create/update secrets |  |  |  | <!-- pragma: allowlist secret -->
-| `secret:rotate` | Rotate secrets |  |  |  | <!-- pragma: allowlist secret -->
-| `secret:delete` | Delete secrets |  |  |  | <!-- pragma: allowlist secret -->
+| `secret:read` | Read secrets | | | | <!-- pragma: allowlist secret -->
+| `secret:write` | Create/update secrets | | | | <!-- pragma: allowlist secret -->
+| `secret:rotate` | Rotate secrets | | | | <!-- pragma: allowlist secret -->
+| `secret:delete` | Delete secrets | | | | <!-- pragma: allowlist secret -->
 
 ### Security & Compliance
 
 | Permission | Description | Owner | Admin |
 |---|---|---|---|
-| `security:audit` | View audit logs |  |  |
-| `security:config` | Update security policies |  |  |
-| `security:incident` | Create incidents |  |  |
-| `security:keys:manage` | Manage encryption keys |  |  |
+| `security:audit` | View audit logs | | |
+| `security:config` | Update security policies | | |
+| `security:incident` | Create incidents | | |
+| `security:keys:manage` | Manage encryption keys | | |
 
 ---
 
@@ -170,71 +170,71 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 #### 1. `codex-ci-deploy`
 
-**Purpose**: CI/CD deployment automation  
+**Purpose**: CI/CD deployment automation
 **Permissions**:
 - `repo:read` (all branches)
 - `deploy:write` (staging + production)
 - `logs:read` (CI/CD logs only)
 
-**Token Expiry**: 90 days  
-**Rotation**: Quarterly  
+**Token Expiry**: 90 days
+**Rotation**: Quarterly
 **Scope**: GitHub Actions workflows only
 
 **Usage**:
 ```yaml
 # .github/workflows/deploy.yml
 - name: Deploy Application
-  env:
-    GITHUB_TOKEN: ${{ secrets.CODEX_CI_DEPLOY_TOKEN }}
-  run: ./scripts/deploy.sh
+ env:
+ GITHUB_TOKEN: ${{ secrets.CODEX_CI_DEPLOY_TOKEN }}
+ run: ./scripts/deploy.sh
 ```
 
 ## 2. `codex-security-scan`
 
-**Purpose**: Security scanning and compliance  
+**Purpose**: Security scanning and compliance
 **Permissions**:
 - `repo:read` (all branches)
 - `code:scan:read` (CodeQL)
 - `security:audit` (log access)
 
-**Token Expiry**: 90 days  
-**Rotation**: Quarterly  
+**Token Expiry**: 90 days
+**Rotation**: Quarterly
 **Scope**: Security scanning workflows only
 
 ### 3. `codex-monitoring`
 
-**Purpose**: Observability and alerting  
+**Purpose**: Observability and alerting
 **Permissions**:
 - `logs:read` (application logs)
 - `metrics:read` (Prometheus/Grafana)
 - `alerts:read|write` (alert management)
 
-**Token Expiry**: 180 days  
-**Rotation**: Semi-annually  
+**Token Expiry**: 180 days
+**Rotation**: Semi-annually
 **Scope**: Monitoring systems only
 
 #### 4. `codex-backup`
 
-**Purpose**: Data archival and backup  
+**Purpose**: Data archival and backup
 **Permissions**:
 - `data:read` (database snapshots)
 - `storage:write` (backup storage)
 - `logs:read` (backup logs)
 
-**Token Expiry**: 180 days  
-**Rotation**: Semi-annually  
+**Token Expiry**: 180 days
+**Rotation**: Semi-annually
 **Scope**: Backup infrastructure only
 
 #### 5. `codex-api-internal`
 
-**Purpose**: Internal service-to-service calls  
+**Purpose**: Internal service-to-service calls
 **Permissions**:
 - `api:call` (internal APIs only)
 - Restricted to internal IP ranges
 - Cannot access external systems
 
-**Token Expiry**: 30 days  
-**Rotation**: Monthly  
+**Token Expiry**: 30 days
+**Rotation**: Monthly
 **Scope**: Internal service communication
 
 ### Service Account Creation
@@ -270,20 +270,20 @@ Owner: [Team lead name]
 **Approval Process**:
 ```
 User Request
-    ↓
-    [Create GitHub Issue: "admin-access-request"]
-    ↓
+ 
+ [Create GitHub Issue: "admin-access-request"]
+ 
 Require: 2/2 Approval (different teams)
-    ├─ Security Team: Security implications review
-    └─ Operations Team: Business justification review
-    ↓
-[If approved] Generate temporary admin token (4 hours)  # pragma: allowlist secret
-    ↓
-    [User performs privileged action]
-    ↓
-    [Token auto-expires after 4 hours]  # pragma: allowlist secret
-    ↓
-    [Action logged with full audit trail]
+ Security Team: Security implications review
+ Operations Team: Business justification review
+ 
+[If approved] Generate temporary admin token (4 hours) # pragma: allowlist secret
+ 
+ [User performs privileged action]
+ 
+ [Token auto-expires after 4 hours] # pragma: allowlist secret
+ 
+ [Action logged with full audit trail]
 ```
 
 **Auto-Expiry**: 4 hours (non-extendable)
@@ -300,16 +300,16 @@ Require: 2/2 Approval (different teams)
 **For critical incidents only (P0/P1)**:
 ```
 Emergency Detection
-    ↓
-    [Create GitHub Issue: "SECURITY: Emergency escalation"]
-    ↓
-    Notify: Security Lead + On-call Engineer
-    ↓
-    [Grant 1-hour emergency admin access]
-    ↓
-    [Automatic escalation to all approvers]
-    ↓
-    [Post-incident review required]
+ 
+ [Create GitHub Issue: "SECURITY: Emergency escalation"]
+ 
+ Notify: Security Lead + On-call Engineer
+ 
+ [Grant 1-hour emergency admin access]
+ 
+ [Automatic escalation to all approvers]
+ 
+ [Post-incident review required]
 ```
 
 ### Privilege Escalation Prevention
@@ -362,28 +362,28 @@ Permissions automatically removed when:
 
 ```
 1. Create GitHub account + MFA setup
-   └─ New employee completes
+ New employee completes
 
 2. Request initial access via form
-   └─ Manager approves
+ Manager approves
 
 3. Grant Viewer role (read-only)
-   └─ Automatic grant for all new members
+ Automatic grant for all new members
 
 4. Role escalation (if needed)
-   └─ Team lead requests specific role
-   └─ Security reviews and approves
-   └─ Role assigned
+ Team lead requests specific role
+ Security reviews and approves
+ Role assigned
 
 5. Team setup (team-specific access)
-   └─ Add to GitHub team
-   └─ Add to deployment group
-   └─ Configure team permissions
+ Add to GitHub team
+ Add to deployment group
+ Configure team permissions
 
 6. First-day setup
-   └─ SSH key registration
-   └─ Local environment setup
-   └─ Secrets management training  # pragma: allowlist secret
+ SSH key registration
+ Local environment setup
+ Secrets management training # pragma: allowlist secret
 ```
 
 ### Offboarding (Departing Team Member)
@@ -392,28 +392,28 @@ Permissions automatically removed when:
 
 ```
 1. Disable GitHub account access
-   └─ Immediate (no grace period)
+ Immediate (no grace period)
 
-2. Revoke all API tokens  # pragma: allowlist secret
-   └─ Immediate
+2. Revoke all API tokens # pragma: allowlist secret
+ Immediate
 
 3. Disable SSH keys
-   └─ Immediate
+ Immediate
 
-4. Clear local secrets/credentials  # pragma: allowlist secret
-   └─ Assisted by IT
+4. Clear local secrets/credentials # pragma: allowlist secret
+ Assisted by IT
 
 5. Archive access history
-   └─ 90-day retention for legal
+ 90-day retention for legal
 
 6. Notify security team
-   └─ Send offboarding summary
+ Send offboarding summary
 
 7. Remove from all deployment groups
-   └─ Immediate
+ Immediate
 
 8. Audit verification
-   └─ Confirm access fully removed
+ Confirm access fully removed
 ```
 
 ### Role Change Request
@@ -506,9 +506,9 @@ Permissions automatically removed when:
 
 ---
 
-**Approved By**: Security & Access Management Team  
-**Effective Date**: 2026-06-14  
-**Review Frequency**: Semi-annually  
+**Approved By**: Security & Access Management Team
+**Effective Date**: 2026-06-14
+**Review Frequency**: Semi-annually
 **Next Review**: 2026-12-14
 
 ---

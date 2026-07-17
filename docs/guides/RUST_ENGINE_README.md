@@ -1,6 +1,6 @@
 # Codex Swarm Engine (Rust)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -19,13 +19,13 @@ The Codex Swarm Engine replaces Python's GIL-bound execution with true paralleli
 
 ```
 Python "Brain" (ML Logic)
-         ↓
-    PyO3 Bridge
-         ↓
+ 
+ PyO3 Bridge
+ 
 Rust "Body" (Orchestration)
-    ├── SwarmState (DashMap)
-    ├── Orchestrator (Tokio)
-    └── TaskQueue (MPSC)
+ SwarmState (DashMap)
+ Orchestrator (Tokio)
+ TaskQueue (MPSC)
 ```
 
 ## Installation
@@ -81,12 +81,12 @@ queue.submit(task)
 
 # Agents receive tasks
 while True:
-    task = queue.receive()
-    if task:
-        print(f"Processing task: {task.id}")
-        state.set_agent_status("agent_1", "working", task.id)
-        # ... process task ...
-        state.set_agent_status("agent_1", "complete")
+ task = queue.receive()
+ if task:
+ print(f"Processing task: {task.id}")
+ state.set_agent_status("agent_1", "working", task.id)
+ # ... process task ...
+ state.set_agent_status("agent_1", "complete")
 ```
 
 ## Agent Status Management
@@ -140,14 +140,14 @@ cargo doc --open
 
 ## Compliance
 
--  AI Agent Policy v0.2.1
--  Cognitive Brain Integration (Phase 11)
--  Zero additional cost (GitHub Team + Copilot Pro+)
--  Production-ready architecture
+- AI Agent Policy v0.2.0
+- Cognitive Brain Integration (Phase 11)
+- Zero additional cost (GitHub Team + Copilot Pro+)
+- Production-ready architecture
 
 ## Roadmap
 
-- [x] **Milestone 1.1**: Project Scaffolding 
+- [x] **Milestone 1.1**: Project Scaffolding
 - [ ] **Milestone 1.2**: SwarmState Bridge
 - [ ] **Milestone 1.3**: Tokio Runtime Integration
 - [ ] **Milestone 2.1**: Async Task Queue

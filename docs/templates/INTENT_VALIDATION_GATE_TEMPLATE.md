@@ -1,25 +1,25 @@
 # Intent Validation & Plan of Action Approval Gate (Iteration-Based)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Template Version**: 2.0.0-iteration-based  
-> **Generated**: 2026-06-22T00:00:00Z  
-> **Author**: mbaetiong  
+> **Template Version**: 2.0.0-iteration-based
+> **Generated**: 2026-06-22T00:00:00Z
+> **Author**: mbaetiong
 > **Framework**: Aligned with _codex_ Iteration-Based Implementation Plan Framework
 
 ---
 
-##  Template Purpose
+## Template Purpose
 
 This template defines how AI assistants must respond for any **non-trivial or higher-risk task**. These rules are binding for the interaction and enforce iteration-based workflow terminology aligned with _codex_ incremental development philosophy.
 
-**Energy Level**:  (4/5 - High Value Governance)
+**Energy Level**: (4/5 - High Value Governance)
 
-**Status**:  Active Template
+**Status**: Active Template
 
 ---
 
-##  Applicability Criteria
+## Applicability Criteria
 
 **Non-trivial / higher-risk** includes any work that:
 - Affects production traffic or user-visible behavior
@@ -33,7 +33,7 @@ This template defines how AI assistants must respond for any **non-trivial or hi
 
 ---
 
-##  Global Behavior
+## Global Behavior
 
 When this template is invoked, the AI must **apply it to the specific task** and produce a **single, fully fleshed-out plan** that can be approved, edited, or rejected.
 
@@ -43,8 +43,8 @@ For any **open questions**, the AI **MUST**:
 - Present each question as **multiple-choice options** (A, B, C, …)
 - mark **recommended option(s)** (e.g., `Recommended: B`)
 - Phrase options to enable:
-  - Approval of all recommendations in one step (`Approve all recommended options`)
-  - Override specific questions with targeted feedback
+ - Approval of all recommendations in one step (`Approve all recommended options`)
+ - Override specific questions with targeted feedback
 
 The AI may **not** skip this behavior when:
 - Requirements, constraints, or context are uncertain
@@ -55,7 +55,7 @@ The AI may **not** skip this behavior when:
 
 ---
 
-##  Required Flow (Two-Stage Process)
+## Required Flow (Two-Stage Process)
 
 Whenever a task references this template, the response must follow **exactly these two stages, in order**:
 
@@ -82,7 +82,7 @@ The plan must be:
 
 ---
 
-##  Iteration-Based Plan Structure
+## Iteration-Based Plan Structure
 
 ### Iteration Organization
 
@@ -92,11 +92,11 @@ For each iteration, include:
 
 #### Iteration Header
 ```markdown
-### **Iteration N: [Name]** [Physics Symbol: ️️️]
+### **Iteration N: [Name]** [Physics Symbol: ]
 
 **Objective**: [Single sentence describing iteration goal]
 
-**Energy Level**:  ([1-5]/5)
+**Energy Level**: ([1-5]/5)
 ```
 
 #### Pre-commit Checkpoint
@@ -137,7 +137,7 @@ For each iteration, include:
 
 ---
 
-## 🧩 Required Sections Inside Plan
+## Required Sections Inside Plan
 
 The Plan of Action must include these sections. For very small, low-risk tasks, some sections may be brief, but they should **not** be omitted if there is material risk.
 
@@ -151,15 +151,15 @@ List **key assumptions** derived from:
 Tag each assumption with confidence marker:
 - `` = confirmed or very likely
 - `?` = uncertain but plausible
-- `️` = high-risk or explicitly requiring clarification
+- `` = high-risk or explicitly requiring clarification
 
 **Example format**:
 ```markdown
 ## Assumptions
 
--  Authentication is currently token-based and centralized in `src/auth/`
+- Authentication is currently token-based and centralized in `src/auth/`
 - ? Rate limiting is handled upstream by the API gateway
-- ️ Production and staging environments share the same database cluster
+- Production and staging environments share the same database cluster
 ```
 
 ---
@@ -179,24 +179,24 @@ For each question:
 
 1. **How strict is the backward compatibility requirement for the API?**
 
-   Context: This affects whether we can introduce breaking changes or must maintain full legacy support.
+ Context: This affects whether we can introduce breaking changes or must maintain full legacy support.
 
-   - A) No breaking changes at all; legacy clients must continue to function indefinitely
-   - B) No breaking changes now, but we can introduce a formal deprecation path
-   - C) Minor breaking changes are acceptable if documented
-   - D) Other (please specify)
+ - A) No breaking changes at all; legacy clients must continue to function indefinitely
+ - B) No breaking changes now, but we can introduce a formal deprecation path
+ - C) Minor breaking changes are acceptable if documented
+ - D) Other (please specify)
 
-   **Recommended:** B
+ **Recommended:** B
 
 2. **What is the iteration completion checkpoint strategy?**
 
-   Context: Defines how we validate each iteration before moving to the next.
+ Context: Defines how we validate each iteration before moving to the next.
 
-   - A) Full validation at each iteration boundary (comprehensive testing)
-   - B) Incremental validation with final comprehensive pass (faster iteration)
-   - C) Continuous validation throughout (highest confidence)
+ - A) Full validation at each iteration boundary (comprehensive testing)
+ - B) Incremental validation with final comprehensive pass (faster iteration)
+ - C) Continuous validation throughout (highest confidence)
 
-   **Recommended:** A
+ **Recommended:** A
 ```
 
 Design questions/options to enable responses like:
@@ -289,7 +289,7 @@ Explain how to **revert or recover** if something goes wrong during or after exe
 Structure by iteration:
 
 ```markdown
-##  Rollback / Fallback Plan
+## Rollback / Fallback Plan
 
 ### Rollback Strategy by Iteration
 
@@ -306,20 +306,20 @@ Structure by iteration:
 **Iteration 3 Rollback**:
 - **Checkpoint**: After deployment
 - **Trigger**: Production incidents or monitoring alerts
-- **Action**: Feature flag disable → immediate revert → hotfix if needed
+- **Action**: Feature flag disable immediate revert hotfix if needed
 
 ### Emergency Recovery Paths
 
-- **If [Condition A]** → [Alternative approach A]
-- **If [Condition B]** → [Alternative approach B]
-- **If [Condition C]** → [Escalation path C]
+- **If [Condition A]** [Alternative approach A]
+- **If [Condition B]** [Alternative approach B]
+- **If [Condition C]** [Escalation path C]
 ```
 
 This section can be concise but must describe **practical, executable** rollback paths.
 
 ---
 
-##  Context Block (Per-Task)
+## Context Block (Per-Task)
 
 For each task using this template, supply or explicitly request these context fields:
 
@@ -340,60 +340,60 @@ Use these fields as primary anchors for Intent Validation, Assumptions, Open Que
 
 ---
 
-##  Reply Format (Markdown Structure)
+## Reply Format (Markdown Structure)
 
 Structure the entire response using these sections and headings:
 
 ```markdown
 # [Task Title]: Intent Validation & Plan of Action
 
-> Generated: [YYYY-MM-DDTHH:MM:SSZ] | Template: Intent Validation v0.2.1
+> Generated: [YYYY-MM-DDTHH:MM:SSZ] | Template: Intent Validation v0.2.0
 
 ---
 
-##  Intent Validation
+## Intent Validation
 
 [2-3 sentence paragraph restating intent, objective, constraints, success criteria, and non-goals]
 
 ---
 
-##  Assumptions
+## Assumptions
 
--  [Confirmed assumption 1]
+- [Confirmed assumption 1]
 - ? [Uncertain assumption 2]
-- ️ [High-risk assumption 3]
+- [High-risk assumption 3]
 
 ---
 
-##  Open Questions
+## Open Questions
 
 1. **[Question 1 - Critical]**
 
-   Context: [1-2 sentences]
+ Context: [1-2 sentences]
 
-   - A) [Option A]
-   - B) [Option B]
-   - C) [Option C]
+ - A) [Option A]
+ - B) [Option B]
+ - C) [Option C]
 
-   **Recommended:** [Option]
+ **Recommended:** [Option]
 
 2. **[Question 2 - High Priority]**
 
-   [Similar structure]
+ [Similar structure]
 
 3. **[Question 3 - Medium Priority]**
 
-   [Similar structure]
+ [Similar structure]
 
 ---
 
-##  Phases of Action (Iteration-Based)
+## Phases of Action (Iteration-Based)
 
-### **Iteration 1: [Name]** ️
+### **Iteration 1: [Name]** 
 
 **Objective**: [Single sentence]
 
-**Energy Level**:  (5/5)
+**Energy Level**: (5/5)
 
 #### Pre-commit Checkpoint
 - [ ] [Prerequisite 1]
@@ -432,25 +432,25 @@ Structure the entire response using these sections and headings:
 
 ---
 
-### **Iteration 3: [Name]** ️
+### **Iteration 3: [Name]** 
 
 [Similar structure]
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
 | Principle | Application | Iteration |
 |-----------|-------------|-----------|
-| Path ️ | [Forward momentum description] | Iteration 1 |
-| Fields  | [Transformation flow description] | Iteration 2 |
-| Patterns ️ | [Observation/recognition description] | Iteration 3 |
-| Redundancy  | [Fallback alternatives description] | All Iterations |
-| Balance ️ | [Equilibrium maintenance description] | All Iterations |
+| Path | [Forward momentum description] | Iteration 1 |
+| Fields | [Transformation flow description] | Iteration 2 |
+| Patterns | [Observation/recognition description] | Iteration 3 |
+| Redundancy | [Fallback alternatives description] | All Iterations |
+| Balance | [Equilibrium maintenance description] | All Iterations |
 
 ---
 
-## ️ Risks and Mitigations
+## Risks and Mitigations
 
 | Risk | Severity | Mitigation | Iteration |
 |------|----------|------------|-----------|
@@ -460,7 +460,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## 📦 Deliverables
+## Deliverables
 
 ### Iteration 1
 - [Deliverable 1]
@@ -476,7 +476,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-##  Acceptance Criteria
+## Acceptance Criteria
 
 - [ ] [Criterion 1: Quality threshold]
 - [ ] [Criterion 2: Operational constraint]
@@ -486,7 +486,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-##  Rollback / Fallback Plan
+## Rollback / Fallback Plan
 
 ### Rollback Strategy by Iteration
 
@@ -502,24 +502,24 @@ Structure the entire response using these sections and headings:
 
 ### Emergency Recovery Paths
 
-- **If [Condition A]** → [Alternative A]
-- **If [Condition B]** → [Alternative B]
+- **If [Condition A]** [Alternative A]
+- **If [Condition B]** [Alternative B]
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 | Iteration | Energy | Rationale |
 |-----------|--------|-----------|
-| Iteration 1 |  | [Why high priority] |
-| Iteration 2 |  | [Why significant] |
-| Iteration 3 |  | [Why moderate] |
+| Iteration 1 | | [Why high priority] |
+| Iteration 2 | | [Why significant] |
+| Iteration 3 | | [Why moderate] |
 
 **Total Energy Investment**: [Sum]/20 units
 
 ---
 
-##  Next Step
+## Next Step
 
 Awaiting your approval or feedback on the plan above (including any adjustments to recommended options for Open Questions).
 
@@ -534,7 +534,7 @@ Awaiting your approval or feedback on the plan above (including any adjustments 
 
 ---
 
-## 🚫 Execution Gate
+## Execution Gate
 
 The AI must **not** execute the plan or perform irreversible changes until explicit approval.
 
@@ -548,11 +548,11 @@ If the plan is rejected or partially approved, the AI must revise accordingly an
 
 ---
 
-## 🎨 Iteration-Based Terminology Standards
+## Iteration-Based Terminology Standards
 
 ### Required Replacements
 
-|  Calendar-Based (Avoid) |  Iteration-Based (Use) |
+| Calendar-Based (Avoid) | Iteration-Based (Use) |
 |---------------------------|--------------------------|
 | Week 1, Week 2 | Iteration 1, Iteration 2 |
 | Day 1, Day 2 | Commit 1.1, Commit 1.2 |
@@ -573,13 +573,13 @@ If the plan is rejected or partially approved, the AI must revise accordingly an
 
 ---
 
-## 🧪 Template Validation Checklist
+## Template Validation Checklist
 
 Before finalizing any plan using this template, verify:
 
 ### Structure Compliance
 - [ ] Intent Validation present (2-3 sentences)
-- [ ] Assumptions listed with confidence markers (?️)
+- [ ] Assumptions listed with confidence markers (?)
 - [ ] At least 3 open questions with multiple-choice options
 - [ ] Iterations use pre-commit/commit structure
 - [ ] No references to weeks, days, or calendar dates
@@ -603,7 +603,7 @@ Before finalizing any plan using this template, verify:
 
 ---
 
-##  Usage Example
+## Usage Example
 
 ### Invocation
 
@@ -626,7 +626,7 @@ Before finalizing any plan using this template, verify:
 The AI would respond with:
 
 1. **Intent Validation** (2-3 sentences)
-2. **Assumptions** (with ?️ markers)
+2. **Assumptions** (with ? markers)
 3. **Open Questions** (minimum 3, with multiple-choice options and recommendations)
 4. **Phases of Action** (3-4 iterations with pre-commit/commit structure)
 5. **Physics Alignment** (table)
@@ -641,7 +641,7 @@ All using iteration-based terminology, no calendar references.
 
 ---
 
-##  Template Philosophy
+## Template Philosophy
 
 ### Core Principles
 
@@ -653,12 +653,12 @@ All using iteration-based terminology, no calendar references.
 
 ### Anti-Patterns to Avoid
 
--  Calendar-based timelines ("complete by Friday")
--  Implicit assumptions (mark uncertainty explicitly)
--  Single-choice questions (always provide options)
--  Execution before approval (strict gate enforcement)
--  Missing rollback strategies
--  Undefined decision gates
+- Calendar-based timelines ("complete by Friday")
+- Implicit assumptions (mark uncertainty explicitly)
+- Single-choice questions (always provide options)
+- Execution before approval (strict gate enforcement)
+- Missing rollback strategies
+- Undefined decision gates
 
 ### Quality Gates
 
@@ -671,7 +671,7 @@ Before considering any plan "complete":
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **Primary Framework**: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 - **Template Verification**: `.codex/TEMPLATE_VERIFICATION_REPORT.md`
@@ -680,17 +680,17 @@ Before considering any plan "complete":
 
 ---
 
-##  Template Metadata
+## Template Metadata
 
 | Attribute | Value |
 |-----------|-------|
 | **Version** | 2.0.0-iteration-based |
-| **Energy Cost** |  (High) |
+| **Energy Cost** | (High) |
 | **Framework Alignment** | 100% (18/18 components) |
-| **Status** |  Production Ready |
+| **Status** | Production Ready |
 | **Last Updated** | 2026-01-23T21:05:00Z |
 | **Next Review** | After 10 usage instances |
 
 ---
 
-**End of Intent Validation & Plan of Action Template (Iteration-Based)** 
+**End of Intent Validation & Plan of Action Template (Iteration-Based)**

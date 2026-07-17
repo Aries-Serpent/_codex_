@@ -377,28 +377,28 @@ class TestWorkflowSubmoduleIntegration:
 
     def test_workflow_module_imports(self):
         """Test that workflow submodule imports correctly."""
-        from services.workflow import WorkflowInventory, WorkflowParser
+        from src.services.workflow import WorkflowInventory, WorkflowParser
 
         assert WorkflowInventory is not None, "WorkflowInventory must be initialized"
         assert WorkflowParser is not None, "WorkflowParser must be initialized"
 
     def test_workflow_types_module(self):
         """Test that workflow types module exists."""
-        from services.workflow import types
+        from src.services.workflow import types
 
         assert types is not None, "types must be initialized"
         assert hasattr(types, "WorkflowMetadata")
 
     def test_workflow_parser_module(self):
         """Test that parser module exists."""
-        from services.workflow import parser
+        from src.services.workflow import parser
 
         assert parser is not None, "parser must be initialized"
         assert hasattr(parser, "WorkflowParser")
 
     def test_workflow_inventory_module(self):
         """Test that inventory module exists."""
-        from services.workflow import inventory
+        from src.services.workflow import inventory
 
         assert inventory is not None, "inventory must be initialized"
         assert hasattr(inventory, "WorkflowInventory")
@@ -485,7 +485,7 @@ class TestServicesLogging:
 class TestServicesWithMockDependencies:
     """Test services with mocked dependencies."""
 
-    @patch("services.workflow.parser.yaml.safe_load")
+    @patch("src.services.workflow.parser.yaml.safe_load")
     def test_parser_with_mocked_yaml_loader(self, mock_yaml):
         """Test parser with mocked YAML loader."""
         import tempfile

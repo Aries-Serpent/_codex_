@@ -1,6 +1,6 @@
 # Consistency Checks Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide explains how to set up and use the CI/CD consistency checks for the *codex* repository.
 
@@ -111,7 +111,7 @@ The pre-commit hook runs automatically before each commit and validates:
 
 ```text
  Running Pre-Commit Consistency Checks
-════════════════════════════════════════════════════════════════════
+
 
 [1/5] Scanning for secrets...
  No secrets detected
@@ -129,7 +129,7 @@ The pre-commit hook runs automatically before each commit and validates:
 [5/5] Validating YAML files...
  YAML validation OK (3 files)
 
-════════════════════════════════════════════════════════════════════
+
  All pre-commit checks passed!
 ```
 
@@ -179,13 +179,13 @@ The checker validates these link patterns (shown as code examples):
 
 **Internal file links:**
 ```markdown
-[text](./file.md)
+<!-- TODO: Add real link: text -->
 ```
 Relative path within repository
 
 **Anchor references:**
 ```markdown
-[text](./file.md#anchor)
+<!-- TODO: Add real link: text -->
 ```
 Link to specific section
 
@@ -218,7 +218,7 @@ From repository root
 All documents must follow:
 
 1. First heading is H1 (`#`)
-2. No hierarchy jumps (H1 → H3 invalid, must use H2)
+2. No hierarchy jumps (H1 H3 invalid, must use H2)
 3. Consistent nesting within documents
 4. Unique headings within sections (MD024)
 
@@ -315,7 +315,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 **PR Annotations:**
 
 - Errors appear as annotations on PR
-- Warnings appear as ️ (external links)
+- Warnings appear as (external links)
 - PR comments with detailed issues
 
 **Artifacts:**
@@ -328,7 +328,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 For merging PRs:
 
 - All consistency checks must pass
-- ️ Warnings do not block merge
+- Warnings do not block merge
 - External link warnings are informational
 
 ## Best Practices

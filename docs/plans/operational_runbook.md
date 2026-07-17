@@ -1,9 +1,9 @@
 # Codex Ingestion Pipeline Operations Runbook
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 | Author: mbaetiong
@@ -26,11 +26,11 @@ This runbook provides step-by-step instructions for operating the Codex Python I
 cat > manifest.yaml << EOF
 version: "1.0"
 source:
-  type: file
-  path: "./my_script.py"
+ type: file
+ path: "./my_script.py"
 metadata:
-  owner: "@yourusername"
-  allow_external_llm: true
+ owner: "@yourusername"
+ allow_external_llm: true
 EOF
 
 # 2. Ingest
@@ -75,12 +75,12 @@ python -m codex.cli ingest ./my_script.py --manifest manifest.yaml
 **Snapshot Structure:**
 ```
 artifacts/20251217-abc123/
-├── source/                 # Original code (immutable)
-├── manifest.yaml           # Copy of ingestion manifest
-├── snapshot-meta.json      # Timestamp, hash, source info
-├── patches/                # Populated by transform
-├── tests/codex_generated/  # Populated by verify
-└── llm_provenance/         # LLM call records
+ source/ # Original code (immutable)
+ manifest.yaml # Copy of ingestion manifest
+ snapshot-meta.json # Timestamp, hash, source info
+ patches/ # Populated by transform
+ tests/codex_generated/ # Populated by verify
+ llm_provenance/ # LLM call records
 ```
 
 ### Step 2: Analyze
@@ -115,9 +115,9 @@ python -m codex.cli transform 20251217-abc123 --tier A --auto --no-dry-run
 
 | Tier | Name | Auto-Apply | Examples |
 |------|------|------------|----------|
-| A | Safe Auto-Apply |  Yes | Black formatting, isort, pathlib migration |
-| B | Apply with Tests |  With tests | Type hints, function extraction |
-| C | Suggest Only |  No | Async conversion, API redesign |
+| A | Safe Auto-Apply | Yes | Black formatting, isort, pathlib migration |
+| B | Apply with Tests | With tests | Type hints, function extraction |
+| C | Suggest Only | No | Async conversion, API redesign |
 
 ## Step 4: Verify
 

@@ -36,9 +36,9 @@ class TestCLIWorkflowDiscovery:
     def test_cli_module_exists(self):
         """Verify CLI module exists."""
         cli_paths = [
-            SRC_DIR / "codex" / "cli.py",
-            SRC_DIR / "codex" / "cli" / "__init__.py",
-            SRC_DIR / "codex_ml" / "cli.py",
+            SRC_DIR / "aries_serpent_core" / "cli.py",
+            SRC_DIR / "aries_serpent_core" / "cli" / "__init__.py",
+            SRC_DIR / "codex_ml" / "cli" / "__init__.py",
         ]
         found = any(p.exists() for p in cli_paths)
         assert found, "CLI module should exist"

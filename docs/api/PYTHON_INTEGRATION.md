@@ -1,6 +1,6 @@
 # Python Integration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Complete guide for integrating the Codex API with Python using the `requests` library.
 

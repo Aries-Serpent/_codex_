@@ -1,10 +1,10 @@
-# [Template]: Legacy Import Refactor — Batch 01 (v0.2.1)
+# [Template]: Legacy Import Refactor — Batch 01 (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
- Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer]  Energy: 5
+ Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer] Energy: 5
 
 ## Summary
 Reduce legacy imports via AST-based refactors (batch-01), maintain determinism and validation gates, and update CI trend/baseline metadata.
@@ -34,8 +34,8 @@ python scripts/space_traversal/audit_runner.py diff --old audit_artifacts/baseli
 
 | Metric | Run A | Run B | Result |
 |--------|-------|-------|--------|
-| repo_root_sha | <shaA> | <shaB> |  equal |
-| capabilities_scored.json (normalized) | <shaA> | <shaB> |  equal |
+| repo_root_sha | <shaA> | <shaB> | equal |
+| capabilities_scored.json (normalized) | <shaA> | <shaB> | equal |
 
 ## Tests Summary
 
@@ -43,7 +43,7 @@ python scripts/space_traversal/audit_runner.py diff --old audit_artifacts/baseli
 |-------|--------|
 | validation | PASS (paste pytest output) |
 
-## Legacy Imports Before → After
+## Legacy Imports Before After
 
 | Metric | Count |
 |--------|-------|

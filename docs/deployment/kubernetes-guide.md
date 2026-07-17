@@ -1,12 +1,12 @@
 # Kubernetes Deployment Guide
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2026-06-22  
-> **Status**: Production-Ready  
-> **Audience**: DevOps Engineers, Platform Teams, Kubernetes Operators  
+> **Version**: 1.0.0
+> **Last Updated**: 2026-06-22
+> **Status**: Production-Ready
+> **Audience**: DevOps Engineers, Platform Teams, Kubernetes Operators
 
 ---
 
@@ -43,41 +43,41 @@ This guide provides comprehensive instructions for deploying the Codex ML platfo
 ### Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Kubernetes Cluster (kubeadm, EKS, GKE, AKS)           │
-│                                                         │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │  Ingress Controller (nginx)                      │   │
-│  │  - Route /api → API Service                      │   │
-│  │  - Route /metrics → Prometheus                   │   │
-│  └──────────────────────────────────────────────────┘   │
-│                 │                                        │
-│  ┌──────────────┴──────────────────────────────────┐   │
-│  │  Services                                        │   │
-│  │  - codex-api (ClusterIP:8000)                   │   │
-│  │  - codex-inference (LoadBalancer:9000)         │   │
-│  │  - codex-prometheus (ClusterIP:9090)           │   │
-│  └──────────────┬──────────────────────────────────┘   │
-│                 │                                        │
-│  ┌──────────────┴──────────────────────────────────┐   │
-│  │  Deployments & StatefulSets                     │   │
-│  │  ┌─────────────────┐  ┌─────────────────┐      │   │
-│  │  │ codex-api       │  │ codex-training  │      │   │
-│  │  │ Replicas: 3     │  │ Replicas: 1     │      │   │
-│  │  └─────────────────┘  └─────────────────┘      │   │
-│  │  ┌─────────────────┐                           │   │
-│  │  │ codex-worker    │                           │   │
-│  │  │ Replicas: 2     │                           │   │
-│  │  └─────────────────┘                           │   │
-│  └──────────────────────────────────────────────────┘   │
-│                                                         │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │  PersistentVolumes                               │   │
-│  │  - codex-checkpoints (50Gi)                     │   │
-│  │  - codex-logs (20Gi)                           │   │
-│  │  - codex-artifacts (100Gi)                     │   │
-│  └──────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
+
+ Kubernetes Cluster (kubeadm, EKS, GKE, AKS) 
+ 
+ 
+ Ingress Controller (nginx) 
+ - Route /api API Service 
+ - Route /metrics Prometheus 
+ 
+ 
+ 
+ Services 
+ - codex-api (ClusterIP:8000) 
+ - codex-inference (LoadBalancer:9000) 
+ - codex-prometheus (ClusterIP:9090) 
+ 
+ 
+ 
+ Deployments & StatefulSets 
+ 
+ codex-api codex-training 
+ Replicas: 3 Replicas: 1 
+ 
+ 
+ codex-worker 
+ Replicas: 2 
+ 
+ 
+ 
+ 
+ PersistentVolumes 
+ - codex-checkpoints (50Gi) 
+ - codex-logs (20Gi) 
+ - codex-artifacts (100Gi) 
+ 
+
 ```
 
 ---
@@ -139,10 +139,10 @@ kubectl get nodes -o json | jq '.items[].status.capacity'
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: codex-ml
-  labels:
-    app: codex
-    environment: production
+ name: codex-ml
+ labels:
+ app: codex
+ environment: production
 ```
 
 **Create namespace**:
@@ -157,36 +157,36 @@ kubectl apply -f codex-namespace.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: codex-config
-  namespace: codex-ml
+ name: codex-config
+ namespace: codex-ml
 data:
-  CODEX_ENV: "production"
-  API_HOST: "0.0.0.0"
-  API_PORT: "8000"
-  API_WORKERS: "4"
-  LOG_LEVEL: "INFO"
-  ENABLE_METRICS: "true"
-  BATCH_SIZE: "32"
-  MODEL_DEVICE: "cuda"
+ CODEX_ENV: "production"
+ API_HOST: "0.0.0.0"
+ API_PORT: "8000"
+ API_WORKERS: "4"
+ LOG_LEVEL: "INFO"
+ ENABLE_METRICS: "true"
+ BATCH_SIZE: "32"
+ MODEL_DEVICE: "cuda"
 
-  # Hydra configuration template
-  hydra_config.yaml: |
-    defaults:
-      - _self_
+ # Hydra configuration template
+ hydra_config.yaml: |
+ defaults:
+ - _self_
 
-    model:
-      name: gpt2
-      device: cuda
+ model:
+ name: gpt2
+ device: cuda
 
-    training:
-      batch_size: 32
-      learning_rate: 1.0e-4
-      num_epochs: 3
+ training:
+ batch_size: 32
+ learning_rate: 1.0e-4
+ num_epochs: 3
 
-    data:
-      path: /data/train
-      preprocessing:
-        max_length: 512
+ data:
+ path: /data/train
+ preprocessing:
+ max_length: 512
 ```
 
 ## Secret: Sensitive Data
@@ -196,28 +196,28 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: codex-secrets
-  namespace: codex-ml
+ name: codex-secrets
+ namespace: codex-ml
 type: Opaque
 stringData:
-  API_KEY: "your-api-key-here"
-  DATABASE_PASSWORD: "secure-password"
-  WANDB_API_KEY: "wandb-api-key"
-  MLFLOW_TRACKING_URI: "******postgres:5432/mlflow"
+ API_KEY: "your-api-key-here"
+ DATABASE_PASSWORD: "secure-password"
+ WANDB_API_KEY: "wandb-api-key"
+ MLFLOW_TRACKING_URI: "******postgres:5432/mlflow"
 ```
 
 **Create secret safely**:
 ```bash
 # Using kubectl create secret
 kubectl create secret generic codex-secrets \
-  --from-literal=API_KEY="$(openssl rand -base64 32)" \
-  --from-literal=DATABASE_PASSWORD="$(openssl rand -base64 32)" \
-  -n codex-ml
+ --from-literal=API_KEY="$(openssl rand -base64 32)" \
+ --from-literal=DATABASE_PASSWORD="$(openssl rand -base64 32)" \
+ -n codex-ml
 
 # Or from file (pre-encrypted)
 kubectl create secret generic codex-secrets \
-  --from-file=.env.production \
-  -n codex-ml
+ --from-file=.env.production \
+ -n codex-ml
 ```
 
 ## Deployment: API Service
@@ -227,160 +227,160 @@ kubectl create secret generic codex-secrets \
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex-api
-  namespace: codex-ml
-  labels:
-    app: codex-api
-    version: v1
+ name: codex-api
+ namespace: codex-ml
+ labels:
+ app: codex-api
+ version: v1
 spec:
-  replicas: 3
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+ replicas: 3
+ strategy:
+ type: RollingUpdate
+ rollingUpdate:
+ maxSurge: 1
+ maxUnavailable: 0
 
-  selector:
-    matchLabels:
-      app: codex-api
+ selector:
+ matchLabels:
+ app: codex-api
 
-  template:
-    metadata:
-      labels:
-        app: codex-api
-        version: v1
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8000"
-        prometheus.io/path: "/metrics"
+ template:
+ metadata:
+ labels:
+ app: codex-api
+ version: v1
+ annotations:
+ prometheus.io/scrape: "true"
+ prometheus.io/port: "8000"
+ prometheus.io/path: "/metrics"
 
-    spec:
-      serviceAccountName: codex-sa
+ spec:
+ serviceAccountName: codex-sa
 
-      # Security context for pod
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+ # Security context for pod
+ securityContext:
+ runAsNonRoot: true
+ runAsUser: 1000
+ fsGroup: 1000
 
-      # Init container for setup
-      initContainers:
-      - name: init-setup
-        image: ghcr.io/aries-serpent/codex-ml:latest
-        command: ['python', '-m', 'src.codex_ml.cli', 'init']
-        envFrom:
-        - configMapRef:
-            name: codex-config
+ # Init container for setup
+ initContainers:
+ - name: init-setup
+ image: ghcr.io/aries-serpent/codex-ml:latest
+ command: ['python', '-m', 'src.codex_ml.cli', 'init']
+ envFrom:
+ - configMapRef:
+ name: codex-config
 
-      containers:
-      - name: codex-api
-        image: ghcr.io/aries-serpent/codex-ml:latest
-        imagePullPolicy: IfNotPresent
+ containers:
+ - name: codex-api
+ image: ghcr.io/aries-serpent/codex-ml:latest
+ imagePullPolicy: IfNotPresent
 
-        ports:
-        - name: http
-          containerPort: 8000
-          protocol: TCP
+ ports:
+ - name: http
+ containerPort: 8000
+ protocol: TCP
 
-        # Environment configuration
-        envFrom:
-        - configMapRef:
-            name: codex-config
-        - secretRef:
-            name: codex-secrets
+ # Environment configuration
+ envFrom:
+ - configMapRef:
+ name: codex-config
+ - secretRef:
+ name: codex-secrets
 
-        # Environment variables
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
+ # Environment variables
+ env:
+ - name: POD_NAME
+ valueFrom:
+ fieldRef:
+ fieldPath: metadata.name
+ - name: POD_NAMESPACE
+ valueFrom:
+ fieldRef:
+ fieldPath: metadata.namespace
+ - name: POD_IP
+ valueFrom:
+ fieldRef:
+ fieldPath: status.podIP
 
-        # Resource limits
-        resources:
-          requests:
-            cpu: "2"
-            memory: "4Gi"
-          limits:
-            cpu: "4"
-            memory: "8Gi"
+ # Resource limits
+ resources:
+ requests:
+ cpu: "2"
+ memory: "4Gi"
+ limits:
+ cpu: "4"
+ memory: "8Gi"
 
-        # Liveness probe: restart if unhealthy
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+ # Liveness probe: restart if unhealthy
+ livenessProbe:
+ httpGet:
+ path: /health
+ port: http
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ timeoutSeconds: 5
+ failureThreshold: 3
 
-        # Readiness probe: remove from service if not ready
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: http
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 2
+ # Readiness probe: remove from service if not ready
+ readinessProbe:
+ httpGet:
+ path: /ready
+ port: http
+ initialDelaySeconds: 10
+ periodSeconds: 5
+ timeoutSeconds: 3
+ failureThreshold: 2
 
-        # Startup probe: allow time for initialization
-        startupProbe:
-          httpGet:
-            path: /health
-            port: http
-          failureThreshold: 30
-          periodSeconds: 10
+ # Startup probe: allow time for initialization
+ startupProbe:
+ httpGet:
+ path: /health
+ port: http
+ failureThreshold: 30
+ periodSeconds: 10
 
-        # Volume mounts
-        volumeMounts:
-        - name: config
-          mountPath: /app/config
-          readOnly: true
-        - name: logs
-          mountPath: /app/logs
-        - name: tmp
-          mountPath: /tmp
+ # Volume mounts
+ volumeMounts:
+ - name: config
+ mountPath: /app/config
+ readOnly: true
+ - name: logs
+ mountPath: /app/logs
+ - name: tmp
+ mountPath: /tmp
 
-      # Volumes
-      volumes:
-      - name: config
-        configMap:
-          name: codex-config
-      - name: logs
-        emptyDir: {}
-      - name: tmp
-        emptyDir: {}
+ # Volumes
+ volumes:
+ - name: config
+ configMap:
+ name: codex-config
+ - name: logs
+ emptyDir: {}
+ - name: tmp
+ emptyDir: {}
 
-      # Pod affinity
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - codex-api
-              topologyKey: kubernetes.io/hostname
+ # Pod affinity
+ affinity:
+ podAntiAffinity:
+ preferredDuringSchedulingIgnoredDuringExecution:
+ - weight: 100
+ podAffinityTerm:
+ labelSelector:
+ matchExpressions:
+ - key: app
+ operator: In
+ values:
+ - codex-api
+ topologyKey: kubernetes.io/hostname
 
-      # Tolerations for node taints
-      tolerations:
-      - key: "workload"
-        operator: "Equal"
-        value: "ml"
-        effect: "NoSchedule"
+ # Tolerations for node taints
+ tolerations:
+ - key: "workload"
+ operator: "Equal"
+ value: "ml"
+ effect: "NoSchedule"
 ```
 
 ## Service: Internal Networking
@@ -390,23 +390,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: codex-api
-  namespace: codex-ml
-  labels:
-    app: codex-api
+ name: codex-api
+ namespace: codex-ml
+ labels:
+ app: codex-api
 spec:
-  type: ClusterIP
-  ports:
-  - port: 8000
-    targetPort: http
-    protocol: TCP
-    name: http
-  selector:
-    app: codex-api
-  sessionAffinity: ClientIP
-  sessionAffinityConfig:
-    clientIP:
-      timeoutSeconds: 10800
+ type: ClusterIP
+ ports:
+ - port: 8000
+ targetPort: http
+ protocol: TCP
+ name: http
+ selector:
+ app: codex-api
+ sessionAffinity: ClientIP
+ sessionAffinityConfig:
+ clientIP:
+ timeoutSeconds: 10800
 ```
 
 ---
@@ -417,23 +417,23 @@ spec:
 
 ```
 codex-ml-chart/
-├── Chart.yaml
-├── values.yaml
-├── values-dev.yaml
-├── values-prod.yaml
-├── templates/
-│   ├── namespace.yaml
-│   ├── configmap.yaml
-│   ├── secret.yaml  # pragma: allowlist secret
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   ├── ingress.yaml
-│   ├── hpa.yaml
-│   ├── pvc.yaml
-│   ├── networkpolicy.yaml
-│   ├── serviceaccount.yaml
-│   └── NOTES.txt
-└── README.md
+ Chart.yaml
+ values.yaml
+ values-dev.yaml
+ values-prod.yaml
+ templates/
+ namespace.yaml
+ configmap.yaml
+ secret.yaml # pragma: allowlist secret
+ deployment.yaml
+ service.yaml
+ ingress.yaml
+ hpa.yaml
+ pvc.yaml
+ networkpolicy.yaml
+ serviceaccount.yaml
+ NOTES.txt
+ README.md
 ```
 
 ### Chart.yaml
@@ -447,10 +447,10 @@ version: 1.0.0
 appVersion: "0.1.0"
 home: https://github.com/Aries-Serpent/_codex_
 sources:
-  - https://github.com/Aries-Serpent/_codex_
+ - https://github.com/Aries-Serpent/_codex_
 maintainers:
-  - name: Aries-Serpent
-    email: team@example.com
+ - name: Aries-Serpent
+ email: team@example.com
 ```
 
 ### values.yaml (Default)
@@ -459,77 +459,77 @@ maintainers:
 replicaCount: 3
 
 image:
-  repository: ghcr.io/aries-serpent/codex-ml
-  pullPolicy: IfNotPresent
-  tag: "latest"
+ repository: ghcr.io/aries-serpent/codex-ml
+ pullPolicy: IfNotPresent
+ tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: true
-  annotations: {}
-  name: ""
+ create: true
+ annotations: {}
+ name: ""
 
 podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  fsGroup: 1000
+ runAsNonRoot: true
+ runAsUser: 1000
+ fsGroup: 1000
 
 securityContext:
-  capabilities:
-    drop:
-    - ALL
-  readOnlyRootFilesystem: true
-  runAsNonRoot: true
+ capabilities:
+ drop:
+ - ALL
+ readOnlyRootFilesystem: true
+ runAsNonRoot: true
 
 service:
-  type: ClusterIP
-  port: 8000
-  targetPort: 8000
+ type: ClusterIP
+ port: 8000
+ targetPort: 8000
 
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-  hosts:
-    - host: "codex-ml.example.com"
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: codex-ml-tls
-      hosts:
-        - codex-ml.example.com
+ enabled: true
+ className: "nginx"
+ annotations:
+ cert-manager.io/cluster-issuer: "letsencrypt-prod"
+ hosts:
+ - host: "codex-ml.example.com"
+ paths:
+ - path: /
+ pathType: Prefix
+ tls:
+ - secretName: codex-ml-tls
+ hosts:
+ - codex-ml.example.com
 
 resources:
-  limits:
-    cpu: 4
-    memory: 8Gi
-  requests:
-    cpu: 2
-    memory: 4Gi
+ limits:
+ cpu: 4
+ memory: 8Gi
+ requests:
+ cpu: 2
+ memory: 4Gi
 
 autoscaling:
-  enabled: true
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+ enabled: true
+ minReplicas: 2
+ maxReplicas: 10
+ targetCPUUtilizationPercentage: 80
+ targetMemoryUtilizationPercentage: 80
 
 persistence:
-  enabled: true
-  storageClass: "fast-ssd"
-  accessMode: ReadWriteOnce
-  size: 50Gi
+ enabled: true
+ storageClass: "fast-ssd"
+ accessMode: ReadWriteOnce
+ size: 50Gi
 
 monitoring:
-  enabled: true
-  serviceMonitor:
-    enabled: true
-    interval: 30s
+ enabled: true
+ serviceMonitor:
+ enabled: true
+ interval: 30s
 ```
 
 ### values-prod.yaml (Production Overrides)
@@ -538,38 +538,38 @@ monitoring:
 replicaCount: 5
 
 image:
-  tag: "v0.1.0"  # Pin to specific version in production
+ tag: "v0.1.0" # Pin to specific version in production
 
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/rate-limit: "100"
-  tls:
-    - secretName: codex-ml-prod-tls
-      hosts:
-        - codex-ml.prod.example.com
+ enabled: true
+ className: "nginx"
+ annotations:
+ cert-manager.io/cluster-issuer: "letsencrypt-prod"
+ nginx.ingress.kubernetes.io/ssl-redirect: "true"
+ nginx.ingress.kubernetes.io/rate-limit: "100"
+ tls:
+ - secretName: codex-ml-prod-tls
+ hosts:
+ - codex-ml.prod.example.com
 
 resources:
-  limits:
-    cpu: 8
-    memory: 16Gi
-  requests:
-    cpu: 4
-    memory: 8Gi
+ limits:
+ cpu: 8
+ memory: 16Gi
+ requests:
+ cpu: 4
+ memory: 8Gi
 
 autoscaling:
-  enabled: true
-  minReplicas: 5
-  maxReplicas: 20
-  targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 75
+ enabled: true
+ minReplicas: 5
+ maxReplicas: 20
+ targetCPUUtilizationPercentage: 70
+ targetMemoryUtilizationPercentage: 75
 
 persistence:
-  size: 200Gi
-  storageClass: "premium-rwo"
+ size: 200Gi
+ storageClass: "premium-rwo"
 ```
 
 ### Helm Installation
@@ -581,21 +581,21 @@ helm repo update
 
 # Install chart (development)
 helm install codex-ml codex/codex-ml \
-  --namespace codex-ml \
-  --create-namespace \
-  --values values.yaml \
-  --values values-dev.yaml
+ --namespace codex-ml \
+ --create-namespace \
+ --values values.yaml \
+ --values values-dev.yaml
 
 # Install chart (production)
 helm install codex-ml codex/codex-ml \
-  --namespace codex-ml-prod \
-  --create-namespace \
-  --values values.yaml \
-  --values values-prod.yaml
+ --namespace codex-ml-prod \
+ --create-namespace \
+ --values values.yaml \
+ --values values-prod.yaml
 
 # Upgrade chart
 helm upgrade codex-ml codex/codex-ml \
-  --values values.yaml
+ --values values.yaml
 
 # Rollback to previous version
 helm rollback codex-ml 1
@@ -612,74 +612,74 @@ helm rollback codex-ml 1
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: codex-training
-  namespace: codex-ml
+ name: codex-training
+ namespace: codex-ml
 spec:
-  serviceName: codex-training
-  replicas: 1
+ serviceName: codex-training
+ replicas: 1
 
-  selector:
-    matchLabels:
-      app: codex-training
+ selector:
+ matchLabels:
+ app: codex-training
 
-  template:
-    metadata:
-      labels:
-        app: codex-training
+ template:
+ metadata:
+ labels:
+ app: codex-training
 
-    spec:
-      serviceAccountName: codex-sa
+ spec:
+ serviceAccountName: codex-sa
 
-      containers:
-      - name: training
-        image: ghcr.io/aries-serpent/codex-ml:latest
+ containers:
+ - name: training
+ image: ghcr.io/aries-serpent/codex-ml:latest
 
-        # GPU support
-        resources:
-          requests:
-            nvidia.com/gpu: 1
-          limits:
-            nvidia.com/gpu: 1
-            cpu: "8"
-            memory: "16Gi"
+ # GPU support
+ resources:
+ requests:
+ nvidia.com/gpu: 1
+ limits:
+ nvidia.com/gpu: 1
+ cpu: "8"
+ memory: "16Gi"
 
-        # Volume mounts for persistent storage
-        volumeMounts:
-        - name: checkpoints
-          mountPath: /app/checkpoints
-        - name: data
-          mountPath: /app/data
-        - name: logs
-          mountPath: /app/logs
+ # Volume mounts for persistent storage
+ volumeMounts:
+ - name: checkpoints
+ mountPath: /app/checkpoints
+ - name: data
+ mountPath: /app/data
+ - name: logs
+ mountPath: /app/logs
 
-  # PersistentVolumeClaim templates
-  volumeClaimTemplates:
-  - metadata:
-      name: checkpoints
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "fast-ssd"
-      resources:
-        requests:
-          storage: 50Gi
+ # PersistentVolumeClaim templates
+ volumeClaimTemplates:
+ - metadata:
+ name: checkpoints
+ spec:
+ accessModes: [ "ReadWriteOnce" ]
+ storageClassName: "fast-ssd"
+ resources:
+ requests:
+ storage: 50Gi
 
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "standard"
-      resources:
-        requests:
-          storage: 100Gi
+ - metadata:
+ name: data
+ spec:
+ accessModes: [ "ReadWriteOnce" ]
+ storageClassName: "standard"
+ resources:
+ requests:
+ storage: 100Gi
 
-  - metadata:
-      name: logs
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "standard"
-      resources:
-        requests:
-          storage: 20Gi
+ - metadata:
+ name: logs
+ spec:
+ accessModes: [ "ReadWriteOnce" ]
+ storageClassName: "standard"
+ resources:
+ requests:
+ storage: 20Gi
 ```
 
 ---
@@ -693,43 +693,43 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: codex-ingress
-  namespace: codex-ml
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/rate-limit: "100"
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+ name: codex-ingress
+ namespace: codex-ml
+ annotations:
+ cert-manager.io/cluster-issuer: "letsencrypt-prod"
+ nginx.ingress.kubernetes.io/ssl-redirect: "true"
+ nginx.ingress.kubernetes.io/rate-limit: "100"
+ nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - codex-ml.example.com
-    - api.codex-ml.example.com
-    secretName: codex-tls
+ ingressClassName: nginx
+ tls:
+ - hosts:
+ - codex-ml.example.com
+ - api.codex-ml.example.com
+ secretName: codex-tls
 
-  rules:
-  - host: codex-ml.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: codex-api
-            port:
-              number: 8000
+ rules:
+ - host: codex-ml.example.com
+ http:
+ paths:
+ - path: /
+ pathType: Prefix
+ backend:
+ service:
+ name: codex-api
+ port:
+ number: 8000
 
-  - host: api.codex-ml.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: codex-api
-            port:
-              number: 8000
+ - host: api.codex-ml.example.com
+ http:
+ paths:
+ - path: /
+ pathType: Prefix
+ backend:
+ service:
+ name: codex-api
+ port:
+ number: 8000
 ```
 
 ---
@@ -751,16 +751,16 @@ spec:
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: codex-quota
-  namespace: codex-ml
+ name: codex-quota
+ namespace: codex-ml
 spec:
-  hard:
-    requests.cpu: "50"
-    requests.memory: "100Gi"
-    limits.cpu: "100"
-    limits.memory: "200Gi"
-    pods: "100"
-    persistentvolumeclaims: "10"
+ hard:
+ requests.cpu: "50"
+ requests.memory: "100Gi"
+ limits.cpu: "100"
+ limits.memory: "200Gi"
+ pods: "100"
+ persistentvolumeclaims: "10"
 ```
 
 ---
@@ -774,50 +774,50 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: codex-api-hpa
-  namespace: codex-ml
+ name: codex-api-hpa
+ namespace: codex-ml
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: codex-api
+ scaleTargetRef:
+ apiVersion: apps/v1
+ kind: Deployment
+ name: codex-api
 
-  minReplicas: 2
-  maxReplicas: 10
+ minReplicas: 2
+ maxReplicas: 10
 
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+ metrics:
+ - type: Resource
+ resource:
+ name: cpu
+ target:
+ type: Utilization
+ averageUtilization: 70
 
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+ - type: Resource
+ resource:
+ name: memory
+ target:
+ type: Utilization
+ averageUtilization: 80
 
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 0
-      policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 2
-        periodSeconds: 15
-      selectPolicy: Max
+ behavior:
+ scaleUp:
+ stabilizationWindowSeconds: 0
+ policies:
+ - type: Percent
+ value: 100
+ periodSeconds: 15
+ - type: Pods
+ value: 2
+ periodSeconds: 15
+ selectPolicy: Max
 
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
+ scaleDown:
+ stabilizationWindowSeconds: 300
+ policies:
+ - type: Percent
+ value: 50
+ periodSeconds: 60
 ```
 
 ---
@@ -831,17 +831,17 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: codex-monitor
-  namespace: codex-ml
+ name: codex-monitor
+ namespace: codex-ml
 spec:
-  selector:
-    matchLabels:
-      app: codex-api
+ selector:
+ matchLabels:
+ app: codex-api
 
-  endpoints:
-  - port: http
-    interval: 30s
-    path: /metrics
+ endpoints:
+ - port: http
+ interval: 30s
+ path: /metrics
 ```
 
 ## PrometheusRule for Alerts
@@ -851,24 +851,24 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: codex-alerts
-  namespace: codex-ml
+ name: codex-alerts
+ namespace: codex-ml
 spec:
-  groups:
-  - name: codex.rules
-    interval: 30s
-    rules:
-    - alert: CodexHighErrorRate
-      expr: rate(codex_requests_total{status="500"}[5m]) > 0.05
-      for: 5m
-      annotations:
-        summary: "Codex high error rate"
+ groups:
+ - name: codex.rules
+ interval: 30s
+ rules:
+ - alert: CodexHighErrorRate
+ expr: rate(codex_requests_total{status="500"}[5m]) > 0.05
+ for: 5m
+ annotations:
+ summary: "Codex high error rate"
 
-    - alert: CodexPodCrashing
-      expr: rate(kube_pod_container_status_restarts_total{pod=~"codex-.*"}[1h]) > 0
-      for: 5m
-      annotations:
-        summary: "Codex pod restarting"
+ - alert: CodexPodCrashing
+ expr: rate(kube_pod_container_status_restarts_total{pod=~"codex-.*"}[1h]) > 0
+ for: 5m
+ annotations:
+ summary: "Codex pod restarting"
 ```
 
 ---
@@ -882,43 +882,43 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: codex-netpolicy
-  namespace: codex-ml
+ name: codex-netpolicy
+ namespace: codex-ml
 spec:
-  podSelector:
-    matchLabels:
-      app: codex-api
+ podSelector:
+ matchLabels:
+ app: codex-api
 
-  policyTypes:
-  - Ingress
-  - Egress
+ policyTypes:
+ - Ingress
+ - Egress
 
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: ingress-nginx
-    ports:
-    - protocol: TCP
-      port: 8000
+ ingress:
+ - from:
+ - namespaceSelector:
+ matchLabels:
+ name: ingress-nginx
+ ports:
+ - protocol: TCP
+ port: 8000
 
-  egress:
-  - to:
-    - namespaceSelector: {}
-    ports:
-    - protocol: TCP
-      port: 53      # DNS
-    - protocol: UDP
-      port: 53      # DNS
-    - protocol: TCP
-      port: 443     # HTTPS
-  - to:
-    - podSelector:
-        matchLabels:
-          app: postgres
-    ports:
-    - protocol: TCP
-      port: 5432
+ egress:
+ - to:
+ - namespaceSelector: {}
+ ports:
+ - protocol: TCP
+ port: 53 # DNS
+ - protocol: UDP
+ port: 53 # DNS
+ - protocol: TCP
+ port: 443 # HTTPS
+ - to:
+ - podSelector:
+ matchLabels:
+ app: postgres
+ ports:
+ - protocol: TCP
+ port: 5432
 ```
 
 ## PodSecurityPolicy
@@ -928,29 +928,29 @@ spec:
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: codex-psp
+ name: codex-psp
 spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-  - ALL
-  volumes:
-  - 'configMap'
-  - 'emptyDir'
-  - 'projected'
-  - 'secret'
-  - 'downwardAPI'
-  - 'persistentVolumeClaim'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  seLinux:
-    rule: 'MustRunAs'
-    seLinuxOptions:
-      level: "s0:c123,c456"
-  readOnlyRootFilesystem: false
+ privileged: false
+ allowPrivilegeEscalation: false
+ requiredDropCapabilities:
+ - ALL
+ volumes:
+ - 'configMap'
+ - 'emptyDir'
+ - 'projected'
+ - 'secret'
+ - 'downwardAPI'
+ - 'persistentVolumeClaim'
+ hostNetwork: false
+ hostIPC: false
+ hostPID: false
+ runAsUser:
+ rule: 'MustRunAsNonRoot'
+ seLinux:
+ rule: 'MustRunAs'
+ seLinuxOptions:
+ level: "s0:c123,c456"
+ readOnlyRootFilesystem: false
 ```
 
 ---

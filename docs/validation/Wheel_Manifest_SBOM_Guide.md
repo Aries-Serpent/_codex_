@@ -1,6 +1,6 @@
 # Wheel Manifest & Baseline Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -91,9 +91,9 @@ Dependency drift occurs when:
 2. Compare with previous baseline manifest
 3. If SHA256 hashes differ: alert via GitHub issue
 4. Manual review required to:
-   - Verify changes are expected
-   - Test compatibility
-   - Update pinned versions if needed
+ - Verify changes are expected
+ - Test compatibility
+ - Update pinned versions if needed
 
 ### Manual Comparison
 
@@ -145,7 +145,7 @@ grype sbom:sbom.json --fail-on critical
 1. Trigger scheduled audit with target version:
    ```bash
    gh workflow run scheduled-dependency-audit.yml -f python_version=3.12
-   ```
+ ```
 
 2. Review upgrade-compatibility job results
 
@@ -156,7 +156,7 @@ grype sbom:sbom.json --fail-on critical
 1. Test with audit workflow:
    ```bash
    gh workflow run scheduled-dependency-audit.yml -f enable_multiarch=true
-   ```
+ ```
 
 2. Verify arm64 wheelhouse artifact contains all required wheels
 
@@ -175,14 +175,14 @@ grype sbom:sbom.json --fail-on critical
    jq -r '.wheels[].name' old/manifest.json > old-wheels.txt
    jq -r '.wheels[].name' new/manifest.json > new-wheels.txt
    diff old-wheels.txt new-wheels.txt
-   ```
+ ```
 
 4. Check for hash changes:
    ```bash
    jq '.wheels[] | "\(.name) \(.sha256)"' old/manifest.json > old-hashes.txt
    jq '.wheels[] | "\(.name) \(.sha256)"' new/manifest.json > new-hashes.txt
    diff old-hashes.txt new-hashes.txt
-   ```
+ ```
 
 5. Review changelog for changed packages
 
@@ -213,9 +213,9 @@ For production systems, consider:
 ### Security Scanning
 
 - Review Grype alerts weekly
-- Critical vulnerabilities → immediate action
-- High vulnerabilities → scheduled update
-- Medium/Low → batch with regular updates
+- Critical vulnerabilities immediate action
+- High vulnerabilities scheduled update
+- Medium/Low batch with regular updates
 
 ### Testing Changes
 

@@ -1,9 +1,9 @@
 # [Doc]: Import Contracts — Layers and Independence (Advisory Mode)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
- Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## Purpose
 Enforce modular boundaries with import-linter while allowing incremental adoption.
@@ -11,7 +11,7 @@ Enforce modular boundaries with import-linter while allowing incremental adoptio
 ## Contracts (summary)
 - Layers: utils -> data -> models -> training -> api
 - Independence: api <-> data (no back-refs)
-- Forbidden: api → training.internal
+- Forbidden: api training.internal
 
 See .importlinter for exact rules.
 
@@ -22,11 +22,11 @@ nox -s lint
 ```text
 
 ## How to fix violations
-1. Identify the violating import in the output (source → target).
+1. Identify the violating import in the output (source target).
 2. Choose one:
-   - Move shared code to a lower layer (e.g., utils).
-   - Introduce a small adapter/port in the dependent layer.
-   - In rare cases, add an allowlist in .importlinter (temporary).
+ - Move shared code to a lower layer (e.g., utils).
+ - Introduce a small adapter/port in the dependent layer.
+ - In rare cases, add an allowlist in .importlinter (temporary).
 
 ## Suggested workflow
 - Keep advisory mode until violations shrink below an agreed threshold.

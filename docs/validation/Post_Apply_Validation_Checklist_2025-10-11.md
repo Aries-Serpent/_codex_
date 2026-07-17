@@ -1,6 +1,6 @@
 # [Checklist]: Post-Apply Validation — Next Atomic Diffs
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Owner: Codex Ops
 
@@ -20,7 +20,7 @@
 
 ## Compose Override
 - Base compose has `codex-cpu`; healthcheck configured with official keys.
-- `docker compose up` → service transitions to `healthy`.
+- `docker compose up` service transitions to `healthy`.
 
 ## Artifacts
 - `artifacts/docs/` (pdoc)

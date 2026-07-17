@@ -1,0 +1,62 @@
+{
+  "collected_at": 1784312503.5656185,
+  "dimensions": {
+    "test_execution_time": {
+      "unit_tests_avg_ms": 45,
+      "integration_tests_avg_ms": 150,
+      "e2e_tests_avg_ms": 300,
+      "p50_ms": 50,
+      "p95_ms": 250,
+      "p99_ms": 400,
+      "unit": "milliseconds",
+      "samples": 3
+    },
+    "cicd_throughput": {
+      "total_workflows": 216,
+      "avg_workflow_duration_sec": 540,
+      "avg_queue_time_sec": 30,
+      "parallelization_efficiency": 0.75,
+      "unit": "seconds"
+    },
+    "cache_hit_rates": {
+      "actions_artifacts_cache_hit_rate": 0.72,
+      "build_output_cache_hit_rate": 0.68,
+      "dependency_cache_hit_rate": 0.85,
+      "ml_model_cache_hit_rate": 0.9,
+      "unit": "percentage"
+    },
+    "artifact_sizes": {
+      "avg_test_artifact_mb": 1.2,
+      "avg_build_artifact_mb": 1.5,
+      "total_artifacts_volume_mb": 2.7,
+      "unit": "megabytes"
+    },
+    "code_analysis_runtime": {
+      "codeql_scan_sec": 120,
+      "ruff_linter_sec": 8,
+      "black_format_sec": 6,
+      "mypy_typecheck_sec": 45,
+      "unit": "seconds"
+    },
+    "dependency_resolution": {
+      "python_install_sec": 45,
+      "nodejs_install_sec": 20,
+      "lock_file_generation_sec": 15,
+      "unit": "seconds"
+    },
+    "doc_build_performance": {
+      "total_doc_files": 1958,
+      "markdown_processing_sec": 8,
+      "html_generation_sec": 12,
+      "static_site_build_sec": 25,
+      "unit": "seconds"
+    },
+    "agent_execution_overhead": {
+      "copilot_startup_ms": 250,
+      "custom_agent_init_ms": 180,
+      "session_init_ms": 150,
+      "total_overhead_ms": 580,
+      "unit": "milliseconds"
+    }
+  }
+}

@@ -1,12 +1,12 @@
 # Comprehensive System Architecture — Codex ML Platform
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
-**Version:** 5.0.0  
+**Version:** 5.0.0
 **Last Updated: 2026-07-10
-**Status:** Complete — Phase 5 Track 4  
-**Session:** S250-doc-arch  
+**Status:** Complete — Phase 5 Track 4
+**Session:** S250-doc-arch
 
 ---
 
@@ -31,19 +31,19 @@ The Codex ML Platform is a comprehensive, production-grade machine learning fram
 
 **Components:**
 - **Hydra Configuration System** — Single source of truth for all parameters
-  - Multi-level config composition (base → experiment → run-specific)
-  - Type-safe schema validation via OmegaConf
-  - Dynamic defaults and sweeps for hyperparameter tuning
-  
+ - Multi-level config composition (base experiment run-specific)
+ - Type-safe schema validation via OmegaConf
+ - Dynamic defaults and sweeps for hyperparameter tuning
+
 - **Workflow Orchestrator** — DAG-based task scheduling
-  - Dependency resolution and parallel execution
-  - Failure recovery with checkpointing
-  - Resource allocation and scheduling
+ - Dependency resolution and parallel execution
+ - Failure recovery with checkpointing
+ - Resource allocation and scheduling
 
 - **State Manager** — Persistent workflow state
-  - Checkpoint storage (local, cloud, S3-compatible)
-  - Recovery point management
-  - Session tracking
+ - Checkpoint storage (local, cloud, S3-compatible)
+ - Recovery point management
+ - Session tracking
 
 **Key Design Patterns:**
 - **Factory Pattern** — Configuration objects instantiate components
@@ -53,15 +53,15 @@ The Codex ML Platform is a comprehensive, production-grade machine learning fram
 **Data Structures:**
 ```yaml
 ConfigurationStore:
-  base_configs/
-    defaults.yaml           # Base parameters
-    training.yaml           # Training-specific
-    inference.yaml          # Inference-specific
-  experiments/
-    exp_001_baseline.yaml   # Experiment override
-    exp_002_variant_a.yaml  # Variant override
-  runtime/
-    run_2026_07_10.yaml     # Runtime captures
+ base_configs/
+ defaults.yaml # Base parameters
+ training.yaml # Training-specific
+ inference.yaml # Inference-specific
+ experiments/
+ exp_001_baseline.yaml # Experiment override
+ exp_002_variant_a.yaml # Variant override
+ runtime/
+ run_2026_07_10.yaml # Runtime captures
 ```
 
 ---
@@ -72,36 +72,36 @@ ConfigurationStore:
 
 **Components:**
 - **File Ingestor** — Multi-format support
-  - CSV, JSON, Parquet, HDF5, Apache Arrow
-  - Automatic encoding detection (UTF-8, Latin-1, GB18030, etc.)
-  - Large file streaming (>100GB support)
-  
+ - CSV, JSON, Parquet, HDF5, Apache Arrow
+ - Automatic encoding detection (UTF-8, Latin-1, GB18030, etc.)
+ - Large file streaming (>100GB support)
+
 - **CSV Ingestor** — Specialized CSV handling
-  - Dialect detection (delimiter, quote char, encoding)
-  - Type inference and validation
-  - Memory-efficient chunked processing
-  
+ - Dialect detection (delimiter, quote char, encoding)
+ - Type inference and validation
+ - Memory-efficient chunked processing
+
 - **Text Processing Pipeline**
-  - Tokenization with multiple backends (NLTK, spaCy, HuggingFace)
-  - Document splitting (semantic, sliding window, recursive)
-  - Format preservation (markdown, code blocks, etc.)
+ - Tokenization with multiple backends (NLTK, spaCy, HuggingFace)
+ - Document splitting (semantic, sliding window, recursive)
+ - Format preservation (markdown, code blocks, etc.)
 
 - **Data Validation Framework**
-  - Schema validation (Pydantic)
-  - Statistical profile validation
-  - Drift detection
+ - Schema validation (Pydantic)
+ - Statistical profile validation
+ - Drift detection
 
 **Data Flow:**
 ```
-Raw Input → Format Detection → Parsing → Validation → Normalization → Output
-                                                    ↓
-                                            Error Handling & Logging
+Raw Input Format Detection Parsing Validation Normalization Output
+ 
+ Error Handling & Logging
 ```
 
 **Key Methods:**
-- `ingest(path: str, config: Config) → Dataset` — Main ingestion entry point
-- `detect_format(bytes: bytes) → Format` — Format auto-detection
-- `split_document(text: str, strategy: str) → List[str]` — Document splitting
+- `ingest(path: str, config: Config) Dataset` — Main ingestion entry point
+- `detect_format(bytes: bytes) Format` — Format auto-detection
+- `split_document(text: str, strategy: str) List[str]` — Document splitting
 
 ---
 
@@ -111,40 +111,40 @@ Raw Input → Format Detection → Parsing → Validation → Normalization → 
 
 **Components:**
 - **Training Engine**
-  - PyTorch-based distributed training
-  - Gradient accumulation and mixed precision
-  - Learning rate scheduling and warmup
-  - Early stopping with patience
+ - PyTorch-based distributed training
+ - Gradient accumulation and mixed precision
+ - Learning rate scheduling and warmup
+ - Early stopping with patience
 
 - **Evaluation Framework**
-  - Multiple metric support (accuracy, F1, AUROC, custom)
-  - Cross-validation with stratification
-  - Confidence interval estimation
+ - Multiple metric support (accuracy, F1, AUROC, custom)
+ - Cross-validation with stratification
+ - Confidence interval estimation
 
 - **Model Registry**
-  - MLflow integration for experiment tracking
-  - Model versioning and lineage
-  - Artifact storage and retrieval
+ - MLflow integration for experiment tracking
+ - Model versioning and lineage
+ - Artifact storage and retrieval
 
 - **Inference Pipeline**
-  - Batch processing with queue management
-  - Single-shot and streaming inference
-  - Latency optimization
+ - Batch processing with queue management
+ - Single-shot and streaming inference
+ - Latency optimization
 
 **Training Loop Pseudocode:**
 ```python
 for epoch in range(num_epochs):
-  for batch in train_loader:
-    output = model(batch)
-    loss = criterion(output, batch.labels)
-    loss.backward()
-    optimizer.step()
-    optimizer.zero_grad()
-    
-    if validation_interval_reached:
-      val_metrics = evaluate(model, val_loader)
-      if val_metrics.best:
-        checkpoint_model(model, epoch, val_metrics)
+ for batch in train_loader:
+ output = model(batch)
+ loss = criterion(output, batch.labels)
+ loss.backward()
+ optimizer.step()
+ optimizer.zero_grad()
+ 
+ if validation_interval_reached:
+ val_metrics = evaluate(model, val_loader)
+ if val_metrics.best:
+ checkpoint_model(model, epoch, val_metrics)
 ```
 
 ---
@@ -155,30 +155,30 @@ for epoch in range(num_epochs):
 
 **Components:**
 - **Vector Store**
-  - FAISS for dense vector search (CPU/GPU)
-  - BM25 for sparse keyword search
-  - Hybrid search combining both approaches
+ - FAISS for dense vector search (CPU/GPU)
+ - BM25 for sparse keyword search
+ - Hybrid search combining both approaches
 
 - **Embedding Service**
-  - Multi-model support (BERT, BGE, OpenAI)
-  - Batch embedding with caching
-  - Dimension reduction and normalization
+ - Multi-model support (BERT, BGE, OpenAI)
+ - Batch embedding with caching
+ - Dimension reduction and normalization
 
 - **Retrieval Pipeline**
-  - Query encoding and expansion
-  - Top-K retrieval with reranking
-  - Context window management
+ - Query encoding and expansion
+ - Top-K retrieval with reranking
+ - Context window management
 
 - **Knowledge Graph Manager**
-  - Entity and relationship storage
-  - Graph traversal and reasoning
-  - Link prediction
+ - Entity and relationship storage
+ - Graph traversal and reasoning
+ - Link prediction
 
 **Retrieval Flow:**
 ```
-Query → Encoding → Vector Search → Reranking → Context Window → LLM Prompt
-          ↓
-      Keyword Search (parallel)
+Query Encoding Vector Search Reranking Context Window LLM Prompt
+ 
+ Keyword Search (parallel)
 ```
 
 ---
@@ -189,24 +189,24 @@ Query → Encoding → Vector Search → Reranking → Context Window → LLM Pr
 
 **Components:**
 - **REST API** (FastAPI)
-  - OpenAPI/Swagger documentation
-  - Request/response validation
-  - Authentication and rate limiting
+ - OpenAPI/Swagger documentation
+ - Request/response validation
+ - Authentication and rate limiting
 
 - **gRPC Services** (High-performance)
-  - Streaming support for large payloads
-  - Protocol buffer serialization
-  - Service mesh integration
+ - Streaming support for large payloads
+ - Protocol buffer serialization
+ - Service mesh integration
 
 - **Event Bus**
-  - Publish/Subscribe pattern
-  - Event sourcing
-  - Dead letter queue for failed events
+ - Publish/Subscribe pattern
+ - Event sourcing
+ - Dead letter queue for failed events
 
 - **CLI Interface** (Typer)
-  - Command-based operations
-  - Batch execution support
-  - Output formatting (JSON, table, markdown)
+ - Command-based operations
+ - Batch execution support
+ - Output formatting (JSON, table, markdown)
 
 ---
 
@@ -214,54 +214,68 @@ Query → Encoding → Vector Search → Reranking → Context Window → LLM Pr
 
 ```mermaid
 graph TB
-    subgraph Layer1["Layer 1: Configuration & Orchestration"]
-        A["Hydra Config\nManager"]
-        B["Workflow\nOrchestrator"]
-        C["State\nManager"]
-    end
-    
-    subgraph Layer2["Layer 2: Data Pipeline"]
-        D["File\nIngestor"]
-        E["Data\nValidator"]
-        F["Text\nProcessor"]
-    end
-    
-    subgraph Layer3["Layer 3: ML Core"]
-        G["Training\nEngine"]
-        H["Evaluation\nFramework"]
-        I["Model\nRegistry"]
-    end
-    
-    subgraph Layer4["Layer 4: RAG & Knowledge"]
-        J["Vector\nStore"]
-        K["Embedding\nService"]
-        L["Knowledge\nGraph"]
-    end
-    
-    subgraph Layer5["Layer 5: API & Integration"]
-        M["REST API"]
-        N["gRPC\nServices"]
-        O["CLI\nInterface"]
-    end
-    
-    A -->|config| B
-    B -->|orchestrate| C
-    B -->|load| D
-    D -->|validate| E
-    E -->|process| F
-    F -->|train| G
-    G -->|evaluate| H
-    H -->|register| I
-    I -->|store embedding| K
-    K -->|populate| J
-    J -->|search| L
-    
-    M -->|query| J
-    N -->|grpc| G
-    O -->|command| B
-    
-    C -->|checkpoint| I
-    I -->|retrieve| G
+
+ subgraph Layer1["Layer 1: Configuration & Orchestration"]
+ A["Hydra Config\nManager"]
+ B["Workflow\nOrchestrator"]
+ C["State\nManager"]
+ end
+ 
+ subgraph Layer2["Layer 2: Data Pipeline"]
+ D["File\nIngestor"]
+ E["Data\nValidator"]
+ F["Text\nProcessor"]
+ end
+ 
+ subgraph Layer3["Layer 3: ML Core"]
+ G["Training\nEngine"]
+ H["Evaluation\nFramework"]
+ I["Model\nRegistry"]
+ end
+ 
+ subgraph Layer4["Layer 4: RAG & Knowledge"]
+ J["Vector\nStore"]
+ K["Embedding\nService"]
+ L["Knowledge\nGraph"]
+ end
+ 
+ subgraph Layer5["Layer 5: API & Integration"]
+ M["REST API"]
+ N["gRPC\nServices"]
+ O["CLI\nInterface"]
+ end
+ 
+ A -->|config| B
+
+ B -->|orchestrate| C
+
+ B -->|load| D
+
+ D -->|validate| E
+
+ E -->|process| F
+
+ F -->|train| G
+
+ G -->|evaluate| H
+
+ H -->|register| I
+
+ I -->|store embedding| K
+
+ K -->|populate| J
+
+ J -->|search| L
+ 
+ M -->|query| J
+
+ N -->|grpc| G
+
+ O -->|command| B
+ 
+ C -->|checkpoint| I
+
+ I -->|retrieve| G
 ```
 
 ---
@@ -272,57 +286,66 @@ graph TB
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant CLI
-    participant Orchestrator
-    participant DataPipeline
-    participant TrainingEngine
-    participant ModelRegistry
-    participant MLflow
-    
-    User->>CLI: python main.py train config=baseline
-    CLI->>Orchestrator: execute_training(config)
-    Orchestrator->>DataPipeline: load_data(config)
-    DataPipeline->>DataPipeline: ingest → validate → split
-    DataPipeline-->>Orchestrator: dataset
-    
-    loop Epoch
-        Orchestrator->>TrainingEngine: train_epoch(dataset)
-        TrainingEngine->>TrainingEngine: forward pass → compute loss
-        TrainingEngine->>ModelRegistry: checkpoint(model, metrics)
-        ModelRegistry->>MLflow: log_metrics(metrics)
-    end
-    
-    Orchestrator->>ModelRegistry: finalize_model(version)
-    ModelRegistry-->>MLflow: register_model(model, version)
-    MLflow-->>User:  Training Complete
+
+ participant User
+ participant CLI
+ participant Orchestrator
+ participant DataPipeline
+ participant TrainingEngine
+ participant ModelRegistry
+ participant MLflow
+ 
+ User->>CLI: python main.py train config=baseline
+ CLI->>Orchestrator: execute_training(config)
+ Orchestrator->>DataPipeline: load_data(config)
+ DataPipeline->>DataPipeline: ingest validate split
+
+ DataPipeline-->>Orchestrator: dataset
+ 
+ loop Epoch
+ Orchestrator->>TrainingEngine: train_epoch(dataset)
+ TrainingEngine->>TrainingEngine: forward pass compute loss
+ TrainingEngine->>ModelRegistry: checkpoint(model, metrics)
+ ModelRegistry->>MLflow: log_metrics(metrics)
+ end
+ 
+ Orchestrator->>ModelRegistry: finalize_model(version)
+
+ ModelRegistry-->>MLflow: register_model(model, version)
+
+ MLflow-->>User: Training Complete
 ```
 
 ### 3.2 Inference Data Flow
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant REST_API
-    participant InferenceEngine
-    participant VectorStore
-    participant EmbeddingService
-    participant LLM
-    
-    Client->>REST_API: POST /infer {query, model_id}
-    REST_API->>InferenceEngine: infer(query, model_id)
-    
-    alt Use RAG
-        InferenceEngine->>EmbeddingService: embed_query(query)
-        EmbeddingService-->>InferenceEngine: query_embedding
-        InferenceEngine->>VectorStore: search_top_k(query_embedding, k=5)
-        VectorStore-->>InferenceEngine: [context_docs]
-    end
-    
-    InferenceEngine->>LLM: generate(query, context)
-    LLM-->>InferenceEngine: response
-    InferenceEngine->>REST_API: response + metadata
-    REST_API-->>Client: {response, latency, tokens}
+
+ participant Client
+ participant REST_API
+ participant InferenceEngine
+ participant VectorStore
+ participant EmbeddingService
+ participant LLM
+ 
+ Client->>REST_API: POST /infer {query, model_id}
+ REST_API->>InferenceEngine: infer(query, model_id)
+ 
+ alt Use RAG
+ InferenceEngine->>EmbeddingService: embed_query(query)
+
+ EmbeddingService-->>InferenceEngine: query_embedding
+ InferenceEngine->>VectorStore: search_top_k(query_embedding, k=5)
+
+ VectorStore-->>InferenceEngine: [context_docs]
+ end
+ 
+ InferenceEngine->>LLM: generate(query, context)
+
+ LLM-->>InferenceEngine: response
+ InferenceEngine->>REST_API: response + metadata
+
+ REST_API-->>Client: {response, latency, tokens}
 ```
 
 ---
@@ -333,85 +356,85 @@ sequenceDiagram
 
 ```python
 class ComponentFactory:
-    """Factory for creating components from config."""
-    
-    @staticmethod
-    def create_model(config: ModelConfig) -> nn.Module:
-        """Create model instance from config."""
-        model_class = get_class(config.class_path)
-        return model_class(**config.params)
-    
-    @staticmethod
-    def create_optimizer(config: OptimizerConfig, model: nn.Module):
-        """Create optimizer from config."""
-        optimizer_class = get_class(config.class_path)
-        return optimizer_class(model.parameters(), **config.params)
+ """Factory for creating components from config."""
+ 
+ @staticmethod
+ def create_model(config: ModelConfig) -> nn.Module:
+ """Create model instance from config."""
+ model_class = get_class(config.class_path)
+ return model_class(**config.params)
+ 
+ @staticmethod
+ def create_optimizer(config: OptimizerConfig, model: nn.Module):
+ """Create optimizer from config."""
+ optimizer_class = get_class(config.class_path)
+ return optimizer_class(model.parameters(), **config.params)
 ```
 
 ### 4.2 Chain of Responsibility (Validation Pipeline)
 
 ```python
 class ValidationChain:
-    """Pipeline of validators."""
-    
-    def __init__(self):
-        self.validators = [
-            SchemaValidator(),
-            TypeValidator(),
-            RangeValidator(),
-            BusinessRuleValidator(),
-        ]
-    
-    def validate(self, data: Any) -> ValidationResult:
-        result = ValidationResult(passed=True)
-        for validator in self.validators:
-            result = validator.validate(data, result)
-            if not result.passed:
-                break
-        return result
+ """Pipeline of validators."""
+ 
+ def __init__(self):
+ self.validators = [
+ SchemaValidator(),
+ TypeValidator(),
+ RangeValidator(),
+ BusinessRuleValidator(),
+ ]
+ 
+ def validate(self, data: Any) -> ValidationResult:
+ result = ValidationResult(passed=True)
+ for validator in self.validators:
+ result = validator.validate(data, result)
+ if not result.passed:
+ break
+ return result
 ```
 
 ### 4.3 Observer Pattern (Config Change Notification)
 
 ```python
 class ConfigManager(Observable):
-    """Config manager with change notifications."""
-    
-    def __init__(self):
-        self.observers = []
-        self.config = {}
-    
-    def subscribe(self, observer: ConfigObserver):
-        self.observers.append(observer)
-    
-    def update_config(self, new_config: dict):
-        self.config = new_config
-        self.notify_observers("config_updated", new_config)
-    
-    def notify_observers(self, event: str, data: dict):
-        for observer in self.observers:
-            observer.on_config_change(event, data)
+ """Config manager with change notifications."""
+ 
+ def __init__(self):
+ self.observers = []
+ self.config = {}
+ 
+ def subscribe(self, observer: ConfigObserver):
+ self.observers.append(observer)
+ 
+ def update_config(self, new_config: dict):
+ self.config = new_config
+ self.notify_observers("config_updated", new_config)
+ 
+ def notify_observers(self, event: str, data: dict):
+ for observer in self.observers:
+ observer.on_config_change(event, data)
 ```
 
 ### 4.4 Strategy Pattern (Multiple Implementations)
 
 ```python
 class DataProcessingStrategy(ABC):
-    """Abstract strategy for data processing."""
-    
-    @abstractmethod
-    def process(self, data: Any) -> Any:
-        pass
+ """Abstract strategy for data processing."""
+ 
+ @abstractmethod
+ def process(self, data: Any) -> Any:
+ pass
 
 class LocalProcessing(DataProcessingStrategy):
-    """Process data locally."""
-    def process(self, data: Any) -> Any:
-        return local_process(data)
+ """Process data locally."""
+ def process(self, data: Any) -> Any:
+ return local_process(data)
 
 class DistributedProcessing(DataProcessingStrategy):
-    """Process data on distributed cluster."""
-    def process(self, data: Any) -> Any:
-        return distributed_process(data)
+ """Process data on distributed cluster."""
+ def process(self, data: Any) -> Any:
+ return distributed_process(data)
 ```
 
 ---
@@ -421,58 +444,58 @@ class DistributedProcessing(DataProcessingStrategy):
 ### 5.1 Single Machine Deployment
 
 ```
-┌─────────────────────────────────────────┐
-│         Single Machine Setup            │
-├─────────────────────────────────────────┤
-│                                         │
-│  ┌──────────────┐  ┌────────────────┐  │
-│  │   Python    │  │   PyTorch      │  │
-│  │   Process   │  │   CPU/GPU      │  │
-│  └──────────────┘  └────────────────┘  │
-│                                         │
-│  ┌──────────────┐  ┌────────────────┐  │
-│  │   Database  │  │   Cache        │  │
-│  │   SQLite    │  │   Redis/Local  │  │
-│  └──────────────┘  └────────────────┘  │
-│                                         │
-│  ┌──────────────┐  ┌────────────────┐  │
-│  │   Storage   │  │   Logs         │  │
-│  │   Local FS  │  │   Local/File   │  │
-│  └──────────────┘  └────────────────┘  │
-│                                         │
-└─────────────────────────────────────────┘
+
+ Single Machine Setup 
+
+ 
+ 
+ Python PyTorch 
+ Process CPU/GPU 
+ 
+ 
+ 
+ Database Cache 
+ SQLite Redis/Local 
+ 
+ 
+ 
+ Storage Logs 
+ Local FS Local/File 
+ 
+ 
+
 ```
 
 ### 5.2 Distributed Deployment
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│              Kubernetes Cluster Deployment                    │
-├──────────────────────────────────────────────────────────────┤
-│                                                                │
-│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐│
-│  │  Master Node   │   │  Worker Node 1 │   │  Worker Node 2 ││
-│  │  (Orchestrator)│   │  (GPU/Compute) │   │  (GPU/Compute) ││
-│  │                │   │                │   │                ││
-│  │  - Scheduler   │   │  - Training    │   │  - Training    ││
-│  │  - State Mgmt  │   │  - Inference   │   │  - Inference   ││
-│  └────────────────┘   └────────────────┘   └────────────────┘│
-│        │                       │                    │          │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │         Shared Storage (S3 or NFS)                      │  │
-│  │         - Models                                        │  │
-│  │         - Datasets                                      │  │
-│  │         - Checkpoints                                  │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│        │                       │                    │          │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │         Monitoring & Logging Stack                      │  │
-│  │         - Prometheus (metrics)                          │  │
-│  │         - ELK Stack (logs)                              │  │
-│  │         - Grafana (dashboards)                          │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-└──────────────────────────────────────────────────────────────┘
+
+ Kubernetes Cluster Deployment 
+
+ 
+ 
+ Master Node Worker Node 1 Worker Node 2 
+ (Orchestrator) (GPU/Compute) (GPU/Compute) 
+ 
+ - Scheduler - Training - Training 
+ - State Mgmt - Inference - Inference 
+ 
+ 
+ 
+ Shared Storage (S3 or NFS) 
+ - Models 
+ - Datasets 
+ - Checkpoints 
+ 
+ 
+ 
+ Monitoring & Logging Stack 
+ - Prometheus (metrics) 
+ - ELK Stack (logs) 
+ - Grafana (dashboards) 
+ 
+ 
+
 ```
 
 ---
@@ -482,30 +505,30 @@ class DistributedProcessing(DataProcessingStrategy):
 ### 6.1 Defense-in-Depth Layers
 
 ```
-┌─────────────────────────────────────────┐
-│     Layer 1: API Authentication         │
-│     (JWT, OAuth2, API Keys)             │
-└─────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────┐
-│     Layer 2: Authorization (RBAC)       │
-│     (Role-based access control)         │
-└─────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────┐
-│     Layer 3: Data Encryption            │
-│     (TLS in transit, AES at rest)       │
-└─────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────┐
-│     Layer 4: Input Validation           │
-│     (Schema, type, business rules)      │
-└─────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────┐
-│     Layer 5: Secrets Management         │
-│     (Vault, env vars, encrypted storage)│
-└─────────────────────────────────────────┘
+
+ Layer 1: API Authentication 
+ (JWT, OAuth2, API Keys) 
+
+ 
+
+ Layer 2: Authorization (RBAC) 
+ (Role-based access control) 
+
+ 
+
+ Layer 3: Data Encryption 
+ (TLS in transit, AES at rest) 
+
+ 
+
+ Layer 4: Input Validation 
+ (Schema, type, business rules) 
+
+ 
+
+ Layer 5: Secrets Management 
+ (Vault, env vars, encrypted storage)
+
 ```
 
 ### 6.2 Secrets Management
@@ -568,13 +591,13 @@ class DistributedProcessing(DataProcessingStrategy):
 
 ```
 API Request Latency Breakdown (Inference):
-├─ Auth & validation: 1-5ms
-├─ Load model: 0ms (cached)
-├─ Embedding: 10-50ms
-├─ Vector search: 5-20ms
-├─ LLM generation: 500-2000ms
-└─ Serialization: 1-5ms
-   Total: 520-2070ms (p50), 1000-3000ms (p95)
+ Auth & validation: 1-5ms
+ Load model: 0ms (cached)
+ Embedding: 10-50ms
+ Vector search: 5-20ms
+ LLM generation: 500-2000ms
+ Serialization: 1-5ms
+ Total: 520-2070ms (p50), 1000-3000ms (p95)
 ```
 
 ---
@@ -585,21 +608,21 @@ API Request Latency Breakdown (Inference):
 
 ```
 Application Logs
-├─ Model Logs (training metrics, checkpoints)
-├─ Data Logs (ingestion, validation)
-├─ API Logs (requests, responses, errors)
-└─ System Logs (resource usage, errors)
-      ↓
-    Logger (Python logging)
-      ↓
-  ┌─────────────────────────────────┐
-  │ Multiple Handlers               │
-  ├─────────────────────────────────┤
-  │ - File (local rotation)         │
-  │ - Console (stdout)              │
-  │ - CloudWatch (AWS)              │
-  │ - Datadog/ELK (centralized)     │
-  └─────────────────────────────────┘
+ Model Logs (training metrics, checkpoints)
+ Data Logs (ingestion, validation)
+ API Logs (requests, responses, errors)
+ System Logs (resource usage, errors)
+ 
+ Logger (Python logging)
+ 
+ 
+ Multiple Handlers 
+ 
+ - File (local rotation) 
+ - Console (stdout) 
+ - CloudWatch (AWS) 
+ - Datadog/ELK (centralized) 
+ 
 ```
 
 ### 9.2 Metrics Collection
@@ -683,54 +706,54 @@ Application Logs
 ```yaml
 # config/defaults.yaml
 hydra:
-  version: 1.1
-  run:
-    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+ version: 1.1
+ run:
+ dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 # Data configuration
 data:
-  train_path: data/train.csv
-  val_path: data/val.csv
-  batch_size: 32
-  num_workers: 4
+ train_path: data/train.csv
+ val_path: data/val.csv
+ batch_size: 32
+ num_workers: 4
 
 # Model configuration
 model:
-  class_path: codex.models.TransformerModel
-  params:
-    hidden_size: 768
-    num_layers: 12
-    num_heads: 12
-    dropout: 0.1
+ class_path: codex.models.TransformerModel
+ params:
+ hidden_size: 768
+ num_layers: 12
+ num_heads: 12
+ dropout: 0.1
 
 # Training configuration
 training:
-  max_epochs: 100
-  learning_rate: 1e-4
-  optimizer:
-    class_path: torch.optim.AdamW
-    params:
-      beta1: 0.9
-      beta2: 0.999
-  scheduler:
-    class_path: torch.optim.lr_scheduler.CosineAnnealingLR
-    params:
-      T_max: 100
+ max_epochs: 100
+ learning_rate: 1e-4
+ optimizer:
+ class_path: torch.optim.AdamW
+ params:
+ beta1: 0.9
+ beta2: 0.999
+ scheduler:
+ class_path: torch.optim.lr_scheduler.CosineAnnealingLR
+ params:
+ T_max: 100
 
 # Evaluation configuration
 evaluation:
-  metrics:
-    - accuracy
-    - f1
-    - auroc
-  eval_interval: 1000  # steps
+ metrics:
+ - accuracy
+ - f1
+ - auroc
+ eval_interval: 1000 # steps
 
 # Inference configuration
 inference:
-  batch_size: 64
-  use_rag: true
-  rag_top_k: 5
-  max_tokens: 256
+ batch_size: 64
+ use_rag: true
+ rag_top_k: 5
+ max_tokens: 256
 ```
 
 ---
@@ -746,16 +769,16 @@ The architecture provides several extension points for customization:
 from codex.models import BaseModel
 
 class CustomModel(BaseModel):
-    """Custom model implementation."""
-    
-    def __init__(self, config):
-        super().__init__(config)
-        self.encoder = self.build_encoder()
-        self.decoder = self.build_decoder()
-    
-    def forward(self, x):
-        encoded = self.encoder(x)
-        return self.decoder(encoded)
+ """Custom model implementation."""
+ 
+ def __init__(self, config):
+ super().__init__(config)
+ self.encoder = self.build_encoder()
+ self.decoder = self.build_decoder()
+ 
+ def forward(self, x):
+ encoded = self.encoder(x)
+ return self.decoder(encoded)
 ```
 
 ### 12.2 Custom Handlers
@@ -766,9 +789,9 @@ from codex.data import register_ingestor
 
 @register_ingestor("custom_format")
 class CustomIngestor:
-    def ingest(self, path, config):
-        # Custom logic
-        return data
+ def ingest(self, path, config):
+ # Custom logic
+ return data
 ```
 
 ### 12.3 Custom Validators
@@ -778,9 +801,9 @@ from codex.validation import register_validator
 
 @register_validator("custom_rule")
 def validate_custom(data, config):
-    if not meets_condition(data):
-        raise ValidationError("Custom validation failed")
-    return data
+ if not meets_condition(data):
+ raise ValidationError("Custom validation failed")
+ return data
 ```
 
 ---
@@ -809,8 +832,8 @@ python -m codex.cli checkpoints list
 
 # Restore from checkpoint
 python main.py \
-  ++checkpoint=checkpoints/epoch_50 \
-  train.resume=true
+ ++checkpoint=checkpoints/epoch_50 \
+ train.resume=true
 ```
 
 **Database recovery:**
@@ -850,6 +873,6 @@ sqlite3 codex.db < /var/backups/codex/db_2026_07_10.sql
 
 ---
 
-**Document maintained by:** @mbaetiong  
-**Last review:** 2026-07-10  
+**Document maintained by:** @mbaetiong
+**Last review:** 2026-07-10
 **Next review:** 2026-08-10

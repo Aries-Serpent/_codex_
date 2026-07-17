@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/_archive-policy/README-standardization/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Archive Standardization - Quick Start Guide - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2325,11 +2325,11 @@
 <h2 id="what-is-this">What is This?<a class="headerlink" href="#what-is-this" title="Permanent link">¶</a></h2>
 <p>Archive standardization adds <strong>cryptographic integrity</strong> and <strong>compliance tracking</strong> to the <em>codex</em> archive system while maintaining <strong>100% backward compatibility</strong> with existing v1 evidence records.</p>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">¶</a></h2>
-<p><strong>SLSA L3 Compliance</strong> - Cryptographic signatures on all evidence records<br/>
-<strong>Schema Versioning</strong> - Explicit v1/v2 schema support with auto-detection<br/>
-<strong>Sigstore Keyless Signing</strong> - No key management, uses GitHub OIDC<br/>
-<strong>Backward Compatible</strong> - Existing v1 records work unchanged<br/>
-<strong>Zero Breaking Changes</strong> - Opt-in via environment variables  </p>
+<p><strong>SLSA L3 Compliance</strong> - Cryptographic signatures on all evidence records
+ <strong>Schema Versioning</strong> - Explicit v1/v2 schema support with auto-detection
+ <strong>Sigstore Keyless Signing</strong> - No key management, uses GitHub OIDC
+ <strong>Backward Compatible</strong> - Existing v1 records work unchanged
+ <strong>Zero Breaking Changes</strong> - Opt-in via environment variables</p>
 <h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">¶</a></h2>
 <h3 id="1-enable-standardization">1. Enable Standardization<a class="headerlink" href="#1-enable-standardization" title="Permanent link">¶</a></h3>
 <p>```bash</p>
@@ -2350,49 +2350,49 @@ python -m codex.cli archive migrate-evidence-to-v2</code>text</p>
 <h2 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">¶</a></h2>
 <p>```text
 src/codex/archive/
-├── standardization.py      # Core standardization manager
-├── sigstore_client.py      # Keyless signing integration
-├── evidence_schema.py      # Schema versioning &amp; validation</p>
+ standardization.py # Core standardization manager
+ sigstore_client.py # Keyless signing integration
+ evidence_schema.py # Schema versioning &amp; validation</p>
 <p>schemas/
-├── archive_evidence_schema_v1.json  # Legacy format
-├── archive_evidence_schema_v2.json  # Standardized format</p>
+ archive_evidence_schema_v1.json # Legacy format
+ archive_evidence_schema_v2.json # Standardized format</p>
 <p>db/migrations/
-├── sqlite/002_add_standardization.sql
-├── postgres/002_add_standardization.sql
-└── mariadb/002_add_standardization.sql</p>
+ sqlite/002_add_standardization.sql
+ postgres/002_add_standardization.sql
+ mariadb/002_add_standardization.sql</p>
 <p>tests/archive/
-└── test_standardization.py  # 10+ comprehensive tests</p>
+ test_standardization.py # 10+ comprehensive tests</p>
 <p>docs/arch/
-├── adr-2025-11-02-archive-sigstore-integration.md
-├── adr-2025-11-03-evidence-schema-versioning.md
-└── _archive-policy/
-    └── standardization-framework.md
+ adr-2025-11-02-archive-sigstore-integration.md
+ adr-2025-11-03-evidence-schema-versioning.md
+ _archive-policy/
+ standardization-framework.md
 ```text</p>
 <h2 id="example-enhanced-evidence-record">Example: Enhanced Evidence Record<a class="headerlink" href="#example-enhanced-evidence-record" title="Permanent link">¶</a></h2>
 <h3 id="before-v1">Before (v1)<a class="headerlink" href="#before-v1" title="Permanent link">¶</a></h3>
 <p><code>json
 {
-  "ts": "2025-11-02T19:44:00Z",
-  "action": "ARCHIVE",
-  "actor": "marc",
-  "tombstone": "d3e8729-...",
-  "sha256": "e3b0c442..."
+ "ts": "2025-11-02T19:44:00Z",
+ "action": "ARCHIVE",
+ "actor": "marc",
+ "tombstone": "d3e8729-...",
+ "sha256": "e3b0c442..."
 }</code>text</p>
 <h3 id="after-v2">After (v2)<a class="headerlink" href="#after-v2" title="Permanent link">¶</a></h3>
 <p><code>json
 {
-  "ts": "2025-11-02T19:44:00Z",
-  "action": "ARCHIVE",
-  "actor": "marc",
-  "tombstone": "d3e8729-...",
-  "sha256": "e3b0c442...",
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "slsa_level": "L3",
-    "signature": "MOCK_SIG_abc123...",
-    "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "2025-11-02T19:44:01Z"
-  }
+ "ts": "2025-11-02T19:44:00Z",
+ "action": "ARCHIVE",
+ "actor": "marc",
+ "tombstone": "d3e8729-...",
+ "sha256": "e3b0c442...",
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "slsa_level": "L3",
+ "signature": "MOCK_SIG_abc123...",
+ "issuer": "https://token.actions.githubusercontent.com",
+ "signed_at": "2025-11-02T19:44:01Z"
+ }
 }</code>text</p>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">¶</a></h2>
 <p>```bash</p>
@@ -2407,34 +2407,38 @@ src/codex/archive/
 name: Archive with Standardization</p>
 <p>on: [push]</p>
 <p>jobs:
-  archive:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # ← REQUIRED for Sigstore
-      contents: read</p>
-<div class="highlight"><pre><span></span><code>steps:
-  - uses: actions/checkout@v4
-
-  - name: Set up Python
-    uses: actions/setup-python@v4
-    with:
-      python-version: '3.10'
-
-  - name: Install dependencies
-    run: |
-      pip install -e .
-      pip install jsonschema
-
-  - name: Archive with standardization
-    env:
-      CODEX_STANDARDIZATION_ENABLED: "true"
-      CODEX_ENABLE_SIGNING: "true"
-    run: |
-      python -m codex.cli archive store _codex_ file.py \
-        --reason "cleanup" \
-        --by "${{ github.actor }}"
-</code></pre></div>
-<p>```text</p>
+ archive:
+ runs-on: ubuntu-latest
+ permissions:
+ id-token: write # REQUIRED for Sigstore
+ contents: read</p>
+<p>steps:
+ - uses: actions/checkout@v4</p>
+<ul>
+<li>
+<p>name: Set up Python
+ uses: actions/setup-python@v4
+ with:
+ python-version: '3.10'</p>
+</li>
+<li>
+<p>name: Install dependencies
+ run: |
+ pip install -e .
+ pip install jsonschema</p>
+</li>
+<li>
+<p>name: Archive with standardization
+ env:
+ CODEX_STANDARDIZATION_ENABLED: "true"
+ CODEX_ENABLE_SIGNING: "true"
+ run: |
+ python -m codex.cli archive store <em>codex</em> file.py \
+ --reason "cleanup" \
+ --by "${{ github.actor }}"
+```text</p>
+</li>
+</ul>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="schema-validation-fails">Schema validation fails<a class="headerlink" href="#schema-validation-fails" title="Permanent link">¶</a></h3>
 <p>```bash</p>
@@ -2535,6 +2539,6 @@ python -m json.tool schemas/archive_evidence_schema_v2.json
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

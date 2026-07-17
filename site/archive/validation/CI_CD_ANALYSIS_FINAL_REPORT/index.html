@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/validation/CI_CD_ANALYSIS_FINAL_REPORT/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI/CD Failure Analysis &amp; Resolution Report - PR #2968 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2652,8 +2652,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Branch:</strong> <code>copilot/sub-pr-2968</code><br/>
-<strong>Commit:</strong> <code>ea7f255c2607c9832347e2c96d6005f6436049d3</code><br/>
+<p><strong>Branch:</strong> <code>copilot/sub-pr-2968</code>
+<strong>Commit:</strong> <code>ea7f255c2607c9832347e2c96d6005f6436049d3</code>
 <strong>Analysis Date:2026-07-13
 </strong>Agent:** CI Testing Agent</p>
 <hr/>
@@ -2662,7 +2662,7 @@
 <h3 id="key-metrics">Key Metrics<a class="headerlink" href="#key-metrics" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Initial Failures:</strong> 21+ tests</li>
-<li><strong>Failures After Phase 1:</strong> 8 tests  </li>
+<li><strong>Failures After Phase 1:</strong> 8 tests</li>
 <li><strong>Success Rate:</strong> 62% improvement</li>
 <li><strong>Files Modified:</strong> 9</li>
 <li><strong>Lines Changed:</strong> ~180</li>
@@ -2722,24 +2722,24 @@
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>ruff<span class="w"> </span>check<span class="w"> </span>--fix<span class="w"> </span>--unsafe-fixes<span class="w"> </span>.codex/agents/
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Manual fixes</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>-<span class="w"> </span>Renamed<span class="w"> </span>variable<span class="w"> </span><span class="sb">`</span>l<span class="sb">`</span><span class="w"> </span>→<span class="w"> </span><span class="sb">`</span>line<span class="sb">`</span><span class="w"> </span><span class="o">(</span>E741<span class="o">)</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>-<span class="w"> </span>Renamed<span class="w"> </span>variable<span class="w"> </span><span class="sb">`</span>l<span class="sb">`</span><span class="w"> </span><span class="sb">`</span>line<span class="sb">`</span><span class="w"> </span><span class="o">(</span>E741<span class="o">)</span>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>-<span class="w"> </span>Removed<span class="w"> </span>unused<span class="w"> </span>variable<span class="w"> </span><span class="sb">`</span>e<span class="sb">`</span><span class="w"> </span><span class="o">(</span>F841<span class="o">)</span>
 </code></pre></div></p>
 <p><strong>Impact:</strong> Unblocked CI linting checks</p>
 <hr/>
 <h2 id="2-f1-score-test-resolved">2. F1 Score Test - RESOLVED<a class="headerlink" href="#2-f1-score-test-resolved" title="Permanent link">¶</a></h2>
-<p><strong>File:</strong> <code>tests/metrics/test_f1_score.py:33</code><br/>
+<p><strong>File:</strong> <code>tests/metrics/test_f1_score.py:33</code>
 <strong>Status:</strong> <strong>TEST PASSING</strong></p>
 <p><strong>Problem:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">def</span> <span class="nf">test_f1_micro_handles_zero_division</span><span class="p">():</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>  <span class="c1">#  WRONG</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="c1"># WRONG</span>
 </code></pre></div></p>
 <p><strong>Solution:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">def</span> <span class="nf">test_f1_micro_handles_zero_division</span><span class="p">():</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="c1"># When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1.0</span>  <span class="c1">#  CORRECT</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="c1"># When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1.0</span> <span class="c1"># CORRECT</span>
 </code></pre></div></p>
 <p><strong>Rationale:</strong> When all predictions and labels match perfectly (even if single class), F1 score = 1.0</p>
 <p><strong>Verification:</strong>
@@ -2747,7 +2747,7 @@
 </code></pre></div></p>
 <hr/>
 <h3 id="3-prometheus-metrics-test-isolation-resolved">3. Prometheus Metrics Test Isolation - RESOLVED<a class="headerlink" href="#3-prometheus-metrics-test-isolation-resolved" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>tests/test_prometheus_metrics.py</code><br/>
+<p><strong>File:</strong> <code>tests/test_prometheus_metrics.py</code>
 <strong>Status:</strong> <strong>11/11 TESTS PASSING</strong></p>
 <p><strong>Problem:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>ValueError: Duplicated timeseries in CollectorRegistry:
@@ -2757,64 +2757,64 @@
 <p><strong>Solution:</strong> Added autouse fixture:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">autouse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="k">def</span> <span class="nf">clear_prometheus_registry</span><span class="p">():</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="sd">"""Clear Prometheus registry between tests to prevent collision."""</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="kn">from</span> <span class="nn">prometheus_client</span> <span class="kn">import</span> <span class="n">REGISTRY</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="sd">"""Clear Prometheus registry between tests to prevent collision."""</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="kn">from</span> <span class="nn">prometheus_client</span> <span class="kn">import</span> <span class="n">REGISTRY</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="c1"># Save collectors before test</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">collectors_before</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">REGISTRY</span><span class="o">.</span><span class="n">_collector_to_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="c1"># Save collectors before test</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">collectors_before</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">REGISTRY</span><span class="o">.</span><span class="n">_collector_to_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="k">yield</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="k">yield</span>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="c1"># Clean up collectors added during test</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    <span class="n">collectors_after</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">REGISTRY</span><span class="o">.</span><span class="n">_collector_to_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    <span class="k">for</span> <span class="n">collector</span> <span class="ow">in</span> <span class="n">collectors_after</span><span class="p">:</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>        <span class="k">if</span> <span class="n">collector</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">collectors_before</span><span class="p">:</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>            <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>                <span class="n">REGISTRY</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">collector</span><span class="p">)</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>                <span class="k">pass</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> <span class="c1"># Clean up collectors added during test</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> <span class="n">collectors_after</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">REGISTRY</span><span class="o">.</span><span class="n">_collector_to_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> <span class="k">for</span> <span class="n">collector</span> <span class="ow">in</span> <span class="n">collectors_after</span><span class="p">:</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> <span class="k">if</span> <span class="n">collector</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">collectors_before</span><span class="p">:</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> <span class="n">REGISTRY</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">collector</span><span class="p">)</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Verification:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>tests/test_prometheus_metrics.py ........... (11 tests) PASSED 
 </code></pre></div></p>
 <hr/>
 <h3 id="4-auditresult-api-mismatch-resolved">4. AuditResult API Mismatch - RESOLVED<a class="headerlink" href="#4-auditresult-api-mismatch-resolved" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>tests/cognitive_brain/test_integration.py:197</code><br/>
+<p><strong>File:</strong> <code>tests/cognitive_brain/test_integration.py:197</code>
 <strong>Status:</strong> <strong>API FIXED</strong></p>
 <p><strong>Problem:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="n">audit</span> <span class="o">=</span> <span class="n">AuditResult</span><span class="p">(</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">repo_name</span><span class="o">=</span><span class="s2">"test/repo"</span><span class="p">,</span>       <span class="c1">#  Not in dataclass</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">compliance_score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>       <span class="c1">#  Wrong parameter name</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="n">business_impact</span><span class="o">=</span><span class="s2">"moderate"</span>   <span class="c1">#  Should be float</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="n">repo_name</span><span class="o">=</span><span class="s2">"test/repo"</span><span class="p">,</span> <span class="c1"># Not in dataclass</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="n">compliance_score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="c1"># Wrong parameter name</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="n">business_impact</span><span class="o">=</span><span class="s2">"moderate"</span> <span class="c1"># Should be float</span>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Actual API:</strong> (<code>src/cognitive_brain/integrations/compliance_integration.py:34</code>)
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nd">@dataclass</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">class</span> <span class="nc">AuditResult</span><span class="p">:</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="n">audit_id</span><span class="p">:</span> <span class="nb">str</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span>              <span class="c1">#  Not 'compliance_score'</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">risk_level</span><span class="p">:</span> <span class="nb">str</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">remediation_cost</span><span class="p">:</span> <span class="nb">float</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="n">business_impact</span><span class="p">:</span> <span class="nb">float</span>    <span class="c1">#  Float 0-1, not string</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="n">violations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="n">audit_id</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="n">score</span><span class="p">:</span> <span class="nb">float</span> <span class="c1"># Not 'compliance_score'</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">risk_level</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">remediation_cost</span><span class="p">:</span> <span class="nb">float</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">business_impact</span><span class="p">:</span> <span class="nb">float</span> <span class="c1"># Float 0-1, not string</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="n">violations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div></p>
 <p><strong>Solution:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">audit</span> <span class="o">=</span> <span class="n">AuditResult</span><span class="p">(</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="n">score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>              <span class="c1">#  Correct parameter</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="n">business_impact</span><span class="o">=</span><span class="mf">0.5</span>      <span class="c1">#  Float 0-1</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> <span class="n">audit_id</span><span class="o">=</span><span class="s2">"audit_001"</span><span class="p">,</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> <span class="n">score</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="c1"># Correct parameter</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="n">violations</span><span class="o">=</span><span class="p">[</span><span class="s2">"missing-license"</span><span class="p">],</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">risk_level</span><span class="o">=</span><span class="s2">"medium"</span><span class="p">,</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="n">remediation_cost</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="n">business_impact</span><span class="o">=</span><span class="mf">0.5</span> <span class="c1"># Float 0-1</span>
 <a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="5-test-collection-warnings-resolved">5. Test Collection Warnings - RESOLVED<a class="headerlink" href="#5-test-collection-warnings-resolved" title="Permanent link">¶</a></h3>
-<p><strong>Files:</strong> <code>src/cognitive_brain/quantum/uncertainty.py</code>, <code>__init__.py</code><br/>
+<p><strong>Files:</strong> <code>src/cognitive_brain/quantum/uncertainty.py</code>, <code>__init__.py</code>
 <strong>Status:</strong> <strong>WARNINGS ELIMINATED</strong></p>
 <p><strong>Problem:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>PytestCollectionWarning: cannot collect test class 'TestExecutionMetrics'
@@ -2823,11 +2823,11 @@
 <p><strong>Root Cause:</strong> Dataclasses named with "Test" prefix confused pytest</p>
 <p><strong>Solution:</strong> Renamed classes + backward compatibility:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a># Before
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>class TestExecutionMetrics:  #  Confuses pytest
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>class TestExecutionMetrics: # Confuses pytest
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>class TestExecutionPriority:
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a># After
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>class ExecutionMetrics:      #  Clean name
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>class ExecutionMetrics: # Clean name
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>class ExecutionPriority:
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
 <a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a># Backward compatibility in __init__.py
@@ -2836,91 +2836,91 @@
 </code></pre></div></p>
 <hr/>
 <h2 id="6-cognitive-brain-method-name-resolved">6. Cognitive Brain Method Name - RESOLVED<a class="headerlink" href="#6-cognitive-brain-method-name-resolved" title="Permanent link">¶</a></h2>
-<p><strong>File:</strong> <code>tests/cognitive_brain/test_integration.py:207</code><br/>
+<p><strong>File:</strong> <code>tests/cognitive_brain/test_integration.py:207</code>
 <strong>Status:</strong> <strong>METHOD FIXED</strong></p>
 <p><strong>Problem:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">assessment</span> <span class="o">=</span> <span class="n">assessor</span><span class="o">.</span><span class="n">assess</span><span class="p">(</span><span class="n">audit</span><span class="p">)</span>  <span class="c1">#  Wrong method name</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">assessment</span> <span class="o">=</span> <span class="n">assessor</span><span class="o">.</span><span class="n">assess</span><span class="p">(</span><span class="n">audit</span><span class="p">)</span> <span class="c1"># Wrong method name</span>
 </code></pre></div></p>
 <p><strong>Solution:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">assessment</span> <span class="o">=</span> <span class="n">assessor</span><span class="o">.</span><span class="n">assess_compliance</span><span class="p">(</span><span class="n">audit</span><span class="p">)</span>  <span class="c1">#  Correct method</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">assessment</span> <span class="o">=</span> <span class="n">assessor</span><span class="o">.</span><span class="n">assess_compliance</span><span class="p">(</span><span class="n">audit</span><span class="p">)</span> <span class="c1"># Correct method</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="7-compliancedecision-enum-resolved">7. ComplianceDecision Enum - RESOLVED<a class="headerlink" href="#7-compliancedecision-enum-resolved" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>tests/cognitive_brain/test_integration.py:210</code><br/>
+<p><strong>File:</strong> <code>tests/cognitive_brain/test_integration.py:210</code>
 <strong>Status:</strong> <strong>ENUM FIXED</strong></p>
 <p><strong>Problem:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">assert</span> <span class="n">assessment</span><span class="o">.</span><span class="n">decision</span> <span class="ow">in</span> <span class="p">[</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>    <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">APPROVE</span><span class="p">,</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">CONDITIONAL</span><span class="p">,</span>  <span class="c1">#  Wrong enum value</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">REJECT</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">APPROVE</span><span class="p">,</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">CONDITIONAL</span><span class="p">,</span> <span class="c1"># Wrong enum value</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">REJECT</span>
 <a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="p">]</span>
 </code></pre></div></p>
 <p><strong>Actual Enum:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="k">class</span> <span class="nc">ComplianceDecision</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>    <span class="n">APPROVE</span> <span class="o">=</span> <span class="s2">"approve"</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">APPROVE_WITH_MONITORING</span> <span class="o">=</span> <span class="s2">"approve_with_monitoring"</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    <span class="n">REJECT</span> <span class="o">=</span> <span class="s2">"reject"</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">CONDITIONAL_APPROVAL</span> <span class="o">=</span> <span class="s2">"conditional_approval"</span>  <span class="c1">#  Correct name</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a> <span class="n">APPROVE</span> <span class="o">=</span> <span class="s2">"approve"</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> <span class="n">APPROVE_WITH_MONITORING</span> <span class="o">=</span> <span class="s2">"approve_with_monitoring"</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> <span class="n">REJECT</span> <span class="o">=</span> <span class="s2">"reject"</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="n">CONDITIONAL_APPROVAL</span> <span class="o">=</span> <span class="s2">"conditional_approval"</span> <span class="c1"># Correct name</span>
 </code></pre></div></p>
 <p><strong>Solution:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="k">assert</span> <span class="n">assessment</span><span class="o">.</span><span class="n">decision</span> <span class="ow">in</span> <span class="p">[</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>    <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">APPROVE</span><span class="p">,</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>    <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">CONDITIONAL_APPROVAL</span><span class="p">,</span>  <span class="c1">#  Fixed</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>    <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">REJECT</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">APPROVE</span><span class="p">,</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">CONDITIONAL_APPROVAL</span><span class="p">,</span> <span class="c1"># Fixed</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> <span class="n">ComplianceDecision</span><span class="o">.</span><span class="n">REJECT</span>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="p">]</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="phase-2-remaining-issues-to-be-addressed">Phase 2: Remaining Issues (To Be Addressed)<a class="headerlink" href="#phase-2-remaining-issues-to-be-addressed" title="Permanent link">¶</a></h2>
 <h3 id="p0-critical-blockers">P0 - Critical Blockers<a class="headerlink" href="#p0-critical-blockers" title="Permanent link">¶</a></h3>
 <h4 id="1-hydra-configuration-missing">1. Hydra Configuration Missing<a class="headerlink" href="#1-hydra-configuration-missing" title="Permanent link">¶</a></h4>
-<p><strong>Test:</strong> <code>tests/config/test_hydra_defaults_tree.py::test_hydra_compose_smoke</code><br/>
-<strong>Error:</strong> <code>hydra.errors.MissingConfigException: Could not load 'hydra/data/base'</code><br/>
-<strong>Status:</strong> ⏭️ <strong>TODO</strong><br/>
+<p><strong>Test:</strong> <code>tests/config/test_hydra_defaults_tree.py::test_hydra_compose_smoke</code>
+<strong>Error:</strong> <code>hydra.errors.MissingConfigException: Could not load 'hydra/data/base'</code>
+<strong>Status:</strong> <strong>TODO</strong>
 <strong>Estimated Time:</strong> 30 minutes</p>
 <p><strong>Action Required:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>configs/hydra/data/
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>configs/hydra/data/base.yaml<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="s">defaults:</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="s">  - _self_</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="s"> - _self_</span>
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="s">data:</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="s">  batch_size: 32</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="s">  num_workers: 4</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="s">  shuffle: true</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="s"> batch_size: 32</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="s"> num_workers: 4</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="s"> shuffle: true</span>
 <a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="s">EOF</span>
 </code></pre></div></p>
 <h4 id="2-config-validation-schema">2. Config Validation Schema<a class="headerlink" href="#2-config-validation-schema" title="Permanent link">¶</a></h4>
-<p><strong>Test:</strong> <code>tests/configs/test_validate_configs_cli.py::test_group_validation_report</code><br/>
-<strong>Error:</strong> <code>FAIL configs/deployment/hhg_logistics/monitor/default.yaml</code><br/>
-<strong>Status:</strong> ⏭️ <strong>TODO</strong><br/>
+<p><strong>Test:</strong> <code>tests/configs/test_validate_configs_cli.py::test_group_validation_report</code>
+<strong>Error:</strong> <code>FAIL configs/deployment/hhg_logistics/monitor/default.yaml</code>
+<strong>Status:</strong> <strong>TODO</strong>
 <strong>Estimated Time:</strong> 30 minutes</p>
 <p><strong>Action Required:</strong> Fix schema validation errors in monitoring config</p>
 <hr/>
 <h3 id="p1-high-priority">P1 - High Priority<a class="headerlink" href="#p1-high-priority" title="Permanent link">¶</a></h3>
 <h4 id="3-train-loop-__version__-error">3. Train Loop <code>__version__</code> Error<a class="headerlink" href="#3-train-loop-__version__-error" title="Permanent link">¶</a></h4>
-<p><strong>Tests:</strong> <code>tests/test_train_loop_smoke.py</code> (2 tests)<br/>
-<strong>Error:</strong> <code>AttributeError: __version__</code><br/>
-<strong>Status:</strong> ⏭️ <strong>TODO</strong><br/>
+<p><strong>Tests:</strong> <code>tests/test_train_loop_smoke.py</code> (2 tests)
+<strong>Error:</strong> <code>AttributeError: __version__</code>
+<strong>Status:</strong> <strong>TODO</strong>
 <strong>Estimated Time:</strong> 10 minutes</p>
 <p><strong>Action Required:</strong> Add <code>__version__</code> attribute or handle AttributeError</p>
 <h4 id="4-entanglementmanager-signature">4. EntanglementManager Signature<a class="headerlink" href="#4-entanglementmanager-signature" title="Permanent link">¶</a></h4>
-<p><strong>Tests:</strong> <code>tests/cognitive_brain/test_integration.py</code> (2 tests)<br/>
-<strong>Error:</strong> <code>EntanglementManager.__init__() takes 3 positional arguments but 4 were given</code><br/>
-<strong>Status:</strong> ⏭️ <strong>TODO</strong><br/>
+<p><strong>Tests:</strong> <code>tests/cognitive_brain/test_integration.py</code> (2 tests)
+<strong>Error:</strong> <code>EntanglementManager.__init__() takes 3 positional arguments but 4 were given</code>
+<strong>Status:</strong> <strong>TODO</strong>
 <strong>Estimated Time:</strong> 15 minutes</p>
 <p><strong>Action Required:</strong> Fix test calls to match correct signature</p>
 <h4 id="5-agent-load-tests">5. Agent Load Tests<a class="headerlink" href="#5-agent-load-tests" title="Permanent link">¶</a></h4>
-<p><strong>Tests:</strong> <code>tests/agents/test_load_and_concurrent.py</code> (2 tests)<br/>
-<strong>Errors:</strong> Performance assertion failures<br/>
-<strong>Status:</strong> ⏭️ <strong>TODO</strong><br/>
+<p><strong>Tests:</strong> <code>tests/agents/test_load_and_concurrent.py</code> (2 tests)
+<strong>Errors:</strong> Performance assertion failures
+<strong>Status:</strong> <strong>TODO</strong>
 <strong>Estimated Time:</strong> 20 minutes</p>
 <p><strong>Action Required:</strong> Review performance assertions or mark as slow tests</p>
 <hr/>
 <h3 id="p2-medium-priority">P2 - Medium Priority<a class="headerlink" href="#p2-medium-priority" title="Permanent link">¶</a></h3>
-<h4 id="6-checkpoint-provenance-flaky">6. Checkpoint Provenance (Flaky) ️<a class="headerlink" href="#6-checkpoint-provenance-flaky" title="Permanent link">¶</a></h4>
-<p><strong>Test:</strong> <code>tests/test_checkpoint_provenance.py::test_checkpoint_includes_commit_and_system</code><br/>
-<strong>Error:</strong> PyTorch serialization (intermittent)<br/>
-<strong>Status:</strong> ⏭️ <strong>TODO</strong><br/>
+<h4 id="6-checkpoint-provenance-flaky">6. Checkpoint Provenance (Flaky)<a class="headerlink" href="#6-checkpoint-provenance-flaky" title="Permanent link">¶</a></h4>
+<p><strong>Test:</strong> <code>tests/test_checkpoint_provenance.py::test_checkpoint_includes_commit_and_system</code>
+<strong>Error:</strong> PyTorch serialization (intermittent)
+<strong>Status:</strong> <strong>TODO</strong>
 <strong>Estimated Time:</strong> 10 minutes</p>
 <p><strong>Action Required:</strong> Add <code>@pytest.mark.flaky</code> decorator</p>
 <hr/>
@@ -3093,16 +3093,16 @@
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
 <p>Phase 1 successfully resolved <strong>62% of identified failures</strong>, including:
--  100+ linting violations
--  11 Prometheus test isolation issues<br/>
--  6 API/assertion mismatches</p>
+- 100+ linting violations
+- 11 Prometheus test isolation issues
+- 6 API/assertion mismatches</p>
 <p><strong>Remaining work:</strong> 9 test failures (estimated 2 hours to resolve)</p>
 <p><strong>CI/CD Status:</strong> Significantly improved, on track for 95%+ success rate</p>
 <p><strong>Next Steps:</strong> Execute Phase 2 fixes using <code>REMAINING_FIXES_QUICK_GUIDE.md</code></p>
 <hr/>
-<p><strong>Report Generated By:</strong> CI Testing Agent<br/>
+<p><strong>Report Generated By:</strong> CI Testing Agent
 <strong>Date:2026-07-13
-</strong>Total Analysis Time:<strong> 4 hours<br/>
+</strong>Total Analysis Time:<strong> 4 hours
 </strong>Files Analyzed:** 16,700+ test cases across 45 changed files</p>
 </article>
 </div>
@@ -3133,6 +3133,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

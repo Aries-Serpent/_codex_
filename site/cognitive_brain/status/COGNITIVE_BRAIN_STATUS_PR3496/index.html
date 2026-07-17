@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3496/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3496 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2273,7 +2273,7 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <h1 id="schedule-repo-var-sync-agent-rust-error-validator-observation-fourth-d_capable-designation-c8-sign-off">Schedule repo-var-sync-agent + rust-error-validator observation + Fourth D_CAPABLE designation + C8 sign-off<a class="headerlink" href="#schedule-repo-var-sync-agent-rust-error-validator-observation-fourth-d_capable-designation-c8-sign-off" title="Permanent link">¶</a></h1>
-<p><strong>Status:</strong>  COMPLETE
+<p><strong>Status:</strong> COMPLETE
 <strong>PR:</strong> #3496
 <strong>Branch:</strong> <code>copilot/schedule-repo-var-sync-agent</code>
 <strong>Date:2026-07-13
@@ -2292,7 +2292,7 @@
 <tbody>
 <tr>
 <td>W-109a</td>
-<td><strong><code>repo-var-sync-schedule.yml</code></strong> — daily scheduled sync of repo variables → <code>.codex/agent_context.json</code>; drift detection; workflow_dispatch with dry-run and force-sync inputs</td>
+<td><strong><code>repo-var-sync-schedule.yml</code></strong> — daily scheduled sync of repo variables <code>.codex/agent_context.json</code>; drift detection; workflow_dispatch with dry-run and force-sync inputs</td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2340,7 +2340,7 @@
 <hr/>
 <h2 id="priority-3-tasks-from-followup_prompt_pr3495md-complete">Priority 3 Tasks (from FOLLOWUP_PROMPT_PR3495.md) — COMPLETE<a class="headerlink" href="#priority-3-tasks-from-followup_prompt_pr3495md-complete" title="Permanent link">¶</a></h2>
 <h3 id="task-1-repo-var-sync-agent-scheduled">Task 1: repo-var-sync-agent Scheduled<a class="headerlink" href="#task-1-repo-var-sync-agent-scheduled" title="Permanent link">¶</a></h3>
-<p><strong>Status:  COMPLETE — W-109a (this PR)</strong></p>
+<p><strong>Status: COMPLETE — W-109a (this PR)</strong></p>
 <p><code>.github/workflows/repo-var-sync-schedule.yml</code> created. This workflow:
 - Runs <strong>daily at 06:00 UTC</strong> (cron <code>0 6 * * *</code>)
 - Also supports <code>workflow_dispatch</code> (dry-run + force-sync inputs)
@@ -2352,7 +2352,7 @@
 Daily polling is the standard mechanism for drift detection. The schedule was set by the
 active Copilot Agent per "MUST EXPLICITLY BE SCHEDULED BY ACTIVE COPILOT AGENT".</p>
 <h3 id="task-2-rust-error-validator-30-day-observation">Task 2: rust-error-validator 30-Day Observation<a class="headerlink" href="#task-2-rust-error-validator-30-day-observation" title="Permanent link">¶</a></h3>
-<p><strong>Status:  COMPLETE — W-109b (this PR)</strong></p>
+<p><strong>Status: COMPLETE — W-109b (this PR)</strong></p>
 <p><code>.github/workflows/rust-error-validator-observation.yml</code> created. Key facts:</p>
 <table>
 <thead>
@@ -2400,7 +2400,7 @@ HISTORICAL OBSERVATION DATA OR LESS THAN 30 DAYS"):</p>
 </tr>
 <tr>
 <td><code>.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md</code> line 100</td>
-<td><code>rust-error-validator</code> 24/24 tests  100% pass rate, status Complete</td>
+<td><code>rust-error-validator</code> 24/24 tests 100% pass rate, status Complete</td>
 </tr>
 <tr>
 <td><code>.codex/qa_walkthrough/capability_registry.json</code></td>
@@ -2452,7 +2452,7 @@ HISTORICAL OBSERVATION DATA OR LESS THAN 30 DAYS"):</p>
 <td>PR #3495 W-108</td>
 <td>GROUNDED</td>
 <td>0</td>
-<td><strong>Ongoing</strong> (day 1 → 30, ends 2026-04-03)</td>
+<td><strong>Ongoing</strong> (day 1 30, ends 2026-04-03)</td>
 </tr>
 </tbody>
 </table>
@@ -2471,7 +2471,7 @@ HISTORICAL OBSERVATION DATA OR LESS THAN 30 DAYS"):</p>
 <td><code>workflow-health-monitor</code></td>
 <td>21</td>
 <td><strong>DESIGNATED</strong> (4th)</td>
-<td>C4 observation window only (→ 2026-04-04); C8  RESOLVED (@mbaetiong sign-off 2026-03-05)</td>
+<td>C4 observation window only ( 2026-04-04); C8 RESOLVED (@mbaetiong sign-off 2026-03-05)</td>
 </tr>
 <tr>
 <td><code>owner-approval-guard</code></td>
@@ -2536,7 +2536,7 @@ HISTORICAL OBSERVATION DATA OR LESS THAN 30 DAYS"):</p>
 </tr>
 <tr>
 <td><code>.github/agents/AGENT_REGISTRY.yaml</code></td>
-<td>v0.2.1→v0.2.1 — observation fields + candidate fields + C8 sign-off</td>
+<td>v0.2.1v0.2.1 — observation fields + candidate fields + C8 sign-off</td>
 </tr>
 <tr>
 <td><code>docs/arch/ADR-20260305-fourth-d-capable-evaluation.md</code></td>
@@ -2564,11 +2564,11 @@ HISTORICAL OBSERVATION DATA OR LESS THAN 30 DAYS"):</p>
 </tr>
 <tr>
 <td><code>.secrets.baseline</code></td>
-<td>W-112a — line numbers 559→561, 590→592 refreshed + <code>generated_at</code> updated</td>
+<td>W-112a — line numbers 559561, 590592 refreshed + <code>generated_at</code> updated</td>
 </tr>
 <tr>
 <td><code>.codex/agent_context.json</code></td>
-<td>W-112c — <code>COGNITIVE_BRAIN_SESSION_NUMBER</code> 112→113</td>
+<td>W-112c — <code>COGNITIVE_BRAIN_SESSION_NUMBER</code> 112113</td>
 </tr>
 </tbody>
 </table>
@@ -2603,6 +2603,6 @@ HISTORICAL OBSERVATION DATA OR LESS THAN 30 DAYS"):</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

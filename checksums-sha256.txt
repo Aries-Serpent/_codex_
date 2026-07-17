@@ -1,0 +1,9 @@
+# SHA256 Checksums - Generated Fri Jul 17 19:21:08 UTC 2026
+# for codex-ml v0.2.0 production release artifacts
+
+32659f346862c076ef20cf0030e423716df9baf0b1b8c4712cf57b3c30d128b6  pyproject.toml
+d8437a7119f61d81abf9e2f8fb34e90783d1dcad1aad9ce266ac18dd283c56b0  requirements.txt
+920d852f3f1f961bff1966af5d0ae022115bec569e4dfc67ef71f663d8044216  uv.lock
+
+# Directory checksums
+051214fa85c57f9985c32fbe241bd49c457cbd1bff2be8e19a4b516bac6e3e63  sbom.json

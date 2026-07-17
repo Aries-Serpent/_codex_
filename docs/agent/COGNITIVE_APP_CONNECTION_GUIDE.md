@@ -1,10 +1,10 @@
 # Cognitive App CLI — Copilot Agent Connection Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-> **Status:**  VERIFIED 2026-03-05 (PR #3497 W-114 audit)
+> **Status:** VERIFIED 2026-03-05 (PR #3497 W-114 audit)
 > **Server:** `http://localhost:8765` (FastAPI — auto-started by `copilot-setup-steps.yml`)
 > **Frontend:** `https://aries-serpent.github.io/_codex_/cognitive_app` (GitHub Pages SPA)
 > **Source:** `cognitive_app/src/server/cli_api_server.py`
@@ -32,24 +32,24 @@ brain = BrainClient()
 assert brain.is_available(), "Start server before session (or fall back to MCP/urllib)"
 
 # GitHub API — auth auto-injected via CODEX_MASTER_KEY
-repo  = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
-runs  = brain.proxy_request("GET",
-          "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
-          params={"per_page": "5"})
+repo = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
+runs = brain.proxy_request("GET",
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
+ params={"per_page": "5"})
 
 # Create / update a repo variable
 brain.proxy_request(
-    "POST",
-    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
-    body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
+ "POST",
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+ body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
 )
 ```
 
 ```bash
 # Equivalent via curl (bash tool) — same auto-auth behaviour
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'
 ```
 
 ---
@@ -60,17 +60,17 @@ Run these four lines at the start of every Copilot Coding Agent session to confi
 
 ```bash
 # 1 — Server alive?
-curl -sf http://localhost:8765/api/health && echo "  server up"
+curl -sf http://localhost:8765/api/health && echo " server up"
 
 # 2 — GitHub API proxy working?
 curl -sf -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}' \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); b=d.get('body',{}); print(' repo:', b.get('full_name'), '| status:', d.get('status_code'))"
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}' \
+ | python3 -c "import json,sys; d=json.load(sys.stdin); b=d.get('body',{}); print(' repo:', b.get('full_name'), '| status:', d.get('status_code'))"
 
 # 3 — History DB accessible?
 curl -sf http://localhost:8765/api/cli/history?limit=1 \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); print(' history total:', d['total'])"
+ | python3 -c "import json,sys; d=json.load(sys.stdin); print(' history total:', d['total'])"
 
 # 4 — Env vars injected?
 echo "CODEX_CLI_API_URL=${CODEX_CLI_API_URL:-NOT SET}"
@@ -79,7 +79,7 @@ echo "COPILOT_CLI_BASE_URL=${COPILOT_CLI_BASE_URL:-NOT SET}"
 
 Expected output:
 ```
-{"status":"ok",...}  server up
+{"status":"ok",...} server up
  repo: Aries-Serpent/_codex_ | status: 200
  history total: 0
 CODEX_CLI_API_URL=http://localhost:8765
@@ -103,14 +103,14 @@ curl -s http://localhost:8765/api/health | python3 -m json.tool
 **Response:**
 ```json
 {
-  "status": "ok",
-  "repo_root": "/home/runner/work/_codex_/_codex_",
-  "timestamp": "2026-03-05T04:25:08.069819",
-  "history_db": "/home/runner/work/_codex_/_codex_/.codex/codex.db"
+ "status": "ok",
+ "repo_root": "/home/runner/work/_codex_/_codex_",
+ "timestamp": "2026-03-05T04:25:08.069819",
+ "history_db": "/home/runner/work/_codex_/_codex_/.codex/codex.db"
 }
 ```
 
-**Expected HTTP:** `200`  
+**Expected HTTP:** `200`
 **Failure:** If this returns connection refused, the server is not running — see
 [Troubleshooting](#troubleshooting) section.
 
@@ -122,29 +122,29 @@ Execute any shell command from the repo root and capture stdout/stderr.
 
 ```bash
 curl -s -X POST http://localhost:8765/api/cli/run \
-  -H "Content-Type: application/json" \
-  -d '{"command":"git log --oneline -3"}'
+ -H "Content-Type: application/json" \
+ -d '{"command":"git log --oneline -3"}'
 ```
 
 **Payload schema:**
 ```json
 {
-  "command": "string",       // required — shell command to run
-  "cwd":     "string",       // optional — working directory (default: repo root)
-  "timeout": 30              // optional — seconds (default: 30)
+ "command": "string", // required — shell command to run
+ "cwd": "string", // optional — working directory (default: repo root)
+ "timeout": 30 // optional — seconds (default: 30)
 }
 ```
 
 **Response:**
 ```json
 {
-  "command":     "git log --oneline -3",
-  "stdout":      "b65212b fix: correct detect-secrets...\n",
-  "stderr":      "",
-  "returncode":  0,
-  "duration_ms": 5.8,
-  "cwd":         "/home/runner/work/_codex_/_codex_",
-  "timestamp":   "2026-03-05T04:25:08.123485"
+ "command": "git log --oneline -3",
+ "stdout": "b65212b fix: correct detect-secrets...\n",
+ "stderr": "",
+ "returncode": 0,
+ "duration_ms": 5.8,
+ "cwd": "/home/runner/work/_codex_/_codex_",
+ "timestamp": "2026-03-05T04:25:08.123485"
 }
 ```
 
@@ -165,10 +165,10 @@ curl -s "http://localhost:8765/api/cli/history?limit=5"
 **Response:**
 ```json
 {
-  "items": [
-    { "command": "git log ...", "stdout": "...", "returncode": 0, "timestamp": "..." }
-  ],
-  "total": 42
+ "items": [
+ { "command": "git log ...", "stdout": "...", "returncode": 0, "timestamp": "..." }
+ ],
+ "total": 42
 }
 ```
 
@@ -202,23 +202,23 @@ is auto-injected if the env var is set.
 **Payload schema (`ApiProxyRequest`):**
 ```json
 {
-  "method":   "GET",                   // required: GET POST PUT PATCH DELETE HEAD OPTIONS
-  "url":      "https://...",           // required: full URL or path (resolved against base_url)
-  "headers":  { "key": "value" },     // optional
-  "params":   { "key": "value" },     // optional — appended to URL as query string
-  "body":     { "any": "json" },      // optional — request body (auto Content-Type: application/json)
-  "base_url": "https://...",          // optional — prefix for relative urls
-  "timeout":  30                       // optional — seconds
+ "method": "GET", // required: GET POST PUT PATCH DELETE HEAD OPTIONS
+ "url": "https://...", // required: full URL or path (resolved against base_url)
+ "headers": { "key": "value" }, // optional
+ "params": { "key": "value" }, // optional — appended to URL as query string
+ "body": { "any": "json" }, // optional — request body (auto Content-Type: application/json)
+ "base_url": "https://...", // optional — prefix for relative urls
+ "timeout": 30 // optional — seconds
 }
 ```
 
 **Response schema (`ApiProxyResponse`):**
 ```json
 {
-  "status_code": 200,
-  "headers":     { "content-type": "application/json" },
-  "body":        { "...": "..." },
-  "error":       null
+ "status_code": 200,
+ "headers": { "content-type": "application/json" },
+ "body": { "...": "..." },
+ "error": null
 }
 ```
 
@@ -226,61 +226,61 @@ is auto-injected if the env var is set.
 
 ```bash
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'
 ```
 
 **Live result (2026-03-05):**
 ```
-id: 1040037790  |  full_name: Aries-Serpent/_codex_
-language: Python  |  default_branch: main
-visibility: public  |  HTTP status: 200
+id: 1040037790 | full_name: Aries-Serpent/_codex_
+language: Python | default_branch: main
+visibility: public | HTTP status: 200
 ```
 
 #### GET GH Runs
 
 ```bash
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?per_page=1"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?per_page=1"}'
 ```
 
 **Live result (2026-03-05):**
 ```
-total_count: 40000  |  latest run: 22702237122
-name: Iterative Self-Healing CI  |  status: completed  |  HTTP status: 200
+total_count: 40000 | latest run: 22702237122
+name: Iterative Self-Healing CI | status: completed | HTTP status: 200
 ```
 
 #### POST example
 
 ```bash
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"POST","url":"https://httpbin.org/post","body":{"hello":"world"}}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"POST","url":"https://httpbin.org/post","body":{"hello":"world"}}'
 ```
 
 #### PUT example
 
 ```bash
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"PUT","url":"https://httpbin.org/put","body":{"key":"value"}}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"PUT","url":"https://httpbin.org/put","body":{"key":"value"}}'
 ```
 
 #### PATCH example
 
 ```bash
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"PATCH","url":"https://httpbin.org/patch","body":{"field":"patched"}}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"PATCH","url":"https://httpbin.org/patch","body":{"field":"patched"}}'
 ```
 
 #### DELETE example
 
 ```bash
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"DELETE","url":"https://httpbin.org/delete"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"DELETE","url":"https://httpbin.org/delete"}'
 ```
 
 **Expected HTTP for all proxy calls:** `200` (outer) with `status_code` reflecting upstream.
@@ -293,7 +293,7 @@ curl -s -X POST http://localhost:8765/api/request \
 curl -s http://localhost:8765/api/memory/state
 ```
 
-**️ Requires `CODEX_MASTER_KEY` env var.** Returns `503` when the key is absent (expected in CI).
+** Requires `CODEX_MASTER_KEY` env var.** Returns `503` when the key is absent (expected in CI).
 See RC-4 in `docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md`.
 
 ---
@@ -315,12 +315,12 @@ Use `BrainClient` from `src/codex/agents/brain_client.py` for typed access:
 ```python
 from codex.agents.brain_client import BrainClient
 
-# Auto-discovers URL from CODEX_CLI_API_URL → COPILOT_CLI_BASE_URL → http://localhost:8765
+# Auto-discovers URL from CODEX_CLI_API_URL COPILOT_CLI_BASE_URL http://localhost:8765
 client = BrainClient()
 
 # Check server is up
 if not client.is_available():
-    raise RuntimeError("Cognitive brain server not running")
+ raise RuntimeError("Cognitive brain server not running")
 
 # Run a shell command
 result = client.run_command("git log --oneline -3")
@@ -328,24 +328,24 @@ print(result["stdout"])
 
 # Proxy an HTTP request
 resp = client.proxy_request(
-    method="GET",
-    url="https://api.github.com/repos/Aries-Serpent/_codex_",
+ method="GET",
+ url="https://api.github.com/repos/Aries-Serpent/_codex_",
 )
-print(resp["body"]["full_name"])   # Aries-Serpent/_codex_
+print(resp["body"]["full_name"]) # Aries-Serpent/_codex_
 
 # Get repo info (convenience wrapper)
 info = client.github_repo_info("Aries-Serpent", "_codex_")
-print(info["language"])            # Python
+print(info["language"]) # Python
 
 # Get workflow runs
 runs = client.github_workflow_runs("Aries-Serpent", "_codex_", per_page=1)
-print(runs["total_count"])         # 40000
+print(runs["total_count"]) # 40000
 
 # Git status
 print(client.git_status())
 
 # Command history
-history = client.memory_state()    # ️ needs CODEX_MASTER_KEY
+history = client.memory_state() # needs CODEX_MASTER_KEY
 ```
 
 ---
@@ -355,8 +355,8 @@ history = client.memory_state()    # ️ needs CODEX_MASTER_KEY
 | Property | Value |
 |----------|-------|
 | URL | `https://aries-serpent.github.io/_codex_/cognitive_app` |
-| `web_fetch` |  Returns static HTML shell |
-| Playwright browser |  Blocked — `ERR_BLOCKED_BY_CLIENT` (sandbox network policy) |
+| `web_fetch` | Returns static HTML shell |
+| Playwright browser | Blocked — `ERR_BLOCKED_BY_CLIENT` (sandbox network policy) |
 | Agent direct use | Via `curl`/`BrainClient` — full functionality available |
 
 The GitHub Pages frontend is a React SPA. It communicates with the same `http://localhost:8765`
@@ -372,15 +372,15 @@ capability — all operations the frontend performs are available via the REST A
 
 | # | Operation | Method | Endpoint | HTTP | Result |
 |---|-----------|--------|----------|------|--------|
-| 1 | Brain Health | `GET` | `/api/health` | **200** |  `status: ok` |
-| 2 | Run cmd | `POST` | `/api/cli/run` | **200** |  `returncode: 0`, git log returned 3 commits |
-| 3 | CLI History | `GET` | `/api/cli/history` | **200** |  `total: 3` after 3 prior commands |
-| 4 | Clear History | `DELETE` | `/api/cli/history` | **200** |  `{"cleared": true}`, history = 0 after |
-| 5 | GET GH Repo | `POST→GET` | `/api/request` → `api.github.com/repos/…` | **200** |  `full_name: Aries-Serpent/_codex_`, `language: Python` |
-| 6 | GET GH Runs | `POST→GET` | `/api/request` → `api.github.com/…/actions/runs?per_page=1` | **200** |  `total_count: 40000`, latest run 22702237122 |
-| 7 | PUT proxy | `POST→PUT` | `/api/request` → `httpbin.org/put` | **200** |  body echoed correctly |
-| 8 | PATCH proxy | `POST→PATCH` | `/api/request` → `httpbin.org/patch` | **200** |  body echoed correctly |
-| 9 | GitHub Pages | browser | `https://aries-serpent.github.io/_codex_/cognitive_app` |  | `ERR_BLOCKED_BY_CLIENT` — permanent sandbox constraint (RC-6) |
+| 1 | Brain Health | `GET` | `/api/health` | **200** | `status: ok` |
+| 2 | Run cmd | `POST` | `/api/cli/run` | **200** | `returncode: 0`, git log returned 3 commits |
+| 3 | CLI History | `GET` | `/api/cli/history` | **200** | `total: 3` after 3 prior commands |
+| 4 | Clear History | `DELETE` | `/api/cli/history` | **200** | `{"cleared": true}`, history = 0 after |
+| 5 | GET GH Repo | `POSTGET` | `/api/request` `api.github.com/repos/…` | **200** | `full_name: Aries-Serpent/_codex_`, `language: Python` |
+| 6 | GET GH Runs | `POSTGET` | `/api/request` `api.github.com/…/actions/runs?per_page=1` | **200** | `total_count: 40000`, latest run 22702237122 |
+| 7 | PUT proxy | `POSTPUT` | `/api/request` `httpbin.org/put` | **200** | body echoed correctly |
+| 8 | PATCH proxy | `POSTPATCH` | `/api/request` `httpbin.org/patch` | **200** | body echoed correctly |
+| 9 | GitHub Pages | browser | `https://aries-serpent.github.io/_codex_/cognitive_app` | | `ERR_BLOCKED_BY_CLIENT` — permanent sandbox constraint (RC-6) |
 
 **Overall: 8/8 API operations successful. 1 known permanent limitation (browser blocked).**
 
@@ -396,31 +396,31 @@ via the GitHub Actions Variables REST API. All calls auto-inject `Authorization:
 ```bash
 # List repo variables
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"}'
 
 # Create a repo variable (POST — name must not already exist)
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "POST",
-    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
-    "body":   {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "method": "POST",
+ "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+ "body": {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}
+ }'
 
 # Update an existing repo variable (PATCH)
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "PATCH",
-    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",
-    "body":   {"name": "COPILOT_TEST_VAR", "value": "updated_value"}
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "method": "PATCH",
+ "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",
+ "body": {"name": "COPILOT_TEST_VAR", "value": "updated_value"}
+ }'
 
 # Delete a repo variable
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"DELETE","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"DELETE","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"}'
 ```
 
 **Python (`BrainClient`):**
@@ -430,16 +430,16 @@ brain = BrainClient()
 
 # Create
 brain.proxy_request(
-    "POST",
-    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
-    body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
+ "POST",
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+ body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
 )
 
 # Update
 brain.proxy_request(
-    "PATCH",
-    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",
-    body={"name": "COPILOT_TEST_VAR", "value": "updated_value"},
+ "PATCH",
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",
+ body={"name": "COPILOT_TEST_VAR", "value": "updated_value"},
 )
 ```
 
@@ -448,17 +448,17 @@ brain.proxy_request(
 ```bash
 # List environment variables (environment name: "production")
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables"}'
 
 # Create an environment variable
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "POST",
-    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables",
-    "body":   {"name": "COPILOT_ENV_TEST", "value": "env_value"}
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "method": "POST",
+ "url": "https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables",
+ "body": {"name": "COPILOT_ENV_TEST", "value": "env_value"}
+ }'
 ```
 
 ## Org Variables
@@ -466,17 +466,17 @@ curl -s -X POST http://localhost:8765/api/request \
 ```bash
 # List org variables
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"method":"GET","url":"https://api.github.com/orgs/Aries-Serpent/actions/variables"}'
+ -H "Content-Type: application/json" \
+ -d '{"method":"GET","url":"https://api.github.com/orgs/Aries-Serpent/actions/variables"}'
 
 # Create an org variable (visibility: "all" | "private" | "selected")
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "POST",
-    "url":    "https://api.github.com/orgs/Aries-Serpent/actions/variables",
-    "body":   {"name": "COPILOT_ORG_TEST", "value": "org_value", "visibility": "all"}
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "method": "POST",
+ "url": "https://api.github.com/orgs/Aries-Serpent/actions/variables",
+ "body": {"name": "COPILOT_ORG_TEST", "value": "org_value", "visibility": "all"}
+ }'
 ```
 
 ## Live Test Results (2026-03-05 PR #3497 W-117)
@@ -485,8 +485,8 @@ curl -s -X POST http://localhost:8765/api/request \
 
 | Tier | Mechanism | Operation | Result |
 |------|-----------|-----------|--------|
-| **1 — Primary** | `github-mcp-server-search_repositories` MCP tool | GET repo info |  `200` full response, admin perms confirmed |
-| **2 — Secondary** | `POST /api/request` → `GET /repos/…/actions/variables` | List repo vars |  `200` outer; upstream `401` when `CODEX_MASTER_KEY` absent (expected — key not injected into sandbox process env); `200` with full list when key is set |
+| **1 — Primary** | `github-mcp-server-search_repositories` MCP tool | GET repo info | `200` full response, admin perms confirmed |
+| **2 — Secondary** | `POST /api/request` `GET /repos/…/actions/variables` | List repo vars | `200` outer; upstream `401` when `CODEX_MASTER_KEY` absent (expected — key not injected into sandbox process env); `200` with full list when key is set |
 | **3 — Fallback** | `urllib.request` direct | (not tested — MCP was sufficient) | N/A |
 
 **Variable management (when `CODEX_MASTER_KEY` is set in server env):**
@@ -589,7 +589,7 @@ credentials independently of this server.
 Run the targeted scan (never full-repo scan):
 ```bash
 detect-secrets scan .github/workflows/agent-auth-delegation.yml CODEX_MANIFEST.json \
-  --baseline .secrets.baseline
+ --baseline .secrets.baseline
 # Exit 0 = baseline now matches file; commit .secrets.baseline
 ```
 

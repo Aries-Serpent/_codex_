@@ -1,6 +1,6 @@
 # Survey — <RING> and <PR_OR_REF> — <YYYY-MM-DD>
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -44,7 +44,7 @@ This survey collects:
 ---
 
 ## 4) Ground Truth Artifacts (Normalized)
-> All embedded as fenced code blocks to preserve readability.  
+> All embedded as fenced code blocks to preserve readability.
 > Use a consistent header for each file or search result:
 >
 > `>>> FILE: <path>@<ref>`
@@ -66,8 +66,8 @@ This survey collects:
 ## 5) Docs Parity (Promises vs Assets)
 - Missing or mismatched references explicitly listed here (path + line)
 - Example:
-  - `docs/deployment/reasoning_pod.md` → `<FOUND | MISSING>`
-  - `configs/deploy/reasoning_pod.yaml` → `<FOUND | MISSING>`
+ - `docs/deployment/reasoning_pod.md` `<FOUND | MISSING>`
+ - `configs/deploy/reasoning_pod.yaml` `<FOUND | MISSING>`
 
 ---
 
@@ -76,7 +76,7 @@ Provide your chosen weights and component scores:
 - α=`<0..1>`, β=`<0..1>`, γ=`<0..1>`
 - E=`<0..1>`, T=`<0..1>`, D=`<0..1>`
 
-**Calculation:**  
+**Calculation:**
 `R = α·E + β·T + γ·D = <value>`
 
 ---

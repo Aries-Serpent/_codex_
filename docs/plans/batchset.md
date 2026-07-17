@@ -1,6 +1,6 @@
 # RAG + Verification Stack Backlog — Batchset Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -93,7 +93,7 @@ Each batch groups related missing files. Run batches sequentially; complete acce
 - `src/agent/adapters/tracing_adapter.py`
 
 **Prompt:**
-> Implement PLAN→ACT→OBSERVE→VERIFY state machine with Responses API/tool calls, using typed state models. Provide CLI and API runners, plus adapters for OpenAI Responses client and tracing. Respect verification policy and token budgeting.
+> Implement PLANACTOBSERVEVERIFY state machine with Responses API/tool calls, using typed state models. Provide CLI and API runners, plus adapters for OpenAI Responses client and tracing. Respect verification policy and token budgeting.
 
 **Acceptance criteria:**
 - Orchestrator supports retries, aborts, and integrates RAG + tools + CoVe.

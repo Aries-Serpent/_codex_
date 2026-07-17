@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/api/token-hierarchy/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Token Hierarchy &amp; Scopes Management - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2621,8 +2621,8 @@
 <h1 id="token-hierarchy-scopes-management">Token Hierarchy &amp; Scopes Management<a class="headerlink" href="#token-hierarchy-scopes-management" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Production Ready<br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Status:</strong> Production Ready
+<strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-08
 </strong>Author:** Phase 12 WS3 Documentation Team</p>
 <hr/>
@@ -2640,28 +2640,24 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <h3 id="token-architecture">Token Architecture<a class="headerlink" href="#token-architecture" title="Permanent link">¶</a></h3>
 <p>The Codex token system provides multiple token types, each with specific purposes, lifetimes, and scopes:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│         Token Management System             │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─────────────────────────────────────────────┤
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│                                             │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│  ┌──────────────┐  ┌──────────────┐       │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│  │ Access Token │  │ Refresh Token│       │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│  │ (15 min TTL) │  │ (30 day TTL) │       │
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│  └──────────────┘  └──────────────┘       │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│         │                  │               │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│         └──────────┬───────┘               │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│                    │                       │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│          ┌─────────▼────────┐             │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│          │  Session Token   │             │
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│          │  (24 hour TTL)   │             │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│          └──────────────────┘             │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│                    │                       │
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│          ┌─────────▼────────┐             │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│          │   API Token      │             │
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>│          │  (90 day TTL)    │             │
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>│          └──────────────────┘             │
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│                                             │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>└─────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Token Management System 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Access Token Refresh Token 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> (15 min TTL) (30 day TTL) 
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> Session Token 
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> (24 hour TTL) 
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> API Token 
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> (90 day TTL) 
 </code></pre></div>
 <h3 id="key-principles">Key Principles<a class="headerlink" href="#key-principles" title="Permanent link">¶</a></h3>
 <ol>
@@ -2680,30 +2676,30 @@
 <p><strong>Scopes:</strong> Specific API permissions (read, write, admin)</p>
 <p><strong>Content:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice@company.com"</span><span class="p">,</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"agent_operator"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ci_operator"</span><span class="p">],</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">"scopes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="s2">"api:agents:read"</span><span class="p">,</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">    </span><span class="s2">"api:agents:write"</span><span class="p">,</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="s2">"api:workflows:exec"</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">  </span><span class="p">],</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">  </span><span class="nt">"issued_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720000000</span><span class="p">,</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">  </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720000900</span><span class="p">,</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"codex-auth"</span><span class="p">,</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">  </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice@company.com"</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="nt">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice@company.com"</span><span class="p">,</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"agent_operator"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ci_operator"</span><span class="p">],</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="nt">"scopes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="s2">"api:agents:read"</span><span class="p">,</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w"> </span><span class="s2">"api:agents:write"</span><span class="p">,</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w"> </span><span class="s2">"api:workflows:exec"</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w"> </span><span class="p">],</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w"> </span><span class="nt">"issued_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720000000</span><span class="p">,</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w"> </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720000900</span><span class="p">,</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w"> </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"codex-auth"</span><span class="p">,</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w"> </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice@company.com"</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Usage:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span>https://api.codex.local/v1/agents
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span>https://api.codex.local/v1/agents
 </code></pre></div></p>
 <p><strong>Refresh:</strong> Via refresh token
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>POST<span class="w"> </span>/api/v1/auth/token/refresh
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="o">{</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="s2">"refresh_token"</span>:<span class="w"> </span><span class="s2">"refresh_token_value"</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="s2">"refresh_token"</span>:<span class="w"> </span><span class="s2">"refresh_token_value"</span>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="o">}</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>→<span class="w"> </span>Returns<span class="w"> </span>new<span class="w"> </span>access_token
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span>Returns<span class="w"> </span>new<span class="w"> </span>access_token
 </code></pre></div></p>
 <h3 id="refresh-token">Refresh Token<a class="headerlink" href="#refresh-token" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Obtain new access tokens without re-authenticating</p>
@@ -2718,12 +2714,12 @@
 <p><strong>Usage:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Client obtains access token</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/api/v1/auth/login"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"secret123"</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"secret123"</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">})</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">access_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"access_token"</span><span class="p">]</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"refresh_token"</span><span class="p">]</span>  <span class="c1"># Store securely</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"refresh_token"</span><span class="p">]</span> <span class="c1"># Store securely</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1"># Use access token for API calls (15 min)</span>
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
@@ -2731,7 +2727,7 @@
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="c1"># Access token expires, refresh it</span>
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/api/v1/auth/token/refresh"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    <span class="s2">"refresh_token"</span><span class="p">:</span> <span class="n">refresh_token</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> <span class="s2">"refresh_token"</span><span class="p">:</span> <span class="n">refresh_token</span>
 <a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="p">})</span>
 <a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="n">new_access_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"access_token"</span><span class="p">]</span>
@@ -2748,15 +2744,15 @@
 <p><strong>Scopes:</strong> Session-specific metadata (user_id, roles, permissions)</p>
 <p><strong>Content:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p">{</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">"session_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sess-uuid-12345"</span><span class="p">,</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice@company.com"</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"agent_operator"</span><span class="p">],</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span><span class="nt">"issued_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720000000</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720086400</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="nt">"ip_address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10.20.30.40"</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">  </span><span class="nt">"user_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mozilla/5.0..."</span><span class="p">,</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"codex-session"</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="nt">"session_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sess-uuid-12345"</span><span class="p">,</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice@company.com"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"agent_operator"</span><span class="p">],</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="nt">"issued_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720000000</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1720086400</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="nt">"ip_address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10.20.30.40"</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="nt">"user_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mozilla/5.0..."</span><span class="p">,</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"codex-session"</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Characteristics:</strong>
@@ -2768,10 +2764,10 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Logout revokes session</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">POST</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">auth</span><span class="o">/</span><span class="n">logout</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="p">{</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>  <span class="s2">"session_token"</span><span class="p">:</span> <span class="s2">"session_token_value"</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="s2">"session_token"</span><span class="p">:</span> <span class="s2">"session_token_value"</span>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="p">}</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="err">→</span> <span class="n">Session</span> <span class="n">marked</span> <span class="k">as</span> <span class="n">revoked</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="err">→</span> <span class="n">Token</span> <span class="ow">is</span> <span class="n">blacklisted</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">Session</span> <span class="n">marked</span> <span class="k">as</span> <span class="n">revoked</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="n">Token</span> <span class="ow">is</span> <span class="n">blacklisted</span>
 </code></pre></div></p>
 <h3 id="api-token">API Token<a class="headerlink" href="#api-token" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Service-to-service authentication (applications, scripts)</p>
@@ -2781,22 +2777,22 @@
 <p><strong>Creation:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>POST<span class="w"> </span>/api/v1/auth/tokens
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="o">{</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">  </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">7776000</span><span class="w">  </span><span class="c1"># 90 days in seconds</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">7776000</span><span class="w"> </span><span class="c1"># 90 days in seconds</span>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="o">}</span>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>→<span class="w"> </span><span class="o">{</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">  </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"codex_pat_abc123def456ghi789"</span>,
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">  </span><span class="s2">"created_at"</span>:<span class="w"> </span><span class="m">1720000000</span>,
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">  </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1727776000</span>,
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">  </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"codex_pat_abc123def456ghi789"</span>,
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w"> </span><span class="s2">"created_at"</span>:<span class="w"> </span><span class="m">1720000000</span>,
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w"> </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1727776000</span>,
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w"> </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>
 <a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="o">}</span>
 </code></pre></div></p>
 <p><strong>Usage:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Service makes API call with API token</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span>https://api.codex.local/v1/agents
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span>https://api.codex.local/v1/agents
 </code></pre></div></p>
 <p><strong>Security:</strong>
 - Cannot be revoked without manual request
@@ -2817,213 +2813,213 @@
 <h2 id="token-lifecycle">Token Lifecycle<a class="headerlink" href="#token-lifecycle" title="Permanent link">¶</a></h2>
 <h3 id="complete-token-flow">Complete Token Flow<a class="headerlink" href="#complete-token-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>User Login
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>    ↓
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>┌───────────────────────────────────────┐
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>│ Issue Tokens                          │
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>│ - Access Token (15 min)               │
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>│ - Refresh Token (30 days)             │
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>│ - Session Token (24 hours)            │
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>└───────────────────────────────────────┘
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    ↓
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>┌───────────────────────────────────────┐
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>│ Access Token Active                   │
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>│ - Use for all API calls               │
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>│ - Verify signature on each request    │
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>│ - Check expiration time               │
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>└───────────────────────────────────────┘
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>    ↓
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> Issue Tokens 
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> - Access Token (15 min) 
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> - Refresh Token (30 days) 
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> - Session Token (24 hours) 
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> Access Token Active 
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> - Use for all API calls 
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> - Verify signature on each request 
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> - Check expiration time 
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
 <a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>[15 minutes]
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>    ↓
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>┌───────────────────────────────────────┐
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>│ Access Token Expired                  │
-<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>│ - API calls with expired token fail   │
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>│ - Return 401 Unauthorized             │
-<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>└───────────────────────────────────────┘
-<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>    ↓
-<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a>┌───────────────────────────────────────┐
-<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a>│ Refresh Access Token                  │
-<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a>│ - Use refresh token to get new token  │
-<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>│ - Issue new access token (15 min)     │
-<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a>│ - Refresh token refreshed (30 days)   │
-<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a>└───────────────────────────────────────┘
-<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a>    ↓
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> Access Token Expired 
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> - API calls with expired token fail 
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a> - Return 401 Unauthorized 
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a>
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a> Refresh Access Token 
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a> - Use refresh token to get new token 
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a> - Issue new access token (15 min) 
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a> - Refresh token refreshed (30 days) 
+<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a>
+<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a>
 <a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a>[Continue using new access token]
-<a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a>    ↓
+<a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a>
 <a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a>[After 30 days of no refresh activity]
-<a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a>    ↓
-<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a>┌───────────────────────────────────────┐
-<a href="#__codelineno-10-37" id="__codelineno-10-37" name="__codelineno-10-37"></a>│ Refresh Token Expired                 │
-<a href="#__codelineno-10-38" id="__codelineno-10-38" name="__codelineno-10-38"></a>│ - User must re-authenticate           │
-<a href="#__codelineno-10-39" id="__codelineno-10-39" name="__codelineno-10-39"></a>│ - New login required                  │
-<a href="#__codelineno-10-40" id="__codelineno-10-40" name="__codelineno-10-40"></a>└───────────────────────────────────────┘
-<a href="#__codelineno-10-41" id="__codelineno-10-41" name="__codelineno-10-41"></a>    ↓
+<a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a>
+<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a>
+<a href="#__codelineno-10-37" id="__codelineno-10-37" name="__codelineno-10-37"></a> Refresh Token Expired 
+<a href="#__codelineno-10-38" id="__codelineno-10-38" name="__codelineno-10-38"></a> - User must re-authenticate 
+<a href="#__codelineno-10-39" id="__codelineno-10-39" name="__codelineno-10-39"></a> - New login required 
+<a href="#__codelineno-10-40" id="__codelineno-10-40" name="__codelineno-10-40"></a>
+<a href="#__codelineno-10-41" id="__codelineno-10-41" name="__codelineno-10-41"></a>
 <a href="#__codelineno-10-42" id="__codelineno-10-42" name="__codelineno-10-42"></a>User Login Again
 </code></pre></div>
 <h3 id="expiration-refresh">Expiration &amp; Refresh<a class="headerlink" href="#expiration-refresh" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">class</span> <span class="nc">TokenManager</span><span class="p">:</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">    </span><span class="sd">"""Manage token lifecycle."""</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w"> </span><span class="sd">"""Manage token lifecycle."""</span>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="k">def</span> <span class="nf">validate_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">        </span><span class="sd">"""Validate token and return claims."""</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>            <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="k">def</span> <span class="nf">validate_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w"> </span><span class="sd">"""Validate token and return claims."""</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>            <span class="c1"># Check expiration</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>            <span class="k">if</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"exp"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">():</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>                <span class="k">raise</span> <span class="n">TokenExpiredError</span><span class="p">(</span><span class="s2">"Token expired"</span><span class="p">)</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="c1"># Check expiration</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="k">if</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"exp"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">():</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> <span class="k">raise</span> <span class="n">TokenExpiredError</span><span class="p">(</span><span class="s2">"Token expired"</span><span class="p">)</span>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>            <span class="k">return</span> <span class="n">payload</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="k">return</span> <span class="n">payload</span>
 <a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">:</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>            <span class="k">raise</span> <span class="n">TokenInvalidError</span><span class="p">(</span><span class="s2">"Invalid signature"</span><span class="p">)</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">:</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>            <span class="k">raise</span> <span class="n">TokenInvalidError</span><span class="p">(</span><span class="s2">"Invalid token"</span><span class="p">)</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">:</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> <span class="k">raise</span> <span class="n">TokenInvalidError</span><span class="p">(</span><span class="s2">"Invalid signature"</span><span class="p">)</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">:</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> <span class="k">raise</span> <span class="n">TokenInvalidError</span><span class="p">(</span><span class="s2">"Invalid token"</span><span class="p">)</span>
 <a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>    <span class="k">def</span> <span class="nf">refresh_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="w">        </span><span class="sd">"""Get new access token from refresh token."""</span>
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>        <span class="c1"># Validate refresh token</span>
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_refresh_token</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">):</span>
-<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>            <span class="k">raise</span> <span class="n">TokenInvalidError</span><span class="p">(</span><span class="s2">"Invalid refresh token"</span><span class="p">)</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a> <span class="k">def</span> <span class="nf">refresh_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="w"> </span><span class="sd">"""Get new access token from refresh token."""</span>
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a> <span class="c1"># Validate refresh token</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_refresh_token</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">):</span>
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a> <span class="k">raise</span> <span class="n">TokenInvalidError</span><span class="p">(</span><span class="s2">"Invalid refresh token"</span><span class="p">)</span>
 <a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>        <span class="c1"># Check if refresh token has been revoked</span>
-<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_revoked</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">):</span>
-<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>            <span class="k">raise</span> <span class="n">TokenRevokedError</span><span class="p">(</span><span class="s2">"Refresh token revoked"</span><span class="p">)</span>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a> <span class="c1"># Check if refresh token has been revoked</span>
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_revoked</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">):</span>
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a> <span class="k">raise</span> <span class="n">TokenRevokedError</span><span class="p">(</span><span class="s2">"Refresh token revoked"</span><span class="p">)</span>
 <a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>
-<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>        <span class="c1"># Issue new access token</span>
-<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">issue_token</span><span class="p">(</span>
-<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>            <span class="n">user_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refresh_token_user</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">),</span>
-<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a>            <span class="n">ttl</span><span class="o">=</span><span class="mi">900</span>  <span class="c1"># 15 minutes</span>
-<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>        <span class="p">)</span>
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a> <span class="c1"># Issue new access token</span>
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">issue_token</span><span class="p">(</span>
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a> <span class="n">user_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refresh_token_user</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">),</span>
+<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a> <span class="n">ttl</span><span class="o">=</span><span class="mi">900</span> <span class="c1"># 15 minutes</span>
+<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a> <span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="scope-model">Scope Model<a class="headerlink" href="#scope-model" title="Permanent link">¶</a></h2>
 <h3 id="scope-hierarchy">Scope Hierarchy<a class="headerlink" href="#scope-hierarchy" title="Permanent link">¶</a></h3>
 <p>Scopes are organized in a hierarchical structure:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>api:*                        (All API scopes)
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>  ├── api:agents:*           (All agent scopes)
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>  │   ├── api:agents:read    (Read agents)
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>  │   ├── api:agents:write   (Create/update agents)
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>  │   └── api:agents:exec    (Execute agents)
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>  ├── api:workflows:*        (All workflow scopes)
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>  │   ├── api:workflows:read
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>  │   ├── api:workflows:exec
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>  │   └── api:workflows:approve
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>  └── api:secrets:*          (All secret scopes)
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>      ├── api:secrets:read
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>      └── api:secrets:rotate
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>api:* (All API scopes)
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> api:agents:* (All agent scopes)
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> api:agents:read (Read agents)
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> api:agents:write (Create/update agents)
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> api:agents:exec (Execute agents)
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> api:workflows:* (All workflow scopes)
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> api:workflows:read
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> api:workflows:exec
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> api:workflows:approve
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> api:secrets:* (All secret scopes)
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> api:secrets:read
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> api:secrets:rotate
 <a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>governance:*                 (All governance scopes)
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>  ├── governance:approve     (Approve requests)
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>  └── governance:audit       (Access audit logs)
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>governance:* (All governance scopes)
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> governance:approve (Approve requests)
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> governance:audit (Access audit logs)
 <a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>admin:*                      (Admin scopes)
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>  ├── admin:users:*
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>  ├── admin:roles:*
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>  └── admin:config:*
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>admin:* (Admin scopes)
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> admin:users:*
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> admin:roles:*
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> admin:config:*
 </code></pre></div>
 <h3 id="scope-definitions">Scope Definitions<a class="headerlink" href="#scope-definitions" title="Permanent link">¶</a></h3>
 <h4 id="apiagentsread">api:agents:read<a class="headerlink" href="#apiagentsread" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Read agent definitions and status<br/>
-<strong>Resources:</strong> Agent metadata, configurations, logs<br/>
+<p><strong>Permission:</strong> Read agent definitions and status
+<strong>Resources:</strong> Agent metadata, configurations, logs
 <strong>Denied:</strong> Agent modification, execution (unless write scope)</p>
 <h4 id="apiagentswrite">api:agents:write<a class="headerlink" href="#apiagentswrite" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Create, update, delete agents<br/>
-<strong>Requires:</strong> api:agents:read (implied)<br/>
-<strong>Resources:</strong> Agent metadata, parameters<br/>
+<p><strong>Permission:</strong> Create, update, delete agents
+<strong>Requires:</strong> api:agents:read (implied)
+<strong>Resources:</strong> Agent metadata, parameters
 <strong>Denied:</strong> Agent execution, role assignment</p>
 <h4 id="apiagentsexec">api:agents:exec<a class="headerlink" href="#apiagentsexec" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Execute agents and run tasks<br/>
-<strong>Requires:</strong> api:agents:read (implied)<br/>
-<strong>Resources:</strong> Agent executions, task runs<br/>
+<p><strong>Permission:</strong> Execute agents and run tasks
+<strong>Requires:</strong> api:agents:read (implied)
+<strong>Resources:</strong> Agent executions, task runs
 <strong>Denied:</strong> Agent definition modification</p>
 <h4 id="apiworkflowsread">api:workflows:read<a class="headerlink" href="#apiworkflowsread" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Read workflow definitions<br/>
-<strong>Resources:</strong> Workflow metadata, execution history  </p>
+<p><strong>Permission:</strong> Read workflow definitions
+<strong>Resources:</strong> Workflow metadata, execution history</p>
 <h4 id="apiworkflowsexec">api:workflows:exec<a class="headerlink" href="#apiworkflowsexec" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Trigger workflow execution<br/>
-<strong>Requires:</strong> api:workflows:read (implied)  </p>
+<p><strong>Permission:</strong> Trigger workflow execution
+<strong>Requires:</strong> api:workflows:read (implied)</p>
 <h4 id="apiworkflowsapprove">api:workflows:approve<a class="headerlink" href="#apiworkflowsapprove" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Approve pending workflow approvals<br/>
-<strong>Resources:</strong> Approval requests  </p>
+<p><strong>Permission:</strong> Approve pending workflow approvals
+<strong>Resources:</strong> Approval requests</p>
 <h4 id="apisecretsread">api:secrets:read<a class="headerlink" href="#apisecretsread" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Read secrets (metadata only, not values)<br/>
-<strong>Resources:</strong> Secret metadata (name, type, rotation date)<br/>
+<p><strong>Permission:</strong> Read secrets (metadata only, not values)
+<strong>Resources:</strong> Secret metadata (name, type, rotation date)
 <strong>Never:</strong> Secret values in logs</p>
 <h4 id="apisecretsrotate">api:secrets:rotate<a class="headerlink" href="#apisecretsrotate" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Rotate/update secrets<br/>
-<strong>Requires:</strong> api:secrets:read (implied)<br/>
+<p><strong>Permission:</strong> Rotate/update secrets
+<strong>Requires:</strong> api:secrets:read (implied)
 <strong>Audit:</strong> All rotations logged with details</p>
 <h4 id="governanceapprove">governance:approve<a class="headerlink" href="#governanceapprove" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Approve governance requests<br/>
-<strong>Scope:</strong> Approval workflows<br/>
+<p><strong>Permission:</strong> Approve governance requests
+<strong>Scope:</strong> Approval workflows
 <strong>Authority:</strong> Limited to policy scope</p>
 <h4 id="governanceaudit">governance:audit<a class="headerlink" href="#governanceaudit" title="Permanent link">¶</a></h4>
-<p><strong>Permission:</strong> Read audit logs<br/>
-<strong>Resources:</strong> Complete audit trail<br/>
+<p><strong>Permission:</strong> Read audit logs
+<strong>Resources:</strong> Complete audit trail
 <strong>Retention:</strong> 90 days (configurable)</p>
 <h3 id="scope-assignment-rules">Scope Assignment Rules<a class="headerlink" href="#scope-assignment-rules" title="Permanent link">¶</a></h3>
 <p>Scopes are assigned based on user roles:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">ROLE_SCOPE_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>        <span class="s2">"api:*"</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>        <span class="s2">"governance:*"</span><span class="p">,</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>        <span class="s2">"admin:*"</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="p">],</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>        <span class="s2">"api:agents:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>        <span class="s2">"api:agents:write"</span><span class="p">,</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>        <span class="s2">"api:agents:exec"</span><span class="p">,</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>        <span class="s2">"api:workflows:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>        <span class="s2">"api:workflows:exec"</span><span class="p">,</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>        <span class="s2">"governance:audit"</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>    <span class="p">],</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>        <span class="s2">"api:workflows:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>        <span class="s2">"api:workflows:exec"</span><span class="p">,</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>        <span class="s2">"api:workflows:approve"</span><span class="p">,</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>        <span class="s2">"governance:audit"</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>    <span class="p">],</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>        <span class="s2">"api:agents:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>        <span class="s2">"api:workflows:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a>        <span class="s2">"api:workflows:approve"</span><span class="p">,</span>
-<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>        <span class="s2">"api:secrets:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a>        <span class="s2">"governance:approve"</span><span class="p">,</span>
-<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a>        <span class="s2">"governance:audit"</span>
-<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a>    <span class="p">],</span>
-<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">DOC_MAINTAINER</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a>        <span class="s2">"api:docs:*"</span>
-<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a>    <span class="p">],</span>
-<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_READER</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a>        <span class="s2">"api:agents:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a>        <span class="s2">"api:workflows:read"</span><span class="p">,</span>
-<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a>        <span class="s2">"governance:audit"</span>
-<a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a>    <span class="p">],</span>
-<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">GUEST</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a>        <span class="s2">"api:public:read"</span>
-<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a>    <span class="p">]</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="s2">"api:*"</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="s2">"governance:*"</span><span class="p">,</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="s2">"admin:*"</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="p">],</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="s2">"api:agents:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="s2">"api:agents:write"</span><span class="p">,</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> <span class="s2">"api:agents:exec"</span><span class="p">,</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> <span class="s2">"api:workflows:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="s2">"api:workflows:exec"</span><span class="p">,</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> <span class="s2">"governance:audit"</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> <span class="p">],</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> <span class="s2">"api:workflows:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> <span class="s2">"api:workflows:exec"</span><span class="p">,</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a> <span class="s2">"api:workflows:approve"</span><span class="p">,</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> <span class="s2">"governance:audit"</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> <span class="p">],</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> <span class="s2">"api:agents:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a> <span class="s2">"api:workflows:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a> <span class="s2">"api:workflows:approve"</span><span class="p">,</span>
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a> <span class="s2">"api:secrets:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a> <span class="s2">"governance:approve"</span><span class="p">,</span>
+<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a> <span class="s2">"governance:audit"</span>
+<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a> <span class="p">],</span>
+<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">DOC_MAINTAINER</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a> <span class="s2">"api:docs:*"</span>
+<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a> <span class="p">],</span>
+<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_READER</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a> <span class="s2">"api:agents:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a> <span class="s2">"api:workflows:read"</span><span class="p">,</span>
+<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a> <span class="s2">"governance:audit"</span>
+<a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a> <span class="p">],</span>
+<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">GUEST</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a> <span class="s2">"api:public:read"</span>
+<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a> <span class="p">]</span>
 <a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="scope-validation">Scope Validation<a class="headerlink" href="#scope-validation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">def</span> <span class="nf">check_scope</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required_scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w">    </span><span class="sd">"""Check if token has required scope."""</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w"> </span><span class="sd">"""Check if token has required scope."""</span>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="n">token_scopes</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scopes"</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="n">token_scopes</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scopes"</span><span class="p">,</span> <span class="p">[])</span>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="c1"># Direct scope match</span>
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>    <span class="k">if</span> <span class="n">required_scope</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>        <span class="k">return</span> <span class="kc">True</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> <span class="c1"># Direct scope match</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> <span class="k">if</span> <span class="n">required_scope</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a> <span class="k">return</span> <span class="kc">True</span>
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>    <span class="c1"># Wildcard scope match</span>
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>    <span class="c1"># e.g., "api:*" matches "api:agents:read"</span>
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>    <span class="n">parts</span> <span class="o">=</span> <span class="n">required_scope</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
-<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>        <span class="n">wildcard</span> <span class="o">=</span> <span class="s2">":"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">":*"</span>
-<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a>        <span class="k">if</span> <span class="n">wildcard</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
-<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>            <span class="k">return</span> <span class="kc">True</span>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> <span class="c1"># Wildcard scope match</span>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> <span class="c1"># e.g., "api:*" matches "api:agents:read"</span>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> <span class="n">parts</span> <span class="o">=</span> <span class="n">required_scope</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> <span class="n">wildcard</span> <span class="o">=</span> <span class="s2">":"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">":*"</span>
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a> <span class="k">if</span> <span class="n">wildcard</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a> <span class="k">return</span> <span class="kc">True</span>
 <a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>
-<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a>    <span class="k">return</span> <span class="kc">False</span>
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a> <span class="k">return</span> <span class="kc">False</span>
 </code></pre></div>
 <hr/>
 <h2 id="token-management-api">Token Management API<a class="headerlink" href="#token-management-api" title="Permanent link">¶</a></h2>
@@ -3032,19 +3028,19 @@
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>Content-Type:<span class="w"> </span>application/json
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="o">{</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">  </span><span class="s2">"username"</span>:<span class="w"> </span><span class="s2">"alice@company.com"</span>,
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">  </span><span class="s2">"password"</span>:<span class="w"> </span><span class="s2">"secure_password_123"</span>,
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">  </span><span class="s2">"mfa_code"</span>:<span class="w"> </span><span class="s2">"123456"</span><span class="w">  </span><span class="c1"># Optional if MFA enabled</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="s2">"username"</span>:<span class="w"> </span><span class="s2">"alice@company.com"</span>,
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w"> </span><span class="s2">"password"</span>:<span class="w"> </span><span class="s2">"secure_password_123"</span>,
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w"> </span><span class="s2">"mfa_code"</span>:<span class="w"> </span><span class="s2">"123456"</span><span class="w"> </span><span class="c1"># Optional if MFA enabled</span>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="o">}</span>
 <a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
 <a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="c1"># Response</span>
 <a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="o">{</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">  </span><span class="s2">"access_token"</span>:<span class="w"> </span><span class="s2">"eyJhbGc..."</span>,
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">  </span><span class="s2">"refresh_token"</span>:<span class="w"> </span><span class="s2">"opaque_token_xyz"</span>,
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">  </span><span class="s2">"session_token"</span>:<span class="w"> </span><span class="s2">"eyJzZXNz..."</span>,
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w">  </span><span class="s2">"token_type"</span>:<span class="w"> </span><span class="s2">"Bearer"</span>,
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w">  </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">900</span>,
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w">  </span><span class="s2">"scope"</span>:<span class="w"> </span><span class="s2">"api:agents:read api:agents:write api:workflows:exec"</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span><span class="s2">"access_token"</span>:<span class="w"> </span><span class="s2">"eyJhbGc..."</span>,
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w"> </span><span class="s2">"refresh_token"</span>:<span class="w"> </span><span class="s2">"opaque_token_xyz"</span>,
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w"> </span><span class="s2">"session_token"</span>:<span class="w"> </span><span class="s2">"eyJzZXNz..."</span>,
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w"> </span><span class="s2">"token_type"</span>:<span class="w"> </span><span class="s2">"Bearer"</span>,
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w"> </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">900</span>,
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w"> </span><span class="s2">"scope"</span>:<span class="w"> </span><span class="s2">"api:agents:read api:agents:write api:workflows:exec"</span>
 <a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="o">}</span>
 </code></pre></div>
 <h3 id="issue-api-token-service-account">Issue API Token (Service Account)<a class="headerlink" href="#issue-api-token-service-account" title="Permanent link">¶</a></h3>
@@ -3053,18 +3049,18 @@
 <a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>Authorization:<span class="w"> </span>******
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="o">{</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">  </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w">  </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w">  </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">7776000</span><span class="w">  </span><span class="c1"># 90 days</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w"> </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w"> </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w"> </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">7776000</span><span class="w"> </span><span class="c1"># 90 days</span>
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="o">}</span>
 <a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>
 <a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="c1"># Response</span>
 <a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="o">{</span>
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w">  </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"codex_pat_abc123def456ghi789"</span>,
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a><span class="w">  </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
-<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="w">  </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
-<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="w">  </span><span class="s2">"created_at"</span>:<span class="w"> </span><span class="m">1720000000</span>,
-<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w">  </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1727776000</span>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w"> </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"codex_pat_abc123def456ghi789"</span>,
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a><span class="w"> </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="w"> </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="w"> </span><span class="s2">"created_at"</span>:<span class="w"> </span><span class="m">1720000000</span>,
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w"> </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1727776000</span>
 <a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a><span class="o">}</span>
 </code></pre></div>
 <h3 id="validate-token">Validate Token<a class="headerlink" href="#validate-token" title="Permanent link">¶</a></h3>
@@ -3072,23 +3068,23 @@
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>Content-Type:<span class="w"> </span>application/json
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="o">{</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">  </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"eyJhbGc..."</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"eyJhbGc..."</span>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="o">}</span>
 <a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>
 <a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="c1"># Response (valid token)</span>
 <a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="o">{</span>
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w">  </span><span class="s2">"valid"</span>:<span class="w"> </span>true,
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w">  </span><span class="s2">"user_id"</span>:<span class="w"> </span><span class="s2">"alice@company.com"</span>,
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w">  </span><span class="s2">"roles"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"agent_operator"</span><span class="o">]</span>,
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a><span class="w">  </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:*"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
-<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="w">  </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1720000900</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w"> </span><span class="s2">"valid"</span>:<span class="w"> </span>true,
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w"> </span><span class="s2">"user_id"</span>:<span class="w"> </span><span class="s2">"alice@company.com"</span>,
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w"> </span><span class="s2">"roles"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"agent_operator"</span><span class="o">]</span>,
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a><span class="w"> </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:*"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>,
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="w"> </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1720000900</span>
 <a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="o">}</span>
 <a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>
 <a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="c1"># Response (invalid/expired token)</span>
 <a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a><span class="o">{</span>
-<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a><span class="w">  </span><span class="s2">"valid"</span>:<span class="w"> </span>false,
-<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a><span class="w">  </span><span class="s2">"error"</span>:<span class="w"> </span><span class="s2">"Token expired"</span>,
-<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a><span class="w">  </span><span class="s2">"error_code"</span>:<span class="w"> </span><span class="s2">"TOKEN_EXPIRED"</span>
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a><span class="w"> </span><span class="s2">"valid"</span>:<span class="w"> </span>false,
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a><span class="w"> </span><span class="s2">"error"</span>:<span class="w"> </span><span class="s2">"Token expired"</span>,
+<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a><span class="w"> </span><span class="s2">"error_code"</span>:<span class="w"> </span><span class="s2">"TOKEN_EXPIRED"</span>
 <a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a><span class="o">}</span>
 </code></pre></div>
 <h3 id="refresh-access-token">Refresh Access Token<a class="headerlink" href="#refresh-access-token" title="Permanent link">¶</a></h3>
@@ -3096,14 +3092,14 @@
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>Content-Type:<span class="w"> </span>application/json
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="o">{</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w">  </span><span class="s2">"refresh_token"</span>:<span class="w"> </span><span class="s2">"opaque_token_xyz"</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w"> </span><span class="s2">"refresh_token"</span>:<span class="w"> </span><span class="s2">"opaque_token_xyz"</span>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="o">}</span>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="c1"># Response</span>
 <a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a><span class="o">{</span>
-<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a><span class="w">  </span><span class="s2">"access_token"</span>:<span class="w"> </span><span class="s2">"eyJhbGc..."</span>,
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="w">  </span><span class="s2">"token_type"</span>:<span class="w"> </span><span class="s2">"Bearer"</span>,
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a><span class="w">  </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">900</span>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a><span class="w"> </span><span class="s2">"access_token"</span>:<span class="w"> </span><span class="s2">"eyJhbGc..."</span>,
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="w"> </span><span class="s2">"token_type"</span>:<span class="w"> </span><span class="s2">"Bearer"</span>,
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a><span class="w"> </span><span class="s2">"expires_in"</span>:<span class="w"> </span><span class="m">900</span>
 <a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a><span class="o">}</span>
 </code></pre></div>
 <h3 id="revoke-token">Revoke Token<a class="headerlink" href="#revoke-token" title="Permanent link">¶</a></h3>
@@ -3112,15 +3108,15 @@
 <a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>Authorization:<span class="w"> </span>******
 <a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>
 <a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="o">{</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w">  </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"codex_pat_abc123def456ghi789"</span><span class="w">  </span><span class="c1"># For API tokens</span>
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="w">  </span><span class="c1"># OR</span>
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="w">  </span><span class="s2">"session_token"</span>:<span class="w"> </span><span class="s2">"eyJzZXNz..."</span><span class="w">  </span><span class="c1"># For session tokens</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w"> </span><span class="s2">"token"</span>:<span class="w"> </span><span class="s2">"codex_pat_abc123def456ghi789"</span><span class="w"> </span><span class="c1"># For API tokens</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="w"> </span><span class="c1"># OR</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="w"> </span><span class="s2">"session_token"</span>:<span class="w"> </span><span class="s2">"eyJzZXNz..."</span><span class="w"> </span><span class="c1"># For session tokens</span>
 <a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="o">}</span>
 <a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>
 <a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="c1"># Response</span>
 <a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="o">{</span>
-<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a><span class="w">  </span><span class="s2">"revoked"</span>:<span class="w"> </span>true,
-<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a><span class="w">  </span><span class="s2">"revoked_at"</span>:<span class="w"> </span><span class="m">1720000100</span>
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a><span class="w"> </span><span class="s2">"revoked"</span>:<span class="w"> </span>true,
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a><span class="w"> </span><span class="s2">"revoked_at"</span>:<span class="w"> </span><span class="m">1720000100</span>
 <a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a><span class="o">}</span>
 </code></pre></div>
 <h3 id="list-tokens">List Tokens<a class="headerlink" href="#list-tokens" title="Permanent link">¶</a></h3>
@@ -3129,17 +3125,17 @@
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># Response</span>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="o">{</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="w">  </span><span class="s2">"tokens"</span>:<span class="w"> </span><span class="o">[</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="w">    </span><span class="o">{</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="w">      </span><span class="s2">"token_id"</span>:<span class="w"> </span><span class="s2">"token_001"</span>,
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="w">      </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="w">      </span><span class="s2">"type"</span>:<span class="w"> </span><span class="s2">"api_token"</span>,
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="w">      </span><span class="s2">"created_at"</span>:<span class="w"> </span><span class="m">1720000000</span>,
-<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a><span class="w">      </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1727776000</span>,
-<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a><span class="w">      </span><span class="s2">"last_used_at"</span>:<span class="w"> </span><span class="m">1720086400</span>,
-<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="w">      </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>
-<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="w">    </span><span class="o">}</span>
-<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="w">  </span><span class="o">]</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="w"> </span><span class="s2">"tokens"</span>:<span class="w"> </span><span class="o">[</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="w"> </span><span class="s2">"token_id"</span>:<span class="w"> </span><span class="s2">"token_001"</span>,
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="w"> </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"DataPipeline Service"</span>,
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="w"> </span><span class="s2">"type"</span>:<span class="w"> </span><span class="s2">"api_token"</span>,
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="w"> </span><span class="s2">"created_at"</span>:<span class="w"> </span><span class="m">1720000000</span>,
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a><span class="w"> </span><span class="s2">"expires_at"</span>:<span class="w"> </span><span class="m">1727776000</span>,
+<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a><span class="w"> </span><span class="s2">"last_used_at"</span>:<span class="w"> </span><span class="m">1720086400</span>,
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="w"> </span><span class="s2">"scopes"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"api:agents:read"</span>,<span class="w"> </span><span class="s2">"api:workflows:exec"</span><span class="o">]</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="w"> </span><span class="o">}</span>
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="w"> </span><span class="o">]</span>
 <a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a><span class="o">}</span>
 </code></pre></div>
 <hr/>
@@ -3149,83 +3145,83 @@
 <a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a>
 <a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="k">class</span> <span class="nc">CodexClient</span><span class="p">:</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
-<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
-<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
-<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="kc">None</span>
-<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="kc">None</span>
-<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a> <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a>
-<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="w">        </span><span class="sd">"""Authenticate and obtain tokens."""</span>
-<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/auth/token"</span><span class="p">,</span>
-<a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a>            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"username"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="s2">"password"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">}</span>
-<a href="#__codelineno-21-18" id="__codelineno-21-18" name="__codelineno-21-18"></a>        <span class="p">)</span>
-<a href="#__codelineno-21-19" id="__codelineno-21-19" name="__codelineno-21-19"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a> <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="w"> </span><span class="sd">"""Authenticate and obtain tokens."""</span>
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/auth/token"</span><span class="p">,</span>
+<a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"username"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="s2">"password"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">}</span>
+<a href="#__codelineno-21-18" id="__codelineno-21-18" name="__codelineno-21-18"></a> <span class="p">)</span>
+<a href="#__codelineno-21-19" id="__codelineno-21-19" name="__codelineno-21-19"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 <a href="#__codelineno-21-20" id="__codelineno-21-20" name="__codelineno-21-20"></a>
-<a href="#__codelineno-21-21" id="__codelineno-21-21" name="__codelineno-21-21"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<a href="#__codelineno-21-22" id="__codelineno-21-22" name="__codelineno-21-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">]</span>
-<a href="#__codelineno-21-23" id="__codelineno-21-23" name="__codelineno-21-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"refresh_token"</span><span class="p">]</span>
-<a href="#__codelineno-21-24" id="__codelineno-21-24" name="__codelineno-21-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">"expires_in"</span><span class="p">]</span>
+<a href="#__codelineno-21-21" id="__codelineno-21-21" name="__codelineno-21-21"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-21-22" id="__codelineno-21-22" name="__codelineno-21-22"></a> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">]</span>
+<a href="#__codelineno-21-23" id="__codelineno-21-23" name="__codelineno-21-23"></a> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"refresh_token"</span><span class="p">]</span>
+<a href="#__codelineno-21-24" id="__codelineno-21-24" name="__codelineno-21-24"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">"expires_in"</span><span class="p">]</span>
 <a href="#__codelineno-21-25" id="__codelineno-21-25" name="__codelineno-21-25"></a>
-<a href="#__codelineno-21-26" id="__codelineno-21-26" name="__codelineno-21-26"></a>    <span class="k">def</span> <span class="nf">_refresh_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-21-27" id="__codelineno-21-27" name="__codelineno-21-27"></a><span class="w">        </span><span class="sd">"""Refresh access token if expiring soon."""</span>
-<a href="#__codelineno-21-28" id="__codelineno-21-28" name="__codelineno-21-28"></a>        <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">-</span> <span class="mi">60</span><span class="p">:</span>
-<a href="#__codelineno-21-29" id="__codelineno-21-29" name="__codelineno-21-29"></a>            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-<a href="#__codelineno-21-30" id="__codelineno-21-30" name="__codelineno-21-30"></a>                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/auth/token/refresh"</span><span class="p">,</span>
-<a href="#__codelineno-21-31" id="__codelineno-21-31" name="__codelineno-21-31"></a>                <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"refresh_token"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">}</span>
-<a href="#__codelineno-21-32" id="__codelineno-21-32" name="__codelineno-21-32"></a>            <span class="p">)</span>
-<a href="#__codelineno-21-33" id="__codelineno-21-33" name="__codelineno-21-33"></a>            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-21-26" id="__codelineno-21-26" name="__codelineno-21-26"></a> <span class="k">def</span> <span class="nf">_refresh_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-21-27" id="__codelineno-21-27" name="__codelineno-21-27"></a><span class="w"> </span><span class="sd">"""Refresh access token if expiring soon."""</span>
+<a href="#__codelineno-21-28" id="__codelineno-21-28" name="__codelineno-21-28"></a> <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">-</span> <span class="mi">60</span><span class="p">:</span>
+<a href="#__codelineno-21-29" id="__codelineno-21-29" name="__codelineno-21-29"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-21-30" id="__codelineno-21-30" name="__codelineno-21-30"></a> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/auth/token/refresh"</span><span class="p">,</span>
+<a href="#__codelineno-21-31" id="__codelineno-21-31" name="__codelineno-21-31"></a> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"refresh_token"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">}</span>
+<a href="#__codelineno-21-32" id="__codelineno-21-32" name="__codelineno-21-32"></a> <span class="p">)</span>
+<a href="#__codelineno-21-33" id="__codelineno-21-33" name="__codelineno-21-33"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 <a href="#__codelineno-21-34" id="__codelineno-21-34" name="__codelineno-21-34"></a>
-<a href="#__codelineno-21-35" id="__codelineno-21-35" name="__codelineno-21-35"></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<a href="#__codelineno-21-36" id="__codelineno-21-36" name="__codelineno-21-36"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">]</span>
-<a href="#__codelineno-21-37" id="__codelineno-21-37" name="__codelineno-21-37"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">"expires_in"</span><span class="p">]</span>
+<a href="#__codelineno-21-35" id="__codelineno-21-35" name="__codelineno-21-35"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-21-36" id="__codelineno-21-36" name="__codelineno-21-36"></a> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">]</span>
+<a href="#__codelineno-21-37" id="__codelineno-21-37" name="__codelineno-21-37"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token_expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">"expires_in"</span><span class="p">]</span>
 <a href="#__codelineno-21-38" id="__codelineno-21-38" name="__codelineno-21-38"></a>
-<a href="#__codelineno-21-39" id="__codelineno-21-39" name="__codelineno-21-39"></a>    <span class="k">def</span> <span class="nf">get_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<a href="#__codelineno-21-40" id="__codelineno-21-40" name="__codelineno-21-40"></a><span class="w">        </span><span class="sd">"""Fetch agents (refreshes token automatically)."""</span>
-<a href="#__codelineno-21-41" id="__codelineno-21-41" name="__codelineno-21-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_if_needed</span><span class="p">()</span>
+<a href="#__codelineno-21-39" id="__codelineno-21-39" name="__codelineno-21-39"></a> <span class="k">def</span> <span class="nf">get_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<a href="#__codelineno-21-40" id="__codelineno-21-40" name="__codelineno-21-40"></a><span class="w"> </span><span class="sd">"""Fetch agents (refreshes token automatically)."""</span>
+<a href="#__codelineno-21-41" id="__codelineno-21-41" name="__codelineno-21-41"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_if_needed</span><span class="p">()</span>
 <a href="#__codelineno-21-42" id="__codelineno-21-42" name="__codelineno-21-42"></a>
-<a href="#__codelineno-21-43" id="__codelineno-21-43" name="__codelineno-21-43"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-<a href="#__codelineno-21-44" id="__codelineno-21-44" name="__codelineno-21-44"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/agents"</span><span class="p">,</span>
-<a href="#__codelineno-21-45" id="__codelineno-21-45" name="__codelineno-21-45"></a>            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
-<a href="#__codelineno-21-46" id="__codelineno-21-46" name="__codelineno-21-46"></a>        <span class="p">)</span>
-<a href="#__codelineno-21-47" id="__codelineno-21-47" name="__codelineno-21-47"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a href="#__codelineno-21-48" id="__codelineno-21-48" name="__codelineno-21-48"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"agents"</span><span class="p">]</span>
+<a href="#__codelineno-21-43" id="__codelineno-21-43" name="__codelineno-21-43"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a href="#__codelineno-21-44" id="__codelineno-21-44" name="__codelineno-21-44"></a> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/agents"</span><span class="p">,</span>
+<a href="#__codelineno-21-45" id="__codelineno-21-45" name="__codelineno-21-45"></a> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
+<a href="#__codelineno-21-46" id="__codelineno-21-46" name="__codelineno-21-46"></a> <span class="p">)</span>
+<a href="#__codelineno-21-47" id="__codelineno-21-47" name="__codelineno-21-47"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-21-48" id="__codelineno-21-48" name="__codelineno-21-48"></a> <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"agents"</span><span class="p">]</span>
 <a href="#__codelineno-21-49" id="__codelineno-21-49" name="__codelineno-21-49"></a>
 <a href="#__codelineno-21-50" id="__codelineno-21-50" name="__codelineno-21-50"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-21-51" id="__codelineno-21-51" name="__codelineno-21-51"></a><span class="n">client</span> <span class="o">=</span> <span class="n">CodexClient</span><span class="p">(</span><span class="s2">"https://api.codex.local"</span><span class="p">,</span> <span class="s2">"alice"</span><span class="p">,</span> <span class="s2">"password"</span><span class="p">)</span>
 <a href="#__codelineno-21-52" id="__codelineno-21-52" name="__codelineno-21-52"></a><span class="n">client</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-<a href="#__codelineno-21-53" id="__codelineno-21-53" name="__codelineno-21-53"></a><span class="n">agents</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_agents</span><span class="p">()</span>  <span class="c1"># Token auto-refreshes if needed</span>
+<a href="#__codelineno-21-53" id="__codelineno-21-53" name="__codelineno-21-53"></a><span class="n">agents</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_agents</span><span class="p">()</span> <span class="c1"># Token auto-refreshes if needed</span>
 </code></pre></div>
 <h3 id="example-2-service-account-with-api-token">Example 2: Service Account with API Token<a class="headerlink" href="#example-2-service-account-with-api-token" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="kn">import</span> <span class="nn">os</span>
 <a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="kn">import</span> <span class="nn">requests</span>
 <a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>
 <a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="k">class</span> <span class="nc">CodexService</span><span class="p">:</span>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CODEX_API_URL"</span><span class="p">,</span> <span class="s2">"https://api.codex.local"</span><span class="p">)</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">api_token</span> <span class="o">=</span> <span class="n">api_token</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CODEX_API_TOKEN"</span><span class="p">)</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span> <span class="o">=</span> <span class="n">service_name</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CODEX_API_URL"</span><span class="p">,</span> <span class="s2">"https://api.codex.local"</span><span class="p">)</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a> <span class="bp">self</span><span class="o">.</span><span class="n">api_token</span> <span class="o">=</span> <span class="n">api_token</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CODEX_API_TOKEN"</span><span class="p">)</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a> <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span> <span class="o">=</span> <span class="n">service_name</span>
 <a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="k">def</span> <span class="nf">execute_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a><span class="w">        </span><span class="sd">"""Execute an agent."""</span>
-<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-<a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/agents/</span><span class="si">{</span><span class="n">agent_id</span><span class="si">}</span><span class="s2">/execute"</span><span class="p">,</span>
-<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a>            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
-<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a>        <span class="p">)</span>
-<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a> <span class="k">def</span> <span class="nf">execute_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a><span class="w"> </span><span class="sd">"""Execute an agent."""</span>
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/agents/</span><span class="si">{</span><span class="n">agent_id</span><span class="si">}</span><span class="s2">/execute"</span><span class="p">,</span>
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a> <span class="p">)</span>
+<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a> <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 <a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a>
-<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a>    <span class="k">def</span> <span class="nf">trigger_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="w">        </span><span class="sd">"""Trigger a workflow."""</span>
-<a href="#__codelineno-22-21" id="__codelineno-22-21" name="__codelineno-22-21"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-<a href="#__codelineno-22-22" id="__codelineno-22-22" name="__codelineno-22-22"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/workflows/</span><span class="si">{</span><span class="n">workflow_id</span><span class="si">}</span><span class="s2">/execute"</span><span class="p">,</span>
-<a href="#__codelineno-22-23" id="__codelineno-22-23" name="__codelineno-22-23"></a>            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
-<a href="#__codelineno-22-24" id="__codelineno-22-24" name="__codelineno-22-24"></a>        <span class="p">)</span>
-<a href="#__codelineno-22-25" id="__codelineno-22-25" name="__codelineno-22-25"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a href="#__codelineno-22-26" id="__codelineno-22-26" name="__codelineno-22-26"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a> <span class="k">def</span> <span class="nf">trigger_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workflow_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="w"> </span><span class="sd">"""Trigger a workflow."""</span>
+<a href="#__codelineno-22-21" id="__codelineno-22-21" name="__codelineno-22-21"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-22-22" id="__codelineno-22-22" name="__codelineno-22-22"></a> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/v1/workflows/</span><span class="si">{</span><span class="n">workflow_id</span><span class="si">}</span><span class="s2">/execute"</span><span class="p">,</span>
+<a href="#__codelineno-22-23" id="__codelineno-22-23" name="__codelineno-22-23"></a> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"******"</span><span class="p">}</span>
+<a href="#__codelineno-22-24" id="__codelineno-22-24" name="__codelineno-22-24"></a> <span class="p">)</span>
+<a href="#__codelineno-22-25" id="__codelineno-22-25" name="__codelineno-22-25"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-22-26" id="__codelineno-22-26" name="__codelineno-22-26"></a> <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 <a href="#__codelineno-22-27" id="__codelineno-22-27" name="__codelineno-22-27"></a>
 <a href="#__codelineno-22-28" id="__codelineno-22-28" name="__codelineno-22-28"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-22-29" id="__codelineno-22-29" name="__codelineno-22-29"></a><span class="n">service</span> <span class="o">=</span> <span class="n">CodexService</span><span class="p">(</span><span class="s2">"DataPipeline"</span><span class="p">)</span>
@@ -3237,64 +3233,64 @@
 <a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="kn">import</span> <span class="nn">jwt</span>
 <a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>
 <a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="k">def</span> <span class="nf">require_scope</span><span class="p">(</span><span class="o">*</span><span class="n">required_scopes</span><span class="p">):</span>
-<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="w">    </span><span class="sd">"""Decorator to check token has required scope."""</span>
-<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a>            <span class="c1"># Extract token from header</span>
-<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>            <span class="n">auth_header</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Authorization"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-<a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"Bearer "</span><span class="p">):</span>
-<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a>                <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Missing token"</span><span class="p">},</span> <span class="mi">401</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="w"> </span><span class="sd">"""Decorator to check token has required scope."""</span>
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a> <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a> <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a> <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a> <span class="c1"># Extract token from header</span>
+<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a> <span class="n">auth_header</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Authorization"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+<a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"Bearer "</span><span class="p">):</span>
+<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Missing token"</span><span class="p">},</span> <span class="mi">401</span>
 <a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a>
-<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a>            <span class="n">token</span> <span class="o">=</span> <span class="n">auth_header</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>  <span class="c1"># Remove "Bearer " prefix</span>
+<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a> <span class="n">token</span> <span class="o">=</span> <span class="n">auth_header</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span> <span class="c1"># Remove "Bearer " prefix</span>
 <a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a>
-<a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a>            <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a>                <span class="c1"># Decode and validate token</span>
-<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a>                <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
-<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a>                <span class="n">token_scopes</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scopes"</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a> <span class="c1"># Decode and validate token</span>
+<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a> <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
+<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a> <span class="n">token_scopes</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scopes"</span><span class="p">,</span> <span class="p">[])</span>
 <a href="#__codelineno-23-20" id="__codelineno-23-20" name="__codelineno-23-20"></a>
-<a href="#__codelineno-23-21" id="__codelineno-23-21" name="__codelineno-23-21"></a>                <span class="c1"># Check if token has required scopes</span>
-<a href="#__codelineno-23-22" id="__codelineno-23-22" name="__codelineno-23-22"></a>                <span class="n">has_scope</span> <span class="o">=</span> <span class="kc">False</span>
-<a href="#__codelineno-23-23" id="__codelineno-23-23" name="__codelineno-23-23"></a>                <span class="k">for</span> <span class="n">required_scope</span> <span class="ow">in</span> <span class="n">required_scopes</span><span class="p">:</span>
-<a href="#__codelineno-23-24" id="__codelineno-23-24" name="__codelineno-23-24"></a>                    <span class="k">if</span> <span class="n">required_scope</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
-<a href="#__codelineno-23-25" id="__codelineno-23-25" name="__codelineno-23-25"></a>                        <span class="n">has_scope</span> <span class="o">=</span> <span class="kc">True</span>
-<a href="#__codelineno-23-26" id="__codelineno-23-26" name="__codelineno-23-26"></a>                        <span class="k">break</span>
+<a href="#__codelineno-23-21" id="__codelineno-23-21" name="__codelineno-23-21"></a> <span class="c1"># Check if token has required scopes</span>
+<a href="#__codelineno-23-22" id="__codelineno-23-22" name="__codelineno-23-22"></a> <span class="n">has_scope</span> <span class="o">=</span> <span class="kc">False</span>
+<a href="#__codelineno-23-23" id="__codelineno-23-23" name="__codelineno-23-23"></a> <span class="k">for</span> <span class="n">required_scope</span> <span class="ow">in</span> <span class="n">required_scopes</span><span class="p">:</span>
+<a href="#__codelineno-23-24" id="__codelineno-23-24" name="__codelineno-23-24"></a> <span class="k">if</span> <span class="n">required_scope</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
+<a href="#__codelineno-23-25" id="__codelineno-23-25" name="__codelineno-23-25"></a> <span class="n">has_scope</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-23-26" id="__codelineno-23-26" name="__codelineno-23-26"></a> <span class="k">break</span>
 <a href="#__codelineno-23-27" id="__codelineno-23-27" name="__codelineno-23-27"></a>
-<a href="#__codelineno-23-28" id="__codelineno-23-28" name="__codelineno-23-28"></a>                    <span class="c1"># Check for wildcard scopes</span>
-<a href="#__codelineno-23-29" id="__codelineno-23-29" name="__codelineno-23-29"></a>                    <span class="n">parts</span> <span class="o">=</span> <span class="n">required_scope</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
-<a href="#__codelineno-23-30" id="__codelineno-23-30" name="__codelineno-23-30"></a>                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
-<a href="#__codelineno-23-31" id="__codelineno-23-31" name="__codelineno-23-31"></a>                        <span class="n">wildcard</span> <span class="o">=</span> <span class="s2">":"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">":*"</span>
-<a href="#__codelineno-23-32" id="__codelineno-23-32" name="__codelineno-23-32"></a>                        <span class="k">if</span> <span class="n">wildcard</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
-<a href="#__codelineno-23-33" id="__codelineno-23-33" name="__codelineno-23-33"></a>                            <span class="n">has_scope</span> <span class="o">=</span> <span class="kc">True</span>
-<a href="#__codelineno-23-34" id="__codelineno-23-34" name="__codelineno-23-34"></a>                            <span class="k">break</span>
+<a href="#__codelineno-23-28" id="__codelineno-23-28" name="__codelineno-23-28"></a> <span class="c1"># Check for wildcard scopes</span>
+<a href="#__codelineno-23-29" id="__codelineno-23-29" name="__codelineno-23-29"></a> <span class="n">parts</span> <span class="o">=</span> <span class="n">required_scope</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
+<a href="#__codelineno-23-30" id="__codelineno-23-30" name="__codelineno-23-30"></a> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+<a href="#__codelineno-23-31" id="__codelineno-23-31" name="__codelineno-23-31"></a> <span class="n">wildcard</span> <span class="o">=</span> <span class="s2">":"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">":*"</span>
+<a href="#__codelineno-23-32" id="__codelineno-23-32" name="__codelineno-23-32"></a> <span class="k">if</span> <span class="n">wildcard</span> <span class="ow">in</span> <span class="n">token_scopes</span><span class="p">:</span>
+<a href="#__codelineno-23-33" id="__codelineno-23-33" name="__codelineno-23-33"></a> <span class="n">has_scope</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-23-34" id="__codelineno-23-34" name="__codelineno-23-34"></a> <span class="k">break</span>
 <a href="#__codelineno-23-35" id="__codelineno-23-35" name="__codelineno-23-35"></a>
-<a href="#__codelineno-23-36" id="__codelineno-23-36" name="__codelineno-23-36"></a>                <span class="k">if</span> <span class="ow">not</span> <span class="n">has_scope</span><span class="p">:</span>
-<a href="#__codelineno-23-37" id="__codelineno-23-37" name="__codelineno-23-37"></a>                    <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Insufficient scope"</span><span class="p">},</span> <span class="mi">403</span>
+<a href="#__codelineno-23-36" id="__codelineno-23-36" name="__codelineno-23-36"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">has_scope</span><span class="p">:</span>
+<a href="#__codelineno-23-37" id="__codelineno-23-37" name="__codelineno-23-37"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Insufficient scope"</span><span class="p">},</span> <span class="mi">403</span>
 <a href="#__codelineno-23-38" id="__codelineno-23-38" name="__codelineno-23-38"></a>
-<a href="#__codelineno-23-39" id="__codelineno-23-39" name="__codelineno-23-39"></a>                <span class="c1"># Attach user info to request</span>
-<a href="#__codelineno-23-40" id="__codelineno-23-40" name="__codelineno-23-40"></a>                <span class="n">request</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"user_id"</span><span class="p">]</span>
-<a href="#__codelineno-23-41" id="__codelineno-23-41" name="__codelineno-23-41"></a>                <span class="n">request</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"roles"</span><span class="p">]</span>
+<a href="#__codelineno-23-39" id="__codelineno-23-39" name="__codelineno-23-39"></a> <span class="c1"># Attach user info to request</span>
+<a href="#__codelineno-23-40" id="__codelineno-23-40" name="__codelineno-23-40"></a> <span class="n">request</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"user_id"</span><span class="p">]</span>
+<a href="#__codelineno-23-41" id="__codelineno-23-41" name="__codelineno-23-41"></a> <span class="n">request</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"roles"</span><span class="p">]</span>
 <a href="#__codelineno-23-42" id="__codelineno-23-42" name="__codelineno-23-42"></a>
-<a href="#__codelineno-23-43" id="__codelineno-23-43" name="__codelineno-23-43"></a>                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a href="#__codelineno-23-43" id="__codelineno-23-43" name="__codelineno-23-43"></a> <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <a href="#__codelineno-23-44" id="__codelineno-23-44" name="__codelineno-23-44"></a>
-<a href="#__codelineno-23-45" id="__codelineno-23-45" name="__codelineno-23-45"></a>            <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">ExpiredSignatureError</span><span class="p">:</span>
-<a href="#__codelineno-23-46" id="__codelineno-23-46" name="__codelineno-23-46"></a>                <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Token expired"</span><span class="p">},</span> <span class="mi">401</span>
-<a href="#__codelineno-23-47" id="__codelineno-23-47" name="__codelineno-23-47"></a>            <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">:</span>
-<a href="#__codelineno-23-48" id="__codelineno-23-48" name="__codelineno-23-48"></a>                <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Invalid token"</span><span class="p">},</span> <span class="mi">401</span>
+<a href="#__codelineno-23-45" id="__codelineno-23-45" name="__codelineno-23-45"></a> <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">ExpiredSignatureError</span><span class="p">:</span>
+<a href="#__codelineno-23-46" id="__codelineno-23-46" name="__codelineno-23-46"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Token expired"</span><span class="p">},</span> <span class="mi">401</span>
+<a href="#__codelineno-23-47" id="__codelineno-23-47" name="__codelineno-23-47"></a> <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">InvalidSignatureError</span><span class="p">:</span>
+<a href="#__codelineno-23-48" id="__codelineno-23-48" name="__codelineno-23-48"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"Invalid token"</span><span class="p">},</span> <span class="mi">401</span>
 <a href="#__codelineno-23-49" id="__codelineno-23-49" name="__codelineno-23-49"></a>
-<a href="#__codelineno-23-50" id="__codelineno-23-50" name="__codelineno-23-50"></a>        <span class="k">return</span> <span class="n">wrapper</span>
-<a href="#__codelineno-23-51" id="__codelineno-23-51" name="__codelineno-23-51"></a>    <span class="k">return</span> <span class="n">decorator</span>
+<a href="#__codelineno-23-50" id="__codelineno-23-50" name="__codelineno-23-50"></a> <span class="k">return</span> <span class="n">wrapper</span>
+<a href="#__codelineno-23-51" id="__codelineno-23-51" name="__codelineno-23-51"></a> <span class="k">return</span> <span class="n">decorator</span>
 <a href="#__codelineno-23-52" id="__codelineno-23-52" name="__codelineno-23-52"></a>
 <a href="#__codelineno-23-53" id="__codelineno-23-53" name="__codelineno-23-53"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-23-54" id="__codelineno-23-54" name="__codelineno-23-54"></a><span class="nd">@require_scope</span><span class="p">(</span><span class="s2">"api:agents:read"</span><span class="p">)</span>
 <a href="#__codelineno-23-55" id="__codelineno-23-55" name="__codelineno-23-55"></a><span class="k">def</span> <span class="nf">get_agents</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-<a href="#__codelineno-23-56" id="__codelineno-23-56" name="__codelineno-23-56"></a><span class="w">    </span><span class="sd">"""Get agents (requires api:agents:read scope)."""</span>
-<a href="#__codelineno-23-57" id="__codelineno-23-57" name="__codelineno-23-57"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"agents"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]},</span> <span class="mi">200</span>
+<a href="#__codelineno-23-56" id="__codelineno-23-56" name="__codelineno-23-56"></a><span class="w"> </span><span class="sd">"""Get agents (requires api:agents:read scope)."""</span>
+<a href="#__codelineno-23-57" id="__codelineno-23-57" name="__codelineno-23-57"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"agents"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]},</span> <span class="mi">200</span>
 <a href="#__codelineno-23-58" id="__codelineno-23-58" name="__codelineno-23-58"></a>
 <a href="#__codelineno-23-59" id="__codelineno-23-59" name="__codelineno-23-59"></a><span class="nd">@require_scope</span><span class="p">(</span><span class="s2">"api:agents:write"</span><span class="p">,</span> <span class="s2">"admin:*"</span><span class="p">)</span>
 <a href="#__codelineno-23-60" id="__codelineno-23-60" name="__codelineno-23-60"></a><span class="k">def</span> <span class="nf">create_agent</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-<a href="#__codelineno-23-61" id="__codelineno-23-61" name="__codelineno-23-61"></a><span class="w">    </span><span class="sd">"""Create agent (requires write scope or admin)."""</span>
-<a href="#__codelineno-23-62" id="__codelineno-23-62" name="__codelineno-23-62"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"agent_id"</span><span class="p">:</span> <span class="s2">"new_agent"</span><span class="p">},</span> <span class="mi">201</span>
+<a href="#__codelineno-23-61" id="__codelineno-23-61" name="__codelineno-23-61"></a><span class="w"> </span><span class="sd">"""Create agent (requires write scope or admin)."""</span>
+<a href="#__codelineno-23-62" id="__codelineno-23-62" name="__codelineno-23-62"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"agent_id"</span><span class="p">:</span> <span class="s2">"new_agent"</span><span class="p">},</span> <span class="mi">201</span>
 </code></pre></div>
 <hr/>
 <h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h2>
@@ -3311,65 +3307,65 @@
 - Secret management system (infrastructure)</p>
 <h3 id="2-token-transmission">2. Token Transmission<a class="headerlink" href="#2-token-transmission" title="Permanent link">¶</a></h3>
 <p><strong>Always use HTTPS:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1">#  GOOD</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># GOOD</span>
 <a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span>https://api.codex.local/...
 <a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="c1">#  BAD</span>
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="c1"># BAD</span>
 <a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span>http://api.codex.local/...
 </code></pre></div></p>
 <p><strong>Never in URLs:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="c1">#  BAD</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="c1"># BAD</span>
 <a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>https://api.codex.local/api/v1/agents?token<span class="o">=</span>secret_token
 <a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="c1">#  GOOD</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="c1"># GOOD</span>
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span>https://api.codex.local/api/v1/agents
 </code></pre></div></p>
 <h3 id="3-token-rotation">3. Token Rotation<a class="headerlink" href="#3-token-rotation" title="Permanent link">¶</a></h3>
-<p><strong>Access Tokens:</strong> Auto-refresh every 15 minutes<br/>
-<strong>Refresh Tokens:</strong> Rotate on every refresh (old token revoked)<br/>
+<p><strong>Access Tokens:</strong> Auto-refresh every 15 minutes
+<strong>Refresh Tokens:</strong> Rotate on every refresh (old token revoked)
 <strong>API Tokens:</strong> Rotate monthly (manual process)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># Monthly rotation for API tokens</span>
 <a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="k">def</span> <span class="nf">rotate_api_token</span><span class="p">():</span>
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>    <span class="c1"># Create new token with same scopes</span>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>    <span class="n">new_token</span> <span class="o">=</span> <span class="n">api_client</span><span class="o">.</span><span class="n">create_token</span><span class="p">(</span>
-<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">"DataPipeline Service (rotated)"</span><span class="p">,</span>
-<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>        <span class="n">scopes</span><span class="o">=</span><span class="n">old_token_scopes</span>
-<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a> <span class="c1"># Create new token with same scopes</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a> <span class="n">new_token</span> <span class="o">=</span> <span class="n">api_client</span><span class="o">.</span><span class="n">create_token</span><span class="p">(</span>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"DataPipeline Service (rotated)"</span><span class="p">,</span>
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a> <span class="n">scopes</span><span class="o">=</span><span class="n">old_token_scopes</span>
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a> <span class="p">)</span>
 <a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>
-<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a>    <span class="c1"># Update service configuration</span>
-<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a>    <span class="n">update_environment</span><span class="p">(</span><span class="s2">"CODEX_API_TOKEN"</span><span class="p">,</span> <span class="n">new_token</span><span class="p">)</span>
+<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a> <span class="c1"># Update service configuration</span>
+<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a> <span class="n">update_environment</span><span class="p">(</span><span class="s2">"CODEX_API_TOKEN"</span><span class="p">,</span> <span class="n">new_token</span><span class="p">)</span>
 <a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a>
-<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a>    <span class="c1"># Verify service works</span>
-<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a>    <span class="n">test_service_connectivity</span><span class="p">()</span>
+<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a> <span class="c1"># Verify service works</span>
+<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a> <span class="n">test_service_connectivity</span><span class="p">()</span>
 <a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a>
-<a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a>    <span class="c1"># Revoke old token</span>
-<a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a>    <span class="n">api_client</span><span class="o">.</span><span class="n">revoke_token</span><span class="p">(</span><span class="n">old_token</span><span class="p">)</span>
+<a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a> <span class="c1"># Revoke old token</span>
+<a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a> <span class="n">api_client</span><span class="o">.</span><span class="n">revoke_token</span><span class="p">(</span><span class="n">old_token</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="4-scope-minimization">4. Scope Minimization<a class="headerlink" href="#4-scope-minimization" title="Permanent link">¶</a></h3>
 <p>Always request minimum scopes needed:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1">#  GOOD: Specific scopes</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1"># GOOD: Specific scopes</span>
 <a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"api:agents:read"</span><span class="p">,</span> <span class="s2">"api:workflows:exec"</span><span class="p">]</span>
 <a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="c1">#  BAD: Overly broad</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="c1"># BAD: Overly broad</span>
 <a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a><span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"api:*"</span><span class="p">]</span>
 <a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a><span class="c1">#  WORSE: Admin scope for non-admin task</span>
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a><span class="c1"># WORSE: Admin scope for non-admin task</span>
 <a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a><span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"admin:*"</span><span class="p">]</span>
 </code></pre></div>
 <h3 id="5-token-revocation-on-logout">5. Token Revocation on Logout<a class="headerlink" href="#5-token-revocation-on-logout" title="Permanent link">¶</a></h3>
 <p>Always revoke session tokens on logout:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="n">session_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="w">    </span><span class="sd">"""Revoke session token on logout."""</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a>    <span class="n">revoke_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a>        <span class="s2">"/api/v1/auth/token/revoke"</span><span class="p">,</span>
-<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a>        <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"session_token"</span><span class="p">:</span> <span class="n">session_token</span><span class="p">}</span>
-<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a>    <span class="p">)</span>
+<a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="w"> </span><span class="sd">"""Revoke session token on logout."""</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a> <span class="n">revoke_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a> <span class="s2">"/api/v1/auth/token/revoke"</span><span class="p">,</span>
+<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"session_token"</span><span class="p">:</span> <span class="n">session_token</span><span class="p">}</span>
+<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a> <span class="p">)</span>
 <a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a>
-<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a>    <span class="k">if</span> <span class="n">revoke_response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a>        <span class="c1"># Clear local session</span>
-<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a>        <span class="n">clear_session</span><span class="p">()</span>
-<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a>    <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-28-12" id="__codelineno-28-12" name="__codelineno-28-12"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Failed to revoke session token"</span><span class="p">)</span>
+<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a> <span class="k">if</span> <span class="n">revoke_response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a> <span class="c1"># Clear local session</span>
+<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a> <span class="n">clear_session</span><span class="p">()</span>
+<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-28-12" id="__codelineno-28-12" name="__codelineno-28-12"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Failed to revoke session token"</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
@@ -3381,7 +3377,7 @@
 </ul>
 <hr/>
 <p><strong>Last Updated: 2026-07-08
-</strong>Version:<strong> 1.0.0<br/>
+</strong>Version:<strong> 1.0.0
 </strong>Status:** Production Ready</p>
 </article>
 </div>
@@ -3412,6 +3408,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

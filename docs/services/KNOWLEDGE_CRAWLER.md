@@ -1,13 +1,13 @@
 # Knowledge Crawler Service - Operational Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Service:** Zendesk Knowledge Synchronization  
-**Version:** 2.0  
-**Status:** Production Ready  
-**Created:** 2026-01-09 (PS-06)  
+**Service:** Zendesk Knowledge Synchronization
+**Version:** 2.0
+**Status:** Production Ready
+**Created:** 2026-01-09 (PS-06)
 
 ---
 
@@ -17,11 +17,11 @@ The Zendesk Knowledge Crawler Service implements "Check and Pull" synchronizatio
 
 ### Key Features
 
- **Incremental Sync** - Only fetch changed articles (80% bandwidth reduction)  
- **Drift Detection** - ETag and Last-Modified tracking  
- **PII Scrubbing** - Mandatory before disk writes  
- **State Management** - Persistent cache  
- **Error Handling** - Retry logic with exponential backoff  
+ **Incremental Sync** - Only fetch changed articles (80% bandwidth reduction)
+ **Drift Detection** - ETag and Last-Modified tracking
+ **PII Scrubbing** - Mandatory before disk writes
+ **State Management** - Persistent cache
+ **Error Handling** - Retry logic with exponential backoff
  **JSON Dataset Export** - Structured data for ML pipelines
 
 ---
@@ -47,8 +47,8 @@ python -m src.services.crawler.zendesk_sync --pipeline
 ## Architecture
 
 ```
-Zendesk API → Check (Metadata) → Compare Cache → Pull (if changed)
-    → PII Scrubbing → Disk Write → Cache Update → JSON Export
+Zendesk API Check (Metadata) Compare Cache Pull (if changed)
+ PII Scrubbing Disk Write Cache Update JSON Export
 ```
 
 ---
@@ -61,9 +61,9 @@ Edit `configs/services/zendesk_crawler.yaml`:
 sync_mode: incremental
 retries: 3
 monitoring:
-  log_level: INFO
-  alerts:
-    max_failures: 5
+ log_level: INFO
+ alerts:
+ max_failures: 5
 ```
 
 ---
@@ -80,9 +80,9 @@ Tracks article ETags, Last-Modified timestamps, and sync history for incremental
 
 ```
 docs/vendors/zendesk/
-└── YYYY-MM-DD/
-    ├── <section>/<bucket>/*.html
-    └── zendesk_knowledge_dataset.json
+ YYYY-MM-DD/
+ <section>/<bucket>/*.html
+ zendesk_knowledge_dataset.json
 ```
 
 ---
@@ -100,8 +100,8 @@ docs/vendors/zendesk/
 
 PII scrubbing is **mandatory**. All content automatically scrubbed before disk writes.
 
-Detection: Email, phone, credit cards, SSN, API keys  
-Action: Automatic redaction with `[REDACTED]` markers  
+Detection: Email, phone, credit cards, SSN, API keys
+Action: Automatic redaction with `[REDACTED]` markers
 Audit: All detections logged
 
 ---

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/WORKFLOW_AUDIT_SUMMARY/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>GitHub Actions Workflow Audit Report - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2432,11 +2432,11 @@
 <a class="md-nav__link" href="#remediation-strategy">
 <span class="md-ellipsis">
       
-        🛠️ Remediation Strategy
+        Remediation Strategy
       
     </span>
 </a>
-<nav aria-label="🛠️ Remediation Strategy" class="md-nav">
+<nav aria-label="Remediation Strategy" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#phase-1-critical-fix-immediate-4-workflows">
@@ -2521,11 +2521,11 @@
 <a class="md-nav__link" href="#recommendations">
 <span class="md-ellipsis">
       
-        📌 Recommendations
+        Recommendations
       
     </span>
 </a>
-<nav aria-label="📌 Recommendations" class="md-nav">
+<nav aria-label="Recommendations" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#before-starting-cleanup">
@@ -2585,9 +2585,9 @@
 <h1 id="github-actions-workflow-audit-report">GitHub Actions Workflow Audit Report<a class="headerlink" href="#github-actions-workflow-audit-report" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Generated</strong>: Comprehensive audit of all 207 GitHub Actions workflows<br/>
-<strong>Objective</strong>: Identify root-level file references and assess cleanup impact<br/>
-<strong>Status</strong>:  Complete - Ready for remediation planning</p>
+<p><strong>Generated</strong>: Comprehensive audit of all 207 GitHub Actions workflows
+<strong>Objective</strong>: Identify root-level file references and assess cleanup impact
+<strong>Status</strong>: Complete - Ready for remediation planning</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <h3 id="critical-findings">Critical Findings<a class="headerlink" href="#critical-findings" title="Permanent link">¶</a></h3>
@@ -2629,9 +2629,9 @@
 </table>
 <h3 id="key-risk-distribution">Key Risk Distribution<a class="headerlink" href="#key-risk-distribution" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Total Workflows: 207
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├─ CRITICAL: 4 workflows (1.9%)          
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─ HIGH-RISK: 129 workflows (62.3%)      
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└─ SAFE: 74 workflows (35.7%)            
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> CRITICAL: 4 workflows (1.9%) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> HIGH-RISK: 129 workflows (62.3%) 
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> SAFE: 74 workflows (35.7%) 
 </code></pre></div>
 <h3 id="root-file-reference-distribution">Root File Reference Distribution<a class="headerlink" href="#root-file-reference-distribution" title="Permanent link">¶</a></h3>
 <p><strong>Most Referenced Root Files:</strong>
@@ -2653,8 +2653,8 @@
 <li><strong>Issue</strong>: Multiple trigger filters on root files</li>
 <li><strong>References</strong>: <code>pyproject.toml</code>, <code>.github/workflows/</code>, <code>.codex/</code></li>
 <li><strong>Impact</strong>: Workflow won't trigger when setup configuration changes</li>
-<li><strong>Severity</strong>:  CRITICAL</li>
-<li><strong>Action Required</strong>: </li>
+<li><strong>Severity</strong>: CRITICAL</li>
+<li><strong>Action Required</strong>:</li>
 <li>Remove or update <code>on.push.paths</code> filter</li>
 <li>Update environment setup references</li>
 </ul>
@@ -2663,7 +2663,7 @@
 <li><strong>Issue</strong>: Trigger filter on <code>.github/workflows/</code> changes</li>
 <li><strong>References</strong>: <code>.github/workflows/</code></li>
 <li><strong>Impact</strong>: Won't enforce workflow requirements on changes</li>
-<li><strong>Severity</strong>:  CRITICAL</li>
+<li><strong>Severity</strong>: CRITICAL</li>
 <li><strong>Action Required</strong>:</li>
 <li>Update trigger filter to new workflow location</li>
 </ul>
@@ -2672,7 +2672,7 @@
 <li><strong>Issue</strong>: Multiple trigger filters on core directories</li>
 <li><strong>References</strong>: <code>tests/</code>, <code>.codex/</code>, <code>coverage.json</code></li>
 <li><strong>Impact</strong>: Validation won't run on test/infrastructure changes</li>
-<li><strong>Severity</strong>:  CRITICAL</li>
+<li><strong>Severity</strong>: CRITICAL</li>
 <li><strong>Action Required</strong>:</li>
 <li>Update all trigger filters</li>
 <li>Verify artifact paths for coverage reports</li>
@@ -2682,7 +2682,7 @@
 <li><strong>Issue</strong>: Trigger filters on source configuration</li>
 <li><strong>References</strong>: <code>pyproject.toml</code>, <code>.github/workflows/</code>, <code>tests/</code></li>
 <li><strong>Impact</strong>: RAG tests won't trigger on changes</li>
-<li><strong>Severity</strong>:  CRITICAL</li>
+<li><strong>Severity</strong>: CRITICAL</li>
 <li><strong>Action Required</strong>:</li>
 <li>Update trigger filters for new locations</li>
 <li>Update environment setup references</li>
@@ -2694,24 +2694,24 @@
 <p><strong>Pattern 1: Workflow Infrastructure References (89 workflows)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Problem: Hard-coded path to workflows directory</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/**'</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/actions/**'</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/**'</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/actions/**'</span>
 </code></pre></div>
 <strong>Fix</strong>: Update paths if moving workflow files</p>
 <p><strong>Pattern 2: Configuration Dependencies (41 workflows)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Problem: Environment variables or cache keys reference root configs</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="nt">cache-dependency-path</span><span class="p">:</span><span class="w"> </span><span class="s">'pyproject.toml'</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w w-Error"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">cache-dependency-path</span><span class="p">:</span><span class="w"> </span><span class="s">'pyproject.toml'</span>
 </code></pre></div>
 <strong>Fix</strong>: Update to new config file location</p>
 <p><strong>Pattern 3: Test/Artifact References (68 workflows)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Problem: Hard-coded paths to test files or coverage outputs</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage.json</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w w-Error"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage.json</span>
 </code></pre></div>
 <strong>Fix</strong>: Ensure artifact output paths match</p>
 <p><strong>Pattern 4: Dependency Installation (35 workflows)</strong>
@@ -2721,19 +2721,19 @@
 <strong>Fix</strong>: Update paths if moving requirements files</p>
 <h3 id="high-risk-workflows-by-category">High-Risk Workflows by Category<a class="headerlink" href="#high-risk-workflows-by-category" title="Permanent link">¶</a></h3>
 <p><strong>CI Configuration &amp; Workflows (89):</strong>
-actionlint-audit, adaptive-agent-delegation, admin-action-t03, admin_setup_verification, 
-agent-auth-delegation, agent-handoff-gate, agent-orchestration-unified, auto-approve-workflows, 
+actionlint-audit, adaptive-agent-delegation, admin-action-t03, admin_setup_verification,
+agent-auth-delegation, agent-handoff-gate, agent-orchestration-unified, auto-approve-workflows,
 ... (80 more)</p>
 <p><strong>Python Configuration (41):</strong>
-agent_infrastructure_manager, auto-fix-pr-check, benchmarks, build-agent-env-cache, 
+agent_infrastructure_manager, auto-fix-pr-check, benchmarks, build-agent-env-cache,
 build-preview-image, codebase-health-sweep, cognitive-analysis-feed, cognitive-k8s-provisioning,
 ... (33 more)</p>
 <p><strong>Test Dependencies (35):</strong>
-agent-health-check, auth-tests, codebase-health-sweep, code-quality-coverage-suite, 
+agent-health-check, auth-tests, codebase-health-sweep, code-quality-coverage-suite,
 codeql.yml, container-scan.yml, coverage-ratchet, coverage-with-timeout,
 ... (27 more)</p>
 <p><strong>Documentation (18):</strong>
-agent-auth-delegation, app-package-download, api-documentation, docs-health, 
+agent-auth-delegation, app-package-download, api-documentation, docs-health,
 docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-examples,
 ... (10 more)</p>
 <hr/>
@@ -2763,31 +2763,31 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 <hr/>
 <h2 id="detailed-impact-analysis">Detailed Impact Analysis<a class="headerlink" href="#detailed-impact-analysis" title="Permanent link">¶</a></h2>
 <h3 id="file-reference-breakdown">File Reference Breakdown<a class="headerlink" href="#file-reference-breakdown" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>┌─ Configuration Files (96 references)
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>│  ├─ pyproject.toml: 41 workflows
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>│  ├─ setup.py: 14 workflows
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>│  ├─ noxfile.py: 7 workflows
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>│  ├─ mkdocs.yml: 12 workflows
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>│  ├─ Makefile: 8 workflows
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>│  └─ Other: 14 workflows
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>│
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>├─ Infrastructure (215 references)
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>│  ├─ .codex/: 126 workflows
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>│  ├─ .github/workflows/: 89 workflows
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>│  └─ tests/: 68 workflows
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>│
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>├─ Dependencies (35 references)
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>│  ├─ requirements-*.txt: 35 workflows
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>│  └─ Other: 12 workflows
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>│
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>└─ Documentation (18 references)
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>   ├─ README.md: 18 workflows
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>   └─ .github/docs/: 3 workflows
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a> Configuration Files (96 references)
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> pyproject.toml: 41 workflows
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> setup.py: 14 workflows
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> noxfile.py: 7 workflows
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> mkdocs.yml: 12 workflows
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> Makefile: 8 workflows
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> Other: 14 workflows
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> Infrastructure (215 references)
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> .codex/: 126 workflows
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> .github/workflows/: 89 workflows
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> tests/: 68 workflows
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> Dependencies (35 references)
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> requirements-*.txt: 35 workflows
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> Other: 12 workflows
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> Documentation (18 references)
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> README.md: 18 workflows
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> .github/docs/: 3 workflows
 </code></pre></div>
 <h3 id="trigger-filter-analysis">Trigger Filter Analysis<a class="headerlink" href="#trigger-filter-analysis" title="Permanent link">¶</a></h3>
-<p><strong>Workflows using on.push.paths filter:</strong> 87<br/>
-<strong>Workflows using on.pull_request.paths filter:</strong> 56<br/>
-<strong>Workflows using on.pull_request_target.paths filter:</strong> 12  </p>
+<p><strong>Workflows using on.push.paths filter:</strong> 87
+<strong>Workflows using on.pull_request.paths filter:</strong> 56
+<strong>Workflows using on.pull_request_target.paths filter:</strong> 12</p>
 <p><strong>Most Common Path Filters:</strong>
 - <code>.github/workflows/</code> - 89 workflows
 - <code>tests/</code> - 68 workflows
@@ -2795,28 +2795,28 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 - <code>pyproject.toml</code> - 41 workflows
 - <code>requirements-*.txt</code> - 35 workflows</p>
 <hr/>
-<h2 id="remediation-strategy">🛠️ Remediation Strategy<a class="headerlink" href="#remediation-strategy" title="Permanent link">¶</a></h2>
+<h2 id="remediation-strategy">Remediation Strategy<a class="headerlink" href="#remediation-strategy" title="Permanent link">¶</a></h2>
 <h3 id="phase-1-critical-fix-immediate-4-workflows">Phase 1: Critical Fix (Immediate - 4 workflows)<a class="headerlink" href="#phase-1-critical-fix-immediate-4-workflows" title="Permanent link">¶</a></h3>
-<p><strong>Effort</strong>: 30-45 minutes<br/>
+<p><strong>Effort</strong>: 30-45 minutes
 <strong>Complexity</strong>: Low</p>
 <ol>
 <li>
 <p><strong>copilot-setup-steps.yml</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># BEFORE: on.push.paths references root files</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'pyproject.toml'</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/**'</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.codex/**'</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'pyproject.toml'</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/**'</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.codex/**'</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="c1"># AFTER: Update to new locations</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'build/pyproject.toml'</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/**'</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.codex/**'</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'build/pyproject.toml'</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/**'</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.codex/**'</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2864,34 +2864,34 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 <h2 id="cleanup-plan">Cleanup Plan<a class="headerlink" href="#cleanup-plan" title="Permanent link">¶</a></h2>
 <h3 id="recommended-directory-structure">Recommended Directory Structure<a class="headerlink" href="#recommended-directory-structure" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>repository/
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>├─ .github/
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>│  ├─ workflows/        (keep as-is)
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>│  ├─ actions/          (keep as-is)
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>│  └─ docs/             (keep as-is)
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>├─ config/              (NEW: Move config files here)
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>│  ├─ pyproject.toml
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>│  ├─ setup.py
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>│  ├─ setup.cfg
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>│  ├─ pytest.ini
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>│  ├─ mypy.ini
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>│  ├─ .mypy_baseline
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>│  ├─ bandit.yaml
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>│  ├─ mkdocs.yml
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>│  └─ commitlint.config.mjs
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>├─ build/               (NEW: Move build files here)
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>│  ├─ Makefile
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>│  ├─ noxfile.py
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>│  ├─ Dockerfile
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>│  └─ docker-compose.yml
-<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>├─ requirements/        (NEW: Move requirements here)
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>│  ├─ requirements.txt
-<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>│  ├─ requirements-dev.txt
-<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>│  ├─ requirements-test.txt
-<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a>│  └─ ... (other requirements files)
-<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a>├─ docs/                (Keep as-is, update references)
-<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a>├─ tests/               (Keep as-is)
-<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>├─ src/                 (Keep as-is)
-<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a>└─ ... (other directories)
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> .github/
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> workflows/ (keep as-is)
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> actions/ (keep as-is)
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> docs/ (keep as-is)
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> config/ (NEW: Move config files here)
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> pyproject.toml
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> setup.py
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> setup.cfg
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> pytest.ini
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> mypy.ini
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> .mypy_baseline
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> bandit.yaml
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> mkdocs.yml
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> commitlint.config.mjs
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a> build/ (NEW: Move build files here)
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> Makefile
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a> noxfile.py
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> Dockerfile
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> docker-compose.yml
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> requirements/ (NEW: Move requirements here)
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a> requirements.txt
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a> requirements-dev.txt
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a> requirements-test.txt
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a> ... (other requirements files)
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a> docs/ (Keep as-is, update references)
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a> tests/ (Keep as-is)
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a> src/ (Keep as-is)
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a> ... (other directories)
 </code></pre></div>
 <h3 id="workflows-that-need-updating">Workflows That Need Updating<a class="headerlink" href="#workflows-that-need-updating" title="Permanent link">¶</a></h3>
 <p><strong>Must Update (4 CRITICAL + 129 HIGH = 133 total):</strong></p>
@@ -2904,25 +2904,25 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 <p><strong>Example Changes:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># BEFORE</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'pyproject.toml'</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'requirements-dev.txt'</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'tests/**'</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w"> </span><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w"> </span><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'pyproject.toml'</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'requirements-dev.txt'</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'tests/**'</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w">  </span><span class="nt">cache-dependency-path</span><span class="p">:</span><span class="w"> </span><span class="s">'requirements.txt'</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w"> </span><span class="nt">cache-dependency-path</span><span class="p">:</span><span class="w"> </span><span class="s">'requirements.txt'</span>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest --cov=src --cov-report=xml</span>
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="c1"># AFTER</span>
 <a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'config/pyproject.toml'</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'requirements/requirements-dev.txt'</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'tests/**'</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w"> </span><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="w"> </span><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'config/pyproject.toml'</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'requirements/requirements-dev.txt'</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'tests/**'</span>
 <a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="w">  </span><span class="nt">cache-dependency-path</span><span class="p">:</span><span class="w"> </span><span class="s">'requirements/requirements.txt'</span>
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest --cov=src --cov-report=xml</span><span class="w">  </span><span class="c1"># (no change needed - finds cwd automatically)</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="w"> </span><span class="nt">cache-dependency-path</span><span class="p">:</span><span class="w"> </span><span class="s">'requirements/requirements.txt'</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest --cov=src --cov-report=xml</span><span class="w"> </span><span class="c1"># (no change needed - finds cwd automatically)</span>
 </code></pre></div>
 <hr/>
 <h2 id="validation-checklist">Validation Checklist<a class="headerlink" href="#validation-checklist" title="Permanent link">¶</a></h2>
@@ -2976,7 +2976,7 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 </tbody>
 </table>
 <hr/>
-<h2 id="recommendations">📌 Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">¶</a></h2>
+<h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">¶</a></h2>
 <h3 id="before-starting-cleanup">Before Starting Cleanup<a class="headerlink" href="#before-starting-cleanup" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>All 4 CRITICAL workflows must be fixed first</strong></li>
@@ -3007,8 +3007,8 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 <li>
 <p><strong>Test incrementally</strong></p>
 </li>
-<li>Fix critical → test</li>
-<li>Fix high-risk batch → test</li>
+<li>Fix critical test</li>
+<li>Fix high-risk batch test</li>
 <li>
 <p>Verify no regressions</p>
 </li>
@@ -3073,14 +3073,14 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 <li><strong>Estimated 9-11.5 hours</strong> of effort to fix all issues</li>
 <li><strong>Zero fundamental blockers</strong> - cleanup is recommended to proceed</li>
 </ol>
-<p><strong>Recommendation</strong>:  <strong>Proceed with cleanup</strong>
+<p><strong>Recommendation</strong>: <strong>Proceed with cleanup</strong>
 - Fix critical workflows first
 - Update high-risk workflows in batches
 - Verify with comprehensive testing
 - Monitor after deployment</p>
 <hr/>
-<p><strong>Report Generated</strong>: 2025-01-23<br/>
-<strong>Repository</strong>: Aries-Serpent/<em>codex</em><br/>
+<p><strong>Report Generated</strong>: 2025-01-23
+<strong>Repository</strong>: Aries-Serpent/<em>codex</em>
 <strong>Next Steps</strong>: Review critical workflows and schedule remediation</p>
 </article>
 </div>
@@ -3111,6 +3111,6 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

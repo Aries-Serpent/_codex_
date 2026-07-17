@@ -1,6 +1,6 @@
 # D Model Activation Checklist
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -20,7 +20,7 @@ Before starting, confirm all of the following:
 
 - [ ] Genesis Phase 1 complete (template files committed, safety guards active)
 - [ ] Genesis Phase 2 complete (human admin injected secrets, enabled workflows)
-- [ ] `admin_setup_verification.yml` passes with  for all §2–§7 checks
+- [ ] `admin_setup_verification.yml` passes with for all §2–§7 checks
 - [ ] `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` are functional (§3a/§3b green)
 - [ ] GitHub Discussions enabled and accessible (§4 green)
 - [ ] At least one Copilot agent session has completed successfully on PR #3854
@@ -31,7 +31,7 @@ Before starting, confirm all of the following:
 
 ### 1.1 Repository Variables
 
-Verify these repository variables are set (Settings → Secrets and variables → Actions → Variables):
+Verify these repository variables are set (Settings Secrets and variables Actions Variables):
 
 | Variable | Required value | Purpose |
 |----------|---------------|---------|
@@ -126,11 +126,11 @@ gh workflow run "Admin Setup Verification" \
 ```
 
 Verify all checks pass:
-- [ ] `CODEX_MASTER_KEY` read + write: 
-- [ ] `CODEX_BACKUP_KEY` read + write:  (or ️ if optional)
-- [ ] GitHub Discussions: 
-- [ ] Repository variables: 
-- [ ] Follow-up prompt file: 
+- [ ] `CODEX_MASTER_KEY` read + write:
+- [ ] `CODEX_BACKUP_KEY` read + write: (or if optional)
+- [ ] GitHub Discussions:
+- [ ] Repository variables:
+- [ ] Follow-up prompt file:
 
 ## 3.2 Session Health Checks
 
@@ -227,7 +227,7 @@ If autonomous operations need to be paused:
 
 1. Set `COPILOT_AGENT_AUTH_ENABLED` to `false` in repository variables
 2. The `agent-auth-delegation.yml` and `copilot-agent-checkin.yml` missed-trigger guards
-   will immediately stop posting new `@copilot` triggers
+ will immediately stop posting new `@copilot` triggers
 3. Any in-progress session will complete normally
 
 ### Full Rollback (hard stop)

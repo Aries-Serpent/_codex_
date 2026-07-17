@@ -1,37 +1,37 @@
 # Codex Tool Selection Guide
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-> **Purpose**: Prevent wrong tool selection (CODEX-007) causing 45% session waste.  
+> **Purpose**: Prevent wrong tool selection (CODEX-007) causing 45% session waste.
 > **References**: RFC 3881, Git documentation, Bash reference manual
 
 ## Quick Decision Tree
 
 ```text
 START: "I need to create/modify a file"
-  │
-  ├─→ "Is it a NEW file?"
-  │    └─→ YES: Use `cat <<'EOF'` or `echo "..." > file`
-  │    └─→ NO: Continue
-  │
-  ├─→ "Is it a SMALL SINGLE-LINE change?"
-  │    └─→ YES: Use `sed -i 's/old/new/'`
-  │    └─→ NO: Continue
-  │
-  ├─→ "Do I have a FORMAL PATCH with @@ markers?"
-  │    └─→ YES: Validate with `git apply --check`, then use `apply_patch`
-  │    └─→ NO: Continue
-  │
-  ├─→ "Is the file COMPLEX with variables/escapes?"
-  │    └─→ YES: Generate to temp file, then move
-  │    └─→ NO: Continue
-  │
-  ├─→ "Is it a LARGE MULTI-LINE change?"
-  │    └─→ YES: Regenerate entire file with `cat <<'EOF'`
-  │    └─→ NO: Consider `sed` or line-by-line editing
-  │
-  └─→ END: Execute with validation
+ 
+ "Is it a NEW file?"
+ YES: Use `cat <<'EOF'` or `echo "..." > file`
+ NO: Continue
+ 
+ "Is it a SMALL SINGLE-LINE change?"
+ YES: Use `sed -i 's/old/new/'`
+ NO: Continue
+ 
+ "Do I have a FORMAL PATCH with @@ markers?"
+ YES: Validate with `git apply --check`, then use `apply_patch`
+ NO: Continue
+ 
+ "Is the file COMPLEX with variables/escapes?"
+ YES: Generate to temp file, then move
+ NO: Continue
+ 
+ "Is it a LARGE MULTI-LINE change?"
+ YES: Regenerate entire file with `cat <<'EOF'`
+ NO: Consider `sed` or line-by-line editing
+ 
+ END: Execute with validation
 ```text
 ## Tool Comparison Matrix
 
@@ -119,7 +119,7 @@ bash scripts/validate_patch.sh changes.patch
 
 # Apply if valid
 if [[ $? -eq 0 ]]; then
-  git apply changes.patch
+ git apply changes.patch
 fi
 ```text
 
@@ -130,14 +130,14 @@ fi
  **WRONG**: Unquoted delimiter when you want literals
 ```bash
 cat <<EOF > file.json
-{ "var": "$VAR" }  # VAR will expand!
+{ "var": "$VAR" } # VAR will expand!
 EOF
 ```text
 
  **CORRECT**: Quote delimiter for literal
 ```bash
 cat <<'EOF' > file.json
-{ "var": "$VAR" }  # VAR stays literal
+{ "var": "$VAR" } # VAR stays literal
 EOF
 ```text
 
@@ -145,28 +145,28 @@ EOF
 
  **WRONG**: Dollar sign not escaped
 ```bash
-sed -i 's/price/$100/g' file.txt  # $ has special meaning in sed!
+sed -i 's/price/$100/g' file.txt # $ has special meaning in sed!
 ```text
 
  **CORRECT**: Escape or use different delimiter
 ```bash
 sed -i 's/price/\$100/g' file.txt
 # OR
-sed -i 's|price|$100|g' file.txt  # Use | as delimiter
+sed -i 's|price|$100|g' file.txt # Use | as delimiter
 ```text
 
 ## Mistake 3: Not validating complex patches
 
  **WRONG**: Applying patch without checking
 ```bash
-git apply potentially-broken.patch  # may silently fail or corrupt files!
+git apply potentially-broken.patch # may silently fail or corrupt files!
 ```text
 
  **CORRECT**: Dry-run first
 ```bash
-git apply --check potentially-broken.patch  # Dry-run
+git apply --check potentially-broken.patch # Dry-run
 if [[ $? -eq 0 ]]; then
-  git apply potentially-broken.patch
+ git apply potentially-broken.patch
 fi
 ```text
 
@@ -180,6 +180,6 @@ fi
 
 ---
 
-**Last Updated**: 2025-10-30  
-**Author**: Codex Optimization Team  
+**Last Updated**: 2025-10-30
+**Author**: Codex Optimization Team
 **Status**: Reference documentation for preventing CODEX-007

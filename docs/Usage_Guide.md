@@ -1,6 +1,6 @@
-# Usage Guide: Codex ML Offline Workflow (v0.2.1)
+# Usage Guide: Codex ML Offline Workflow (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -35,7 +35,7 @@ trainer) and writes checkpoints plus metrics under
 `artifacts/runs/quickstart/`. Override parameters inline to explore different
 presets without editing YAML.
 
-️ **Prompt safety:** the training profile sanitises embedded datasets by
+ **Prompt safety:** the training profile sanitises embedded datasets by
 default. To inspect raw fixtures set `training.sanitize_prompts=false` on the
 command line.
 

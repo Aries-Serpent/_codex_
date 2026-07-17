@@ -1,6 +1,6 @@
 # [Validation]: Runner status — org/repo inventory and CI routing
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -46,4 +46,4 @@ Expect:
 Troubleshooting
 - 401/403 from API: confirm GH_PAT or _CODEX_BOT_RUNNER environment is set and has repo/org admin + actions variables permissions (the upgraded token does).
 - Still queued: ensure a runner with labels self-hosted,linux is online; verify RUNS_ON value.
-- GHCR push denied: repo Actions → Workflow permissions must allow read/write; packages: write enabled org/repo wide.
+- GHCR push denied: repo Actions Workflow permissions must allow read/write; packages: write enabled org/repo wide.

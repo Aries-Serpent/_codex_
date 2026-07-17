@@ -1,9 +1,9 @@
 # Workflow Consolidation Developer Guide
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-13  
-**Audience:** Developers, DevOps Engineers  
-**Phase:** 3.3 - Phase 3.5 Documentation  
+**Version:** 1.0.0
+**Last Updated:** 2026-07-13
+**Audience:** Developers, DevOps Engineers
+**Phase:** 3.3 - Phase 3.5 Documentation
 
 ---
 
@@ -88,16 +88,16 @@ All scan types available via single interface:
 
 ```yaml
 gh workflow run security-scanning-suite.yml \
-  -f scan-type=<TYPE>
+ -f scan-type=<TYPE>
 
 # Available types:
-# - all              (default, runs all scans)
-# - codeql           (CodeQL analysis only)
-# - dependency       (Dependency scanning only)
-# - semgrep          (SAST analysis only)
-# - cve              (CVE scanning only)
-# - containers       (Container image scanning)
-# - secrets          (Secrets detection only)
+# - all (default, runs all scans)
+# - codeql (CodeQL analysis only)
+# - dependency (Dependency scanning only)
+# - semgrep (SAST analysis only)
+# - cve (CVE scanning only)
+# - containers (Container image scanning)
+# - secrets (Secrets detection only)
 ```
 
 #### Examples
@@ -135,11 +135,11 @@ Results are located the same as before:
 
 | Scan Type | Output Location |
 |-----------|-----------------|
-| CodeQL | GitHub Security tab → Code scanning → CodeQL |
-| Semgrep | GitHub Security tab → Code scanning → Semgrep |
-| Container | GitHub Security tab → Code scanning → Trivy |
+| CodeQL | GitHub Security tab Code scanning CodeQL |
+| Semgrep | GitHub Security tab Code scanning Semgrep |
+| Container | GitHub Security tab Code scanning Trivy |
 | CVE | Artifacts: `cve-scan-results.json` |
-| Secrets | GitHub Security tab → Secret scanning |
+| Secrets | GitHub Security tab Secret scanning |
 | Dependencies | Artifacts: `dependency-scan-results.json` |
 
 #### Artifacts Access
@@ -164,21 +164,21 @@ The following workflows are now consolidated into `optimized-test-execution.yml`
 
 | Old Workflow | New Location | Status |
 |--------------|--------------|--------|
-| `ci-pytest.yml.disabled` | Suite orchestration | ✅ Consolidated |
-| `comprehensive_tests.yml.disabled` | Suite with levels | ✅ Consolidated |
-| `tests.yml.disabled` | Suite basic tests | ✅ Consolidated |
-| `auth-tests.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
-| `ml-tests.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
-| `test-rag.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
-| `rust_swarm_ci.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
+| `ci-pytest.yml.disabled` | Suite orchestration | Consolidated |
+| `comprehensive_tests.yml.disabled` | Suite with levels | Consolidated |
+| `tests.yml.disabled` | Suite basic tests | Consolidated |
+| `auth-tests.yml` | Specialized trigger | Kept (special trigger) |
+| `ml-tests.yml` | Specialized trigger | Kept (special trigger) |
+| `test-rag.yml` | Specialized trigger | Kept (special trigger) |
+| `rust_swarm_ci.yml` | Specialized trigger | Kept (special trigger) |
 
 #### New Features
 
 **1. Workflow Dispatch Input**
 ```yaml
 gh workflow run optimized-test-execution.yml \
-  -f test-type=<TYPE> \
-  -f test-level=<LEVEL>
+ -f test-type=<TYPE> \
+ -f test-level=<LEVEL>
 
 # Test types: all, core, auth, ml, rag, rust
 # Test levels: smoke, full, extended
@@ -198,12 +198,12 @@ gh workflow run optimized-test-execution.yml \
 #### Workflow Triggers
 
 **Automatic Triggers (No Action Needed):**
-- Push to `main` or `develop` branch → Runs all tests
-- Pull request to `main` → Runs all tests
-- Push to `src/codex/auth/**` → Auth tests only
-- Push to `training/**` or `src/**ml**` → ML tests only
-- Push to `src/codex/rag/**` → RAG tests only
-- Push to `.rs` files → Rust tests only
+- Push to `main` or `develop` branch Runs all tests
+- Pull request to `main` Runs all tests
+- Push to `src/codex/auth/**` Auth tests only
+- Push to `training/**` or `src/**ml**` ML tests only
+- Push to `src/codex/rag/**` RAG tests only
+- Push to `.rs` files Rust tests only
 
 **Manual Trigger (Selective Execution):**
 ```bash
@@ -212,8 +212,8 @@ gh workflow run optimized-test-execution.yml -f test-type=ml
 
 # Run with specific level
 gh workflow run optimized-test-execution.yml \
-  -f test-type=core \
-  -f test-level=smoke
+ -f test-type=core \
+ -f test-level=smoke
 
 # Run all tests
 gh workflow run optimized-test-execution.yml -f test-type=all
@@ -223,24 +223,24 @@ gh workflow run optimized-test-execution.yml -f test-type=all
 
 **Core Tests (Always Run)**
 ```
-test-fast:          15 minutes (parallel with others)
-test-integration:   20 minutes (parallel with others)
-test-slow:          20 minutes (parallel with others)
-test-coverage:      20 minutes (after core)
-Total:              ~40 minutes (vs 55 min sequential)
+test-fast: 15 minutes (parallel with others)
+test-integration: 20 minutes (parallel with others)
+test-slow: 20 minutes (parallel with others)
+test-coverage: 20 minutes (after core)
+Total: ~40 minutes (vs 55 min sequential)
 ```
 
 **Specialized Tests (Conditional)**
 ```
-auth-tests:   30 minutes (if src/codex/auth/** changed)
-ml-tests:     45 minutes (2 Python × 3 suites)
-rag-tests:    30 minutes (if src/codex/rag/** changed)
-rust-tests:   45 minutes (if .rs files changed)
+auth-tests: 30 minutes (if src/codex/auth/** changed)
+ml-tests: 45 minutes (2 Python × 3 suites)
+rag-tests: 30 minutes (if src/codex/rag/** changed)
+rust-tests: 45 minutes (if .rs files changed)
 ```
 
 **P19 Shadow Import Check**
 ```
-Pre-flight:   5 minutes (prevents silent failures)
+Pre-flight: 5 minutes (prevents silent failures)
 ```
 
 #### Test Results
@@ -284,29 +284,29 @@ The following workflows are now consolidated into 2 master workflows:
 **1. `deploy-production.yml`**
 ```
 Triggers:
-  - Manual dispatch with environment selection
-  - Tag release (via GitHub Actions)
-  - Scheduled maintenance (configurable)
+ - Manual dispatch with environment selection
+ - Tag release (via GitHub Actions)
+ - Scheduled maintenance (configurable)
 
 Features:
-  - Multi-stage deployment (10% → 50% → 100%)
-  - Pre-deployment health checks
-  - Automated rollback on failure
-  - Cost tracking
+ - Multi-stage deployment (10% 50% 100%)
+ - Pre-deployment health checks
+ - Automated rollback on failure
+ - Cost tracking
 ```
 
 **2. `deploy-staging.yml`**
 ```
 Triggers:
-  - Push to develop/staging branch
-  - Manual dispatch for verification
-  - On-demand validation
+ - Push to develop/staging branch
+ - Manual dispatch for verification
+ - On-demand validation
 
 Features:
-  - Quick deployment for validation
-  - Health verification
-  - Performance baseline
-  - Integration testing
+ - Quick deployment for validation
+ - Health verification
+ - Performance baseline
+ - Integration testing
 ```
 
 #### Workflow Dispatch Options
@@ -314,16 +314,16 @@ Features:
 **Production Deployment**
 ```bash
 gh workflow run deploy-production.yml \
-  -f environment=production \
-  -f version=<SEMVER> \
-  -f canary-percentage=10
+ -f environment=production \
+ -f version=<SEMVER> \
+ -f canary-percentage=10
 ```
 
 **Staging Deployment**
 ```bash
 gh workflow run deploy-staging.yml \
-  -f environment=staging \
-  -f deployment-type=full
+ -f environment=staging \
+ -f deployment-type=full
 ```
 
 #### Health Verification
@@ -368,19 +368,19 @@ cat .codex/WORKFLOW_HEALTH_DASHBOARD.json | jq .
 #### Alert Thresholds
 
 Dashboard alerts on:
-- 🔴 **CRITICAL:** Immediate action needed
-  - Health score < 70%
-  - Success rate < 80%
-  - Compliance < 90%
+- **CRITICAL:** Immediate action needed
+ - Health score < 70%
+ - Success rate < 80%
+ - Compliance < 90%
 
 - 🟡 **WARNING:** Monitor closely
-  - Health score 85-70%
-  - Success rate 90-80%
-  - Any manual approval needed
+ - Health score 85-70%
+ - Success rate 90-80%
+ - Any manual approval needed
 
 - 🟢 **INFO:** Normal operations
-  - All metrics in range
-  - Minor variations acceptable
+ - All metrics in range
+ - Minor variations acceptable
 
 ---
 
@@ -388,11 +388,11 @@ Dashboard alerts on:
 
 ### What Stayed the Same?
 
-✅ **PR Checks** - All scans still run on pull requests  
-✅ **Scheduling** - All original schedules preserved  
-✅ **Artifacts** - Same output patterns and locations  
-✅ **SARIF Uploads** - Code scanning tab unchanged  
-✅ **Lane Metadata** - Traceability contracts maintained  
+ **PR Checks** - All scans still run on pull requests
+ **Scheduling** - All original schedules preserved
+ **Artifacts** - Same output patterns and locations
+ **SARIF Uploads** - Code scanning tab unchanged
+ **Lane Metadata** - Traceability contracts maintained
 
 ### What's Different?
 
@@ -535,12 +535,12 @@ ls -la ./artifacts/
 ```yaml
 # Example: Run security scan in another workflow
 - name: Run Security Scans
-  uses: actions/github-script@v7
-  with:
-    script: |
-      const { execSync } = require('child_process');
-      execSync('gh workflow run security-scanning-suite.yml -f scan-type=all', 
-        { stdio: 'inherit' });
+ uses: actions/github-script@v7
+ with:
+ script: |
+ const { execSync } = require('child_process');
+ execSync('gh workflow run security-scanning-suite.yml -f scan-type=all', 
+ { stdio: 'inherit' });
 ```
 
 ### CI/CD Pipeline Hook
@@ -550,7 +550,7 @@ ls -la ./artifacts/
 # Example: Trigger tests on PR creation
 
 if [ $EVENT_NAME == "pull_request" ]; then
-  gh workflow run optimized-test-execution.yml -f test-type=all
+ gh workflow run optimized-test-execution.yml -f test-type=all
 fi
 ```
 
@@ -590,7 +590,7 @@ cp .github/workflows/archived/*.yml .github/workflows/
 
 # Disable problematic consolidated workflow
 mv .github/workflows/security-scanning-suite.yml \
-   .github/workflows/security-scanning-suite.yml.disabled
+ .github/workflows/security-scanning-suite.yml.disabled
 
 # Commit and notify
 git add .github/workflows/

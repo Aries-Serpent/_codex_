@@ -1,9 +1,9 @@
 # [Prompt]: AfterMath Action Workflow — Copilot Agent Emission Standard
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2026-06-22  
+> **Version**: 1.0.0
+> **Last Updated**: 2026-06-22
 > **Purpose**: Structured session logging for AI-driven lessons learned
 
 ## Objective
@@ -44,126 +44,126 @@ Emit exactly one fenced block labeled `aftermath` with the following YAML struct
 
 ```aftermath
 meta:
-  # Identifiers
-  session_id: "S-PR2671-2025-12-30-1"
-  pr: 2671
-  branch: "copilot/sub-pr-2668-again"
-  run_id: 59168839007
+ # Identifiers
+ session_id: "S-PR2671-2025-12-30-1"
+ pr: 2671
+ branch: "copilot/sub-pr-2668-again"
+ run_id: 59168839007
 
-  # Timestamps (ISO 8601, UTC)
-  started_at: "2025-12-30T08:00:00Z"
-  finished_at: "2025-12-30T08:18:00Z"
+ # Timestamps (ISO 8601, UTC)
+ started_at: "2025-12-30T08:00:00Z"
+ finished_at: "2025-12-30T08:18:00Z"
 
-  # Context (free text or short bullets)
-  context: "Resolve PR review items; implement AfterMath logging; advance Phase 9"
+ # Context (free text or short bullets)
+ context: "Resolve PR review items; implement AfterMath logging; advance Phase 9"
 
 lessons:
-  - title: "Code quality maintenance scripts"
-    context: "PR review identified unused imports and empty except blocks"
-    root_cause: "Initial rapid development without linting validation"
-    fix: "Removed unused imports (json, subprocess, Set); added explanatory comments"
-    evidence:
-      - type: "commit"
-        sha: "b62e012"
-      - type: "pr_review"
-        ref: "3619599169"
-    outcome: "All 4 code quality findings resolved"
+ - title: "Code quality maintenance scripts"
+ context: "PR review identified unused imports and empty except blocks"
+ root_cause: "Initial rapid development without linting validation"
+ fix: "Removed unused imports (json, subprocess, Set); added explanatory comments"
+ evidence:
+ - type: "commit"
+ sha: "b62e012"
+ - type: "pr_review"
+ ref: "3619599169"
+ outcome: "All 4 code quality findings resolved"
 
-  - title: "Systematic documentation alignment"
-    context: "Session required documentation verification across all components"
-    root_cause: "Rapid multi-phase delivery without systematic validation"
-    fix: "Created automated diagram update system; verified all READMEs current"
-    evidence:
-      - type: "commit"
-        sha: "ff3c5e9"
-      - type: "file"
-        path: "scripts/maintenance/update_diagrams.py"
-    outcome: "Documentation alignment system operational"
+ - title: "Systematic documentation alignment"
+ context: "Session required documentation verification across all components"
+ root_cause: "Rapid multi-phase delivery without systematic validation"
+ fix: "Created automated diagram update system; verified all READMEs current"
+ evidence:
+ - type: "commit"
+ sha: "ff3c5e9"
+ - type: "file"
+ path: "scripts/maintenance/update_diagrams.py"
+ outcome: "Documentation alignment system operational"
 
 decisions:
-  - what: "Implement AfterMath logging system"
-    why: "Enable AI agents to learn from session experience and resume from checkpoints"
-    alternatives: ["Manual session summaries", "External logging service"]
-    chosen: "Structured YAML blocks in GitHub outputs"
-    tradeoffs: "Requires agent discipline to emit blocks consistently"
-    outcome: "System designed and implemented"
+ - what: "Implement AfterMath logging system"
+ why: "Enable AI agents to learn from session experience and resume from checkpoints"
+ alternatives: ["Manual session summaries", "External logging service"]
+ chosen: "Structured YAML blocks in GitHub outputs"
+ tradeoffs: "Requires agent discipline to emit blocks consistently"
+ outcome: "System designed and implemented"
 
 metrics:
-  tokens_used: 107199
-  tokens_available: 892801
-  commits: 24
-  files_changed: 45
-  documentation_kb: 212
-  session_duration_minutes: 180
+ tokens_used: 107199
+ tokens_available: 892801
+ commits: 24
+ files_changed: 45
+ documentation_kb: 212
+ session_duration_minutes: 180
 
 quality:
-  tests_passing: true
-  test_count: "1500+"
-  coverage_percent: 72
-  self_review_passes: 5
-  self_review_concerns: 0
-  security_scan_findings: 4
-  security_scan_resolved: 4
+ tests_passing: true
+ test_count: "1500+"
+ coverage_percent: 72
+ self_review_passes: 5
+ self_review_concerns: 0
+ security_scan_findings: 4
+ security_scan_resolved: 4
 
 blockers:
-  - issue: "Unused imports in maintenance scripts"
-    impact: "Code quality warnings"
-    resolution: "Removed unused imports; validated with py_compile"
-    status: "resolved"
+ - issue: "Unused imports in maintenance scripts"
+ impact: "Code quality warnings"
+ resolution: "Removed unused imports; validated with py_compile"
+ status: "resolved"
 
-  - issue: "Empty except block without comment"
-    impact: "CodeQL findings"
-    resolution: "Added explanatory comment for best-effort suggestion logic"
-    status: "resolved"
+ - issue: "Empty except block without comment"
+ impact: "CodeQL findings"
+ resolution: "Added explanatory comment for best-effort suggestion logic"
+ status: "resolved"
 
 next_steps:
-  - task: "Implement AfterMath logging in all future sessions"
-    priority: "high"
-    status: "complete"
+ - task: "Implement AfterMath logging in all future sessions"
+ priority: "high"
+ status: "complete"
 
-  - task: "Phase 9.1: Critical path coverage testing"
-    priority: "high"
-    status: "pending"
-    estimated_effort: "150-200 tests, 2-3 sessions"
+ - task: "Phase 9.1: Critical path coverage testing"
+ priority: "high"
+ status: "pending"
+ estimated_effort: "150-200 tests, 2-3 sessions"
 
-  - task: "Fix 321 broken documentation links"
-    priority: "medium"
-    status: "pending"
-    estimated_effort: "1-2 sessions"
+ - task: "Fix 321 broken documentation links"
+ priority: "medium"
+ status: "pending"
+ estimated_effort: "1-2 sessions"
 
-  - task: "Agent normalization improvements (81% → 95%)"
-    priority: "medium"
-    status: "pending"
-    estimated_effort: "1 session"
+ - task: "Agent normalization improvements (81% 95%)"
+ priority: "medium"
+ status: "pending"
+ estimated_effort: "1 session"
 
 future_research:
-  - topic: "ML-powered pattern detection in lessons learned"
-    rationale: "Automatically identify recurring patterns across sessions for proactive optimization"
-    potential_approach: "Train classifier on lesson root_cause → fix pairs; suggest preemptive solutions"
-    estimated_complexity: "medium"
-    dependencies: ["Sufficient lessons corpus (50+ sessions)", "ML infrastructure"]
-    expected_impact: "Reduce recurring issues by 30-40%"
+ - topic: "ML-powered pattern detection in lessons learned"
+ rationale: "Automatically identify recurring patterns across sessions for proactive optimization"
+ potential_approach: "Train classifier on lesson root_cause fix pairs; suggest preemptive solutions"
+ estimated_complexity: "medium"
+ dependencies: ["Sufficient lessons corpus (50+ sessions)", "ML infrastructure"]
+ expected_impact: "Reduce recurring issues by 30-40%"
 
-  - topic: "Automated test generation from coverage gaps"
-    rationale: "AI generates tests for uncovered code paths based on code analysis"
-    potential_approach: "AST analysis + GPT-4 to generate pytest fixtures and test cases"
-    estimated_complexity: "high"
-    dependencies: ["Coverage data", "Code understanding model", "Test execution sandbox"]
-    expected_impact: "Accelerate coverage improvement 2-3x"
+ - topic: "Automated test generation from coverage gaps"
+ rationale: "AI generates tests for uncovered code paths based on code analysis"
+ potential_approach: "AST analysis + GPT-4 to generate pytest fixtures and test cases"
+ estimated_complexity: "high"
+ dependencies: ["Coverage data", "Code understanding model", "Test execution sandbox"]
+ expected_impact: "Accelerate coverage improvement 2-3x"
 
-  - topic: "Session checkpoint resume with context injection"
-    rationale: "Resume interrupted sessions with full context from checkpoint data"
-    potential_approach: "Load checkpoint YAML, inject into system prompt with phase status"
-    estimated_complexity: "low"
-    dependencies: ["Checkpoint storage", "Prompt engineering"]
-    expected_impact: "Enable seamless multi-session workflows"
+ - topic: "Session checkpoint resume with context injection"
+ rationale: "Resume interrupted sessions with full context from checkpoint data"
+ potential_approach: "Load checkpoint YAML, inject into system prompt with phase status"
+ estimated_complexity: "low"
+ dependencies: ["Checkpoint storage", "Prompt engineering"]
+ expected_impact: "Enable seamless multi-session workflows"
 
-  - topic: "Cognitive brain predictive analytics"
-    rationale: "Predict blockers and estimate effort based on historical patterns"
-    potential_approach: "Time series analysis on metrics + blocker history"
-    estimated_complexity: "medium"
-    dependencies: ["Historical aftermath data", "Analytics framework"]
-    expected_impact: "Improve planning accuracy 20-30%"
+ - topic: "Cognitive brain predictive analytics"
+ rationale: "Predict blockers and estimate effort based on historical patterns"
+ potential_approach: "Time series analysis on metrics + blocker history"
+ estimated_complexity: "medium"
+ dependencies: ["Historical aftermath data", "Analytics framework"]
+ expected_impact: "Improve planning accuracy 20-30%"
 
 status: "complete"
 phases_complete: ["6", "7", "8"]
@@ -202,9 +202,9 @@ The AfterMath Action Workflow will:
 2. Extract `aftermath` blocks or inline tags
 3. Validate schema completeness
 4. Generate durable artifacts:
-   - `lessons_learned.md` (cumulative)
-   - `session_metrics.json` (time series)
-   - `checkpoint_state.yaml` (resume data)
+ - `lessons_learned.md` (cumulative)
+ - `session_metrics.json` (time series)
+ - `checkpoint_state.yaml` (resume data)
 5. Update cognitive brain with findings
 
 ## Integration Requirements
@@ -214,8 +214,8 @@ The AfterMath Action Workflow will:
 1. **Start of Session**: Load previous checkpoints if available
 2. **During Session**: Track decisions, lessons, metrics
 3. **End of Session**: Emit aftermath block to:
-   - `$GITHUB_STEP_SUMMARY` (workflows)
-   - Final PR comment (PRs)
+ - `$GITHUB_STEP_SUMMARY` (workflows)
+ - Final PR comment (PRs)
 4. **Continuation**: Reference previous session_id for continuity
 
 ### For Repository Maintainers
@@ -232,41 +232,41 @@ The AfterMath Action Workflow will:
 name: AfterMath Lessons Learned
 
 on:
-  pull_request:
-    types: [closed]
-  workflow_run:
-    workflows: ["*"]
-    types: [completed]
+ pull_request:
+ types: [closed]
+ workflow_run:
+ workflows: ["*"]
+ types: [completed]
 
 jobs:
-  capture:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Parse AfterMath Blocks
-        run: |
-          python scripts/aftermath/parse_session.py \
-            --source=$GITHUB_STEP_SUMMARY \
-            --output=.codex/lessons_learned/
-      - name: Update Cognitive Brain
-        run: |
-          python scripts/aftermath/update_cognitive_brain.py \
-            --lessons=.codex/lessons_learned/ \
-            --dashboard=docs/system/CODEBASE_DASHBOARD.md
-      - uses: actions/upload-artifact@v4
-        with:
-          name: aftermath-artifacts
-          path: .codex/lessons_learned/
+ capture:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Parse AfterMath Blocks
+ run: |
+ python scripts/aftermath/parse_session.py \
+ --source=$GITHUB_STEP_SUMMARY \
+ --output=.codex/lessons_learned/
+ - name: Update Cognitive Brain
+ run: |
+ python scripts/aftermath/update_cognitive_brain.py \
+ --lessons=.codex/lessons_learned/ \
+ --dashboard=docs/system/CODEBASE_DASHBOARD.md
+ - uses: actions/upload-artifact@v4
+ with:
+ name: aftermath-artifacts
+ path: .codex/lessons_learned/
 ```
 
 ## Success Criteria
 
--  Aftermath blocks emitted in every session
--  Lessons learned cumulative file updated
--  Metrics tracking operational
--  Checkpoint resume tested and working
--  Cognitive brain integration complete
--  All future Copilot sessions adopt standard
+- Aftermath blocks emitted in every session
+- Lessons learned cumulative file updated
+- Metrics tracking operational
+- Checkpoint resume tested and working
+- Cognitive brain integration complete
+- All future Copilot sessions adopt standard
 
 ## Best Practices
 

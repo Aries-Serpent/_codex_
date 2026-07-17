@@ -1,6 +1,6 @@
 # Research Note 06 — Condensed Understanding
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -41,22 +41,39 @@ H_sa = C_aΘΦ_context − μF + Ω_obs
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CpT: heat capacity times temperature, Specific enthalpy approximation'}}%%
+
 flowchart LR
+
     CpT[CpT: heat capacity times temperature] --> Enthalpy[Specific enthalpy approximation]
+
     Enthalpy --> Analogy[Security/access enthalpy]
+
     Analogy --> Capacity[Access capacity C_a]
+
     Analogy --> Threat[Threat temperature Theta]
+
     Analogy --> Context[Context multiplier Phi]
+
     Analogy --> Friction[Friction mu F]
+
     Analogy --> Observability[Observability Omega]
+
     Capacity --> Balance[Counter-balance]
+
     Threat --> Balance
+
     Context --> Balance
+
     Friction --> Balance
+
     Observability --> Balance
+
     Balance --> Outcome{Outcome}
+
     Outcome --> Allow[Allow safely]
+
     Outcome --> Scope[Scope/JIT/step-up]
+
     Outcome --> Deny[Deny or redesign]
 ```
 

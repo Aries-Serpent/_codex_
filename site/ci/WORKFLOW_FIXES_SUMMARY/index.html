@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/WORKFLOW_FIXES_SUMMARY/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Workflow Failure Analysis and Fix Summary - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2322,7 +2322,7 @@
 <a class="md-nav__link" href="#1-security-scanyml-22-78-lines">
 <span class="md-ellipsis">
       
-        1. security-scan.yml (22 → 78 lines)
+        1. security-scan.yml (22 78 lines)
       
     </span>
 </a>
@@ -2334,17 +2334,17 @@
 <a class="md-nav__link" href="#2-determinismyml-25-118-lines">
 <span class="md-ellipsis">
       
-        2. determinism.yml (25 → 118 lines)
+        2. determinism.yml (25 118 lines)
       
     </span>
 </a>
-<nav aria-label="2. determinism.yml (25 → 118 lines)" class="md-nav">
+<nav aria-label="2. determinism.yml (25 118 lines)" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#3-semgrep_sarifyml-42-134-lines">
 <span class="md-ellipsis">
       
-        3. semgrep_sarif.yml (42 → 134 lines)
+        3. semgrep_sarif.yml (42 134 lines)
       
     </span>
 </a>
@@ -2563,21 +2563,21 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Branch:</strong> <code>copilot/sub-pr-2782-again</code><br/>
+<p><strong>Branch:</strong> <code>copilot/sub-pr-2782-again</code>
 <strong>Date:2026-07-13
-</strong>Agent:** CI Testing Agent  </p>
+</strong>Agent:** CI Testing Agent</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>All 6 workflow failures on branch <code>copilot/sub-pr-2782-again</code> have been analyzed and <strong>3 critical workflow files have been fixed</strong>. The workflows were showing <code>action_required</code> status because they were truncated/incomplete - containing only setup steps without actual job logic.</p>
 <h2 id="problem-analysis">Problem Analysis<a class="headerlink" href="#problem-analysis" title="Permanent link">¶</a></h2>
 <h3 id="failed-workflow-runs">Failed Workflow Runs<a class="headerlink" href="#failed-workflow-runs" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Rust-Python Hybrid Swarm CI/CD</strong> (run 20887503560) - ️ Complete, needs approval</li>
-<li><strong>RAG Module Tests</strong> (run 20887503563) - ️ Complete, needs approval</li>
-<li><strong>Security Scan</strong> (run 20887503569) -  INCOMPLETE (FIXED)</li>
-<li><strong>Determinism &amp; Audit Validation</strong> (run 20887503950) -  INCOMPLETE (FIXED)</li>
-<li><strong>Semgrep SAST</strong> (run 20887503932) -  INCOMPLETE (FIXED)</li>
-<li><strong>Documentation Link Checker</strong> (run 20887503938) - ️ Complete, needs approval</li>
+<li><strong>Rust-Python Hybrid Swarm CI/CD</strong> (run 20887503560) - Complete, needs approval</li>
+<li><strong>RAG Module Tests</strong> (run 20887503563) - Complete, needs approval</li>
+<li><strong>Security Scan</strong> (run 20887503569) - INCOMPLETE (FIXED)</li>
+<li><strong>Determinism &amp; Audit Validation</strong> (run 20887503950) - INCOMPLETE (FIXED)</li>
+<li><strong>Semgrep SAST</strong> (run 20887503932) - INCOMPLETE (FIXED)</li>
+<li><strong>Documentation Link Checker</strong> (run 20887503938) - Complete, needs approval</li>
 </ol>
 <h3 id="root-cause">Root Cause<a class="headerlink" href="#root-cause" title="Permanent link">¶</a></h3>
 <p><strong>3 workflows were truncated/incomplete:</strong>
@@ -2591,7 +2591,7 @@
 - Repository security setting, not a defect</p>
 <hr/>
 <h2 id="fixes-applied">Fixes Applied<a class="headerlink" href="#fixes-applied" title="Permanent link">¶</a></h2>
-<h3 id="1-security-scanyml-22-78-lines">1.  security-scan.yml (22 → 78 lines)<a class="headerlink" href="#1-security-scanyml-22-78-lines" title="Permanent link">¶</a></h3>
+<h3 id="1-security-scanyml-22-78-lines">1. security-scan.yml (22 78 lines)<a class="headerlink" href="#1-security-scanyml-22-78-lines" title="Permanent link">¶</a></h3>
 <p><strong>Added comprehensive security scanning:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Bandit static security analysis for Python code</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Safety check for known vulnerabilities in dependencies</span>
@@ -2612,7 +2612,7 @@
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># - pip-audit-report.json/txt</span>
 </code></pre></div></p>
 <hr/>
-<h2 id="2-determinismyml-25-118-lines">2.  determinism.yml (25 → 118 lines)<a class="headerlink" href="#2-determinismyml-25-118-lines" title="Permanent link">¶</a></h2>
+<h2 id="2-determinismyml-25-118-lines">2. determinism.yml (25 118 lines)<a class="headerlink" href="#2-determinismyml-25-118-lines" title="Permanent link">¶</a></h2>
 <p><strong>Added determinism and audit validation:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Audit pipeline determinism testing (runs pipeline twice, compares outputs)</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Random seed usage detection in codebase</span>
@@ -2621,20 +2621,20 @@
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Comprehensive determinism report generation</span>
 </code></pre></div></p>
 <p><strong>Validation Checks:</strong>
--  Ensures reproducible results by comparing dual runs
--  Identifies non-deterministic code patterns (unseeded random)
--  Detects problematic timestamp usage
--  Validates audit logging coverage (warns if &lt;10 references)</p>
+- Ensures reproducible results by comparing dual runs
+- Identifies non-deterministic code patterns (unseeded random)
+- Detects problematic timestamp usage
+- Validates audit logging coverage (warns if &lt;10 references)</p>
 <p><strong>Report Output:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="gh"># Determinism &amp; Audit Validation Report</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="gu">## Checks Performed</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="k">1.</span>  Audit pipeline determinism
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">2.</span>  Random seed usage
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">3.</span>  Timestamp dependencies
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">4.</span>  Audit trail coverage
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="k">1.</span> Audit pipeline determinism
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">2.</span> Random seed usage
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">3.</span> Timestamp dependencies
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">4.</span> Audit trail coverage
 </code></pre></div></p>
 <hr/>
-<h3 id="3-semgrep_sarifyml-42-134-lines">3.  semgrep_sarif.yml (42 → 134 lines)<a class="headerlink" href="#3-semgrep_sarifyml-42-134-lines" title="Permanent link">¶</a></h3>
+<h3 id="3-semgrep_sarifyml-42-134-lines">3. semgrep_sarif.yml (42 134 lines)<a class="headerlink" href="#3-semgrep_sarifyml-42-134-lines" title="Permanent link">¶</a></h3>
 <p><strong>Added Semgrep SAST scanning with GitHub Security integration:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Multi-ruleset scanning (auto, security-audit, Python-specific)</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SARIF format output for GitHub Security tab</span>
@@ -2648,17 +2648,17 @@
 - Preserves detailed reports as artifacts (30-day retention)
 - Non-blocking to allow gradual rollout</p>
 <p><strong>GitHub Integration:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github/codeql-action/upload-sarif@v3</span><span class="w">  </span><span class="c1"># Security tab integration</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v7</span><span class="w">              </span><span class="c1"># PR comments</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github/codeql-action/upload-sarif@v3</span><span class="w"> </span><span class="c1"># Security tab integration</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v7</span><span class="w"> </span><span class="c1"># PR comments</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="validation-results">Validation Results<a class="headerlink" href="#validation-results" title="Permanent link">¶</a></h2>
 <p>All workflows validated with Python YAML parser:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a> security-scan.yml       - Valid YAML (78 lines)
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> determinism.yml         - Valid YAML (118 lines)
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> semgrep_sarif.yml       - Valid YAML (134 lines)
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> rust_swarm_ci.yml       - Valid YAML (268 lines, already complete)
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> test-rag.yml            - Valid YAML (118 lines, already complete)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a> security-scan.yml - Valid YAML (78 lines)
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> determinism.yml - Valid YAML (118 lines)
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> semgrep_sarif.yml - Valid YAML (134 lines)
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> rust_swarm_ci.yml - Valid YAML (268 lines, already complete)
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> test-rag.yml - Valid YAML (118 lines, already complete)
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> documentation-link-checker.yml - Valid YAML (195 lines, already complete)
 </code></pre></div></p>
 <p><strong>No syntax errors detected.</strong></p>
@@ -2670,9 +2670,9 @@
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>Deletions:<span class="w"> </span>-3
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>Modified<span class="w"> </span>files:
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">  </span>-<span class="w"> </span>.github/workflows/security-scan.yml
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">  </span>-<span class="w"> </span>.github/workflows/determinism.yml
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">  </span>-<span class="w"> </span>.github/workflows/semgrep_sarif.yml
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span>-<span class="w"> </span>.github/workflows/security-scan.yml
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span>-<span class="w"> </span>.github/workflows/determinism.yml
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span>-<span class="w"> </span>.github/workflows/semgrep_sarif.yml
 </code></pre></div>
 <hr/>
 <h2 id="next-steps-required">Next Steps Required<a class="headerlink" href="#next-steps-required" title="Permanent link">¶</a></h2>
@@ -2680,7 +2680,7 @@
 <ol>
 <li>
 <p><strong>Push the commit</strong> (requires GitHub authentication):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>/home/runner/work/_codex_/_codex_
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>/home/runner/work/_codex_/_codex_
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>copilot/sub-pr-2782-again
 </code></pre></div></p>
 </li>
@@ -2698,7 +2698,7 @@
 <p>Once workflows run successfully:</p>
 <ol>
 <li><strong>security-scan.yml</strong>:</li>
-<li>Check Actions → Artifacts for security-reports</li>
+<li>Check Actions Artifacts for security-reports</li>
 <li>Review bandit-report.txt for findings</li>
 <li>Check safety-report.txt for CVEs</li>
 <li>
@@ -2715,7 +2715,7 @@
 <li>
 <p><strong>semgrep_sarif.yml</strong>:</p>
 </li>
-<li>Go to Security → Code scanning</li>
+<li>Go to Security Code scanning</li>
 <li>Verify Semgrep results appear in security tab</li>
 <li>Check PR for automated comment with findings</li>
 <li>
@@ -2747,12 +2747,12 @@
 <hr/>
 <h2 id="risk-assessment">Risk Assessment<a class="headerlink" href="#risk-assessment" title="Permanent link">¶</a></h2>
 <h3 id="low-risk-changes">Low Risk Changes<a class="headerlink" href="#low-risk-changes" title="Permanent link">¶</a></h3>
-<p>Only affects previously non-functional workflows<br/>
- No changes to working workflows<br/>
- Standard security scanning patterns<br/>
- Comprehensive error handling with <code>|| true</code><br/>
- Non-blocking scans (won't fail CI)<br/>
- Reports generated as artifacts for review  </p>
+<p>Only affects previously non-functional workflows
+ No changes to working workflows
+ Standard security scanning patterns
+ Comprehensive error handling with <code>|| true</code>
+ Non-blocking scans (won't fail CI)
+ Reports generated as artifacts for review</p>
 <h3 id="mitigation-strategies">Mitigation Strategies<a class="headerlink" href="#mitigation-strategies" title="Permanent link">¶</a></h3>
 <ul>
 <li>All security scans allow failures initially</li>
@@ -2764,7 +2764,7 @@
 <h2 id="expected-workflow-behavior">Expected Workflow Behavior<a class="headerlink" href="#expected-workflow-behavior" title="Permanent link">¶</a></h2>
 <h3 id="first-run-after-push">First Run (After Push)<a class="headerlink" href="#first-run-after-push" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a> Workflows triggered automatically
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>️  May require manual approval in GitHub UI
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> May require manual approval in GitHub UI
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> Security scans execute and generate reports
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> Determinism checks run audit validations
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> SARIF results upload to Security tab
@@ -2779,7 +2779,7 @@
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="if-workflows-still-show-action_required">If workflows still show "action_required":<a class="headerlink" href="#if-workflows-still-show-action_required" title="Permanent link">¶</a></h3>
 <ol>
-<li>Check repository Settings → Actions → General</li>
+<li>Check repository Settings Actions General</li>
 <li>Look for "Require approval for all outside collaborators"</li>
 <li>Approve workflows manually in Actions tab</li>
 <li>This is expected for first-time workflows on new branch patterns</li>
@@ -2823,33 +2823,33 @@
 <h3 id="before-truncated">Before (Truncated)<a class="headerlink" href="#before-truncated" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># security-scan.yml - 22 lines</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/setup-python-cached</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w">    </span><span class="c1"># ... TRUNCATED - no actual scanning</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/setup-python-cached</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w"> </span><span class="c1"># ... TRUNCATED - no actual scanning</span>
 </code></pre></div>
 <h2 id="after-complete">After (Complete)<a class="headerlink" href="#after-complete" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># security-scan.yml - 78 lines</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/setup-python-cached</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e ".[dev,test]"</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Bandit security scan</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bandit -r src/ ...</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Safety check</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">safety check ...</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run pip-audit</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip-audit ...</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload security reports</span>
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check for critical vulnerabilities</span>
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="c1"># Check severity and report</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/setup-python-cached</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e ".[dev,test]"</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Bandit security scan</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bandit -r src/ ...</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Safety check</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">safety check ...</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run pip-audit</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip-audit ...</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload security reports</span>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check for critical vulnerabilities</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="c1"># Check severity and report</span>
 </code></pre></div>
 <hr/>
-<p><strong>Status</strong>:  FIXES READY - Awaiting push and workflow approval<br/>
-<strong>Impact</strong>: HIGH - Unblocks production readiness<br/>
+<p><strong>Status</strong>: FIXES READY - Awaiting push and workflow approval
+<strong>Impact</strong>: HIGH - Unblocks production readiness
 <strong>Priority</strong>: CRITICAL</p>
 </article>
 </div>
@@ -2880,6 +2880,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

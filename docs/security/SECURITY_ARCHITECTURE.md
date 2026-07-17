@@ -1,10 +1,10 @@
 # Security Architecture
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
-**Status**: Production-Ready  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.0
+**Status**: Production-Ready
 **CVEs Fixed**: 48
 
 ---
@@ -13,115 +13,132 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Security Architecture<br/>Authentication + Authorization + Scanning + Encryption'}, 'theme': 'base'}}%%
+
 graph TB
-    subgraph "Authentication & Authorization"
-        OAuth["🔓 OAuth2/GitHub<br/>• GitHub login<br/>• Token exchange<br/>• Session creation"]
-        JWT["🎫 JWT Tokens<br/>• Token generation<br/>• Signature validation<br/>• Expiry management"]
-        MFA[" Multi-Factor Auth<br/>• TOTP support<br/>• Backup codes<br/>• Recovery flows"]
-        RBAC[" Role-Based Access<br/>• User roles (admin, user)<br/>• Permission checks<br/>• Policy enforcement"]
-    end
+ subgraph "Authentication & Authorization"
+ OAuth[" OAuth2/GitHub<br/>• GitHub login<br/>• Token exchange<br/>• Session creation"]
+ JWT[" JWT Tokens<br/>• Token generation<br/>• Signature validation<br/>• Expiry management"]
+ MFA[" Multi-Factor Auth<br/>• TOTP support<br/>• Backup codes<br/>• Recovery flows"]
+ RBAC[" Role-Based Access<br/>• User roles (admin, user)<br/>• Permission checks<br/>• Policy enforcement"]
+ end
 
-    subgraph "Secret Management"
-        SecStore["🗝️ Secret Storage<br/>• Environment vars<br/>• .env files<br/>• Vault integration"]
-        SecRotate[" Rotation<br/>• Automated rotation<br/>• Scheduled updates<br/>• Audit logging"]
-        SecAccess[" Access Control<br/>• Who accessed what<br/>• When & why<br/>• Audit trail"]
-    end
+ subgraph "Secret Management"
+ SecStore[" Secret Storage<br/>• Environment vars<br/>• .env files<br/>• Vault integration"]
+ SecRotate[" Rotation<br/>• Automated rotation<br/>• Scheduled updates<br/>• Audit logging"]
+ SecAccess[" Access Control<br/>• Who accessed what<br/>• When & why<br/>• Audit trail"]
+ end
 
-    subgraph "Code Scanning & Analysis"
-        Static["🔎 Static Analysis<br/>• Semgrep rules<br/>• CodeQL queries<br/>• Custom patterns"]
-        Bandit[" Bandit/Safety<br/>• Security linting<br/>• Dep vulnerabilities<br/>• Best practices"]
-        SAST[" SAST Engine<br/>• Flow analysis<br/>• Taint tracking<br/>• Risk scoring"]
-        Secrets[" Secrets Detection<br/>• Committed secrets<br/>• API keys found<br/>• Credential exposure"]
-    end
+ subgraph "Code Scanning & Analysis"
+ Static[" Static Analysis<br/>• Semgrep rules<br/>• CodeQL queries<br/>• Custom patterns"]
+ Bandit[" Bandit/Safety<br/>• Security linting<br/>• Dep vulnerabilities<br/>• Best practices"]
+ SAST[" SAST Engine<br/>• Flow analysis<br/>• Taint tracking<br/>• Risk scoring"]
+ Secrets[" Secrets Detection<br/>• Committed secrets<br/>• API keys found<br/>• Credential exposure"]
+ end
 
-    subgraph "Encryption & Transport"
-        TLS[" TLS/HTTPS<br/>• End-to-end encryption<br/>• Certificate pinning<br/>• Strong ciphers"]
-        DataEnc["💾 Data Encryption<br/>• At-rest encryption<br/>• Key derivation<br/>• Algorithm: AES-256"]
-        Transit["📦 Transit Encryption<br/>• In-flight protection<br/>• Signed messages<br/>• Integrity checks"]
-    end
+ subgraph "Encryption & Transport"
+ TLS[" TLS/HTTPS<br/>• End-to-end encryption<br/>• Certificate pinning<br/>• Strong ciphers"]
+ DataEnc[" Data Encryption<br/>• At-rest encryption<br/>• Key derivation<br/>• Algorithm: AES-256"]
+ Transit[" Transit Encryption<br/>• In-flight protection<br/>• Signed messages<br/>• Integrity checks"]
+ end
 
-    subgraph "Monitoring & Detection"
-        AnomalyDetect[" Anomaly Detection<br/>• Unusual logins<br/>• Permission escalation<br/>• Data exfiltration"]
-        RateLimit["⏱️ Rate Limiting<br/>• Per-user limits<br/>• Per-endpoint limits<br/>• DDoS protection"]
-        AuditLog[" Audit Logging<br/>• All actions logged<br/>• Immutable records<br/>• Retention policy"]
-        Alerts["️ Security Alerts<br/>• Real-time alerts<br/>• Escalation chain<br/>• Incident response"]
-    end
+ subgraph "Monitoring & Detection"
+ AnomalyDetect[" Anomaly Detection<br/>• Unusual logins<br/>• Permission escalation<br/>• Data exfiltration"]
+ RateLimit[" Rate Limiting<br/>• Per-user limits<br/>• Per-endpoint limits<br/>• DDoS protection"]
+ AuditLog[" Audit Logging<br/>• All actions logged<br/>• Immutable records<br/>• Retention policy"]
+ Alerts[" Security Alerts<br/>• Real-time alerts<br/>• Escalation chain<br/>• Incident response"]
+ end
 
-    subgraph "Request Processing"
-        Incoming["📥 Incoming Request<br/>HTTPS"]
-        Input[" Input Validation<br/>• Type checking<br/>• Length limits<br/>• Sanitization"]
-        Auth[" Authentication<br/>• Verify token<br/>• Check signature<br/>• Validate expiry"]
-        AuthZ[" Authorization<br/>• Check permissions<br/>• Verify RBAC<br/>• Policy eval"]
-        Process[" Process Request<br/>Application logic"]
-        Output["📤 Output Encoding<br/>• Context-aware<br/>• Sanitization<br/>• Safe formatting"]
-    end
+ subgraph "Request Processing"
+ Incoming[" Incoming Request<br/>HTTPS"]
+ Input[" Input Validation<br/>• Type checking<br/>• Length limits<br/>• Sanitization"]
+ Auth[" Authentication<br/>• Verify token<br/>• Check signature<br/>• Validate expiry"]
+ AuthZ[" Authorization<br/>• Check permissions<br/>• Verify RBAC<br/>• Policy eval"]
+ Process[" Process Request<br/>Application logic"]
+ Output[" Output Encoding<br/>• Context-aware<br/>• Sanitization<br/>• Safe formatting"]
+ end
 
-    %% Request flow
-    Incoming --> Input
-    Input --> Auth
-    Auth --> AuthZ
-    AuthZ -->|" Allowed"| Process
-    AuthZ -->|" Denied"| Denied["Return 403<br/>Forbidden"]
-    Process --> Output
-    Output --> Response["📥 Response<br/>HTTPS"]
+ %% Request flow
+ Incoming --> Input
 
-    %% Security checks feeding into request processing
-    OAuth --> Auth
-    JWT --> Auth
-    MFA --> Auth
-    RBAC --> AuthZ
+ Input --> Auth
 
-    SecStore --> Auth
-    SecRotate -.audit.-> SecAccess
-    SecAccess --> AuditLog
+ Auth --> AuthZ
 
-    Static --> Input
-    Bandit --> Input
-    SAST --> Input
-    Secrets --> AuditLog
+ AuthZ -->|" Allowed"| Process
 
-    TLS --> Incoming
-    TLS --> Response
-    DataEnc -.protects.-> SecStore
-    Transit -.protects.-> Incoming
-    Transit -.protects.-> Response
+ AuthZ -->|" Denied"| Denied["Return 403<br/>Forbidden"]
 
-    AnomalyDetect --> Alerts
-    RateLimit --> Input
-    AuditLog --> Alerts
+ Process --> Output
 
-    %% Styling
-    style OAuth fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style JWT fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style MFA fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style RBAC fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ Output --> Response[" Response<br/>HTTPS"]
 
-    style SecStore fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
-    style SecRotate fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
-    style SecAccess fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+ %% Security checks feeding into request processing
+ OAuth --> Auth
 
-    style Static fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
-    style Bandit fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
-    style SAST fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
-    style Secrets fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+ JWT --> Auth
 
-    style TLS fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
-    style DataEnc fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
-    style Transit fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+ MFA --> Auth
 
-    style AnomalyDetect fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
-    style RateLimit fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
-    style AuditLog fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
-    style Alerts fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+ RBAC --> AuthZ
 
-    style Incoming fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style Input fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style Auth fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style AuthZ fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style Process fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style Output fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style Response fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
-    style Denied fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#000
+ SecStore --> Auth
+ SecRotate -.audit.-> SecAccess
+
+ SecAccess --> AuditLog
+
+ Static --> Input
+
+ Bandit --> Input
+
+ SAST --> Input
+
+ Secrets --> AuditLog
+
+ TLS --> Incoming
+
+ TLS --> Response
+ DataEnc -.protects.-> SecStore
+ Transit -.protects.-> Incoming
+ Transit -.protects.-> Response
+
+ AnomalyDetect --> Alerts
+
+ RateLimit --> Input
+
+ AuditLog --> Alerts
+
+ %% Styling
+ style OAuth fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style JWT fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style MFA fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style RBAC fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+
+ style SecStore fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+ style SecRotate fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+ style SecAccess fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+
+ style Static fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+ style Bandit fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+ style SAST fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+ style Secrets fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+
+ style TLS fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+ style DataEnc fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+ style Transit fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+
+ style AnomalyDetect fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+ style RateLimit fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+ style AuditLog fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+ style Alerts fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+
+ style Incoming fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style Input fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style Auth fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style AuthZ fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style Process fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style Output fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style Response fill:#dbeafe,stroke:#0284c7,stroke-width:2px,color:#000
+ style Denied fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#000
 ```
 
 ---
@@ -179,39 +196,39 @@ graph TB
 
 ```
 1. Incoming HTTPS Request (TLS 1.3)
-   ↓
+ 
 2. Input Validation & Sanitization
-   • Type checking
-   • Length limits
-   • Format validation
-   ↓
+ • Type checking
+ • Length limits
+ • Format validation
+ 
 3. Authentication
-   • Extract JWT token
-   • Verify signature
-   • Check expiry
-   • Rate limit check
-   ↓
+ • Extract JWT token
+ • Verify signature
+ • Check expiry
+ • Rate limit check
+ 
 4. Authorization
-   • Check user role
-   • Verify permissions
-   • Enforce RBAC policy
-   ↓
+ • Check user role
+ • Verify permissions
+ • Enforce RBAC policy
+ 
 5. Anomaly Detection
-   • Check for suspicious patterns
-   • Validate request context
-   ↓
+ • Check for suspicious patterns
+ • Validate request context
+ 
 6. Process Request
-   • Execute application logic
-   • Log activity
-   ↓
+ • Execute application logic
+ • Log activity
+ 
 7. Output Encoding
-   • Context-aware escaping
-   • Safe serialization
-   ↓
+ • Context-aware escaping
+ • Safe serialization
+ 
 8. Response (TLS 1.3)
-   • Encrypt response
-   • Sign if needed
-   • Send over HTTPS
+ • Encrypt response
+ • Sign if needed
+ • Send over HTTPS
 ```
 
 ---
@@ -222,22 +239,29 @@ graph TB
 
 ```mermaid
 graph LR
-    Discover[" Discover CVE"] -->|"Alert"| Assess[" Assess<br/>Severity: High"]
-    Assess --> Patch[" Create Patch"]
-    Patch --> Test[" Test Fix"]
-    Test --> Review["👀 Code Review"]
-    Review --> Merge[" Merge"]
-    Merge --> Deploy[" Deploy"]
-    Deploy --> Verify["✔️ Verify<br/>Fixed"]
 
-    style Discover fill:#f59e0b,stroke:#d97706,stroke-width:2px
-    style Assess fill:#f59e0b,stroke:#d97706,stroke-width:2px
-    style Patch fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
-    style Test fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style Review fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style Merge fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style Deploy fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-    style Verify fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ Discover[" Discover CVE"] -->|"Alert"| Assess[" Assess<br/>Severity: High"]
+
+ Assess --> Patch[" Create Patch"]
+
+ Patch --> Test[" Test Fix"]
+
+ Test --> Review[" Code Review"]
+
+ Review --> Merge[" Merge"]
+
+ Merge --> Deploy[" Deploy"]
+
+ Deploy --> Verify[" Verify<br/>Fixed"]
+
+ style Discover fill:#f59e0b,stroke:#d97706,stroke-width:2px
+ style Assess fill:#f59e0b,stroke:#d97706,stroke-width:2px
+ style Patch fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+ style Test fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style Review fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style Merge fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style Deploy fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+ style Verify fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
 ```
 
 ---
@@ -246,11 +270,11 @@ graph LR
 
 | Standard | Coverage | Status |
 |----------|----------|--------|
-| **OWASP Top 10** | XSS, CSRF, Injection |  Mitigated |
-| **CWE** | 25 most dangerous |  Covered |
-| **NIST Cybersecurity** | Core functions |  Implemented |
-| **GDPR** | Data privacy |  Compliant |
-| **SOC 2** | Security controls |  Ready |
+| **OWASP Top 10** | XSS, CSRF, Injection | Mitigated |
+| **CWE** | 25 most dangerous | Covered |
+| **NIST Cybersecurity** | Core functions | Implemented |
+| **GDPR** | Data privacy | Compliant |
+| **SOC 2** | Security controls | Ready |
 
 ---
 

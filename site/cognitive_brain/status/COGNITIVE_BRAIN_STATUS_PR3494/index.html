@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3494 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2273,7 +2273,7 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <h1 id="first-d_capable-promotion-auto_promote_tier_enabled-write-path">First D_CAPABLE Promotion + AUTO_PROMOTE_TIER_ENABLED Write Path<a class="headerlink" href="#first-d_capable-promotion-auto_promote_tier_enabled-write-path" title="Permanent link">¶</a></h1>
-<p><strong>Status:</strong>  COMPLETE
+<p><strong>Status:</strong> COMPLETE
 <strong>PR:</strong> #3494
 <strong>Branch:</strong> <code>copilot/continue-bec-objective</code>
 <strong>Date:2026-07-13
@@ -2307,7 +2307,7 @@
 </tr>
 <tr>
 <td>W-096d</td>
-<td>CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 → 1</td>
+<td>CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 1</td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2335,25 +2335,28 @@
 <hr/>
 <h2 id="architecture-state-post-pr-3494">Architecture State (Post PR #3494)<a class="headerlink" href="#architecture-state-post-pr-3494" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing "PR #3494 Deliverables", " ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph PR3494["PR #3494 Deliverables"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        ADR[" ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        DCAP[" ci-testing-agent\nautonomyModel: E → D_CAPABLE\nFirst D_CAPABLE agent in system"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        GUARD[" AUTO_PROMOTE_TIER_ENABLED guard\nauto_promote_tier.py write path added\nDefaults to disabled (Domain 8)"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        MAN[" CODEX_MANIFEST.json refreshed\nD_CAPABLE count: 0 → 1\nAge: fresh"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    end
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    subgraph AGENTS["Agent State"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        GATES["E→D Gate: 5/5  (unchanged)\nC2: MANIFEST fresh"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    end
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    PR3494 --&gt; AGENTS
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    DCAP --&gt; REG
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    MAN --&gt; GATES
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph PR3494["PR #3494 Deliverables"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> ADR[" ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> DCAP[" ci-testing-agent\nautonomyModel: E D_CAPABLE\nFirst D_CAPABLE agent in system"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> GUARD[" AUTO_PROMOTE_TIER_ENABLED guard\nauto_promote_tier.py write path added\nDefaults to disabled (Domain 8)"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> MAN[" CODEX_MANIFEST.json refreshed\nD_CAPABLE count: 0 1\nAge: fresh"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> end
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> subgraph AGENTS["Agent State"]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> GATES["ED Gate: 5/5 (unchanged)\nC2: MANIFEST fresh"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> end
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> PR3494 --&gt; AGENTS
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> DCAP --&gt; REG
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> MAN --&gt; GATES
 </code></pre></div>
 <hr/>
-<h2 id="ed-gate-state-post-pr-3494">E→D Gate State (Post PR #3494)<a class="headerlink" href="#ed-gate-state-post-pr-3494" title="Permanent link">¶</a></h2>
+<h2 id="ed-gate-state-post-pr-3494">ED Gate State (Post PR #3494)<a class="headerlink" href="#ed-gate-state-post-pr-3494" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -2410,10 +2413,10 @@
 </table>
 <hr/>
 <h2 id="completed-objective-map">Completed Objective Map<a class="headerlink" href="#completed-objective-map" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>PR #3492 (Merged) → P2.x All wiring complete  · P3.1 MIN_CONFIDENCE  · P3.2 SESSION_RESTORE 
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>PR #3494 (This PR) → Priority 2: BEC = Becoming D_CAPABLE 
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>                   → P3.3: AUTO_PROMOTE_TIER_ENABLED write path added 
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>                   → W-098: _apply_promotion() write-path tests (15/15) 
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>PR #3492 (Merged) P2.x All wiring complete · P3.1 MIN_CONFIDENCE · P3.2 SESSION_RESTORE 
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>PR #3494 (This PR) Priority 2: BEC = Becoming D_CAPABLE 
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> P3.3: AUTO_PROMOTE_TIER_ENABLED write path added 
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> W-098: _apply_promotion() write-path tests (15/15) 
 </code></pre></div>
 <hr/>
 <h2 id="w-098-session-update-2026-03-04-1721z">W-098 Session Update (2026-03-04 ~17:21Z)<a class="headerlink" href="#w-098-session-update-2026-03-04-1721z" title="Permanent link">¶</a></h2>
@@ -2484,7 +2487,7 @@ Fixes Pre-Merge Validation run 22681530883.</p>
 <p>Two ruff violations introduced in W-098a fixed:
 - <strong>F401</strong>: removed unused <code>import pytest</code>
 - <strong>I001</strong>: added <code>I001</code> to <code># noqa: E402,I001</code> on <code>auto_promote_tier</code> import line
-  (ruff/isort flags it as out-of-order because it follows a mandatory <code>sys.path.insert()</code>)</p>
+ (ruff/isort flags it as out-of-order because it follows a mandatory <code>sys.path.insert()</code>)</p>
 <p>Fixes Pre-Merge Validation run 22681530852. All 15 tests continue to pass, ruff CLEAN.</p>
 <h3 id="agent-token-delegation-re-activated-2nd-activation">Agent Token Delegation Re-Activated (2nd activation)<a class="headerlink" href="#agent-token-delegation-re-activated-2nd-activation" title="Permanent link">¶</a></h3>
 <p>Owner @mbaetiong re-confirmed Agent Token Delegation via workflow run
@@ -2508,9 +2511,9 @@ Fixes Pre-Merge Validation run 22681530883.</p>
 </tbody>
 </table>
 <p><strong>Delegated agent coverage:</strong>
--  <code>copilot-swe-agent[bot]</code> — GitHub Copilot coding agent
--  <code>github-copilot[bot]</code> — Copilot custom agents
--  <code>github-actions[bot]</code> — CI/AI workflow agents</p>
+- <code>copilot-swe-agent[bot]</code> — GitHub Copilot coding agent
+- <code>github-copilot[bot]</code> — Copilot custom agents
+- <code>github-actions[bot]</code> — CI/AI workflow agents</p>
 <hr/>
 <h2 id="github-app-registration-admin-action-required">GitHub App Registration — Admin Action Required<a class="headerlink" href="#github-app-registration-admin-action-required" title="Permanent link">¶</a></h2>
 <p>All four GitHub App design patterns have complete code-layer implementations
@@ -2539,7 +2542,7 @@ Credentials saved to <code>.codex/github_app/app_credentials.json</code>.</p>
 2. Add <code>GITHUB_APP_ID</code>, <code>GITHUB_APP_PRIVATE_KEY</code>, <code>GITHUB_WEBHOOK_SECRET</code></p>
 <p><strong>Step 6 — Install the App</strong>
 1. Go to: <code>https://github.com/apps/&lt;app-slug&gt;/installations/new</code>
-2. Select <code>Aries-Serpent</code> org → <code>_codex_</code> repo → Click <strong>"Install"</strong></p>
+2. Select <code>Aries-Serpent</code> org <code>_codex_</code> repo Click <strong>"Install"</strong></p>
 <p><strong>Step 7 — Verify</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>python<span class="w"> </span>scripts/ci/github_app_bootstrap.py<span class="w"> </span>--show
 </code></pre></div>
@@ -2568,17 +2571,17 @@ Should print App ID, installation ID, and permissions.</p>
 <tr>
 <td>P6</td>
 <td>Set AUTO_PROMOTE_TIER_ENABLED=true after Domain 8 owner sign-off</td>
-<td>🔮 Future</td>
+<td>Future</td>
 </tr>
 <tr>
 <td>P7</td>
 <td>FAISS index freshness check (codex_index_meta.json age)</td>
-<td>🔮 Future</td>
+<td>Future</td>
 </tr>
 <tr>
 <td>P8</td>
 <td>GitHub App registration (admin action — steps above)</td>
-<td>🔮 Admin action required</td>
+<td>Admin action required</td>
 </tr>
 </tbody>
 </table>
@@ -2670,12 +2673,12 @@ Should print App ID, installation ID, and permissions.</p>
 </tr>
 <tr>
 <td>W-104c</td>
-<td>CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated</td>
+<td>CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 2 + .secrets.baseline updated</td>
 <td></td>
 </tr>
 <tr>
 <td>W-104d</td>
-<td>Status / follow-up prompt updated (P2 →  COMPLETE)</td>
+<td>Status / follow-up prompt updated (P2 COMPLETE)</td>
 <td></td>
 </tr>
 <tr>
@@ -2739,11 +2742,11 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.</p
 </tr>
 </tbody>
 </table>
-<p><strong>Registry changes (v0.2.1 → v0.2.1):</strong>
-- <code>workflow-ci-fixer</code>: <code>enforcement_tier</code> PARTIAL → GROUNDED, <code>autonomy_model</code> E → D_CAPABLE
+<p><strong>Registry changes (v0.2.1 v0.2.1):</strong>
+- <code>workflow-ci-fixer</code>: <code>enforcement_tier</code> PARTIAL GROUNDED, <code>autonomy_model</code> E D_CAPABLE
 - <code>has_tests: true</code>, <code>has_docs: true</code>, <code>violations_30d: 0</code> added
 - ADR: <code>docs/arch/ADR-20260304-second-d-capable-promotion.md</code> created</p>
-<p><strong>Manifest:</strong> regenerated 2026-03-04T19:08:27Z — D_CAPABLE count: 1 → 2.
+<p><strong>Manifest:</strong> regenerated 2026-03-04T19:08:27Z — D_CAPABLE count: 1 2.
 <strong><code>.secrets.baseline</code>:</strong> updated 2026-07-13</p>
 <hr/>
 <h3 id="w-102-detect-secrets-baseline-fix-art_validation-run-22683254031">W-102 — detect-secrets baseline fix (Art_Validation run 22683254031)<a class="headerlink" href="#w-102-detect-secrets-baseline-fix-art_validation-run-22683254031" title="Permanent link">¶</a></h3>
@@ -2771,7 +2774,7 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.</p
 <tr>
 <td><code>CODEX_ENV_PYTHON_VERSION</code></td>
 <td><code>,3.12</code></td>
-<td>️ display artifact</td>
+<td>display artifact</td>
 <td>Leading comma in Variables Summary data extraction; env-level value confirmed <code>3.12</code>. No action required.</td>
 </tr>
 <tr>
@@ -2851,6 +2854,6 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.</p
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

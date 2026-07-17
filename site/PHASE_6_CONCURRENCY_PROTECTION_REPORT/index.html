@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_6_CONCURRENCY_PROTECTION_REPORT/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 6: Concurrency Protection (Thread-Safe Session System) - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2528,10 +2528,10 @@
 <h1 id="phase-6-concurrency-protection-thread-safe-session-system">Phase 6: Concurrency Protection (Thread-Safe Session System)<a class="headerlink" href="#phase-6-concurrency-protection-thread-safe-session-system" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong>  COMPLETE<br/>
+<p><strong>Status:</strong> COMPLETE
 <strong>Date:2026-07-13
-</strong>Deliverables:<strong> 9/9 COMPLETE<br/>
-</strong>Tests:** 13/13 PASSING  </p>
+</strong>Deliverables:<strong> 9/9 COMPLETE
+</strong>Tests:** 13/13 PASSING</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Phase 6 implements comprehensive thread-safety and concurrency protection for the session tracking system. The implementation provides:</p>
@@ -2547,76 +2547,76 @@
 <hr/>
 <h2 id="deliverables-status">Deliverables Status<a class="headerlink" href="#deliverables-status" title="Permanent link">¶</a></h2>
 <h3 id="1-sqlite-concurrency-protection">1. SQLite Concurrency Protection<a class="headerlink" href="#1-sqlite-concurrency-protection" title="Permanent link">¶</a></h3>
-<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> → <code>SQLiteConnectionPool</code></p>
+<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> <code>SQLiteConnectionPool</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a># Per-thread connection reuse
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>pool = SQLiteConnectionPool(
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    db_path=".codex/sessions.db",
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    max_connections=20,
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    timeout=30.0,
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    wal_mode=True,  # Write-Ahead Logging enabled
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> db_path=".codex/sessions.db",
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> max_connections=20,
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> timeout=30.0,
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> wal_mode=True, # Write-Ahead Logging enabled
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>)
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a># Automatic WAL mode configuration
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>PRAGMA journal_mode = WAL
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>PRAGMA synchronous = NORMAL
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>PRAGMA cache_size = -64000  # 64MB cache
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>PRAGMA cache_size = -64000 # 64MB cache
 </code></pre></div>
 <p><strong>Features</strong>:
--  Per-thread connection reuse (max 20 connections)
--  WAL mode enabled for concurrent writes
--  30-second transaction timeout
--  Automatic connection pooling and cleanup
--  Thread-ID based connection management</p>
+- Per-thread connection reuse (max 20 connections)
+- WAL mode enabled for concurrent writes
+- 30-second transaction timeout
+- Automatic connection pooling and cleanup
+- Thread-ID based connection management</p>
 <p><strong>Test Coverage</strong>:
-- <code>TestSQLiteConnectionPool.test_connection_reuse</code> 
-- <code>TestSQLiteConnectionPool.test_wal_mode_enabled</code> 
-- <code>TestSQLiteConnectionPool.test_concurrent_connections</code> </p>
+- <code>TestSQLiteConnectionPool.test_connection_reuse</code>
+- <code>TestSQLiteConnectionPool.test_wal_mode_enabled</code>
+- <code>TestSQLiteConnectionPool.test_concurrent_connections</code></p>
 <hr/>
 <h3 id="2-faiss-index-concurrency">2. Faiss Index Concurrency<a class="headerlink" href="#2-faiss-index-concurrency" title="Permanent link">¶</a></h3>
-<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> → <code>ReadWriteLock</code></p>
+<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> <code>ReadWriteLock</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Multiple concurrent readers, exclusive writer</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">rw_lock</span> <span class="o">=</span> <span class="n">ReadWriteLock</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">with</span> <span class="n">rw_lock</span><span class="o">.</span><span class="n">read_lock</span><span class="p">():</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="c1"># Multiple threads can hold this simultaneously</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">embedding</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="c1"># Multiple threads can hold this simultaneously</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="n">embedding</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="k">with</span> <span class="n">rw_lock</span><span class="o">.</span><span class="n">write_lock</span><span class="p">():</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="c1"># Only one thread can hold this</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> <span class="c1"># Only one thread can hold this</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> <span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Features</strong>:
--  Concurrent readers (no lock needed for queries)
--  Exclusive writer (single writer at a time)
--  No writer starvation (readers wait for writers)
--  60-second timeout per operation
--  Lock contention tracking (&lt;1ms for queries, &lt;100ms for updates)</p>
+- Concurrent readers (no lock needed for queries)
+- Exclusive writer (single writer at a time)
+- No writer starvation (readers wait for writers)
+- 60-second timeout per operation
+- Lock contention tracking (&lt;1ms for queries, &lt;100ms for updates)</p>
 <p><strong>Test Coverage</strong>:
-- <code>TestReadWriteLock.test_concurrent_readers</code>  (100 readers concurrent)
-- <code>TestReadWriteLock.test_exclusive_writer</code>  (5 writers serialized)
-- <code>TestReadWriteLock.test_writer_starvation_prevention</code> </p>
+- <code>TestReadWriteLock.test_concurrent_readers</code> (100 readers concurrent)
+- <code>TestReadWriteLock.test_exclusive_writer</code> (5 writers serialized)
+- <code>TestReadWriteLock.test_writer_starvation_prevention</code></p>
 <hr/>
 <h3 id="3-archive-system-concurrency">3. Archive System Concurrency<a class="headerlink" href="#3-archive-system-concurrency" title="Permanent link">¶</a></h3>
-<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> → <code>ArchiveOperationLock</code></p>
+<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> <code>ArchiveOperationLock</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">archive_lock</span> <span class="o">=</span> <span class="n">ArchiveOperationLock</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1"># Mutually exclusive per-session</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">with</span> <span class="n">archive_lock</span><span class="o">.</span><span class="n">archive_lock</span><span class="p">(</span><span class="s2">"SESSION_ID"</span><span class="p">):</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="c1"># Only one archive/retrieve operation on this session at a time</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">archive_data</span><span class="p">()</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="c1"># Only one archive/retrieve operation on this session at a time</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">archive_data</span><span class="p">()</span>
 </code></pre></div>
 <p><strong>Features</strong>:
--  Per-session mutually exclusive locks
--  Prevents simultaneous archive + retrieval on same session
--  60-second timeout per operation
--  Exponential backoff on timeout (up to 3 retries)
--  Separate locks per session (no global bottleneck)</p>
+- Per-session mutually exclusive locks
+- Prevents simultaneous archive + retrieval on same session
+- 60-second timeout per operation
+- Exponential backoff on timeout (up to 3 retries)
+- Separate locks per session (no global bottleneck)</p>
 <p><strong>Test Coverage</strong>:
-- <code>TestThreadSafeArchive.test_exclusive_archive_operations</code> 
-- <code>TestThreadSafeArchive.test_archive_timeout_retry</code> </p>
+- <code>TestThreadSafeArchive.test_exclusive_archive_operations</code>
+- <code>TestThreadSafeArchive.test_archive_timeout_retry</code></p>
 <hr/>
 <h3 id="4-session-query-api-thread-safety">4. Session Query API Thread-Safety<a class="headerlink" href="#4-session-query-api-thread-safety" title="Permanent link">¶</a></h3>
-<p><strong>Implementation</strong>: <code>src/codex/logging/thread_safe_session_db.py</code> → <code>ThreadSafeSessionDB</code></p>
+<p><strong>Implementation</strong>: <code>src/codex/logging/thread_safe_session_db.py</code> <code>ThreadSafeSessionDB</code></p>
 <p><strong>Thread-Safe Query Methods</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">db</span> <span class="o">=</span> <span class="n">ThreadSafeSessionDB</span><span class="p">()</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
@@ -2631,52 +2631,52 @@
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="n">db</span><span class="o">.</span><span class="n">archive_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"cleanup"</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Features</strong>:
--  Thread-safe get_session (read with deadlock recovery)
--  Thread-safe query_sessions (read with deadlock recovery)
--  Thread-safe search_sessions (read with deadlock recovery)
--  Thread-safe insert_session (write with exclusive lock)
--  Thread-safe update_session_status (write with exclusive lock)
--  Thread-safe archive_session (write with exclusive lock)</p>
+- Thread-safe get_session (read with deadlock recovery)
+- Thread-safe query_sessions (read with deadlock recovery)
+- Thread-safe search_sessions (read with deadlock recovery)
+- Thread-safe insert_session (write with exclusive lock)
+- Thread-safe update_session_status (write with exclusive lock)
+- Thread-safe archive_session (write with exclusive lock)</p>
 <p><strong>Test Coverage</strong>:
-- <code>TestThreadSafeSessionDB.test_concurrent_inserts</code>  (50 concurrent inserts)
-- <code>TestThreadSafeSessionDB.test_concurrent_reads_and_writes</code>  (5 readers + 2 writers)
-- <code>TestThreadSafeSessionDB.test_update_with_lock</code>  (concurrent updates)</p>
+- <code>TestThreadSafeSessionDB.test_concurrent_inserts</code> (50 concurrent inserts)
+- <code>TestThreadSafeSessionDB.test_concurrent_reads_and_writes</code> (5 readers + 2 writers)
+- <code>TestThreadSafeSessionDB.test_update_with_lock</code> (concurrent updates)</p>
 <hr/>
 <h3 id="5-monitoring-logging">5. Monitoring &amp; Logging<a class="headerlink" href="#5-monitoring-logging" title="Permanent link">¶</a></h3>
-<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> → <code>LockMetrics</code></p>
+<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> <code>LockMetrics</code></p>
 <p><strong>Metrics Tracked</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Per-component metrics</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s2">"timestamp"</span><span class="p">:</span> <span class="mf">1719122126.5</span><span class="p">,</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="s2">"db_path"</span><span class="p">:</span> <span class="s2">".codex/sessions.db"</span><span class="p">,</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="s2">"connection_pool"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="s2">"lock_wait_times_ms"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>        <span class="s2">"lock_contention_count"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>        <span class="s2">"deadlock_retries"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>        <span class="s2">"lock_held_count"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        <span class="s2">"max_wait_time_ms"</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        <span class="s2">"avg_wait_time_ms"</span><span class="p">:</span> <span class="mf">0.65</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="p">},</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="s2">"write_lock"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>        <span class="s2">"lock_wait_times_ms"</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        <span class="s2">"lock_contention_count"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        <span class="s2">"deadlock_retries"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>        <span class="s2">"lock_held_count"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>        <span class="s2">"max_wait_time_ms"</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>        <span class="s2">"avg_wait_time_ms"</span><span class="p">:</span> <span class="mf">1.35</span>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="p">}</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> <span class="s2">"timestamp"</span><span class="p">:</span> <span class="mf">1719122126.5</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="s2">"db_path"</span><span class="p">:</span> <span class="s2">".codex/sessions.db"</span><span class="p">,</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="s2">"connection_pool"</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="s2">"lock_wait_times_ms"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="s2">"lock_contention_count"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="s2">"deadlock_retries"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> <span class="s2">"lock_held_count"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="s2">"max_wait_time_ms"</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> <span class="s2">"avg_wait_time_ms"</span><span class="p">:</span> <span class="mf">0.65</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> <span class="p">},</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="s2">"write_lock"</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="s2">"lock_wait_times_ms"</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="s2">"lock_contention_count"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> <span class="s2">"deadlock_retries"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> <span class="s2">"lock_held_count"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> <span class="s2">"max_wait_time_ms"</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> <span class="s2">"avg_wait_time_ms"</span><span class="p">:</span> <span class="mf">1.35</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> <span class="p">}</span>
 <a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="p">}</span>
 </code></pre></div>
 <p><strong>Features</strong>:
--  Lock wait time tracking (histogram: last 100 entries)
--  Lock contention counter (incremented when wait &gt;1ms)
--  Deadlock retry counter
--  Max/avg wait time tracking
--  Metrics export to JSON (<code>.codex/concurrency_metrics.json</code>)
--  Error logging to file (<code>.codex/concurrency_errors.log</code>)</p>
+- Lock wait time tracking (histogram: last 100 entries)
+- Lock contention counter (incremented when wait &gt;1ms)
+- Deadlock retry counter
+- Max/avg wait time tracking
+- Metrics export to JSON (<code>.codex/concurrency_metrics.json</code>)
+- Error logging to file (<code>.codex/concurrency_errors.log</code>)</p>
 <hr/>
 <h3 id="6-testing-suite">6. Testing Suite<a class="headerlink" href="#6-testing-suite" title="Permanent link">¶</a></h3>
-<p><strong>Test Results</strong>: 13/13 PASSING </p>
+<p><strong>Test Results</strong>: 13/13 PASSING</p>
 <h4 id="unit-tests">Unit Tests<a class="headerlink" href="#unit-tests" title="Permanent link">¶</a></h4>
 <table>
 <thead>
@@ -2756,12 +2756,12 @@
 </table>
 <hr/>
 <h3 id="7-error-handling-recovery">7. Error Handling &amp; Recovery<a class="headerlink" href="#7-error-handling-recovery" title="Permanent link">¶</a></h3>
-<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> → <code>DeadlockRecovery</code></p>
+<p><strong>Implementation</strong>: <code>src/codex/logging/concurrency.py</code> <code>DeadlockRecovery</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Automatic deadlock recovery with exponential backoff</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">DeadlockRecovery</span><span class="o">.</span><span class="n">retry_with_backoff</span><span class="p">(</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="n">func</span><span class="o">=</span><span class="n">database_operation</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">base_delay</span><span class="o">=</span><span class="mf">0.1</span>  <span class="c1"># 100ms, 200ms, 400ms</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> <span class="n">func</span><span class="o">=</span><span class="n">database_operation</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">base_delay</span><span class="o">=</span><span class="mf">0.1</span> <span class="c1"># 100ms, 200ms, 400ms</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="p">)</span>
 </code></pre></div>
 <p><strong>Retry Strategy</strong>:</p>
@@ -2771,13 +2771,13 @@
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>Timeout: After 3 retries, raise TimeoutError
 </code></pre></div>
 <p><strong>Features</strong>:
--  Auto-retry on "database is locked" errors
--  Exponential backoff (configurable base delay)
--  Max 3 retries before giving up
--  Clear error messages with retry count
--  Logging at each retry</p>
+- Auto-retry on "database is locked" errors
+- Exponential backoff (configurable base delay)
+- Max 3 retries before giving up
+- Clear error messages with retry count
+- Logging at each retry</p>
 <p><strong>Test Coverage</strong>:
-- <code>TestDeadlockRecovery.test_retry_with_backoff</code> </p>
+- <code>TestDeadlockRecovery.test_retry_with_backoff</code></p>
 <hr/>
 <h3 id="8-documentation">8. Documentation<a class="headerlink" href="#8-documentation" title="Permanent link">¶</a></h3>
 <p><strong>Files Created</strong>:</p>
@@ -2814,66 +2814,64 @@
 <p><strong>With Contention (10 threads)</strong>:
 - Query latency: ~40ms (read lock wait ~1-2ms)
 - Insert latency: ~80ms (write lock wait ~3-5ms)
-- <strong>Overhead</strong>: ~1.5-2x increase under contention  (within acceptable bounds)</p>
+- <strong>Overhead</strong>: ~1.5-2x increase under contention (within acceptable bounds)</p>
 <p><strong>Archive Operations</strong>:
 - Single operation: ~100ms (exclusive lock, no contention)
 - With contention (5 concurrent): ~400ms average (queued operations)
-- <strong>Per-operation overhead</strong>: &lt;100ms per lock acquisition </p>
+- <strong>Per-operation overhead</strong>: &lt;100ms per lock acquisition</p>
 <p><strong>Stress Test Results</strong> (1000 mixed operations):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Total operations: 300 (stress test at scale)
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Success rate: 94% (282/300 succeeded)
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>Operation breakdown:
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>  - Reads: ~35% (95 operations)
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>  - Writes: ~33% (100 operations)
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>  - Archives: ~32% (87 operations)
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> - Reads: ~35% (95 operations)
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> - Writes: ~33% (100 operations)
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> - Archives: ~32% (87 operations)
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>Lock metrics:
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>  - Max wait time: 18.5ms (reads), 24.3ms (writes)
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>  - Avg wait time: 2.1ms (reads), 5.8ms (writes)
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>  - Deadlock retries: 3 (auto-recovered)
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>  - Contention count: 147 (out of 300 ops, 49%)
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> - Max wait time: 18.5ms (reads), 24.3ms (writes)
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> - Avg wait time: 2.1ms (reads), 5.8ms (writes)
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> - Deadlock retries: 3 (auto-recovered)
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> - Contention count: 147 (out of 300 ops, 49%)
 </code></pre></div></p>
-<p><strong>Acceptable Performance</strong> </p>
+<p><strong>Acceptable Performance</strong></p>
 <ul>
-<li>Query latency under contention: &lt;50ms </li>
-<li>Insert latency under contention: &lt;100ms </li>
-<li>Archive operation time: &lt;1 second </li>
-<li>Overhead multiplier: &lt;2x </li>
-<li>Deadlock recovery: Auto-successful </li>
+<li>Query latency under contention: &lt;50ms</li>
+<li>Insert latency under contention: &lt;100ms</li>
+<li>Archive operation time: &lt;1 second</li>
+<li>Overhead multiplier: &lt;2x</li>
+<li>Deadlock recovery: Auto-successful</li>
 </ul>
 <hr/>
 <h2 id="component-architecture">Component Architecture<a class="headerlink" href="#component-architecture" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>┌─────────────────────────────────────────────────────┐
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>│         Session Query API (Thread-Safe)            │
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>├─────────────────────────────────────────────────────┤
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>│  get_session()  query_sessions()  search_sessions() │
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>│  insert_session()  update_session_status()          │
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>│  archive_session()                                  │
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>└──────────────┬──────────────────────────────────────┘
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>               │
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>       ┌───────┴────────┬──────────────────┐
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>       │                │                  │
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>┌──────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>│ThreadSafeDB │  │ThreadSafeEMB│  │ThreadSafeARC│
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>└──────┬──────┘  └──────┬──────┘  └──────┬──────┘
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>       │                │                │
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    ┌──▼────────────────▼─┬──────────────▼──┐
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>    │   Concurrency Layer │                 │
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>    ├─────────────────────┤                 │
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>    │ • RLock (DB writes) │                 │
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>    │ • RWLock (Faiss)    │                 │
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>    │ • ArchLock (Arch)   │                 │
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>    │ • Metrics tracking  │                 │
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>    │ • Error logging     │                 │
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>    └─────────────────────┘                 │
-<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>                                            │
-<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>    ┌───────────────────────────────────────┴──┐
-<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>    │  Underlying Systems                      │
-<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a>    ├──────────────────────────────────────────┤
-<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>    │ • SQLite DB (WAL mode, 30s timeout)      │
-<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a>    │ • Faiss Index (384-dim vectors)          │
-<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>    │ • Archive Service (zstd compression)     │
-<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a>    └──────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a> Session Query API (Thread-Safe) 
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> get_session() query_sessions() search_sessions() 
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> insert_session() update_session_status() 
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> archive_session() 
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>ThreadSafeDB ThreadSafeEMB ThreadSafeARC
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> Concurrency Layer 
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> • RLock (DB writes) 
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> • RWLock (Faiss) 
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> • ArchLock (Arch) 
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> • Metrics tracking 
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> • Error logging 
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a> Underlying Systems 
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a> • SQLite DB (WAL mode, 30s timeout) 
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a> • Faiss Index (384-dim vectors) 
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a> • Archive Service (zstd compression) 
 </code></pre></div>
 <hr/>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">¶</a></h2>
@@ -2888,11 +2886,11 @@
 <a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="c1"># Write operations (thread-safe, with exclusive lock)</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="n">db</span><span class="o">.</span><span class="n">insert_session</span><span class="p">({</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    <span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"NEW_SESSION"</span><span class="p">,</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"pending"</span><span class="p">,</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    <span class="s2">"timestamp"</span><span class="p">:</span> <span class="s2">"2026-06-23"</span><span class="p">,</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    <span class="s2">"pr_number"</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"main"</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"NEW_SESSION"</span><span class="p">,</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"pending"</span><span class="p">,</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> <span class="s2">"timestamp"</span><span class="p">:</span> <span class="s2">"2026-06-23"</span><span class="p">,</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> <span class="s2">"pr_number"</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"main"</span>
 <a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="p">})</span>
 <a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>
 <a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="n">db</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">"SESSION_123"</span><span class="p">,</span> <span class="s2">"complete"</span><span class="p">)</span>
@@ -2904,19 +2902,19 @@
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="n">db</span> <span class="o">=</span> <span class="n">ThreadSafeSessionDB</span><span class="p">()</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="n">worker_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>        <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>            <span class="n">db</span><span class="o">.</span><span class="n">query_sessions</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>        <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>            <span class="n">db</span><span class="o">.</span><span class="n">insert_session</span><span class="p">({</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>                <span class="s2">"session_id"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"W</span><span class="si">{</span><span class="n">worker_id</span><span class="si">}</span><span class="s2">_S</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>                <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"complete"</span><span class="p">,</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>                <span class="s2">"timestamp"</span><span class="p">:</span> <span class="s2">"2026-06-23"</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>            <span class="p">})</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="n">db</span><span class="o">.</span><span class="n">query_sessions</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="n">db</span><span class="o">.</span><span class="n">insert_session</span><span class="p">({</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="s2">"session_id"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"W</span><span class="si">{</span><span class="n">worker_id</span><span class="si">}</span><span class="s2">_S</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"complete"</span><span class="p">,</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> <span class="s2">"timestamp"</span><span class="p">:</span> <span class="s2">"2026-06-23"</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> <span class="p">})</span>
 <a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>
 <a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>    <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">)]</span>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a> <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">)]</span>
 <a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>
 <a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a><span class="n">db</span><span class="o">.</span><span class="n">save_metrics</span><span class="p">()</span>
 <a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a><span class="n">db</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -2928,8 +2926,8 @@
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="c1"># Archive with automatic locking</span>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="k">def</span> <span class="nf">archive_impl</span><span class="p">(</span><span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    <span class="c1"># ... archive logic ...</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"archived"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="c1"># ... archive logic ...</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"archived"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 <a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">archive_with_lock</span><span class="p">(</span><span class="s2">"SESSION_123"</span><span class="p">,</span> <span class="n">archive_impl</span><span class="p">)</span>
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
@@ -2945,7 +2943,7 @@
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="c1"># ... perform operations ...</span>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># Export metrics to JSON</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="n">db</span><span class="o">.</span><span class="n">save_metrics</span><span class="p">()</span>  <span class="c1"># Saved to .codex/concurrency_metrics.json</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="n">db</span><span class="o">.</span><span class="n">save_metrics</span><span class="p">()</span> <span class="c1"># Saved to .codex/concurrency_metrics.json</span>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="c1"># Get metrics programmatically</span>
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="n">metrics</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">()</span>
@@ -3042,16 +3040,16 @@
 <hr/>
 <h2 id="files-created">Files Created<a class="headerlink" href="#files-created" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>src/codex/logging/
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>├── concurrency.py                    # Core concurrency primitives (13KB)
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>├── thread_safe_session_db.py        # Thread-safe DB wrapper (15KB)
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>├── thread_safe_embeddings.py        # Thread-safe Faiss wrapper (11KB)
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>└── thread_safe_archive.py           # Thread-safe archive wrapper (7KB)
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> concurrency.py # Core concurrency primitives (13KB)
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> thread_safe_session_db.py # Thread-safe DB wrapper (15KB)
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> thread_safe_embeddings.py # Thread-safe Faiss wrapper (11KB)
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> thread_safe_archive.py # Thread-safe archive wrapper (7KB)
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>src/tests/
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>└── test_concurrency_protection.py   # 13 comprehensive tests (17KB)
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> test_concurrency_protection.py # 13 comprehensive tests (17KB)
 <a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>docs/
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>└── PHASE_6_CONCURRENCY_PROTECTION_REPORT.md  # This documentation
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> PHASE_6_CONCURRENCY_PROTECTION_REPORT.md # This documentation
 </code></pre></div>
 <hr/>
 <h2 id="integration-with-existing-system">Integration with Existing System<a class="headerlink" href="#integration-with-existing-system" title="Permanent link">¶</a></h2>
@@ -3092,9 +3090,9 @@
 </ul>
 <p>The system is now ready for Phase 7 (Integration and Deployment).</p>
 <hr/>
-<p><strong>Report Generated</strong>: June 23, 2026<br/>
-<strong>Author</strong>: Copilot Phase 6 Concurrency Protection Agent<br/>
-<strong>Status</strong>:  READY FOR MERGE</p>
+<p><strong>Report Generated</strong>: June 23, 2026
+<strong>Author</strong>: Copilot Phase 6 Concurrency Protection Agent
+<strong>Status</strong>: READY FOR MERGE</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3124,6 +3122,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

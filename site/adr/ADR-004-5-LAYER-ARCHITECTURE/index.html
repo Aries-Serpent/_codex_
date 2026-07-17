@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/adr/ADR-004-5-LAYER-ARCHITECTURE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-004: 5-Layer Architecture for ML Platform Scalability - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2363,10 +2363,10 @@
 <h1 id="adr-004-5-layer-architecture-for-ml-platform-scalability">ADR-004: 5-Layer Architecture for ML Platform Scalability<a class="headerlink" href="#adr-004-5-layer-architecture-for-ml-platform-scalability" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Accepted<br/>
-<strong>Date:</strong> 2026-07-10<br/>
-<strong>Author:</strong> @mbaetiong<br/>
-<strong>Session:</strong> S250-doc-arch  </p>
+<p><strong>Status:</strong> Accepted
+<strong>Date:</strong> 2026-07-10
+<strong>Author:</strong> @mbaetiong
+<strong>Session:</strong> S250-doc-arch</p>
 <hr/>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
 <p>The Codex ML platform needs a clear, scalable architectural structure that supports:
@@ -2394,15 +2394,15 @@
 <hr/>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
 <h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">¶</a></h3>
-<p>Clear responsibility boundaries make onboarding faster<br/>
- Horizontal scaling easier with clear module boundaries<br/>
- Independent testing and CI/CD per layer<br/>
- Easier to replace/upgrade individual components<br/>
- Reduces merge conflicts in large teams  </p>
+<p>Clear responsibility boundaries make onboarding faster
+ Horizontal scaling easier with clear module boundaries
+ Independent testing and CI/CD per layer
+ Easier to replace/upgrade individual components
+ Reduces merge conflicts in large teams</p>
 <h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">¶</a></h3>
-<p>️ More complex codebase structure initially<br/>
-️ Requires documentation to maintain boundaries<br/>
-️ May introduce slight performance overhead from abstraction layers  </p>
+<p>More complex codebase structure initially
+ Requires documentation to maintain boundaries
+ May introduce slight performance overhead from abstraction layers</p>
 <h3 id="mitigations">Mitigations<a class="headerlink" href="#mitigations" title="Permanent link">¶</a></h3>
 <ul>
 <li>Comprehensive documentation of interfaces</li>
@@ -2424,10 +2424,10 @@
 <p><strong>Selected:</strong> 5-Layer because it balances clarity and scalability for current team size.</p>
 <hr/>
 <h2 id="implementation-status">Implementation Status<a class="headerlink" href="#implementation-status" title="Permanent link">¶</a></h2>
-<p>Architecture documented (this file)<br/>
- Layer interfaces defined in codebase<br/>
- CI/CD updated to respect layer boundaries<br/>
-️ Legacy code gradually being refactored into layers  </p>
+<p>Architecture documented (this file)
+ Layer interfaces defined in codebase
+ CI/CD updated to respect layer boundaries
+ Legacy code gradually being refactored into layers</p>
 <hr/>
 <h2 id="related-adrs">Related ADRs<a class="headerlink" href="#related-adrs" title="Permanent link">¶</a></h2>
 <ul>
@@ -2463,6 +2463,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Local Deployment & Development Guide
 
-**Version**: 1.0.0 | **Last Updated**: 2026-07-13 | **Status**: ✅ Production-Ready
+**Version**: 1.0.0 | **Last Updated**: 2026-07-13 | **Status**: Production-Ready
 
 ## Overview
 
@@ -35,8 +35,8 @@ cd /home/runner/work/_codex_/_codex_
 mkdocs serve
 
 # Output:
-# INFO     -  Building documentation...
-# INFO     -  Listening on http://127.0.0.1:8000
+# INFO - Building documentation...
+# INFO - Listening on http://127.0.0.1:8000
 ```
 
 ### Access Documentation
@@ -57,11 +57,11 @@ The development server automatically:
 mkdocs build --verbose
 
 # Output directory:
-# site/                              # 💾 Generated static files
-#   ├── index.html                   # Homepage
-#   ├── assets/                      # CSS, JS, images
-#   ├── search/                      # Search index
-#   └── [page_name]/index.html       # All documentation pages
+# site/ # Generated static files
+# index.html # Homepage
+# assets/ # CSS, JS, images
+# search/ # Search index
+# [page_name]/index.html # All documentation pages
 ```
 
 ### Verify Build Output
@@ -211,9 +211,9 @@ EXPOSE 80
 **Usage**:
 ```bash
 bash deploy/deploy.sh \
-  --namespace codex-ml \
-  --image-tag v1.2.3 \
-  --environment production
+ --namespace codex-ml \
+ --image-tag v1.2.3 \
+ --environment production
 ```
 
 ### 2. `deploy/setup_universal.sh`
@@ -254,7 +254,7 @@ source deploy/setup_universal.sh
 
 ## Verification Checklist
 
-### ✅ Pre-Deployment Verification
+### Pre-Deployment Verification
 
 - [ ] Python 3.12+ installed: `python --version`
 - [ ] MkDocs installed: `mkdocs --version`
@@ -262,14 +262,14 @@ source deploy/setup_universal.sh
 - [ ] All docs files present: `find docs -name "*.md" | wc -l`
 - [ ] mkdocs.yml valid: `python -c "import yaml; yaml.safe_load(open('mkdocs.yml'))"`
 
-### ✅ Local Build Verification
+### Local Build Verification
 
 - [ ] Build completes without errors: `mkdocs build --verbose 2>&1 | grep -i error`
 - [ ] No broken references: Check build output for warnings
-- [ ] Static files generated: `test -d site && echo "✅ site/ directory exists"`
-- [ ] Index page valid: `test -f site/index.html && echo "✅ Homepage generated"`
+- [ ] Static files generated: `test -d site && echo " site/ directory exists"`
+- [ ] Index page valid: `test -f site/index.html && echo " Homepage generated"`
 
-### ✅ Development Server Verification
+### Development Server Verification
 
 - [ ] Server starts: `mkdocs serve` runs without errors
 - [ ] Accessible at 127.0.0.1:8000: Browser responds with HTTP 200
@@ -277,7 +277,7 @@ source deploy/setup_universal.sh
 - [ ] Navigation renders: All nav items accessible and clickable
 - [ ] Search functional: Search index builds and searches work
 
-### ✅ GitHub Pages Verification
+### GitHub Pages Verification
 
 - [ ] Workflow triggers: Push to `main` triggers `pages-mkdocs.yml`
 - [ ] Build succeeds: GitHub Actions build completes
@@ -290,7 +290,7 @@ source deploy/setup_universal.sh
 ### mkdocs.yml Structure
 
 ```yaml
-site_name: Codex Docs v0.2.1
+site_name: Codex Docs v0.2.0
 site_url: https://aries-serpent.github.io/_codex_/
 repo_name: Aries-Serpent/_codex_
 repo_url: https://github.com/Aries-Serpent/_codex_
@@ -299,28 +299,28 @@ docs_dir: docs/
 site_dir: site/
 
 theme:
-  name: material
-  language: en
-  features: [12 features for navigation & search]
+ name: material
+ language: en
+ features: [12 features for navigation & search]
 
 plugins:
-  - material/search
-  - mermaid2:
-      version: "10.4.0"
+ - material/search
+ - mermaid2:
+ version: "10.4.0"
 
 nav:
-  - Home: index.md
-  - [40+ documentation sections with 100+ total nav entries]
+ - Home: index.md
+ - [40+ documentation sections with 100+ total nav entries]
 
 markdown_extensions:
-  - [11 markdown extensions for enhanced formatting]
+ - [11 markdown extensions for enhanced formatting]
 
 validation:
-  links:
-    absolute_links: ignore
-    anchors: ignore
-  nav:
-    omitted_files: ignore
+ links:
+ absolute_links: ignore
+ anchors: ignore
+ nav:
+ omitted_files: ignore
 ```
 
 ### Navigation Coverage
@@ -359,20 +359,20 @@ validation:
 **Key Jobs**:
 
 1. **Build Job**
-   - Checkout repository (fetch-depth: 0)
-   - Setup Python 3.12 with caching
-   - Install dependencies
-   - Generate API documentation
-   - Validate documentation links
-   - Build MkDocs site (verbose)
-   - Build cognitive_app dashboard
-   - Upload artifact
+ - Checkout repository (fetch-depth: 0)
+ - Setup Python 3.12 with caching
+ - Install dependencies
+ - Generate API documentation
+ - Validate documentation links
+ - Build MkDocs site (verbose)
+ - Build cognitive_app dashboard
+ - Upload artifact
 
 2. **Deploy Job**
-   - Wait for previous deployments
-   - Deploy to GitHub Pages
-   - Verify deployed site health
-   - Post summary
+ - Wait for previous deployments
+ - Deploy to GitHub Pages
+ - Verify deployed site health
+ - Post summary
 
 **Concurrency**: `${{ github.workflow }}-${{ github.head_ref || github.ref }}`
 
@@ -405,8 +405,8 @@ pip show mkdocs-mermaid2-plugin
 
 # Verify in mkdocs.yml:
 # plugins:
-#   - mermaid2:
-#       version: "10.4.0"
+# - mermaid2:
+# version: "10.4.0"
 
 # Rebuild
 mkdocs build --clean
@@ -491,10 +491,10 @@ All sensitive operations are audited and encrypted.
 For questions or issues:
 
 1. **Check troubleshooting** section above
-2. **Review GitHub workflow logs**: Actions → pages-mkdocs
+2. **Review GitHub workflow logs**: Actions pages-mkdocs
 3. **Inspect build output**: `mkdocs build --verbose 2>&1 | tee build.log`
 4. **Create GitHub Issue**: Report bugs with logs attached
 
 ---
 
-**Last Verified**: 2026-07-13 | **Next Review**: 2026-08-13 | **Status**: ✅ Operational
+**Last Verified**: 2026-07-13 | **Next Review**: 2026-08-13 | **Status**: Operational

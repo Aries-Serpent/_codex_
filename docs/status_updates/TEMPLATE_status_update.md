@@ -1,10 +1,10 @@
 # Status Update — Reasoning Readiness & Promotion Gate
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-> **When to use:** After each ring run (0A → 0D) or major PR affecting reasoning,
+> **When to use:** After each ring run (0A 0D) or major PR affecting reasoning,
 > fill this template to create an auditable record of progress. Save as:
 > `docs/status_updates/<slug>-<YYYY-MM-DD>.md`.
 >
@@ -61,7 +61,7 @@
 - **Gate result:** `[Block | Proceed to next ring]`
 - **Rationale:** `<short argument>`
 - **Readiness score:** `R = α·E + β·T + γ·D = <value>`
-  - α=`<0..1>`, β=`<0..1>`, γ=`<0..1>`, E=`<0..1>`, T=`<0..1>`, D=`<0..1>`
+ - α=`<0..1>`, β=`<0..1>`, γ=`<0..1>`, E=`<0..1>`, T=`<0..1>`, D=`<0..1>`
 
 ## 7) Artifacts (attach and list)
 - `docs/status_updates/artifacts/<date>/report.md`
@@ -86,4 +86,4 @@ The weighted readiness score \(R\) represents overall promotion confidence:
 - **D (Docs Parity)**: Documentation completeness (broken links, missing refs)
 
 **Example**: For α=0.4, β=0.3, γ=0.3, E=0.9, T=0.8, D=1.0:
-  R = 0.4×0.9 + 0.3×0.8 + 0.3×1.0 = 0.36 + 0.24 + 0.30 = **0.90** (90% ready)
+ R = 0.4×0.9 + 0.3×0.8 + 0.3×1.0 = 0.36 + 0.24 + 0.30 = **0.90** (90% ready)

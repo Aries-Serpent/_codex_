@@ -1,10 +1,10 @@
 # Database Performance Baseline & Optimization Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Batch:** Phase 6, Batch 3 (Testing, Validation & Release Preparation)  
-**Generated:** 2026-06-14  
-**Status:** ️ APPROVED WITH CAVEATS (see Section 2)  
+**Batch:** Phase 6, Batch 3 (Testing, Validation & Release Preparation)
+**Generated:** 2026-06-14
+**Status:** APPROVED WITH CAVEATS (see Section 2)
 **Owner:** Database Engineering
 
 ---
@@ -17,10 +17,10 @@ Database performance measurements establish baseline metrics for production depl
 
 | Query Type | Baseline | Target | Status | Note |
 |------------|----------|--------|--------|------|
-| **Simple Queries** | 6.2ms p99 | 5.0ms | ️ MARGIN | +24% vs target |
-| **Complex Queries** | 63.1ms p99 | 50ms | ️ MARGIN | +26% vs target |
-| **Bulk Operations** | 117.3ms p99 | <1000ms |  PASS | Well within target |
-| **Overall Status** | — | — |  ACCEPTABLE | With optimization needed |
+| **Simple Queries** | 6.2ms p99 | 5.0ms | MARGIN | +24% vs target |
+| **Complex Queries** | 63.1ms p99 | 50ms | MARGIN | +26% vs target |
+| **Bulk Operations** | 117.3ms p99 | <1000ms | PASS | Well within target |
+| **Overall Status** | — | — | ACCEPTABLE | With optimization needed |
 
 ### 1.2 Key Recommendations
 
@@ -55,13 +55,13 @@ Database performance measurements establish baseline metrics for production depl
 
 **Before production deployment, you MUST:**
 
-1.  Set up representative test database
-2.  Perform actual benchmarking against real DB
-3.  Profile all query plans with EXPLAIN/ANALYZE
-4.  Test under realistic concurrent load
-5.  Measure actual disk I/O impact
-6.  Validate index effectiveness
-7.  Test transaction concurrency
+1. Set up representative test database
+2. Perform actual benchmarking against real DB
+3. Profile all query plans with EXPLAIN/ANALYZE
+4. Test under realistic concurrent load
+5. Measure actual disk I/O impact
+6. Validate index effectiveness
+7. Test transaction concurrency
 
 **Expected variance:** 10-50% depending on database configuration.
 
@@ -89,7 +89,7 @@ LIMIT 100
 **Target Comparison:**
 - Target: <5.0ms
 - Actual: 6.2ms p99
-- **Status:** ️ 24% OVER TARGET
+- **Status:** 24% OVER TARGET
 
 ### 3.2 Simple Query Optimization
 
@@ -107,7 +107,7 @@ ON items(category, created_at DESC, id);
 ANALYZE TABLE items;
 ```
 
-**Expected improvement:** 40-60% latency reduction (p99: 6.2→2.5ms)
+**Expected improvement:** 40-60% latency reduction (p99: 6.22.5ms)
 
 #### Action 2: Verify Query Plan
 ```sql
@@ -139,16 +139,16 @@ SHOW PROFILE ALL;
 **Workload:**
 ```sql
 SELECT
-  o.order_id,
-  o.total_amount,
-  c.customer_name,
-  COUNT(i.item_id) as item_count,
-  SUM(i.quantity) as total_quantity
+ o.order_id,
+ o.total_amount,
+ c.customer_name,
+ COUNT(i.item_id) as item_count,
+ SUM(i.quantity) as total_quantity
 FROM orders o
 JOIN customers c ON o.customer_id = c.id
 LEFT JOIN order_items i ON o.order_id = i.order_id
 WHERE o.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-  AND o.status = ?
+ AND o.status = ?
 GROUP BY o.order_id, o.total_amount, c.customer_name
 HAVING COUNT(i.item_id) > 0
 ORDER BY o.created_at DESC
@@ -165,7 +165,7 @@ LIMIT 1000
 **Target Comparison:**
 - Target: <50ms
 - Actual: 63.1ms p99
-- **Status:** ️ 26% OVER TARGET
+- **Status:** 26% OVER TARGET
 
 ### 3.4 Complex Query Optimization
 
@@ -182,7 +182,7 @@ LIMIT 1000
 CREATE INDEX idx_orders_customer_status
 ON orders(customer_id, status, created_at DESC);
 
--- Index for JOIN on order_items  
+-- Index for JOIN on order_items 
 CREATE INDEX idx_order_items_order_id
 ON order_items(order_id, item_id, quantity);
 
@@ -193,52 +193,52 @@ ON customers(id, customer_name);
 ANALYZE TABLE orders, order_items, customers;
 ```
 
-**Expected improvement:** 30-50% latency reduction (p99: 63.1→32ms)
+**Expected improvement:** 30-50% latency reduction (p99: 63.132ms)
 
 #### Action 2: Rewrite for Better Performance
 ```sql
 -- Optimized query: use subquery to filter orders first
 SELECT
-  o.order_id,
-  o.total_amount,
-  c.customer_name,
-  COALESCE(item_stats.item_count, 0) as item_count,
-  COALESCE(item_stats.total_quantity, 0) as total_quantity
+ o.order_id,
+ o.total_amount,
+ c.customer_name,
+ COALESCE(item_stats.item_count, 0) as item_count,
+ COALESCE(item_stats.total_quantity, 0) as total_quantity
 FROM (
-  SELECT order_id, customer_id, total_amount, created_at
-  FROM orders
-  WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-    AND status = ?
+ SELECT order_id, customer_id, total_amount, created_at
+ FROM orders
+ WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+ AND status = ?
 ) o
 JOIN customers c ON o.customer_id = c.id
 LEFT JOIN (
-  SELECT
-    order_id,
-    COUNT(*) as item_count,
-    SUM(quantity) as total_quantity
-  FROM order_items
-  GROUP BY order_id
-  HAVING COUNT(*) > 0
+ SELECT
+ order_id,
+ COUNT(*) as item_count,
+ SUM(quantity) as total_quantity
+ FROM order_items
+ GROUP BY order_id
+ HAVING COUNT(*) > 0
 ) item_stats ON o.order_id = item_stats.order_id
 ORDER BY o.created_at DESC
 LIMIT 1000;
 ```
 
-**Expected improvement:** 50-70% latency reduction (p99: 63.1→19ms)
+**Expected improvement:** 50-70% latency reduction (p99: 63.119ms)
 
 #### Action 3: Consider Materialized View
 ```sql
 -- For frequently accessed reports
 CREATE TABLE order_summary_cache (
-  order_id BIGINT PRIMARY KEY,
-  customer_id BIGINT,
-  customer_name VARCHAR(255),
-  total_amount DECIMAL(10,2),
-  item_count INT,
-  total_quantity INT,
-  created_at TIMESTAMP,
-  INDEX idx_created_at (created_at DESC),
-  INDEX idx_status (status)
+ order_id BIGINT PRIMARY KEY,
+ customer_id BIGINT,
+ customer_name VARCHAR(255),
+ total_amount DECIMAL(10,2),
+ item_count INT,
+ total_quantity INT,
+ created_at TIMESTAMP,
+ INDEX idx_created_at (created_at DESC),
+ INDEX idx_status (status)
 );
 
 -- Refresh periodically (e.g., every 5 minutes)
@@ -247,7 +247,7 @@ SELECT ... FROM [optimized query]
 ON DUPLICATE KEY UPDATE ... ;
 ```
 
-**Expected improvement:** 90-98% latency reduction (p99: 63.1→2-3ms)
+**Expected improvement:** 90-98% latency reduction (p99: 63.12-3ms)
 
 ### 3.5 Bulk Operations Baseline
 
@@ -255,9 +255,9 @@ ON DUPLICATE KEY UPDATE ... ;
 ```sql
 INSERT INTO audit_logs (user_id, action, timestamp)
 VALUES
-  (?, ?, NOW()),
-  (?, ?, NOW()),
-  ...  -- 1000 rows
+ (?, ?, NOW()),
+ (?, ?, NOW()),
+ ... -- 1000 rows
 ;
 ```
 
@@ -272,7 +272,7 @@ VALUES
 **Target Comparison:**
 - Target: <1000ms (per 1000 rows)
 - Actual: 117.3ms
-- **Status:**  PASS (88% better than target)
+- **Status:** PASS (88% better than target)
 
 ### 3.6 Bulk Operations Analysis
 
@@ -340,7 +340,7 @@ ON orders(created_at DESC, status);
 ```sql
 -- Enable slow query log
 SET GLOBAL slow_query_log = 'ON';
-SET GLOBAL long_query_time = 0.1;  -- 100ms threshold
+SET GLOBAL long_query_time = 0.1; -- 100ms threshold
 
 -- After collection period, analyze
 SELECT query, time, rows_sent, rows_examined
@@ -356,9 +356,9 @@ EXPLAIN FORMAT=JSON
 SELECT ... FROM ... WHERE ... ;
 
 -- Look for:
---  Good: type = "index" or "ref"
--- ️ Warning: type = "range"
---  Bad: type = "ALL" (full table scan)
+-- Good: type = "index" or "ref"
+-- Warning: type = "range"
+-- Bad: type = "ALL" (full table scan)
 ```
 
 ### 5.3 Optimize Identified Queries
@@ -384,7 +384,7 @@ max_connections: 1000
 max_user_connections: 100
 
 # Query Performance
-long_query_time: 0.5         # Log queries > 500ms
+long_query_time: 0.5 # Log queries > 500ms
 slow_query_log: ON
 log_queries_not_using_indexes: ON
 
@@ -428,63 +428,63 @@ import random
 from statistics import mean, stdev
 
 def run_query(query_type: str) -> float:
-    """Execute query and return latency in ms."""
-    conn = get_db_connection()
+ """Execute query and return latency in ms."""
+ conn = get_db_connection()
 
-    query = {
-        "simple": "SELECT ... WHERE category = ?",
-        "complex": "SELECT ... FROM ... JOIN ...",
-    }[query_type]
+ query = {
+ "simple": "SELECT ... WHERE category = ?",
+ "complex": "SELECT ... FROM ... JOIN ...",
+ }[query_type]
 
-    params = [random.choice(test_data)]
+ params = [random.choice(test_data)]
 
-    start = time.perf_counter()
-    cursor = conn.cursor()
-    cursor.execute(query, params)
-    results = cursor.fetchall()
-    elapsed_ms = (time.perf_counter() - start) * 1000
+ start = time.perf_counter()
+ cursor = conn.cursor()
+ cursor.execute(query, params)
+ results = cursor.fetchall()
+ elapsed_ms = (time.perf_counter() - start) * 1000
 
-    conn.close()
-    return elapsed_ms
+ conn.close()
+ return elapsed_ms
 
 def benchmark(query_type: str, num_queries: int = 100) -> dict:
-    """Benchmark query performance."""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        latencies = list(executor.map(
-            lambda _: run_query(query_type),
-            range(num_queries)
-        ))
+ """Benchmark query performance."""
+ with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+ latencies = list(executor.map(
+ lambda _: run_query(query_type),
+ range(num_queries)
+ ))
 
-    latencies.sort()
-    return {
-        "query_type": query_type,
-        "min": latencies[0],
-        "max": latencies[-1],
-        "mean": mean(latencies),
-        "stdev": stdev(latencies),
-        "p50": latencies[len(latencies) // 2],
-        "p95": latencies[int(len(latencies) * 0.95)],
-        "p99": latencies[int(len(latencies) * 0.99)],
-    }
+ latencies.sort()
+ return {
+ "query_type": query_type,
+ "min": latencies[0],
+ "max": latencies[-1],
+ "mean": mean(latencies),
+ "stdev": stdev(latencies),
+ "p50": latencies[len(latencies) // 2],
+ "p95": latencies[int(len(latencies) * 0.95)],
+ "p99": latencies[int(len(latencies) * 0.99)],
+ }
 
 if __name__ == "__main__":
-    print("Benchmarking Simple Queries...")
-    simple_results = benchmark("simple")
+ print("Benchmarking Simple Queries...")
+ simple_results = benchmark("simple")
 
-    print("Benchmarking Complex Queries...")
-    complex_results = benchmark("complex")
+ print("Benchmarking Complex Queries...")
+ complex_results = benchmark("complex")
 
-    print(f"\nSimple: p99={simple_results['p99']:.1f}ms")
-    print(f"Complex: p99={complex_results['p99']:.1f}ms")
+ print(f"\nSimple: p99={simple_results['p99']:.1f}ms")
+ print(f"Complex: p99={complex_results['p99']:.1f}ms")
 ```
 
 ### 7.2 Expected Results After Optimization
 
 | Query Type | Before | After | Improvement |
 |------------|--------|-------|-------------|
-| **Simple** | 6.2ms | 2.5ms |  -60% |
-| **Complex** | 63.1ms | 19ms |  -70% |
-| **Bulk 1k rows** | 117.3ms | 117.3ms |  No change |
+| **Simple** | 6.2ms | 2.5ms | -60% |
+| **Complex** | 63.1ms | 19ms | -70% |
+| **Bulk 1k rows** | 117.3ms | 117.3ms | No change |
 
 ---
 
@@ -521,24 +521,24 @@ if __name__ == "__main__":
 
 ```yaml
 database_query_latency_p99_ms:
-  simple_query:
-    target: 5
-    warning: 8
-    critical: 15
-  complex_query:
-    target: 50
-    warning: 75
-    critical: 150
+ simple_query:
+ target: 5
+ warning: 8
+ critical: 15
+ complex_query:
+ target: 50
+ warning: 75
+ critical: 150
 
 database_query_count_per_minute:
-  target: 100-1000
-  warning: <50 or >2000
-  critical: <20 or >5000
+ target: 100-1000
+ warning: <50 or >2000
+ critical: <20 or >5000
 
 database_error_rate_percent:
-  target: <0.1
-  warning: 0.1-0.5
-  critical: >0.5
+ target: <0.1
+ warning: 0.1-0.5
+ critical: >0.5
 ```
 
 ### 9.2 Dashboard Requirements
@@ -590,16 +590,16 @@ EXPLAIN FORMAT=JSON SELECT ... ;
 ```
 
 **Common Causes:**
-1. Missing index (type="ALL") → Add index
-2. Expensive sort (sort=true) → Add ORDER BY index
-3. JOIN without condition → Add JOIN condition
-4. Large result set → Add LIMIT or filter
+1. Missing index (type="ALL") Add index
+2. Expensive sort (sort=true) Add ORDER BY index
+3. JOIN without condition Add JOIN condition
+4. Large result set Add LIMIT or filter
 
 ### Issue: Connection Pool Exhausted
 
 **Diagnosis:**
 ```sql
-SHOW PROCESSLIST;  -- Many connections?
+SHOW PROCESSLIST; -- Many connections?
 ```
 
 **Solutions:**
@@ -612,7 +612,7 @@ SHOW PROCESSLIST;  -- Many connections?
 
 **Diagnosis:**
 ```sql
-SHOW ENGINE INNODB STATUS;  -- Deadlocks?
+SHOW ENGINE INNODB STATUS; -- Deadlocks?
 ```
 
 **Solutions:**
@@ -649,11 +649,11 @@ SHOW ENGINE INNODB STATUS;  -- Deadlocks?
 
 ## 14. Approval & Sign-Off
 
-**Prepared By:** Database Engineering  
-**Reviewed By:** Performance Team  
-**Approved:** 2026-06-14  
-**Status:** ️ APPROVED WITH CAVEATS  
-**Effective:** Immediate (with pre-deployment validation)  
+**Prepared By:** Database Engineering
+**Reviewed By:** Performance Team
+**Approved:** 2026-06-14
+**Status:** APPROVED WITH CAVEATS
+**Effective:** Immediate (with pre-deployment validation)
 **Next Review:** 2026-09-14 (post-deployment+90 days)
 
 **Caveats:**

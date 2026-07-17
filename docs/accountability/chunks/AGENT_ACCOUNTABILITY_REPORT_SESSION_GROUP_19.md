@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 19
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 19 of 32  
 **Sessions:** auto-pda-2026-06-16 to S1034-workflow-portfolio-expansion  

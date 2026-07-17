@@ -1,15 +1,15 @@
 ## Quick Start Guide for _codex_ Contributors
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version**: 2.0.0  
-> **Last Updated**: 2026-06-20  
-> **Audience**: New contributors, AI agents, developers  
-> **⏱️ Setup Time:** 5-15 minutes (30 min with Docker)
+> **Version**: 2.0.0
+> **Last Updated**: 2026-06-20
+> **Audience**: New contributors, AI agents, developers
+> ** Setup Time:** 5-15 minutes (30 min with Docker)
 
 ---
 
-##  CHOOSE YOUR SETUP PATH
+## CHOOSE YOUR SETUP PATH
 
 ### Path A: Local Development (Recommended for Development) — 5-10 minutes
 
@@ -25,20 +25,20 @@ Best for: Testing examples, simple scripts, learning
 
 ---
 
-##  Prerequisites
+## Prerequisites
 
 | Requirement | Linux | macOS | Windows | Notes |
 |-------------|-------|-------|---------|-------|
-| **Python 3.10+** |  apt/dnf |  Homebrew |  winget/Chocolatey | `python --version` |
-| **Git 2.30+** |  apt/dnf |  Homebrew |  winget | `git --version` |
-| **C/C++ compiler** |  gcc/g++ |  Xcode CLT | ️ MSVC | For PyTorch compilation |
+| **Python 3.10+** | apt/dnf | Homebrew | winget/Chocolatey | `python --version` |
+| **Git 2.30+** | apt/dnf | Homebrew | winget | `git --version` |
+| **C/C++ compiler** | gcc/g++ | Xcode CLT | MSVC | For PyTorch compilation |
 | **~2 GB free disk** | Required | Required | Required | Source + dependencies |
 
 **Check prerequisites:**
 ```bash
-python --version  # Should be 3.10+
-git --version     # Should be 2.30+
-gcc --version     # (Linux only) Should be 9.0+
+python --version # Should be 3.10+
+git --version # Should be 2.30+
+gcc --version # (Linux only) Should be 9.0+
 ```
 
 ---
@@ -74,7 +74,7 @@ uv pip install -e ".[ml,dev]"
 ```bash
 # Create virtual environment (recommended)
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -e ".[dev]"
@@ -142,7 +142,7 @@ pytest tests/ -v
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
-sudo usermod -aG docker $USER  # Add user to docker group
+sudo usermod -aG docker $USER # Add user to docker group
 ```
 
 **macOS:**
@@ -169,10 +169,10 @@ docker build -t codex-dev:latest -f Dockerfile.dev .
 
 # Run container with volume mount (interactive development)
 docker run -it --rm \
-  -v $(pwd):/workspace \
-  -w /workspace \
-  codex-dev:latest \
-  bash
+ -v $(pwd):/workspace \
+ -w /workspace \
+ codex-dev:latest \
+ bash
 
 # Inside container:
 python -c "import codex; print(codex.__version__)"
@@ -203,45 +203,45 @@ python -c "from transformers import AutoTokenizer; print(' Ready for examples')"
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 _codex_/
-├── agents/                     # AI Agent infrastructure
-│   ├── agent_memory.py         # Persistent memory system
-│   ├── self_healing.py         # Automated remediation
-│   ├── quantum_game_theory.py  # Physics-inspired decision making
-│   └── prompts/                # Prompt templates
-├── src/
-│   ├── codex_ml/               # Core ML framework
-│   │   ├── evaluation/         # Model evaluation
-│   │   ├── training/           # Training pipeline
-│   │   ├── serving/            # Model serving (FastAPI + Ray Serve)
-│   │   └── utils/              # Utilities
-│   ├── mcp/                    # Model Context Protocol (MCP) system
-│   │   ├── server/             # MCP server implementation
-│   │   ├── backends/           # Backend adapters (Pinecone, Redis, etc.)
-│   │   └── embeddings/         # Embedding system
-│   └── codex_cli/              # Command-line interface
-├── tests/                      # Test suites
-│   ├── unit/                   # Unit tests
-│   ├── integration/            # Integration tests
-│   └── fixtures/               # Test fixtures
-├── docs/                       # Documentation (you are here!)
-│   ├── onboarding/             # Getting started guides
-│   ├── deployment/             # Production deployment guides
-│   ├── api/                    # API references
-│   └── troubleshooting/        # Troubleshooting guides
-├── scripts/                    # Automation scripts
-├── docker/                     # Docker configurations
-├── .github/workflows/          # CI/CD workflows
-├── pyproject.toml              # Python project metadata
-└── README.md                   # Root project README
+ agents/ # AI Agent infrastructure
+ agent_memory.py # Persistent memory system
+ self_healing.py # Automated remediation
+ quantum_game_theory.py # Physics-inspired decision making
+ prompts/ # Prompt templates
+ src/
+ codex_ml/ # Core ML framework
+ evaluation/ # Model evaluation
+ training/ # Training pipeline
+ serving/ # Model serving (FastAPI + Ray Serve)
+ utils/ # Utilities
+ mcp/ # Model Context Protocol (MCP) system
+ server/ # MCP server implementation
+ backends/ # Backend adapters (Pinecone, Redis, etc.)
+ embeddings/ # Embedding system
+ codex_cli/ # Command-line interface
+ tests/ # Test suites
+ unit/ # Unit tests
+ integration/ # Integration tests
+ fixtures/ # Test fixtures
+ docs/ # Documentation (you are here!)
+ onboarding/ # Getting started guides
+ deployment/ # Production deployment guides
+ api/ # API references
+ troubleshooting/ # Troubleshooting guides
+ scripts/ # Automation scripts
+ docker/ # Docker configurations
+ .github/workflows/ # CI/CD workflows
+ pyproject.toml # Python project metadata
+ README.md # Root project README
 ```
 
 ---
 
-##  Development Workflow
+## Development Workflow
 
 ### 1. Create a Branch
 
@@ -290,7 +290,7 @@ Use the PR template and ensure:
 
 ---
 
-##  AI Agent Integration
+## AI Agent Integration
 
 ### Using Agent Memory
 
@@ -305,10 +305,10 @@ frame = memory.start_task("Fix code review comments")
 
 # Record decisions
 memory.store_decision(
-    task_id="task_123",
-    decision="Use AST parsing",
-    rationale="More reliable than regex",
-    context={"file": "analyzer.py"}
+ task_id="task_123",
+ decision="Use AST parsing",
+ rationale="More reliable than regex",
+ context={"file": "analyzer.py"}
 )
 
 # Get guidance
@@ -333,13 +333,13 @@ print(f"Health score: {report.health_score}")
 
 # Get remediation suggestions
 for issue in report.issues:
-    print(f"Issue: {issue.description}")
-    print(f"Fix: {issue.suggested_fix}")
+ print(f"Issue: {issue.description}")
+ print(f"Fix: {issue.suggested_fix}")
 ```
 
 ---
 
-##  Key Documentation
+## Key Documentation
 
 | Document | Purpose |
 |----------|---------|
@@ -351,7 +351,7 @@ for issue in report.issues:
 
 ---
 
-##  Common Tasks
+## Common Tasks
 
 ### Adding a New Feature
 
@@ -390,7 +390,7 @@ detect-secrets scan
 
 ---
 
-##  Checklist for First PR
+## Checklist for First PR
 
 - [ ] Forked and cloned repository
 - [ ] Installed dependencies
@@ -404,4 +404,4 @@ detect-secrets scan
 
 ---
 
-Welcome to the _codex_ project! 🎉
+Welcome to the _codex_ project!

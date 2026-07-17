@@ -1,6 +1,6 @@
 # Configuration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -15,23 +15,23 @@ Codex ML uses Hydra for configuration management, enabling flexible, reproducibl
 
 ```
 configs/
-├── training/
-│ ├── default.yaml
-│ ├── bert.yaml
-│ ├── gpt.yaml
-│ └── tokenizer/ # pragma: allowlist secret
-│ └── offline/
-│ └── tiny_vocab.yaml
-├── data/
-│ ├── default.yaml
-│ └── preprocessing.yaml
-├── hardware/
-│ ├── default.yaml
-│ ├── cuda.yaml
-│ └── cpu.yaml
-└── experiment/
- ├── base_experiment.yaml
- └── hyperparameter_sweep.yaml
+ training/
+ default.yaml
+ bert.yaml
+ gpt.yaml
+ tokenizer/ # pragma: allowlist secret
+ offline/
+ tiny_vocab.yaml
+ data/
+ default.yaml
+ preprocessing.yaml
+ hardware/
+ default.yaml
+ cuda.yaml
+ cpu.yaml
+ experiment/
+ base_experiment.yaml
+ hyperparameter_sweep.yaml
 ```
 
 ## Core Configuration Files
@@ -224,14 +224,14 @@ Create hierarchical configs with defaults:
 
 ```
 configs/
-├── training/
-│ ├── default.yaml
-│ ├── bert.yaml
-│ └── gpt.yaml
-├── data/
-│ ├── default.yaml
-│ └── large.yaml
-└── config.yaml
+ training/
+ default.yaml
+ bert.yaml
+ gpt.yaml
+ data/
+ default.yaml
+ large.yaml
+ config.yaml
 ```
 
 In `config.yaml`:
@@ -485,23 +485,23 @@ cfg = load_config(
 
 ```
 conf/
-├── errors/ # Error definitions
-│ └── defaults.yaml
-├── model/ # Model configurations
-│ ├── base.yaml
-│ ├── toy.yaml
-│ └── offline/
-├── training/ # Training configurations
-│ ├── base.yaml
-│ ├── continual/
-│ └── offline/
-├── evaluation/ # Evaluation configurations
-│ ├── base.yaml
-│ └── reasoning/
-└── data/ # Data configurations
- ├── base.yaml
- ├── tiny.yaml
- └── offline/
+ errors/ # Error definitions
+ defaults.yaml
+ model/ # Model configurations
+ base.yaml
+ toy.yaml
+ offline/
+ training/ # Training configurations
+ base.yaml
+ continual/
+ offline/
+ evaluation/ # Evaluation configurations
+ base.yaml
+ reasoning/
+ data/ # Data configurations
+ base.yaml
+ tiny.yaml
+ offline/
 ```
 
 ---
@@ -667,7 +667,7 @@ overrides = [
 
 ## Best Practices
 
-### DO 
+### DO
 
 1. **Use ConfigLoader for all config loading**
 ```python
@@ -702,7 +702,7 @@ except MissingConfigException:
  # Handle missing config
 ```
 
-### DON'T 
+### DON'T
 
 1. **Don't hardcode config paths**
 ```python
@@ -872,5 +872,5 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
 
 ---
 
-**Maintained By:** PS-01 Configuration Consolidation 
+**Maintained By:** PS-01 Configuration Consolidation
 **Questions:** File an issue with "configuration" label

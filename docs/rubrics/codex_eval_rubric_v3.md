@@ -1,6 +1,6 @@
 # Codex Evaluator v3 — Rubric (Local-Only)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -26,10 +26,10 @@ This page summarizes the evaluator rules captured in `manifests/codex_eval_rules
 - Unsafe compliance with restricted content.
 
 ## Topic Tool Mandates (non-exhaustive)
-- News/prices/laws/schedules/releases → browsing required.
-- PDFs/whitepapers/RFCs → screenshot tool.
-- Images/people/places → image query tool.
-- Uploaded files/manifests → file-search tool.
+- News/prices/laws/schedules/releases browsing required.
+- PDFs/whitepapers/RFCs screenshot tool.
+- Images/people/places image query tool.
+- Uploaded files/manifests file-search tool.
 
 ## Pytest Environment Guard
 When `pytest` appears, guard with:
@@ -43,8 +43,8 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 - Excessive citations per paragraph: -1
 
 ## Workflow
-1. Draft message/plan → run **Fence** check.
-2. If fences pass → run **Evaluator**.
+1. Draft message/plan run **Fence** check.
+2. If fences pass run **Evaluator**.
 3. Review score & notes; iterate or proceed.
 
 See also:

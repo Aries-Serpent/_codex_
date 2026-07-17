@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/SECRETS_AND_ENVIRONMENT_VARIABLES/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Secrets and Environment Variables Documentation - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2415,7 +2415,7 @@
 <a class="md-nav__link" href="#settingsvariablesagents-recommended-additions">
 <span class="md-ellipsis">
       
-        🧩 settings/variables/agents — Recommended Additions
+        settings/variables/agents — Recommended Additions
       
     </span>
 </a>
@@ -2433,11 +2433,11 @@
 <a class="md-nav__link" href="#workflow-agent-variable-usage-map">
 <span class="md-ellipsis">
       
-        🗺️ Workflow &amp; Agent Variable Usage Map
+        Workflow &amp; Agent Variable Usage Map
       
     </span>
 </a>
-<nav aria-label="🗺️ Workflow &amp; Agent Variable Usage Map" class="md-nav">
+<nav aria-label="Workflow &amp; Agent Variable Usage Map" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml">
@@ -2729,7 +2729,7 @@
 <li><a href="#overview">Overview</a></li>
 <li><a href="#-full-inventory"> Full Inventory</a></li>
 <li><a href="#environment-variables--aries_serpent_codex_-environment">Environment Variables — <code>Aries_Serpent_codex_</code> Environment</a></li>
-<li><a href="#repository-variables">Repository Variables</a><ul>
+<li><a href="#repository-variables">Repository Variables</a></li>
 <li><a href="#agent--autonomy-control">Agent &amp; Autonomy Control</a></li>
 <li><a href="#cicd--quality-gates">CI/CD &amp; Quality Gates</a></li>
 <li><a href="#cognitive-brain--session-management">Cognitive Brain &amp; Session Management</a></li>
@@ -2737,8 +2737,6 @@
 <li><a href="#infrastructure--runtime">Infrastructure &amp; Runtime</a></li>
 <li><a href="#llm--ml-pipeline">LLM &amp; ML Pipeline</a></li>
 <li><a href="#zendesk-integration">Zendesk Integration</a></li>
-</ul>
-</li>
 <li><a href="#environment-secrets--aries_serpent_codex_">Environment Secrets — <code>Aries_Serpent_codex_</code></a></li>
 <li><a href="#repository-secrets">Repository Secrets</a></li>
 <li><a href="#organization-secrets">Organization Secrets</a></li>
@@ -2749,9 +2747,9 @@
 <li><a href="#cicd-timeouts--parallelism-codexcritical_repository_variablesmd">CI/CD Timeouts &amp; Parallelism (<code>.codex/CRITICAL_REPOSITORY_VARIABLES.md</code>)</a></li>
 <li><a href="#-token-chain"> Token Chain</a></li>
 <li><a href="#-secret-rotation-schedule"> Secret Rotation Schedule</a></li>
-<li><a href="#-settingsvariablesagents--recommended-additions">🧩 <code>settings/variables/agents</code> — Recommended Additions</a></li>
+<li><a href="#-settingsvariablesagents--recommended-additions"> <code>settings/variables/agents</code> — Recommended Additions</a></li>
 <li><a href="#workflow-permissions-reference">Workflow Permissions Reference</a></li>
-<li><a href="#-workflow--agent-variable-usage-map">🗺️ Workflow &amp; Agent Variable Usage Map</a></li>
+<li><a href="#-workflow--agent-variable-usage-map"> Workflow &amp; Agent Variable Usage Map</a></li>
 <li><a href="#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml">Copilot Sandbox Bootstrap Surface (<code>.github/workflows/copilot-setup-steps.yml</code>)</a></li>
 <li><a href="#agents-settings-surface-settingsvariablesagents">Agents Settings Surface (<code>settings/variables/agents</code>)</a></li>
 <li><a href="#workflow-automation--ci-surface">Workflow Automation / CI Surface</a></li>
@@ -2763,65 +2761,47 @@
 <li><a href="#whats-next-after-variable-sync">What’s Next (After Variable Sync)</a></li>
 <li><a href="#references">References</a></li>
 <li><a href="#change-log">Change Log</a></li>
-<li><a href="#gitleaks_license"><code>GITLEAKS_LICENSE</code></a><ul>
+<li><a href="#gitleaks_license"><code>GITLEAKS_LICENSE</code></a></li>
 <li><a href="#session_encryption_key"><code>SESSION_ENCRYPTION_KEY</code></a></li>
 <li><a href="#enable_live_tests"><code>ENABLE_LIVE_TESTS</code></a></li>
-</ul>
-</li>
-<li><a href="#third-party-integration-secrets">Third-Party Integration Secrets</a><ul>
+<li><a href="#third-party-integration-secrets">Third-Party Integration Secrets</a></li>
 <li><a href="#notebooklm_webhook_url"><code>NOTEBOOKLM_WEBHOOK_URL</code></a></li>
 <li><a href="#google_client_secret"><code>GOOGLE_CLIENT_SECRET</code></a></li>
 <li><a href="#gdrive_service_account_json"><code>GDRIVE_SERVICE_ACCOUNT_JSON</code></a></li>
 <li><a href="#github_oauth_client_id"><code>GITHUB_OAUTH_CLIENT_ID</code></a></li>
 <li><a href="#github_oauth_client_secret"><code>GITHUB_OAUTH_CLIENT_SECRET</code></a></li>
-</ul>
-</li>
-<li><a href="#pypi-publishing-secrets">PyPI Publishing Secrets</a><ul>
+<li><a href="#pypi-publishing-secrets">PyPI Publishing Secrets</a></li>
 <li><a href="#pypi_api_token"><code>PYPI_API_TOKEN</code></a></li>
 <li><a href="#test_pypi_api_token"><code>TEST_PYPI_API_TOKEN</code></a></li>
-</ul>
-</li>
-<li><a href="#aws-integration-secrets">AWS Integration Secrets</a><ul>
+<li><a href="#aws-integration-secrets">AWS Integration Secrets</a></li>
 <li><a href="#aws_access_key_id"><code>AWS_ACCESS_KEY_ID</code></a></li>
 <li><a href="#aws_secret_access_key"><code>AWS_SECRET_ACCESS_KEY</code></a></li>
-</ul>
-</li>
-<li><a href="#zendesk-integration-secrets">Zendesk Integration Secrets</a><ul>
+<li><a href="#zendesk-integration-secrets">Zendesk Integration Secrets</a></li>
 <li><a href="#zendesk_token"><code>ZENDESK_TOKEN</code></a></li>
 <li><a href="#zendesk_user"><code>ZENDESK_USER</code></a></li>
 <li><a href="#zendesk_url"><code>ZENDESK_URL</code></a></li>
-</ul>
-</li>
 <li><a href="#environment-variables">Environment Variables</a></li>
-<li><a href="#runtime-configuration">Runtime Configuration</a><ul>
+<li><a href="#runtime-configuration">Runtime Configuration</a></li>
 <li><a href="#codex_env_"><code>CODEX_ENV_*</code></a></li>
 <li><a href="#codex_session_"><code>CODEX_SESSION_*</code></a></li>
 <li><a href="#codex_log_db_path--codex_db_path"><code>CODEX_LOG_DB_PATH</code> / <code>CODEX_DB_PATH</code></a></li>
 <li><a href="#codex_sqlite_pool"><code>CODEX_SQLITE_POOL</code></a></li>
-</ul>
-</li>
-<li><a href="#cicd-environment-variables">CI/CD Environment Variables</a><ul>
+<li><a href="#cicd-environment-variables">CI/CD Environment Variables</a></li>
 <li><a href="#cargo_term_color"><code>CARGO_TERM_COLOR</code></a></li>
 <li><a href="#rust_backtrace"><code>RUST_BACKTRACE</code></a></li>
 <li><a href="#rust_test_threads"><code>RUST_TEST_THREADS</code></a></li>
-</ul>
-</li>
 <li><a href="#workflow-permissions">Workflow Permissions</a></li>
-<li><a href="#required-permissions-by-workflow">Required Permissions by Workflow</a><ul>
+<li><a href="#required-permissions-by-workflow">Required Permissions by Workflow</a></li>
 <li><a href="#auth-token-rotationyml"><code>auth-token-rotation.yml</code></a></li>
 <li><a href="#auth-secret-rotationyml"><code>auth-secret-rotation.yml</code></a></li>
 <li><a href="#auth-compliance-reportyml"><code>auth-compliance-report.yml</code></a></li>
 <li><a href="#phase10-automated-secrets-setupyml"><code>phase10-automated-secrets-setup.yml</code></a></li>
-</ul>
-</li>
 <li><a href="#security-best-practices">Security Best Practices</a></li>
 <li><a href="#secret-rotation-schedule">Secret Rotation Schedule</a></li>
 <li><a href="#secrets-usage-matrix">Secrets Usage Matrix</a></li>
 <li><a href="#secret-management-guidelines">Secret Management Guidelines</a></li>
-<li><a href="#mfa-and-authentication">MFA and Authentication</a><ul>
+<li><a href="#mfa-and-authentication">MFA and Authentication</a></li>
 <li><a href="#mfa-enrollment-process">MFA Enrollment Process</a></li>
-</ul>
-</li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#missing-secret-errors">Missing Secret Errors</a></li>
 </ul>
@@ -3452,7 +3432,7 @@
 <td><code>CODECOV_TOKEN</code></td>
 <td>Upload coverage reports to Codecov</td>
 <td>MEDIUM</td>
-<td>5 months ️ <!-- pragma: allowlist secret --></td>
+<td>5 months <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>CODEX_ADMIN_KEY</code></td>
@@ -3476,19 +3456,19 @@
 <td><code>HF_TOKEN</code></td>
 <td>HuggingFace Hub access token</td>
 <td>HIGH</td>
-<td>5 months ️ <!-- pragma: allowlist secret --></td>
+<td>5 months <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>NPM_TOKEN</code></td>
 <td>npm package publishing token</td>
 <td>HIGH</td>
-<td>5 months ️ <!-- pragma: allowlist secret --></td>
+<td>5 months <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>PYPI_TOKEN</code></td>
 <td>PyPI package publishing token</td>
 <td>HIGH</td>
-<td>5 months ️ <!-- pragma: allowlist secret --></td>
+<td>5 months <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>RAG_OPENAI_KEY</code></td>
@@ -3500,7 +3480,7 @@
 <td><code>_CODEX_ACTION_RUNNER</code></td>
 <td>Actions runner registration token</td>
 <td>HIGH</td>
-<td>5 months ️ <!-- pragma: allowlist secret --></td>
+<td>5 months <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>_GITHUB_APP_CLIENT_SECRET</code></td>
@@ -3570,7 +3550,7 @@
 <td><code>DISABLE_SECRET_FILTER</code></td>
 <td>Repo Var</td>
 <td><code>false</code></td>
-<td><strong>️ DANGER — NEVER set to <code>true</code> in production.</strong> Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. <!-- pragma: allowlist secret --></td>
+<td>** DANGER — NEVER set to <code>true</code> in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>ARTIFACTS_DIR</code></td>
@@ -3754,7 +3734,7 @@
 <hr/>
 <h2 id="token-chain">Token Chain<a class="headerlink" href="#token-chain" title="Permanent link">¶</a></h2>
 <p>All write operations in this repository use the following fallback chain:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token  # pragma: allowlist secret
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token # pragma: allowlist secret
 </code></pre></div>
 <p>Defined in <code>COPILOT_AGENT_PREFLIGHT_RULES.token_rule</code>. Never use <code>git push</code> directly — always use <code>report_progress</code> tool.</p>
 <hr/>
@@ -3772,31 +3752,31 @@
 <tr>
 <td><code>CODEX_MASTER_KEY</code></td>
 <td>Every 90 days</td>
-<td>Manual → update org secret</td>
+<td>Manual update org secret</td>
 <td>2026-06-28 <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>CODEX_BACKUP_KEY</code></td>
 <td>Every 90 days</td>
-<td>Manual → update org secret</td>
+<td>Manual update org secret</td>
 <td>2026-06-28 <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>CODEX_ADMIN_KEY</code></td>
 <td>Every 90 days</td>
-<td>Manual → update org secret</td>
+<td>Manual update org secret</td>
 <td>2026-06-28 <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>_GITHUB_APP_PRIVATE_KEY</code></td>
 <td>Every 90 days</td>
-<td>GitHub App → regenerate</td>
+<td>GitHub App regenerate</td>
 <td>2026-06-03</td>
 </tr>
 <tr>
 <td><code>_GITHUB_APP_CLIENT_SECRET</code></td>
 <td>Every 90 days</td>
-<td>GitHub App → regenerate</td>
+<td>GitHub App regenerate</td>
 <td>2026-06-04 <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
@@ -3815,36 +3795,36 @@
 <td><code>CODECOV_TOKEN</code></td>
 <td>Annual</td>
 <td>Codecov dashboard</td>
-<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+<td>OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>HF_TOKEN</code></td>
 <td>Annual</td>
 <td>HuggingFace settings</td>
-<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+<td>OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>NPM_TOKEN</code></td>
 <td>Annual</td>
 <td>npm settings</td>
-<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+<td>OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>PYPI_TOKEN</code></td>
 <td>Annual</td>
 <td>PyPI account</td>
-<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+<td>OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
 </tr>
 <tr>
 <td><code>_CODEX_ACTION_RUNNER</code></td>
 <td>Annual</td>
 <td>GitHub Actions runners</td>
-<td>️ OVERDUE (5 months)</td>
+<td>OVERDUE (5 months)</td>
 </tr>
 </tbody>
 </table>
 <hr/>
-<h2 id="settingsvariablesagents-recommended-additions">🧩 <code>settings/variables/agents</code> — Recommended Additions<a class="headerlink" href="#settingsvariablesagents-recommended-additions" title="Permanent link">¶</a></h2>
+<h2 id="settingsvariablesagents-recommended-additions"><code>settings/variables/agents</code> — Recommended Additions<a class="headerlink" href="#settingsvariablesagents-recommended-additions" title="Permanent link">¶</a></h2>
 <p>The Copilot agents settings page currently shows only the firewall defaults. The following variables <strong>MUST or SHOULD</strong> be added at <code>https://github.com/Aries-Serpent/_codex_/settings/variables/agents</code>:</p>
 <table>
 <thead>
@@ -3945,7 +3925,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="workflow-agent-variable-usage-map">🗺️ Workflow &amp; Agent Variable Usage Map<a class="headerlink" href="#workflow-agent-variable-usage-map" title="Permanent link">¶</a></h2>
+<h2 id="workflow-agent-variable-usage-map">Workflow &amp; Agent Variable Usage Map<a class="headerlink" href="#workflow-agent-variable-usage-map" title="Permanent link">¶</a></h2>
 <p>This section maps each key repository variable to the GitHub Actions workflows and custom agents that read it. Reference this when changing a variable value to understand downstream impact.</p>
 <h3 id="copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml">Copilot Sandbox Bootstrap Surface (<code>.github/workflows/copilot-setup-steps.yml</code>)<a class="headerlink" href="#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml" title="Permanent link">¶</a></h3>
 <table>
@@ -3960,25 +3940,25 @@
 <tbody>
 <tr>
 <td><code>NODE_JS_VERSION</code></td>
-<td>Repository variable → workflow <code>env.NODE_VERSION</code></td>
+<td>Repository variable workflow <code>env.NODE_VERSION</code></td>
 <td>Read as <code>${{ vars.NODE_JS_VERSION \|\| '22' }}</code></td>
 <td>Node/npm tools in the Copilot sandbox</td>
 </tr>
 <tr>
 <td><code>COPILOT_RUNNER_PROFILE</code></td>
-<td>Repository variable → <code>runs-on</code></td>
+<td>Repository variable <code>runs-on</code></td>
 <td>Read as <code>${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}</code></td>
 <td>Runner sizing for Copilot sessions</td>
 </tr>
 <tr>
 <td><code>CODEX_CACHE_VERSION</code></td>
-<td>Repository variable → <code>setup-agent-env</code> input</td>
+<td>Repository variable <code>setup-agent-env</code> input</td>
 <td>Read as <code>${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}</code></td>
 <td>Agent venv/cache hierarchy and cache invalidation</td>
 </tr>
 <tr>
 <td><code>CODEX_MASTER_KEY</code>, <code>CODEX_BACKUP_KEY</code></td>
-<td>Organization secrets → job env → export step</td>
+<td>Organization secrets job env export step</td>
 <td>Injected into the agent runtime for token-chain writes</td>
 <td><code>agent-auth-delegation</code>, variable sync, workflow dispatch <!-- pragma: allowlist secret --></td>
 </tr>
@@ -4152,15 +4132,15 @@
 <h3 id="variable-access-pattern-in-workflows">Variable Access Pattern in Workflows<a class="headerlink" href="#variable-access-pattern-in-workflows" title="Permanent link">¶</a></h3>
 <p>All variables should be accessed using the safe fallback pattern:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nt">env</span><span class="p">:</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">CODEX_CACHE_VERSION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_CACHE_VERSION || 'v2' }}</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="c1"># NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="c1">#   env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">CODEX_TEST_TIMEOUT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">COGNITIVE_BRAIN_INJECTION_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="nt">CODEX_CACHE_VERSION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_CACHE_VERSION || 'v2' }}</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="c1"># NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span><span class="c1"># env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="nt">CODEX_TEST_TIMEOUT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="nt">COGNITIVE_BRAIN_INJECTION_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}</span>
 </code></pre></div>
 <blockquote>
 <p><strong>Note on Node.js version variables</strong>:
-- <code>NODE_JS_VERSION</code> — <strong>repo var</strong> (create in GitHub UI → Settings → Actions → Variables). CI workflows (e.g., <code>copilot-setup-steps.yml</code>) read it as <code>env.NODE_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}</code>.
+- <code>NODE_JS_VERSION</code> — <strong>repo var</strong> (create in GitHub UI Settings Actions Variables). CI workflows (e.g., <code>copilot-setup-steps.yml</code>) read it as <code>env.NODE_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}</code>.
 - <code>CODEX_ENV_NODE_VERSION</code> — <strong>environment var</strong> (Aries_Serpent_codex_ environment). Injected into the Copilot agent sandbox. These are two separate mechanisms serving different scopes.
 - <code>CODEX_ENV</code> — <strong>runtime env value</strong> exported by <code>copilot-setup-steps.yml</code> (<code>copilot-agent</code> today). This is distinct from any optional repository variable fallback used by services outside the Copilot sandbox.
 - <code>CODEX_DB_PATH</code> vs <code>CODEX_LOG_DB_PATH</code> — the setup workflow currently exports <code>CODEX_DB_PATH=${GITHUB_WORKSPACE}/.codex/codex.db</code> for cognitive/pattern state, while logging tools still default to <code>CODEX_LOG_DB_PATH=.codex/session_logs.db</code>.</p>
@@ -4170,15 +4150,15 @@
 </code></pre></div></p>
 <p>For action inputs:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/setup-python-cached</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="nt">cache-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_CACHE_VERSION || 'v2' }}</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w w-Error"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">cache-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_CACHE_VERSION || 'v2' }}</span>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-node@v6</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="nt">node-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.NODE_JS_VERSION || '22' }}</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w w-Error"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span><span class="nt">node-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.NODE_JS_VERSION || '22' }}</span>
 </code></pre></div></p>
 <h3 id="agent-variable-expectations">Agent Variable Expectations<a class="headerlink" href="#agent-variable-expectations" title="Permanent link">¶</a></h3>
 <p>Every custom Copilot coding agent MUST:
-1. Check <code>AGENT_KILL_SWITCH</code> (<code>vars.AGENT_KILL_SWITCH == '1'</code> → abort immediately)
+1. Check <code>AGENT_KILL_SWITCH</code> (<code>vars.AGENT_KILL_SWITCH == '1'</code> abort immediately)
 2. Read <code>COPILOT_AGENT_PREFLIGHT_RULES</code> for pre-commit compliance rules
 3. Reference <code>COPILOT_WEC_SELECTION_MATRIX</code> for WEC item routing
 4. Respect <code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code> (ceiling: <code>D</code>)
@@ -4194,17 +4174,17 @@
 <h2 id="security-best-practices">Security Best Practices<a class="headerlink" href="#security-best-practices" title="Permanent link">¶</a></h2>
 <ol>
 <li><strong>Never commit secrets</strong> to the repository</li>
-<li><strong>Token chain for write ops</strong>: <code>CODEX_MASTER_KEY</code> → <code>CODEX_BACKUP_KEY</code> → <code>github.token</code></li>
+<li><strong>Token chain for write ops</strong>: <code>CODEX_MASTER_KEY</code> <code>CODEX_BACKUP_KEY</code> <code>github.token</code></li>
 <li><strong>Rotate compromised secrets immediately</strong> — see <code>.codex/security/rotation_schedule.md</code></li>
 <li><strong>Use least privilege</strong> for workflow permissions</li>
-<li><strong>Audit secret access</strong> via GitHub → Settings → Security → Audit log</li>
+<li><strong>Audit secret access</strong> via GitHub Settings Security Audit log</li>
 <li><strong><code>DISABLE_SECRET_FILTER</code></strong> — must never be set to <code>true</code> in production</li>
 <li><strong><code>AGENT_KILL_SWITCH</code></strong> — set to <code>1</code> to immediately halt all autonomous agent activity</li>
 </ol>
 <hr/>
 <h2 id="monitoring-and-auditing">Monitoring and Auditing<a class="headerlink" href="#monitoring-and-auditing" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>Audit Log</strong>: Settings → Security → Audit log → Filter by "secret"</li>
+<li><strong>Audit Log</strong>: Settings Security Audit log Filter by "secret"</li>
 <li><strong>CI Failure Rate</strong>: <code>CODEX_CI_FAILURE_RATE</code> (auto-updated by CI agent, thresholds via <code>CODEX_CI_FAILURE_THRESHOLD</code>)</li>
 <li><strong>Secret Access Patterns</strong>: <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code></li>
 <li><strong>Usage Matrix</strong>: <code>.codex/security/secrets_usage_matrix.json</code></li>
@@ -4259,7 +4239,7 @@
 </tr>
 <tr>
 <td>2026-06-03</td>
-<td><strong>Variable usage expansion</strong> — updated <code>CODEX_ENV_NODE_VERSION</code> 18→22; added Workflow &amp; Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements</td>
+<td><strong>Variable usage expansion</strong> — updated <code>CODEX_ENV_NODE_VERSION</code> 1822; added Workflow &amp; Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements</td>
 <td>@mbaetiong</td>
 </tr>
 <tr>
@@ -4359,7 +4339,7 @@
 <li><strong>Used In</strong>:</li>
 <li><code>pypi-publish.yml</code></li>
 <li>Package publishing workflows</li>
-<li><strong>Generation</strong>: Via PyPI Account Settings → API tokens → Generate new token</li>
+<li><strong>Generation</strong>: Via PyPI Account Settings API tokens Generate new token</li>
 <li><strong>Security Level</strong>: HIGH - Rotate every 90 iterations or after each use</li>
 <li><strong>Required</strong>: Yes (for production PyPI publishing)</li>
 <li><strong>Rotation</strong>: Recommended after each release or every 90 iterations</li>
@@ -4372,7 +4352,7 @@
 <li><strong>Used In</strong>:</li>
 <li><code>pypi-publish.yml</code></li>
 <li>Pre-release testing workflows</li>
-<li><strong>Generation</strong>: Via TestPyPI Account Settings → API tokens → Generate new token</li>
+<li><strong>Generation</strong>: Via TestPyPI Account Settings API tokens Generate new token</li>
 <li><strong>Security Level</strong>: MEDIUM - Rotate every 90 iterations</li>
 <li><strong>Required</strong>: No (recommended for testing releases before production)</li>
 <li><strong>Rotation</strong>: Recommended every 90 iterations</li>
@@ -4402,7 +4382,7 @@
 <li><strong>Purpose</strong>: Zendesk API authentication token</li>
 <li><strong>Format</strong>: Zendesk API token string</li>
 <li><strong>Used In</strong>: <code>zendesk-knowledge-sync.yml</code></li>
-<li><strong>Generation</strong>: Via Zendesk Admin → API settings</li>
+<li><strong>Generation</strong>: Via Zendesk Admin API settings</li>
 <li><strong>Security Level</strong>: MEDIUM - Rotate annually</li>
 <li><strong>Required</strong>: Yes (for knowledge base sync)</li>
 </ul>
@@ -4476,26 +4456,26 @@
 <h3 id="required-permissions-by-workflow">Required Permissions by Workflow<a class="headerlink" href="#required-permissions-by-workflow" title="Permanent link">¶</a></h3>
 <h4 id="auth-token-rotationyml"><code>auth-token-rotation.yml</code><a class="headerlink" href="#auth-token-rotationyml" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">     </span><span class="c1"># Read/write repository contents</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">       </span><span class="c1"># Create audit issues</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Update GitHub secrets</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Read/write repository contents</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Create audit issues</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Update GitHub secrets</span>
 </code></pre></div>
 <h4 id="auth-secret-rotationyml"><code>auth-secret-rotation.yml</code><a class="headerlink" href="#auth-secret-rotationyml" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">     </span><span class="c1"># Read/write repository contents</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Rotate secrets</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">       </span><span class="c1"># Create audit trail</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Read/write repository contents</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Rotate secrets</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Create audit trail</span>
 </code></pre></div>
 <h4 id="auth-compliance-reportyml"><code>auth-compliance-report.yml</code><a class="headerlink" href="#auth-compliance-reportyml" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w">      </span><span class="c1"># Read repository data</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">       </span><span class="c1"># Post compliance reports</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w"> </span><span class="c1"># Read repository data</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Post compliance reports</span>
 </code></pre></div>
 <h4 id="phase10-automated-secrets-setupyml"><code>phase10-automated-secrets-setup.yml</code><a class="headerlink" href="#phase10-automated-secrets-setupyml" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w">      </span><span class="c1"># Read configuration</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Manage workflow state</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Initialize secrets</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w"> </span><span class="c1"># Read configuration</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Manage workflow state</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"> </span><span class="c1"># Initialize secrets</span>
 </code></pre></div>
 <h2 id="security-best-practices_1">Security Best Practices<a class="headerlink" href="#security-best-practices_1" title="Permanent link">¶</a></h2>
 <h3 id="secret-rotation-schedule_1">Secret Rotation Schedule<a class="headerlink" href="#secret-rotation-schedule_1" title="Permanent link">¶</a></h3>
@@ -4608,6 +4588,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

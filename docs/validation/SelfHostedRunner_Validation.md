@@ -1,6 +1,6 @@
 # [Validation]: Self-hosted runner — GH_PAT/_CODEX_BOT_RUNNER flow
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -14,9 +14,9 @@ Checklist
 | Install Docker | sudo bash scripts/runner/install_docker.sh <runner_user> | docker info succeeds; user in docker group |
 | Optional binfmt | sudo -u <runner_user> bash scripts/runner/install_binfmt.sh | binfmt entries visible |
 | Bootstrap (repo-level) | sudo -u <runner_user> bash scripts/runner/actions_runner_bootstrap.sh --url "https://github.com/Aries-Serpent/_codex_" --labels "self-hosted,linux,docker" --version "2.329.0" --svc systemd | Runner registers and service starts |
-| Diagnostics | GH UI → Actions → “Runner diagnostics — self-hosted readiness” → Run workflow | Summary shows Docker present, Buildx checked |
+| Diagnostics | GH UI Actions “Runner diagnostics — self-hosted readiness” Run workflow | Summary shows Docker present, Buildx checked |
 | CI (check-only) | Dispatch Docker CI with check_only=true and approval_duration="24h" | Approval-check passes; build/push skipped |
-| CI (full run on main) | Push to main during approval window | Build → smoke → push → GHCR pull+smoke succeed |
+| CI (full run on main) | Push to main during approval window | Build smoke push GHCR pull+smoke succeed |
 
 Notes
 - Token sourcing: scripts prefer GH_PAT, fallback to _CODEX_BOT_RUNNER. No other variables needed.

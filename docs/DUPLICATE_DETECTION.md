@@ -1,6 +1,6 @@
 # Duplicate Detection Inventory
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -11,26 +11,26 @@ Comprehensive duplicate detection system for identifying and managing code dupli
 ### Detection Modes
 
 1. **Exact Detection** (SHA256-based)
-   - Finds byte-for-byte identical files
-   - Fast and reliable
-   - Useful for identifying true duplicates
+ - Finds byte-for-byte identical files
+ - Fast and reliable
+ - Useful for identifying true duplicates
 
 2. **Normalized Detection** (Comment/whitespace-agnostic)
-   - Removes comments and normalizes whitespace
-   - Detects structural duplicates
-   - Language-specific normalizers (Python, JavaScript)
+ - Removes comments and normalizes whitespace
+ - Detects structural duplicates
+ - Language-specific normalizers (Python, JavaScript)
 
 3. **AST Detection** (Function/class level)
-   - Analyzes code at AST level
-   - Identifies duplicate functions and methods
-   - Reports exact line numbers
-   - Cross-file detection
+ - Analyzes code at AST level
+ - Identifies duplicate functions and methods
+ - Reports exact line numbers
+ - Cross-file detection
 
 4. **Semantic Detection** (MinHash fuzzy matching)
-   - Finds semantically similar code
-   - Token-based similarity
-   - Adjustable threshold
-   - Clusters similar files
+ - Finds semantically similar code
+ - Token-based similarity
+ - Adjustable threshold
+ - Clusters similar files
 
 ### Integration Features
 
@@ -92,10 +92,10 @@ After running, the following files are generated:
 - `supplemental_duplicates.json` - JSON format
 - `supplemental_duplicates.csv` - Flat summary table
 - `supplemental_duplicates.md` - Human-readable report with:
-  - Executive summary
-  - SHIM inventory status
-  - High-priority duplicates NOT in SHIM inventory
-  - Detailed duplicate groups with recommendations
+ - Executive summary
+ - SHIM inventory status
+ - High-priority duplicates NOT in SHIM inventory
+ - Detailed duplicate groups with recommendations
 
 ## Report Sections
 
@@ -108,7 +108,7 @@ After running, the following files are generated:
 ### SHIM Inventory Status
 - Duplicates in SHIM inventory
 - Whitelisted duplicates
-- **High Priority**: Duplicates NOT in SHIM inventory ️
+- **High Priority**: Duplicates NOT in SHIM inventory
 
 ### Duplicate Groups
 - Grouped by detection type
@@ -123,9 +123,9 @@ After running, the following files are generated:
 
 The tool automatically cross-references detected duplicates with `.github/SHIM_INVENTORY.yaml`:
 
--  **In Inventory & Whitelisted**: These are tracked and approved
-- ️ **In Inventory but Not Whitelisted**: Need attention
--  **NOT in Inventory**: High priority - should be reviewed immediately
+- **In Inventory & Whitelisted**: These are tracked and approved
+- **In Inventory but Not Whitelisted**: Need attention
+- **NOT in Inventory**: High priority - should be reviewed immediately
 
 ## Configuration File
 

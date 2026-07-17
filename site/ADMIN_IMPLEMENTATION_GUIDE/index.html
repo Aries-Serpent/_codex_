@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ADMIN_IMPLEMENTATION_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>codex Repository: Complete Admin Implementation Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2423,11 +2423,11 @@
 <a class="md-nav__link" href="#section-3-repository-secrets-configuration">
 <span class="md-ellipsis">
       
-        🔑 Section 3: Repository Secrets Configuration
+        Section 3: Repository Secrets Configuration
       
     </span>
 </a>
-<nav aria-label="🔑 Section 3: Repository Secrets Configuration" class="md-nav">
+<nav aria-label="Section 3: Repository Secrets Configuration" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#31-navigate-to-secrets-settings">
@@ -2512,11 +2512,11 @@
 <a class="md-nav__link" href="#section-5-security-compliance">
 <span class="md-ellipsis">
       
-        🛡️ Section 5: Security &amp; Compliance
+        Section 5: Security &amp; Compliance
       
     </span>
 </a>
-<nav aria-label="🛡️ Section 5: Security &amp; Compliance" class="md-nav">
+<nav aria-label="Section 5: Security &amp; Compliance" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#51-security-settings-verification">
@@ -2650,11 +2650,11 @@
 <a class="md-nav__link" href="#section-9-support-resources">
 <span class="md-ellipsis">
       
-        📞 Section 9: Support Resources
+        Section 9: Support Resources
       
     </span>
 </a>
-<nav aria-label="📞 Section 9: Support Resources" class="md-nav">
+<nav aria-label="Section 9: Support Resources" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#documentation-links">
@@ -2809,43 +2809,37 @@
 <li><a href="#11-enable-github-copilot-for-organization">1.1 Enable GitHub Copilot for Organization</a></li>
 <li><a href="#12-repository-permissions">1.2 Repository Permissions</a></li>
 <li><a href="#-section-2-github-app-creation-pr-reviewer-bot"> Section 2: GitHub App Creation (PR Reviewer Bot)</a></li>
-<li><a href="#21-create-github-app">2.1 Create GitHub App</a><ul>
+<li><a href="#21-create-github-app">2.1 Create GitHub App</a></li>
 <li><a href="#step-1-basic-information">Step 1: Basic Information</a></li>
 <li><a href="#step-2-identifying-and-authorizing-users">Step 2: Identifying and authorizing users</a></li>
 <li><a href="#step-3-post-installation">Step 3: Post installation</a></li>
 <li><a href="#step-4-webhook-configuration">Step 4: Webhook Configuration</a></li>
-</ul>
-</li>
 <li><a href="#run-this-command-to-generate-a-secure-webhook-secret">Run this command to generate a secure webhook secret</a></li>
 <li><a href="#step-5-repository-permissions-critical">Step 5: Repository Permissions (CRITICAL)</a></li>
-<li><a href="#step-6-subscribe-to-events">Step 6: Subscribe to Events</a><ul>
+<li><a href="#step-6-subscribe-to-events">Step 6: Subscribe to Events</a></li>
 <li><a href="#step-7-where-can-this-github-app-be-installed">Step 7: Where can this GitHub App be installed?</a></li>
 <li><a href="#step-8-create-github-app">Step 8: Create GitHub App</a></li>
-</ul>
-</li>
 <li><a href="#22-after-app-creation---collect-required-information">2.2 After App Creation - Collect Required Information</a></li>
 <li><a href="#23-install-app-on-repository">2.3 Install App on Repository</a></li>
-<li><a href="#-section-3-repository-secrets-configuration">🔑 Section 3: Repository Secrets Configuration</a></li>
+<li><a href="#-section-3-repository-secrets-configuration"> Section 3: Repository Secrets Configuration</a></li>
 <li><a href="#31-navigate-to-secrets-settings">3.1 Navigate to Secrets Settings</a></li>
 <li><a href="#32-required-secrets-critical">3.2 Required Secrets (CRITICAL)</a></li>
 <li><a href="#33-optional-secrets-enhanced-features">3.3 Optional Secrets (Enhanced Features)</a></li>
 <li><a href="#34-how-to-add-a-secret">3.4 How to Add a Secret</a></li>
 <li><a href="#35-personal-access-token-if-needed">3.5 Personal Access Token (if needed)</a></li>
 <li><a href="#-section-4-deployment-infrastructure"> Section 4: Deployment Infrastructure</a></li>
-<li><a href="#41-choose-deployment-method">4.1 Choose Deployment Method</a><ul>
+<li><a href="#41-choose-deployment-method">4.1 Choose Deployment Method</a></li>
 <li><a href="#option-a-github-actions-only-simplest---recommended-for-start">Option A: GitHub Actions Only (Simplest - RECOMMENDED for start)</a></li>
 <li><a href="#option-b-aws-lambda-recommended-for-production">Option B: AWS Lambda (Recommended for Production)</a></li>
 <li><a href="#option-c-azure-functions">Option C: Azure Functions</a></li>
 <li><a href="#option-d-self-hosted-runner">Option D: Self-Hosted Runner</a></li>
-</ul>
-</li>
 <li><a href="#42-github-actions-runner-configuration">4.2 GitHub Actions Runner Configuration</a></li>
 <li><a href="#on-your-server">On your server:</a></li>
-<li><a href="#download-runner-get-url-from-settings--actions--runners--new-self-hosted-runner">Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)</a></li>
+<li><a href="#download-runner-get-url-from-settings--actions--runners--new-self-hosted-runner">Download runner (get URL from Settings Actions Runners New self-hosted runner)</a></li>
 <li><a href="#extract">Extract</a></li>
 <li><a href="#configure-token-from-github-settings">Configure (token from GitHub Settings)</a></li>
 <li><a href="#run">Run</a></li>
-<li><a href="#-section-5-security--compliance">🛡️ Section 5: Security &amp; Compliance</a></li>
+<li><a href="#-section-5-security--compliance"> Section 5: Security &amp; Compliance</a></li>
 <li><a href="#51-security-settings-verification">5.1 Security Settings Verification</a></li>
 <li><a href="#52-branch-protection-rules">5.2 Branch Protection Rules</a></li>
 <li><a href="#53-codeowners-file">5.3 CODEOWNERS File</a></li>
@@ -2864,23 +2858,21 @@
 <li><a href="#">==============================================================================</a></li>
 <li><a href="#admin-configuration-report-for-_codex_">Admin Configuration Report for <em>codex</em></a></li>
 <li><a href="#">==============================================================================</a></li>
-<li><a href="#date-todays-date---eg-2025-12-21">Date: 2026-07-13</a></li>
+<li><a href="#date-todays-date---eg-2025-12-21">Date: 2026-07-16</a></li>
 <li><a href="#administrator-your_name">Administrator: [YOUR_NAME]</a></li>
 <li><a href="#">==============================================================================</a></li>
 <li><a href="#list-any-issues-or-blockers">List any issues or blockers</a></li>
 <li><a href="#questions-for-copilot-agent">Questions for Copilot Agent</a></li>
 <li><a href="#additional-notes">Additional notes</a></li>
 <li><a href="#-section-8-troubleshooting-guide"> Section 8: Troubleshooting Guide</a></li>
-<li><a href="#common-issues-and-solutions">Common Issues and Solutions</a><ul>
+<li><a href="#common-issues-and-solutions">Common Issues and Solutions</a></li>
 <li><a href="#issue-copilot-agents-not-available">Issue: "Copilot Agents not available"</a></li>
 <li><a href="#issue-workflows-failing-with-permission-errors">Issue: "Workflows failing with permission errors"</a></li>
 <li><a href="#issue-cannot-create-github-app">Issue: "Cannot create GitHub App"</a></li>
 <li><a href="#issue-webhook-not-receiving-events">Issue: "Webhook not receiving events"</a></li>
 <li><a href="#issue-secret-scanning-blocking-push">Issue: "Secret scanning blocking push"</a></li>
 <li><a href="#issue-required-status-checks-not-found">Issue: "Required status checks not found"</a></li>
-</ul>
-</li>
-<li><a href="#-section-9-support-resources">📞 Section 9: Support Resources</a></li>
+<li><a href="#-section-9-support-resources"> Section 9: Support Resources</a></li>
 <li><a href="#documentation-links">Documentation Links</a></li>
 <li><a href="#getting-help">Getting Help</a></li>
 <li><a href="#repository-specific-resources">Repository-Specific Resources</a></li>
@@ -2951,13 +2943,13 @@
 </tr>
 <tr>
 <td>Security Scanning</td>
-<td>️ Partial</td>
+<td>Partial</td>
 <td>3 actions</td>
 <td><strong>HIGH</strong></td>
 </tr>
 <tr>
 <td>Workflows</td>
-<td>️ Failing</td>
+<td>Failing</td>
 <td>4 actions</td>
 <td><strong>MEDIUM</strong></td>
 </tr>
@@ -2975,7 +2967,7 @@
 <p><strong>Admin Portal:</strong> <code>https://github.com/organizations/Aries-Serpent/settings/copilot</code></p>
 <p><strong>Required Actions:</strong></p>
 <ol>
-<li>Navigate to: <strong>Settings → Copilot → Policies</strong></li>
+<li>Navigate to: <strong>Settings Copilot Policies</strong></li>
 <li>Enable: <strong>"Allow Copilot"</strong></li>
 <li>Set: <strong>"Organization members can use Copilot"</strong></li>
 <li>Enable: <strong>"Copilot Agents"</strong> (if available in your plan)</li>
@@ -2988,11 +2980,11 @@
 </blockquote>
 <p><strong>Information to Return:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nt">organization_settings</span><span class="p">:</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">org_name</span><span class="p">:</span><span class="w"> </span><span class="s">"Aries-Serpent"</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">org_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">YOUR_ORG_ID</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># e.g., 123456789</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">copilot_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">copilot_agents_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="nt">copilot_tier</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">free/team/enterprise</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w"> </span><span class="nt">org_name</span><span class="p">:</span><span class="w"> </span><span class="s">"Aries-Serpent"</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="nt">org_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">YOUR_ORG_ID</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># e.g., 123456789</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w"> </span><span class="nt">copilot_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w"> </span><span class="nt">copilot_agents_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w"> </span><span class="nt">copilot_tier</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">free/team/enterprise</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="12-repository-permissions">1.2 Repository Permissions<a class="headerlink" href="#12-repository-permissions" title="Permanent link">¶</a></h3>
 <p><strong>Admin Portal:</strong> <code>https://github.com/Aries-Serpent/_codex_/settings</code></p>
@@ -3008,47 +3000,47 @@
 <tbody>
 <tr>
 <td>Actions</td>
-<td>Settings → Actions → General</td>
+<td>Settings Actions General</td>
 <td>Enabled</td>
 </tr>
 <tr>
 <td>Workflow Permissions</td>
-<td>Settings → Actions → General</td>
+<td>Settings Actions General</td>
 <td>Read and write permissions</td>
 </tr>
 <tr>
 <td>Allow PR approval</td>
-<td>Settings → Actions → General</td>
+<td>Settings Actions General</td>
 <td>Allow GitHub Actions to create and approve pull requests</td>
 </tr>
 <tr>
 <td>Dependency Graph</td>
-<td>Settings → Security → Code security</td>
+<td>Settings Security Code security</td>
 <td>Enabled</td>
 </tr>
 <tr>
 <td>Dependabot Alerts</td>
-<td>Settings → Security → Code security</td>
+<td>Settings Security Code security</td>
 <td>Enabled</td>
 </tr>
 <tr>
 <td>Dependabot Security Updates</td>
-<td>Settings → Security → Code security</td>
+<td>Settings Security Code security</td>
 <td>Enabled</td>
 </tr>
 <tr>
 <td>Secret Scanning</td>
-<td>Settings → Security → Code security</td>
+<td>Settings Security Code security</td>
 <td>Enabled</td>
 </tr>
 <tr>
 <td>Push Protection</td>
-<td>Settings → Security → Code security</td>
+<td>Settings Security Code security</td>
 <td>Enabled</td>
 </tr>
 <tr>
 <td>GitHub Pages</td>
-<td>Settings → Pages</td>
+<td>Settings Pages</td>
 <td>Enabled (Deploy from Actions)</td>
 </tr>
 </tbody>
@@ -3067,7 +3059,7 @@
 <h3 id="21-create-github-app">2.1 Create GitHub App<a class="headerlink" href="#21-create-github-app" title="Permanent link">¶</a></h3>
 <p><strong>Portal:</strong> <code>https://github.com/organizations/Aries-Serpent/settings/apps/new</code></p>
 <blockquote>
-<p>️ <strong>IMPORTANT:</strong> You must be an Organization Owner or Admin to create a GitHub App.</p>
+<p><strong>IMPORTANT:</strong> You must be an Organization Owner or Admin to create a GitHub App.</p>
 </blockquote>
 <p><strong>Step-by-Step Instructions:</strong></p>
 <h4 id="step-1-basic-information">Step 1: Basic Information<a class="headerlink" href="#step-1-basic-information" title="Permanent link">¶</a></h4>
@@ -3240,12 +3232,12 @@
 </ol>
 <p><strong>Return this information:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">github_app</span><span class="p">:</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="nt">app_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">APP_ID</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># e.g., 123456</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">client_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">CLIENT_ID</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># e.g., Iv1.abc123def456</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="nt">app_name</span><span class="p">:</span><span class="w"> </span><span class="s">"codex-quantum-reviewer"</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">webhook_secret</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">SECRET_FROM_STEP_4</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># KEEP SECURE</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">private_key_generated</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">private_key_file</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">FILENAME.pem</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="nt">app_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">APP_ID</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># e.g., 123456</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">client_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">CLIENT_ID</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># e.g., Iv1.abc123def456</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">app_name</span><span class="p">:</span><span class="w"> </span><span class="s">"codex-quantum-reviewer"</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">webhook_secret</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">SECRET_FROM_STEP_4</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># KEEP SECURE</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">private_key_generated</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="nt">private_key_file</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">FILENAME.pem</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="23-install-app-on-repository">2.3 Install App on Repository<a class="headerlink" href="#23-install-app-on-repository" title="Permanent link">¶</a></h3>
 <ol>
@@ -3265,94 +3257,31 @@
 </ol>
 <p><strong>Return this information:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nt">app_installation</span><span class="p">:</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">installation_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">INSTALLATION_ID</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># e.g., 12345678</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">installed_on_repo</span><span class="p">:</span><span class="w"> </span><span class="s">"_codex_"</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span><span class="nt">installation_url</span><span class="p">:</span><span class="w"> </span><span class="s">"https://github.com/organizations/Aries-Serpent/settings/installations/[INSTALLATION_ID]"</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span><span class="nt">installation_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">INSTALLATION_ID</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># e.g., 12345678</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">installed_on_repo</span><span class="p">:</span><span class="w"> </span><span class="s">"_codex_"</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">installation_url</span><span class="p">:</span><span class="w"> </span><span class="s">"https://github.com/organizations/Aries-Serpent/settings/installations/[INSTALLATION_ID]"</span>
 </code></pre></div>
 <hr/>
-<h2 id="section-3-repository-secrets-configuration">🔑 Section 3: Repository Secrets Configuration<a class="headerlink" href="#section-3-repository-secrets-configuration" title="Permanent link">¶</a></h2>
+<h2 id="section-3-repository-secrets-configuration">Section 3: Repository Secrets Configuration<a class="headerlink" href="#section-3-repository-secrets-configuration" title="Permanent link">¶</a></h2>
 <h3 id="31-navigate-to-secrets-settings">3.1 Navigate to Secrets Settings<a class="headerlink" href="#31-navigate-to-secrets-settings" title="Permanent link">¶</a></h3>
 <p><strong>Portal:</strong> <code>https://github.com/Aries-Serpent/_codex_/settings/secrets/actions</code></p>
 <h3 id="32-required-secrets-critical">3.2 Required Secrets (CRITICAL)<a class="headerlink" href="#32-required-secrets-critical" title="Permanent link">¶</a></h3>
 <p>Create these secrets <strong>exactly as named</strong>:</p>
-<table>
-<thead>
-<tr>
-<th>Secret Name</th>
-<th>How to Obtain</th>
-<th>Required For</th>
-<th>Priority</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>CODEX_APP_ID</code></td>
-<td>From GitHub App creation (Section 2.2)</td>
-<td>PR Reviewer</td>
-<td><strong>CRITICAL</strong></td>
-</tr>
-<tr>
-<td><code>CODEX_PRIVATE_KEY</code></td>
-<td>Contents of downloaded <code>.pem</code> file</td>
-<td>PR Reviewer</td>
-<td><strong>CRITICAL</strong></td>
-</tr>
-<tr>
-<td><code>CODEX_WEBHOOK_SECRET</code></td>
-<td>Generated in Section 2.1 Step 4</td>
-<td>Webhook verification</td>
-<td><strong>CRITICAL</strong></td>
-</tr>
-<tr>
-<td><code>CODEX_INSTALLATION_ID</code></td>
-<td>From Section 2.3</td>
-<td>App authentication</td>
-<td><strong>CRITICAL</strong></td>
-</tr>
-</tbody>
-</table>
+<p>| Secret Name | How to Obtain | Required For | Priority | <!-- pragma: allowlist secret -->
+|------------|---------------|--------------|----------|
+| <code>CODEX_APP_ID</code> | From GitHub App creation (Section 2.2) | PR Reviewer | <strong>CRITICAL</strong> |
+| <code>CODEX_PRIVATE_KEY</code> | Contents of downloaded <code>.pem</code> file | PR Reviewer | <strong>CRITICAL</strong> |
+| <code>CODEX_WEBHOOK_SECRET</code> | Generated in Section 2.1 Step 4 | Webhook verification | <strong>CRITICAL</strong> | <!-- pragma: allowlist secret -->
+| <code>CODEX_INSTALLATION_ID</code> | From Section 2.3 | App authentication | <strong>CRITICAL</strong> |</p>
 <h3 id="33-optional-secrets-enhanced-features">3.3 Optional Secrets (Enhanced Features)<a class="headerlink" href="#33-optional-secrets-enhanced-features" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Secret Name</th>
-<th>How to Obtain</th>
-<th>Required For</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>OPENAI_API_KEY</code></td>
-<td>https://platform.openai.com/api-keys</td>
-<td>AI-powered features</td>
-</tr>
-<tr>
-<td><code>PINECONE_API_KEY</code></td>
-<td>https://app.pinecone.io/</td>
-<td>Vector search features</td>
-</tr>
-<tr>
-<td><code>AWS_ACCESS_KEY_ID</code></td>
-<td>AWS Console → IAM</td>
-<td>Cloud deployment</td>
-</tr>
-<tr>
-<td><code>AWS_SECRET_ACCESS_KEY</code></td>
-<td>AWS Console → IAM</td>
-<td>Cloud deployment</td>
-</tr>
-<tr>
-<td><code>AZURE_CREDENTIALS</code></td>
-<td>Azure Portal</td>
-<td>Azure deployment</td>
-</tr>
-<tr>
-<td><code>ENABLE_LIVE_TESTS</code></td>
-<td>Set to <code>true</code></td>
-<td>Integration testing</td>
-</tr>
-</tbody>
-</table>
+<p>| Secret Name | How to Obtain | Required For | <!-- pragma: allowlist secret -->
+|------------|---------------|--------------|
+| <code>OPENAI_API_KEY</code> | https://platform.openai.com/api-keys | AI-powered features | <!-- pragma: allowlist secret -->
+| <code>PINECONE_API_KEY</code> | https://app.pinecone.io/ | Vector search features | <!-- pragma: allowlist secret -->
+| <code>AWS_ACCESS_KEY_ID</code> | AWS Console IAM | Cloud deployment |
+| <code>AWS_SECRET_ACCESS_KEY</code> | AWS Console IAM | Cloud deployment | <!-- pragma: allowlist secret -->
+| <code>AZURE_CREDENTIALS</code> | Azure Portal | Azure deployment |
+| <code>ENABLE_LIVE_TESTS</code> | Set to <code>true</code> | Integration testing |</p>
 <h3 id="34-how-to-add-a-secret">3.4 How to Add a Secret<a class="headerlink" href="#34-how-to-add-a-secret" title="Permanent link">¶</a></h3>
 <ol>
 <li>Go to: <code>https://github.com/Aries-Serpent/_codex_/settings/secrets/actions</code></li>
@@ -3366,7 +3295,7 @@
 <ol>
 <li>Open the downloaded <code>.pem</code> file in a text editor</li>
 <li>Copy the <strong>entire contents</strong> including:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>-----BEGIN RSA PRIVATE KEY----- &lt;!-- pragma: allowlist secret --&gt;
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>-----BEGIN RSA PRIVATE KEY----- &lt;!-- pragma: allowlist secret --&gt;
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>[multiple lines of characters]
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>-----END RSA PRIVATE KEY-----
 </code></pre></div></li>
@@ -3380,34 +3309,32 @@
 <li>Configure:</li>
 <li><strong>Token name:</strong> <code>codex-automation</code></li>
 <li><strong>Expiration:</strong> 90 days (recommended) or no expiration</li>
-<li><strong>Repository access:</strong> Only select repositories → <code>Aries-Serpent/_codex_</code></li>
-<li><strong>Permissions:</strong><ul>
+<li><strong>Repository access:</strong> Only select repositories <code>Aries-Serpent/_codex_</code></li>
+<li><strong>Permissions:</strong></li>
 <li>Repository permissions:</li>
 <li>Contents: Read and write</li>
 <li>Issues: Read and write</li>
 <li>Metadata: Read-only</li>
 <li>Pull requests: Read and write</li>
 <li>Workflows: Read and write</li>
-</ul>
-</li>
 <li>Click: <strong>"Generate token"</strong></li>
 <li>Copy the token and save as secret <code>GH_PAT</code> (if needed)</li>
 </ol>
 <p><strong>Return Secrets Status:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">secrets_configured</span><span class="p">:</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="c1"># Required secrets</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">CODEX_APP_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">CODEX_PRIVATE_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">CODEX_WEBHOOK_SECRET</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span><span class="nt">CODEX_INSTALLATION_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="c1"># Required secrets</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">CODEX_APP_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">CODEX_PRIVATE_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">CODEX_WEBHOOK_SECRET</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="nt">CODEX_INSTALLATION_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="c1"># Optional secrets</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">  </span><span class="nt">optional_secrets</span><span class="p">:</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="nt">OPENAI_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="nt">PINECONE_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="nt">AWS_ACCESS_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">    </span><span class="nt">AWS_SECRET_ACCESS_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="nt">ENABLE_LIVE_TESTS</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="c1"># Optional secrets</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="nt">optional_secrets</span><span class="p">:</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">OPENAI_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="nt">PINECONE_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="nt">AWS_ACCESS_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="nt">AWS_SECRET_ACCESS_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w"> </span><span class="nt">ENABLE_LIVE_TESTS</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <hr/>
 <h2 id="section-4-deployment-infrastructure">Section 4: Deployment Infrastructure<a class="headerlink" href="#section-4-deployment-infrastructure" title="Permanent link">¶</a></h2>
@@ -3461,12 +3388,12 @@
 <p><strong>Return Your Decision:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">deployment_choice</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">actions_only/aws_lambda/azure_functions/self_hosted</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nt">deployment_details</span><span class="p">:</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="c1"># Only fill if NOT using actions_only</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">cloud_provider</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">aws/azure/gcp/none</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span><span class="nt">account_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">IF_APPLICABLE</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">IF_APPLICABLE</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span><span class="nt">infrastructure_ready</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="nt">webhook_url</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">URL or "not_deployed"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="c1"># Only fill if NOT using actions_only</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">cloud_provider</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">aws/azure/gcp/none</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">account_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">IF_APPLICABLE</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">IF_APPLICABLE</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nt">infrastructure_ready</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="nt">webhook_url</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">URL or "not_deployed"</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="42-github-actions-runner-configuration">4.2 GitHub Actions Runner Configuration<a class="headerlink" href="#42-github-actions-runner-configuration" title="Permanent link">¶</a></h3>
 <p>If using GitHub-hosted runners (recommended):</p>
@@ -3479,7 +3406,7 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># On your server:</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>mkdir<span class="w"> </span>actions-runner<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>actions-runner
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1"># Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1"># Download runner (get URL from Settings Actions Runners New self-hosted runner)</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>curl<span class="w"> </span>-o<span class="w"> </span>actions-runner-linux-x64-2.311.0.tar.gz<span class="w"> </span>-L<span class="w"> </span>https://github.com/actions/runner/releases/download/v0.2.1/actions-runner-linux-x64-2.311.0.tar.gz
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="c1"># Extract</span>
@@ -3492,7 +3419,7 @@
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>./run.sh
 </code></pre></div>
 <hr/>
-<h2 id="section-5-security-compliance">🛡️ Section 5: Security &amp; Compliance<a class="headerlink" href="#section-5-security-compliance" title="Permanent link">¶</a></h2>
+<h2 id="section-5-security-compliance">Section 5: Security &amp; Compliance<a class="headerlink" href="#section-5-security-compliance" title="Permanent link">¶</a></h2>
 <h3 id="51-security-settings-verification">5.1 Security Settings Verification<a class="headerlink" href="#51-security-settings-verification" title="Permanent link">¶</a></h3>
 <p><strong>Portal:</strong> <code>https://github.com/Aries-Serpent/_codex_/settings/security_analysis</code></p>
 <p><strong>Required Security Features:</strong></p>
@@ -3508,31 +3435,31 @@
 <tr>
 <td>Dependency graph</td>
 <td>Enabled</td>
-<td>Settings → Security → Enable</td>
+<td>Settings Security Enable</td>
 </tr>
 <tr>
 <td>Dependabot alerts</td>
 <td>Enabled</td>
-<td>Settings → Security → Enable</td>
+<td>Settings Security Enable</td>
 </tr>
 <tr>
 <td>Dependabot security updates</td>
 <td>Enabled</td>
-<td>Settings → Security → Enable</td>
+<td>Settings Security Enable</td>
 </tr>
 <tr>
 <td>Secret scanning</td>
 <td>Enabled</td>
-<td>Settings → Security → Enable</td>
+<td>Settings Security Enable</td>
 </tr>
 <tr>
 <td>Push protection</td>
 <td>Enabled</td>
-<td>Settings → Security → Enable</td>
+<td>Settings Security Enable</td>
 </tr>
 <tr>
 <td>Code scanning</td>
-<td>️ Optional</td>
+<td>Optional</td>
 <td>Configure in workflow</td>
 </tr>
 </tbody>
@@ -3567,7 +3494,7 @@
 </tr>
 <tr>
 <td>Require review from Code Owners</td>
-<td>️ Optional</td>
+<td>Optional</td>
 </tr>
 <tr>
 <td>Require status checks to pass</td>
@@ -3587,11 +3514,11 @@
 </tr>
 <tr>
 <td>Do not allow bypassing</td>
-<td>️ Optional</td>
+<td>Optional</td>
 </tr>
 <tr>
 <td>Restrict who can push</td>
-<td>️ Optional</td>
+<td>Optional</td>
 </tr>
 </tbody>
 </table>
@@ -3677,74 +3604,74 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># ==============================================================================</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="c1"># Admin Configuration Report for _codex_</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="c1"># ==============================================================================</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Date: 2026-07-13</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Date: 2026-07-16</span>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="c1"># Administrator: [YOUR_NAME]</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="c1"># ==============================================================================</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="nt">organization</span><span class="p">:</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Aries-Serpent"</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">ORG_ID</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># Numeric ID from API</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w">  </span><span class="nt">copilot_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w">  </span><span class="nt">copilot_agents_available</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w">  </span><span class="nt">copilot_tier</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">free/team/enterprise</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Aries-Serpent"</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">ORG_ID</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Numeric ID from API</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w"> </span><span class="nt">copilot_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w"> </span><span class="nt">copilot_agents_available</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w"> </span><span class="nt">copilot_tier</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">free/team/enterprise</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
 <a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="nt">repository</span><span class="p">:</span>
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"_codex_"</span>
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="w">  </span><span class="nt">full_name</span><span class="p">:</span><span class="w"> </span><span class="s">"Aries-Serpent/_codex_"</span>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="w">  </span><span class="nt">default_branch</span><span class="p">:</span><span class="w"> </span><span class="s">"main"</span>
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a><span class="w">  </span><span class="nt">visibility</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">public/private</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"_codex_"</span>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="w"> </span><span class="nt">full_name</span><span class="p">:</span><span class="w"> </span><span class="s">"Aries-Serpent/_codex_"</span>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="w"> </span><span class="nt">default_branch</span><span class="p">:</span><span class="w"> </span><span class="s">"main"</span>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a><span class="w"> </span><span class="nt">visibility</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">public/private</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>
 <a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a><span class="nt">github_app</span><span class="p">:</span>
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a><span class="w">  </span><span class="nt">created</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a><span class="w">  </span><span class="nt">app_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">APP_ID or "not_created"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a><span class="w">  </span><span class="nt">app_name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">APP_NAME or "not_created"</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># Should be "codex-quantum-reviewer"</span>
-<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a><span class="w">  </span><span class="nt">installation_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">INSTALLATION_ID or "not_installed"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a><span class="w">  </span><span class="nt">webhook_configured</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a><span class="w">  </span><span class="nt">private_key_generated</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a><span class="w"> </span><span class="nt">created</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a><span class="w"> </span><span class="nt">app_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">APP_ID or "not_created"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a><span class="w"> </span><span class="nt">app_name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">APP_NAME or "not_created"</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Should be "codex-quantum-reviewer"</span>
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a><span class="w"> </span><span class="nt">installation_id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">INSTALLATION_ID or "not_installed"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a><span class="w"> </span><span class="nt">webhook_configured</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a><span class="w"> </span><span class="nt">private_key_generated</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>
 <a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a><span class="nt">secrets_status</span><span class="p">:</span>
-<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a><span class="w">  </span><span class="c1"># Required (all must be "configured" for full functionality)</span>
-<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a><span class="w">  </span><span class="nt">CODEX_APP_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a><span class="w">  </span><span class="nt">CODEX_PRIVATE_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a><span class="w">  </span><span class="nt">CODEX_WEBHOOK_SECRET</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a><span class="w">  </span><span class="nt">CODEX_INSTALLATION_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a><span class="w"> </span><span class="c1"># Required (all must be "configured" for full functionality)</span>
+<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a><span class="w"> </span><span class="nt">CODEX_APP_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a><span class="w"> </span><span class="nt">CODEX_PRIVATE_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a><span class="w"> </span><span class="nt">CODEX_WEBHOOK_SECRET</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a><span class="w"> </span><span class="nt">CODEX_INSTALLATION_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a>
-<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a><span class="w">  </span><span class="c1"># Optional</span>
-<a href="#__codelineno-10-37" id="__codelineno-10-37" name="__codelineno-10-37"></a><span class="w">  </span><span class="nt">OPENAI_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-38" id="__codelineno-10-38" name="__codelineno-10-38"></a><span class="w">  </span><span class="nt">PINECONE_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-39" id="__codelineno-10-39" name="__codelineno-10-39"></a><span class="w">  </span><span class="nt">AWS_ACCESS_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-40" id="__codelineno-10-40" name="__codelineno-10-40"></a><span class="w">  </span><span class="nt">AWS_SECRET_ACCESS_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-41" id="__codelineno-10-41" name="__codelineno-10-41"></a><span class="w">  </span><span class="nt">ENABLE_LIVE_TESTS</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a><span class="w"> </span><span class="c1"># Optional</span>
+<a href="#__codelineno-10-37" id="__codelineno-10-37" name="__codelineno-10-37"></a><span class="w"> </span><span class="nt">OPENAI_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-38" id="__codelineno-10-38" name="__codelineno-10-38"></a><span class="w"> </span><span class="nt">PINECONE_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-39" id="__codelineno-10-39" name="__codelineno-10-39"></a><span class="w"> </span><span class="nt">AWS_ACCESS_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-40" id="__codelineno-10-40" name="__codelineno-10-40"></a><span class="w"> </span><span class="nt">AWS_SECRET_ACCESS_KEY</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-41" id="__codelineno-10-41" name="__codelineno-10-41"></a><span class="w"> </span><span class="nt">ENABLE_LIVE_TESTS</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">configured/missing/not_needed</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-42" id="__codelineno-10-42" name="__codelineno-10-42"></a>
 <a href="#__codelineno-10-43" id="__codelineno-10-43" name="__codelineno-10-43"></a><span class="nt">deployment</span><span class="p">:</span>
-<a href="#__codelineno-10-44" id="__codelineno-10-44" name="__codelineno-10-44"></a><span class="w">  </span><span class="nt">method_chosen</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">actions_only/aws_lambda/azure_functions/self_hosted/not_decided</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-45" id="__codelineno-10-45" name="__codelineno-10-45"></a><span class="w">  </span><span class="nt">infrastructure_ready</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-46" id="__codelineno-10-46" name="__codelineno-10-46"></a><span class="w">  </span><span class="nt">webhook_url</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">URL or "not_deployed" or "not_applicable"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-44" id="__codelineno-10-44" name="__codelineno-10-44"></a><span class="w"> </span><span class="nt">method_chosen</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">actions_only/aws_lambda/azure_functions/self_hosted/not_decided</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-45" id="__codelineno-10-45" name="__codelineno-10-45"></a><span class="w"> </span><span class="nt">infrastructure_ready</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-46" id="__codelineno-10-46" name="__codelineno-10-46"></a><span class="w"> </span><span class="nt">webhook_url</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">URL or "not_deployed" or "not_applicable"</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-47" id="__codelineno-10-47" name="__codelineno-10-47"></a>
 <a href="#__codelineno-10-48" id="__codelineno-10-48" name="__codelineno-10-48"></a><span class="nt">security</span><span class="p">:</span>
-<a href="#__codelineno-10-49" id="__codelineno-10-49" name="__codelineno-10-49"></a><span class="w">  </span><span class="nt">branch_protection_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-50" id="__codelineno-10-50" name="__codelineno-10-50"></a><span class="w">  </span><span class="nt">required_status_checks_configured</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-51" id="__codelineno-10-51" name="__codelineno-10-51"></a><span class="w">  </span><span class="nt">security_scanning_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-52" id="__codelineno-10-52" name="__codelineno-10-52"></a><span class="w">  </span><span class="nt">secret_scanning_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-53" id="__codelineno-10-53" name="__codelineno-10-53"></a><span class="w">  </span><span class="nt">dependabot_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-49" id="__codelineno-10-49" name="__codelineno-10-49"></a><span class="w"> </span><span class="nt">branch_protection_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-50" id="__codelineno-10-50" name="__codelineno-10-50"></a><span class="w"> </span><span class="nt">required_status_checks_configured</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-51" id="__codelineno-10-51" name="__codelineno-10-51"></a><span class="w"> </span><span class="nt">security_scanning_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-52" id="__codelineno-10-52" name="__codelineno-10-52"></a><span class="w"> </span><span class="nt">secret_scanning_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-53" id="__codelineno-10-53" name="__codelineno-10-53"></a><span class="w"> </span><span class="nt">dependabot_enabled</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-54" id="__codelineno-10-54" name="__codelineno-10-54"></a>
 <a href="#__codelineno-10-55" id="__codelineno-10-55" name="__codelineno-10-55"></a><span class="nt">actions_permissions</span><span class="p">:</span>
-<a href="#__codelineno-10-56" id="__codelineno-10-56" name="__codelineno-10-56"></a><span class="w">  </span><span class="nt">workflow_permissions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">read_only/read_write</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-57" id="__codelineno-10-57" name="__codelineno-10-57"></a><span class="w">  </span><span class="nt">can_approve_prs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-56" id="__codelineno-10-56" name="__codelineno-10-56"></a><span class="w"> </span><span class="nt">workflow_permissions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">read_only/read_write</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-57" id="__codelineno-10-57" name="__codelineno-10-57"></a><span class="w"> </span><span class="nt">can_approve_prs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">true/false</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-58" id="__codelineno-10-58" name="__codelineno-10-58"></a>
 <a href="#__codelineno-10-59" id="__codelineno-10-59" name="__codelineno-10-59"></a><span class="c1"># List any issues or blockers</span>
 <a href="#__codelineno-10-60" id="__codelineno-10-60" name="__codelineno-10-60"></a><span class="nt">blockers</span><span class="p">:</span>
-<a href="#__codelineno-10-61" id="__codelineno-10-61" name="__codelineno-10-61"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">LIST ANY BLOCKERS - e.g.</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"Cannot</span><span class="nv"> </span><span class="s">create</span><span class="nv"> </span><span class="s">GitHub</span><span class="nv"> </span><span class="s">App</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">need</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">permissions"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-62" id="__codelineno-10-62" name="__codelineno-10-62"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">OR "None" if no blockers</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-61" id="__codelineno-10-61" name="__codelineno-10-61"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">LIST ANY BLOCKERS - e.g.</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"Cannot</span><span class="nv"> </span><span class="s">create</span><span class="nv"> </span><span class="s">GitHub</span><span class="nv"> </span><span class="s">App</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">need</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">permissions"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-62" id="__codelineno-10-62" name="__codelineno-10-62"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">OR "None" if no blockers</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-63" id="__codelineno-10-63" name="__codelineno-10-63"></a>
 <a href="#__codelineno-10-64" id="__codelineno-10-64" name="__codelineno-10-64"></a><span class="c1"># Questions for Copilot Agent</span>
 <a href="#__codelineno-10-65" id="__codelineno-10-65" name="__codelineno-10-65"></a><span class="nt">questions</span><span class="p">:</span>
-<a href="#__codelineno-10-66" id="__codelineno-10-66" name="__codelineno-10-66"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">ANY QUESTIONS - e.g.</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"Should</span><span class="nv"> </span><span class="s">I</span><span class="nv"> </span><span class="s">enable</span><span class="nv"> </span><span class="s">Copilot</span><span class="nv"> </span><span class="s">Agents</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">available?"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-10-67" id="__codelineno-10-67" name="__codelineno-10-67"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">OR "None" if no questions</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-66" id="__codelineno-10-66" name="__codelineno-10-66"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">ANY QUESTIONS - e.g.</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"Should</span><span class="nv"> </span><span class="s">I</span><span class="nv"> </span><span class="s">enable</span><span class="nv"> </span><span class="s">Copilot</span><span class="nv"> </span><span class="s">Agents</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">available?"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-10-67" id="__codelineno-10-67" name="__codelineno-10-67"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">OR "None" if no questions</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-10-68" id="__codelineno-10-68" name="__codelineno-10-68"></a>
 <a href="#__codelineno-10-69" id="__codelineno-10-69" name="__codelineno-10-69"></a><span class="c1"># Additional notes</span>
 <a href="#__codelineno-10-70" id="__codelineno-10-70" name="__codelineno-10-70"></a><span class="nt">notes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-71" id="__codelineno-10-71" name="__codelineno-10-71"></a><span class="w">  </span><span class="no">[Any additional observations or information that might be helpful]</span>
+<a href="#__codelineno-10-71" id="__codelineno-10-71" name="__codelineno-10-71"></a><span class="w"> </span><span class="no">[Any additional observations or information that might be helpful]</span>
 </code></pre></div>
 <hr/>
 <h2 id="section-8-troubleshooting-guide">Section 8: Troubleshooting Guide<a class="headerlink" href="#section-8-troubleshooting-guide" title="Permanent link">¶</a></h2>
@@ -3776,7 +3703,7 @@
 <p><strong>Solution:</strong>
 1. Verify webhook URL is publicly accessible (if using external endpoint)
 2. Check webhook secret matches in both GitHub App settings and repository secret
-3. View delivery history: GitHub App Settings → Advanced → Recent Deliveries
+3. View delivery history: GitHub App Settings Advanced Recent Deliveries
 4. Check for failed deliveries and error messages</p>
 <hr/>
 <h4 id="issue-secret-scanning-blocking-push">Issue: "Secret scanning blocking push"<a class="headerlink" href="#issue-secret-scanning-blocking-push" title="Permanent link">¶</a></h4>
@@ -3784,20 +3711,20 @@
 <p><strong>Solution:</strong>
 1. Remove the secret from code
 2. If false positive, use <code>.github/secret_scanning.yml</code> to allow:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nt">paths-ignore</span><span class="p">:</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"docs/**"</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"**/*.md"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nt">paths-ignore</span><span class="p">:</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"docs/**"</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"**/*.md"</span>
 </code></pre></div></p>
 <hr/>
 <h4 id="issue-required-status-checks-not-found">Issue: "Required status checks not found"<a class="headerlink" href="#issue-required-status-checks-not-found" title="Permanent link">¶</a></h4>
 <p><strong>Cause:</strong> Workflow jobs haven't run yet or names don't match.</p>
 <p><strong>Solution:</strong>
 1. Trigger workflows manually first to register job names
-2. Go to Actions tab → Select workflow → Run workflow
+2. Go to Actions tab Select workflow Run workflow
 3. After completion, status check names become available
 4. Update branch protection with correct names</p>
 <hr/>
-<h2 id="section-9-support-resources">📞 Section 9: Support Resources<a class="headerlink" href="#section-9-support-resources" title="Permanent link">¶</a></h2>
+<h2 id="section-9-support-resources">Section 9: Support Resources<a class="headerlink" href="#section-9-support-resources" title="Permanent link">¶</a></h2>
 <h3 id="documentation-links">Documentation Links<a class="headerlink" href="#documentation-links" title="Permanent link">¶</a></h3>
 <table>
 <thead>
@@ -4008,6 +3935,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

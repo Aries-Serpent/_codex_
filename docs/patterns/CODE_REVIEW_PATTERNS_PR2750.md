@@ -1,6 +1,6 @@
 # Code Review Patterns and Best Practices (PR #2750)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -14,12 +14,12 @@ This document captures reusable patterns discovered during the code review and s
 
 **Example**:
 ```bash
-#  VULNERABLE - Direct interpolation
+# VULNERABLE - Direct interpolation
 python3 <<PYEOF
 path = '${USER_INPUT}'
 PYEOF
 
-#  SECURE - Environment variables with quoted heredoc
+# SECURE - Environment variables with quoted heredoc
 export BUILD_PATH="${USER_INPUT}"
 python3 <<'PYEOF'
 import os
@@ -41,15 +41,15 @@ PYEOF
 
 **Example**:
 ```python
-#  FRAGILE - String comparison
+# FRAGILE - String comparison
 if str(model.device) == "meta":
-    model = model.to("cpu")
+ model = model.to("cpu")
 
-#  ROBUST - Type attribute comparison
+# ROBUST - Type attribute comparison
 if hasattr(model, "device"):
-    device_type = getattr(model.device, "type", None)
-    if device_type == "meta":
-        model = model.to_empty("cpu")
+ device_type = getattr(model.device, "type", None)
+ if device_type == "meta":
+ model = model.to_empty("cpu")
 ```
 
 **Location**: `src/codex/rag/utils.py:34-36`
@@ -68,16 +68,16 @@ if hasattr(model, "device"):
 ```python
 # Check for optional package
 try:
-    import openai
-    OPENAI_AVAILABLE = True
+ import openai
+ OPENAI_AVAILABLE = True
 except ImportError:
-    OPENAI_AVAILABLE = False
+ OPENAI_AVAILABLE = False
 
 # Skip tests when not available
 @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
 class TestOpenAIFeatures:
-    def test_api_call(self):
-        ...
+ def test_api_call(self):
+ ...
 ```
 
 **Location**: `tests/test_rag_embeddings.py:14-20`, `tests/test_rag_error_handling.py:18-37`
@@ -95,11 +95,11 @@ class TestOpenAIFeatures:
 **Structure**:
 ```
 src/codex/rag/
-├── __init__.py          # Export public API
-├── utils.py             # Shared utilities (NEW)
-├── embeddings.py        # Import from utils
-├── retriever.py         # Import from utils
-└── indexer.py
+ __init__.py # Export public API
+ utils.py # Shared utilities (NEW)
+ embeddings.py # Import from utils
+ retriever.py # Import from utils
+ indexer.py
 ```
 
 **Location**: `src/codex/rag/utils.py:1-48`, `src/codex/rag/__init__.py:22-56`
@@ -116,19 +116,19 @@ src/codex/rag/
 
 **Example**:
 ```python
-#  UNCLEAR - Silent error swallowing
+# UNCLEAR - Silent error swallowing
 try:
-    data = json.load(f)
+ data = json.load(f)
 except (json.JSONDecodeError, OSError):
-    pass
+ pass
 
-#  CLEAR - Documented intent
+# CLEAR - Documented intent
 try:
-    data = json.load(f)
+ data = json.load(f)
 except (json.JSONDecodeError, OSError):
-    # Intentionally ignore errors reading the cache file.
-    # If the cache is corrupted or unreadable, we'll fall back to a full sync.
-    pass
+ # Intentionally ignore errors reading the cache file.
+ # If the cache is corrupted or unreadable, we'll fall back to a full sync.
+ pass
 ```
 
 **Location**: `scripts/expanded_context_audit.py:104-107`, `src/services/crawler/zendesk_sync.py:392-395`
@@ -143,8 +143,8 @@ except (json.JSONDecodeError, OSError):
 
 The repository has **two RAG implementations**:
 
-1.  **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
-2. ️ **Legacy**: `src/rag/pipelines/` - Original implementation
+1. **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
+2. **Legacy**: `src/rag/pipelines/` - Original implementation
 
 **Preference**: Use sentence-transformers for new RAG features. OpenAI integration is optional for development.
 
@@ -174,6 +174,6 @@ The repository has **two RAG implementations**:
 
 ---
 
-**Maintained by**: GitHub Copilot Agent  
-**Last Updated**: 2026-01-08  
+**Maintained by**: GitHub Copilot Agent
+**Last Updated**: 2026-01-08
 **PR**: #2750 (copilot/sub-pr-2750 branch)

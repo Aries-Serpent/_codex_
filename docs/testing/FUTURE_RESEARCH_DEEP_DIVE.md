@@ -1,84 +1,84 @@
 # Future Research Topics: Test Coverage & Quality Enhancement
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [ Overview](#-overview)
 - [1. Automated Test Generation from Uncovered Code Paths](#1-automated-test-generation-from-uncovered-code-paths)
-  - [Research Topic Classification](#research-topic-classification)
-  - [Problem Statement](#problem-statement)
-  - [Research Keywords & Technologies](#research-keywords--technologies)
-    - [AI/ML Approaches](#aiml-approaches)
-    - [Code Analysis Technologies](#code-analysis-technologies)
-    - [Testing Frameworks](#testing-frameworks)
-  - [Potential Approaches](#potential-approaches)
-    - [Approach 1: LLM-Based Test Generator (Recommended)](#approach-1-llm-based-test-generator-recommended)
+ - [Research Topic Classification](#research-topic-classification)
+ - [Problem Statement](#problem-statement)
+ - [Research Keywords & Technologies](#research-keywords--technologies)
+ - [AI/ML Approaches](#aiml-approaches)
+ - [Code Analysis Technologies](#code-analysis-technologies)
+ - [Testing Frameworks](#testing-frameworks)
+ - [Potential Approaches](#potential-approaches)
+ - [Approach 1: LLM-Based Test Generator (Recommended)](#approach-1-llm-based-test-generator-recommended)
 - [scripts/testing/auto_test_generator.py](#scriptstestingauto_test_generatorpy)
 - [Approach 2: Template-Based Generation](#approach-2-template-based-generation)
-  - [Approach 3: Hybrid Approach](#approach-3-hybrid-approach)
-  - [Dependencies](#dependencies)
-  - [Implementation Roadmap](#implementation-roadmap)
-  - [Success Metrics](#success-metrics)
-  - [Research Questions](#research-questions)
+ - [Approach 3: Hybrid Approach](#approach-3-hybrid-approach)
+ - [Dependencies](#dependencies)
+ - [Implementation Roadmap](#implementation-roadmap)
+ - [Success Metrics](#success-metrics)
+ - [Research Questions](#research-questions)
 - [2. Test Quality Metrics and Mutation Testing](#2-test-quality-metrics-and-mutation-testing)
-  - [Research Topic Classification](#research-topic-classification)
-  - [Problem Statement](#problem-statement)
+ - [Research Topic Classification](#research-topic-classification)
+ - [Problem Statement](#problem-statement)
 - [Test 1: Achieves coverage but doesn't validate behavior](#test-1-achieves-coverage-but-doesnt-validate-behavior)
 - [Test 2: Too generic assertion](#test-2-too-generic-assertion)
 - [Test 3: Doesn't test edge cases](#test-3-doesnt-test-edge-cases)
 - [Research Keywords & Technologies](#research-keywords--technologies)
-  - [Mutation Testing](#mutation-testing)
-    - [Test Quality Metrics](#test-quality-metrics)
-    - [Advanced Analysis](#advanced-analysis)
-  - [Potential Approaches](#potential-approaches)
-    - [Approach 1: Mutation Testing Pipeline (Recommended)](#approach-1-mutation-testing-pipeline-recommended)
+ - [Mutation Testing](#mutation-testing)
+ - [Test Quality Metrics](#test-quality-metrics)
+ - [Advanced Analysis](#advanced-analysis)
+ - [Potential Approaches](#potential-approaches)
+ - [Approach 1: Mutation Testing Pipeline (Recommended)](#approach-1-mutation-testing-pipeline-recommended)
 - [scripts/testing/run_mutation_tests.py](#scriptstestingrun_mutation_testspy)
 - [.github/workflows/mutation-testing.yml](#githubworkflowsmutation-testingyml)
 - [Approach 2: Test Quality Dashboard](#approach-2-test-quality-dashboard)
 - [docs/testing/QUALITY_DASHBOARD.md](#docstestingquality_dashboardmd)
 - [Test Quality Dashboard](#test-quality-dashboard)
-  - [Dependencies](#dependencies)
-  - [Implementation Roadmap](#implementation-roadmap)
-  - [Success Metrics](#success-metrics)
+ - [Dependencies](#dependencies)
+ - [Implementation Roadmap](#implementation-roadmap)
+ - [Success Metrics](#success-metrics)
 - [3. Property-Based Testing Expansion with Hypothesis](#3-property-based-testing-expansion-with-hypothesis)
-  - [Research Topic Classification](#research-topic-classification)
-  - [Problem Statement](#problem-statement)
+ - [Research Topic Classification](#research-topic-classification)
+ - [Problem Statement](#problem-statement)
 - [Example-based: Tests specific inputs](#example-based-tests-specific-inputs)
 - [Property-based: Tests invariants across many inputs](#property-based-tests-invariants-across-many-inputs)
 - [Research Keywords & Technologies](#research-keywords--technologies)
-  - [Property-Based Testing](#property-based-testing)
-    - [Testing Properties](#testing-properties)
-    - [Advanced Techniques](#advanced-techniques)
-  - [Potential Approaches](#potential-approaches)
-    - [Approach 1: Systematic Hypothesis Expansion](#approach-1-systematic-hypothesis-expansion)
+ - [Property-Based Testing](#property-based-testing)
+ - [Testing Properties](#testing-properties)
+ - [Advanced Techniques](#advanced-techniques)
+ - [Potential Approaches](#potential-approaches)
+ - [Approach 1: Systematic Hypothesis Expansion](#approach-1-systematic-hypothesis-expansion)
 - [tests/property_based/test_string_processing.py](#testsproperty_basedtest_string_processingpy)
 - [Strategy for valid filesystem paths](#strategy-for-valid-filesystem-paths)
 - [Approach 2: Stateful Testing for Complex Systems](#approach-2-stateful-testing-for-complex-systems)
-  - [Dependencies](#dependencies)
-  - [Implementation Roadmap](#implementation-roadmap)
-  - [Success Metrics](#success-metrics)
-  - [Example Properties by Domain](#example-properties-by-domain)
+ - [Dependencies](#dependencies)
+ - [Implementation Roadmap](#implementation-roadmap)
+ - [Success Metrics](#success-metrics)
+ - [Example Properties by Domain](#example-properties-by-domain)
 - [ Cross-Topic Synergies](#-cross-topic-synergies)
-  - [Automated Test Generation + Mutation Testing](#automated-test-generation--mutation-testing)
-  - [Property-Based + Automated Generation](#property-based--automated-generation)
-  - [All Three Together: Ultimate Test Suite](#all-three-together-ultimate-test-suite)
-- [🔖 Bookmark & Search Keywords](#-bookmark--search-keywords)
+ - [Automated Test Generation + Mutation Testing](#automated-test-generation--mutation-testing)
+ - [Property-Based + Automated Generation](#property-based--automated-generation)
+ - [All Three Together: Ultimate Test Suite](#all-three-together-ultimate-test-suite)
+- [ Bookmark & Search Keywords](#-bookmark--search-keywords)
 - [ Recommended Reading](#-recommended-reading)
-  - [Papers](#papers)
-  - [Books](#books)
-  - [Tutorials](#tutorials)
+ - [Papers](#papers)
+ - [Books](#books)
+ - [Tutorials](#tutorials)
 
 **Last Updated: 2026-06-22
 
-**Version**: 1.0.0  
-**Created**: 2025-12-31  
-**Purpose**: Deep research keywords, approaches, and implementation guidance for future test enhancement initiatives  
-**Status**: 🔬 Research Phase
+**Version**: 1.0.0
+**Created**: 2025-12-31
+**Purpose**: Deep research keywords, approaches, and implementation guidance for future test enhancement initiatives
+**Status**: Research Phase
 
 ---
 
-##  Overview
+## Overview
 
 This document provides comprehensive research context, keywords, methodologies, and implementation guidance for three future research initiatives aimed at dramatically improving test coverage and quality in the `_codex_` repository.
 
@@ -87,9 +87,9 @@ This document provides comprehensive research context, keywords, methodologies, 
 ## 1. Automated Test Generation from Uncovered Code Paths
 
 ### Research Topic Classification
-**Category**: AI/ML for Software Testing  
-**Complexity**: High  
-**Timeline**: Phase 3 (Current Cycle)  
+**Category**: AI/ML for Software Testing
+**Complexity**: High
+**Timeline**: Phase 3 (Current Cycle)
 **Expected ROI**: 5-10x faster test creation
 
 ### Problem Statement
@@ -100,7 +100,7 @@ Manual test writing for achieving 100% coverage is time-intensive, requiring:
 - Repetitive boilerplate for similar test structures
 - Manual identification of edge cases
 
-**Current State**: 72-75% coverage, manual test creation (~56 tests in 36 minutes = ~1.5 tests per minute)  
+**Current State**: 72-75% coverage, manual test creation (~56 tests in 36 minutes = ~1.5 tests per minute)
 **Target State**: Automated generation of 80-90% of coverage gap tests
 
 ### Research Keywords & Technologies
@@ -187,7 +187,7 @@ new_coverage = measure_coverage()
 
 # Iterate if coverage not improved
 if new_coverage <= old_coverage:
-    refine_prompt_with_failure_context()
+ refine_prompt_with_failure_context()
 ```
 
 **Tools**:
@@ -206,42 +206,42 @@ import coverage
 from openai import OpenAI
 
 class AutoTestGenerator:
-    def __init__(self, cov_file=".coverage"):
-        self.cov = coverage.Coverage(data_file=cov_file)
-        self.cov.load()
-        self.client = OpenAI()
+ def __init__(self, cov_file=".coverage"):
+ self.cov = coverage.Coverage(data_file=cov_file)
+ self.cov.load()
+ self.client = OpenAI()
 
-    def find_uncovered_functions(self, module_path):
-        """Find functions with <100% coverage"""
-        analysis = self.cov.analysis2(module_path)
-        source = open(module_path).read()
-        tree = ast.parse(source)
+ def find_uncovered_functions(self, module_path):
+ """Find functions with <100% coverage"""
+ analysis = self.cov.analysis2(module_path)
+ source = open(module_path).read()
+ tree = ast.parse(source)
 
-        uncovered_funcs = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef):
-                func_lines = range(node.lineno, node.end_lineno + 1)
-                uncovered = set(func_lines) & set(analysis.missing)
-                if uncovered:
-                    uncovered_funcs.append({
-                        'name': node.name,
-                        'code': ast.get_source_segment(source, node),
-                        'uncovered_lines': list(uncovered)
-                    })
-        return uncovered_funcs
+ uncovered_funcs = []
+ for node in ast.walk(tree):
+ if isinstance(node, ast.FunctionDef):
+ func_lines = range(node.lineno, node.end_lineno + 1)
+ uncovered = set(func_lines) & set(analysis.missing)
+ if uncovered:
+ uncovered_funcs.append({
+ 'name': node.name,
+ 'code': ast.get_source_segment(source, node),
+ 'uncovered_lines': list(uncovered)
+ })
+ return uncovered_funcs
 
-    def generate_tests(self, func_info):
-        """Generate pytest tests for uncovered function"""
-        prompt = self._build_prompt(func_info)
-        response = self.client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3
-        )
-        return response.choices[0].message.content
+ def generate_tests(self, func_info):
+ """Generate pytest tests for uncovered function"""
+ prompt = self._build_prompt(func_info)
+ response = self.client.chat.completions.create(
+ model="gpt-4",
+ messages=[{"role": "user", "content": prompt}],
+ temperature=0.3
+ )
+ return response.choices[0].message.content
 
-    def _build_prompt(self, func_info):
-        return f"""Generate comprehensive pytest tests for this function.
+ def _build_prompt(self, func_info):
+ return f"""Generate comprehensive pytest tests for this function.
 
 Function:
 {func_info['code']}
@@ -272,24 +272,24 @@ Output only the test code, no explanations."""
 3. Fill template with function-specific details
 4. Generate test file
 
-**Pros**: Faster, more predictable, no API costs  
+**Pros**: Faster, more predictable, no API costs
 **Cons**: Less flexible, may miss complex edge cases
 
 ### Approach 3: Hybrid Approach
 **Method**: Template-based for simple cases, LLM for complex cases
 
 **Decision Tree**:
-- Uncovered code is simple getter/setter → Template
-- Uncovered code has complex logic/branches → LLM
-- Uncovered code is error handling → Error path template
-- Uncovered code is integration point → Integration test template
+- Uncovered code is simple getter/setter Template
+- Uncovered code has complex logic/branches LLM
+- Uncovered code is error handling Error path template
+- Uncovered code is integration point Integration test template
 
 ### Dependencies
 
 **Required**:
-- `coverage.py` (installed) 
-- `pytest`, `pytest-cov` (installed) 
-- `ast` module (stdlib) 
+- `coverage.py` (installed)
+- `pytest`, `pytest-cov` (installed)
+- `ast` module (stdlib)
 - LLM API access (OpenAI / Anthropic / local LLM)
 
 **Optional**:
@@ -340,33 +340,33 @@ Output only the test code, no explanations."""
 ### Research Questions
 
 1. **How to ensure generated tests are high quality, not just coverage-boosting?**
-   - Use mutation testing to validate effectiveness
-   - Require manual review of generated tests
-   - Implement quality scoring (readability, edge cases, assertions)
+ - Use mutation testing to validate effectiveness
+ - Require manual review of generated tests
+ - Implement quality scoring (readability, edge cases, assertions)
 
 2. **How to handle flaky tests generated by AI?**
-   - Run generated tests multiple times before accepting
-   - Use deterministic fixtures (mental_mapping.set_clock)
-   - Static analysis to detect non-deterministic patterns
+ - Run generated tests multiple times before accepting
+ - Use deterministic fixtures (mental_mapping.set_clock)
+ - Static analysis to detect non-deterministic patterns
 
 3. **How to incorporate domain knowledge into generated tests?**
-   - Few-shot prompting with domain-specific examples
-   - Fine-tune LLM on repository-specific test patterns
-   - Human-in-the-loop refinement for complex cases
+ - Few-shot prompting with domain-specific examples
+ - Fine-tune LLM on repository-specific test patterns
+ - Human-in-the-loop refinement for complex cases
 
 4. **How to maintain generated tests over time?**
-   - Version generated tests with metadata (generator version, date)
-   - Regenerate tests when source code changes significantly
-   - Allow manual edits with "do not regenerate" marker
+ - Version generated tests with metadata (generator version, date)
+ - Regenerate tests when source code changes significantly
+ - Allow manual edits with "do not regenerate" marker
 
 ---
 
 ## 2. Test Quality Metrics and Mutation Testing
 
 ### Research Topic Classification
-**Category**: Software Testing Quality Assurance  
-**Complexity**: Medium  
-**Timeline**: Phase 2 (Current Cycle)  
+**Category**: Software Testing Quality Assurance
+**Complexity**: Medium
+**Timeline**: Phase 2 (Current Cycle)
 **Expected ROI**: Identify 20-30% weak tests
 
 ### Problem Statement
@@ -377,18 +377,18 @@ Output only the test code, no explanations."""
 ```python
 # Test 1: Achieves coverage but doesn't validate behavior
 def test_function_runs():
-    result = complex_function(input_data)
-    # Test passes even if function returns wrong result!
+ result = complex_function(input_data)
+ # Test passes even if function returns wrong result!
 
 # Test 2: Too generic assertion
 def test_output_exists():
-    result = process_data(data)
-    assert result is not None  # Passes for any non-None value
+ result = process_data(data)
+ assert result is not None # Passes for any non-None value
 
 # Test 3: Doesn't test edge cases
 def test_happy_path_only():
-    assert add(2, 3) == 5
-    # What about add(-1, 1)? add(0, 0)? add(MAX_INT, 1)?
+ assert add(2, 3) == 5
+ # What about add(-1, 1)? add(0, 0)? add(MAX_INT, 1)?
 ```
 
 **Need**: Metrics to measure test effectiveness beyond coverage.
@@ -420,29 +420,29 @@ def test_happy_path_only():
 
 **Pipeline**:
 1. **Select Mutation Tool**
-   - `mutpy` (Python-specific, actively maintained)
-   - `cosmic-ray` (parallelized, faster)
-   - `mutmut` (simple, good for CI)
+ - `mutpy` (Python-specific, actively maintained)
+ - `cosmic-ray` (parallelized, faster)
+ - `mutmut` (simple, good for CI)
 
 2. **Configure Mutation Operators**
-   ```text
-   # mutpy configuration
-   operators = [
-       'AOR',  # Arithmetic Operator Replacement (+ → -)
-       'BCR',  # Break Continue Replacement
-       'COI',  # Conditional Operator Insertion (if x → if not x)
-       'COD',  # Conditional Operator Deletion
-       'CRP',  # Constant Replacement (5 → 6)
-       'ROR',  # Relational Operator Replacement (< → <=)
-   ]
-   ```
+ ```text
+ # mutpy configuration
+ operators = [
+ 'AOR', # Arithmetic Operator Replacement (+ -)
+ 'BCR', # Break Continue Replacement
+ 'COI', # Conditional Operator Insertion (if x if not x)
+ 'COD', # Conditional Operator Deletion
+ 'CRP', # Constant Replacement (5 6)
+ 'ROR', # Relational Operator Replacement (< <=)
+ ]
+ ```
 
 3. **Run Mutation Testing**
-   ```bash
-   # Run mutpy on specific module
-   mut.py --target src/module.py --unit-test tests/test_module.py \
-          --report-html mutation_report
-   ```
+ ```bash
+ # Run mutpy on specific module
+ mut.py --target src/module.py --unit-test tests/test_module.py \
+ --report-html mutation_report
+ ```
 
 4. **Analyze Results**
 ```python
@@ -466,17 +466,17 @@ mutation_score = killed_mutants / (killed_mutants + survived_mutants)
 
 # Example: Original test
 def test_divide():
-    assert divide(10, 2) == 5
+ assert divide(10, 2) == 5
 
 # Mutant: operator / changed to *
 def divide_mutant(a, b):
-    return a * b  # Mutation survives!
+ return a * b # Mutation survives!
 
 # Fixed test (kills mutant):
 def test_divide_fixed():
-    assert divide(10, 2) == 5
-    assert divide(6, 3) == 2   # New assertion
-    assert divide(1, 1) == 1   # Kills * mutation
+ assert divide(10, 2) == 5
+ assert divide(6, 3) == 2 # New assertion
+ assert divide(1, 1) == 1 # Kills * mutation
 ```
 
 **Example Integration**:
@@ -488,45 +488,45 @@ import json
 from pathlib import Path
 
 class MutationTester:
-    def __init__(self, target_dir="src", test_dir="tests"):
-        self.target_dir = Path(target_dir)
-        self.test_dir = Path(test_dir)
+ def __init__(self, target_dir="src", test_dir="tests"):
+ self.target_dir = Path(target_dir)
+ self.test_dir = Path(test_dir)
 
-    def run_mutation_testing(self, module_path, threshold=75.0):
-        """Run mutation testing on a module"""
-        test_path = self.find_test_file(module_path)
+ def run_mutation_testing(self, module_path, threshold=75.0):
+ """Run mutation testing on a module"""
+ test_path = self.find_test_file(module_path)
 
-        # Run mutpy
-        cmd = [
-            "mut.py",
-            "--target", str(module_path),
-            "--unit-test", str(test_path),
-            "--report-json", "mutation_results.json",
-            "--timeout-factor", "2.0"
-        ]
+ # Run mutpy
+ cmd = [
+ "mut.py",
+ "--target", str(module_path),
+ "--unit-test", str(test_path),
+ "--report-json", "mutation_results.json",
+ "--timeout-factor", "2.0"
+ ]
 
-        result = subprocess.run(cmd, capture_output=True)
+ result = subprocess.run(cmd, capture_output=True)
 
-        # Parse results
-        with open("mutation_results.json") as f:
-            results = json.load(f)
+ # Parse results
+ with open("mutation_results.json") as f:
+ results = json.load(f)
 
-        mutation_score = self.calculate_score(results)
+ mutation_score = self.calculate_score(results)
 
-        if mutation_score < threshold:
-            print(f"️  Low mutation score: {mutation_score:.1f}%")
-            print("Survived mutants:")
-            for mutant in results['survived']:
-                print(f"  - Line {mutant['lineno']}: {mutant['operator']}")
-        else:
-            print(f" Good mutation score: {mutation_score:.1f}%")
+ if mutation_score < threshold:
+ print(f" Low mutation score: {mutation_score:.1f}%")
+ print("Survived mutants:")
+ for mutant in results['survived']:
+ print(f" - Line {mutant['lineno']}: {mutant['operator']}")
+ else:
+ print(f" Good mutation score: {mutation_score:.1f}%")
 
-        return mutation_score
+ return mutation_score
 
-    def calculate_score(self, results):
-        killed = results['killed_count']
-        total = results['total_count']
-        return (killed / total * 100) if total > 0 else 0
+ def calculate_score(self, results):
+ killed = results['killed_count']
+ total = results['total_count']
+ return (killed / total * 100) if total > 0 else 0
 ```
 
 **CI Integration**:
@@ -535,37 +535,37 @@ class MutationTester:
 name: Mutation Testing
 
 on:
-  pull_request:
-    paths:
-      - 'src/**/*.py'
-      - 'tests/**/*.py'
+ pull_request:
+ paths:
+ - 'src/**/*.py'
+ - 'tests/**/*.py'
 
 jobs:
-  mutation-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+ mutation-test:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Set up Python
+ uses: actions/setup-python@v5
+ with:
+ python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          pip install mutpy pytest
-          pip install -e .
+ - name: Install dependencies
+ run: |
+ pip install mutpy pytest
+ pip install -e .
 
-      - name: Run mutation testing
-        run: |
-          python scripts/testing/run_mutation_tests.py \
-            --changed-files-only \
-            --threshold 75
+ - name: Run mutation testing
+ run: |
+ python scripts/testing/run_mutation_tests.py \
+ --changed-files-only \
+ --threshold 75
 
-      - name: Upload mutation report
-        uses: actions/upload-artifact@v4
-        with:
-          name: mutation-report
-          path: mutation_report.html
+ - name: Upload mutation report
+ uses: actions/upload-artifact@v4
+ with:
+ name: mutation-report
+ path: mutation_report.html
 ```
 
 ## Approach 2: Test Quality Dashboard
@@ -585,9 +585,9 @@ jobs:
 
 | Module | Coverage | Mutation Score | Assertions/Test | Status |
 |--------|----------|----------------|-----------------|--------|
-| agents/workflow_navigator.py | 95% | 82% | 3.2 |  Good |
-| src/codex/rag.py | 78% | 65% | 1.8 | ️ Weak Tests |
-| scripts/mcp/select_components.py | 100% | 91% | 4.1 |  Excellent |
+| agents/workflow_navigator.py | 95% | 82% | 3.2 | Good |
+| src/codex/rag.py | 78% | 65% | 1.8 | Weak Tests |
+| scripts/mcp/select_components.py | 100% | 91% | 4.1 | Excellent |
 ```
 
 ### Dependencies
@@ -626,7 +626,7 @@ jobs:
 
 ### Success Metrics
 
-- **Mutation score improvement**: 60% → 80%+ average across codebase
+- **Mutation score improvement**: 60% 80%+ average across codebase
 - **Weak tests identified**: 20-30% of tests flagged for improvement
 - **Test effectiveness**: 95%+ of tests have ≥2 meaningful assertions
 - **CI integration**: Mutation testing runs on every PR
@@ -636,9 +636,9 @@ jobs:
 ## 3. Property-Based Testing Expansion with Hypothesis
 
 ### Research Topic Classification
-**Category**: Advanced Testing Methodologies  
-**Complexity**: Low  
-**Timeline**: Phase 1 (Current Cycle)  
+**Category**: Advanced Testing Methodologies
+**Complexity**: Low
+**Timeline**: Phase 1 (Current Cycle)
 **Expected ROI**: Discover 20-30% more edge case bugs
 
 ### Problem Statement
@@ -649,10 +649,10 @@ jobs:
 ```python
 # Example-based: Tests specific inputs
 def test_reverse_string():
-    assert reverse("hello") == "olleh"
-    assert reverse("a") == "a"
-    assert reverse("") == ""
-    # What about unicode? Long strings? Special chars?
+ assert reverse("hello") == "olleh"
+ assert reverse("a") == "a"
+ assert reverse("") == ""
+ # What about unicode? Long strings? Special chars?
 ```
 
 **Property-based testing advantages**:
@@ -660,15 +660,15 @@ def test_reverse_string():
 # Property-based: Tests invariants across many inputs
 @given(st.text())
 def test_reverse_string_properties(s):
-    # Property 1: Reversing twice returns original
-    assert reverse(reverse(s)) == s
+ # Property 1: Reversing twice returns original
+ assert reverse(reverse(s)) == s
 
-    # Property 2: Length is preserved
-    assert len(reverse(s)) == len(s)
+ # Property 2: Length is preserved
+ assert len(reverse(s)) == len(s)
 
-    # Property 3: Reversing empty string returns empty
-    if s == "":
-        assert reverse(s) == ""
+ # Property 3: Reversing empty string returns empty
+ if s == "":
+ assert reverse(s) == ""
 ```
 
 **Benefits**:
@@ -715,60 +715,60 @@ from hypothesis import given, strategies as st
 
 @given(st.text(min_size=1, max_size=1000))
 def test_path_flatten_unflatten_roundtrip(path):
-    """Flattening then unflattening returns original"""
-    flattened = flatten_path(path)
-    unflattened = unflatten_path(flattened)
-    assert unflattened == path
+ """Flattening then unflattening returns original"""
+ flattened = flatten_path(path)
+ unflattened = unflatten_path(flattened)
+ assert unflattened == path
 
 @given(st.dictionaries(st.text(), st.integers()))
 def test_json_roundtrip(data):
-    """JSON serialize/deserialize preserves data"""
-    json_str = json.dumps(data)
-    parsed = json.loads(json_str)
-    assert parsed == data
+ """JSON serialize/deserialize preserves data"""
+ json_str = json.dumps(data)
+ parsed = json.loads(json_str)
+ assert parsed == data
 ```
 
 2. **Data Transformations** (HIGH)
 ```python
 @given(st.lists(st.integers(), min_size=0, max_size=100))
 def test_sort_properties(lst):
-    """Test sorting properties"""
-    sorted_lst = sorted(lst)
+ """Test sorting properties"""
+ sorted_lst = sorted(lst)
 
-    # Property 1: Length preserved
-    assert len(sorted_lst) == len(lst)
+ # Property 1: Length preserved
+ assert len(sorted_lst) == len(lst)
 
-    # Property 2: All elements present
-    assert sorted(sorted_lst) == sorted(lst)
+ # Property 2: All elements present
+ assert sorted(sorted_lst) == sorted(lst)
 
-    # Property 3: Ordered
-    for i in range(len(sorted_lst) - 1):
-        assert sorted_lst[i] <= sorted_lst[i + 1]
+ # Property 3: Ordered
+ for i in range(len(sorted_lst) - 1):
+ assert sorted_lst[i] <= sorted_lst[i + 1]
 ```
 
 3. **Parsers & AST** (MEDIUM)
 ```python
 @given(st.text(alphabet=string.ascii_letters + string.digits + " \n"))
 def test_python_parse_doesnt_crash(code):
-    """Parser should handle any input gracefully"""
-    try:
-        ast.parse(code)
-    except SyntaxError:
-        pass  # Expected for invalid Python
-    except Exception as e:
-        pytest.fail(f"Unexpected exception: {e}")
+ """Parser should handle any input gracefully"""
+ try:
+ ast.parse(code)
+ except SyntaxError:
+ pass # Expected for invalid Python
+ except Exception as e:
+ pytest.fail(f"Unexpected exception: {e}")
 ```
 
 4. **Configuration Handling** (MEDIUM)
 ```python
 @given(st.dictionaries(
-    keys=st.text(min_size=1),
-    values=st.one_of(st.integers(), st.text(), st.booleans())
+ keys=st.text(min_size=1),
+ values=st.one_of(st.integers(), st.text(), st.booleans())
 ))
 def test_config_validation(config):
-    """Config validation shouldn't crash on any dict"""
-    result = validate_config(config)
-    assert result in (True, False)  # Should return bool
+ """Config validation shouldn't crash on any dict"""
+ result = validate_config(config)
+ assert result in (True, False) # Should return bool
 ```
 
 **Implementation Strategy**:
@@ -780,26 +780,26 @@ import string
 
 # Strategy for valid filesystem paths
 path_strategy = st.text(
-    alphabet=string.ascii_letters + string.digits + "/_-.",
-    min_size=1,
-    max_size=255
+ alphabet=string.ascii_letters + string.digits + "/_-.",
+ min_size=1,
+ max_size=255
 ).filter(lambda s: not s.startswith('/'))
 
 @given(path_strategy)
 def test_flatten_path_properties(path):
-    """Property tests for path flattening"""
-    assume('/' in path)  # Only test paths with separators
+ """Property tests for path flattening"""
+ assume('/' in path) # Only test paths with separators
 
-    flattened = flatten_path(path)
+ flattened = flatten_path(path)
 
-    # Property 1: No slashes in flattened path
-    assert '/' not in flattened
+ # Property 1: No slashes in flattened path
+ assert '/' not in flattened
 
-    # Property 2: Flattening is deterministic
-    assert flatten_path(path) == flattened
+ # Property 2: Flattening is deterministic
+ assert flatten_path(path) == flattened
 
-    # Property 3: Length doesn't decrease
-    assert len(flattened) >= len(path.replace('/', ''))
+ # Property 3: Length doesn't decrease
+ assert len(flattened) >= len(path.replace('/', ''))
 ```
 
 ## Approach 2: Stateful Testing for Complex Systems
@@ -810,35 +810,35 @@ def test_flatten_path_properties(path):
 from hypothesis.stateful import RuleBasedStateMachine, rule, precondition
 
 class WorkflowNavigatorStateMachine(RuleBasedStateMachine):
-    """Stateful testing for WorkflowNavigator"""
+ """Stateful testing for WorkflowNavigator"""
 
-    def __init__(self):
-        super().__init__()
-        self.navigator = WorkflowNavigator()
-        self.workflows = {}
+ def __init__(self):
+ super().__init__()
+ self.navigator = WorkflowNavigator()
+ self.workflows = {}
 
-    @rule(workflow_id=st.text(min_size=1), steps=st.lists(st.text()))
-    def create_workflow(self, workflow_id, steps):
-        """Create a new workflow"""
-        assume(workflow_id not in self.workflows)
-        result = self.navigator.create_workflow(workflow_id, steps)
-        self.workflows[workflow_id] = steps
-        assert result == workflow_id
+ @rule(workflow_id=st.text(min_size=1), steps=st.lists(st.text()))
+ def create_workflow(self, workflow_id, steps):
+ """Create a new workflow"""
+ assume(workflow_id not in self.workflows)
+ result = self.navigator.create_workflow(workflow_id, steps)
+ self.workflows[workflow_id] = steps
+ assert result == workflow_id
 
-    @rule(workflow_id=st.sampled_from([]))
-    @precondition(lambda self: len(self.workflows) > 0)
-    def get_workflow(self, workflow_id):
-        """Get an existing workflow"""
-        workflow = self.navigator.get_workflow(workflow_id)
-        assert workflow.steps == self.workflows[workflow_id]
+ @rule(workflow_id=st.sampled_from([]))
+ @precondition(lambda self: len(self.workflows) > 0)
+ def get_workflow(self, workflow_id):
+ """Get an existing workflow"""
+ workflow = self.navigator.get_workflow(workflow_id)
+ assert workflow.steps == self.workflows[workflow_id]
 
-    @rule()
-    def check_invariants(self):
-        """Invariants that should always hold"""
-        # All created workflows should be retrievable
-        for wf_id in self.workflows:
-            workflow = self.navigator.get_workflow(wf_id)
-            assert workflow is not None
+ @rule()
+ def check_invariants(self):
+ """Invariants that should always hold"""
+ # All created workflows should be retrievable
+ for wf_id in self.workflows:
+ workflow = self.navigator.get_workflow(wf_id)
+ assert workflow is not None
 
 TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 ```
@@ -846,8 +846,8 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 ### Dependencies
 
 **Required**:
-- `hypothesis` (already available) 
-- `pytest` (installed) 
+- `hypothesis` (already available)
+- `pytest` (installed)
 
 **Optional**:
 - `hypothesis[cli]` for command-line tools
@@ -878,7 +878,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ### Success Metrics
 
-- **Property-based test coverage**: 10% → 30% of all tests
+- **Property-based test coverage**: 10% 30% of all tests
 - **Bugs discovered**: 20-30 new edge case bugs found
 - **Test robustness**: Property tests run 100-1000 cases each
 - **Developer adoption**: 80%+ of new tests include properties
@@ -886,9 +886,9 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 ### Example Properties by Domain
 
 **String Processing**:
-- Round-trip (encode → decode)
+- Round-trip (encode decode)
 - Idempotence (normalize twice == normalize once)
-- Reversibility (compress → decompress)
+- Reversibility (compress decompress)
 
 **Collections**:
 - Length preservation (map, filter)
@@ -907,11 +907,11 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-##  Cross-Topic Synergies
+## Cross-Topic Synergies
 
 ### Automated Test Generation + Mutation Testing
 - Generate tests, then validate with mutation testing
-- Iterate: generate → mutate → refine → validate
+- Iterate: generate mutate refine validate
 - Measure: "mutation score per generated test"
 
 ### Property-Based + Automated Generation
@@ -927,7 +927,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-## 🔖 Bookmark & Search Keywords
+## Bookmark & Search Keywords
 
 **For Literature Search**:
 - "neural program synthesis"
@@ -953,7 +953,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-##  Recommended Reading
+## Recommended Reading
 
 ### Papers
 1. "An Empirical Evaluation of Mutation Testing" (IEEE TSE, 2014)
@@ -972,7 +972,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-**Document Maintenance**: Update per phase as research progresses  
-**Owner**: Test Infrastructure Team  
-**Last Review**: 2025-12-31  
+**Document Maintenance**: Update per phase as research progresses
+**Owner**: Test Infrastructure Team
+**Last Review**: 2025-12-31
 **Next Review**: 2026-04-01

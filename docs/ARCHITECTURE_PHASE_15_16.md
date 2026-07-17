@@ -1,8 +1,8 @@
 # Phase 15-16 Architecture Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **v0.2.1-final**: Complete MLOps platform with autonomous cognitive brain system, integrated decision engine, and production-grade API layer.
+> **v0.2.0-final**: Complete MLOps platform with autonomous cognitive brain system, integrated decision engine, and production-grade API layer.
 
 **Last Updated**: 2026-07-11 | **Authors**: Phase 17 Lane 5 Documentation Team
 
@@ -25,6 +25,7 @@ The Phase 15-16 system represents a unified ML platform with three major subsyst
 
 ```mermaid
 graph TB
+
     subgraph "Phase 15-16 Unified System"
         subgraph "Client Layer"
             CLI[CLI Interface<br/>Commands: train, eval, serve, ingest]
@@ -65,26 +66,37 @@ graph TB
     end
 
     CLI --> APIGateway
+
     SDK --> APIGateway
+
     WebUI --> APIGateway
     
     APIGateway --> DecisionAPI
+
     APIGateway --> MemoryAPI
+
     APIGateway --> WorkflowAPI
+
     APIGateway --> MemoryStats
 
     DecisionAPI --> DecisionStorage
+
     DecisionStorage --> SQLite
     
     MemoryAPI --> STM
+
     MemoryAPI --> LTM
+
     STM --> Cache
+
     LTM --> PatternDB
+
     PatternDB --> SQLite
     
     WorkflowAPI --> WorkflowEngine
     
     MemoryStats --> Telemetry
+
     Telemetry --> SQLite
 
     style APIGateway fill:#ff9999
@@ -459,6 +471,7 @@ Response: 200 OK
 
 ```mermaid
 sequenceDiagram
+
     participant Client
     participant APIGateway
     participant DecisionAPI
@@ -469,10 +482,14 @@ sequenceDiagram
     APIGateway->>APIGateway: Validate request schema
     APIGateway->>DecisionAPI: Route to handler
     DecisionAPI->>SQLite: Insert decision record
+
     SQLite-->>DecisionAPI: Return inserted ID
     DecisionAPI->>Telemetry: Log decision event
+
     Telemetry-->>Telemetry: Update metrics
+
     DecisionAPI-->>APIGateway: Return 201 Created
+
     APIGateway-->>Client: Return response
 ```
 
@@ -480,6 +497,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+
     participant Client
     participant APIGateway
     participant MemoryAPI
@@ -491,14 +509,18 @@ sequenceDiagram
     APIGateway->>MemoryAPI: Route request
     MemoryAPI->>Cache: Check hot patterns
     alt Cache hit
+
         Cache-->>MemoryAPI: Return cached patterns
     else Cache miss
         MemoryAPI->>LTM: Query pattern database
+
         LTM-->>MemoryAPI: Return patterns
         MemoryAPI->>Cache: Update cache
     end
     MemoryAPI->>Telemetry: Increment usage_count
+
     MemoryAPI-->>APIGateway: Return patterns
+
     APIGateway-->>Client: Return response
 ```
 
@@ -506,6 +528,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+
     participant Client
     participant APIGateway
     participant WorkflowAPI
@@ -519,10 +542,13 @@ sequenceDiagram
     Checkers->>Checkers: Validate links
     Checkers->>Checkers: Run security scan
     Checkers->>Checkers: Run linter
+
     Checkers-->>WorkflowAPI: Return results
     WorkflowAPI->>Results: Aggregate results
     Results->>Results: Determine gate_passed
+
     Results-->>APIGateway: Return gate status
+
     APIGateway-->>Client: Return response
 ```
 
@@ -534,6 +560,7 @@ sequenceDiagram
 
 ```mermaid
 graph TB
+
     subgraph "Container Orchestration"
         subgraph "Production K8s Cluster"
             LB["Load Balancer<br/>HTTPS/TLS"]
@@ -563,18 +590,25 @@ graph TB
     end
 
     LB --> API1
+
     LB --> API2
+
     LB --> API3
     
     API1 --> Redis
+
     API2 --> Redis
+
     API3 --> Redis
     
     API1 --> PVC
+
     API2 --> PVC
+
     API3 --> PVC
     
     Worker1 --> PVC
+
     Worker2 --> PVC
     
     CM -.-> API1

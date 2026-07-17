@@ -1,10 +1,10 @@
 # RAG Enhancement Plansets & Promptsets
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Created:** 2026-01-08  
-**Agent:** GitHub Copilot  
-**Status:**  Execution In Progress  
+**Created:** 2026-01-08
+**Agent:** GitHub Copilot
+**Status:** Execution In Progress
 **Target:** 100% Test Coverage + Production Enhancements
 
 ---
@@ -101,7 +101,7 @@ This document contains comprehensive plansets and promptsets for completing all 
 
 **Tasks:**
 - [ ] Create `tests/test_rag_integration.py`
-- [ ] Test end-to-end pipeline (docs → index → query)
+- [ ] Test end-to-end pipeline (docs index query)
 - [ ] Test multi-tenant isolation
 - [ ] Test concurrent operations
 - [ ] Test index updates and versioning
@@ -326,24 +326,24 @@ This document contains comprehensive plansets and promptsets for completing all 
 Execute Planset 1 (CI/CD Integration):
 
 1. Create GitHub Actions workflow at .github/workflows/test-rag.yml:
-   - Trigger on push/PR to paths: src/codex/rag/**, tests/test_rag_**
-   - Install dependencies: pip install -e ".[rag,test]"
-   - Run pytest with coverage: --cov=src/codex/rag --cov-report=xml --cov-report=html
-   - Upload coverage to codecov
-   - Fail if coverage <90%
+ - Trigger on push/PR to paths: src/codex/rag/**, tests/test_rag_**
+ - Install dependencies: pip install -e ".[rag,test]"
+ - Run pytest with coverage: --cov=src/codex/rag --cov-report=xml --cov-report=html
+ - Upload coverage to codecov
+ - Fail if coverage <90%
 
 2. Create performance benchmarks:
-   - Generate test corpus (1k, 10k chunks)
-   - Benchmark indexing: chunks/second
-   - Benchmark queries: latency percentiles
-   - Measure cache hit rates
-   - Save results to docs/PERFORMANCE_BENCHMARKS.md
+ - Generate test corpus (1k, 10k chunks)
+ - Benchmark indexing: chunks/second
+ - Benchmark queries: latency percentiles
+ - Measure cache hit rates
+ - Save results to docs/PERFORMANCE_BENCHMARKS.md
 
 3. Validate:
-   - Run tests locally first
-   - Ensure all pass
-   - Generate coverage report
-   - Commit with message: "Add CI integration and performance benchmarks"
+ - Run tests locally first
+ - Ensure all pass
+ - Generate coverage report
+ - Commit with message: "Add CI integration and performance benchmarks"
 ```
 
 ### Promptset 2: 100% Coverage
@@ -351,35 +351,35 @@ Execute Planset 1 (CI/CD Integration):
 Execute Planset 2 (Path to 100% Coverage):
 
 1. Create tests/test_rag_error_handling.py:
-   - Test all exception paths in indexer, retriever, embeddings
-   - Mock file I/O errors (PermissionError, OSError)
-   - Mock network errors for OpenAI (TimeoutError, ConnectionError)
-   - Test cache corruption scenarios
-   - Test import errors (patch sys.modules)
-   - Test concurrent access (threading)
+ - Test all exception paths in indexer, retriever, embeddings
+ - Mock file I/O errors (PermissionError, OSError)
+ - Mock network errors for OpenAI (TimeoutError, ConnectionError)
+ - Test cache corruption scenarios
+ - Test import errors (patch sys.modules)
+ - Test concurrent access (threading)
 
 2. Create tests/test_rag_integration.py:
-   - Full pipeline: create corpus → build index → query → verify provenance
-   - Multi-tenant: create 3 tenants, verify isolation
-   - Concurrent: build 2 indices simultaneously
-   - Updates: modify corpus, rebuild, verify changes
+ - Full pipeline: create corpus build index query verify provenance
+ - Multi-tenant: create 3 tenants, verify isolation
+ - Concurrent: build 2 indices simultaneously
+ - Updates: modify corpus, rebuild, verify changes
 
 3. Create tests/test_rag_edge_cases.py:
-   - Extreme parameters: top_k=10000, chunk_size=10
-   - Large files: generate 100MB file, index successfully
-   - Many files: 1000 small files
-   - Malformed metadata: invalid JSON, missing fields
+ - Extreme parameters: top_k=10000, chunk_size=10
+ - Large files: generate 100MB file, index successfully
+ - Many files: 1000 small files
+ - Malformed metadata: invalid JSON, missing fields
 
 4. Create tests/test_rag_docs_examples.py:
-   - Extract all code examples from docs/EXPANDED_CONTEXT_RAG.md
-   - Convert to test functions
-   - Add assertions for expected behavior
+ - Extract all code examples from docs/EXPANDED_CONTEXT_RAG.md
+ - Convert to test functions
+ - Add assertions for expected behavior
 
 5. Validate:
-   - Run: pytest tests/test_rag_*.py --cov=src/codex/rag --cov-report=term-missing
-   - Target: 98-100% coverage
-   - Fix any remaining gaps
-   - Commit with message: "Achieve 100% test coverage for RAG modules"
+ - Run: pytest tests/test_rag_*.py --cov=src/codex/rag --cov-report=term-missing
+ - Target: 98-100% coverage
+ - Fix any remaining gaps
+ - Commit with message: "Achieve 100% test coverage for RAG modules"
 ```
 
 ### Promptset 3: Query Enhancements
@@ -387,35 +387,35 @@ Execute Planset 2 (Path to 100% Coverage):
 Execute Planset 3 (Query Enhancement Features):
 
 1. Create src/codex/rag/query_rewriter.py:
-   - Class QueryRewriter with methods:
-     - expand_synonyms(query) using WordNet/custom dict
-     - expand_with_embeddings(query, model, top_k=5)
-     - correct_spelling(query) using SymSpell
-   - Configuration: enable_synonyms, enable_expansion, enable_spelling
-   - Cache expanded queries
+ - Class QueryRewriter with methods:
+ - expand_synonyms(query) using WordNet/custom dict
+ - expand_with_embeddings(query, model, top_k=5)
+ - correct_spelling(query) using SymSpell
+ - Configuration: enable_synonyms, enable_expansion, enable_spelling
+ - Cache expanded queries
 
 2. Create src/codex/rag/reranker.py:
-   - Class CrossEncoderReranker:
-     - Use cross-encoder/ms-marco-MiniLM-L-6-v2
-     - rerank(query, results, top_k) method
-     - Batch processing for efficiency
-     - Fallback to original scores if model fails
-   - Add caching layer for query-result pairs
+ - Class CrossEncoderReranker:
+ - Use cross-encoder/ms-marco-MiniLM-L-6-v2
+ - rerank(query, results, top_k) method
+ - Batch processing for efficiency
+ - Fallback to original scores if model fails
+ - Add caching layer for query-result pairs
 
 3. Create tests for both:
-   - Query rewriter: test each expansion method
-   - Reranker: test ranking improvement, batch processing
+ - Query rewriter: test each expansion method
+ - Reranker: test ranking improvement, batch processing
 
 4. Update Retriever to use rewriter + reranker:
-   - Add optional query_rewriter parameter
-   - Add optional reranker parameter
-   - Pipeline: rewrite → retrieve → rerank
+ - Add optional query_rewriter parameter
+ - Add optional reranker parameter
+ - Pipeline: rewrite retrieve rerank
 
 5. Validate:
-   - Test query accuracy improves
-   - Measure latency impact
-   - Document usage in docs/EXPANDED_CONTEXT_RAG.md
-   - Commit with message: "Add query rewriting and cross-encoder re-ranking"
+ - Test query accuracy improves
+ - Measure latency impact
+ - Document usage in docs/EXPANDED_CONTEXT_RAG.md
+ - Commit with message: "Add query rewriting and cross-encoder re-ranking"
 ```
 
 ### Promptset 4: Advanced Features
@@ -423,30 +423,30 @@ Execute Planset 3 (Query Enhancement Features):
 Execute Planset 4 (Advanced Features):
 
 1. Create src/codex/rag/hybrid_retriever.py:
-   - Implement BM25 sparse retrieval (rank_bm25 library)
-   - Implement Reciprocal Rank Fusion (RRF)
-   - Class HybridRetriever:
-     - Combines dense (FAISS) + sparse (BM25)
-     - Configurable weights (default: 0.5/0.5)
-     - query() returns fused results
+ - Implement BM25 sparse retrieval (rank_bm25 library)
+ - Implement Reciprocal Rank Fusion (RRF)
+ - Class HybridRetriever:
+ - Combines dense (FAISS) + sparse (BM25)
+ - Configurable weights (default: 0.5/0.5)
+ - query() returns fused results
 
 2. Create src/codex/rag/hierarchical.py:
-   - Implement hierarchical chunking:
-     - Parent chunks (2000 chars)
-     - Child chunks (500 chars)
-     - Store relationships in metadata
-   - On retrieval: return child + parent context
-   - Update indexer to support hierarchy
+ - Implement hierarchical chunking:
+ - Parent chunks (2000 chars)
+ - Child chunks (500 chars)
+ - Store relationships in metadata
+ - On retrieval: return child + parent context
+ - Update indexer to support hierarchy
 
 3. Create tests:
-   - test_rag_hybrid.py: test BM25, RRF, fusion
-   - test_rag_hierarchical.py: test parent-child, context expansion
+ - test_rag_hybrid.py: test BM25, RRF, fusion
+ - test_rag_hierarchical.py: test parent-child, context expansion
 
 4. Validate:
-   - Benchmark hybrid vs dense-only (expect +15% recall)
-   - Test hierarchical context preservation
-   - Document in docs/EXPANDED_CONTEXT_RAG.md
-   - Commit with message: "Add hybrid search and hierarchical chunking"
+ - Benchmark hybrid vs dense-only (expect +15% recall)
+ - Test hierarchical context preservation
+ - Document in docs/EXPANDED_CONTEXT_RAG.md
+ - Commit with message: "Add hybrid search and hierarchical chunking"
 ```
 
 ### Promptset 5: Monitoring & GPU
@@ -454,36 +454,36 @@ Execute Planset 4 (Advanced Features):
 Execute Planset 5 (Monitoring & Optimization):
 
 1. Create src/codex/rag/analytics.py:
-   - Class RAGAnalytics:
-     - Track queries: frequency, latency, results
-     - Measure retrieval quality: precision@k, recall@k
-     - Store in SQLite: .codex/rag_analytics.db
-     - Generate reports: top queries, slow queries, cache stats
-   - Add dashboard script: scripts/rag_analytics_dashboard.py
+ - Class RAGAnalytics:
+ - Track queries: frequency, latency, results
+ - Measure retrieval quality: precision@k, recall@k
+ - Store in SQLite: .codex/rag_analytics.db
+ - Generate reports: top queries, slow queries, cache stats
+ - Add dashboard script: scripts/rag_analytics_dashboard.py
 
 2. Create src/codex/rag/gpu_utils.py:
-   - Function detect_gpu(): returns bool
-   - Function get_faiss_gpu_resources(): returns GPU config
-   - Automatic fallback to CPU if GPU unavailable
+ - Function detect_gpu(): returns bool
+ - Function get_faiss_gpu_resources(): returns GPU config
+ - Automatic fallback to CPU if GPU unavailable
 
 3. Update indexer.py and retriever.py:
-   - Add use_gpu parameter (default: auto-detect)
-   - Use faiss.StandardGpuResources() when available
-   - Graceful fallback with logging
+ - Add use_gpu parameter (default: auto-detect)
+ - Use faiss.StandardGpuResources() when available
+ - Graceful fallback with logging
 
 4. Create tests:
-   - test_rag_analytics.py: test tracking, reporting
-   - test_rag_gpu.py: mock GPU, test fallback
+ - test_rag_analytics.py: test tracking, reporting
+ - test_rag_gpu.py: mock GPU, test fallback
 
 5. Create documentation:
-   - docs/GPU_ACCELERATION.md: setup guide, benchmarks
-   - Update docs/EXPANDED_CONTEXT_RAG.md: analytics section
+ - docs/GPU_ACCELERATION.md: setup guide, benchmarks
+ - Update docs/EXPANDED_CONTEXT_RAG.md: analytics section
 
 6. Validate:
-   - Test analytics tracking
-   - Test GPU detection (mock)
-   - Document setup process
-   - Commit with message: "Add analytics and GPU acceleration support"
+ - Test analytics tracking
+ - Test GPU detection (mock)
+ - Document setup process
+ - Commit with message: "Add analytics and GPU acceleration support"
 ```
 
 ---
@@ -492,11 +492,11 @@ Execute Planset 5 (Monitoring & Optimization):
 
 Execute plansets in order:
 
-1. **Planset 1** (Pre-commits 1-4): CI & Performance → ~2-3 hours
-2. **Planset 2** (Pre-commits 5-10): 100% Coverage → ~3-4 hours
-3. **Planset 3** (Pre-commits 11-14): Query Enhancements → ~2-3 hours
-4. **Planset 4** (Pre-commits 15-18): Advanced Features → ~3-4 hours
-5. **Planset 5** (Pre-commits 19-22): Monitoring & GPU → ~2-3 hours
+1. **Planset 1** (Pre-commits 1-4): CI & Performance ~2-3 hours
+2. **Planset 2** (Pre-commits 5-10): 100% Coverage ~3-4 hours
+3. **Planset 3** (Pre-commits 11-14): Query Enhancements ~2-3 hours
+4. **Planset 4** (Pre-commits 15-18): Advanced Features ~3-4 hours
+5. **Planset 5** (Pre-commits 19-22): Monitoring & GPU ~2-3 hours
 
 **Total Estimated**: 11 pre-commit cycles (12-17 hours of development)
 
@@ -527,5 +527,5 @@ Execute plansets in order:
 
 Track progress in PR description and comments. Update after each pre-commit cycle.
 
-**Current Status:**  Ready for Execution  
+**Current Status:** Ready for Execution
 **Next Action:** Begin Planset 1, Pre-commit 1-2

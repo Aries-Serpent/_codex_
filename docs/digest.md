@@ -1,6 +1,6 @@
 # Codebase Context Digest
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-01-07T15:24:53.546749
 **Token Budget:** 100,000
@@ -262,19 +262,19 @@
 
 ```
 src/
-├── cognitive_brain/    # Cognitive architecture ABCs
-├── bridge_manager.py   # Secure IPC bridge
-├── bridge_types.py     # Typed message formats
-├── codex_init.py       # Configuration loader
-└── workflow_refactor.py # CI/CD utilities
+ cognitive_brain/ # Cognitive architecture ABCs
+ bridge_manager.py # Secure IPC bridge
+ bridge_types.py # Typed message formats
+ codex_init.py # Configuration loader
+ workflow_refactor.py # CI/CD utilities
 
 agents/
-├── cognitive_adapter.py # Legacy agent adapter
-├── agent_memory.py     # Agent memory system
-└── [35+ agent modules]
+ cognitive_adapter.py # Legacy agent adapter
+ agent_memory.py # Agent memory system
+ [35+ agent modules]
 
 cognitive_app/
-└── src/orchestrator.py # OODA Loop orchestrator
+ src/orchestrator.py # OODA Loop orchestrator
 ```
 
 **Digest Size:** 8715 chars

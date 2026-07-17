@@ -10,9 +10,9 @@
 <link href="../CI_FAILURE_ANALYSIS/" rel="prev"/>
 <link href="../../safety/safety_guide/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Root Org Validation - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -212,7 +212,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -896,7 +896,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1428,7 +1428,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -3205,16 +3205,16 @@
 - <code>.codex/inventory.json</code></p>
 <h3 id="manual-workflow_dispatch">Manual (workflow_dispatch)<a class="headerlink" href="#manual-workflow_dispatch" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nt">inputs</span><span class="p">:</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">file_to_validate</span><span class="p">:</span><span class="w"> </span><span class="s">'README.md'</span><span class="w">  </span><span class="c1"># Optional</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">dry_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                   </span><span class="c1"># Default: true</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w"> </span><span class="nt">file_to_validate</span><span class="p">:</span><span class="w"> </span><span class="s">'README.md'</span><span class="w"> </span><span class="c1"># Optional</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="nt">dry_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Default: true</span>
 </code></pre></div>
 <p><strong>Usage:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Via GitHub UI: Actions → Root Organization Validation → Run workflow</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Via GitHub UI: Actions Root Organization Validation Run workflow</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="c1"># Via GitHub CLI:</span>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>root-org-validation.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">file_to_validate</span><span class="o">=</span>QUICKSTART.md<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">true</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">file_to_validate</span><span class="o">=</span>QUICKSTART.md<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">true</span>
 </code></pre></div></p>
 <h2 id="jobs">Jobs<a class="headerlink" href="#jobs" title="Permanent link">¶</a></h2>
 <h3 id="1-pre-validation">1. Pre-Validation<a class="headerlink" href="#1-pre-validation" title="Permanent link">¶</a></h3>
@@ -3255,34 +3255,34 @@
 - Report overall status</p>
 <h2 id="artifacts">Artifacts<a class="headerlink" href="#artifacts" title="Permanent link">¶</a></h2>
 <h3 id="validation-baseline">validation-baseline<a class="headerlink" href="#validation-baseline" title="Permanent link">¶</a></h3>
-<p><strong>Retention:</strong> 7 iterations<br/>
+<p><strong>Retention:</strong> 7 iterations
 <strong>Content:</strong> Baseline metrics from pre-validation
 <strong>Format:</strong> Text file with timestamped results</p>
 <h3 id="reference-validation-report">reference-validation-report<a class="headerlink" href="#reference-validation-report" title="Permanent link">¶</a></h3>
-<p><strong>Retention:</strong> 30 iterations<br/>
+<p><strong>Retention:</strong> 30 iterations
 <strong>Content:</strong> Reference check results
 <strong>Format:</strong> Markdown report</p>
 <h3 id="root-org-validation-report">root-org-validation-report<a class="headerlink" href="#root-org-validation-report" title="Permanent link">¶</a></h3>
-<p><strong>Retention:</strong> 90 iterations<br/>
+<p><strong>Retention:</strong> 90 iterations
 <strong>Content:</strong> Complete validation report
 <strong>Format:</strong> Markdown with all job results</p>
 <h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permanent link">¶</a></h2>
 <h3 id="with-root-organization-scripts">With Root Organization Scripts<a class="headerlink" href="#with-root-organization-scripts" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Example: Validate before move</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate file</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/root_org/validate_references.py ${{ matrix.file }} --dry-run</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/root_org/validate_references.py ${{ matrix.file }} --dry-run</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Example: Check references after move</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check references</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="no">python scripts/root_org/validate_references.py ${{ matrix.new_path }}</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/root_org/validate_references.py ${{ matrix.new_path }}</span>
 </code></pre></div>
 <h2 id="with-custom-agents">With Custom Agents<a class="headerlink" href="#with-custom-agents" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Example: Use root-organizer-agent</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Assess risk</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="no"># Agent would analyze risk level</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="no"># And provide recommendations</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="c1"># Agent would analyze risk level</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span><span class="c1"># And provide recommendations</span>
 </code></pre></div>
 <h2 id="validation-checks">Validation Checks<a class="headerlink" href="#validation-checks" title="Permanent link">¶</a></h2>
 <h3 id="link-checker">Link Checker<a class="headerlink" href="#link-checker" title="Permanent link">¶</a></h3>
@@ -3345,13 +3345,13 @@
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>python<span class="w"> </span>scripts/root_org/update_links_atomic.py<span class="w"> </span>--old<span class="w"> </span>QUICKSTART.md<span class="w"> </span>--new<span class="w"> </span>docs/QUICKSTART.md
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Move QUICKSTART.md to docs/"</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/move-files
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Create PR → Workflow runs automatically</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Create PR Workflow runs automatically</span>
 </code></pre></div>
 <h2 id="example-2-manual-validation">Example 2: Manual Validation<a class="headerlink" href="#example-2-manual-validation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Via GitHub CLI</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>root-org-validation.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">file_to_validate</span><span class="o">=</span>.codex/archive/deprecated/AGENTS.md<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">false</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">file_to_validate</span><span class="o">=</span>.codex/archive/deprecated/AGENTS.md<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">false</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="c1"># Check run status</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>gh<span class="w"> </span>run<span class="w"> </span>list<span class="w"> </span>--workflow<span class="o">=</span>root-org-validation.yml<span class="w"> </span>--limit<span class="w"> </span><span class="m">1</span>
@@ -3404,17 +3404,17 @@
 <p>Edit <code>.github/workflows/root-org-validation.yml</code>:</p>
 <p><strong>Change file patterns:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'*.md'</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'custom/**/*.txt'</span><span class="w">  </span><span class="c1"># Add custom patterns</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'*.md'</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'custom/**/*.txt'</span><span class="w"> </span><span class="c1"># Add custom patterns</span>
 </code></pre></div></p>
 <p><strong>Adjust retention:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nt">retention-days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span><span class="w">  </span><span class="c1"># Default, can be changed per artifact</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nt">retention-days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span><span class="w"> </span><span class="c1"># Default, can be changed per artifact</span>
 </code></pre></div></p>
 <p><strong>Add custom checks:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Custom validation</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">    </span><span class="no"># Your custom validation logic</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w">    </span><span class="no">./scripts/custom_check.sh</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="c1"># Your custom validation logic</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./scripts/custom_check.sh</span>
 </code></pre></div></p>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
 <ol>
@@ -3449,9 +3449,9 @@
 - Run validation scripts locally
 - Contact: @mbaetiong</p>
 <hr/>
-<p><strong>Version:</strong> 1.0.0<br/>
-<strong>Created:</strong> 2026-01-21<br/>
-<strong>Status:</strong>  Production Ready<br/>
+<p><strong>Version:</strong> 1.0.0
+<strong>Created:</strong> 2026-01-21
+<strong>Status:</strong> Production Ready
 <strong>Integration:</strong> root-org scripts, custom agents</p>
 </article>
 </div>
@@ -3482,6 +3482,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

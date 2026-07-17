@@ -1,6 +1,6 @@
 # Test Taxonomy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,13 +12,13 @@ Tests are organized by type and purpose, with clear markers for categorization a
 
 ```text
 tests/
-├── config/          # Configuration and schema tests
-├── unit/            # Unit tests (isolated, fast)
-├── integration/     # Integration tests
-├── training/        # Training-related tests
-├── eval/            # Evaluation tests
-├── cli/             # CLI tests
-└── ...
+ config/ # Configuration and schema tests
+ unit/ # Unit tests (isolated, fast)
+ integration/ # Integration tests
+ training/ # Training-related tests
+ eval/ # Evaluation tests
+ cli/ # CLI tests
+ ...
 ```text
 
 ### Test Markers
@@ -28,38 +28,38 @@ All markers are registered in `pytest.ini`. Use these consistently:
 #### Core Markers
 
 - **`smoke`**: Quick smoke tests for basic functionality
-  - Runtime: < 1 second each
-  - Run frequently during development
-  - Usage: `@pytest.mark.smoke`
+ - Runtime: < 1 second each
+ - Run frequently during development
+ - Usage: `@pytest.mark.smoke`
 
 - **`slow`**: Long-running or resource-intensive tests
-  - Runtime: > 10 seconds
-  - Skip during quick checks
-  - Usage: `@pytest.mark.slow`
+ - Runtime: > 10 seconds
+ - Skip during quick checks
+ - Usage: `@pytest.mark.slow`
 
 #### Environment Markers
 
 - **`requires_torch`**: Tests requiring PyTorch installation
-  - Automatically skipped if torch unavailable
-  - Usage: `@pytest.mark.requires_torch`
+ - Automatically skipped if torch unavailable
+ - Usage: `@pytest.mark.requires_torch`
 
 - **`cpu_only`**: Tests that should only run on CPU
-  - Prevents GPU resource usage
-  - Usage: `@pytest.mark.cpu_only`
+ - Prevents GPU resource usage
+ - Usage: `@pytest.mark.cpu_only`
 
 - **`distributed`**: Distributed/accelerate tests
-  - Opt-in via `ACCELERATE_TEST=1`
-  - Usage: `@pytest.mark.distributed`
+ - Opt-in via `ACCELERATE_TEST=1`
+ - Usage: `@pytest.mark.distributed`
 
 #### Feature Markers
 
 - **`lora`**: LoRA-specific tests
-  - Opt-in via `RUN_LORA_TESTS=1`
-  - Usage: `@pytest.mark.lora`
+ - Opt-in via `RUN_LORA_TESTS=1`
+ - Usage: `@pytest.mark.lora`
 
 - **`perf_smoke`**: Performance smoke tests
-  - Opt-in via `RUN_PERF_SMOKE=1`
-  - Usage: `@pytest.mark.perf_smoke`
+ - Opt-in via `RUN_PERF_SMOKE=1`
+ - Usage: `@pytest.mark.perf_smoke`
 
 ### Running Tests by Category
 
@@ -92,32 +92,32 @@ pytest -m "smoke and not requires_torch"
 
 ```text
 def test_<feature>_<scenario>_<expected_result>():
-    """Clear docstring explaining what is tested."""
-    pass
+ """Clear docstring explaining what is tested."""
+ pass
 
 # Examples:
 def test_config_loads_valid_yaml():
-    """Test that valid YAML config loads successfully."""
-    pass
+ """Test that valid YAML config loads successfully."""
+ pass
 
 def test_model_raises_error_on_invalid_device():
-    """Test that model initialization fails with invalid device."""
-    pass
+ """Test that model initialization fails with invalid device."""
+ pass
 ```text
 
 ## Test Structure (AAA Pattern)
 
 ```python
 def test_example():
-    """Test description."""
-    # Arrange: Set up test data and conditions
-    config = {"epochs": 5}
+ """Test description."""
+ # Arrange: Set up test data and conditions
+ config = {"epochs": 5}
 
-    # Act: Perform the action being tested
-    result = process_config(config)
+ # Act: Perform the action being tested
+ result = process_config(config)
 
-    # Assert: Verify the expected outcome
-    assert result.epochs == 5
+ # Assert: Verify the expected outcome
+ assert result.epochs == 5
 ```text
 
 ### Best Practices

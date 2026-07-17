@@ -1,10 +1,10 @@
 # [Implementation Update]: Training CLI, Checkpoint Helpers, and API Inference Wiring
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 00:32:28 | Author: mbaetiong
 
-Roles: [Primary], [Secondary]  Energy: [3]
+Roles: [Primary], [Secondary] Energy: [3]
 
 This document merges the last applied atomic diffs (training CLI, checkpoint utilities, API /infer wiring, secret filtering) with the implementation summary provided. It is an authoritative, concise reference for reviewers and maintainers.
 
@@ -20,7 +20,7 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 | Checkpoint wrapper | Thin wrapper around existing checkpointing + JSON sidecar | src/codex_ml/utils/checkpoint.py |
 | Hydra Config | Training config group (lean, non-conflicting) | configs/training/profiles/default.yaml |
 | Hydra CLI | Hydra entrypoint that calls run_training | src/codex_ml/cli/train.py |
-| API Inference | Lazy load tokenizer/model, encode→decode flow, secret masking, fallbacks | services/api/main.py |
+| API Inference | Lazy load tokenizer/model, encodedecode flow, secret masking, fallbacks | services/api/main.py |
 | Secret Filtering | Extended regexes: OpenAI, AWS, GCP, GitHub PAT, Slack | services/api/main.py |
 | Tests | Checkpoint roundtrip test (torch-guarded), hydra CLI tests guarded for missing deps | tests/test_checkpoint_util.py, tests/test_hydra_cli.py |
 
@@ -43,7 +43,7 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 | Default deterministic seed | PID/time-derived (non-deterministic) | Seed 1234 when seed==0 or None (deterministic offline) |
 | run_training metrics | Demo loop only | Optional model_params added when model available |
 | Checkpointing from train loop | Absent | Per-epoch checkpoint directories + latest.json sidecar when checkpoint_dir provided |
-| /infer | Echo with basic sk- filter | Tokenizer→encode→decode flow, secret masking across more patterns, lazy cached components |
+| /infer | Echo with basic sk- filter | Tokenizerencodedecode flow, secret masking across more patterns, lazy cached components |
 | Model/LoRA | No wiring | Optional model_name, lora, lora_cfg, device, dtype parameters — guarded by torch/peft presence |
 
 5) Security & offline considerations
@@ -70,12 +70,12 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 
 9) Minimal usage examples
 - Hydra train (example):
-  python -m codex_ml.cli.train epochs=1 model_name=MiniLM checkpoint.dir=artifacts/ckpts
+ python -m codex_ml.cli.train epochs=1 model_name=MiniLM checkpoint.dir=artifacts/ckpts
 - Legacy raw loop:
-  python -m codex_ml.train_loop --epochs 1 --grad-accum 2
+ python -m codex_ml.train_loop --epochs 1 --grad-accum 2
 - API call that demonstrates masking:
-  curl -X POST localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"aws key AKIAEXAMPLEKEY"}'
-  → completion masks key: "[SECRET]"
+ curl -X POST localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"aws key AKIAEXAMPLEKEY"}'
+ completion masks key: "[SECRET]"
 
 10) Follow-ups (prioritized)
 1. P1: Implement resume by reading latest.json and load_checkpoint wrapper.

@@ -1,6 +1,6 @@
 # Repository Admin Implementation Decisions - Executive Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,20 +12,20 @@
 
 | # | Question | Recommendation | Rationale | Priority | Page |
 |---|----------|----------------|-----------|----------|------|
-| **4.1.1** | Long function threshold (50 lines)? |  **KEEP** | Industry standard (40-60), fractal analysis confirms | HIGH | [Link(#top) |
-| **4.1.2** | Max arguments threshold (5)? |  **KEEP** | Clean Code standard, cognitive load optimal | HIGH | [Link(#top) |
-| **4.1.3** | Max nesting threshold (4 levels)? |  **KEEP** | Complexity research, maintainability | HIGH | [Link(#top) |
-| **4.1.4** | God class threshold (20 methods)? |  **KEEP** | SRP boundary, industry tools alignment | HIGH | [Link(#top) |
-| **4.1.5** | Keep all 5 export formats? |  **YES** | Each serves distinct persona/workflow | MEDIUM | [Link(#top) |
-| **4.1.6** | LibCST as primary parser? |  **YES** | Refactoring-critical, formatting preservation | HIGH | [Link(#top) |
-| **4.2.1** | AST similarity default CI? |  **CI YES** /  **Local NO** | Context-dependent (relativistic effects) | MEDIUM | [Link(#top) |
-| **4.2.2** | Log encoding errors? |  **YES** | Visibility critical, use `errors="replace"` | HIGH | [Link(#top) |
-| **4.3.1** | Register CLI entry points? |  **YES** | Discoverability, ecosystem integration | HIGH | [Link(#top) |
-| **4.3.2** | CI merge blocking? | ️ **WARNINGS ONLY** | Gradual adoption, non-blocking initially | MEDIUM | [Link(#top) |
-| **4.3.3** | Standard SQLite location? |  **YES** | `.codex/session_logs.db` convention | LOW | [Link(#top) |
-| **4.4.1** | Tree-sitter for YAML/SQL? |  **YES** | Cross-language analysis, validation | MEDIUM | [Link(#top) |
-| **4.4.2** | Incremental analysis? |  **YES** | Performance critical (10-100x faster) | HIGH | [Link(#top) |
-| **4.4.3** | HTML report generation? |  **YES** | User experience, stakeholder communication | MEDIUM | [Link(#top) |
+| **4.1.1** | Long function threshold (50 lines)? | **KEEP** | Industry standard (40-60), fractal analysis confirms | HIGH | [Link(#top) |
+| **4.1.2** | Max arguments threshold (5)? | **KEEP** | Clean Code standard, cognitive load optimal | HIGH | [Link(#top) |
+| **4.1.3** | Max nesting threshold (4 levels)? | **KEEP** | Complexity research, maintainability | HIGH | [Link(#top) |
+| **4.1.4** | God class threshold (20 methods)? | **KEEP** | SRP boundary, industry tools alignment | HIGH | [Link(#top) |
+| **4.1.5** | Keep all 5 export formats? | **YES** | Each serves distinct persona/workflow | MEDIUM | [Link(#top) |
+| **4.1.6** | LibCST as primary parser? | **YES** | Refactoring-critical, formatting preservation | HIGH | [Link(#top) |
+| **4.2.1** | AST similarity default CI? | **CI YES** / **Local NO** | Context-dependent (relativistic effects) | MEDIUM | [Link(#top) |
+| **4.2.2** | Log encoding errors? | **YES** | Visibility critical, use `errors="replace"` | HIGH | [Link(#top) |
+| **4.3.1** | Register CLI entry points? | **YES** | Discoverability, ecosystem integration | HIGH | [Link(#top) |
+| **4.3.2** | CI merge blocking? | **WARNINGS ONLY** | Gradual adoption, non-blocking initially | MEDIUM | [Link(#top) |
+| **4.3.3** | Standard SQLite location? | **YES** | `.codex/session_logs.db` convention | LOW | [Link(#top) |
+| **4.4.1** | Tree-sitter for YAML/SQL? | **YES** | Cross-language analysis, validation | MEDIUM | [Link(#top) |
+| **4.4.2** | Incremental analysis? | **YES** | Performance critical (10-100x faster) | HIGH | [Link(#top) |
+| **4.4.3** | HTML report generation? | **YES** | User experience, stakeholder communication | MEDIUM | [Link(#top) |
 
 ---
 
@@ -36,7 +36,7 @@
 | **Chaos Theory** | Stable defaults + exploratory options | Thresholds: conservative defaults, tunable per-context |
 | **Fractal Geometry** | Multi-scale consistency | 50-line functions align with fractal dimension ~1.5-2.0 |
 | **Fluid Dynamics** | Minimize workflow friction | 5 export formats = optimal channel distribution |
-| **EM Fields** | Graduated influence | CI severity: INFO → WARNING → ERROR → CRITICAL |
+| **EM Fields** | Graduated influence | CI severity: INFO WARNING ERROR CRITICAL |
 | **Wave Propagation** | Constructive interference | Multiple CLI tools increase ecosystem adoption |
 | **Relativistic Effects** | Context-dependent behavior | AST analysis: disabled locally, enabled in CI |
 
@@ -149,19 +149,19 @@ fail_on: [error, critical]    # Block on these severities
 
 ## Critical Decisions Summary
 
-###  Implement Immediately (HIGH Priority)
+### Implement Immediately (HIGH Priority)
 1. **Error logging** - Silent failures create debugging nightmares
 2. **CLI registration** - Discoverability drives adoption
 3. **Incremental analysis** - Essential for scale (10-100x speedup)
 4. **LibCST elevation** - Enables safe refactoring/codemods
 
-### ️ Implement Gradually (MEDIUM Priority)
+### Implement Gradually (MEDIUM Priority)
 5. **AST similarity in CI** - Valuable but expensive
 6. **Tree-sitter integration** - High ROI for YAML-heavy codebases
 7. **HTML reports** - User experience multiplier
 8. **CI merge blocking** - Build consensus first (3-phase rollout)
 
-### ℹ️ Consider Later (LOW Priority)
+### ℹ Consider Later (LOW Priority)
 9. **Standard DB location** - Nice-to-have, not urgent
 10. **Advanced visualization** - After basic reporting works
 
@@ -171,7 +171,7 @@ fail_on: [error, critical]    # Block on these severities
 
 | Risk | Mitigation Strategy |
 |------|---------------------|
-| **Developer pushback on thresholds** | 3-phase rollout (observe → warn → enforce) |
+| **Developer pushback on thresholds** | 3-phase rollout (observe warn enforce) |
 | **CI time increase** | Incremental analysis (Phase 2) |
 | **False positive code smells** | Configurable per-directory thresholds |
 | **Tool adoption resistance** | Clear CLI docs, shell completion |
@@ -197,6 +197,6 @@ fail_on: [error, critical]    # Block on these severities
 
 ---
 
-**Document Version**: 1.0.0  
-**Created**: 2025-12-21  
+**Document Version**: 1.0.0
+**Created**: 2025-12-21
 **Companion**: [Full Analysis Document](./REPO_ADMIN_IMPLEMENTATION_DECISIONS.md) (2080 lines)

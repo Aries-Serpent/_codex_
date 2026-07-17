@@ -1,15 +1,15 @@
 # ADR-20260304-copilot-agent-cli-api-gaps
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
 ## Context
 
 **Date:2026-07-13
-**PR:** #3495  
-**Session:** COGNITIVE_BRAIN_SESSION_NUMBER 112  
-**Status:** ACCEPTED — gaps resolved in this PR  
+**PR:** #3495
+**Session:** COGNITIVE_BRAIN_SESSION_NUMBER 112
+**Status:** ACCEPTED — gaps resolved in this PR
 
 This ADR records the complete capability assessment of an active **GitHub Copilot Coding Agent**
 using the **Cognitive Brain CLI API Client** (`cognitive_app/src/server/cli_api_server.py`),
@@ -36,22 +36,22 @@ Live interrogation performed during PR #3495 agent session (2026-03-04T22:00–2
 
 | Capability | Status | Root Cause |
 |-----------|--------|------------|
-| `GET /api/health` |  WORKS | Server auto-started by setup-steps |
-| `POST /api/cli/run` |  WORKS | No auth required |
-| `GET /api/cli/history` |  WORKS | No auth required |
-| `DELETE /api/cli/history` |  WORKS | No auth required |
-| `POST /api/request` (HTTP proxy) |  WORKS | No auth required; GitHub auto-inject via `CODEX_MASTER_KEY` skipped (key empty) |
-| `GET /api/ooda/metrics` |  WORKS | Returns empty (orchestrator not wired) |
-| `POST /api/ooda/process` | ️ PARTIAL | `cognitive_brain.base` import fails in CI |
-| `GET /api/memory/state` |  FAILS 503 | `CODEX_MASTER_KEY` not available in session |
-| `GET /api/memory/search` |  FAILS 503 | Same |
-| `POST /api/memory/consolidate` |  FAILS 503 | Same |
-| `WebSocket /ws/cli` (PTY) | ️ UNTESTED | No browser in agent sandbox; works if frontend is connected |
-| GitHub Pages frontend URL |  BLOCKED | Playwright sandbox network policy (`ERR_BLOCKED_BY_CLIENT`) |
-| `web_fetch` of GitHub Pages |  WORKS | Returns static HTML shell; React SPA requires JS runtime |
-| `CODEX_CLI_API_URL` in agent env |  MISSING | Not exported to `GITHUB_ENV` in setup steps |
-| `COPILOT_CLI_BASE_URL` in agent env |  MISSING | `.codex/agent_context.json` did not exist → injection step silently skipped |
-| Repo variables injected as env vars |  MISSING | **Same root cause: `.codex/agent_context.json` not present** |
+| `GET /api/health` | WORKS | Server auto-started by setup-steps |
+| `POST /api/cli/run` | WORKS | No auth required |
+| `GET /api/cli/history` | WORKS | No auth required |
+| `DELETE /api/cli/history` | WORKS | No auth required |
+| `POST /api/request` (HTTP proxy) | WORKS | No auth required; GitHub auto-inject via `CODEX_MASTER_KEY` skipped (key empty) |
+| `GET /api/ooda/metrics` | WORKS | Returns empty (orchestrator not wired) |
+| `POST /api/ooda/process` | PARTIAL | `cognitive_brain.base` import fails in CI |
+| `GET /api/memory/state` | FAILS 503 | `CODEX_MASTER_KEY` not available in session |
+| `GET /api/memory/search` | FAILS 503 | Same |
+| `POST /api/memory/consolidate` | FAILS 503 | Same |
+| `WebSocket /ws/cli` (PTY) | UNTESTED | No browser in agent sandbox; works if frontend is connected |
+| GitHub Pages frontend URL | BLOCKED | Playwright sandbox network policy (`ERR_BLOCKED_BY_CLIENT`) |
+| `web_fetch` of GitHub Pages | WORKS | Returns static HTML shell; React SPA requires JS runtime |
+| `CODEX_CLI_API_URL` in agent env | MISSING | Not exported to `GITHUB_ENV` in setup steps |
+| `COPILOT_CLI_BASE_URL` in agent env | MISSING | `.codex/agent_context.json` did not exist injection step silently skipped |
+| Repo variables injected as env vars | MISSING | **Same root cause: `.codex/agent_context.json` not present** |
 
 ---
 
@@ -81,7 +81,7 @@ The CLI server startup step exported `CLI_API_SERVER_PID` but not the server URL
 
 **Fix (this PR):**
 - `copilot-setup-steps.yml` now exports `CODEX_CLI_API_URL=${COPILOT_CLI_BASE_URL:-http://localhost:8765}` to `GITHUB_ENV`
-- `BrainClient.__init__` now checks `CODEX_CLI_API_URL` → `COPILOT_CLI_BASE_URL` → default
+- `BrainClient.__init__` now checks `CODEX_CLI_API_URL` `COPILOT_CLI_BASE_URL` default
 
 ### RC-3 — No Python client wrapper for agent code
 
@@ -92,7 +92,7 @@ No standard, testable interface existed.
 typed methods for every server endpoint, convenience helpers (`git_status`, `git_log`,
 `github_repo_info`, `github_workflow_runs`), and clean `BrainClientError` exception handling.
 
-### RC-4 — `CODEX_MASTER_KEY` not available → memory endpoints blocked
+### RC-4 — `CODEX_MASTER_KEY` not available memory endpoints blocked
 
 `copilot-setup-steps.yml` references `secrets.CODEX_MASTER_KEY` and `secrets.CODEX_BACKUP_KEY`
 in the job `env:` block (lines 86–87). In theory these should inject into the session.
@@ -133,22 +133,22 @@ via the REST/WebSocket server.
 
 | Capability | Status | Notes |
 |-----------|--------|-------|
-| `GET /api/health` |  WORKS | Unchanged |
-| `POST /api/cli/run` |  WORKS | Unchanged |
-| `GET /api/cli/history` |  WORKS | Unchanged |
-| `DELETE /api/cli/history` |  WORKS | Unchanged |
-| `POST /api/request` (HTTP proxy) |  WORKS | `httpx` now in startup install |
-| `GET /api/ooda/metrics` |  WORKS | Unchanged |
-| `POST /api/ooda/process` | ️ PARTIAL | Needs `cognitive_brain.base` installed |
-| `GET /api/memory/state` | ️ PENDING | Requires `CODEX_MASTER_KEY` rotation (RC-4) |
-| `GET /api/memory/search` | ️ PENDING | Same |
-| `POST /api/memory/consolidate` | ️ PENDING | Same |
-| `WebSocket /ws/cli` (PTY) | ️ HUMAN-ONLY | Accessible from browser frontend, not agent |
-| GitHub Pages frontend |  BLOCKED | Sandbox policy; use REST API directly |
-| `CODEX_CLI_API_URL` in agent env |  FIXED | Exported by startup step (this PR) |
-| `COPILOT_CLI_BASE_URL` in agent env |  FIXED | `agent_context.json` created (this PR) |
-| All repo variables in agent env |  FIXED | `agent_context.json` created (this PR) |
-| `BrainClient` Python import |  NEW | `from codex.agents.brain_client import BrainClient` |
+| `GET /api/health` | WORKS | Unchanged |
+| `POST /api/cli/run` | WORKS | Unchanged |
+| `GET /api/cli/history` | WORKS | Unchanged |
+| `DELETE /api/cli/history` | WORKS | Unchanged |
+| `POST /api/request` (HTTP proxy) | WORKS | `httpx` now in startup install |
+| `GET /api/ooda/metrics` | WORKS | Unchanged |
+| `POST /api/ooda/process` | PARTIAL | Needs `cognitive_brain.base` installed |
+| `GET /api/memory/state` | PENDING | Requires `CODEX_MASTER_KEY` rotation (RC-4) |
+| `GET /api/memory/search` | PENDING | Same |
+| `POST /api/memory/consolidate` | PENDING | Same |
+| `WebSocket /ws/cli` (PTY) | HUMAN-ONLY | Accessible from browser frontend, not agent |
+| GitHub Pages frontend | BLOCKED | Sandbox policy; use REST API directly |
+| `CODEX_CLI_API_URL` in agent env | FIXED | Exported by startup step (this PR) |
+| `COPILOT_CLI_BASE_URL` in agent env | FIXED | `agent_context.json` created (this PR) |
+| All repo variables in agent env | FIXED | `agent_context.json` created (this PR) |
+| `BrainClient` Python import | NEW | `from codex.agents.brain_client import BrainClient` |
 
 ---
 
@@ -156,12 +156,12 @@ via the REST/WebSocket server.
 
 | Variable | Type | Before | After | Action |
 |----------|------|--------|-------|--------|
-| `CODEX_CLI_API_URL` | Repo variable |  Missing | `http://localhost:8765` | **Add to repo variables** |
-| `agent_context.json` | File |  Missing | Created with all repo vars | **Created (this PR)** |
+| `CODEX_CLI_API_URL` | Repo variable | Missing | `http://localhost:8765` | **Add to repo variables** |
+| `agent_context.json` | File | Missing | Created with all repo vars | **Created (this PR)** |
 | `COGNITIVE_BRAIN_SESSION_NUMBER` | Repo variable | `110` | `112` | **Update in repo variables + agent_context.json** |
-| `COPILOT_CLI_BASE_URL` | Repo variable |  `http://localhost:8765` | Unchanged | Propagated via agent_context.json |
-| `COPILOT_CLI_ENABLED` | Repo variable |  `true` | Unchanged | Propagated via agent_context.json |
-| `CODEX_MASTER_KEY` | Org secret | ️ Possibly empty | **Verify & rotate** | Action for @mbaetiong |
+| `COPILOT_CLI_BASE_URL` | Repo variable | `http://localhost:8765` | Unchanged | Propagated via agent_context.json |
+| `COPILOT_CLI_ENABLED` | Repo variable | `true` | Unchanged | Propagated via agent_context.json |
+| `CODEX_MASTER_KEY` | Org secret | Possibly empty | **Verify & rotate** | Action for @mbaetiong |
 
 ---
 

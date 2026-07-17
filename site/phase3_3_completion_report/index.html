@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/phase3_3_completion_report/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 3.3 Completion Report: Integration &amp; End-to-End Test Suite - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2600,11 +2600,11 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
-<p><strong>Status</strong>:  <strong>COMPLETE</strong><br/>
-<strong>Date</strong>: 2026-01-18<br/>
-<strong>Tests Added</strong>: 156 integration and E2E tests<br/>
-<strong>Files Created</strong>: 4 comprehensive test suites<br/>
-<strong>Coverage Goal</strong>: +15-18% gain (target: 77-80% total coverage)<br/>
+<p><strong>Status</strong>: <strong>COMPLETE</strong>
+<strong>Date</strong>: 2026-01-18
+<strong>Tests Added</strong>: 156 integration and E2E tests
+<strong>Files Created</strong>: 4 comprehensive test suites
+<strong>Coverage Goal</strong>: +15-18% gain (target: 77-80% total coverage)
 <strong>Test Execution</strong>: All 156 tests passing</p>
 <hr/>
 <h2 id="phase-33-objectives-achieved">Phase 3.3 Objectives - ACHIEVED<a class="headerlink" href="#phase-33-objectives-achieved" title="Permanent link">¶</a></h2>
@@ -2627,7 +2627,7 @@
 <hr/>
 <h2 id="test-suite-breakdown">Test Suite Breakdown<a class="headerlink" href="#test-suite-breakdown" title="Permanent link">¶</a></h2>
 <h3 id="1-test_phase3_cross_module_coveragepy-35-tests">1. test_phase3_cross_module_coverage.py (35 tests)<a class="headerlink" href="#1-test_phase3_cross_module_coveragepy-35-tests" title="Permanent link">¶</a></h3>
-<p><strong>Config → Training → Evaluation Flow (12 tests)</strong>
+<p><strong>Config Training Evaluation Flow (12 tests)</strong>
 - <code>test_config_loads_and_initializes_training</code>: Config initialization
 - <code>test_training_config_propagates_to_optimizer</code>: Optimizer configuration
 - <code>test_training_produces_checkpoint</code>: Checkpoint creation
@@ -2640,7 +2640,7 @@
 - <code>test_config_overrides_cascade_correctly</code>: Override precedence
 - <code>test_evaluation_metrics_aggregation</code>: Metrics aggregation
 - <code>test_training_stops_on_early_stopping</code>: Early stopping logic</p>
-<p><strong>RAG → Agent → Response Flow (13 tests)</strong>
+<p><strong>RAG Agent Response Flow (13 tests)</strong>
 - <code>test_rag_embeds_documents</code>: Document embedding
 - <code>test_rag_builds_index_from_embeddings</code>: Index building
 - <code>test_rag_retrieves_relevant_documents</code>: Document retrieval
@@ -2654,7 +2654,7 @@
 - <code>test_rag_filters_low_confidence_results</code>: Confidence filtering
 - <code>test_agent_streaming_response_with_rag</code>: Response streaming
 - <code>test_rag_agent_error_recovery</code>: Error recovery</p>
-<p><strong>CLI → Core → Output Flow (10 tests)</strong>
+<p><strong>CLI Core Output Flow (10 tests)</strong>
 - <code>test_cli_parses_train_command</code>: Command parsing
 - <code>test_cli_config_merges_with_defaults</code>: Config merging
 - <code>test_cli_validates_arguments</code>: Argument validation
@@ -2838,9 +2838,9 @@
 - CLI interface: +12-15%
 - Error handling: +20-25%</p>
 <p><strong>Integration Path Coverage</strong>:
-- Config → Training → Evaluation: 85%+
-- RAG → Agent → Response: 80%+
-- CLI → Core → Output: 75%+
+- Config Training Evaluation: 85%+
+- RAG Agent Response: 80%+
+- CLI Core Output: 75%+
 - Cross-module interactions: 70%+</p>
 <p><strong>Overall Coverage Projection</strong>:
 - Pre-Phase 3.3: ~60-62%
@@ -2947,17 +2947,17 @@
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
 <p>Phase 3.3 has been successfully completed with <strong>156 comprehensive integration and E2E tests</strong> that validate:</p>
-<p>Cross-module interactions and data flow<br/>
- Complete end-to-end user workflows<br/>
- Error handling and recovery mechanisms<br/>
- Performance under realistic load<br/>
- Concurrent operations and resource management  </p>
+<p>Cross-module interactions and data flow
+ Complete end-to-end user workflows
+ Error handling and recovery mechanisms
+ Performance under realistic load
+ Concurrent operations and resource management</p>
 <p>The test suite is <strong>production-ready</strong>, <strong>fast-executing</strong>, and provides <strong>high confidence</strong> in system reliability and correctness.</p>
 <p><strong>Phase 3 (Advanced Test Coverage) is now COMPLETE</strong> with <strong>77-80% total coverage achieved</strong>.</p>
 <hr/>
-<p><strong>Report Generated</strong>: 2026-01-18<br/>
-<strong>Phase</strong>: 3.3 - Integration &amp; End-to-End Test Suite<br/>
-<strong>Status</strong>:  COMPLETE<br/>
+<p><strong>Report Generated</strong>: 2026-01-18
+<strong>Phase</strong>: 3.3 - Integration &amp; End-to-End Test Suite
+<strong>Status</strong>: COMPLETE
 <strong>Next Phase</strong>: Phase 4 - Specialized Component Testing</p>
 </article>
 </div>
@@ -2988,6 +2988,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

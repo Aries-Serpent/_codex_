@@ -1,10 +1,10 @@
 # ML Validation & Inference API Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Phase 2 - Master API Documentation  
-**Coverage:** 49+ public functions & classes  
-**Modules:** cognitive/ml/validation.py, cognitive/ml/integration.py  
+**Status:** Phase 2 - Master API Documentation
+**Coverage:** 49+ public functions & classes
+**Modules:** cognitive/ml/validation.py, cognitive/ml/integration.py
 **Last Updated: 2026-07-08
 
 ---
@@ -19,8 +19,8 @@
 
 ## ML Validation Suite
 
-**File:** `src/codex/cognitive/ml/validation.py`  
-**Purpose:** Machine learning model validation and quality assurance  
+**File:** `src/codex/cognitive/ml/validation.py`
+**Purpose:** Machine learning model validation and quality assurance
 **LOC:** 784 | **API:** 49 public functions & classes
 
 ### Classes
@@ -266,7 +266,7 @@ Validate all models in directory.
 Compare multiple models.
 
 **Parameters:**
-- `models: dict` — Model name → path mapping
+- `models: dict` — Model name path mapping
 - `test_data: list` — Test cases
 
 **Returns:** `dict` — Benchmark results for each model
@@ -291,8 +291,8 @@ Assess overall data quality (0-100).
 
 ## ML Integration
 
-**File:** `src/codex/cognitive/ml/integration.py`  
-**Purpose:** Integration between ML systems and agent workflows  
+**File:** `src/codex/cognitive/ml/integration.py`
+**Purpose:** Integration between ML systems and agent workflows
 **LOC:** 640 | **API:** 15+ public functions
 
 ### Classes
@@ -489,11 +489,11 @@ print(f"Feature importance: {explanation['importance']}")
 
 ## Coverage Status
 
-**Documented Signatures:** 14/49 (29%)  
+**Documented Signatures:** 14/49 (29%)
 **Next Phase:** Complete remaining ML validation functions
 
 ---
 
-**Generated:** 2026-07-08  
-**Campaign:** WS1 API Documentation Expansion  
+**Generated:** 2026-07-08
+**Campaign:** WS1 API Documentation Expansion
 **Phase:** 2 - Master API References

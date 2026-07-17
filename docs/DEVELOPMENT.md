@@ -1,8 +1,8 @@
 # Development Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-08 
+**Last Updated**: 2026-07-08
 **Version**: 1.0.0
 
 This guide walks you through setting up your development environment to contribute to Codex ML.
@@ -259,22 +259,22 @@ python -c "from codex_ml import __version__; print(__version__)"
 ### PyCharm / IntelliJ IDEA
 
 **Configuration**:
-1. **File → Settings → Project → Python Interpreter**
+1. **File Settings Project Python Interpreter**
  - Select your virtual environment created above
- 
-2. **File → Settings → Editor → Code Style → Python**
+
+2. **File Settings Editor Code Style Python**
  - Set line length to 100
  - Enable optimized imports
 
-3. **File → Settings → Tools → Python Integrated Tools**
+3. **File Settings Tools Python Integrated Tools**
  - Test runner: pytest
  - Package management: pip
 
-4. **File → Settings → Tools → Black**
+4. **File Settings Tools Black**
  - Enable Black formatter
  - Set line length to 100
 
-5. **File → Settings → Tools → Ruff**
+5. **File Settings Tools Ruff**
  - Enable Ruff linter
 
 ### Vim / Neovim
@@ -658,4 +658,4 @@ git clone https://github.com/Aries-Serpent/_codex_.git
 - **[Testing Guide](dev/testing.md)** - Writing tests
 - **[Documentation Index](MASTER_INDEX.md)** - All documentation
 
-Happy coding! 
+Happy coding!

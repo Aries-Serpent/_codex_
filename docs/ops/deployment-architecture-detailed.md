@@ -1,9 +1,9 @@
 # Deployment Architecture - Detailed Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status**: Active  
-**Phase**: Phase 12+ Architecture  
+**Status**: Active
+**Phase**: Phase 12+ Architecture
 **Author**: Phase 12 WS3 Documentation Team
 
 ## Overview
@@ -20,12 +20,12 @@ This document provides detailed architectural guidance for deploying Codex acros
 
 **Architecture**:
 ```
-┌─────────────────────────┐
-│   Single Server Node    │
-├─────────────────────────┤
-│ Application + Database  │
-│ + Cache + Message Queue │
-└─────────────────────────┘
+
+ Single Server Node 
+
+ Application + Database 
+ + Cache + Message Queue 
+
 ```
 
 **Configuration**:
@@ -40,14 +40,14 @@ This document provides detailed architectural guidance for deploying Codex acros
 
 **Architecture**:
 ```
-┌──────────────────────────────────┐
-│         Load Balancer            │
-├──────────────────────────────────┤
-│  App Node 1  │  App Node 2  │ ... │
-├──────────────────────────────────┤
-│  Shared Database Cluster         │
-│  + Cache Cluster + Message Queue │
-└──────────────────────────────────┘
+
+ Load Balancer 
+
+ App Node 1 App Node 2 ... 
+
+ Shared Database Cluster 
+ + Cache Cluster + Message Queue 
+
 ```
 
 **Features**:
@@ -131,6 +131,6 @@ This document provides detailed architectural guidance for deploying Codex acros
 
 ---
 
-**Last Updated**: 2026-07-08  
-**Status**: Phase 12+ (Active)  
+**Last Updated**: 2026-07-08
+**Status**: Phase 12+ (Active)
 **Author**: Codex Architecture Team

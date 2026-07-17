@@ -1,6 +1,6 @@
 # CI Triage Reproducibility Reference — S145
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -13,7 +13,7 @@
 ## Overview
 
 This document is the standardised reference for every diagnostic performed during
-session S145.  Each check has its own section with:
+session S145. Each check has its own section with:
 
 - **Root cause** — what failed and why
 - **Repro command** — exact shell command to reproduce the symptom
@@ -38,7 +38,7 @@ individually via `--check <N>` or all at once.
 
 Shell's `[` (test) command performs **lexicographic** string comparison with `\>` and `\<`.
 Applying it to floating-point values (e.g., `'99.65' \> '99.6'`) produces incorrect
-results for strings like `100.0 \> 99.6` → `false` (because `'1' < '9'` lexicographically).
+results for strings like `100.0 \> 99.6` `false` (because `'1' < '9'` lexicographically).
 actionlint/shellcheck flag this as SC2072.
 
 ### Repro
@@ -85,11 +85,11 @@ Both files contain a guarded OTel import inside a `try:` block:
 
 ```python
 try:
-    sys.path.insert(0, str(ROOT / "src"))
-    from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score
-    _OTEL_AVAILABLE = True
+ sys.path.insert(0, str(ROOT / "src"))
+ from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score
+ _OTEL_AVAILABLE = True
 except Exception:
-    _OTEL_AVAILABLE = False
+ _OTEL_AVAILABLE = False
 ```
 
 `ruff --select I` (isort mode) flagged the import block as out of canonical order.
@@ -128,15 +128,15 @@ ruff check --select I scripts/ci/aais_v4_scorer.py scripts/ci/pr_comment_consoli
 
 ### Root Cause
 
-`.mypy_baseline` contained `0`.  The CI gate runs:
+`.mypy_baseline` contained `0`. The CI gate runs:
 
 ```python
 # scripts/ci/mypy_baseline.py logic:
 if current_count > stored_baseline:
-    sys.exit(1)  # regression
+ sys.exit(1) # regression
 ```
 
-The codebase had 282 type errors, so `282 > 0` → gate failed.
+The codebase had 282 type errors, so `282 > 0` gate failed.
 The baseline was accidentally zeroed in a previous session.
 
 ## Repro
@@ -145,7 +145,7 @@ The baseline was accidentally zeroed in a previous session.
 bash scripts/ci/ci_triage_repro.sh --check 3
 # or directly:
 cat .mypy_baseline
-python scripts/ci/mypy_baseline.py  # shows current count
+python scripts/ci/mypy_baseline.py # shows current count
 ```
 
 ## Fix
@@ -179,7 +179,7 @@ python scripts/ci/mypy_baseline.py
 
 ### Root Cause
 
-This is the canonical first-line diagnostic.  Patterns 1–16 cover unused imports,
+This is the canonical first-line diagnostic. Patterns 1–16 cover unused imports,
 unused variables, YAML indentation, coverage thresholds, tokenizer fallbacks,
 test assertions, redundant imports, CodeQL alerts, unsorted imports, bandit,
 f-string placeholders, line length, W-series warnings, link checker config,
@@ -196,8 +196,8 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 ## Fix
 
 ```bash
-python scripts/ci/auto_fix_common_issues.py        # apply all fixable patterns
-python scripts/ci/auto_fix_common_issues.py --pattern 1  # apply one pattern
+python scripts/ci/auto_fix_common_issues.py # apply all fixable patterns
+python scripts/ci/auto_fix_common_issues.py --pattern 1 # apply one pattern
 ```
 
 ### Verification
@@ -220,17 +220,17 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 ### Root Cause
 
 The workflow embeds a base64-encoded Python script to extract metrics from
-`/tmp/telemetry_report.json`.  The original script used `chr(34)` obfuscation:
+`/tmp/telemetry_report.json`. The original script used `chr(34)` obfuscation:
 
 ```python
 # BUGGY — constructs the string '"failed_runs"' (with embedded quotes):
 print(f'FAILED_RUNS={s.get(chr(34)+"failed_runs"+chr(34),0)}')
 # chr(34) == '"', so this calls: s.get('"failed_runs"', 0)
-# The actual JSON key is 'failed_runs' (no quotes) → always returns 0
+# The actual JSON key is 'failed_runs' (no quotes) always returns 0
 ```
 
 `failure_rate` used plain `'failure_rate'` (single-quote string) and worked
-correctly.  Only `failed_runs` and `total_runs` used `chr(34)` — always returning 0.
+correctly. Only `failed_runs` and `total_runs` used `chr(34)` — always returning 0.
 
 **Observable symptom:** GitHub issue body showed `Total Runs: 0, Failed Runs: 0`
 alongside a non-zero `Failure Rate: 11.7%` — mathematically impossible unless the
@@ -277,12 +277,12 @@ Expected output:
 ```
 === BUGGY ===
 FAILURE_RATE=11.7
-FAILED_RUNS=0          ← always 0 (wrong key)
-TOTAL_RUNS=0           ← always 0 (wrong key)
+FAILED_RUNS=0 always 0 (wrong key)
+TOTAL_RUNS=0 always 0 (wrong key)
 === FIXED ===
 FAILURE_RATE=11.7
-FAILED_RUNS=21         ← correct
-TOTAL_RUNS=180         ← correct
+FAILED_RUNS=21 correct
+TOTAL_RUNS=180 correct
 ```
 
 ## Fix
@@ -294,14 +294,14 @@ python3 -c "
 import base64
 script = '''import json,sys
 try:
-    d=json.load(open(\'/tmp/telemetry_report.json\'))
-    s=d.get(\'summary\',{})
-    rate=s.get(\'failure_rate\',0)
-    print(f\'FAILURE_RATE={rate*100:.1f}\')
-    print(f\'FAILED_RUNS={s.get(\"failed_runs\",0)}\')
-    print(f\'TOTAL_RUNS={s.get(\"total_runs\",0)}\')
+ d=json.load(open(\'/tmp/telemetry_report.json\'))
+ s=d.get(\'summary\',{})
+ rate=s.get(\'failure_rate\',0)
+ print(f\'FAILURE_RATE={rate*100:.1f}\')
+ print(f\'FAILED_RUNS={s.get(\"failed_runs\",0)}\')
+ print(f\'TOTAL_RUNS={s.get(\"total_runs\",0)}\')
 except Exception:
-    print(\'FAILURE_RATE=0\');print(\'FAILED_RUNS=0\');print(\'TOTAL_RUNS=0\')
+ print(\'FAILURE_RATE=0\');print(\'FAILED_RUNS=0\');print(\'TOTAL_RUNS=0\')
 '''
 print(base64.b64encode(script.encode()).decode())
 "
@@ -312,7 +312,7 @@ print(base64.b64encode(script.encode()).decode())
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 5
-# Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7%  TOTAL_RUNS=180  FAILED_RUNS=21"
+# Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7% TOTAL_RUNS=180 FAILED_RUNS=21"
 ```
 
 ---
@@ -335,7 +335,7 @@ Two thresholds in the same workflow were inconsistent:
 | Enforcement `threshold` | `score < threshold` | 99.7 |
 
 A score of **99.65** would set `--status success` (dashboard looks green) but then
-immediately fail the enforcement step (job fails red).  Users see contradictory
+immediately fail the enforcement step (job fails red). Users see contradictory
 signals.
 
 ### Repro
@@ -381,8 +381,8 @@ bash scripts/ci/ci_triage_repro.sh --check 6
 `### Fixed (S145 — ... — PR #3606)` section that referenced `PR #3613`:
 
 ```markdown
-### Fixed (S145 — 2026-03-17 — PR #3606 CI triage)          ← header: #3606
-- Auto-fix: session_wrapup_autofix.py updated ... for PR #3613  ← bullet: #3613
+### Fixed (S145 — 2026-03-17 — PR #3606 CI triage) header: #3606
+- Auto-fix: session_wrapup_autofix.py updated ... for PR #3613 bullet: #3613
 ```
 
 This breaks traceability: a reader cannot determine which PR the section belongs to.

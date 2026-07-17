@@ -1,9 +1,9 @@
 # [Report]: Codebase Status Audit — Aries-Serpent/*codex* (main)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
- Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## 1) Executive Summary
 
@@ -70,14 +70,14 @@
 | detect-secrets | Pre-commit + nox sec | Baseline scanning |
 | pip-audit | Pre-commit (manual), nox sec gated by CODEX_AUDIT=1 | Optional/gated |
 | SBOM | scripts/sbom_cyclonedx.py | Available on demand |
-| Licenses | scripts/security/licenses.sh → artifacts/licenses/THIRD_PARTY_NOTICES.md | Local generation |
+| Licenses | scripts/security/licenses.sh artifacts/licenses/THIRD_PARTY_NOTICES.md | Local generation |
 | Docker scans | hadolint, trivy (imagescan gated) | Requires binaries in PATH |
 
 ## 7) Documentation & Knowledge
 
 | Topic | Evidence | Status |
 |------|----------|--------|
-| API docs | nox docs → artifacts/docs/ via pdoc | OK |
+| API docs | nox docs artifacts/docs/ via pdoc | OK |
 | Developer docs | docs/ (ops, training, safety, usage, architecture) | Extensive |
 | Audit workflow docs | Traversal_Workflow.md, Usage_Guide.md, capability_matrix template | Clear, versioned |
 | Commit practices | docs/ops/Commits.md; pre-commit commitizen hook; nox conventional | Enforced guidance |
@@ -133,15 +133,15 @@
 
 ## 13) Suggested Next Steps (Actionable)
 - Unify coverage execution paths:
-  - Adopt `nox coverage` (branch) as canonical; deprecate legacy variants after announcement.
+ - Adopt `nox coverage` (branch) as canonical; deprecate legacy variants after announcement.
 - Strengthen import contracts:
-  - Expand `.importlinter` rules to cover `src/codex_ml` subdomains (data, models, api, training).
+ - Expand `.importlinter` rules to cover `src/codex_ml` subdomains (data, models, api, training).
 - Security baseline artifacting (opt-in):
-  - When `CODEX_AUDIT=1`, persist scan outputs under `audit_artifacts/security/` for traceability.
+ - When `CODEX_AUDIT=1`, persist scan outputs under `audit_artifacts/security/` for traceability.
 - Docker hygiene:
-  - Document required local tools; add Make targets (`docker-hadolint`, `docker-trivy`) wrapping nox sessions.
+ - Document required local tools; add Make targets (`docker-hadolint`, `docker-trivy`) wrapping nox sessions.
 - Progressive typing:
-  - Introduce targeted strict modules (e.g., `src.security` already enforced); add 1-2 modules per iteration.
+ - Introduce targeted strict modules (e.g., `src.security` already enforced); add 1-2 modules per iteration.
 
 ## 14) Quick-Run Commands
 

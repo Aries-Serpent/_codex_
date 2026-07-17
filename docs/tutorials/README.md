@@ -1,10 +1,10 @@
 ## Guides
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-Practical, hands-on guides for using the `_codex_` ML platform.  Each tutorial
+Practical, hands-on guides for using the `_codex_` ML platform. Each tutorial
 walks through a concrete use-case with working Python code you can paste
 straight into a script or Jupyter notebook.
 
@@ -35,10 +35,10 @@ pip install -e ".[minimal]"
 If you are new to the platform, read the tutorials in order:
 
 ```
-01 → understand what drift looks like
-02 → compare model versions with statistics
-03 → automate the detect → retrain → promote cycle
-04 → harden your service for production
+01 understand what drift looks like
+02 compare model versions with statistics
+03 automate the detect retrain promote cycle
+04 harden your service for production
 ```
 
 Each tutorial links to the next one so you can follow the chain naturally.

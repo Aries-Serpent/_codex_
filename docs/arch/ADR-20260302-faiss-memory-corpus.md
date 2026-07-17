@@ -1,6 +1,6 @@
 # ADR-20260302: FAISS Memory Corpus for Semantic Agent Routing
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T07:00:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted

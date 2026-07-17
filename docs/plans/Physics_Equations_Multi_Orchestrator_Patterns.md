@@ -1,6 +1,6 @@
 # Physics Equations & Formulas Reference — Multi-Orchestrator / Multi-Agent Patterns
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -8,15 +8,15 @@
 - [Strategy Categories](#strategy-categories)
 - [Concise table with mapping to capabilities and multi-orchestrator / multi-agent use cases](#concise-table-with-mapping-to-capabilities-and-multi-orchestrator--multi-agent-use-cases)
 - [Agent Patterns](#agent-patterns)
-  - [Pattern 1: Sentinel Agents (Eq #4, #16, #32, #33, #56)](#pattern-1-sentinel-agents-eq-4-16-32-33-56)
-  - [Pattern 2: Coherence-Arbiter Agents (Eq #15, #42, #54)](#pattern-2-coherence-arbiter-agents-eq-15-42-54)
-  - [Pattern 3: Workload Distribution (Eq #5, #17, #18)](#pattern-3-workload-distribution-eq-5-17-18)
-  - [Pattern 4: Transactional Semantics (Eq #9, #21, #53)](#pattern-4-transactional-semantics-eq-9-21-53)
+ - [Pattern 1: Sentinel Agents (Eq #4, #16, #32, #33, #56)](#pattern-1-sentinel-agents-eq-4-16-32-33-56)
+ - [Pattern 2: Coherence-Arbiter Agents (Eq #15, #42, #54)](#pattern-2-coherence-arbiter-agents-eq-15-42-54)
+ - [Pattern 3: Workload Distribution (Eq #5, #17, #18)](#pattern-3-workload-distribution-eq-5-17-18)
+ - [Pattern 4: Transactional Semantics (Eq #9, #21, #53)](#pattern-4-transactional-semantics-eq-9-21-53)
 - [Integration Testing Roadmap](#integration-testing-roadmap)
-  - [Phase 3: Cross-Module Integration (50% → 70%)](#phase-3-cross-module-integration-50--70)
+ - [Phase 3: Cross-Module Integration (50% 70%)](#phase-3-cross-module-integration-50--70)
 - [Usage Guidelines](#usage-guidelines)
-  - [When to Apply Table 3](#when-to-apply-table-3)
-  - [Expected Gains](#expected-gains)
+ - [When to Apply Table 3](#when-to-apply-table-3)
+ - [Expected Gains](#expected-gains)
 - [Validation Checklist](#validation-checklist)
 - [See Also](#see-also)
 
@@ -85,24 +85,24 @@ This table provides multi-orchestrator coordination patterns based on physics eq
 | 40 | Noether currents (ρ, j, g) | gauge_symmetry.md | Conserved currents | Verification mapping | Domain-specific potentials | Noether-agents maintain current checks aligned to domain potentials across orchestrators. |
 | 41 | [Ĥ, p̂], [Ĥ, Ê] heuristics | operators.md | Commutation sanity | Composition checks | Formal commutators (future) | Composition-agents run commutation sanity passes to prevent incompatible operator mixes across orchestrators. |
 | 42 | Coherence bands e^{-t/τ} | coherence.md | Operational bands | Alert thresholds | Data-driven τ | Coherence-agents gate multi-agent actions using band policies. |
-| 43 | KD-tree R ↔ coupling | benchmarks.md | Performance/accuracy trade-off | Tunable R | Reinforcement auto-tune | Performance-agents set R per orchestrator to meet SLA while preserving physics fidelity. |
+| 43 | KD-tree R coupling | benchmarks.md | Performance/accuracy trade-off | Tunable R | Reinforcement auto-tune | Performance-agents set R per orchestrator to meet SLA while preserving physics fidelity. |
 | 44 | Global error ~ O(T·dt) | operators.md, evolution docs | Accumulated error | Validation planning | Integrator switching | Budget-agents publish error envelopes for coordinated minimal-step validations. |
 | 45 | ∇ψ finite-diff | discrete_methods.md, momentum.py | Gradient approximation | Momentum computation | Higher-order stencils | Approximation-agents standardize Δ across orchestrators for consistent momentum estimates. |
 | 46 | ∇·j finite-diff | quick_checks.md, probability_current.py | Divergence approximation | Continuity residual | Vectorized/sparse ops | Residual-agents ensure shared divergence stencils across orchestrators for comparable residuals. |
 | 47 | H = f(ρ,j,v,γ) | observability_playbook.md, mlops_bridge.py | Composite health | Health API/metrics | Learned composite models | Health-agents aggregate H across orchestrators; approve multi-agent actions if H≥threshold. |
 | 48 | Spinor coupling bound | concurrency_constraints.md | Concurrency guard | Prevent unsafe evolution | Formal multi-component schedulers | Concurrency-agents enforce coupling constraints across orchestrators; simulate representative cases. |
 | 49 | J = Coverage/Runtime | testing_strategy.md | Coverage-time objective | Minimal high-yield tests | Risk-weighted multi-objective | Coverage-agents select cross-orchestrator test suites maximizing J under CI limits. |
-| 50 | ρ ← ρ/Σρ repair | safety_guards.md | Renormalization rule | Self-healing repair | Error-bounded repair policies | Repair-agents coordinate renormalization across orchestrators and log unified audit trails. |
+| 50 | ρ ρ/Σρ repair | safety_guards.md | Renormalization rule | Self-healing repair | Error-bounded repair policies | Repair-agents coordinate renormalization across orchestrators and log unified audit trails. |
 | 51 | Σ_i metric_i aggregation | observability_playbook.md | Metrics aggregate | Telemetry-based checks | Sharded/streaming aggregation | Telemetry-agents synchronize aggregates across orchestrators for invariant snapshots. |
 | 52 | Euler local O(dt²), global O(T·dt) | discrete_methods.md | Error bounds | Justify minimal steps | Integrator escalation | Error-policy agents negotiate integrator levels across orchestrators based on shared budgets. |
 | 53 | Transactional entanglement (all-or-nothing) | concurrency_constraints.md, entanglement.py | Group outcome rule | Coordinated deploy semantics | Distributed entanglement | Transaction-agents enforce atomic outcomes across orchestrators for multi-service changes. |
 | 54 | Coherence thresholds (bands) | observability_playbook.md, coherence.md | Thresholding | Go/No-go decisions | Learned thresholds | Threshold-agents codify bands and approve multi-agent actions conditionally. |
 | 55 | Glossary (ħ, γ, ρ, j, Ĥ, p̂, Ê) | glossary.md | Canonical meanings | Shared vocabulary | Domain units extensions | Reference-agents embed glossary validation checks in PR bots across orchestrators. |
 | 56 | Invariants (Σρ=1, R≈0, v<c, \|j\|≤c) | invariants.md | Guard equations | CI anchors | Auto-enforcer | Invariant-agents run minimal invariant batteries across all orchestrators pre-merge. |
-| 57 | Ĥ mapping → J(task) | scheduler_objectives.md | Objective mapping | Bridge physics→objective | Adaptive potentials | Objective-agents publish standardized J mappings for consistent orchestration across agents. |
+| 57 | Ĥ mapping J(task) | scheduler_objectives.md | Objective mapping | Bridge physicsobjective | Adaptive potentials | Objective-agents publish standardized J mappings for consistent orchestration across agents. |
 | 58 | \|j\| ≤ c (derivation) | dirac_current.md | Formal safety bound | Bound enforcement | c_eff variants | Bound-agents verify derivations and enforce runtime policies across orchestrators. |
 | 59 | Anneal schedules T_{k+1} = αT_k | quantum_annnealing.md | Cooling schedules | Optimization under constraints | Adaptive telemetry-driven cooling | Anneal-agents synchronize cooling parameters across orchestrators for consistent optimization. |
-| 60 | Module↔Invariant matrix | validation_matrix.md | Required checks per module | Targeted minimal tests | Automated selection | Matrix-agents auto-select minimal cross-orchestrator tests based on module changes. |
+| 60 | ModuleInvariant matrix | validation_matrix.md | Required checks per module | Targeted minimal tests | Automated selection | Matrix-agents auto-select minimal cross-orchestrator tests based on module changes. |
 
 ---
 
@@ -215,12 +215,12 @@ def test_transactional_deployment():
 
 ## Integration Testing Roadmap
 
-### Phase 3: Cross-Module Integration (50% → 70%)
+### Phase 3: Cross-Module Integration (50% 70%)
 
 **Target Modules**:
-- physics_orchestrator ↔ quantum_game_theory
-- physics_orchestrator ↔ mental_mapping
-- codex_client ↔ all orchestrators
+- physics_orchestrator quantum_game_theory
+- physics_orchestrator mental_mapping
+- codex_client all orchestrators
 
 **Key Equations**: #4, #9, #15, #49, #53, #56
 
@@ -250,15 +250,15 @@ class TestCrossModuleIntegration:
 
 ### When to Apply Table 3
 
-**Phase 2 (30% → 50%)**: Limited use
+**Phase 2 (30% 50%)**: Limited use
 - Focus on single-module deep coverage first
 - Apply Eq #49 for test selection
 
-**Phase 3 (50% → 70%)**: Primary focus
+**Phase 3 (50% 70%)**: Primary focus
 - Cross-module integration tests
 - Apply Eq #4, #15, #16, #49, #53, #56 extensively
 
-**Phase 4-5 (70% → 95%)**: Advanced patterns
+**Phase 4-5 (70% 95%)**: Advanced patterns
 - Multi-agent coordination
 - Distributed workflows
 - All 60 equations applicable

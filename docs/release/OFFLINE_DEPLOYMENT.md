@@ -1,6 +1,6 @@
 # Offline Deployment Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide explains how to deploy Codex ML in air-gapped (offline) environments where external network access is restricted or unavailable.
 
@@ -9,19 +9,19 @@ This guide explains how to deploy Codex ML in air-gapped (offline) environments 
 Offline deployment requires pre-staging all dependencies in a wheelhouse directory, then using the bootstrap script to install into isolated environments.
 
 ```
-┌─────────────────────┐      ┌──────────────────────┐
-│  Build Environment  │      │  Target Environment  │
-│ (Network Access)    │      │ (Air-Gapped/Offline) │
-│                     │      │                      │
-│ 1. Download wheel   │──┬─→ │ 3. Bootstrap install │
-│ 2. Build wheelhouse │  │   │ 4. Run application   │
-│    (all deps)       │  │   │                      │
-└─────────────────────┘  │   └──────────────────────┘
-                         │
-                    ┌────┴────┐
-                    │ Wheelhouse
-                    │ (USB, SCP,
-                    │  S3, etc.)
+ 
+ Build Environment Target Environment 
+ (Network Access) (Air-Gapped/Offline) 
+ 
+ 1. Download wheel 3. Bootstrap install 
+ 2. Build wheelhouse 4. Run application 
+ (all deps) 
+ 
+ 
+ 
+ Wheelhouse
+ (USB, SCP,
+ S3, etc.)
 ```
 
 ## Prerequisites
@@ -57,16 +57,16 @@ Generate all dependencies for your chosen profile:
 ```bash
 # Core profile (8-15 MB) — minimal dependencies
 pip download 'codex-ml[core]==0.1.0' \
-  --dest ./wheelhouse \
-  --no-binary :all:
+ --dest ./wheelhouse \
+ --no-binary :all:
 
 # Runtime profile (20-35 MB) — includes torch, transformers
 pip download 'codex-ml[runtime]==0.1.0' \
-  --dest ./wheelhouse
+ --dest ./wheelhouse
 
 # Full profile (100+ MB) — complete development
 pip download 'codex-ml[full]==0.1.0' \
-  --dest ./wheelhouse
+ --dest ./wheelhouse
 ```
 
 ### Verify Wheelhouse
@@ -109,7 +109,7 @@ Choose your transfer method:
 ```bash
 # Mount USB and copy
 cp -r wheelhouse/ /mnt/usb/codex-wheelhouse/
-sync  # Ensure written
+sync # Ensure written
 ```
 
 ### SCP to Target
@@ -145,10 +145,10 @@ cd /path/to/deployment
 
 # Run bootstrap
 ./OFFLINE_BOOTSTRAP.sh \
-  --wheelhouse ./wheelhouse \
-  --artifact ./wheelhouse/codex_ml-0.1.0-py3-none-any.whl \
-  --venv ./.venv-offline \
-  --python python3
+ --wheelhouse ./wheelhouse \
+ --artifact ./wheelhouse/codex_ml-0.1.0-py3-none-any.whl \
+ --venv ./.venv-offline \
+ --python python3
 ```
 
 ### Method B: Manual Installation
@@ -162,9 +162,9 @@ source .venv-offline/bin/activate
 
 # Install with wheelhouse
 pip install \
-  --no-index \
-  --find-links ./wheelhouse \
-  ./wheelhouse/codex_ml-0.1.0-py3-none-any.whl
+ --no-index \
+ --find-links ./wheelhouse \
+ ./wheelhouse/codex_ml-0.1.0-py3-none-any.whl
 
 # Verify installation
 codex --help
@@ -176,21 +176,21 @@ python -c "from cognitive_brain import Planner; print('Installation successful')
 ```bash
 # Core profile (if wheelhouse includes all core deps)
 pip install \
-  --no-index \
-  --find-links ./wheelhouse \
-  'codex-ml[core]==0.1.0'
+ --no-index \
+ --find-links ./wheelhouse \
+ 'codex-ml[core]==0.1.0'
 
 # Runtime profile
 pip install \
-  --no-index \
-  --find-links ./wheelhouse \
-  'codex-ml[runtime]==0.1.0'
+ --no-index \
+ --find-links ./wheelhouse \
+ 'codex-ml[runtime]==0.1.0'
 
 # Full profile
 pip install \
-  --no-index \
-  --find-links ./wheelhouse \
-  'codex-ml[full]==0.1.0'
+ --no-index \
+ --find-links ./wheelhouse \
+ 'codex-ml[full]==0.1.0'
 ```
 
 ## Step 4: Verify Installation
@@ -238,13 +238,13 @@ import asyncio
 from cognitive_brain import Planner, ObservationData
 
 async def main():
-    planner = Planner()
-    observation = ObservationData(
-        context="Analyze this text",
-        metadata={"offline": True}
-    )
-    result = planner.observe(observation)
-    print(f"Result: {result}")
+ planner = Planner()
+ observation = ObservationData(
+ context="Analyze this text",
+ metadata={"offline": True}
+ )
+ result = planner.observe(observation)
+ print(f"Result: {result}")
 
 asyncio.run(main())
 ```
@@ -354,8 +354,8 @@ sha256sum -c SHA256SUMS.txt
 ### Network Policy
 
 Codex ML is fail-closed by default:
--  localhost only (ports 8000-9999)
--  External network blocked until explicitly configured
+- localhost only (ports 8000-9999)
+- External network blocked until explicitly configured
 
 To allow external network:
 
@@ -363,12 +363,12 @@ To allow external network:
 # Edit network policy
 cat > .codex/network-policy.yaml <<EOF
 network:
-  mode: strict  # or 'permissive'
-  allowlist:
-    - localhost
-    - 127.0.0.1
-    # Add external hosts if needed:
-    # - example.com
+ mode: strict # or 'permissive'
+ allowlist:
+ - localhost
+ - 127.0.0.1
+ # Add external hosts if needed:
+ # - example.com
 EOF
 ```
 
@@ -408,12 +408,12 @@ For enterprise environments with internal package repositories:
 ```bash
 # On build machine
 pip download 'codex-ml[full]==0.1.0' \
-  --index-url https://internal-pypi.company.com/simple \
-  --dest ./wheelhouse
+ --index-url https://internal-pypi.company.com/simple \
+ --dest ./wheelhouse
 
 # On target machine with same internal PyPI access
 pip install -e . \
-  --index-url https://internal-pypi.company.com/simple
+ --index-url https://internal-pypi.company.com/simple
 ```
 
 ---

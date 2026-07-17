@@ -15,7 +15,7 @@ This plan coordinates **6 parallel workstreams**, each with dedicated specialist
 
 | WS | Name | Lead Agent | Duration | Status |
 |----|------|-----------|----------|--------|
-| **WS1A** | v0.2.1 Feature Implementation | `ci-testing-agent` | Weeks 1-3 | 🟡 PENDING |
+| **WS1A** | v0.2.0 Feature Implementation | `ci-testing-agent` | Weeks 1-3 | 🟡 PENDING |
 | **WS1B** | Canary Deployment & Monitoring | `ci-emergency-response-agent` | Weeks 2-4 | 🟡 PENDING |
 | **WS1C** | A/B Testing Framework | `performance-monitor-agent` | Weeks 3-6 | 🟡 PENDING |
 | **WS1D** | Feature Flag Orchestration | `workflow-management-agent` | Weeks 2-5 | 🟡 PENDING |
@@ -36,7 +36,7 @@ Each workstream uses **AgentHandoffManifest v1.1** with structured checkpoints:
   "workstreams": {
     "WS1A": {
       "receiving_agent": "ci-testing-agent",
-      "task": "v0.2.1 Feature Implementation",
+      "task": "v0.2.0 Feature Implementation",
       "start_date": "2026-07-24T20:10Z",
       "checkpoint_1": "2026-07-31T20:10Z (Feature set finalized, staging tests complete)",
       "policy_compliance": {
@@ -84,7 +84,7 @@ Each workstream uses **AgentHandoffManifest v1.1** with structured checkpoints:
       "start_date": "2026-07-24T20:10Z",
       "checkpoint_1": "2026-07-31T20:10Z (6-month roadmap published)",
       "policy_compliance": {
-        "release_cycles": "2-week batches (v0.2.1 → v0.2.5)",
+        "release_cycles": "2-week batches (v0.2.0 → v0.2.5)",
         "release_gates": ["security", "performance", "compliance"],
         "roadmap_alignment": "WS2 infrastructure capacity forecast"
       }
@@ -114,11 +114,11 @@ Each workstream uses **AgentHandoffManifest v1.1** with structured checkpoints:
 
 | Task | Agent | Deliverable | Success Criteria |
 |------|-------|-------------|------------------|
-| v0.2.1 feature set finalization | `ci-testing-agent` | Feature list + implementation tasks | All features documented & prioritized |
+| v0.2.0 feature set finalization | `ci-testing-agent` | Feature list + implementation tasks | All features documented & prioritized |
 | Code review pipeline setup | `code-review` | Review procedures + automation config | 0 critical bugs in staging |
 | Staging test execution | `ci-testing-agent` | Test report (all tests pass) | 100% test pass rate |
-| Release calendar creation | `documentation-consolidator` | 6-month roadmap (v0.2.1 → v0.2.5) | Schedule aligns with infrastructure capacity |
-| Feature flag configuration | `workflow-management-agent` | Unleash config for v0.2.1 features | Ready for canary deployment |
+| Release calendar creation | `documentation-consolidator` | 6-month roadmap (v0.2.0 → v0.2.5) | Schedule aligns with infrastructure capacity |
+| Feature flag configuration | `workflow-management-agent` | Unleash config for v0.2.0 features | Ready for canary deployment |
 | **CHECKPOINT 1** | Orchestrator | Status report to @mbaetiong | All Week 1 deliverables complete |
 
 ---
@@ -162,7 +162,7 @@ Each workstream uses **AgentHandoffManifest v1.1** with structured checkpoints:
 | Feature flag rollout (25→50%) | `workflow-management-agent` | Rollout execution + monitoring | 0 flag-related incidents, <0.05% error rate |
 | Continued A/B testing (Weeks 3-4 data) | `performance-monitor-agent` | Extended metrics analysis | Confirms statistical significance |
 | Infrastructure capacity monitoring | `performance-monitor-agent` | Resource usage report (CPU, memory, network) | Capacity headroom for full rollout |
-| Release runbook documentation | `documentation-consolidator` | v0.2.1 runbook + enable/disable procedures | Team can execute release procedures |
+| Release runbook documentation | `documentation-consolidator` | v0.2.0 runbook + enable/disable procedures | Team can execute release procedures |
 | **CHECKPOINT 4** | Orchestrator | Mid-phase status update | 50% rollout complete, tracking nominal |
 
 ---
@@ -173,12 +173,12 @@ Each workstream uses **AgentHandoffManifest v1.1** with structured checkpoints:
 
 | Task | Agent | Deliverable | Success Criteria |
 |------|-------|-------------|------------------|
-| Feature flag rollout (50→100%) | `workflow-management-agent` | Full rollout execution + validation | v0.2.1 GA, 0 rollout incidents |
+| Feature flag rollout (50→100%) | `workflow-management-agent` | Full rollout execution + validation | v0.2.0 GA, 0 rollout incidents |
 | Final canary/A/B monitoring window | `performance-monitor-agent` | Final 2-week metrics report | Error rate <0.05%, all success metrics met |
 | CD pipeline automation | `ci-optimization-agent` | Automated release pipeline (v0.2.2+ ready) | Pipeline ready for next release |
 | Team training delivery | `documentation-consolidator` | CD model training + runbook walkthroughs | Team certified on CD procedures |
 | Phase 14 WS1 completion report | Orchestrator | Final deliverables summary + metrics | All 6 deliverables complete, signed off |
-| **CHECKPOINT 5 (FINAL)** | Orchestrator | v0.2.1 GA completion report | Phase 14 WS1 COMPLETE |
+| **CHECKPOINT 5 (FINAL)** | Orchestrator | v0.2.0 GA completion report | Phase 14 WS1 COMPLETE |
 
 ---
 
@@ -186,7 +186,7 @@ Each workstream uses **AgentHandoffManifest v1.1** with structured checkpoints:
 
 ### Phase Completion Criteria (ALL REQUIRED)
 
-- ✅ v0.2.1 deployed to 100% users (gradual rollout complete by 2026-08-25)
+- ✅ v0.2.0 deployed to 100% users (gradual rollout complete by 2026-08-25)
 - ✅ Feature flags operational (enable/disable within <5 minutes, no redeployment needed)
 - ✅ A/B testing framework validated (2-week experiment complete, statistical significance p<0.05 achieved)
 - ✅ Canary deployment procedures end-to-end validated (zero critical incidents throughout 1-week observation)

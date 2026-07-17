@@ -1,6 +1,6 @@
 # Cache Shared Datasets — Aries-Serpent/_codex_
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -32,23 +32,27 @@ tiers never collide.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback", "Layer 2 — PyTorch CPU wheels\n~/.cache/torch-whl\nKeyed on torch major slot (2.x)\nOnly when install-torch=true\nSurvives pyproject.toml edits"'}}%%
+
 graph TD
-    subgraph "setup-python-cached composite action"
-        L1["Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback"]
-        L2["Layer 2 — PyTorch CPU wheels\n~/.cache/torch-whl\nKeyed on torch major slot (2.x)\nOnly when install-torch=true\nSurvives pyproject.toml edits"]
-        L3["Layer 3 — installed venv\n.venv_ci/\nEncodes: extras + torch + preflight + hash\nRestore-key chain gives partial hits\nKey: {OS}-{tier}-venv-{VER}-py{ver}-extras={e}-torch={t}-..."]
-        L4["Layer 4 — npm tools\n~/.npm\nKey: {OS}-npm-mlc-v1\nOnly when install-npm-tools=true"]
-    end
+ subgraph "setup-python-cached composite action"
+ L1["Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback"]
+ L2["Layer 2 — PyTorch CPU wheels\n~/.cache/torch-whl\nKeyed on torch major slot (2.x)\nOnly when install-torch=true\nSurvives pyproject.toml edits"]
+ L3["Layer 3 — installed venv\n.venv_ci/\nEncodes: extras + torch + preflight + hash\nRestore-key chain gives partial hits\nKey: {OS}-{tier}-venv-{VER}-py{ver}-extras={e}-torch={t}-..."]
+ L4["Layer 4 — npm tools\n~/.npm\nKey: {OS}-npm-mlc-v1\nOnly when install-npm-tools=true"]
+ end
 
-    L1 -->|"seeds venv build on miss"| L3
-    L2 -->|"find-links feed"| L3
-    L3 -->|"skip venv rebuild on hit"| FAST[" Fast CI (no pip install)"]
-    L4 -->|"markdown-link-check"| DOCS["📄 Doc link checking"]
+ L1 -->|"seeds venv build on miss"| L3
 
-    style L1 fill:#10b981,color:#fff
-    style L3 fill:#3b82f6,color:#fff
-    style L2 fill:#f59e0b,color:#000
-    style L4 fill:#8b5cf6,color:#fff
+ L2 -->|"find-links feed"| L3
+
+ L3 -->|"skip venv rebuild on hit"| FAST[" Fast CI (no pip install)"]
+
+ L4 -->|"markdown-link-check"| DOCS[" Doc link checking"]
+
+ style L1 fill:#10b981,color:#fff
+ style L3 fill:#3b82f6,color:#fff
+ style L2 fill:#f59e0b,color:#000
+ style L4 fill:#8b5cf6,color:#fff
 ```
 
 ### Key Format Summary
@@ -74,11 +78,11 @@ gh variable set CODEX_CACHE_VERSION --body "v3" --repo Aries-Serpent/_codex_
 ```yaml
 # Recommended: pass CODEX_CACHE_VERSION and explicit tier
 - uses: ./.github/actions/setup-python-cached
-  with:
-    python-version: '3.12'
-    extras: 'dev'
-    cache-tier: live        # live | common | ephemeral
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+ with:
+ python-version: '3.12'
+ extras: 'dev'
+ cache-tier: live # live | common | ephemeral
+ cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 ```
 
 ---
@@ -90,35 +94,37 @@ L1/L3 keys, not just informational.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " LIVE Tier (permanent)", "copilot-setup-steps.yml"'}}%%
+
 graph LR
-    subgraph LIVE[" LIVE Tier (permanent)"]
-        WF1["copilot-setup-steps.yml"]
-        WF2["agent-auth-delegation.yml"]
-        WF3["nox_gates.yml"]
-        WF4["code-quality-coverage-suite.yml"]
-        WF5["audit-qa-suite.yml"]
-        WF6["codeql-analysis.yml"]
-    end
+ subgraph LIVE[" LIVE Tier (permanent)"]
+ WF1["copilot-setup-steps.yml"]
+ WF2["agent-auth-delegation.yml"]
+ WF3["nox_gates.yml"]
+ WF4["code-quality-coverage-suite.yml"]
+ WF5["audit-qa-suite.yml"]
+ WF6["codeql-analysis.yml"]
+ end
 
-    subgraph COMMON[" COMMON Tier (7-day)"]
-        WF7["cognitive_brain_ci_feedback.yml"]
-        WF8["copilot-evolution-suite.yml"]
-        WF9["iterative-self-healing-ci.yml"]
-        WF10["pre-flight-validation.yml"]
-    end
+ subgraph COMMON[" COMMON Tier (7-day)"]
+ WF7["cognitive_brain_ci_feedback.yml"]
+ WF8["copilot-evolution-suite.yml"]
+ WF9["iterative-self-healing-ci.yml"]
+ WF10["pre-flight-validation.yml"]
+ end
 
-    subgraph EPHEMERAL[" EPHEMERAL Tier (1-day)"]
-        WF11["html_visual_regression.yml"]
-        WF12["build-preview-image.yml"]
-    end
+ subgraph EPHEMERAL[" EPHEMERAL Tier (1-day)"]
+ WF11["html_visual_regression.yml"]
+ WF12["build-preview-image.yml"]
+ end
 
-    LIVE -->|restore-key fallback| COMMON
-    COMMON -->|restore-key fallback| EPHEMERAL
-    LIVE -.->|"live tier fallback\n(always available)"| EPHEMERAL
+ LIVE -->|restore-key fallback| COMMON
 
-    style LIVE fill:#10b981,color:#fff
-    style COMMON fill:#f59e0b,color:#000
-    style EPHEMERAL fill:#ef4444,color:#fff
+ COMMON -->|restore-key fallback| EPHEMERAL
+ LIVE -.->|"live tier fallback\n(always available)"| EPHEMERAL
+
+ style LIVE fill:#10b981,color:#fff
+ style COMMON fill:#f59e0b,color:#000
+ style EPHEMERAL fill:#ef4444,color:#fff
 ```
 
 ### Fallback Chain
@@ -126,9 +132,9 @@ graph LR
 For any tier, restore-keys always include the `live` prefix as a final fallback:
 
 ```
-1. {OS}-{tier}-pip-v2-py3.12-{exact hash}   ← exact match in tier
-2. {OS}-{tier}-pip-v2-py3.12-               ← any in tier (version match)
-3. {OS}-live-pip-v2-py3.12-                 ← live tier seed (always populated)
+1. {OS}-{tier}-pip-v2-py3.12-{exact hash} exact match in tier
+2. {OS}-{tier}-pip-v2-py3.12- any in tier (version match)
+3. {OS}-live-pip-v2-py3.12- live tier seed (always populated)
 ```
 
 ---
@@ -140,39 +146,48 @@ shared state across runs.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER", "ci-health-monitor.yml\nWrites: CODEX_CI_FAILURE_RATE,\nCODEX_CI_LAST_GREEN_SHA"'}}%%
+
 graph TB
-    subgraph "Producers (write)"
-        P1["copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER"]
-        P2["ci-health-monitor.yml\nWrites: CODEX_CI_FAILURE_RATE,\nCODEX_CI_LAST_GREEN_SHA"]
-        P3["agent-auth-delegation.yml\nWrites: COPILOT_AGENT_STATE,\nCOPILOT_AGENT_SESSION_EXPIRES"]
-        P4["cognitive_brain_ci_feedback.yml\nWrites: pattern_learning_store.json,\nworkflow_patterns.jsonl"]
-    end
+ subgraph "Producers (write)"
+ P1["copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER"]
+ P2["ci-health-monitor.yml\nWrites: CODEX_CI_FAILURE_RATE,\nCODEX_CI_LAST_GREEN_SHA"]
+ P3["agent-auth-delegation.yml\nWrites: COPILOT_AGENT_STATE,\nCOPILOT_AGENT_SESSION_EXPIRES"]
+ P4["cognitive_brain_ci_feedback.yml\nWrites: pattern_learning_store.json,\nworkflow_patterns.jsonl"]
+ end
 
-    subgraph "Shared Cache / Storage"
-        S1["GitHub Actions Cache\n(pip / venv / torch)"]
-        S2["GitHub Repo Variables\n(CODEX_CI_FAILURE_RATE, SESSION_ID, etc)"]
-        S3[".codex/cognitive_brain/\npattern_learning_store.json\nworkflow_patterns.jsonl"]
-        S4[".codex/evidence/\naudit trail"]
-    end
+ subgraph "Shared Cache / Storage"
+ S1["GitHub Actions Cache\n(pip / venv / torch)"]
+ S2["GitHub Repo Variables\n(CODEX_CI_FAILURE_RATE, SESSION_ID, etc)"]
+ S3[".codex/cognitive_brain/\npattern_learning_store.json\nworkflow_patterns.jsonl"]
+ S4[".codex/evidence/\naudit trail"]
+ end
 
-    subgraph "Consumers (read)"
-        C1["All Python CI jobs\n← pip/venv cache"]
-        C2["agent-auth-delegation.yml\n← CODEX_CI_FAILURE_RATE"]
-        C3["e-to-d-transition-gate.yml\n← multiple vars"]
-        C4["Copilot agent sessions\n← all cognitive brain data"]
-    end
+ subgraph "Consumers (read)"
+ C1["All Python CI jobs\n pip/venv cache"]
+ C2["agent-auth-delegation.yml\n CODEX_CI_FAILURE_RATE"]
+ C3["e-to-d-transition-gate.yml\n multiple vars"]
+ C4["Copilot agent sessions\n all cognitive brain data"]
+ end
 
-    P1 --> S2
-    P2 --> S2
-    P3 --> S2
-    P4 --> S3
+ P1 --> S2
 
-    S1 --> C1
-    S2 --> C2
-    S2 --> C3
-    S2 --> C4
-    S3 --> C4
-    S4 --> C4
+ P2 --> S2
+
+ P3 --> S2
+
+ P4 --> S3
+
+ S1 --> C1
+
+ S2 --> C2
+
+ S2 --> C3
+
+ S2 --> C4
+
+ S3 --> C4
+
+ S4 --> C4
 ```
 
 ### Variable-Based Shared State
@@ -192,8 +207,8 @@ graph TB
 |---------|------|--------|-----------|
 | Cognitive brain patterns | `.codex/cognitive_brain/pattern_learning_store.json` | JSON | All Copilot agents, `cognitive_brain_ci_feedback.yml` |
 | Workflow patterns | `.codex/cognitive_brain/workflow_patterns.jsonl` | NDJSON | `cognitive_brain_ci_feedback.yml`, cognitive agents |
-| Agent registry | `.github/agents/AGENT_REGISTRY.yaml` | YAML | `agent-registry-validation.yml`, E→D gate, all agents |
-| CODEX manifest | `CODEX_MANIFEST.json` | JSON (sha256-signed) | `agent-registry-validation.yml`, E→D gate |
+| Agent registry | `.github/agents/AGENT_REGISTRY.yaml` | YAML | `agent-registry-validation.yml`, ED gate, all agents |
+| CODEX manifest | `CODEX_MANIFEST.json` | JSON (sha256-signed) | `agent-registry-validation.yml`, ED gate |
 | CI failure patterns | `.codex/patterns/ci_failure_patterns.yaml` | YAML | `iterative-self-healing-ci.yml`, ci-testing-agent |
 | Webhook config | `.codex/webhook_config.json` | JSON | `webhook_configurator.py`, `agent_infrastructure_manager.yml` |
 | Webhook registry | `.codex/webhook_registry.json` | JSON | `webhook_configurator.py` (live hook IDs) |
@@ -210,27 +225,30 @@ like topology maps, pattern query results, and embedding lookups.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT", "L2: Cold entries\n(SQLite DB)\nCODEX_LOG_DB_PATH\nPersisted across runs"'}}%%
+
 graph LR
-    subgraph "In-Process (CacheIntelligence)"
-        M1["L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT"]
-        M2["L2: Cold entries\n(SQLite DB)\nCODEX_LOG_DB_PATH\nPersisted across runs"]
-        M3["L3: Embedding index\n(FAISS)\n.codex/embeddings/\nRebuilt on EMBEDDING_INDEX_AUTO_REBUILD"]
-    end
+ subgraph "In-Process (CacheIntelligence)"
+ M1["L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT"]
+ M2["L2: Cold entries\n(SQLite DB)\nCODEX_LOG_DB_PATH\nPersisted across runs"]
+ M3["L3: Embedding index\n(FAISS)\n.codex/embeddings/\nRebuilt on EMBEDDING_INDEX_AUTO_REBUILD"]
+ end
 
-    subgraph "Usage"
-        U1["TopologyManager\n(find_by_concept)"]
-        U2["PatternLibrary\n(query, store_pattern)"]
-        U3["SessionLogger\n(CODEX_SQLITE_DB)"]
-    end
+ subgraph "Usage"
+ U1["TopologyManager\n(find_by_concept)"]
+ U2["PatternLibrary\n(query, store_pattern)"]
+ U3["SessionLogger\n(CODEX_SQLITE_DB)"]
+ end
 
-    U1 --> M1
-    U2 --> M1 --> M2
-    U3 --> M2
-    M2 -.->|"cache miss"| M3
+ U1 --> M1
 
-    style M1 fill:#10b981,color:#fff
-    style M2 fill:#3b82f6,color:#fff
-    style M3 fill:#8b5cf6,color:#fff
+ U2 --> M1 --> M2
+
+ U3 --> M2
+ M2 -.->|"cache miss"| M3
+
+ style M1 fill:#10b981,color:#fff
+ style M2 fill:#3b82f6,color:#fff
+ style M3 fill:#8b5cf6,color:#fff
 ```
 
 ### Relevant Environment Variables
@@ -283,37 +301,41 @@ adding `cache-tier: common` with `setup-python-cached`:
 How caches are kept coherent across concurrent workflow runs:
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF:  Cache hit → skip venv '}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF: Cache hit skip venv '}}%%
+
 sequenceDiagram
-    participant WF as Workflow (any tier)
-    participant L1 as L1 pip cache
-    participant L3 as L3 venv cache
-    participant GH as GitHub Actions Cache API
+ participant WF as Workflow (any tier)
+ participant L1 as L1 pip cache
+ participant L3 as L3 venv cache
+ participant GH as GitHub Actions Cache API
 
-    WF->>L3: Restore attempt (exact key)
-    alt Exact hit
-        L3-->>WF:  Cache hit → skip venv rebuild
-    else Restore-key partial hit
-        L3-->>WF: ️ Partial hit → refresh venv (pip install -e . --upgrade)
-        WF->>L1: Use pip download cache for fresh packages
-        WF->>L3: Save refreshed venv (new exact key)
-    else Miss
-        L3-->>WF:  Cache miss → full venv build
-        WF->>L1: Restore pip download cache
-        WF->>L3: Save new venv
-        WF->>L1: Save new pip downloads
-    end
+ WF->>L3: Restore attempt (exact key)
+ alt Exact hit
 
-    Note over GH: GitHub auto-evicts LRU when total exceeds 10 GB
-    Note over WF: cache-pruning.yml deletes entries > 7 days old (Sunday 04:00 UTC)
+ L3-->>WF: Cache hit skip venv rebuild
+ else Restore-key partial hit
+
+ L3-->>WF: Partial hit refresh venv (pip install -e . --upgrade)
+ WF->>L1: Use pip download cache for fresh packages
+ WF->>L3: Save refreshed venv (new exact key)
+ else Miss
+
+ L3-->>WF: Cache miss full venv build
+ WF->>L1: Restore pip download cache
+ WF->>L3: Save new venv
+ WF->>L1: Save new pip downloads
+ end
+
+ Note over GH: GitHub auto-evicts LRU when total exceeds 10 GB
+ Note over WF: cache-pruning.yml deletes entries > 7 days old (Sunday 04:00 UTC)
 ```
 
 ### Cache Invalidation Events
 
 | Trigger | Effect | Recovery |
 |---------|--------|---------|
-| `pyproject.toml` changed | L3 partial hit (restore-key) → venv refresh | Automatic (pip upgrade) |
-| `requirements/lock.txt` changed | L3 exact miss → full venv rebuild | Automatic |
+| `pyproject.toml` changed | L3 partial hit (restore-key) venv refresh | Automatic (pip upgrade) |
+| `requirements/lock.txt` changed | L3 exact miss full venv rebuild | Automatic |
 | `CODEX_CACHE_VERSION` bumped | L1+L3 full miss (all tiers) | Automatic rebuild on next run |
 | GitHub 10 GB limit hit | LRU eviction of oldest entries | `cache-pruning.yml` prevents this |
 | Manual branch cache delete | Only that branch's caches deleted | Next run rebuilds |
@@ -332,10 +354,10 @@ Priority additions (Tier: COMMON):
 ```yaml
 # Add to each of these workflows:
 - uses: ./.github/actions/setup-python-cached
-  with:
-    python-version: '3.12'
-    cache-tier: common
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+ with:
+ python-version: '3.12'
+ cache-tier: common
+ cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 ```
 
 Workflows needing this most urgently:
@@ -374,13 +396,13 @@ SQLite DB between runs. Each PR checkout starts cold on cognitive DB queries.
 **Recommendation**: Add optional L5 layer to `setup-python-cached`:
 ```yaml
 - name: 'Cache L5: Cognitive brain SQLite (~/.codex/sessions/)'
-  if: inputs.persist-cognitive-cache == 'true'
-  uses: actions/cache@v5
-  with:
-    path: .codex/sessions
-    key: ${{ runner.os }}-cognitive-db-${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    restore-keys: |
-      ${{ runner.os }}-cognitive-db-
+ if: inputs.persist-cognitive-cache == 'true'
+ uses: actions/cache@v5
+ with:
+ path: .codex/sessions
+ key: ${{ runner.os }}-cognitive-db-${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+ restore-keys: |
+ ${{ runner.os }}-cognitive-db-
 ```
 
 ---
@@ -391,8 +413,8 @@ SQLite DB between runs. Each PR checkout starts cold on cognitive DB queries.
 
 ```bash
 gh api /repos/Aries-Serpent/_codex_/actions/caches \
-  --jq '.actions_caches[] | [.key, .size_in_bytes, .last_accessed_at] | @tsv' | \
-  sort -k3 -r | head -20
+ --jq '.actions_caches[] | [.key, .size_in_bytes, .last_accessed_at] | @tsv' | \
+ sort -k3 -r | head -20
 ```
 
 ### Prune stale caches (workflow trigger)
@@ -419,7 +441,7 @@ gh workflow run cache-pruning.yml --field dry_run=false --field max_age_days=0
 
 ```bash
 grep -rh "key:.*pip\|key:.*venv" .github/workflows/ .github/actions/ | \
-  sort | uniq -c | sort -rn | head -20
+ sort | uniq -c | sort -rn | head -20
 ```
 
 ---

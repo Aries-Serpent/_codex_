@@ -1,8 +1,8 @@
 # codex-ml Installation Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-Welcome to codex-ml v0.2.1! This guide covers installation across three distinct deployment profiles.
+Welcome to codex-ml v0.2.0! This guide covers installation across three distinct deployment profiles.
 
 ## Package Architecture Note
 
@@ -398,7 +398,7 @@ If you encounter problems:
 
 ## Version History
 
-### v0.2.1 (Current)
+### v0.2.0 (Current)
 - Three-profile packaging strategy (core, runtime, full)
 - 5 core entry points
 - Full ML inference support in runtime profile

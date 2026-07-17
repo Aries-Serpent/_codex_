@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 13
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 13 of 32  
 **Sessions:** S993-cont5-cherry-pick-4445 to S_PR4536_APPROVAL_MONITOR_WRAPUP_SYNC  

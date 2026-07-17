@@ -1,6 +1,6 @@
 # How-to: Repo Admin Bootstrap (Local, Dry-Run by Default)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -37,7 +37,7 @@ python -m scripts.ops.codex_repo_admin_bootstrap --owner <org> --repo <name> --a
 | Scope | Repo admin for target repository (via App installation) |
 | Alt auth | `GITHUB_TOKEN` (PAT) fallback supported |
 
-> ️ Online calls require the host to be present in the allowlist guard. The script exits fast when the mode/hosts are missing.
+> Online calls require the host to be present in the allowlist guard. The script exits fast when the mode/hosts are missing.
 
 ## 3) Flags at a Glance
 

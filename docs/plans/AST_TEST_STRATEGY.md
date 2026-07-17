@@ -1,12 +1,12 @@
 # AST Standardization - Test Strategy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-**Generated**: 2026-06-22  
-**Purpose**: Comprehensive testing strategy for AST standardization  
+**Generated**: 2026-06-22
+**Purpose**: Comprehensive testing strategy for AST standardization
 **Status**: PLANNING - Tests not yet implemented
 
 ---
@@ -87,24 +87,24 @@ Required performance targets:
 
 ```text
 tests/ast/
-├── unit/                    # Unit tests (90%+ coverage target)
-│   ├── core/
-│   ├── parsers/
-│   ├── analysis/
-│   └── graph/
-├── integration/             # Integration tests (80%+ coverage)
-│   ├── test_parse_analyze_flow.py
-│   ├── test_graph_building.py
-│   └── test_metrics_aggregation.py
-├── e2e/                     # End-to-end tests
-│   ├── test_full_codebase_analysis.py
-│   └── test_report_generation.py
-├── benchmarks/              # Performance benchmarks
-│   ├── test_parse_performance.py
-│   └── test_analysis_performance.py
-└── fixtures/                # Test fixtures
-    ├── sample_code.py
-    └── test_files/
+ unit/ # Unit tests (90%+ coverage target)
+ core/
+ parsers/
+ analysis/
+ graph/
+ integration/ # Integration tests (80%+ coverage)
+ test_parse_analyze_flow.py
+ test_graph_building.py
+ test_metrics_aggregation.py
+ e2e/ # End-to-end tests
+ test_full_codebase_analysis.py
+ test_report_generation.py
+ benchmarks/ # Performance benchmarks
+ test_parse_performance.py
+ test_analysis_performance.py
+ fixtures/ # Test fixtures
+ sample_code.py
+ test_files/
 ```text
 
 ---
@@ -125,23 +125,23 @@ Strategy for regression detection:
 
 ```bash
 pytest tests/ast/ \
-  --cov=src/codex_ml/ast \
-  --cov-report=term-missing \
-  --cov-fail-under=80
+ --cov=src/codex_ml/ast \
+ --cov-report=term-missing \
+ --cov-fail-under=80
 ```text
 
 ---
 
 ## Next Steps
 
-1.  AI Assistant autonomous test strategy review
-2.  Create fixture library
-3.  Implement unit tests (Sprint 1)
-4.  Implement integration tests (Sprint 2)
-5.  Create benchmark suite (Sprint 2)
-6.  Implement golden file tests (Sprint 3)
-7.  Achieve 80%+ coverage (Sprint 3)
+1. AI Assistant autonomous test strategy review
+2. Create fixture library
+3. Implement unit tests (Sprint 1)
+4. Implement integration tests (Sprint 2)
+5. Create benchmark suite (Sprint 2)
+6. Implement golden file tests (Sprint 3)
+7. Achieve 80%+ coverage (Sprint 3)
 
-**Status**: STRATEGY COMPLETE - Awaiting implementation approval  
-**Owner**: QA Lead  
+**Status**: STRATEGY COMPLETE - Awaiting implementation approval
+**Owner**: QA Lead
 **Timeline**: Tests developed alongside implementation (Sprints 1-3)

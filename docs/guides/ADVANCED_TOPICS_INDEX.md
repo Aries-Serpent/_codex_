@@ -1,170 +1,170 @@
 # Advanced Topics & Specialized Guides Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
 
 ---
 
-##  Advanced Guides Available
+## Advanced Guides Available
 
 ### Model Optimization & Performance
 
 1. **[Model Quantization Guide](./ADVANCED_QUANTIZATION.md)**
-   - Int8, Int4, mixed precision
-   - 50-80% size reduction
-   - <5% accuracy loss
-   - For: ML Engineers, Data Scientists
+ - Int8, Int4, mixed precision
+ - 50-80% size reduction
+ - <5% accuracy loss
+ - For: ML Engineers, Data Scientists
 
 2. **[Distillation & Compression](./ADVANCED_DISTILLATION.md)**
-   - Knowledge distillation
-   - Model pruning
-   - Layer fusion
-   - 2-10x speedup
+ - Knowledge distillation
+ - Model pruning
+ - Layer fusion
+ - 2-10x speedup
 
 3. **[Caching & Inference Optimization](./ADVANCED_CACHING.md)**
-   - Request caching strategies
-   - Batch processing optimization
-   - Model warm-up techniques
-   - 50-90% latency reduction
+ - Request caching strategies
+ - Batch processing optimization
+ - Model warm-up techniques
+ - 50-90% latency reduction
 
 ### Fine-tuning & Customization
 
 4. **[LoRA Fine-tuning Guide](./ADVANCED_LORA.md)**
-   - Parameter-efficient tuning
-   - LoRA vs FullFT comparison
-   - Multi-adapter composition
-   - GPU memory optimization
+ - Parameter-efficient tuning
+ - LoRA vs FullFT comparison
+ - Multi-adapter composition
+ - GPU memory optimization
 
 5. **[Domain Adaptation Guide](./ADVANCED_DOMAIN_ADAPTATION.md)**
-   - Few-shot learning
-   - Zero-shot transfer
-   - Domain-specific vocabularies
-   - Handling distribution shifts
+ - Few-shot learning
+ - Zero-shot transfer
+ - Domain-specific vocabularies
+ - Handling distribution shifts
 
 6. **[Prompt Engineering Guide](./ADVANCED_PROMPTING.md)**
-   - Prompt patterns
-   - Few-shot examples
-   - Chain-of-thought prompting
-   - For: LLM-based models
+ - Prompt patterns
+ - Few-shot examples
+ - Chain-of-thought prompting
+ - For: LLM-based models
 
 ### Data Handling
 
 7. **[Data Augmentation Guide](./ADVANCED_DATA_AUGMENTATION.md)**
-   - Text augmentation (backtranslate, EDA, etc.)
-   - Image augmentation
-   - Synthetic data generation
-   - Imbalance handling
+ - Text augmentation (backtranslate, EDA, etc.)
+ - Image augmentation
+ - Synthetic data generation
+ - Imbalance handling
 
 8. **[Data Validation & Quality](./ADVANCED_DATA_QUALITY.md)**
-   - Quality metrics
-   - Drift detection
-   - Outlier identification
-   - Data profiling
+ - Quality metrics
+ - Drift detection
+ - Outlier identification
+ - Data profiling
 
 ### Monitoring & Observability
 
 9. **[Comprehensive Monitoring Setup](./ADVANCED_MONITORING.md)**
-   - Prometheus metrics
-   - Custom metrics
-   - Alert rules
-   - SLA tracking
+ - Prometheus metrics
+ - Custom metrics
+ - Alert rules
+ - SLA tracking
 
 10. **[Model Monitoring & Drift](./ADVANCED_MODEL_MONITORING.md)**
-    - Performance degradation detection
-    - Data drift detection
-    - Feature drift
-    - Concept drift
-    - Retraining triggers
+ - Performance degradation detection
+ - Data drift detection
+ - Feature drift
+ - Concept drift
+ - Retraining triggers
 
 ### Deployment Patterns
 
 11. **[Multi-model Deployments](./ADVANCED_MULTI_MODEL.md)**
-    - Model ensembles
-    - Router patterns
-    - Stacking
-    - Voting strategies
+ - Model ensembles
+ - Router patterns
+ - Stacking
+ - Voting strategies
 
 12. **[Federated Learning Setup](./ADVANCED_FEDERATED_LEARNING.md)**
-    - Distributed training
-    - Privacy preservation
-    - Model aggregation
-    - Communication efficiency
+ - Distributed training
+ - Privacy preservation
+ - Model aggregation
+ - Communication efficiency
 
 13. **[Edge Deployment Guide](./ADVANCED_EDGE_DEPLOYMENT.md)**
-    - ONNX conversion
-    - TorchScript export
-    - Mobile optimization
-    - On-device inference
+ - ONNX conversion
+ - TorchScript export
+ - Mobile optimization
+ - On-device inference
 
 ### Security & Compliance
 
 14. **[Security Best Practices](./ADVANCED_SECURITY.md)**
-    - API key rotation
-    - Secure data handling
-    - Access control
-    - Audit logging
+ - API key rotation
+ - Secure data handling
+ - Access control
+ - Audit logging
 
 15. **[Compliance & Governance](./ADVANCED_COMPLIANCE.md)**
-    - GDPR compliance
-    - Model cards
-    - Explainability requirements
-    - Audit trails
+ - GDPR compliance
+ - Model cards
+ - Explainability requirements
+ - Audit trails
 
 ### Advanced ML Concepts
 
 16. **[Interpretability & Explainability](./ADVANCED_INTERPRETABILITY.md)**
-    - LIME explanations
-    - SHAP values
-    - Attention visualization
-    - Gradient-based methods
+ - LIME explanations
+ - SHAP values
+ - Attention visualization
+ - Gradient-based methods
 
 17. **[Fairness & Bias Mitigation](./ADVANCED_FAIRNESS.md)**
-    - Bias detection
-    - Debiasing techniques
-    - Fairness metrics
-    - Demographic parity
+ - Bias detection
+ - Debiasing techniques
+ - Fairness metrics
+ - Demographic parity
 
 18. **[Uncertainty Quantification](./ADVANCED_UNCERTAINTY.md)**
-    - Confidence calibration
-    - Bayesian approaches
-    - Ensemble uncertainty
-    - Out-of-distribution detection
+ - Confidence calibration
+ - Bayesian approaches
+ - Ensemble uncertainty
+ - Out-of-distribution detection
 
 ---
 
-##  Choose by Your Goal
+## Choose by Your Goal
 
 ### "I want to make my model faster"
-→ [Quantization](./ADVANCED_QUANTIZATION.md)
-→ [Caching](./ADVANCED_CACHING.md)
-→ [Distillation](./ADVANCED_DISTILLATION.md)
+ [Quantization](./ADVANCED_QUANTIZATION.md)
+ [Caching](./ADVANCED_CACHING.md)
+ [Distillation](./ADVANCED_DISTILLATION.md)
 
 ### "I want to make my model smaller"
-→ [Quantization](./ADVANCED_QUANTIZATION.md)
-→ [Pruning](./ADVANCED_DISTILLATION.md#pruning)
-→ [LoRA](./ADVANCED_LORA.md)
+ [Quantization](./ADVANCED_QUANTIZATION.md)
+ [Pruning](./ADVANCED_DISTILLATION.md#pruning)
+ [LoRA](./ADVANCED_LORA.md)
 
 ### "I want to improve accuracy"
-→ [Data Augmentation](./ADVANCED_DATA_AUGMENTATION.md)
-→ [Domain Adaptation](./ADVANCED_DOMAIN_ADAPTATION.md)
-→ [Fine-tuning](./ADVANCED_LORA.md)
+ [Data Augmentation](./ADVANCED_DATA_AUGMENTATION.md)
+ [Domain Adaptation](./ADVANCED_DOMAIN_ADAPTATION.md)
+ [Fine-tuning](./ADVANCED_LORA.md)
 
 ### "I want production-grade monitoring"
-→ [Monitoring Setup](./ADVANCED_MONITORING.md)
-→ [Model Drift Detection](./ADVANCED_MODEL_MONITORING.md)
+ [Monitoring Setup](./ADVANCED_MONITORING.md)
+ [Model Drift Detection](./ADVANCED_MODEL_MONITORING.md)
 
 ### "I want to ensure fairness"
-→ [Fairness & Bias](./ADVANCED_FAIRNESS.md)
-→ [Interpretability](./ADVANCED_INTERPRETABILITY.md)
+ [Fairness & Bias](./ADVANCED_FAIRNESS.md)
+ [Interpretability](./ADVANCED_INTERPRETABILITY.md)
 
 ### "I want to meet compliance"
-→ [Compliance Guide](./ADVANCED_COMPLIANCE.md)
-→ [Model Cards](./ADVANCED_COMPLIANCE.md#model-cards)
+ [Compliance Guide](./ADVANCED_COMPLIANCE.md)
+ [Model Cards](./ADVANCED_COMPLIANCE.md#model-cards)
 
 ---
 
-##  Reading Order by Experience Level
+## Reading Order by Experience Level
 
 ### Intermediate (6-12 months ML experience)
 1. LoRA Fine-tuning
@@ -186,7 +186,7 @@
 
 ---
 
-## 🛠️ Task-Specific Deep Dives
+## Task-Specific Deep Dives
 
 ### Computer Vision
 - Image classification fine-tuning
@@ -220,7 +220,7 @@
 
 ---
 
-##  External Resources
+## External Resources
 
 ### Papers & Research
 - Quantization: [Binary Networks](https://arxiv.org/abs/1602.02830)
@@ -241,7 +241,7 @@
 
 ---
 
-##  Quick Links
+## Quick Links
 
 | Topic | Beginner | Intermediate | Advanced |
 |-------|----------|--------------|----------|
@@ -253,7 +253,7 @@
 
 ---
 
-##  Next Steps
+## Next Steps
 
 1. **Pick your goal** from "Choose by Your Goal" section
 2. **Read the corresponding guide**

@@ -1,6 +1,6 @@
 # Zendesk Admin Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -23,7 +23,7 @@ python -m codex.cli zendesk env-check --env dev
 python -m codex.cli zendesk deps-check
 ```text
 
-## Dry-run → Plan → Apply
+## Dry-run Plan Apply
 
 ```bash
 # Diff & plan (resource example: triggers)

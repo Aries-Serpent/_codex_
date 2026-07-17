@@ -57,7 +57,7 @@
 
 3. **Delegate Phase 14 WS1 (Feature Delivery)** 
    - **Agent:** orchestrator-agent
-   - **Mission:** Execute v0.2.1 feature rollout, feature flags, A/B testing framework
+   - **Mission:** Execute v0.2.0 feature rollout, feature flags, A/B testing framework
    - **Target Completion:** 2026-08-25T20:10Z (6 weeks)
    - **Authority:** D-tier autonomous (Phase 13 WS3 pre-approval carries forward)
 
@@ -141,7 +141,7 @@
 | **2026-07-28T20:10Z** | Phase 14 checkpoint 1 (T+4d) — Infra ready | orchestrator-agent | Review progress |
 | **2026-08-04T20:10Z** | Phase 14 checkpoint 2 (T+11d) — A/B testing started | orchestrator-agent | Review progress |
 | **2026-08-11T20:10Z** | Phase 14 checkpoint 3 (T+18d) — Optimization live | workflow-health-monitor | Review progress |
-| **2026-08-18T20:10Z** | Phase 14 checkpoint 4 (T+25d) — v0.2.1 canary | orchestrator-agent | Review progress |
+| **2026-08-18T20:10Z** | Phase 14 checkpoint 4 (T+25d) — v0.2.0 canary | orchestrator-agent | Review progress |
 | **2026-08-25T20:10Z** | **WS1 Complete** (Feature Delivery GA) | orchestrator-agent | ✅ WS1 gate |
 | **2026-09-04T20:10Z** | **WS2 Complete** (Infrastructure GA) | workflow-health-monitor | ✅ WS2 gate |
 | **2026-09-18T20:10Z** | **WS3 + WS4 Complete** (Security GA + Orchestration) | security-audit-agent | ✅ Phase 14 COMPLETE |
@@ -203,7 +203,7 @@ Upon next session start, execute in this order:
 **Upon Phase 14 completion (target: 2026-09-18T20:10Z):**
 
 **Feature Delivery (WS1) — 6 weeks:**
-- ✅ v0.2.1 deployed to 100% users
+- ✅ v0.2.0 deployed to 100% users
 - ✅ Feature flags operational (enable/disable without redeployment)
 - ✅ A/B testing framework validated (2-week experiment complete)
 - ✅ Canary deployment procedures end-to-end validated

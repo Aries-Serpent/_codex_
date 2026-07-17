@@ -1,11 +1,11 @@
 # Integration Master Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Consolidated Master Document** for Codex Integrations  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Integrations
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Consolidated from** 10 source files:
 - docs/COGNITIVE_BRAIN_GITHUB_LOGS_UPDATE.md
@@ -39,30 +39,30 @@
 ### Available Integrations
 
 ```
-┌────────────────────────────────────┐
-│ Integration Hub                    │
-├────────────────────────────────────┤
-│ • GitHub APIs                      │
-│ • Python Client Library            │
-│ • JavaScript/Node SDK              │
-│ • Cognitive Brain (Memory/Skills)  │
-│ • CI/CD Workflows                  │
-│ • CRM Integration                  │
-│ • Bundle Builder                   │
-│ • Fast-Forward Merging             │
-│ • GitHub Logs Integration          │
-└────────────────────────────────────┘
+
+ Integration Hub 
+
+ • GitHub APIs 
+ • Python Client Library 
+ • JavaScript/Node SDK 
+ • Cognitive Brain (Memory/Skills) 
+ • CI/CD Workflows 
+ • CRM Integration 
+ • Bundle Builder 
+ • Fast-Forward Merging 
+ • GitHub Logs Integration 
+
 ```
 
 ### Integration Layers
 
 | Layer | Technology | Purpose | Status |
 |-------|-----------|---------|--------|
-| **API Layer** | REST/GraphQL | System communication |  Active |
-| **Client Layer** | Python/JS SDKs | User interaction |  Active |
-| **Agent Layer** | Agent system | Automation |  Active |
-| **Cognitive Layer** | Memory/Skills | Intelligence |  Active |
-| **Workflow Layer** | GitHub Actions | CI/CD automation |  Active |
+| **API Layer** | REST/GraphQL | System communication | Active |
+| **Client Layer** | Python/JS SDKs | User interaction | Active |
+| **Agent Layer** | Agent system | Automation | Active |
+| **Cognitive Layer** | Memory/Skills | Intelligence | Active |
+| **Workflow Layer** | GitHub Actions | CI/CD automation | Active |
 
 ---
 
@@ -75,14 +75,14 @@
 import requests
 
 headers = {
-    "Authorization": f"token {GITHUB_TOKEN}",
-    "Accept": "application/vnd.github.v3+json"
+ "Authorization": f"token {GITHUB_TOKEN}",
+ "Accept": "application/vnd.github.v3+json"
 }
 
 # List repositories
 response = requests.get(
-    "https://api.github.com/user/repos",
-    headers=headers
+ "https://api.github.com/user/repos",
+ headers=headers
 )
 repos = response.json()
 ```
@@ -92,32 +92,32 @@ repos = response.json()
 **Query Example**:
 ```graphql
 query {
-  repository(owner: "Aries-Serpent", name: "_codex_") {
-    nameWithOwner
-    description
-    isPrivate
-    issues(first: 5) {
-      edges {
-        node {
-          number
-          title
-          state
-        }
-      }
-    }
-    pullRequests(first: 5) {
-      edges {
-        node {
-          number
-          title
-          state
-          author {
-            login
-          }
-        }
-      }
-    }
-  }
+ repository(owner: "Aries-Serpent", name: "_codex_") {
+ nameWithOwner
+ description
+ isPrivate
+ issues(first: 5) {
+ edges {
+ node {
+ number
+ title
+ state
+ }
+ }
+ }
+ pullRequests(first: 5) {
+ edges {
+ node {
+ number
+ title
+ state
+ author {
+ login
+ }
+ }
+ }
+ }
+ }
 }
 ```
 
@@ -129,20 +129,20 @@ from github import GithubIntegration
 
 # Using GitHub App
 integration = GithubIntegration(
-    integration_id=APP_ID,
-    private_key=PRIVATE_KEY
+ integration_id=APP_ID,
+ private_key=PRIVATE_KEY
 )
 
 # Get installation
 for installation in integration.get_installations():
-    if installation.account.login == "Aries-Serpent":
-        access_token = integration.get_access_token(
-            installation.id
-        )
-        
-        # Use access token
-        g = Github(access_token.token)
-        repo = g.get_repo("Aries-Serpent/_codex_")
+ if installation.account.login == "Aries-Serpent":
+ access_token = integration.get_access_token(
+ installation.id
+ )
+ 
+ # Use access token
+ g = Github(access_token.token)
+ repo = g.get_repo("Aries-Serpent/_codex_")
 ```
 
 ### GitHub Logs Integration
@@ -158,18 +158,18 @@ for installation in integration.get_installations():
 import requests
 
 response = requests.get(
-    "https://api.github.com/repos/Aries-Serpent/_codex_/logs",
-    headers=headers,
-    params={
-        "per_page": 100,
-        "page": 1,
-        "sort": "desc"
-    }
+ "https://api.github.com/repos/Aries-Serpent/_codex_/logs",
+ headers=headers,
+ params={
+ "per_page": 100,
+ "page": 1,
+ "sort": "desc"
+ }
 )
 
 logs = response.json()
 for log in logs:
-    print(f"{log['timestamp']}: {log['action']} by {log['actor']}")
+ print(f"{log['timestamp']}: {log['action']} by {log['actor']}")
 ```
 
 ---
@@ -191,28 +191,28 @@ from codex import Codex
 
 # Initialize client
 client = Codex(
-    api_key="your-api-key",
-    base_url="https://api.example.com"
+ api_key="your-api-key",
+ base_url="https://api.example.com"
 )
 
 # Create session
 session = client.sessions.create(
-    session_type="cli",
-    metadata={"user": "alice"}
+ session_type="cli",
+ metadata={"user": "alice"}
 )
 
 # Log event
 event = client.events.log(
-    session_id=session.id,
-    type="user.message",
-    content="Analyze this code"
+ session_id=session.id,
+ type="user.message",
+ content="Analyze this code"
 )
 
 # Get response
 response = client.execute(
-    session_id=session.id,
-    action="analyze_code",
-    params={"code": code_snippet}
+ session_id=session.id,
+ action="analyze_code",
+ params={"code": code_snippet}
 )
 ```
 
@@ -221,22 +221,22 @@ response = client.execute(
 ```python
 # Semantic search
 results = client.search(
-    query="ML training pipeline",
-    type="code",
-    limit=10
+ query="ML training pipeline",
+ type="code",
+ limit=10
 )
 
 # Store memory
 client.memory.store(
-    fact="Use Ray for distributed training",
-    scope="ltm",  # Long-term memory
-    tags=["ml", "training"]
+ fact="Use Ray for distributed training",
+ scope="ltm", # Long-term memory
+ tags=["ml", "training"]
 )
 
 # Retrieve memory
 facts = client.memory.retrieve(
-    query="distributed training",
-    scope="both"
+ query="distributed training",
+ scope="both"
 )
 ```
 
@@ -259,28 +259,28 @@ import { Codex } from '@codex/client';
 
 // Initialize client
 const client = new Codex({
-  apiKey: process.env.CODEX_API_KEY,
-  baseUrl: 'https://api.example.com'
+ apiKey: process.env.CODEX_API_KEY,
+ baseUrl: 'https://api.example.com'
 });
 
 // Create session
 const session = await client.sessions.create({
-  sessionType: 'cli',
-  metadata: { user: 'bob' }
+ sessionType: 'cli',
+ metadata: { user: 'bob' }
 });
 
 // Log event
 const event = await client.events.log({
-  sessionId: session.id,
-  type: 'user.message',
-  content: 'Analyze this code'
+ sessionId: session.id,
+ type: 'user.message',
+ content: 'Analyze this code'
 });
 
 // Execute action
 const response = await client.execute({
-  sessionId: session.id,
-  action: 'analyze_code',
-  params: { code: codeSnippet }
+ sessionId: session.id,
+ action: 'analyze_code',
+ params: { code: codeSnippet }
 });
 
 console.log(response.result);
@@ -291,30 +291,30 @@ console.log(response.result);
 ```javascript
 // Semantic search
 const results = await client.search({
-  query: 'API authentication patterns',
-  type: 'code',
-  limit: 10
+ query: 'API authentication patterns',
+ type: 'code',
+ limit: 10
 });
 
 // Store memory
 await client.memory.store({
-  fact: 'Use OAuth 2.0 for user authentication',
-  scope: 'ltm',
-  tags: ['auth', 'security']
+ fact: 'Use OAuth 2.0 for user authentication',
+ scope: 'ltm',
+ tags: ['auth', 'security']
 });
 
 // Stream responses
 const stream = client.createStream({
-  sessionId: session.id,
-  action: 'analyze_large_codebase'
+ sessionId: session.id,
+ action: 'analyze_large_codebase'
 });
 
 stream.on('data', chunk => {
-  console.log('Received:', chunk);
+ console.log('Received:', chunk);
 });
 
 stream.on('end', () => {
-  console.log('Analysis complete');
+ console.log('Analysis complete');
 });
 ```
 
@@ -328,13 +328,13 @@ stream.on('end', () => {
 ```python
 # Store temporary facts
 client.memory.store_stm({
-    "fact": "Current task is refactoring auth module",
-    "ttl": 3600  # 1 hour
+ "fact": "Current task is refactoring auth module",
+ "ttl": 3600 # 1 hour
 })
 
 # Retrieve STM
 recent_context = client.memory.retrieve_stm(
-    query="current task"
+ query="current task"
 )
 ```
 
@@ -342,15 +342,15 @@ recent_context = client.memory.retrieve_stm(
 ```python
 # Store persistent facts
 client.memory.store_ltm({
-    "fact": "Always use bcrypt for password hashing",
-    "category": "security_best_practices",
-    "confidence": 0.95
+ "fact": "Always use bcrypt for password hashing",
+ "category": "security_best_practices",
+ "confidence": 0.95
 })
 
 # Query LTM
 best_practices = client.memory.retrieve_ltm(
-    query="password hashing",
-    limit=5
+ query="password hashing",
+ limit=5
 )
 ```
 
@@ -360,18 +360,18 @@ best_practices = client.memory.retrieve_ltm(
 # List available skills
 skills = client.skills.list()
 # Output: [
-#   {'name': 'code_analyzer', 'version': '1.0.0'},
-#   {'name': 'test_generator', 'version': '2.1.0'},
-#   ...
+# {'name': 'code_analyzer', 'version': '1.0.0'},
+# {'name': 'test_generator', 'version': '2.1.0'},
+# ...
 # ]
 
 # Execute skill
 result = client.skills.execute(
-    name='code_analyzer',
-    input={
-        'code': code_snippet,
-        'language': 'python'
-    }
+ name='code_analyzer',
+ input={
+ 'code': code_snippet,
+ 'language': 'python'
+ }
 )
 
 # Result includes:
@@ -385,15 +385,15 @@ result = client.skills.execute(
 ```python
 # Get cognitive context
 context = client.get_cognitive_context({
-    "session_id": session_id,
-    "include": ["memory", "skills", "patterns"]
+ "session_id": session_id,
+ "include": ["memory", "skills", "patterns"]
 })
 
 # Use context for enhanced responses
 response = client.execute(
-    action="explain_architecture",
-    params={"module": "data_pipeline"},
-    context=context  # Include cognitive context
+ action="explain_architecture",
+ params={"module": "data_pipeline"},
+ context=context # Include cognitive context
 )
 ```
 
@@ -410,27 +410,27 @@ name: AI Code Review
 on: [pull_request]
 
 jobs:
-  ai-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Run AI Code Review
-        uses: ./.github/actions/agent-runner
-        with:
-          agent: code-review-agent
-          pr_number: ${{ github.event.pull_request.number }}
-          
-      - name: Comment on PR
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'AI code review completed'
-            })
+ ai-review:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ 
+ - name: Run AI Code Review
+ uses: ./.github/actions/agent-runner
+ with:
+ agent: code-review-agent
+ pr_number: ${{ github.event.pull_request.number }}
+ 
+ - name: Comment on PR
+ uses: actions/github-script@v6
+ with:
+ script: |
+ github.rest.issues.createComment({
+ issue_number: context.issue.number,
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ body: 'AI code review completed'
+ })
 ```
 
 ### Fast-Forward Integration
@@ -442,22 +442,22 @@ name: Auto-Merge Simple PRs
 on: [pull_request_review]
 
 jobs:
-  auto-merge:
-    runs-on: ubuntu-latest
-    if: github.event.review.state == 'APPROVED'
-    steps:
-      - name: Check PR complexity
-        id: complexity
-        run: |
-          # Analyze PR diff
-          # If < 100 lines + no dependency changes + all tests pass
-          echo "is_simple=true" >> $GITHUB_OUTPUT
-          
-      - name: Auto-merge if simple
-        if: steps.complexity.outputs.is_simple == 'true'
-        uses: ./.github/actions/fast-forward-merge
-        with:
-          pr_number: ${{ github.event.pull_request.number }}
+ auto-merge:
+ runs-on: ubuntu-latest
+ if: github.event.review.state == 'APPROVED'
+ steps:
+ - name: Check PR complexity
+ id: complexity
+ run: |
+ # Analyze PR diff
+ # If < 100 lines + no dependency changes + all tests pass
+ echo "is_simple=true" >> $GITHUB_OUTPUT
+ 
+ - name: Auto-merge if simple
+ if: steps.complexity.outputs.is_simple == 'true'
+ uses: ./.github/actions/fast-forward-merge
+ with:
+ pr_number: ${{ github.event.pull_request.number }}
 ```
 
 ### Agent Merge Readiness
@@ -468,18 +468,18 @@ name: Agent Merge Readiness
 on: [pull_request]
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Agent Consolidation Check
-        run: |
-          python scripts/check_agent_consolidation.py
-          # Verifies:
-          # - No duplicate agents
-          # - All agents in registry
-          # - No deprecated agents active
+ check:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ 
+ - name: Agent Consolidation Check
+ run: |
+ python scripts/check_agent_consolidation.py
+ # Verifies:
+ # - No duplicate agents
+ # - All agents in registry
+ # - No deprecated agents active
 ```
 
 ---
@@ -501,20 +501,20 @@ projects = crm.get_customer_projects(customer_id)
 
 # Create Codex session per project
 for project in projects:
-    session = client.sessions.create(
-        session_type="customer_project",
-        metadata={
-            "customer_id": customer_id,
-            "project_id": project.id,
-            "crm_sync": True
-        }
-    )
-    
-    # Track Codex work in CRM
-    crm.update_project(
-        project_id=project.id,
-        codex_session_id=session.id
-    )
+ session = client.sessions.create(
+ session_type="customer_project",
+ metadata={
+ "customer_id": customer_id,
+ "project_id": project.id,
+ "crm_sync": True
+ }
+ )
+ 
+ # Track Codex work in CRM
+ crm.update_project(
+ project_id=project.id,
+ codex_session_id=session.id
+ )
 ```
 
 ### Bundle Builder Integration
@@ -524,8 +524,8 @@ for project in projects:
 from bundle_builder import BundleBuilder
 
 builder = BundleBuilder(
-    version="1.2.3",
-    target_platform="docker"
+ version="1.2.3",
+ target_platform="docker"
 )
 
 # Include dependencies
@@ -534,9 +534,9 @@ builder.add_dependency("torch==2.0.0")
 
 # Include Codex
 builder.add_package(
-    name="codex",
-    path="./src/codex",
-    include_tests=False
+ name="codex",
+ path="./src/codex",
+ include_tests=False
 )
 
 # Build bundle
@@ -553,20 +553,20 @@ bundle_path = builder.build()
 ```python
 # Set up webhooks
 client.webhooks.create({
-    "event_type": "pr_opened",
-    "url": "https://example.com/webhooks/pr",
-    "active": True
+ "event_type": "pr_opened",
+ "url": "https://example.com/webhooks/pr",
+ "active": True
 })
 
 # Handle webhook
 @app.post("/webhooks/pr")
 async def handle_pr_webhook(payload: dict):
-    if payload['action'] == 'opened':
-        # Trigger analysis
-        client.execute(
-            action="analyze_pr",
-            params={"pr_number": payload['pull_request']['number']}
-        )
+ if payload['action'] == 'opened':
+ # Trigger analysis
+ client.execute(
+ action="analyze_pr",
+ params={"pr_number": payload['pull_request']['number']}
+ )
 ```
 
 ### Polling Integration
@@ -576,21 +576,21 @@ async def handle_pr_webhook(payload: dict):
 import time
 
 while True:
-    # Check for new issues
-    issues = client.issues.list(
-        state="open",
-        since=last_check_time
-    )
-    
-    for issue in issues:
-        # Process issue
-        client.execute(
-            action="triage_issue",
-            params={"issue_id": issue.id}
-        )
-    
-    last_check_time = datetime.now()
-    time.sleep(300)  # Check every 5 minutes
+ # Check for new issues
+ issues = client.issues.list(
+ state="open",
+ since=last_check_time
+ )
+ 
+ for issue in issues:
+ # Process issue
+ client.execute(
+ action="triage_issue",
+ params={"issue_id": issue.id}
+ )
+ 
+ last_check_time = datetime.now()
+ time.sleep(300) # Check every 5 minutes
 ```
 
 ---
@@ -605,17 +605,17 @@ import pytest
 from unittest.mock import MagicMock
 
 def test_github_integration():
-    client = Codex(api_key="test-key")
-    
-    # Mock GitHub API
-    with patch('requests.get') as mock_get:
-        mock_get.return_value.json.return_value = [
-            {'id': 1, 'name': 'repo1'}
-        ]
-        
-        repos = client.github.get_repositories()
-        assert len(repos) == 1
-        assert repos[0]['name'] == 'repo1'
+ client = Codex(api_key="test-key")
+ 
+ # Mock GitHub API
+ with patch('requests.get') as mock_get:
+ mock_get.return_value.json.return_value = [
+ {'id': 1, 'name': 'repo1'}
+ ]
+ 
+ repos = client.github.get_repositories()
+ assert len(repos) == 1
+ assert repos[0]['name'] == 'repo1'
 ```
 
 ### Integration Tests
@@ -624,26 +624,26 @@ def test_github_integration():
 # test_integration_end_to_end.py
 @pytest.mark.integration
 def test_end_to_end_workflow():
-    # Create session
-    session = client.sessions.create()
-    
-    # Log events
-    client.events.log(
-        session_id=session.id,
-        type="user.message",
-        content="Analyze code"
-    )
-    
-    # Execute action
-    result = client.execute(
-        session_id=session.id,
-        action="analyze_code",
-        params={"code": "x = 1"}
-    )
-    
-    # Verify result
-    assert result.status == "success"
-    assert len(result.analysis) > 0
+ # Create session
+ session = client.sessions.create()
+ 
+ # Log events
+ client.events.log(
+ session_id=session.id,
+ type="user.message",
+ content="Analyze code"
+ )
+ 
+ # Execute action
+ result = client.execute(
+ session_id=session.id,
+ action="analyze_code",
+ params={"code": "x = 1"}
+ )
+ 
+ # Verify result
+ assert result.status == "success"
+ assert len(result.analysis) > 0
 ```
 
 ---
@@ -651,4 +651,4 @@ def test_end_to_end_workflow():
 **This document is the authoritative integration guide for Codex.**
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (10 files merged)*
+*Consolidation Status: Complete (10 files merged)*

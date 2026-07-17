@@ -1,6 +1,6 @@
 # Contributor Onboarding Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-16
 
@@ -32,7 +32,7 @@ cd _codex_
 
 # 2. Set up Python environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -e .
@@ -61,7 +61,7 @@ python -m codex.cli --help
 ### Purpose
 
 Codex is a Level 4 MLOps production system with:
-- **Audit Pipeline v0.2.1**: Deterministic capability tracking
+- **Audit Pipeline v0.2.0**: Deterministic capability tracking
 - **1,208+ tests**: Comprehensive test coverage
 - **693 documentation files**: Extensive documentation
 - **AI-First Design**: Built for AI Assistant/Agent intuitiveness
@@ -78,14 +78,14 @@ Codex is a Level 4 MLOps production system with:
 
 ```
 _codex_/
-├── src/codex_ml/          # Core ML code
-├── training/              # Training pipelines
-├── scripts/               # Utility scripts
-├── tests/                 # Test suite
-├── docs/                  # Documentation
-├── agents/                # AI Agent infrastructure
-├── .github/workflows/     # CI/CD pipelines
-└── requirements*.txt      # Dependencies
+ src/codex_ml/ # Core ML code
+ training/ # Training pipelines
+ scripts/ # Utility scripts
+ tests/ # Test suite
+ docs/ # Documentation
+ agents/ # AI Agent infrastructure
+ .github/workflows/ # CI/CD pipelines
+ requirements*.txt # Dependencies
 ```
 
 ---
@@ -147,15 +147,15 @@ pytest tests/test_tokenization.py -v
 **VS Code:**
 ```json
 {
-  "python.linting.enabled": true,
-  "python.linting.ruffEnabled": true,
-  "python.formatting.provider": "black",
-  "python.testing.pytestEnabled": true
+ "python.linting.enabled": true,
+ "python.linting.ruffEnabled": true,
+ "python.formatting.provider": "black",
+ "python.testing.pytestEnabled": true
 }
 ```
 
 **PyCharm:**
-- Enable Ruff in Settings → Tools → External Tools
+- Enable Ruff in Settings Tools External Tools
 - Set test runner to pytest
 - Enable type checking with mypy
 
@@ -197,25 +197,25 @@ Located in `agents/`:
 
 ```
 Key Files:
-- .codex/archive/deprecated/AGENTS.md                 # Main agent guide
-- COMPREHENSIVE_GAP_ANALYSIS.md  # Current gaps and priorities
-- codex_gap_registry.yaml   # Known gaps tracking
+- .codex/archive/deprecated/AGENTS.md # Main agent guide
+- COMPREHENSIVE_GAP_ANALYSIS.md # Current gaps and priorities
+- codex_gap_registry.yaml # Known gaps tracking
 
 Core Modules:
-- src/codex_ml/training/    # Training pipelines
-- src/codex_ml/evaluation/  # Evaluation metrics
-- src/codex_ml/connectors/  # Storage connectors
-- src/codex_ml/plugins/     # Plugin system
+- src/codex_ml/training/ # Training pipelines
+- src/codex_ml/evaluation/ # Evaluation metrics
+- src/codex_ml/connectors/ # Storage connectors
+- src/codex_ml/plugins/ # Plugin system
 
 Scripts:
-- scripts/space_traversal/  # Audit pipeline
-- scripts/archive_files.py  # Archival automation
-- scripts/dependency_analyzer.py  # Dependency analysis
+- scripts/space_traversal/ # Audit pipeline
+- scripts/archive_files.py # Archival automation
+- scripts/dependency_analyzer.py # Dependency analysis
 
 Tests:
-- tests/                    # Main test suite
-- tests/capabilities/       # Capability-specific tests
-- tests/space_traversal/    # Audit pipeline tests
+- tests/ # Main test suite
+- tests/capabilities/ # Capability-specific tests
+- tests/space_traversal/ # Audit pipeline tests
 ```
 
 ---
@@ -323,23 +323,23 @@ Fixes #issue-number
 import pytest
 
 def test_basic_functionality():
-    """Test basic functionality."""
-    result = function_under_test()
-    assert result == expected_value
+ """Test basic functionality."""
+ result = function_under_test()
+ assert result == expected_value
 
 def test_error_handling():
-    """Test error handling."""
-    with pytest.raises(ValueError):
-        function_with_error()
+ """Test error handling."""
+ with pytest.raises(ValueError):
+ function_with_error()
 
 @pytest.fixture
 def sample_data():
-    """Provide sample data for tests."""
-    return {"key": "value"}
+ """Provide sample data for tests."""
+ return {"key": "value"}
 
 def test_with_fixture(sample_data):
-    """Test using fixture."""
-    assert sample_data["key"] == "value"
+ """Test using fixture."""
+ assert sample_data["key"] == "value"
 ```
 
 ## Running Tests
@@ -449,7 +449,7 @@ touch tests/test_new_feature.py
 # 2. Write test
 cat > tests/test_new_feature.py << 'EOF'
 def test_new_feature():
-    assert True
+ assert True
 EOF
 
 # 3. Run test
@@ -520,10 +520,10 @@ git commit -m "docs: Update documentation for feature"
 1. Check existing documentation first
 2. Search closed issues/PRs
 3. Open new issue with:
-   - Clear problem description
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Environment details
+ - Clear problem description
+ - Steps to reproduce
+ - Expected vs actual behavior
+ - Environment details
 
 ### Debugging Tips
 

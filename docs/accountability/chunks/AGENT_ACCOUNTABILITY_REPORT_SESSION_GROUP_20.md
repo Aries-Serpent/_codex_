@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 20
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 20 of 32  
 **Sessions:** S1049 to S293  

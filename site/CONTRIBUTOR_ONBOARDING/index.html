@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/CONTRIBUTOR_ONBOARDING/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Contributor Onboarding Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2766,7 +2766,7 @@
 <h1 id="contributor-onboarding-guide">Contributor Onboarding Guide<a class="headerlink" href="#contributor-onboarding-guide" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p>**Last Updated: 2026-06-22</p>
+<p>**Last Updated: 2026-07-16</p>
 <p>Welcome to the Codex repository! This guide will help you get started as a contributor, whether you're a human developer or an AI Agent.</p>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
 <ol>
@@ -2790,7 +2790,7 @@
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># 2. Set up Python environment</span>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w"> </span><span class="c1"># On Windows: venv\Scripts\activate</span>
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="c1"># 3. Install dependencies</span>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
@@ -2826,14 +2826,14 @@
 </ul>
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>_codex_/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── src/codex_ml/          # Core ML code
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>├── training/              # Training pipelines
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>├── scripts/               # Utility scripts
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>├── tests/                 # Test suite
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>├── docs/                  # Documentation
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>├── agents/                # AI Agent infrastructure
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>├── .github/workflows/     # CI/CD pipelines
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>└── requirements*.txt      # Dependencies
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> src/codex_ml/ # Core ML code
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> training/ # Training pipelines
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> scripts/ # Utility scripts
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> tests/ # Test suite
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> docs/ # Documentation
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> agents/ # AI Agent infrastructure
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> .github/workflows/ # CI/CD pipelines
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> requirements*.txt # Dependencies
 </code></pre></div>
 <hr/>
 <h2 id="development-setup">Development Setup<a class="headerlink" href="#development-setup" title="Permanent link">¶</a></h2>
@@ -2878,14 +2878,14 @@
 <h2 id="4-ide-setup">4. IDE Setup<a class="headerlink" href="#4-ide-setup" title="Permanent link">¶</a></h2>
 <p><strong>VS Code:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p">{</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">"python.linting.enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">"python.linting.ruffEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">"python.formatting.provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"black"</span><span class="p">,</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span><span class="nt">"python.testing.pytestEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">"python.linting.enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">"python.linting.ruffEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">"python.formatting.provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"black"</span><span class="p">,</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">"python.testing.pytestEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>PyCharm:</strong>
-- Enable Ruff in Settings → Tools → External Tools
+- Enable Ruff in Settings Tools External Tools
 - Set test runner to pytest
 - Enable type checking with mypy</p>
 <hr/>
@@ -2915,25 +2915,25 @@
 </ul>
 <h3 id="code-organization">Code Organization<a class="headerlink" href="#code-organization" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Key Files:
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>- .codex/archive/deprecated/AGENTS.md                 # Main agent guide
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>- COMPREHENSIVE_GAP_ANALYSIS.md  # Current gaps and priorities
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>- codex_gap_registry.yaml   # Known gaps tracking
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>- .codex/archive/deprecated/AGENTS.md # Main agent guide
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>- COMPREHENSIVE_GAP_ANALYSIS.md # Current gaps and priorities
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>- codex_gap_registry.yaml # Known gaps tracking
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>Core Modules:
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>- src/codex_ml/training/    # Training pipelines
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>- src/codex_ml/evaluation/  # Evaluation metrics
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>- src/codex_ml/connectors/  # Storage connectors
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>- src/codex_ml/plugins/     # Plugin system
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>- src/codex_ml/training/ # Training pipelines
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>- src/codex_ml/evaluation/ # Evaluation metrics
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>- src/codex_ml/connectors/ # Storage connectors
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>- src/codex_ml/plugins/ # Plugin system
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>Scripts:
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>- scripts/space_traversal/  # Audit pipeline
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>- scripts/archive_files.py  # Archival automation
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>- scripts/dependency_analyzer.py  # Dependency analysis
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>- scripts/space_traversal/ # Audit pipeline
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>- scripts/archive_files.py # Archival automation
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>- scripts/dependency_analyzer.py # Dependency analysis
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
 <a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>Tests:
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>- tests/                    # Main test suite
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>- tests/capabilities/       # Capability-specific tests
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>- tests/space_traversal/    # Audit pipeline tests
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>- tests/ # Main test suite
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>- tests/capabilities/ # Capability-specific tests
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>- tests/space_traversal/ # Audit pipeline tests
 </code></pre></div>
 <hr/>
 <h2 id="making-your-first-contribution">Making Your First Contribution<a class="headerlink" href="#making-your-first-contribution" title="Permanent link">¶</a></h2>
@@ -3017,23 +3017,23 @@
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="kn">import</span> <span class="nn">pytest</span>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="k">def</span> <span class="nf">test_basic_functionality</span><span class="p">():</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">    </span><span class="sd">"""Test basic functionality."""</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">function_under_test</span><span class="p">()</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">expected_value</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w"> </span><span class="sd">"""Test basic functionality."""</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">function_under_test</span><span class="p">()</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">expected_value</span>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="k">def</span> <span class="nf">test_error_handling</span><span class="p">():</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="w">    </span><span class="sd">"""Test error handling."""</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>        <span class="n">function_with_error</span><span class="p">()</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="w"> </span><span class="sd">"""Test error handling."""</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="n">function_with_error</span><span class="p">()</span>
 <a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
 <a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a><span class="k">def</span> <span class="nf">sample_data</span><span class="p">():</span>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="w">    </span><span class="sd">"""Provide sample data for tests."""</span>
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"key"</span><span class="p">:</span> <span class="s2">"value"</span><span class="p">}</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="w"> </span><span class="sd">"""Provide sample data for tests."""</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"key"</span><span class="p">:</span> <span class="s2">"value"</span><span class="p">}</span>
 <a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
 <a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="k">def</span> <span class="nf">test_with_fixture</span><span class="p">(</span><span class="n">sample_data</span><span class="p">):</span>
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a><span class="w">    </span><span class="sd">"""Test using fixture."""</span>
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>    <span class="k">assert</span> <span class="n">sample_data</span><span class="p">[</span><span class="s2">"key"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"value"</span>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a><span class="w"> </span><span class="sd">"""Test using fixture."""</span>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> <span class="k">assert</span> <span class="n">sample_data</span><span class="p">[</span><span class="s2">"key"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"value"</span>
 </code></pre></div>
 <h2 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Run all tests</span>
@@ -3119,7 +3119,7 @@
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="c1"># 2. Write test</span>
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>tests/test_new_feature.py<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="s">def test_new_feature():</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="s">    assert True</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="s"> assert True</span>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="s">EOF</span>
 <a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
 <a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="c1"># 3. Run test</span>
@@ -3278,6 +3278,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

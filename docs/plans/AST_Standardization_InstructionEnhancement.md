@@ -1,67 +1,67 @@
-#  AST: Deep Codebase Analysis Requirements
+# AST: Deep Codebase Analysis Requirements
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [1. Executive Summary](#1-executive-summary)
 - [2. Requirement Categories Matrix](#2-requirement-categories-matrix)
-  - [2.1 Functional Requirements (FR) - CRITICAL PATH](#21-functional-requirements-fr---critical-path)
-  - [2.2 Non-Functional Requirements (NFR) - QUALITY GATES](#22-non-functional-requirements-nfr---quality-gates)
-  - [2.3 Constraint Requirements (CR) - IMMUTABLE](#23-constraint-requirements-cr---immutable)
+ - [2.1 Functional Requirements (FR) - CRITICAL PATH](#21-functional-requirements-fr---critical-path)
+ - [2.2 Non-Functional Requirements (NFR) - QUALITY GATES](#22-non-functional-requirements-nfr---quality-gates)
+ - [2.3 Constraint Requirements (CR) - IMMUTABLE](#23-constraint-requirements-cr---immutable)
 - [3. Data Model & Schemas](#3-data-model--schemas)
-  - [3.1 Standardized AST Node Structure](#31-standardized-ast-node-structure)
-  - [3.2 Analysis Results Schema](#32-analysis-results-schema)
-  - [3.3 Dependency Graph Schema](#33-dependency-graph-schema)
-  - [3.4 Knowledge Graph Export Schema](#34-knowledge-graph-export-schema)
+ - [3.1 Standardized AST Node Structure](#31-standardized-ast-node-structure)
+ - [3.2 Analysis Results Schema](#32-analysis-results-schema)
+ - [3.3 Dependency Graph Schema](#33-dependency-graph-schema)
+ - [3.4 Knowledge Graph Export Schema](#34-knowledge-graph-export-schema)
 - [4. Implementation Phases & Deliverables](#4-implementation-phases--deliverables)
-  - [Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2](#phase-1-foundation-sprint-1-2---weeks-1-2)
-  - [Phase 2: Metrics & Analysis (Sprint 2-3) - WEEKS 3-5](#phase-2-metrics--analysis-sprint-2-3---weeks-3-5)
-  - [Phase 3: Dependency & Graph (Sprint 3-4) - WEEKS 6-8](#phase-3-dependency--graph-sprint-3-4---weeks-6-8)
-  - [Phase 4: CLI & Integration (Sprint 4-5) - WEEKS 8-10](#phase-4-cli--integration-sprint-4-5---weeks-8-10)
-  - [Phase 5: Testing & Validation (Sprint 6) - WEEKS 11-12](#phase-5-testing--validation-sprint-6---weeks-11-12)
+ - [Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2](#phase-1-foundation-sprint-1-2---weeks-1-2)
+ - [Phase 2: Metrics & Analysis (Sprint 2-3) - WEEKS 3-5](#phase-2-metrics--analysis-sprint-2-3---weeks-3-5)
+ - [Phase 3: Dependency & Graph (Sprint 3-4) - WEEKS 6-8](#phase-3-dependency--graph-sprint-3-4---weeks-6-8)
+ - [Phase 4: CLI & Integration (Sprint 4-5) - WEEKS 8-10](#phase-4-cli--integration-sprint-4-5---weeks-8-10)
+ - [Phase 5: Testing & Validation (Sprint 6) - WEEKS 11-12](#phase-5-testing--validation-sprint-6---weeks-11-12)
 - [5. Quality Assurance Framework](#5-quality-assurance-framework)
-  - [5.1 Testing Strategy (Test Pyramid)](#51-testing-strategy-test-pyramid)
-  - [5.2 Test Coverage Targets by Component](#52-test-coverage-targets-by-component)
-  - [5.3 Regression Test Matrix](#53-regression-test-matrix)
+ - [5.1 Testing Strategy (Test Pyramid)](#51-testing-strategy-test-pyramid)
+ - [5.2 Test Coverage Targets by Component](#52-test-coverage-targets-by-component)
+ - [5.3 Regression Test Matrix](#53-regression-test-matrix)
 - [6. Acceptance & Sign-Off Process](#6-acceptance--sign-off-process)
-  - [6.1 Validation Checkpoints](#61-validation-checkpoints)
-  - [6.2 Functional Acceptance Criteria (Final)](#62-functional-acceptance-criteria-final)
+ - [6.1 Validation Checkpoints](#61-validation-checkpoints)
+ - [6.2 Functional Acceptance Criteria (Final)](#62-functional-acceptance-criteria-final)
 - [7. Risk Assessment & Mitigation](#7-risk-assessment--mitigation)
-  - [7.1 High-Risk Items](#71-high-risk-items)
-  - [7.2 Rollback Procedures](#72-rollback-procedures)
+ - [7.1 High-Risk Items](#71-high-risk-items)
+ - [7.2 Rollback Procedures](#72-rollback-procedures)
 - [Fall back to regex-based analysis](#fall-back-to-regex-based-analysis)
 - [Reduce scope](#reduce-scope)
 - [Reduce sensitivity](#reduce-sensitivity)
 - [8. Success Metrics & KPIs](#8-success-metrics--kpis)
-  - [8.1 Delivery KPIs](#81-delivery-kpis)
-  - [8.2 Adoption KPIs](#82-adoption-kpis)
+ - [8.1 Delivery KPIs](#81-delivery-kpis)
+ - [8.2 Adoption KPIs](#82-adoption-kpis)
 - [9. Documentation Requirements](#9-documentation-requirements)
-  - [9.1 Mandatory Documentation](#91-mandatory-documentation)
+ - [9.1 Mandatory Documentation](#91-mandatory-documentation)
 - [10. Conclusion & Next Steps](#10-conclusion--next-steps)
 - [ AST: Standardization Implementation Guidance](#-ast-standardization-implementation-guidance)
 - [1. Implementation Philosophy](#1-implementation-philosophy)
-  - [1.1 Core Principles](#11-core-principles)
-  - [1.2 Architecture Decision Records (ADRs)](#12-architecture-decision-records-adrs)
+ - [1.1 Core Principles](#11-core-principles)
+ - [1.2 Architecture Decision Records (ADRs)](#12-architecture-decision-records-adrs)
 - [2. Component Deep-Dive](#2-component-deep-dive)
-  - [2.1 Parser Module Implementation Guide](#21-parser-module-implementation-guide)
-  - [2.2 Metrics Analyzer Implementation Guide](#22-metrics-analyzer-implementation-guide)
-  - [2.3 Dependency Graph Implementation Guide](#23-dependency-graph-implementation-guide)
+ - [2.1 Parser Module Implementation Guide](#21-parser-module-implementation-guide)
+ - [2.2 Metrics Analyzer Implementation Guide](#22-metrics-analyzer-implementation-guide)
+ - [2.3 Dependency Graph Implementation Guide](#23-dependency-graph-implementation-guide)
 - [Testing](#testing)
 - [3. Testing & Validation Framework](#3-testing--validation-framework)
-  - [3.1 Test Organization](#31-test-organization)
-  - [3.2 Fixture Strategy (conftest.py)](#32-fixture-strategy-conftestpy)
-  - [3.3 Performance Benchmarks](#33-performance-benchmarks)
+ - [3.1 Test Organization](#31-test-organization)
+ - [3.2 Fixture Strategy (conftest.py)](#32-fixture-strategy-conftestpy)
+ - [3.3 Performance Benchmarks](#33-performance-benchmarks)
 - [4. Integration Checkpoints](#4-integration-checkpoints)
-  - [4.1 Phase Gate Criteria](#41-phase-gate-criteria)
-  - [4.2 CI/CD Integration Template](#42-cicd-integration-template)
+ - [4.1 Phase Gate Criteria](#41-phase-gate-criteria)
+ - [4.2 CI/CD Integration Template](#42-cicd-integration-template)
 - [5. Conclusion](#5-conclusion)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] |  Energy: 5/5
+** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] | Energy: 5/5
 
 ---
 
@@ -70,13 +70,13 @@
 This document establishes **comprehensive, binding requirements** for developing an **AST (Abstract Syntax Tree) Standardization Project** that enables **deep codebase analysis beyond test scope**.
 
 **Strategic Objectives:**
--  Standardize AST parsing across Python/YAML/JSON codebases
--  Enable automated structural and semantic codebase analysis
--  Provide objective metrics for code quality, complexity, and dependencies
--  Integrate maturity tracking with AST-derived findings
--  Create knowledge graphs for team-wide code intelligence
+- Standardize AST parsing across Python/YAML/JSON codebases
+- Enable automated structural and semantic codebase analysis
+- Provide objective metrics for code quality, complexity, and dependencies
+- Integrate maturity tracking with AST-derived findings
+- Create knowledge graphs for team-wide code intelligence
 
-**Scope:** Comprehensive codebase analysis → structural, semantic, quality, and evolution tracking
+**Scope:** Comprehensive codebase analysis structural, semantic, quality, and evolution tracking
 
 ---
 
@@ -95,7 +95,7 @@ This document establishes **comprehensive, binding requirements** for developing
 | **FR-AST-007** | **Code Smell Detection** | HIGH | Detect 8+ smell types (long functions, high complexity, duplication, dead code); >80% precision | FR-AST-003 |
 | **FR-AST-008** | **Type Hint Extraction & Inference** | MEDIUM | Extract explicit hints; infer from usage; measure coverage; <200ms per file | FR-AST-002 |
 | **FR-AST-009** | **Documentation Coverage Analysis** | MEDIUM | Extract docstrings; measure coverage %; assess quality; <100ms per file | FR-AST-002 |
-| **FR-AST-010** | **Testing Coverage Integration** | MEDIUM | Read pytest XML; map to AST nodes; correlate coverage ↔ complexity | FR-AST-002 |
+| **FR-AST-010** | **Testing Coverage Integration** | MEDIUM | Read pytest XML; map to AST nodes; correlate coverage complexity | FR-AST-002 |
 | **FR-AST-011** | **Knowledge Graph Export** | HIGH | Export to JSON/SQLite/Markdown/HTML/DOT; queryable; no data loss; <500ms per 1000 entities | FR-AST-003+ |
 | **FR-AST-012** | **Incremental Delta Analysis** | HIGH | Analyze only changed files; compare to baseline; report improvements/regressions; <1s for typical PR | FR-AST-003+ |
 | **FR-AST-013** | **CLI Interface Suite** | CRITICAL | 3 tools: codex-analyze, codex-audit, codex-diff; offline-capable; <30s per 10K LOC | FR-AST-011+ |
@@ -119,7 +119,7 @@ This document establishes **comprehensive, binding requirements** for developing
 | **NFR-ACC-004** | **Smell Detection Precision** | >80% (false positives <20%) | Manual review sample | HIGH |
 | **NFR-REL-001** | **Error Resilience** | Zero crashes on invalid input | Fuzz testing | CRITICAL |
 | **NFR-REL-002** | **Graceful Degradation** | Partial results on parse error | Error handling tests | HIGH |
-| **NFR-REL-003** | **Determinism** | Identical input → identical output | Reproducibility tests | CRITICAL |
+| **NFR-REL-003** | **Determinism** | Identical input identical output | Reproducibility tests | CRITICAL |
 | **NFR-MAINT-001** | **Code Duplication** | <10% | Automated detection | MEDIUM |
 | **NFR-MAINT-002** | **Test Coverage** | ≥80% | Coverage reports | HIGH |
 | **NFR-MAINT-003** | **Cyclomatic Complexity** | <10 per function | Enforced by own tool | MEDIUM |
@@ -150,39 +150,39 @@ This document establishes **comprehensive, binding requirements** for developing
 ```python
 @dataclass
 class SourceLocation:
-    """Pin point code location."""
-    file_path: Path
-    line_start: int
-    line_end: int
-    column_start: int
-    column_end: int
+ """Pin point code location."""
+ file_path: Path
+ line_start: int
+ line_end: int
+ column_start: int
+ column_end: int
 
 @dataclass
 class StandardizedASTNode:
-    """Language-agnostic AST representation."""
-    # Identity
-    node_id: str                        # unique identifier
-    type: str                           # "module", "function", "class", "statement", etc.
-    name: str                           # identifier
+ """Language-agnostic AST representation."""
+ # Identity
+ node_id: str # unique identifier
+ type: str # "module", "function", "class", "statement", etc.
+ name: str # identifier
 
-    # Structure
-    parent: Optional["StandardizedASTNode"]
-    children: List["StandardizedASTNode"]
+ # Structure
+ parent: Optional["StandardizedASTNode"]
+ children: List["StandardizedASTNode"]
 
-    # Metadata
-    source_location: SourceLocation
-    docstring: Optional[str]
-    decorators: List[str]              # e.g., ["@dataclass", "@property"]
+ # Metadata
+ source_location: SourceLocation
+ docstring: Optional[str]
+ decorators: List[str] # e.g., ["@dataclass", "@property"]
 
-    # Type System
-    type_hints: Dict[str, str]          # param → type_str mappings
-    inferred_types: Dict[str, str]      # inferred types
+ # Type System
+ type_hints: Dict[str, str] # param type_str mappings
+ inferred_types: Dict[str, str] # inferred types
 
-    # Language-Specific Details (JSON blob for extensibility)
-    metadata: Dict[str, Any]
+ # Language-Specific Details (JSON blob for extensibility)
+ metadata: Dict[str, Any]
 
-    # Analysis Results (populated post-parse)
-    analysis_results: Optional["AnalysisResults"] = None
+ # Analysis Results (populated post-parse)
+ analysis_results: Optional["AnalysisResults"] = None
 ```text
 
 ### 3.2 Analysis Results Schema
@@ -190,43 +190,43 @@ class StandardizedASTNode:
 ```python
 @dataclass
 class CodeMetrics:
-    """Aggregated code quality metrics."""
-    lines_of_code: int
-    cyclomatic_complexity: int
-    cognitive_complexity: float
-    halstead_volume: float
-    halstead_difficulty: float
-    maintainability_index: float        # 0-100, A-F grade
-    test_coverage: Optional[float]      # 0-100%
-    type_hint_coverage: float           # 0-100%
+ """Aggregated code quality metrics."""
+ lines_of_code: int
+ cyclomatic_complexity: int
+ cognitive_complexity: float
+ halstead_volume: float
+ halstead_difficulty: float
+ maintainability_index: float # 0-100, A-F grade
+ test_coverage: Optional[float] # 0-100%
+ type_hint_coverage: float # 0-100%
 
-    @property
-    def quality_tier(self) -> str:
-        """Compute A-F grade from MI."""
-        if self.maintainability_index >= 85: return "A"
-        if self.maintainability_index >= 70: return "B"
-        if self.maintainability_index >= 55: return "C"
-        if self.maintainability_index >= 40: return "D"
-        return "F"
+ @property
+ def quality_tier(self) -> str:
+ """Compute A-F grade from MI."""
+ if self.maintainability_index >= 85: return "A"
+ if self.maintainability_index >= 70: return "B"
+ if self.maintainability_index >= 55: return "C"
+ if self.maintainability_index >= 40: return "D"
+ return "F"
 
 @dataclass
 class CodeSmell:
-    """Identified code quality issue."""
-    smell_type: str                     # "long_function", "high_complexity", etc.
-    severity: str                       # "low", "medium", "high", "critical"
-    location: SourceLocation
-    message: str
-    suggested_remediation: Optional[str]
-    confidence: float                   # 0.0-1.0
+ """Identified code quality issue."""
+ smell_type: str # "long_function", "high_complexity", etc.
+ severity: str # "low", "medium", "high", "critical"
+ location: SourceLocation
+ message: str
+ suggested_remediation: Optional[str]
+ confidence: float # 0.0-1.0
 
 @dataclass
 class AnalysisResults:
-    """Complete analysis for an AST node."""
-    metrics: CodeMetrics
-    smells: List[CodeSmell]
-    dependencies: List["Dependency"]
-    timestamp: datetime
-    analyzer_version: str
+ """Complete analysis for an AST node."""
+ metrics: CodeMetrics
+ smells: List[CodeSmell]
+ dependencies: List["Dependency"]
+ timestamp: datetime
+ analyzer_version: str
 ```text
 
 ### 3.3 Dependency Graph Schema
@@ -234,38 +234,38 @@ class AnalysisResults:
 ```python
 @dataclass
 class Dependency:
-    """Relationship between code entities."""
-    source_id: str                      # from node_id
-    target_id: str                      # to node_id
-    dep_type: str                       # "imports", "calls", "inherits_from", "uses"
-    line_number: int
-    is_circular: bool = False
+ """Relationship between code entities."""
+ source_id: str # from node_id
+ target_id: str # to node_id
+ dep_type: str # "imports", "calls", "inherits_from", "uses"
+ line_number: int
+ is_circular: bool = False
 
 @dataclass
 class DependencyGraph:
-    """Directional graph of all dependencies."""
-    nodes: Dict[str, StandardizedASTNode]
-    edges: List[Dependency]
+ """Directional graph of all dependencies."""
+ nodes: Dict[str, StandardizedASTNode]
+ edges: List[Dependency]
 
-    def get_transitive_dependencies(self, node_id: str) -> Set[str]:
-        """All nodes reachable from this node."""
-        pass
+ def get_transitive_dependencies(self, node_id: str) -> Set[str]:
+ """All nodes reachable from this node."""
+ pass
 
-    def get_transitive_dependents(self, node_id: str) -> Set[str]:
-        """All nodes that depend on this node."""
-        pass
+ def get_transitive_dependents(self, node_id: str) -> Set[str]:
+ """All nodes that depend on this node."""
+ pass
 
-    def detect_cycles(self) -> List[List[str]]:
-        """Find strongly connected components (Tarjan's algorithm)."""
-        pass
+ def detect_cycles(self) -> List[List[str]]:
+ """Find strongly connected components (Tarjan's algorithm)."""
+ pass
 
-    def compute_fan_in(self, node_id: str) -> int:
-        """Count incoming edges."""
-        pass
+ def compute_fan_in(self, node_id: str) -> int:
+ """Count incoming edges."""
+ pass
 
-    def compute_fan_out(self, node_id: str) -> int:
-        """Count outgoing edges."""
-        pass
+ def compute_fan_out(self, node_id: str) -> int:
+ """Count outgoing edges."""
+ pass
 ```text
 
 ### 3.4 Knowledge Graph Export Schema
@@ -275,57 +275,57 @@ class DependencyGraph:
 ```sql
 -- Entities
 CREATE TABLE modules (
-    id TEXT PRIMARY KEY,
-    file_path TEXT NOT NULL,
-    lines_of_code INTEGER,
-    complexity_avg REAL,
-    quality_tier TEXT
+ id TEXT PRIMARY KEY,
+ file_path TEXT NOT NULL,
+ lines_of_code INTEGER,
+ complexity_avg REAL,
+ quality_tier TEXT
 );
 
 CREATE TABLE functions (
-    id TEXT PRIMARY KEY,
-    module_id TEXT NOT NULL,
-    name TEXT NOT NULL,
-    signature TEXT,
-    lines_of_code INTEGER,
-    cyclomatic_complexity INTEGER,
-    maintainability_index REAL,
-    test_coverage REAL,
-    FOREIGN KEY (module_id) REFERENCES modules(id)
+ id TEXT PRIMARY KEY,
+ module_id TEXT NOT NULL,
+ name TEXT NOT NULL,
+ signature TEXT,
+ lines_of_code INTEGER,
+ cyclomatic_complexity INTEGER,
+ maintainability_index REAL,
+ test_coverage REAL,
+ FOREIGN KEY (module_id) REFERENCES modules(id)
 );
 
 CREATE TABLE classes (
-    id TEXT PRIMARY KEY,
-    module_id TEXT NOT NULL,
-    name TEXT NOT NULL,
-    lines_of_code INTEGER,
-    method_count INTEGER,
-    FOREIGN KEY (module_id) REFERENCES modules(id)
+ id TEXT PRIMARY KEY,
+ module_id TEXT NOT NULL,
+ name TEXT NOT NULL,
+ lines_of_code INTEGER,
+ method_count INTEGER,
+ FOREIGN KEY (module_id) REFERENCES modules(id)
 );
 
 -- Relationships
 CREATE TABLE dependencies (
-    source_id TEXT NOT NULL,
-    target_id TEXT NOT NULL,
-    dep_type TEXT NOT NULL,  -- "imports", "calls", "inherits_from"
-    is_circular BOOLEAN,
-    PRIMARY KEY (source_id, target_id)
+ source_id TEXT NOT NULL,
+ target_id TEXT NOT NULL,
+ dep_type TEXT NOT NULL, -- "imports", "calls", "inherits_from"
+ is_circular BOOLEAN,
+ PRIMARY KEY (source_id, target_id)
 );
 
 CREATE TABLE code_smells (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    entity_id TEXT NOT NULL,
-    smell_type TEXT NOT NULL,
-    severity TEXT,
-    message TEXT,
-    line_number INTEGER
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ entity_id TEXT NOT NULL,
+ smell_type TEXT NOT NULL,
+ severity TEXT,
+ message TEXT,
+ line_number INTEGER
 );
 
 -- Metrics
 CREATE TABLE quality_metrics (
-    entity_id TEXT PRIMARY KEY,
-    metric_name TEXT NOT NULL,
-    metric_value REAL NOT NULL
+ entity_id TEXT PRIMARY KEY,
+ metric_name TEXT NOT NULL,
+ metric_value REAL NOT NULL
 );
 ```text
 
@@ -419,13 +419,13 @@ CREATE TABLE quality_metrics (
 ### 5.1 Testing Strategy (Test Pyramid)
 
 ```text
-        ┌──────────────────────┐
-        │  E2E Tests (5%)      │   Full pipeline: codebase → report
-        ├──────────────────────┤
-        │  Integration (20%)   │   Component interaction: parser → analyzer → exporter
-        ├──────────────────────┤
-        │  Unit Tests (75%)    │   Individual function: parser.parse() → AST
-        └──────────────────────┘
+ 
+ E2E Tests (5%) Full pipeline: codebase report
+ 
+ Integration (20%) Component interaction: parser analyzer exporter
+ 
+ Unit Tests (75%) Individual function: parser.parse() AST
+ 
 ```text
 
 ### 5.2 Test Coverage Targets by Component
@@ -442,10 +442,10 @@ CREATE TABLE quality_metrics (
 
 | Scenario | Test File | Validation |
 |----------|-----------|-----------|
-| Parser consistency | `test_parser_regression.py` | Same input → same AST across runs |
-| Metrics stability | `test_metrics_regression.py` | Known functions → expected CC/LOC |
-| Cycle detection | `test_cycle_regression.py` | Synthetic graphs → correct cycles |
-| Export fidelity | `test_export_regression.py` | Analysis → export → re-parse identical |
+| Parser consistency | `test_parser_regression.py` | Same input same AST across runs |
+| Metrics stability | `test_metrics_regression.py` | Known functions expected CC/LOC |
+| Cycle detection | `test_cycle_regression.py` | Synthetic graphs correct cycles |
+| Export fidelity | `test_export_regression.py` | Analysis export re-parse identical |
 
 ---
 
@@ -455,13 +455,13 @@ CREATE TABLE quality_metrics (
 
 | Checkpoint | Criteria | Owner | Sign-Off |
 |-----------|----------|-------|---------|
-| **Design Review** | Architecture reviewed; tech spike completed | Tech Lead | ✍️ |
-| **Phase 1 Gate** | Parser working for all languages; tests green | QA Lead | ✍️ |
-| **Phase 2 Gate** | Metrics accurate; smells detected; benchmarks met | QA Lead | ✍️ |
-| **Phase 3 Gate** | Dependency graph built; cycles detected; exports work | QA Lead | ✍️ |
-| **Phase 4 Gate** | CLI tools working; MATURITY integrated; docs complete | QA Lead + Product | ✍️ |
-| **Phase 5 Gate** | 80%+ coverage; security clean; performance OK | QA Lead + Tech Lead | ✍️ |
-| **Production Gate** | All acceptance criteria met; no known issues | Tech Lead + Product Lead | ✍️ |
+| **Design Review** | Architecture reviewed; tech spike completed | Tech Lead | |
+| **Phase 1 Gate** | Parser working for all languages; tests green | QA Lead | |
+| **Phase 2 Gate** | Metrics accurate; smells detected; benchmarks met | QA Lead | |
+| **Phase 3 Gate** | Dependency graph built; cycles detected; exports work | QA Lead | |
+| **Phase 4 Gate** | CLI tools working; MATURITY integrated; docs complete | QA Lead + Product | |
+| **Phase 5 Gate** | 80%+ coverage; security clean; performance OK | QA Lead + Tech Lead | |
+| **Production Gate** | All acceptance criteria met; no known issues | Tech Lead + Product Lead | |
 
 ### 6.2 Functional Acceptance Criteria (Final)
 
@@ -577,10 +577,10 @@ codex-analyze --smell-threshold high src/
 This requirements document provides **complete, verifiable, and measurable** specifications for the AST Standardization Project.
 
 **Critical Success Factors:**
-1.  **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
-2.  **Test-Driven Development**: Write tests before code; maintain >80% coverage
-3.  **Regular Sign-Offs**: Validate at each phase gate; no surprises at end
-4.  **Documentation**: Keep docs in sync with code; mandatory for all APIs
+1. **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
+2. **Test-Driven Development**: Write tests before code; maintain >80% coverage
+3. **Regular Sign-Offs**: Validate at each phase gate; no surprises at end
+4. **Documentation**: Keep docs in sync with code; mandatory for all APIs
 
 **Next Actions:**
 1. **This Week:** Schedule kickoff with team; assign roles
@@ -589,21 +589,21 @@ This requirements document provides **complete, verifiable, and measurable** spe
 
 ---
 
-**Document Version:** 1.0 (FINAL)  
-**Status:** APPROVED FOR IMPLEMENTATION  
-**Assigned To:** mbaetiong (Primary Engineer)  
+**Document Version:** 1.0 (FINAL)
+**Status:** APPROVED FOR IMPLEMENTATION
+**Assigned To:** mbaetiong (Primary Engineer)
 **Review Cycle:** Phase-end gates + final sign-off
 ```text
 
 Now creating the complementary validation and implementation guidance file:
 
 ```markdown name=AST_Standardization_InstructionEnhancement.md
-#  AST: Standardization Implementation Guidance
+# AST: Standardization Implementation Guidance
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] |  Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Sequential phases] | Fields [Modular components] | Patterns️ [DRY code, reusable analyzers] | Redundancy [Fallback strategies] | Balance️ [Performance vs accuracy]
+ **Physics:** Path [Sequential phases] | Fields [Modular components] | Patterns [DRY code, reusable analyzers] | Redundancy [Fallback strategies] | Balance [Performance vs accuracy]
 
 ---
 
@@ -616,7 +616,7 @@ Now creating the complementary validation and implementation guidance file:
 | **Standardization** | Single AST format across languages | Enables cross-language analysis; reduces duplication |
 | **Modularity** | Independent parser, analyzer, exporter modules | Allows parallel development; easy testing |
 | **Incrementalism** | Deliver value per phase; iterate on feedback | Reduces risk; enables early validation |
-| **Determinism** | Identical input → identical output always | Reproducible results; easier debugging |
+| **Determinism** | Identical input identical output always | Reproducible results; easier debugging |
 | **Offline-First** | No cloud dependencies; all processing local | Works in air-gapped environments |
 | **Fail-Safe** | Graceful degradation on errors | Partial results better than crash |
 
@@ -639,21 +639,21 @@ Now creating the complementary validation and implementation guidance file:
 **File Structure:**
 ```text
 src/codex_ml/ast/
-├── parser.py                    # UniversalParser orchestrator
-├── language_adapters/
-│   ├── __init__.py
-│   ├── base_adapter.py          # BaseLanguageAdapter abstract class
-│   ├── python_adapter.py        # PythonAdapter (libcst-based)
-│   ├── yaml_adapter.py          # YAMLAdapter
-│   ├── json_adapter.py          # JSONAdapter
-│   └── sql_adapter.py           # SQLAdapter (custom)
-└── errors.py                    # AST-specific exceptions
+ parser.py # UniversalParser orchestrator
+ language_adapters/
+ __init__.py
+ base_adapter.py # BaseLanguageAdapter abstract class
+ python_adapter.py # PythonAdapter (libcst-based)
+ yaml_adapter.py # YAMLAdapter
+ json_adapter.py # JSONAdapter
+ sql_adapter.py # SQLAdapter (custom)
+ errors.py # AST-specific exceptions
 ```text
 
 **Implementation Checklist: `python_adapter.py`**
 
 ```python
-"""Python source code → StandardizedAST using libcst."""
+"""Python source code StandardizedAST using libcst."""
 
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
@@ -661,77 +661,77 @@ from pathlib import Path
 import libcst as cst
 
 class PythonAdapter:
-    """Convert Python AST to standardized representation."""
+ """Convert Python AST to standardized representation."""
 
-    def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
-        """Parse Python source → StandardizedAST."""
-        # Step 1: Parse with libcst
-        module = cst.parse_module(source_code)
+ def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
+ """Parse Python source StandardizedAST."""
+ # Step 1: Parse with libcst
+ module = cst.parse_module(source_code)
 
-        # Step 2: Traverse and extract metadata
-        visitor = MetadataExtractor()
-        module.walk(visitor)
+ # Step 2: Traverse and extract metadata
+ visitor = MetadataExtractor()
+ module.walk(visitor)
 
-        # Step 3: Convert to standardized format
-        return self._convert_to_standardized(module, visitor.metadata, file_path)
+ # Step 3: Convert to standardized format
+ return self._convert_to_standardized(module, visitor.metadata, file_path)
 
-    def _convert_to_standardized(self,
-                                module: cst.Module,
-                                metadata: Dict,
-                                file_path: Path) -> StandardizedASTNode:
-        """Transform libcst.Module → StandardizedASTNode."""
-        # Implementation: walk libcst tree → StandardizedAST
-        pass
+ def _convert_to_standardized(self,
+ module: cst.Module,
+ metadata: Dict,
+ file_path: Path) -> StandardizedASTNode:
+ """Transform libcst.Module StandardizedASTNode."""
+ # Implementation: walk libcst tree StandardizedAST
+ pass
 
-    # Key extraction methods:
-    def _extract_functions(self, node: cst.Module) -> List[StandardizedASTNode]:
-        """Extract function definitions."""
-        pass
+ # Key extraction methods:
+ def _extract_functions(self, node: cst.Module) -> List[StandardizedASTNode]:
+ """Extract function definitions."""
+ pass
 
-    def _extract_classes(self, node: cst.Module) -> List[StandardizedASTNode]:
-        """Extract class definitions."""
-        pass
+ def _extract_classes(self, node: cst.Module) -> List[StandardizedASTNode]:
+ """Extract class definitions."""
+ pass
 
-    def _extract_imports(self, node: cst.Module) -> List[Dict[str, str]]:
-        """Extract import statements."""
-        pass
+ def _extract_imports(self, node: cst.Module) -> List[Dict[str, str]]:
+ """Extract import statements."""
+ pass
 
-    def _extract_type_hints(self, func: cst.FunctionDef) -> Dict[str, str]:
-        """Extract type hints from function."""
-        pass
+ def _extract_type_hints(self, func: cst.FunctionDef) -> Dict[str, str]:
+ """Extract type hints from function."""
+ pass
 
-    def _extract_docstring(self, node: cst.Module | cst.FunctionDef | cst.ClassDef) -> Optional[str]:
-        """Extract docstring if present."""
-        pass
+ def _extract_docstring(self, node: cst.Module | cst.FunctionDef | cst.ClassDef) -> Optional[str]:
+ """Extract docstring if present."""
+ pass
 
 class MetadataExtractor(cst.CSTVisitor):
-    """Visitor pattern to extract all metadata."""
+ """Visitor pattern to extract all metadata."""
 
-    def __init__(self):
-        self.metadata = {
-            'functions': [],
-            'classes': [],
-            'imports': [],
-            'decorators': {},
-        }
+ def __init__(self):
+ self.metadata = {
+ 'functions': [],
+ 'classes': [],
+ 'imports': [],
+ 'decorators': {},
+ }
 
-    def visit_FunctionDef(self, node: cst.FunctionDef) -> bool:
-        """Visit function definition."""
-        # Record function info
-        pass
-        return True
+ def visit_FunctionDef(self, node: cst.FunctionDef) -> bool:
+ """Visit function definition."""
+ # Record function info
+ pass
+ return True
 
-    def visit_ClassDef(self, node: cst.ClassDef) -> bool:
-        """Visit class definition."""
-        # Record class info
-        pass
-        return True
+ def visit_ClassDef(self, node: cst.ClassDef) -> bool:
+ """Visit class definition."""
+ # Record class info
+ pass
+ return True
 
-    def visit_ImportFrom(self, node: cst.ImportFrom) -> bool:
-        """Visit import statement."""
-        # Record import
-        pass
-        return True
+ def visit_ImportFrom(self, node: cst.ImportFrom) -> bool:
+ """Visit import statement."""
+ # Record import
+ pass
+ return True
 ```text
 
 **Testing: `tests/ast/test_parser.py`**
@@ -741,60 +741,60 @@ import pytest
 from pathlib import Path
 
 def test_parse_simple_function():
-    """Verify parsing of simple function."""
-    source = """
-    def add(x: int, y: int) -> int:
-        '''Add two numbers.'''
-        return x + y
-    """
-    adapter = PythonAdapter()
-    ast = adapter.parse(source, Path("test.py"))
+ """Verify parsing of simple function."""
+ source = """
+ def add(x: int, y: int) -> int:
+ '''Add two numbers.'''
+ return x + y
+ """
+ adapter = PythonAdapter()
+ ast = adapter.parse(source, Path("test.py"))
 
-    assert ast.type == "module"
-    assert len(ast.children) == 1
-    assert ast.children[0].type == "function"
-    assert ast.children[0].name == "add"
-    assert ast.children[0].docstring == "Add two numbers."
-    assert ast.children[0].type_hints["x"] == "int"
-    assert ast.children[0].type_hints["y"] == "int"
-    assert ast.children[0].type_hints["return"] == "int"
+ assert ast.type == "module"
+ assert len(ast.children) == 1
+ assert ast.children[0].type == "function"
+ assert ast.children[0].name == "add"
+ assert ast.children[0].docstring == "Add two numbers."
+ assert ast.children[0].type_hints["x"] == "int"
+ assert ast.children[0].type_hints["y"] == "int"
+ assert ast.children[0].type_hints["return"] == "int"
 
 def test_parse_decorated_class():
-    """Verify parsing of decorated class."""
-    source = """
-    @dataclass
-    class Person:
-        name: str
-        age: int
-    """
-    adapter = PythonAdapter()
-    ast = adapter.parse(source, Path("test.py"))
+ """Verify parsing of decorated class."""
+ source = """
+ @dataclass
+ class Person:
+ name: str
+ age: int
+ """
+ adapter = PythonAdapter()
+ ast = adapter.parse(source, Path("test.py"))
 
-    assert ast.children[0].type == "class"
-    assert ast.children[0].decorators == ["@dataclass"]
+ assert ast.children[0].type == "class"
+ assert ast.children[0].decorators == ["@dataclass"]
 
 def test_parse_async_function():
-    """Verify parsing of async function."""
-    source = """
-    async def fetch_data(url: str) -> str:
-        result = await client.get(url)
-        return result.text
-    """
-    adapter = PythonAdapter()
-    ast = adapter.parse(source, Path("test.py"))
+ """Verify parsing of async function."""
+ source = """
+ async def fetch_data(url: str) -> str:
+ result = await client.get(url)
+ return result.text
+ """
+ adapter = PythonAdapter()
+ ast = adapter.parse(source, Path("test.py"))
 
-    assert ast.children[0].type == "function"
-    # async flag should be captured
-    assert ast.children[0].metadata.get("is_async") == True
+ assert ast.children[0].type == "function"
+ # async flag should be captured
+ assert ast.children[0].metadata.get("is_async") == True
 
 @pytest.mark.benchmark
 def test_parser_performance(benchmark):
-    """Benchmark parser performance."""
-    source = open("tests/fixtures/large_file.py").read()
-    adapter = PythonAdapter()
+ """Benchmark parser performance."""
+ source = open("tests/fixtures/large_file.py").read()
+ adapter = PythonAdapter()
 
-    result = benchmark(adapter.parse, source, Path("large_file.py"))
-    assert result is not None
+ result = benchmark(adapter.parse, source, Path("large_file.py"))
+ assert result is not None
 ```text
 
 **Integration Point:** All adapters inherit from `BaseLanguageAdapter`
@@ -803,17 +803,17 @@ def test_parser_performance(benchmark):
 from abc import ABC, abstractmethod
 
 class BaseLanguageAdapter(ABC):
-    """Abstract base for language adapters."""
+ """Abstract base for language adapters."""
 
-    @abstractmethod
-    def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
-        """Parse source code → StandardizedAST."""
-        pass
+ @abstractmethod
+ def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
+ """Parse source code StandardizedAST."""
+ pass
 
-    @abstractmethod
-    def get_supported_extensions(self) -> List[str]:
-        """File extensions this adapter handles."""
-        pass
+ @abstractmethod
+ def get_supported_extensions(self) -> List[str]:
+ """File extensions this adapter handles."""
+ pass
 ```text
 
 ---
@@ -832,157 +832,157 @@ from typing import Dict, Any
 
 @dataclass
 class CodeMetrics:
-    """Aggregated metrics for code entity."""
-    lines_of_code: int
-    cyclomatic_complexity: int
-    cognitive_complexity: float
-    halstead_volume: float
-    halstead_difficulty: float
-    halstead_effort: float
-    maintainability_index: float
+ """Aggregated metrics for code entity."""
+ lines_of_code: int
+ cyclomatic_complexity: int
+ cognitive_complexity: float
+ halstead_volume: float
+ halstead_difficulty: float
+ halstead_effort: float
+ maintainability_index: float
 
-    @property
-    def quality_grade(self) -> str:
-        """Compute A-F grade from maintainability index."""
-        if self.maintainability_index >= 85: return "A"
-        if self.maintainability_index >= 70: return "B"
-        if self.maintainability_index >= 55: return "C"
-        if self.maintainability_index >= 40: return "D"
-        return "F"
+ @property
+ def quality_grade(self) -> str:
+ """Compute A-F grade from maintainability index."""
+ if self.maintainability_index >= 85: return "A"
+ if self.maintainability_index >= 70: return "B"
+ if self.maintainability_index >= 55: return "C"
+ if self.maintainability_index >= 40: return "D"
+ return "F"
 
 class MetricsAnalyzer:
-    """Compute metrics on AST nodes."""
+ """Compute metrics on AST nodes."""
 
-    def analyze(self, node: StandardizedASTNode) -> CodeMetrics:
-        """Compute all metrics for node."""
-        return CodeMetrics(
-            lines_of_code=self._count_loc(node),
-            cyclomatic_complexity=self._compute_cc(node),
-            cognitive_complexity=self._compute_cognitive_cc(node),
-            halstead_volume=self._compute_halstead_volume(node),
-            halstead_difficulty=self._compute_halstead_difficulty(node),
-            halstead_effort=self._compute_halstead_effort(node),
-            maintainability_index=self._compute_maintainability_index(node),
-        )
+ def analyze(self, node: StandardizedASTNode) -> CodeMetrics:
+ """Compute all metrics for node."""
+ return CodeMetrics(
+ lines_of_code=self._count_loc(node),
+ cyclomatic_complexity=self._compute_cc(node),
+ cognitive_complexity=self._compute_cognitive_cc(node),
+ halstead_volume=self._compute_halstead_volume(node),
+ halstead_difficulty=self._compute_halstead_difficulty(node),
+ halstead_effort=self._compute_halstead_effort(node),
+ maintainability_index=self._compute_maintainability_index(node),
+ )
 
-    def _count_loc(self, node: StandardizedASTNode) -> int:
-        """Count lines of code."""
-        start_line = node.source_location.line_start
-        end_line = node.source_location.line_end
-        return end_line - start_line + 1
+ def _count_loc(self, node: StandardizedASTNode) -> int:
+ """Count lines of code."""
+ start_line = node.source_location.line_start
+ end_line = node.source_location.line_end
+ return end_line - start_line + 1
 
-    def _compute_cc(self, node: StandardizedASTNode) -> int:
-        """Compute cyclomatic complexity (1-based)."""
-        # Start with 1
-        cc = 1
+ def _compute_cc(self, node: StandardizedASTNode) -> int:
+ """Compute cyclomatic complexity (1-based)."""
+ # Start with 1
+ cc = 1
 
-        # Count decision points
-        # - if, elif, else, for, while, except, and, or, ternary
-        for child in self._traverse_depth_first(node):
-            if child.type in ("if", "elif", "for", "while", "except"):
-                cc += 1
-            elif child.type == "bool_op":
-                # 'and' and 'or' add to complexity
-                cc += 1
+ # Count decision points
+ # - if, elif, else, for, while, except, and, or, ternary
+ for child in self._traverse_depth_first(node):
+ if child.type in ("if", "elif", "for", "while", "except"):
+ cc += 1
+ elif child.type == "bool_op":
+ # 'and' and 'or' add to complexity
+ cc += 1
 
-        return cc
+ return cc
 
-    def _compute_cognitive_cc(self, node: StandardizedASTNode) -> float:
-        """Compute cognitive complexity (reflects nesting)."""
-        # Similar to CC but adds nesting depth penalty
-        cognitive_cc = 0
+ def _compute_cognitive_cc(self, node: StandardizedASTNode) -> float:
+ """Compute cognitive complexity (reflects nesting)."""
+ # Similar to CC but adds nesting depth penalty
+ cognitive_cc = 0
 
-        for child, depth in self._traverse_with_depth(node):
-            if child.type in ("if", "elif", "for", "while", "try"):
-                # Base increment
-                cognitive_cc += 1
-                # Nesting penalty: each level of nesting adds 0.1
-                if depth > 1:
-                    cognitive_cc += (depth - 1) * 0.1
+ for child, depth in self._traverse_with_depth(node):
+ if child.type in ("if", "elif", "for", "while", "try"):
+ # Base increment
+ cognitive_cc += 1
+ # Nesting penalty: each level of nesting adds 0.1
+ if depth > 1:
+ cognitive_cc += (depth - 1) * 0.1
 
-        return cognitive_cc
+ return cognitive_cc
 
-    def _compute_halstead_volume(self, node: StandardizedASTNode) -> float:
-        """Compute Halstead volume (measure of complexity)."""
-        # Volume = N * log2(n)
-        # where N = total operators + operands
-        # and n = distinct operators + operands
+ def _compute_halstead_volume(self, node: StandardizedASTNode) -> float:
+ """Compute Halstead volume (measure of complexity)."""
+ # Volume = N * log2(n)
+ # where N = total operators + operands
+ # and n = distinct operators + operands
 
-        operators = self._extract_operators(node)
-        operands = self._extract_operands(node)
+ operators = self._extract_operators(node)
+ operands = self._extract_operands(node)
 
-        n1 = len(set(operators))  # distinct operators
-        n2 = len(set(operands))   # distinct operands
-        N1 = len(operators)        # total operators
-        N2 = len(operands)         # total operands
+ n1 = len(set(operators)) # distinct operators
+ n2 = len(set(operands)) # distinct operands
+ N1 = len(operators) # total operators
+ N2 = len(operands) # total operands
 
-        n = n1 + n2
-        N = N1 + N2
+ n = n1 + n2
+ N = N1 + N2
 
-        import math
-        if n > 0:
-            volume = N * math.log2(n)
-        else:
-            volume = 0
+ import math
+ if n > 0:
+ volume = N * math.log2(n)
+ else:
+ volume = 0
 
-        return volume
+ return volume
 
-    def _compute_maintainability_index(self, node: StandardizedASTNode) -> float:
-        """Compute Maintainability Index (0-100)."""
-        # MI = 171 - 5.2 * ln(Halstead Volume)
-        #          - 0.23 * CC
-        #          - 16.2 * ln(LOC)
+ def _compute_maintainability_index(self, node: StandardizedASTNode) -> float:
+ """Compute Maintainability Index (0-100)."""
+ # MI = 171 - 5.2 * ln(Halstead Volume)
+ # - 0.23 * CC
+ # - 16.2 * ln(LOC)
 
-        import math
+ import math
 
-        cc = self._compute_cc(node)
-        loc = self._count_loc(node)
-        volume = self._compute_halstead_volume(node)
+ cc = self._compute_cc(node)
+ loc = self._count_loc(node)
+ volume = self._compute_halstead_volume(node)
 
-        # Avoid log of 0
-        loc = max(loc, 1)
-        volume = max(volume, 1)
+ # Avoid log of 0
+ loc = max(loc, 1)
+ volume = max(volume, 1)
 
-        mi = 171 - 5.2 * math.log(volume) - 0.23 * cc - 16.2 * math.log(loc)
+ mi = 171 - 5.2 * math.log(volume) - 0.23 * cc - 16.2 * math.log(loc)
 
-        # Clamp to 0-100
-        return max(0, min(100, mi))
+ # Clamp to 0-100
+ return max(0, min(100, mi))
 
-    def _extract_operators(self, node: StandardizedASTNode) -> List[str]:
-        """Extract operators from AST."""
-        operators = []
+ def _extract_operators(self, node: StandardizedASTNode) -> List[str]:
+ """Extract operators from AST."""
+ operators = []
 
-        for child in self._traverse_depth_first(node):
-            if child.type in ("binary_op", "unary_op", "compare", "bool_op"):
-                operators.append(child.metadata.get("operator", ""))
-            elif child.type in ("if", "for", "while", "try"):
-                operators.append(child.type)
+ for child in self._traverse_depth_first(node):
+ if child.type in ("binary_op", "unary_op", "compare", "bool_op"):
+ operators.append(child.metadata.get("operator", ""))
+ elif child.type in ("if", "for", "while", "try"):
+ operators.append(child.type)
 
-        return operators
+ return operators
 
-    def _extract_operands(self, node: StandardizedASTNode) -> List[str]:
-        """Extract operands (variables, literals) from AST."""
-        operands = []
+ def _extract_operands(self, node: StandardizedASTNode) -> List[str]:
+ """Extract operands (variables, literals) from AST."""
+ operands = []
 
-        for child in self._traverse_depth_first(node):
-            if child.type == "name":
-                operands.append(child.name)
-            elif child.type == "constant":
-                operands.append(str(child.metadata.get("value", "")))
+ for child in self._traverse_depth_first(node):
+ if child.type == "name":
+ operands.append(child.name)
+ elif child.type == "constant":
+ operands.append(str(child.metadata.get("value", "")))
 
-        return operands
+ return operands
 
-    def _traverse_depth_first(self, node: StandardizedASTNode):
-        """DFS traversal of AST."""
-        yield node
-        for child in node.children:
-            yield from self._traverse_depth_first(child)
+ def _traverse_depth_first(self, node: StandardizedASTNode):
+ """DFS traversal of AST."""
+ yield node
+ for child in node.children:
+ yield from self._traverse_depth_first(child)
 
-    def _traverse_with_depth(self, node: StandardizedASTNode, depth=0):
-        """DFS traversal with depth tracking."""
-        yield node, depth
-        for child in node.children:
-            yield from self._traverse_with_depth(child, depth + 1)
+ def _traverse_with_depth(self, node: StandardizedASTNode, depth=0):
+ """DFS traversal with depth tracking."""
+ yield node, depth
+ for child in node.children:
+ yield from self._traverse_with_depth(child, depth + 1)
 ```text
 
 **Testing: `tests/ast/test_metrics.py`**
@@ -991,45 +991,45 @@ class MetricsAnalyzer:
 import pytest
 
 def test_cyclomatic_complexity_linear():
-    """CC of linear function = 1."""
-    source = """
-    def add(x, y):
-        return x + y
-    """
-    ast = parse(source)
-    analyzer = MetricsAnalyzer()
-    metrics = analyzer.analyze(ast.children[0])
+ """CC of linear function = 1."""
+ source = """
+ def add(x, y):
+ return x + y
+ """
+ ast = parse(source)
+ analyzer = MetricsAnalyzer()
+ metrics = analyzer.analyze(ast.children[0])
 
-    assert metrics.cyclomatic_complexity == 1
+ assert metrics.cyclomatic_complexity == 1
 
 def test_cyclomatic_complexity_if_else():
-    """CC of if-else = 2."""
-    source = """
-    def is_positive(x):
-        if x > 0:
-            return True
-        else:
-            return False
-    """
-    ast = parse(source)
-    analyzer = MetricsAnalyzer()
-    metrics = analyzer.analyze(ast.children[0])
+ """CC of if-else = 2."""
+ source = """
+ def is_positive(x):
+ if x > 0:
+ return True
+ else:
+ return False
+ """
+ ast = parse(source)
+ analyzer = MetricsAnalyzer()
+ metrics = analyzer.analyze(ast.children[0])
 
-    assert metrics.cyclomatic_complexity == 2
+ assert metrics.cyclomatic_complexity == 2
 
 def test_maintainability_index_grade():
-    """MI computed and graded correctly."""
-    # Simple function should have high MI
-    source = """
-    def hello():
-        print('hello')
-    """
-    ast = parse(source)
-    analyzer = MetricsAnalyzer()
-    metrics = analyzer.analyze(ast.children[0])
+ """MI computed and graded correctly."""
+ # Simple function should have high MI
+ source = """
+ def hello():
+ print('hello')
+ """
+ ast = parse(source)
+ analyzer = MetricsAnalyzer()
+ metrics = analyzer.analyze(ast.children[0])
 
-    assert metrics.maintainability_index > 85
-    assert metrics.quality_grade == "A"
+ assert metrics.maintainability_index > 85
+ assert metrics.quality_grade == "A"
 ```text
 
 ---
@@ -1048,154 +1048,154 @@ from dataclasses import dataclass, field
 
 @dataclass
 class DependencyGraph:
-    """Directed graph of code dependencies."""
-    nodes: Dict[str, StandardizedASTNode] = field(default_factory=dict)
-    edges: Dict[str, Set[str]] = field(default_factory=dict)  # node → neighbors
+ """Directed graph of code dependencies."""
+ nodes: Dict[str, StandardizedASTNode] = field(default_factory=dict)
+ edges: Dict[str, Set[str]] = field(default_factory=dict) # node neighbors
 
-    def add_edge(self, source_id: str, target_id: str):
-        """Add edge source → target."""
-        if source_id not in self.edges:
-            self.edges[source_id] = set()
-        self.edges[source_id].add(target_id)
+ def add_edge(self, source_id: str, target_id: str):
+ """Add edge source target."""
+ if source_id not in self.edges:
+ self.edges[source_id] = set()
+ self.edges[source_id].add(target_id)
 
-    def detect_cycles(self) -> List[List[str]]:
-        """Find all cycles (strongly connected components > 1)."""
-        # Implement Tarjan's algorithm
-        index_counter = [0]
-        stack = []
-        lowlinks = {}
-        index = {}
-        on_stack = {}
-        sccs = []
+ def detect_cycles(self) -> List[List[str]]:
+ """Find all cycles (strongly connected components > 1)."""
+ # Implement Tarjan's algorithm
+ index_counter = [0]
+ stack = []
+ lowlinks = {}
+ index = {}
+ on_stack = {}
+ sccs = []
 
-        def strongconnect(node_id):
-            index[node_id] = index_counter[0]
-            lowlinks[node_id] = index_counter[0]
-            index_counter[0] += 1
-            stack.append(node_id)
-            on_stack[node_id] = True
+ def strongconnect(node_id):
+ index[node_id] = index_counter[0]
+ lowlinks[node_id] = index_counter[0]
+ index_counter[0] += 1
+ stack.append(node_id)
+ on_stack[node_id] = True
 
-            for target_id in self.edges.get(node_id, set()):
-                if target_id not in index:
-                    strongconnect(target_id)
-                    lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
-                elif on_stack.get(target_id, False):
-                    lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
+ for target_id in self.edges.get(node_id, set()):
+ if target_id not in index:
+ strongconnect(target_id)
+ lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
+ elif on_stack.get(target_id, False):
+ lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
 
-            if lowlinks[node_id] == index[node_id]:
-                scc = []
-                while True:
-                    w = stack.pop()
-                    on_stack[w] = False
-                    scc.append(w)
-                    if w == node_id:
-                        break
-                # Only record cycles (SCC with len > 1)
-                if len(scc) > 1:
-                    sccs.append(scc)
+ if lowlinks[node_id] == index[node_id]:
+ scc = []
+ while True:
+ w = stack.pop()
+ on_stack[w] = False
+ scc.append(w)
+ if w == node_id:
+ break
+ # Only record cycles (SCC with len > 1)
+ if len(scc) > 1:
+ sccs.append(scc)
 
-        for node_id in self.nodes:
-            if node_id not in index:
-                strongconnect(node_id)
+ for node_id in self.nodes:
+ if node_id not in index:
+ strongconnect(node_id)
 
-        return sccs
+ return sccs
 
 class DependencyGraphBuilder:
-    """Build dependency graph from codebase."""
+ """Build dependency graph from codebase."""
 
-    def build_graph(self, codebase: List[StandardizedASTNode]) -> DependencyGraph:
-        """Build graph from AST nodes."""
-        graph = DependencyGraph()
+ def build_graph(self, codebase: List[StandardizedASTNode]) -> DependencyGraph:
+ """Build graph from AST nodes."""
+ graph = DependencyGraph()
 
-        # Step 1: Add all nodes
-        for node in self._flatten_ast(codebase):
-            if node.type in ("module", "class", "function"):
-                graph.nodes[self._get_fully_qualified_name(node)] = node
+ # Step 1: Add all nodes
+ for node in self._flatten_ast(codebase):
+ if node.type in ("module", "class", "function"):
+ graph.nodes[self._get_fully_qualified_name(node)] = node
 
-        # Step 2: Extract dependencies
-        for node in self._flatten_ast(codebase):
-            deps = self._extract_dependencies(node)
-            source_id = self._get_fully_qualified_name(node)
-            for target_id in deps:
-                graph.add_edge(source_id, target_id)
+ # Step 2: Extract dependencies
+ for node in self._flatten_ast(codebase):
+ deps = self._extract_dependencies(node)
+ source_id = self._get_fully_qualified_name(node)
+ for target_id in deps:
+ graph.add_edge(source_id, target_id)
 
-        return graph
+ return graph
 
-    def _extract_dependencies(self, node: StandardizedASTNode) -> Set[str]:
-        """Extract all dependencies of a node."""
-        deps = set()
+ def _extract_dependencies(self, node: StandardizedASTNode) -> Set[str]:
+ """Extract all dependencies of a node."""
+ deps = set()
 
-        if node.type == "module":
-            # Extract imports
-            for child in node.children:
-                if child.type == "import":
-                    # Parse import statement
-                    deps.add(child.metadata.get("module_name", ""))
+ if node.type == "module":
+ # Extract imports
+ for child in node.children:
+ if child.type == "import":
+ # Parse import statement
+ deps.add(child.metadata.get("module_name", ""))
 
-        elif node.type == "function":
-            # Extract function calls
-            for child in self._traverse(node):
-                if child.type == "call":
-                    # Get fully qualified name of called function
-                    called_name = child.metadata.get("function_name", "")
-                    if called_name:
-                        deps.add(called_name)
+ elif node.type == "function":
+ # Extract function calls
+ for child in self._traverse(node):
+ if child.type == "call":
+ # Get fully qualified name of called function
+ called_name = child.metadata.get("function_name", "")
+ if called_name:
+ deps.add(called_name)
 
-        elif node.type == "class":
-            # Extract base classes (inheritance)
-            for base in node.metadata.get("base_classes", []):
-                deps.add(base)
+ elif node.type == "class":
+ # Extract base classes (inheritance)
+ for base in node.metadata.get("base_classes", []):
+ deps.add(base)
 
-        return deps
+ return deps
 
-    def _get_fully_qualified_name(self, node: StandardizedASTNode) -> str:
-        """Compute fully qualified name: module.class.function."""
-        parts = []
-        current = node
-        while current:
-            if current.name:
-                parts.insert(0, current.name)
-            current = current.parent
-        return ".".join(parts)
+ def _get_fully_qualified_name(self, node: StandardizedASTNode) -> str:
+ """Compute fully qualified name: module.class.function."""
+ parts = []
+ current = node
+ while current:
+ if current.name:
+ parts.insert(0, current.name)
+ current = current.parent
+ return ".".join(parts)
 
-    def _traverse(self, node: StandardizedASTNode):
-        """Depth-first traversal."""
-        yield node
-        for child in node.children:
-            yield from self._traverse(child)
+ def _traverse(self, node: StandardizedASTNode):
+ """Depth-first traversal."""
+ yield node
+ for child in node.children:
+ yield from self._traverse(child)
 
-    def _flatten_ast(self, nodes: List[StandardizedASTNode]):
-        """Flatten AST list."""
-        for node in nodes:
-            yield from self._traverse(node)
+ def _flatten_ast(self, nodes: List[StandardizedASTNode]):
+ """Flatten AST list."""
+ for node in nodes:
+ yield from self._traverse(node)
 
 # Testing
 def test_cycle_detection_simple():
-    """Detect simple 2-node cycle."""
-    graph = DependencyGraph()
-    graph.nodes["A"] = None
-    graph.nodes["B"] = None
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "A")
+ """Detect simple 2-node cycle."""
+ graph = DependencyGraph()
+ graph.nodes["A"] = None
+ graph.nodes["B"] = None
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "A")
 
-    cycles = graph.detect_cycles()
-    assert len(cycles) == 1
-    assert set(cycles[0]) == {"A", "B"}
+ cycles = graph.detect_cycles()
+ assert len(cycles) == 1
+ assert set(cycles[0]) == {"A", "B"}
 
 def test_cycle_detection_complex():
-    """Detect complex 4-node cycle."""
-    graph = DependencyGraph()
-    for node_id in ["A", "B", "C", "D"]:
-        graph.nodes[node_id] = None
+ """Detect complex 4-node cycle."""
+ graph = DependencyGraph()
+ for node_id in ["A", "B", "C", "D"]:
+ graph.nodes[node_id] = None
 
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "C")
-    graph.add_edge("C", "D")
-    graph.add_edge("D", "A")  # Cycle: A → B → C → D → A
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ graph.add_edge("C", "D")
+ graph.add_edge("D", "A") # Cycle: A B C D A
 
-    cycles = graph.detect_cycles()
-    assert len(cycles) == 1
-    assert set(cycles[0]) == {"A", "B", "C", "D"}
+ cycles = graph.detect_cycles()
+ assert len(cycles) == 1
+ assert set(cycles[0]) == {"A", "B", "C", "D"}
 ```text
 
 ---
@@ -1206,20 +1206,20 @@ def test_cycle_detection_complex():
 
 ```text
 tests/ast/
-├── conftest.py                  # Shared fixtures
-├── fixtures/
-│   ├── sample_code.py
-│   ├── large_codebase/
-│   └── synthetic_graphs.json
-├── test_parser.py
-├── test_metrics.py
-├── test_dependencies.py
-├── test_smells.py
-├── test_knowledge_graph.py
-├── test_exporters.py
-├── test_cli.py
-├── test_integration.py
-└── test_benchmarks.py
+ conftest.py # Shared fixtures
+ fixtures/
+ sample_code.py
+ large_codebase/
+ synthetic_graphs.json
+ test_parser.py
+ test_metrics.py
+ test_dependencies.py
+ test_smells.py
+ test_knowledge_graph.py
+ test_exporters.py
+ test_cli.py
+ test_integration.py
+ test_benchmarks.py
 ```text
 
 ### 3.2 Fixture Strategy (conftest.py)
@@ -1232,42 +1232,42 @@ from pathlib import Path
 
 @pytest.fixture
 def sample_python_file():
-    """Small Python file for testing."""
-    return """
-    def add(x: int, y: int) -> int:
-        '''Add two numbers.'''
-        return x + y
-    """
+ """Small Python file for testing."""
+ return """
+ def add(x: int, y: int) -> int:
+ '''Add two numbers.'''
+ return x + y
+ """
 
 @pytest.fixture
 def large_codebase(tmp_path):
-    """Generate large codebase for stress testing."""
-    # Create 100 Python files with realistic code
-    base = tmp_path / "large_codebase"
-    base.mkdir()
+ """Generate large codebase for stress testing."""
+ # Create 100 Python files with realistic code
+ base = tmp_path / "large_codebase"
+ base.mkdir()
 
-    for i in range(100):
-        file = base / f"module_{i}.py"
-        file.write_text(f"""
-        def func_{i}(x):
-            return x * 2
-        """)
+ for i in range(100):
+ file = base / f"module_{i}.py"
+ file.write_text(f"""
+ def func_{i}(x):
+ return x * 2
+ """)
 
-    return base
+ return base
 
 @pytest.fixture
 def synthetic_graph():
-    """Graph with known cycles for testing."""
-    graph = DependencyGraph()
-    # Set up graph with 3-node cycle: A → B → C → A
-    for node_id in ["A", "B", "C"]:
-        graph.nodes[node_id] = None
+ """Graph with known cycles for testing."""
+ graph = DependencyGraph()
+ # Set up graph with 3-node cycle: A B C A
+ for node_id in ["A", "B", "C"]:
+ graph.nodes[node_id] = None
 
-    graph.add_edge("A", "B")
-    graph.add_edge("B", "C")
-    graph.add_edge("C", "A")
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ graph.add_edge("C", "A")
 
-    return graph
+ return graph
 ```text
 
 ### 3.3 Performance Benchmarks
@@ -1283,50 +1283,50 @@ import time
 @pytest.mark.benchmark
 class TestParserPerformance:
 
-    def test_parser_speed_small_file(self, benchmark, sample_python_file):
-        """Parser: <1ms per 100 tokens (small file)."""
-        parser = PythonAdapter()
+ def test_parser_speed_small_file(self, benchmark, sample_python_file):
+ """Parser: <1ms per 100 tokens (small file)."""
+ parser = PythonAdapter()
 
-        def parse():
-            return parser.parse(sample_python_file, Path("test.py"))
+ def parse():
+ return parser.parse(sample_python_file, Path("test.py"))
 
-        result = benchmark(parse)
-        # Verify performance
-        assert result is not None
+ result = benchmark(parse)
+ # Verify performance
+ assert result is not None
 
-    def test_parser_speed_large_file(self, benchmark, large_codebase):
-        """Parser: <1ms per 100 tokens (large files)."""
-        large_file = (large_codebase / "module_0.py").read_text() * 100
+ def test_parser_speed_large_file(self, benchmark, large_codebase):
+ """Parser: <1ms per 100 tokens (large files)."""
+ large_file = (large_codebase / "module_0.py").read_text() * 100
 
-        parser = PythonAdapter()
-        start = time.time()
-        result = parser.parse(large_file, Path("large.py"))
-        elapsed = time.time() - start
+ parser = PythonAdapter()
+ start = time.time()
+ result = parser.parse(large_file, Path("large.py"))
+ elapsed = time.time() - start
 
-        # ~10K tokens per 1000 LOC
-        tokens = len(large_file.split())
-        ms_per_100_tokens = (elapsed * 1000) / (tokens / 100)
+ # ~10K tokens per 1000 LOC
+ tokens = len(large_file.split())
+ ms_per_100_tokens = (elapsed * 1000) / (tokens / 100)
 
-        assert ms_per_100_tokens < 1.0
+ assert ms_per_100_tokens < 1.0
 
 @pytest.mark.benchmark
 class TestAnalyzerPerformance:
 
-    def test_metrics_speed_1000_loc(self, benchmark, large_codebase):
-        """Analyzer: <5s per 1000 LOC."""
-        codebase = Codebase.from_directory(large_codebase)
-        analyzer = MetricsAnalyzer()
+ def test_metrics_speed_1000_loc(self, benchmark, large_codebase):
+ """Analyzer: <5s per 1000 LOC."""
+ codebase = Codebase.from_directory(large_codebase)
+ analyzer = MetricsAnalyzer()
 
-        start = time.time()
-        for node in codebase.all_nodes():
-            analyzer.analyze(node)
-        elapsed = time.time() - start
+ start = time.time()
+ for node in codebase.all_nodes():
+ analyzer.analyze(node)
+ elapsed = time.time() - start
 
-        loc = sum(n.source_location.line_end - n.source_location.line_start
-                 for n in codebase.all_nodes())
+ loc = sum(n.source_location.line_end - n.source_location.line_start
+ for n in codebase.all_nodes())
 
-        time_per_1000_loc = (elapsed / loc) * 1000
-        assert time_per_1000_loc < 5.0
+ time_per_1000_loc = (elapsed / loc) * 1000
+ assert time_per_1000_loc < 5.0
 ```text
 
 ---
@@ -1351,52 +1351,52 @@ class TestAnalyzerPerformance:
 name: AST Codebase Analysis
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
+ push:
+ branches: [main, develop]
+ pull_request:
 
 jobs:
-  analyze:
-    runs-on: ubuntu-latest
+ analyze:
+ runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+ steps:
+ - uses: actions/checkout@v3
+ with:
+ fetch-depth: 0
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
+ - uses: actions/setup-python@v4
+ with:
+ python-version: "3.9"
 
-      - name: Install
-        run: pip install -e ".[ast]"
+ - name: Install
+ run: pip install -e ".[ast]"
 
-      - name: Audit
-        run: codex-audit src/ --output audit.html --format html
+ - name: Audit
+ run: codex-audit src/ --output audit.html --format html
 
-      - name: Compare
-        if: github.event_name == 'pull_request'
-        run: codex-diff origin/main HEAD --metric complexity > complexity_delta.txt
+ - name: Compare
+ if: github.event_name == 'pull_request'
+ run: codex-diff origin/main HEAD --metric complexity > complexity_delta.txt
 
-      - name: Comment
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const delta = fs.readFileSync('complexity_delta.txt', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## AST Analysis\n\n${delta}`
-            });
+ - name: Comment
+ if: github.event_name == 'pull_request'
+ uses: actions/github-script@v6
+ with:
+ script: |
+ const fs = require('fs');
+ const delta = fs.readFileSync('complexity_delta.txt', 'utf8');
+ github.rest.issues.createComment({
+ issue_number: context.issue.number,
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ body: `## AST Analysis\n\n${delta}`
+ });
 
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          name: ast-report
-          path: audit.html
+ - name: Upload
+ uses: actions/upload-artifact@v3
+ with:
+ name: ast-report
+ path: audit.html
 ```text
 
 ---
@@ -1405,11 +1405,11 @@ jobs:
 
 This **Implementation Guidance** provides:
 
- **Module-by-module implementation templates**  
- **Test-driven development patterns**  
- **Performance benchmarks and validation**  
- **CI/CD integration strategies**  
- **Phase-gate criteria for sign-off**  
+ **Module-by-module implementation templates**
+ **Test-driven development patterns**
+ **Performance benchmarks and validation**
+ **CI/CD integration strategies**
+ **Phase-gate criteria for sign-off**
 
 **Critical Success Factors:**
 - Write tests before code (TDD)
@@ -1421,8 +1421,8 @@ This **Implementation Guidance** provides:
 
 ---
 
-**Document Version:** 1.0 (READY FOR IMPLEMENTATION)  
-**Status:** APPROVED  
+**Document Version:** 1.0 (READY FOR IMPLEMENTATION)
+**Status:** APPROVED
 **Assigned To:** mbaetiong (Implementation Lead)
 
 

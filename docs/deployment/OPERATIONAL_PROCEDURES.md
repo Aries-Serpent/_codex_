@@ -1,10 +1,10 @@
 # Operational Procedures & Maintenance Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.0  
-**Audience**: Operations teams, DevOps engineers, platform engineers  
+**Last Updated**: 2026-07-08
+**Version**: 1.0
+**Audience**: Operations teams, DevOps engineers, platform engineers
 **Tier**: Production-Ready
 
 ---
@@ -25,7 +25,7 @@
 
 ### Morning Health Check
 
-**Duration**: 15 minutes  
+**Duration**: 15 minutes
 **Frequency**: Daily at 8:00 AM
 
 ```bash
@@ -46,9 +46,9 @@ echo -e "\n[PODS] Checking pod status..."
 kubectl get pods --all-namespaces --field-selector=status.phase!=Running,status.phase!=Succeeded
 CRASHED=$(kubectl get pods -A --field-selector=status.phase=Failed | wc -l)
 if [ $CRASHED -gt 0 ]; then
-  echo " WARNING: $CRASHED crashed pods found"
+ echo " WARNING: $CRASHED crashed pods found"
 else
-  echo " All pods running normally"
+ echo " All pods running normally"
 fi
 
 # 3. Check storage
@@ -59,13 +59,13 @@ kubectl get pv | grep -v "Bound" || echo " All PVs properly bound"
 # 4. Check database
 echo -e "\n[DATABASE] Checking database connectivity..."
 kubectl exec -it deployment/postgres -n data-layer -- \
-  psql -U codex_admin -d codex -c "SELECT count(*) FROM pg_stat_activity;"
+ psql -U codex_admin -d codex -c "SELECT count(*) FROM pg_stat_activity;"
 echo " Database responding"
 
 # 5. Check Redis
 echo -e "\n[CACHE] Checking Redis cache..."
 kubectl exec -it deployment/redis -n data-layer -- \
-  redis-cli ping
+ redis-cli ping
 echo " Cache responding"
 
 # 6. Check API health
@@ -82,7 +82,7 @@ echo -e "\n=== Health Check Complete ==="
 
 ### Weekly Review
 
-**Duration**: 1 hour  
+**Duration**: 1 hour
 **Frequency**: Every Monday at 9:00 AM
 
 ```bash
@@ -94,8 +94,8 @@ echo "=== Weekly Operational Review ==="
 # 1. Review logs for errors
 echo -e "\n[LOGS] Error rate last 7 days..."
 kubectl logs -f deployment/codex-ml -n codex-ml \
-  --timestamps=true \
-  --tail=1000 | grep -i "ERROR\|CRITICAL" | wc -l
+ --timestamps=true \
+ --tail=1000 | grep -i "ERROR\|CRITICAL" | wc -l
 
 # 2. Check resource utilization
 echo -e "\n[RESOURCES] Resource utilization..."
@@ -105,17 +105,17 @@ kubectl top pods -n codex-ml | sort -k3 -rn | head -10
 # 3. Check backup status
 echo -e "\n[BACKUPS] Backup status last 7 days..."
 aws s3 ls s3://backup-bucket/postgres/ \
-  --recursive \
-  --human-readable \
-  --summarize | tail -5
+ --recursive \
+ --human-readable \
+ --summarize | tail -5
 
 # 4. Review cost
 echo -e "\n[COST] Cloud spending last 7 days..."
 aws ce get-cost-and-usage \
-  --time-period Start=2026-07-01,End=2026-07-08 \
-  --granularity DAILY \
-  --metrics UnblendedCost \
-  --group-by Type=DIMENSION,Key=SERVICE
+ --time-period Start=2026-07-01,End=2026-07-08 \
+ --granularity DAILY \
+ --metrics UnblendedCost \
+ --group-by Type=DIMENSION,Key=SERVICE
 
 # 5. Check scaling metrics
 echo -e "\n[SCALING] Pod scaling events last 7 days..."
@@ -124,8 +124,8 @@ kubectl get events -n codex-ml --sort-by='.lastTimestamp' | grep -i "Scaled"
 # 6. Review security alerts
 echo -e "\n[SECURITY] Security events last 7 days..."
 kubectl logs -f siem-service -n security \
-  --timestamps=true \
-  --tail=100
+ --timestamps=true \
+ --tail=100
 
 echo -e "\n=== Review Complete ==="
 ```
@@ -141,19 +141,19 @@ echo -e "\n=== Review Complete ==="
 ```bash
 # Monitor connection usage
 psql -U postgres -d codex -c \
-  "SELECT datname, count(*) as connections FROM pg_stat_activity GROUP BY datname;"
+ "SELECT datname, count(*) as connections FROM pg_stat_activity GROUP BY datname;"
 
 # Identify long-running queries
 psql -U postgres -d codex -c \
-  "SELECT pid, usename, query_start, query 
-   FROM pg_stat_activity 
-   WHERE query_start < NOW() - INTERVAL '10 minutes';"
+ "SELECT pid, usename, query_start, query 
+ FROM pg_stat_activity 
+ WHERE query_start < NOW() - INTERVAL '10 minutes';"
 
 # Kill idle connections
 psql -U postgres -d codex -c \
-  "SELECT pg_terminate_backend(pid) FROM pg_stat_activity 
-   WHERE state = 'idle' 
-   AND query_start < NOW() - INTERVAL '1 hour';"
+ "SELECT pg_terminate_backend(pid) FROM pg_stat_activity 
+ WHERE state = 'idle' 
+ AND query_start < NOW() - INTERVAL '1 hour';"
 
 # Tune connection pool in PgBouncer
 cat >> /etc/pgbouncer/pgbouncer.ini <<'EOF'
@@ -179,28 +179,28 @@ sudo systemctl restart pgbouncer
 ```bash
 # Find missing indexes
 psql -U postgres -d codex -c \
-  "SELECT schemaname, tablename, attname, n_distinct
-   FROM pg_stats
-   WHERE schemaname NOT LIKE 'pg_%'
-   ORDER BY abs(n_distinct) DESC;"
+ "SELECT schemaname, tablename, attname, n_distinct
+ FROM pg_stats
+ WHERE schemaname NOT LIKE 'pg_%'
+ ORDER BY abs(n_distinct) DESC;"
 
 # Create indexes for frequently accessed columns
 psql -U postgres -d codex -c \
-  "CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
-   CREATE INDEX CONCURRENTLY idx_orders_date ON orders(created_at);
-   CREATE INDEX CONCURRENTLY idx_transactions_user_id ON transactions(user_id);"
+ "CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
+ CREATE INDEX CONCURRENTLY idx_orders_date ON orders(created_at);
+ CREATE INDEX CONCURRENTLY idx_transactions_user_id ON transactions(user_id);"
 
 # Monitor index usage
 psql -U postgres -d codex -c \
-  "SELECT schemaname, tablename, indexname, idx_scan
-   FROM pg_stat_user_indexes
-   ORDER BY idx_scan DESC;"
+ "SELECT schemaname, tablename, indexname, idx_scan
+ FROM pg_stat_user_indexes
+ ORDER BY idx_scan DESC;"
 
 # Remove unused indexes
 psql -U postgres -d codex -c \
-  "SELECT indexname FROM pg_stat_user_indexes 
-   WHERE idx_scan = 0 
-   AND indexrelname LIKE '%idx%';"
+ "SELECT indexname FROM pg_stat_user_indexes 
+ WHERE idx_scan = 0 
+ AND indexrelname LIKE '%idx%';"
 
 # Drop unused indexes (after verification)
 # DROP INDEX CONCURRENTLY unused_index_name;
@@ -213,26 +213,26 @@ psql -U postgres -d codex -c \
 ```bash
 # Enable query logging
 psql -U postgres -d codex -c "
-  ALTER SYSTEM SET log_min_duration_statement = 1000;
-  SELECT pg_reload_conf();"
+ ALTER SYSTEM SET log_min_duration_statement = 1000;
+ SELECT pg_reload_conf();"
 
 # Analyze slow query
 psql -U postgres -d codex -c \
-  "EXPLAIN ANALYZE SELECT * FROM orders 
-   WHERE customer_id = 123 AND created_at > '2026-01-01';"
+ "EXPLAIN ANALYZE SELECT * FROM orders 
+ WHERE customer_id = 123 AND created_at > '2026-01-01';"
 
 # Create optimal query plan
 psql -U postgres -d codex -c "
-  -- Before (slow)
-  SELECT * FROM orders o
-  JOIN customers c ON o.customer_id = c.id
-  WHERE c.country = 'US'
-  
-  -- After (optimized)
-  SELECT o.* FROM orders o
-  WHERE o.customer_id IN (
-    SELECT id FROM customers WHERE country = 'US'
-  );"
+ -- Before (slow)
+ SELECT * FROM orders o
+ JOIN customers c ON o.customer_id = c.id
+ WHERE c.country = 'US'
+ 
+ -- After (optimized)
+ SELECT o.* FROM orders o
+ WHERE o.customer_id IN (
+ SELECT id FROM customers WHERE country = 'US'
+ );"
 
 # Verify improvement
 EXPLAIN ANALYZE <optimized-query>;
@@ -266,7 +266,7 @@ DB_USER="codex_admin"
 
 # Full backup
 pg_dump -h localhost -U $DB_USER -d $DB_NAME \
-  | gzip > $BACKUP_DIR/full_backup_$TIMESTAMP.sql.gz
+ | gzip > $BACKUP_DIR/full_backup_$TIMESTAMP.sql.gz
 
 # Verify backup
 gunzip -t $BACKUP_DIR/full_backup_$TIMESTAMP.sql.gz
@@ -274,15 +274,15 @@ echo " Backup verified"
 
 # Upload to S3
 aws s3 cp $BACKUP_DIR/full_backup_$TIMESTAMP.sql.gz \
-  s3://backup-bucket/postgres/$TIMESTAMP/
+ s3://backup-bucket/postgres/$TIMESTAMP/
 
 # Cleanup local backups older than 7 days
 find $BACKUP_DIR -name "full_backup_*.sql.gz" -mtime +7 -delete
 
 # Alert if backup failed
 if [ $? -ne 0 ]; then
-  aws sns publish --topic-arn arn:aws:sns:region:account:alerts \
-    --message "Database backup failed at $TIMESTAMP"
+ aws sns publish --topic-arn arn:aws:sns:region:account:alerts \
+ --message "Database backup failed at $TIMESTAMP"
 fi
 ```
 
@@ -304,17 +304,17 @@ psql -U postgres -d template1 -c "CREATE DATABASE codex_recovery;"
 
 # Restore from backup
 gunzip < $BACKUP_FILE | \
-  psql -h localhost -U codex_admin -d codex_recovery
+ psql -h localhost -U codex_admin -d codex_recovery
 
 # Verify data integrity
 psql -U postgres -d codex_recovery -c \
-  "SELECT COUNT(*) FROM information_schema.tables
-   WHERE table_schema NOT LIKE 'pg_%';"
+ "SELECT COUNT(*) FROM information_schema.tables
+ WHERE table_schema NOT LIKE 'pg_%';"
 
 # Rename databases
 psql -U postgres -d template1 -c \
-  "ALTER DATABASE codex RENAME TO codex_old;
-   ALTER DATABASE codex_recovery RENAME TO codex;"
+ "ALTER DATABASE codex RENAME TO codex_old;
+ ALTER DATABASE codex_recovery RENAME TO codex;"
 
 # Restart application
 kubectl scale deployment codex-ml --replicas=3 -n codex-ml
@@ -348,9 +348,9 @@ SELECT pg_reload_conf();"
 # Monitor cache hit ratio
 psql -U postgres -d codex -c "
 SELECT 
-  sum(heap_blks_read) as heap_read,
-  sum(heap_blks_hit) as heap_hit,
-  sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
+ sum(heap_blks_read) as heap_read,
+ sum(heap_blks_hit) as heap_hit,
+ sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
 FROM pg_statio_user_tables;"
 ```
 
@@ -359,7 +359,7 @@ FROM pg_statio_user_tables;"
 ```bash
 # Enable debug logging
 kubectl set env deployment/codex-ml \
-  LOG_LEVEL=DEBUG -n codex-ml
+ LOG_LEVEL=DEBUG -n codex-ml
 
 # Monitor metrics
 kubectl port-forward svc/prometheus 9090:9090 -n monitoring
@@ -411,8 +411,8 @@ npm audit
 
 # Apply security patches
 kubectl patch deployment codex-ml \
-  -p '{"spec":{"template":{"metadata":{"annotations":{"updated":"'$(date +%s)'"}}}}}' \
-  -n codex-ml
+ -p '{"spec":{"template":{"metadata":{"annotations":{"updated":"'$(date +%s)'"}}}}}' \
+ -n codex-ml
 ```
 
 ### Access Control Review
@@ -441,7 +441,7 @@ kubectl logs apiserver | grep "user=" | tail -100
 ```bash
 # Check security groups
 aws ec2 describe-security-groups \
-  --filters "Name=group-name,Values=codex-ml-sg"
+ --filters "Name=group-name,Values=codex-ml-sg"
 
 # Verify firewall rules
 kubectl get networkpolicies -A
@@ -483,9 +483,9 @@ kubectl top pods -n codex-ml
 ```bash
 # Update resource requests/limits
 kubectl set resources deployment codex-ml \
-  --requests=cpu=2000m,memory=4Gi \
-  --limits=cpu=4000m,memory=8Gi \
-  -n codex-ml
+ --requests=cpu=2000m,memory=4Gi \
+ --limits=cpu=4000m,memory=8Gi \
+ -n codex-ml
 
 # Monitor resource utilization
 watch 'kubectl top pods -n codex-ml'
@@ -501,18 +501,18 @@ kubectl rollout status deployment/codex-ml -n codex-ml
 ```bash
 # Add read replica
 aws rds create-db-instance-read-replica \
-  --db-instance-identifier codex-db-read-1 \
-  --source-db-instance-identifier codex-ml-db
+ --db-instance-identifier codex-db-read-1 \
+ --source-db-instance-identifier codex-ml-db
 
 # Monitor replication lag
 aws rds describe-db-instances \
-  --db-instance-identifier codex-db-read-1 \
-  --query 'DBInstances[0].StatusInfos'
+ --db-instance-identifier codex-db-read-1 \
+ --query 'DBInstances[0].StatusInfos'
 
 # Update application to use read replica
 kubectl set env deployment/codex-ml \
-  READ_REPLICA_HOST=codex-db-read-1.rds.amazonaws.com \
-  -n codex-ml
+ READ_REPLICA_HOST=codex-db-read-1.rds.amazonaws.com \
+ -n codex-ml
 ```
 
 ---
@@ -523,25 +523,25 @@ kubectl set env deployment/codex-ml \
 
 ```
 Weekly Maintenance Window
-├─ When: Sundays 02:00-04:00 UTC
-├─ Duration: 2 hours
-├─ Components: Non-critical updates
-├─ Notification: Friday email blast
-└─ Validation: 15-minute post-maintenance testing
+ When: Sundays 02:00-04:00 UTC
+ Duration: 2 hours
+ Components: Non-critical updates
+ Notification: Friday email blast
+ Validation: 15-minute post-maintenance testing
 
 Monthly Maintenance Window
-├─ When: First Saturday of month 02:00-06:00 UTC
-├─ Duration: 4 hours
-├─ Components: Critical updates, major upgrades
-├─ Notification: 2-week advance notice
-└─ Validation: 1-hour comprehensive testing
+ When: First Saturday of month 02:00-06:00 UTC
+ Duration: 4 hours
+ Components: Critical updates, major upgrades
+ Notification: 2-week advance notice
+ Validation: 1-hour comprehensive testing
 
 Quarterly Maintenance Window
-├─ When: TBD (announce 1 month in advance)
-├─ Duration: 8 hours
-├─ Components: Major infrastructure changes
-├─ Notification: 3-month advance notice
-└─ Validation: Full regression test suite
+ When: TBD (announce 1 month in advance)
+ Duration: 8 hours
+ Components: Major infrastructure changes
+ Notification: 3-month advance notice
+ Validation: Full regression test suite
 ```
 
 ### Database Maintenance
@@ -566,9 +566,9 @@ psql -U codex_admin -d codex -c "ANALYZE codex;"
 
 # 5. Check table bloat
 psql -U codex_admin -d codex -c \
-  "SELECT schemaname, tablename, round(100.0 * (CASE 
-   WHEN live_tuples = 0 THEN 0.0 ELSE dead_tuples / live_tuples::float END), 2) as dead_ratio
-   FROM pg_stat_user_tables ORDER BY dead_ratio DESC;"
+ "SELECT schemaname, tablename, round(100.0 * (CASE 
+ WHEN live_tuples = 0 THEN 0.0 ELSE dead_tuples / live_tuples::float END), 2) as dead_ratio
+ FROM pg_stat_user_tables ORDER BY dead_ratio DESC;"
 
 # 6. Verify integrity
 psql -U codex_admin -d codex -c "REINDEX TABLE CONCURRENTLY <table>;"
@@ -586,13 +586,13 @@ echo "Starting application maintenance..."
 
 # 1. Drain connections gracefully
 kubectl annotate pods -l app=codex-ml \
-  -n codex-ml \
-  drain=true --overwrite
+ -n codex-ml \
+ drain=true --overwrite
 
 # 2. Update deployment
 kubectl set image deployment/codex-ml \
-  codex-ml=registry.example.com/codex-ml:1.0.1 \
-  -n codex-ml
+ codex-ml=registry.example.com/codex-ml:1.0.1 \
+ -n codex-ml
 
 # 3. Monitor rollout
 kubectl rollout status deployment/codex-ml -n codex-ml

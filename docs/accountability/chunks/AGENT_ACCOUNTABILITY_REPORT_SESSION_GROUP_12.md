@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 12
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 12 of 32  
 **Sessions:** S985-pr4434-codeql-report-followup to S993-cont4-secrets-baseline  

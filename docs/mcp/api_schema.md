@@ -1,31 +1,31 @@
 # MCP HTTP API Schema
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-06-22T00:00:00Z  
-**Status**:  Prototype Specification  
-**Priority**: P2 (Supporting Documentation)  
-**MCP Protocol Version**: 2024-11-05  
+**Last Updated**: 2026-06-22T00:00:00Z
+**Status**: Prototype Specification
+**Priority**: P2 (Supporting Documentation)
+**MCP Protocol Version**: 2024-11-05
 **API Version**: v1
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Define FastAPI-based HTTP API schema for MCP server deployments, enabling edge-compatible (Cloudflare Workers, Fly.io) and container-based MCP endpoints.
 
-**Energy Level**:  (3/5) - Active API specification supporting prototype deployment.
+**Energy Level**: (3/5) - Active API specification supporting prototype deployment.
 
 **Operational Status**:
--  Prototype implemented in `src/mcp/server/http.py`
--  Three core endpoints operational (/health, /query, /context)
--  Authentication headers defined
--  OpenAPI schema generation pending
-- 🔮 Production hardening in progress
+- Prototype implemented in `src/mcp/server/http.py`
+- Three core endpoints operational (/health, /query, /context)
+- Authentication headers defined
+- OpenAPI schema generation pending
+- Production hardening in progress
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **API Specification Requirements**:
 - [ ] OpenAPI 3.0+ schema documented
@@ -49,13 +49,13 @@
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Endpoint | Target Latency (p95) | Target Success Rate | Current | Status |
 |----------|----------------------|---------------------|---------|--------|
-| GET /health | <50ms | 100% | - | 🔮 Pending Monitoring |
-| POST /query | <200ms | >95% | - | 🔮 Pending Monitoring |
-| POST /context | <100ms | >98% | - | 🔮 Pending Monitoring |
+| GET /health | <50ms | 100% | - | Pending Monitoring |
+| POST /query | <200ms | >95% | - | Pending Monitoring |
+| POST /context | <100ms | >98% | - | Pending Monitoring |
 
 **API Quality KPIs**:
 - Schema validation pass rate: 100% (target)
@@ -65,33 +65,44 @@
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Request Flow)
-**Request Path**: Client → Auth → Validation → Processing → Response
+### Path (Request Flow)
+**Request Path**: Client Auth Validation Processing Response
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing HTTP Request, Health Check'}}%%
+
 graph LR
-    A[HTTP Request] --> B{Endpoint Router}
-    B -->|/health| C[Health Check]
-    B -->|/query| D[Auth Middleware]
-    B -->|/context| D
 
-    D --> E{Valid Auth?}
-    E -->|No| F[401 Unauthorized]
-    E -->|Yes| G[Request Validation]
+ A[HTTP Request] --> B{Endpoint Router}
 
-    G --> H{Valid Schema?}
-    H -->|No| I[400 Bad Request]
-    H -->|Yes| J[Business Logic]
+ B -->|/health| C[Health Check]
 
-    J --> K[VectorStore Query/Upsert]
-    K --> L[Format Response]
-    L --> M[200 OK + JSON]
+ B -->|/query| D[Auth Middleware]
+
+ B -->|/context| D
+
+ D --> E{Valid Auth?}
+
+ E -->|No| F[401 Unauthorized]
+
+ E -->|Yes| G[Request Validation]
+
+ G --> H{Valid Schema?}
+
+ H -->|No| I[400 Bad Request]
+
+ H -->|Yes| J[Business Logic]
+
+ J --> K[VectorStore Query/Upsert]
+
+ K --> L[Format Response]
+
+ L --> M[200 OK + JSON]
 ```
 
-### Fields  (State Transitions)
+### Fields (State Transitions)
 **Request Lifecycle**:
 1. **Received**: HTTP request enters server
 2. **Authenticated**: Headers validated
@@ -100,27 +111,27 @@ graph LR
 5. **Responding**: JSON serialization
 6. **Completed**: Response sent to client
 
-### Patterns ️ (API Patterns)
+### Patterns (API Patterns)
 - **Health Check Pattern**: Stateless, fast, no auth required
 - **Query Pattern**: Auth required, read-only, cacheable
 - **Upsert Pattern**: Auth required, write operation, idempotent
 - **Error Pattern**: Consistent JSON structure `{"error": {...}}`
 
-### Redundancy  (Resilience)
+### Redundancy (Resilience)
 **Fault Tolerance**:
 - Health endpoint always responds (no dependencies)
 - Query endpoint falls back to empty results on error
 - Context upsert retries on transient failures
 - Circuit breakers prevent cascading failures
 
-### Balance ️ (Trade-offs)
+### Balance (Trade-offs)
 - **Latency vs. Accuracy**: Query top_k = 5 (default) balances speed and relevance
 - **Security vs. Usability**: API key header simple but less secure than OAuth
 - **Statelessness vs. Performance**: No server-side caching for edge compatibility
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 ### P0 Critical (40%)
 - Schema correctness (15%)
@@ -142,14 +153,14 @@ graph LR
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 
 **Scenario 1: Breaking API Change**
 ```bash
 # Rollback: Version API endpoints
-# /mcp/v1/* → /mcp/v2/*
+# /mcp/v1/* /mcp/v2/*
 # Keep v1 operational during migration
 
 # Deploy v2 alongside v1
@@ -160,7 +171,7 @@ graph LR
 **Scenario 2: Authentication Vulnerability**
 ```bash
 # Immediate rollback: Disable affected endpoint
-# POST /context → 503 Service Unavailable
+# POST /context 503 Service Unavailable
 
 # Fix: Update auth middleware
 # Test: Comprehensive security audit
@@ -204,44 +215,44 @@ graph LR
 The FastAPI prototype in `src/mcp/server/http.py` exposes three endpoints compatible with edge deployments (Cloudflare Workers) and Fly.io containers.
 
 ## Endpoints
-- `GET /mcp/v1/health` → `{ "status": "healthy", "documents": <int> }`
+- `GET /mcp/v1/health` `{ "status": "healthy", "documents": <int> }`
 - `POST /mcp/v1/query`
-  - Headers: `X-MCP-API-Key` or `Authorization: Bearer <token>`
-  - Body:
-    ```json
-    { "query": "<text>", "top_k": 5, "filters": {"scope": "repo"} }
-    ```
-  - Response:
-    ```json
-    { "results": [{"id": "demo-1", "score": 1.0, "content": "...", "metadata": {"scope": "repo"}}] }
-    ```
+ - Headers: `X-MCP-API-Key` or `Authorization: Bearer <token>`
+ - Body:
+ ```json
+ { "query": "<text>", "top_k": 5, "filters": {"scope": "repo"} }
+ ```
+ - Response:
+ ```json
+ { "results": [{"id": "demo-1", "score": 1.0, "content": "...", "metadata": {"scope": "repo"}}] }
+ ```
 - `POST /mcp/v1/context`
-  - Headers: same as `/query`
-  - Body:
-    ```json
-    { "items": [{"id": "doc-1", "content": "text", "metadata": {"scope": "repo"}}] }
-    ```
-  - Response: `{ "upserted": 1 }`
+ - Headers: same as `/query`
+ - Body:
+ ```json
+ { "items": [{"id": "doc-1", "content": "text", "metadata": {"scope": "repo"}}] }
+ ```
+ - Response: `{ "upserted": 1 }`
 
 ## Workers (Node) sketch
 ```ts
 export default {
-  async fetch(request: Request): Promise<Response> {
-    if (request.method === "GET" && request.url.endsWith("/mcp/v1/health")) {
-      return Response.json({ status: "healthy", documents: 0 });
-    }
-    // Mirror FastAPI payloads for /query and /context
-    return new Response("not implemented", { status: 501 });
-  }
+ async fetch(request: Request): Promise<Response> {
+ if (request.method === "GET" && request.url.endsWith("/mcp/v1/health")) {
+ return Response.json({ status: "healthy", documents: 0 });
+ }
+ // Mirror FastAPI payloads for /query and /context
+ return new Response("not implemented", { status: 501 });
+ }
 };
 ```
 
 ---
 
-**Document Version**: 2.0.0  
-**Last Updated**: 2026-06-22T00:00:00Z  
-**Implementation**: `src/mcp/server/http.py`  
-**Iteration Alignment**: Phase 12.3+ compatible  
+**Document Version**: 2.0.0
+**Last Updated**: 2026-06-22T00:00:00Z
+**Implementation**: `src/mcp/server/http.py`
+**Iteration Alignment**: Phase 12.3+ compatible
 **MCP Protocol**: 2024-11-05 specification
 
 **Related Documentation**:

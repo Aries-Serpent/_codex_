@@ -1,6 +1,6 @@
 # DOCUMENTATION COVERAGE BY PACKAGE - PRIORITIZATION GUIDE
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -16,11 +16,11 @@
 - **Rationale:** Largest package, core ML functionality
 - **Effort:** ~161 pre-commits (48% of total)
 - **Key Areas:**
-  - `data/` - Data loading and preprocessing
-  - `modeling/` - Model architectures
-  - `training/` - Training loops
-  - `checkpointing/` - Model persistence
-  - `reward_models/` - RL reward models
+ - `data/` - Data loading and preprocessing
+ - `modeling/` - Model architectures
+ - `training/` - Training loops
+ - `checkpointing/` - Model persistence
+ - `reward_models/` - RL reward models
 
 #### 2. codex/ - **HIGH**
 - **Undocumented Items:** 551
@@ -30,10 +30,10 @@
 - **Rationale:** Core application package, user-facing
 - **Effort:** ~46 pre-commits (14% of total)
 - **Key Areas:**
-  - `zendesk/` - CRM integrations
-  - `evidence/` - Evidence tracking
-  - `plans/` - Planning system
-  - `rag/` - RAG pipeline
+ - `zendesk/` - CRM integrations
+ - `evidence/` - Evidence tracking
+ - `plans/` - Planning system
+ - `rag/` - RAG pipeline
 
 #### 3. training/ - **HIGH**
 - **Undocumented Items:** 130
@@ -104,12 +104,12 @@
 ### LOW PRIORITY (Phases 7-8 or Phase 6)
 
 #### Well-Documented Packages (>90% coverage):
-- **cognitive_brain/** - 97.7% 
-- **context_management/** - 99.6% 
-- **zendesk/** - 93.6% 
-- **ingestion/** - 88.2% 
-- **agent/** - 89.3% 
-- **security/** - 84.0% 
+- **cognitive_brain/** - 97.7%
+- **context_management/** - 99.6%
+- **zendesk/** - 93.6%
+- **ingestion/** - 88.2%
+- **agent/** - 89.3%
+- **security/** - 84.0%
 
 These packages serve as **examples of good documentation** and can be used as templates.
 
@@ -140,7 +140,7 @@ These packages serve as **examples of good documentation** and can be used as te
 - **Training package core** (11 pre-commits) - 36% to 80%
 - **Start codex_ml/data/** (20 pre-commits)
 
-**Total: 39 pre-commits**  
+**Total: 39 pre-commits**
 **Impact: 3 packages to >90%, training to 80%**
 
 ### Phases 3-4: codex_ml Deep Dive
@@ -148,7 +148,7 @@ These packages serve as **examples of good documentation** and can be used as te
 - **codex_ml/training/** (30 pre-commits)
 - **codex_ml/data/** (continued, 30 pre-commits)
 
-**Total: 100 pre-commits**  
+**Total: 100 pre-commits**
 **Impact: Core ML components documented**
 
 ### Phases 5-6: codex Package & MCP
@@ -158,7 +158,7 @@ These packages serve as **examples of good documentation** and can be used as te
 - **mcp/** (10 pre-commits)
 - **Tutorial creation** (21 pre-commits)
 
-**Total: 66 pre-commits**  
+**Total: 66 pre-commits**
 **Impact: Main packages to 90%+, tutorials complete**
 
 ### Phases 7-8: Polish & Remaining
@@ -168,7 +168,7 @@ These packages serve as **examples of good documentation** and can be used as te
 - **hhg_logistics/** (5 pre-commits)
 - **Link fixes & API reference** (25 pre-commits)
 
-**Total: 67 pre-commits**  
+**Total: 67 pre-commits**
 **Impact: All P0/P1 complete, docs polished**
 
 ---
@@ -341,8 +341,8 @@ echo "Coverage threshold: 80%"
 Phase 5 should follow a **package-centric approach** with clear phase targets:
 
 1. **Phases 1-2:** Quick wins (3 packages from <10% to >90%)
-2. **Phases 3-4:** codex_ml core (51% → 65%)
-3. **Phases 5-6:** codex & MCP (75% → 92%, 63% → 85%)
+2. **Phases 3-4:** codex_ml core (51% 65%)
+3. **Phases 5-6:** codex & MCP (75% 92%, 63% 85%)
 4. **Phases 7-8:** Remaining packages + polish
 
 **Expected Final Coverage:**

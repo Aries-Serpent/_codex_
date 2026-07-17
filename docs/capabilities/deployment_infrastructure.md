@@ -1,6 +1,6 @@
 # Deployment Infrastructure
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -25,28 +25,28 @@ Provides deployment infrastructure through:
 ### Deployment Layers
 
 ```
-┌─────────────────────────────────────┐
-│   CI/CD Pipeline                    │
-│   (Build, Test, Deploy triggers)    │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Container Registry                │
-│   (Docker images, versioning)       │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Kubernetes Cluster                │
-│   (Pods, Services, Ingress)         │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Monitoring & Observability        │
-│   (Metrics, Logs, Alerts)           │
-└─────────────────────────────────────┘
+
+ CI/CD Pipeline 
+ (Build, Test, Deploy triggers) 
+
+ 
+ 
+
+ Container Registry 
+ (Docker images, versioning) 
+
+ 
+ 
+
+ Kubernetes Cluster 
+ (Pods, Services, Ingress) 
+
+ 
+ 
+
+ Monitoring & Observability 
+ (Metrics, Logs, Alerts) 
+
 ```
 
 ## Configuration
@@ -84,43 +84,43 @@ CMD ["python", "-m", "codex.serve"]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex-ml-service
-  labels:
-    app: codex-ml
+ name: codex-ml-service
+ labels:
+ app: codex-ml
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: codex-ml
-  template:
-    metadata:
-      labels:
-        app: codex-ml
-    spec:
-      containers:
-      - name: codex-ml
-        image: codex-ml:latest
-        ports:
-        - containerPort: 8080
-        resources:
-          limits:
-            cpu: "2"
-            memory: "4Gi"
-          requests:
-            cpu: "500m"
-            memory: "1Gi"
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+ replicas: 3
+ selector:
+ matchLabels:
+ app: codex-ml
+ template:
+ metadata:
+ labels:
+ app: codex-ml
+ spec:
+ containers:
+ - name: codex-ml
+ image: codex-ml:latest
+ ports:
+ - containerPort: 8080
+ resources:
+ limits:
+ cpu: "2"
+ memory: "4Gi"
+ requests:
+ cpu: "500m"
+ memory: "1Gi"
+ livenessProbe:
+ httpGet:
+ path: /healthz
+ port: 8080
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ readinessProbe:
+ httpGet:
+ path: /ready
+ port: 8080
+ initialDelaySeconds: 5
+ periodSeconds: 5
 ```
 
 ## Helm Chart Values
@@ -130,31 +130,31 @@ spec:
 replicaCount: 3
 
 image:
-  repository: codex-ml
-  tag: latest
-  pullPolicy: IfNotPresent
+ repository: codex-ml
+ tag: latest
+ pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
-  port: 8080
+ type: ClusterIP
+ port: 8080
 
 resources:
-  limits:
-    cpu: 2
-    memory: 4Gi
-  requests:
-    cpu: 500m
-    memory: 1Gi
+ limits:
+ cpu: 2
+ memory: 4Gi
+ requests:
+ cpu: 500m
+ memory: 1Gi
 
 autoscaling:
-  enabled: true
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+ enabled: true
+ minReplicas: 2
+ maxReplicas: 10
+ targetCPUUtilizationPercentage: 70
 
 rollback:
-  enabled: true
-  maxRevisions: 5
+ enabled: true
+ maxRevisions: 5
 ```
 
 ## Usage Examples
@@ -167,10 +167,10 @@ docker build -f Dockerfile -t codex-ml:latest .
 
 # Run with health checks
 docker run -d \
-  --name codex-ml \
-  -p 8080:8080 \
-  --health-interval=30s \
-  codex-ml:latest
+ --name codex-ml \
+ -p 8080:8080 \
+ --health-interval=30s \
+ codex-ml:latest
 
 # Verify container health
 docker inspect --format='{{.State.Health.Status}}' codex-ml
@@ -196,15 +196,15 @@ kubectl get pods -l app=codex-ml
 ```bash
 # Install with custom values
 helm install codex-ml ./charts/codex-ml \
-  --namespace codex \
-  --create-namespace \
-  --set replicaCount=3 \
-  --set image.tag=v0.2.1
+ --namespace codex \
+ --create-namespace \
+ --set replicaCount=3 \
+ --set image.tag=v0.2.0
 
 # Upgrade with rollback capability
 helm upgrade codex-ml ./charts/codex-ml \
-  --set image.tag=v0.2.1 \
-  --wait --timeout=5m
+ --set image.tag=v0.2.0 \
+ --wait --timeout=5m
 
 # Rollback if needed
 helm rollback codex-ml 1
@@ -221,7 +221,7 @@ kubectl rollout status deployment/codex-ml-green
 
 # Switch traffic to green
 kubectl patch service codex-ml \
-  -p '{"spec":{"selector":{"version":"green"}}}'
+ -p '{"spec":{"selector":{"version":"green"}}}'
 
 # Remove blue after verification
 kubectl delete deployment codex-ml-blue
@@ -234,14 +234,14 @@ kubectl delete deployment codex-ml-blue
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex-ml-canary
+ name: codex-ml-canary
 spec:
-  replicas: 1  # 10% of traffic
-  template:
-    metadata:
-      labels:
-        app: codex-ml
-        track: canary
+ replicas: 1 # 10% of traffic
+ template:
+ metadata:
+ labels:
+ app: codex-ml
+ track: canary
 ```
 
 ## Safeguards
@@ -273,27 +273,27 @@ app = FastAPI()
 
 @app.get("/healthz")
 async def health_check() -> Dict[str, str]:
-    """
-    Liveness probe endpoint.
+ """
+ Liveness probe endpoint.
 
-    Safeguard: Returns 200 only if service is alive.
-    Validation: Checks core dependencies.
-    """
-    return {"status": "healthy"}
+ Safeguard: Returns 200 only if service is alive.
+ Validation: Checks core dependencies.
+ """
+ return {"status": "healthy"}
 
 @app.get("/ready")
 async def readiness_check() -> Dict[str, str]:
-    """
-    Readiness probe endpoint.
+ """
+ Readiness probe endpoint.
 
-    Safeguard: Returns 200 only when ready for traffic.
-    Validation: Checks model loaded and DB connected.
-    """
-    # Validate model is loaded
-    if not model_manager.is_loaded():
-        raise HTTPException(503, "Model not loaded")
+ Safeguard: Returns 200 only when ready for traffic.
+ Validation: Checks model loaded and DB connected.
+ """
+ # Validate model is loaded
+ if not model_manager.is_loaded():
+ raise HTTPException(503, "Model not loaded")
 
-    return {"status": "ready"}
+ return {"status": "ready"}
 ```
 
 ## Best Practices
@@ -352,20 +352,20 @@ kubectl get deployment <name> -o yaml | grep -A10 "livenessProbe"
 ```yaml
 # .github/workflows/deploy.yml
 deploy:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
 
-    - name: Build and push image
-      run: |
-        docker build -t $IMAGE:$TAG .
-        docker push $IMAGE:$TAG
+ - name: Build and push image
+ run: |
+ docker build -t $IMAGE:$TAG .
+ docker push $IMAGE:$TAG
 
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl set image deployment/codex-ml \
-          codex-ml=$IMAGE:$TAG
-        kubectl rollout status deployment/codex-ml
+ - name: Deploy to Kubernetes
+ run: |
+ kubectl set image deployment/codex-ml \
+ codex-ml=$IMAGE:$TAG
+ kubectl rollout status deployment/codex-ml
 ```
 
 ## Monitoring Integration
@@ -375,14 +375,14 @@ deploy:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: codex-ml-metrics
+ name: codex-ml-metrics
 spec:
-  selector:
-    matchLabels:
-      app: codex-ml
-  endpoints:
-  - port: metrics
-    interval: 15s
+ selector:
+ matchLabels:
+ app: codex-ml
+ endpoints:
+ - port: metrics
+ interval: 15s
 ```
 
 ## Related Capabilities

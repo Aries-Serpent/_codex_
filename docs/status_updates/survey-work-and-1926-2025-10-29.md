@@ -1,8 +1,8 @@
 # Repo Survey — work & PR 1926 — 2025-10-29 (UTC)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Ref:** branch `work`  commit `c829fec7`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
+**Ref:** branch `work` commit `c829fec7` • **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
 
 ---
 
@@ -98,7 +98,7 @@ Let readiness be \( R = \alpha \cdot E + \beta \cdot T + \gamma \cdot D \).
 - T (Trace quality): `0.0`
 - D (Docs parity): `0.9`
 - Weights: α=`0.2`, β=`0.2`, γ=`0.6`
-- **R = 0.54** → **Recommendation:** `Proceed`
+- **R = 0.54** **Recommendation:** `Proceed`
 
 ## 7) Artifacts
 - `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md`

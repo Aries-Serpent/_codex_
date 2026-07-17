@@ -1,11 +1,11 @@
 # Incident Response Playbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Maintainer**: Incident Commander  
-**Escalation**: SRE Lead → Engineering Director → VP Engineering  
+**Version**: 1.0
+**Last Updated**: 2026-06-22
+**Maintainer**: Incident Commander
+**Escalation**: SRE Lead Engineering Director VP Engineering
 
 ---
 
@@ -44,26 +44,26 @@ This playbook provides structured procedures for detecting, diagnosing, mitigati
 
 ```
 Incident Detected
-  │
-  ├─ Customer-facing service down?
-  │   ├─ YES → SEV1/SEV2
-  │   └─ NO → Continue
-  │
-  ├─ Data loss or integrity risk?
-  │   ├─ YES → SEV1
-  │   └─ NO → Continue
-  │
-  ├─ Security or compliance breach?
-  │   ├─ YES → SEV1
-  │   └─ NO → Continue
-  │
-  ├─ Error rate > 1%?
-  │   ├─ YES → SEV2
-  │   └─ NO → Continue
-  │
-  ├─ Response time degradation?
-  │   ├─ YES → SEV2/SEV3
-  │   └─ NO → SEV3/SEV4
+ 
+ Customer-facing service down?
+ YES SEV1/SEV2
+ NO Continue
+ 
+ Data loss or integrity risk?
+ YES SEV1
+ NO Continue
+ 
+ Security or compliance breach?
+ YES SEV1
+ NO Continue
+ 
+ Error rate > 1%?
+ YES SEV2
+ NO Continue
+ 
+ Response time degradation?
+ YES SEV2/SEV3
+ NO SEV3/SEV4
 ```
 
 ---
@@ -205,7 +205,7 @@ kubectl get events -n production --sort-by='.lastTimestamp' | tail -50 > /tmp/${
 
 # 5. Database status
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT pid, state, query FROM pg_stat_activity;" > /tmp/${INCIDENT_ID}-db-queries.txt
+ -c "SELECT pid, state, query FROM pg_stat_activity;" > /tmp/${INCIDENT_ID}-db-queries.txt
 
 # 6. Resource limits and requests
 kubectl get pods -n production -o json | jq '.items[] | {name: .metadata.name, requests: .spec.containers[].resources.requests, limits: .spec.containers[].resources.limits}' > /tmp/${INCIDENT_ID}-resources.txt
@@ -226,25 +226,25 @@ kubectl get pods -n production -o json | jq '.items[] | {name: .metadata.name, r
 
 ```
 API Endpoints Returning 5xx
-  ├─ Pod crash loop?
-  │   ├─ Check: kubectl get pods -n production
-  │   ├─ Review: kubectl logs pod-name -n production
-  │   └─ Common causes: Memory leak, unhandled exception, config error
-  │
-  ├─ Database connectivity issue?
-  │   ├─ Check: telnet $DB_HOST 5432
-  │   ├─ Verify: Connection pool status
-  │   └─ Common causes: RDS failover, firewall rule, expired password  # pragma: allowlist secret
-  │
-  ├─ Resource exhaustion?
-  │   ├─ Check: kubectl top pods -n production
-  │   ├─ Verify: Available cluster resources
-  │   └─ Common causes: Memory leak, unbounded loop, cache growth
-  │
-  └─ Recent deployment error?
-      ├─ Check: kubectl rollout history deployment/codex-api
-      ├─ Review: Image scanning results, test results
-      └─ Common causes: Bad Docker image, uncaught dependency
+ Pod crash loop?
+ Check: kubectl get pods -n production
+ Review: kubectl logs pod-name -n production
+ Common causes: Memory leak, unhandled exception, config error
+ 
+ Database connectivity issue?
+ Check: telnet $DB_HOST 5432
+ Verify: Connection pool status
+ Common causes: RDS failover, firewall rule, expired password # pragma: allowlist secret
+ 
+ Resource exhaustion?
+ Check: kubectl top pods -n production
+ Verify: Available cluster resources
+ Common causes: Memory leak, unbounded loop, cache growth
+ 
+ Recent deployment error?
+ Check: kubectl rollout history deployment/codex-api
+ Review: Image scanning results, test results
+ Common causes: Bad Docker image, uncaught dependency
 ```
 
 **Step 3: Document Findings**
@@ -370,26 +370,26 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod -c "SELECT co
 
 ```
 T+0 min: Alert triggered
-  ├─ Notify: On-call engineer (PagerDuty)
-  └─ Notify: #prod-incidents Slack channel
+ Notify: On-call engineer (PagerDuty)
+ Notify: #prod-incidents Slack channel
 
 T+5 min: Incident declared
-  ├─ Update: Slack incident thread with severity and impact
-  └─ Notify: Incident commander
+ Update: Slack incident thread with severity and impact
+ Notify: Incident commander
 
 T+10 min: Ongoing investigation
-  ├─ Update: Slack with investigation progress
-  ├─ Notify: Affected teams (if known)
-  └─ Brief: Management if customer-impacting
+ Update: Slack with investigation progress
+ Notify: Affected teams (if known)
+ Brief: Management if customer-impacting
 
 T+15 min: Mitigation in progress
-  ├─ Update: ETA to resolution
-  ├─ Notify: Customers (if > 15 min outage)
-  └─ Engage: Additional resources if needed
+ Update: ETA to resolution
+ Notify: Customers (if > 15 min outage)
+ Engage: Additional resources if needed
 
 T+30 min: Resolution or escalation
-  ├─ Notify: If still unresolved, escalate to director level
-  └─ Update: Stakeholders on progress
+ Notify: If still unresolved, escalate to director level
+ Update: Stakeholders on progress
 ```
 
 ### 4.2 Escalation Matrix
@@ -468,26 +468,26 @@ Engineering Team
 **Review Agenda**:
 
 1. **Timeline reconstruction** (15 min):
-   - When was issue first detected?
-   - When was mitigation started?
-   - When was issue resolved?
-   - Identify gaps between detection and response
+ - When was issue first detected?
+ - When was mitigation started?
+ - When was issue resolved?
+ - Identify gaps between detection and response
 
 2. **Root cause deep dive** (20 min):
-   - What was the root cause?
-   - Why wasn't it caught earlier?
-   - What tests or monitoring would have caught it?
+ - What was the root cause?
+ - Why wasn't it caught earlier?
+ - What tests or monitoring would have caught it?
 
 3. **Action items** (15 min):
-   - What can we do to prevent this?
-   - What can we do to detect faster?
-   - What can we do to resolve faster?
-   - Who owns each action item?
+ - What can we do to prevent this?
+ - What can we do to detect faster?
+ - What can we do to resolve faster?
+ - Who owns each action item?
 
 4. **Documentation** (10 min):
-   - Update runbooks with learnings
-   - Add new alert if needed
-   - Update post-mortem document
+ - Update runbooks with learnings
+ - Add new alert if needed
+ - Update post-mortem document
 
 **Post-Incident Report Template**:
 
@@ -543,7 +543,7 @@ Engineering Team
 **Investigation**:
 ```bash
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT count(*) FROM pg_stat_activity WHERE state = 'idle in transaction';"
+ -c "SELECT count(*) FROM pg_stat_activity WHERE state = 'idle in transaction';"
 ```
 
 **Mitigation**:
@@ -553,7 +553,7 @@ kubectl delete pod -n production -l app=connection-pool
 
 # Option 2: Terminate idle connections
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle in transaction' AND query_start < now() - INTERVAL '5 minutes';"
+ -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle in transaction' AND query_start < now() - INTERVAL '5 minutes';"
 ```
 
 ## Scenario 2: Memory Leak in Application
@@ -635,6 +635,6 @@ kubectl port-forward -n production svc/codex-api 8080:8080
 
 ---
 
-**Document Version**: 1.0  
-**Last Reviewed**: 2024-01-15  
+**Document Version**: 1.0
+**Last Reviewed**: 2024-01-15
 **Next Review Date**: 2024-02-15

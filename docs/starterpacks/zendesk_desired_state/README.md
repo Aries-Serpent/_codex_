@@ -1,12 +1,12 @@
 # Starter Pack: Zendesk Desired State (First Cycle)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 16:17:26 | Author: mbaetiong
 
 This starter pack bootstraps a Zendesk admin “first cycle” using Codex:
 - Define “desired state” JSONs per resource (triggers, ticket fields/forms, views, macros, webhooks, routing, Talk IVR).
-- Run Snapshot → Diff → Plan → Dry-run → Apply with audit evidence and metrics.
+- Run Snapshot Diff Plan Dry-run Apply with audit evidence and metrics.
 - Prepare for end-to-end Support workflows development (macros, automation, routing, app surfaces).
 
 Use with Codex CLI:

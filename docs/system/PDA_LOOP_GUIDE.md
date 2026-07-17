@@ -1,12 +1,12 @@
 # PDA Loop Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Status**: Active  
-**Pattern ID**: P-PROC-001  
-**PDA**: Plan → Do → Assess
+**Status**: Active
+**Pattern ID**: P-PROC-001
+**PDA**: Plan Do Assess
 
 This guide documents the PDA (Plan-Do-Assess) loop used by agents in this repository.
 Every agent session MUST follow this loop to ensure consistent, high-quality output.
@@ -20,17 +20,17 @@ structured approach to task execution that minimises regressions, ensures knowle
 transfer, and guarantees measurable improvement per session.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                       PDA LOOP                          │
-│                                                         │
-│   ┌─────────┐     ┌─────────┐     ┌─────────────────┐  │
-│   │  PLAN   │────▶│   DO    │────▶│    ASSESS       │  │
-│   │         │     │         │     │  (5+ iterations) │  │
-│   └─────────┘     └─────────┘     └────────┬────────┘  │
-│        ▲                                    │           │
-│        └────────────────────────────────────┘           │
-│                  Loop until complete                     │
-└─────────────────────────────────────────────────────────┘
+
+ PDA LOOP 
+ 
+ 
+ PLAN DO ASSESS 
+ (5+ iterations) 
+ 
+ 
+ 
+ Loop until complete 
+
 ```
 
 ---
@@ -62,9 +62,9 @@ Before writing a single line of code or documentation, every agent MUST:
 ### Tasks
 | Priority | Task | Files | Success Criteria |
 |----------|------|-------|-----------------|
-|  P1 | ... | ... | ... |
-|  P2 | ... | ... | ... |
-|  P3 | ... | ... | ... |
+| P1 | ... | ... | ... |
+| P2 | ... | ... | ... |
+| P3 | ... | ... | ... |
 
 ### Risk Assessment
 - **Scope**: N files, M tests
@@ -183,13 +183,13 @@ A session is complete ONLY when:
 
 The PDA loop terminates when ALL of the following are true:
 
-1.  All tasks in the plan are checked off
-2.  5+ self-review iterations completed with zero concerns
-3.  CI shows 0 errors, 0 warnings on the branch
-4.  Cognitive brain status updated with patterns/learnings
-5.  Follow-up `@copilot` prompt posted on the PR
+1. All tasks in the plan are checked off
+2. 5+ self-review iterations completed with zero concerns
+3. CI shows 0 errors, 0 warnings on the branch
+4. Cognitive brain status updated with patterns/learnings
+5. Follow-up `@copilot` prompt posted on the PR
 
-If any criterion is not met → loop back to **PLAN** with updated context.
+If any criterion is not met loop back to **PLAN** with updated context.
 
 ---
 
@@ -198,10 +198,10 @@ If any criterion is not met → loop back to **PLAN** with updated context.
 The AfterMath (PDA) loop integrates with the cognitive brain:
 
 ```
-ASSESS output → Cognitive Brain Status file
-             → Memory facts (store_memory)
-             → Lessons learned document
-             → Follow-up prompt for next session
+ASSESS output Cognitive Brain Status file
+ Memory facts (store_memory)
+ Lessons learned document
+ Follow-up prompt for next session
 ```
 
 See [COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)
@@ -212,10 +212,10 @@ for the full cognitive brain documentation.
 ## Quick Reference Card
 
 ```
-PLAN  → load context → inventory → define success → post checklist
-DO    → minimal changes → parallel ops → incremental commits → document
-ASSESS → 5+ self-reviews → verify all criteria → update CB → post prompt
-LOOP  → until zero concerns → then terminate
+PLAN load context inventory define success post checklist
+DO minimal changes parallel ops incremental commits document
+ASSESS 5+ self-reviews verify all criteria update CB post prompt
+LOOP until zero concerns then terminate
 ```
 
 ---

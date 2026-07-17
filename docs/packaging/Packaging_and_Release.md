@@ -1,6 +1,6 @@
 # Packaging & Release — codex-ml
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide covers local, offline-friendly packaging for the Codex ML project.
 

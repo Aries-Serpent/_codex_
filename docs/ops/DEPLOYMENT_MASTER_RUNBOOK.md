@@ -1,11 +1,11 @@
 # Deployment & Operations Master Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Consolidated Master Document** for Codex Deployment  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Deployment
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Consolidated from** 10 source files:
 - docs/docs/release/ISOLATED_DEPLOYMENT.md
@@ -35,39 +35,39 @@
 ### Deployment Architecture
 
 ```
-┌──────────────────────────────────────────┐
-│ Source Code (GitHub)                     │
-│ - main branch                            │
-│ - release branches                       │
-└──────────┬───────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────┐
-│ Build Pipeline (GitHub Actions)          │
-│ - Tests, linting, security scans         │
-│ - Build Docker image                     │
-│ - Push to registry                       │
-└──────────┬───────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────┐
-│ Deployment Targets                       │
-│ - Staging (validation)                   │
-│ - Production (live)                      │
-│ - Offline (air-gapped)                   │
-│ - Isolated (sandboxed)                   │
-└──────────────────────────────────────────┘
+
+ Source Code (GitHub) 
+ - main branch 
+ - release branches 
+
+ 
+ 
+
+ Build Pipeline (GitHub Actions) 
+ - Tests, linting, security scans 
+ - Build Docker image 
+ - Push to registry 
+
+ 
+ 
+
+ Deployment Targets 
+ - Staging (validation) 
+ - Production (live) 
+ - Offline (air-gapped) 
+ - Isolated (sandboxed) 
+
 ```
 
 ### Supported Deployment Models
 
 | Model | Use Case | Infrastructure | Readiness |
 |-------|----------|-----------------|-----------|
-| **Standard** | Cloud deployment | AWS/GCP/Azure |  Ready |
-| **Docker** | Container-based | Docker/Podman |  Ready |
-| **Kubernetes** | Orchestrated | K8s 1.20+ |  Ready |
-| **Offline** | Air-gapped networks | Local + USB drives |  Ready |
-| **Isolated** | Sandboxed environment | Local VM/Container |  Ready |
+| **Standard** | Cloud deployment | AWS/GCP/Azure | Ready |
+| **Docker** | Container-based | Docker/Podman | Ready |
+| **Kubernetes** | Orchestrated | K8s 1.20+ | Ready |
+| **Offline** | Air-gapped networks | Local + USB drives | Ready |
+| **Isolated** | Sandboxed environment | Local VM/Container | Ready |
 
 ---
 
@@ -127,16 +127,16 @@ make deploy --dry-run
 **Deployment**:
 ```bash
 # 1. Build artifact
-docker build -t codex:v0.2.1 .
+docker build -t codex:v0.2.0 .
 
 # 2. Push to registry
-docker push registry.example.com/codex:v0.2.1
+docker push registry.example.com/codex:v0.2.0
 
 # 3. Update configuration
-sed -i 's/v0.2.1/v0.2.1/g' config/prod.yaml
+sed -i 's/v0.2.0/v0.2.0/g' config/prod.yaml
 
 # 4. Deploy
-terraform apply -var="image_tag=v0.2.1"
+terraform apply -var="image_tag=v0.2.0"
 
 # 5. Verify
 curl https://api.example.com/health
@@ -145,7 +145,7 @@ curl https://api.example.com/health
 **Rollback**:
 ```bash
 # Revert to previous version
-terraform apply -var="image_tag=v0.2.1"
+terraform apply -var="image_tag=v0.2.0"
 ```
 
 ### 2. Docker Deployment
@@ -167,11 +167,11 @@ docker stop codex || true
 
 # 3. Start new container
 docker run -d \
-  --name codex \
-  -p 8000:8000 \
-  -v /data:/app/data \
-  -e ENVIRONMENT=production \
-  codex:latest
+ --name codex \
+ -p 8000:8000 \
+ -v /data:/app/data \
+ -e ENVIRONMENT=production \
+ codex:latest
 
 # 4. Verify
 docker ps | grep codex
@@ -199,8 +199,8 @@ docker run -d --name codex ... codex:previous
 ```bash
 # 1. Update Helm chart values
 helm upgrade codex ./charts/codex \
-  --set image.tag=v0.2.1 \
-  --values values-prod.yaml
+ --set image.tag=v0.2.0 \
+ --values values-prod.yaml
 
 # 2. Monitor rollout
 kubectl rollout status deployment/codex
@@ -229,19 +229,19 @@ helm rollback codex 1
 **Preparation**:
 ```bash
 # On bootstrap machine with internet
-./offline_bootstrap.sh --version v0.2.1
+./offline_bootstrap.sh --version v0.2.0
 
 # Output:
-# - codex-v0.2.1-offline.tar.gz (8GB)
-# - dependencies-v0.2.1.tar.gz (2GB)
+# - codex-v0.2.0-offline.tar.gz (8GB)
+# - dependencies-v0.2.0.tar.gz (2GB)
 # - bootstrap-scripts.tar.gz (50MB)
 ```
 
 **Deployment**:
 ```bash
 # On offline machine
-tar xzf codex-v0.2.1-offline.tar.gz
-cd codex-v0.2.1
+tar xzf codex-v0.2.0-offline.tar.gz
+cd codex-v0.2.0
 ./deploy-offline.sh
 
 # Verify
@@ -264,9 +264,9 @@ docker build -t codex-isolated -f Dockerfile.isolated .
 
 # 2. Run in isolation
 docker run -it \
-  --network none \
-  --name codex-isolated \
-  codex-isolated
+ --network none \
+ --name codex-isolated \
+ codex-isolated
 
 # 3. Test functionality (internal only)
 curl http://localhost:8000/health
@@ -280,54 +280,54 @@ curl http://localhost:8000/health
 
 ```
 1. STAGING DEPLOYMENT
-   ├─ Deploy to staging environment
-   ├─ Run smoke tests
-   ├─ Validate data migration
-   └─ Get approval from QA team
+ Deploy to staging environment
+ Run smoke tests
+ Validate data migration
+ Get approval from QA team
 
 2. PRODUCTION DEPLOYMENT
-   ├─ Deploy to canary (5% traffic)
-   ├─ Monitor metrics for 30 minutes
-   ├─ Gradually increase to 100%
-   │  ├─ 25% at 15 minutes
-   │  ├─ 50% at 30 minutes
-   │  ├─ 100% at 45 minutes
-   └─ Monitor for 24 hours
+ Deploy to canary (5% traffic)
+ Monitor metrics for 30 minutes
+ Gradually increase to 100%
+ 25% at 15 minutes
+ 50% at 30 minutes
+ 100% at 45 minutes
+ Monitor for 24 hours
 
 3. POST-DEPLOYMENT
-   ├─ Update documentation
-   ├─ Notify users
-   ├─ Archive old artifacts
-   └─ Close deployment ticket
+ Update documentation
+ Notify users
+ Archive old artifacts
+ Close deployment ticket
 ```
 
 ### Deployment Rollout Strategy
 
 ```yaml
 canary_deployment:
-  stage_1:
-    traffic_percentage: 5
-    duration: 15 minutes
-    metrics_check: error_rate < 1%
-    decision: success → continue
+ stage_1:
+ traffic_percentage: 5
+ duration: 15 minutes
+ metrics_check: error_rate < 1%
+ decision: success continue
 
-  stage_2:
-    traffic_percentage: 25
-    duration: 15 minutes
-    metrics_check: latency p95 < 100ms
-    decision: success → continue
+ stage_2:
+ traffic_percentage: 25
+ duration: 15 minutes
+ metrics_check: latency p95 < 100ms
+ decision: success continue
 
-  stage_3:
-    traffic_percentage: 50
-    duration: 15 minutes
-    metrics_check: success_rate > 99.5%
-    decision: success → continue
+ stage_3:
+ traffic_percentage: 50
+ duration: 15 minutes
+ metrics_check: success_rate > 99.5%
+ decision: success continue
 
-  stage_4:
-    traffic_percentage: 100
-    duration: ongoing
-    metrics_check: all metrics nominal
-    decision: success → complete
+ stage_4:
+ traffic_percentage: 100
+ duration: ongoing
+ metrics_check: all metrics nominal
+ decision: success complete
 ```
 
 ---
@@ -359,15 +359,15 @@ echo " Smoke tests passed"
 # 1. Check error rate
 ERROR_RATE=$(curl -s http://metrics.example.com/error_rate)
 if (( $(echo "$ERROR_RATE > 1.0" | bc -l) )); then
-  echo " Error rate too high: $ERROR_RATE%"
-  exit 1
+ echo " Error rate too high: $ERROR_RATE%"
+ exit 1
 fi
 
 # 2. Check latency
 LATENCY_P95=$(curl -s http://metrics.example.com/latency_p95)
 if (( $(echo "$LATENCY_P95 > 100" | bc -l) )); then
-  echo " Latency too high: ${LATENCY_P95}ms"
-  exit 1
+ echo " Latency too high: ${LATENCY_P95}ms"
+ exit 1
 fi
 
 # All metrics nominal
@@ -381,15 +381,15 @@ echo " Metrics validation passed"
 MIGRATED_COUNT=$(psql -c "SELECT COUNT(*) FROM migrated_data")
 EXPECTED_COUNT=1000000
 if [[ $MIGRATED_COUNT -ne $EXPECTED_COUNT ]]; then
-  echo " Migration count mismatch: $MIGRATED_COUNT vs $EXPECTED_COUNT"
-  exit 1
+ echo " Migration count mismatch: $MIGRATED_COUNT vs $EXPECTED_COUNT"
+ exit 1
 fi
 
 # 2. Check data integrity
 INTEGRITY_CHECK=$(python scripts/validate_data_integrity.py)
 if [[ $INTEGRITY_CHECK != "OK" ]]; then
-  echo " Data integrity check failed"
-  exit 1
+ echo " Data integrity check failed"
+ exit 1
 fi
 
 echo " Data validation passed"
@@ -409,12 +409,12 @@ response_time: 10 minutes
 stakeholders: On-call engineer, TechLead
 
 steps:
-  1. Page on-call engineer
-  2. Assess impact (% users affected, duration)
-  3. Implement mitigation (enable cache, scale up)
-  4. Monitor metrics
-  5. Root cause analysis
-  6. Post-incident review
+ 1. Page on-call engineer
+ 2. Assess impact (% users affected, duration)
+ 3. Implement mitigation (enable cache, scale up)
+ 4. Monitor metrics
+ 5. Root cause analysis
+ 6. Post-incident review
 ```
 
 **Type 2: Error Rate Spike**
@@ -425,13 +425,13 @@ response_time: 2 minutes
 stakeholders: On-call engineer, TechLead, Manager
 
 steps:
-  1. Trigger automatic rollback
-  2. Page entire on-call team
-  3. Assess scope (API endpoints, user impact)
-  4. Implement manual fixes if rollback fails
-  5. Monitor recovery
-  6. Root cause analysis
-  7. Incident postmortem
+ 1. Trigger automatic rollback
+ 2. Page entire on-call team
+ 3. Assess scope (API endpoints, user impact)
+ 4. Implement manual fixes if rollback fails
+ 5. Monitor recovery
+ 6. Root cause analysis
+ 7. Incident postmortem
 ```
 
 **Type 3: Security Incident**
@@ -442,70 +442,70 @@ response_time: 5 minutes
 stakeholders: Security team, CISO, Legal
 
 steps:
-  1. Isolate affected systems
-  2. Preserve evidence (logs, memory dump)
-  3. Page security team
-  4. Notify affected users
-  5. Conduct forensic analysis
-  6. Implement fixes
-  7. Compliance review
+ 1. Isolate affected systems
+ 2. Preserve evidence (logs, memory dump)
+ 3. Page security team
+ 4. Notify affected users
+ 5. Conduct forensic analysis
+ 6. Implement fixes
+ 7. Compliance review
 ```
 
 ### Incident Escalation
 
 ```
 LEVEL 1: Individual contributor
-         - Monitor metrics
-         - Implement quick fixes
-         - Update status page
-         - 30-minute escalation timer
+ - Monitor metrics
+ - Implement quick fixes
+ - Update status page
+ - 30-minute escalation timer
 
 LEVEL 2: Engineering Lead
-         - Lead incident response
-         - Coordinate teams
-         - Make go/no-go decisions
-         - 60-minute escalation timer
+ - Lead incident response
+ - Coordinate teams
+ - Make go/no-go decisions
+ - 60-minute escalation timer
 
 LEVEL 3: Manager / Director
-         - Executive decision-making
-         - Customer communication
-         - Resource allocation
-         - 2-hour escalation timer
+ - Executive decision-making
+ - Customer communication
+ - Resource allocation
+ - 2-hour escalation timer
 
 LEVEL 4: VP / C-Suite
-         - Strategic decisions
-         - Major outage handling
-         - Legal/regulatory involvement
-         - Ongoing escalation
+ - Strategic decisions
+ - Major outage handling
+ - Legal/regulatory involvement
+ - Ongoing escalation
 ```
 
 ### Communication Protocol
 
 ```
 T+0: Incident detected
-     → Page on-call team
-     → Update status page: INVESTIGATING
-     → Create incident ticket
+ Page on-call team
+ Update status page: INVESTIGATING
+ Create incident ticket
 
 T+5: Initial assessment complete
-     → Brief stakeholders
-     → Estimate recovery time
-     → Update status page: IDENTIFIED
+ Brief stakeholders
+ Estimate recovery time
+ Update status page: IDENTIFIED
 
 T+15: Mitigation implemented
-     → Update status page: MONITORING
-     → ETA to full recovery
+ Update status page: MONITORING
+ ETA to full recovery
 
 T+30: Service recovered
-     → Update status page: RESOLVED
-     → Announce recovery
-     → Schedule postmortem
+ Update status page: RESOLVED
+ Announce recovery
+ Schedule postmortem
 
 T+2 days: Postmortem meeting
-     → Review root cause
-     → Discuss preventive measures
-     → Assign action items
-     → Publish report
+ Review root cause
+ Discuss preventive measures
+ Assign action items
+ Publish report
 ```
 
 ---
@@ -525,16 +525,16 @@ T+2 days: Postmortem meeting
 
 ```yaml
 auto_rollback:
-  triggers:
-    - error_rate > 5% for 2 minutes
-    - latency_p95 > 500ms for 5 minutes
-    - availability < 99% for 3 minutes
-    
-  action: Automatically rollback to previous release
-  
-  confirmation: Notify team, log rollback reason
-  
-  result: Service back to previous state within 2 minutes
+ triggers:
+ - error_rate > 5% for 2 minutes
+ - latency_p95 > 500ms for 5 minutes
+ - availability < 99% for 3 minutes
+ 
+ action: Automatically rollback to previous release
+ 
+ confirmation: Notify team, log rollback reason
+ 
+ result: Service back to previous state within 2 minutes
 ```
 
 ### Manual Rollback
@@ -545,7 +545,7 @@ kubectl rollout undo deployment/codex
 
 # For Docker Compose
 docker-compose down
-docker-compose up -d  # Uses previous image version
+docker-compose up -d # Uses previous image version
 
 # For Terraform
 git checkout HEAD~1 -- main.tf
@@ -568,4 +568,4 @@ helm rollback codex 1
 **This document is the authoritative deployment and operations guide for Codex.**
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (10 files merged)*
+*Consolidation Status: Complete (10 files merged)*

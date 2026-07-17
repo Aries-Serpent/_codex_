@@ -1,8 +1,8 @@
 # Integration Examples
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version:** 0.1.0  
+**Version:** 0.1.0
 **Last Updated: 2026-07-09
 **Audience:** Developers, Integration Engineers
 
@@ -30,10 +30,10 @@ scorer = IntelligenceScorer()
 
 # Define decision
 decision = {
-    "action": "deploy",
-    "environment": "production",
-    "confidence": 0.95,
-    "risk_level": "low"
+ "action": "deploy",
+ "environment": "production",
+ "confidence": 0.95,
+ "risk_level": "low"
 }
 
 # Score the decision
@@ -43,9 +43,9 @@ print(f"Intelligence Score: {score}")
 
 # Threshold-based action
 if score > 0.8:
-    print(" APPROVED: Deploy to production")
+ print(" APPROVED: Deploy to production")
 else:
-    print("⏸️ HOLD: Review decision before deploying")
+ print(" HOLD: Review decision before deploying")
 ```
 
 ---
@@ -93,9 +93,9 @@ pipeline = InferencePipeline("bert-base-uncased")
 
 # Prepare texts
 texts = [
-    "This movie is great!",
-    "I didn't like it.",
-    "!"
+ "This movie is great!",
+ "I didn't like it.",
+ "!"
 ]
 
 # Run inference
@@ -103,9 +103,9 @@ predictions = pipeline(texts, batch_size=32)
 
 # Process results
 for text, pred in zip(texts, predictions):
-    print(f"Text: {text}")
-    print(f"Prediction: {pred.label} (confidence: {pred.score:.2%})")
-    print()
+ print(f"Text: {text}")
+ print(f"Prediction: {pred.label} (confidence: {pred.score:.2%})")
+ print()
 ```
 
 ---
@@ -122,19 +122,19 @@ curl http://localhost:8000/health
 
 # Score endpoint
 curl -X POST http://localhost:8000/api/score \
-  -H "Content-Type: application/json" \
-  -d '{
-    "data": {
-      "action": "deploy",
-      "environment": "production"
-    }
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "data": {
+ "action": "deploy",
+ "environment": "production"
+ }
+ }'
 
 # Response
 {
-  "score": 0.89,
-  "confidence": 0.95,
-  "recommendation": "approve"
+ "score": 0.89,
+ "confidence": 0.95,
+ "recommendation": "approve"
 }
 ```
 
@@ -149,11 +149,11 @@ url = "http://localhost:8000/api/score"
 
 # Request payload
 payload = {
-    "data": {
-        "action": "deploy",
-        "environment": "production",
-        "risk_level": "low"
-    }
+ "data": {
+ "action": "deploy",
+ "environment": "production",
+ "risk_level": "low"
+ }
 }
 
 # Make request
@@ -161,12 +161,12 @@ response = requests.post(url, json=payload)
 
 # Handle response
 if response.status_code == 200:
-    result = response.json()
-    print(f"Score: {result['score']}")
-    print(f"Recommendation: {result['recommendation']}")
+ result = response.json()
+ print(f"Score: {result['score']}")
+ print(f"Recommendation: {result['recommendation']}")
 else:
-    print(f"Error: {response.status_code}")
-    print(response.text)
+ print(f"Error: {response.status_code}")
+ print(response.text)
 ```
 
 ### JavaScript/Node.js Example
@@ -175,24 +175,24 @@ else:
 const axios = require('axios');
 
 async function scoreDecision(data) {
-  try {
-    const response = await axios.post('http://localhost:8000/api/score', {
-      data: data
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error:', error.message);
-    throw error;
-  }
+ try {
+ const response = await axios.post('http://localhost:8000/api/score', {
+ data: data
+ });
+ return response.data;
+ } catch (error) {
+ console.error('Error:', error.message);
+ throw error;
+ }
 }
 
 // Usage
 scoreDecision({
-  action: 'deploy',
-  environment: 'production'
+ action: 'deploy',
+ environment: 'production'
 }).then(result => {
-  console.log(`Score: ${result.score}`);
-  console.log(`Recommendation: ${result.recommendation}`);
+ console.log(`Score: ${result.score}`);
+ console.log(`Recommendation: ${result.recommendation}`);
 });
 ```
 
@@ -222,9 +222,9 @@ import requests
 url = "http://codex-api-service.codex.svc.cluster.local:8000/api/score"
 
 response = requests.post(url, json={
-    "data": {
-        "action": "deploy"
-    }
+ "data": {
+ "action": "deploy"
+ }
 })
 
 print(response.json())
@@ -236,22 +236,22 @@ print(response.json())
 apiVersion: v1
 kind: Pod
 metadata:
-  name: client-pod
+ name: client-pod
 spec:
-  containers:
-  - name: client
-    image: python:3.12
-    command:
-    - /bin/sh
-    - -c
-    - |
-      pip install requests
-      python -c "
-      import requests
-      url = 'http://codex-api-service:8000/api/score'
-      result = requests.post(url, json={'data': {'action': 'deploy'}})
-      print(result.json())
-      "
+ containers:
+ - name: client
+ image: python:3.12
+ command:
+ - /bin/sh
+ - -c
+ - |
+ pip install requests
+ python -c "
+ import requests
+ url = 'http://codex-api-service:8000/api/score'
+ result = requests.post(url, json={'data': {'action': 'deploy'}})
+ print(result.json())
+ "
 ```
 
 ---
@@ -265,22 +265,22 @@ import requests
 from requests.exceptions import Timeout, ConnectionError
 
 try:
-    response = requests.post(
-        'http://localhost:8000/api/score',
-        json={'data': {...}},
-        timeout=10
-    )
-    response.raise_for_status()
-    result = response.json()
+ response = requests.post(
+ 'http://localhost:8000/api/score',
+ json={'data': {...}},
+ timeout=10
+ )
+ response.raise_for_status()
+ result = response.json()
 except Timeout:
-    print("Request timeout - service may be overloaded")
+ print("Request timeout - service may be overloaded")
 except ConnectionError:
-    print("Cannot reach service - check network/deployment")
+ print("Cannot reach service - check network/deployment")
 except requests.HTTPError as e:
-    print(f"HTTP error: {e.response.status_code}")
-    print(e.response.json())
+ print(f"HTTP error: {e.response.status_code}")
+ print(e.response.json())
 except Exception as e:
-    print(f"Unexpected error: {e}")
+ print(f"Unexpected error: {e}")
 ```
 
 ---

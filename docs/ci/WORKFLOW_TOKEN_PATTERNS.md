@@ -1,6 +1,6 @@
 # Workflow Token Patterns Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide provides standardized token usage patterns for GitHub Actions workflows. All 209 workflows should follow these patterns to ensure consistent, secure authentication and proper API access levels.
 
@@ -41,11 +41,11 @@ jobs:
 ```
 
 **When to Use:**
--  Modifying PR properties (title, body, labels)
--  Writing to repository variables
--  Triggering workflow dispatch
--  Creating/updating workflow runs
--  Managing repository settings via API
+- Modifying PR properties (title, body, labels)
+- Writing to repository variables
+- Triggering workflow dispatch
+- Creating/updating workflow runs
+- Managing repository settings via API
 
 ---
 
@@ -89,11 +89,11 @@ jobs:
 ```
 
 **When to Use:**
--  Listing/viewing workflow runs
--  Posting PR/issue comments
--  Managing artifacts (download, upload)
--  Reading repository data
--  Checking CI/CD status
+- Listing/viewing workflow runs
+- Posting PR/issue comments
+- Managing artifacts (download, upload)
+- Reading repository data
+- Checking CI/CD status
 
 ---
 
@@ -134,9 +134,9 @@ jobs:
 ```
 
 **When to Use:**
--  Workflows combining read and write operations
--  CI gates that read status and update variables
--  Monitoring workflows that collect data and post results
+- Workflows combining read and write operations
+- CI gates that read status and update variables
+- Monitoring workflows that collect data and post results
 
 ---
 
@@ -147,24 +147,24 @@ Critical operations are those that enforce system policies, manage rate limits, 
 **Critical Operation Categories:**
 
 1. **Workflow Execution Control (WEC)**
-   - Enforcing concurrency rules
-   - Managing workflow timeouts
-   - Controlling job execution flow
+ - Enforcing concurrency rules
+ - Managing workflow timeouts
+ - Controlling job execution flow
 
 2. **Rate Limit Management**
-   - Checking API rate limits
-   - Managing request queuing
-   - Implementing backoff strategies
+ - Checking API rate limits
+ - Managing request queuing
+ - Implementing backoff strategies
 
 3. **Session Management**
-   - Session state persistence
-   - Session cleanup and recovery
-   - Context synchronization
+ - Session state persistence
+ - Session cleanup and recovery
+ - Context synchronization
 
 4. **Infrastructure Policy Enforcement**
-   - Variable consistency checks
-   - Secret rotation verification
-   - Permission audits
+ - Variable consistency checks
+ - Secret rotation verification
+ - Permission audits
 
 **Implementation:**
 
@@ -261,11 +261,11 @@ The token being used lacks required permissions for the operation. This typicall
 2. If it's ELEVATED or CRITICAL, add CODEX_MASTER_KEY to the fallback chain:
    ```yaml
    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-   ```
+ ```
 3. For CRITICAL operations, remove github.token fallback:
    ```yaml
    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-   ```
+ ```
 4. Verify CODEX_MASTER_KEY secret exists in repository settings
 
 ---
@@ -282,12 +282,12 @@ Referenced secret doesn't exist in repository.
 
 **Solution:**
 1. Check secret name spelling and capitalization
-2. Verify secret exists in repository Settings → Secrets and variables → Actions
+2. Verify secret exists in repository Settings Secrets and variables Actions
 3. If using `secrets.GITHUB_TOKEN` - this doesn't exist! Use `github.token` instead
 4. Create missing secrets if needed:
    ```bash
    gh secret set CODEX_MASTER_KEY --body "your-token"
-   ```
+ ```
 
 ---
 
@@ -334,7 +334,7 @@ Too many API calls in short time period. GitHub allows 5,000 requests per hour p
    ```yaml
    - name: Check rate limits
      run: gh api /rate_limit -q '.rate | "\(.remaining)/\(.limit)"'
-   ```
+ ```
 
 2. Implement exponential backoff:
    ```yaml
@@ -343,7 +343,7 @@ Too many API calls in short time period. GitHub allows 5,000 requests per hour p
        for attempt in {1..3}; do
          gh api ... && break || sleep $((2**attempt))
        done
-   ```
+ ```
 
 3. Reduce API call frequency where possible
 4. Use pagination to batch requests efficiently
@@ -363,14 +363,14 @@ Environment differences between local and CI. Token scopes, permissions, or auth
 1. Add `--verbose` flag to gh commands for debugging:
    ```yaml
    run: gh pr view --verbose
-   ```
+ ```
 
 2. Check workflow permissions:
    ```yaml
    permissions:
      contents: read
      pull-requests: read  # Add required scopes
-   ```
+ ```
 
 3. Verify secrets are set (note: they won't display in logs)
 4. Use `gh auth status` to verify authentication:
@@ -379,7 +379,7 @@ Environment differences between local and CI. Token scopes, permissions, or auth
      run: |
        gh auth status
        gh auth token | head -c 20  # Show first 20 chars only
-   ```
+ ```
 
 ---
 

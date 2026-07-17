@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 18
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 18 of 32  
 **Sessions:** hardened-ci-autofix-2026-06-11 to auto-pda-2026-06-16  

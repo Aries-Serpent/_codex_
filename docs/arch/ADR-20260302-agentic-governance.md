@@ -1,6 +1,6 @@
 # ADR-20260302: Self-Healing CI Governance (Phases 5–6)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T07:00:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
@@ -8,13 +8,13 @@
 
 ## 1. Context
 
-Phases 1–4 of the Soft→GROUNDED conversion established the enforcement
+Phases 1–4 of the SoftGROUNDED conversion established the enforcement
 infrastructure (schema, gates, embeddings, FSM). However, without ongoing
 governance, these structures could regress:
 
 - A Tier-1 workflow could be downgraded to Tier-2 without detection.
 - Soft enforcement patterns (`::warning::` without `exit 1`) could be
-  introduced in new workflows.
+ introduced in new workflows.
 - CODEOWNERS entries for governance paths could be removed.
 - Semgrep rules could be disabled without audit.
 
@@ -59,11 +59,11 @@ Implement a three-pillar governance backbone:
 table from AGENT_REGISTRY.yaml:
 
 ```
-Tier        Count  Percentage
-──────────  ─────  ──────────
-GROUNDED        8       5.3%
-PARTIAL       142      93.4%
-SOFT            2       1.3%
+Tier Count Percentage
+ 
+GROUNDED 8 5.3%
+PARTIAL 142 93.4%
+SOFT 2 1.3%
 ```
 
 Integrated into `ci-health-monitor.yml` as a job summary step.
@@ -114,13 +114,13 @@ Integrated into `ci-health-monitor.yml` as a job summary step.
 
 ### Risks & Mitigations
 - **Risk**: Semgrep false positives block legitimate PRs.
-  **Mitigation**: Rules use `severity: WARNING` (not `ERROR`); `# nosemgrep`
-  inline suppression available for documented exceptions.
+ **Mitigation**: Rules use `severity: WARNING` (not `ERROR`); `# nosemgrep`
+ inline suppression available for documented exceptions.
 - **Risk**: Actionlint not installed in CI runner.
-  **Mitigation**: Workflow includes `brew install actionlint` setup step.
+ **Mitigation**: Workflow includes `brew install actionlint` setup step.
 - **Risk**: CODEOWNERS team membership changes.
-  **Mitigation**: Organization-level team management; documented in
-  `docs/admin/GENESIS_SETUP_GUIDE.md`.
+ **Mitigation**: Organization-level team management; documented in
+ `docs/admin/GENESIS_SETUP_GUIDE.md`.
 
 ## 7. Provenance & Compliance
 - **Actionlint**: `.github/workflows/actionlint-audit.yml` (Tier-1 GROUNDED)

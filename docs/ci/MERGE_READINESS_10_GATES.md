@@ -1,8 +1,8 @@
 # Pre-Merge Validation Gates — Complete Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:**  Authoritative Gate Definitions  
+**Status:** Authoritative Gate Definitions
 **Last Updated: 2026-06-25
 **Audience:** PR reviewers, CI/CD engineers, Copilot agents
 
@@ -26,13 +26,13 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Run Ruff linter: `python -m ruff check src/ tests/ --fix`
-   - Must pass with 0 violations
-   - Checks only E (error), F (Pyflakes), I (isort) rules
-   - Per-file ignores: E402, F811 (test-only exceptions)
+ - Must pass with 0 violations
+ - Checks only E (error), F (Pyflakes), I (isort) rules
+ - Per-file ignores: E402, F811 (test-only exceptions)
 
 2. Run MyPy type checker: `python -m mypy src/ --ignore-missing-imports`
-   - Must pass with all types covered
-   - Reports errors if any function has untyped parameters or returns
+ - Must pass with all types covered
+ - Reports errors if any function has untyped parameters or returns
 
 **Failure Criterion:** Any ruff error or mypy error blocks merge
 
@@ -74,24 +74,24 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Detect-secrets check:
-   ```bash
-   detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD)
-   ```
-   - Exit code 0 = pass (no new secrets)
-   - Exit code ≠ 0 = fail (new secrets detected)
+ ```bash
+ detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD)
+ ```
+ - Exit code 0 = pass (no new secrets)
+ - Exit code ≠ 0 = fail (new secrets detected)
 
 2. CodeQL alert count:
-   ```bash
-   gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open --jq '.[] | select(.rule.severity=="error" or .rule.severity=="warning") | .number'
-   ```
-   - Count open alerts
-   - Threshold: 0 new alerts introduced in this PR
+ ```bash
+ gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open --jq '.[] | select(.rule.severity=="error" or .rule.severity=="warning") | .number'
+ ```
+ - Count open alerts
+ - Threshold: 0 new alerts introduced in this PR
 
 3. Pip audit (CVE check):
-   ```bash
-   python -m pip_audit --skip-editable --desc
-   ```
-   - Exit code 0 = pass (no vulnerabilities)
+ ```bash
+ python -m pip_audit --skip-editable --desc
+ ```
+ - Exit code 0 = pass (no vulnerabilities)
 
 **Failure Criterion:** Any new secrets detected OR new CodeQL errors > threshold OR pip audit failures
 
@@ -110,27 +110,27 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Purpose:** Ensure Workflow Execution Checklist (WEC) is present and valid.
 
 **Validation Steps:**
-1. Check WEC section exists: `grep "##  Workflow Execution Checklist" pr_body`
+1. Check WEC section exists: `grep "## Workflow Execution Checklist" pr_body`
 2. Validate all 9 items present:
-   - pre-merge-validation.yml
-   - comment-review-gate.yml
-   - deferral-language-gate.yml
-   - agent-auth-delegation.yml
-   - workflow-execution-gate.yml
-   - copilot-agent-checkin.yml
-   - copilot-agent-session-done.yml
-   - copilot-iterative-self-healing.yml
-   - cost-gate.yml
+ - pre-merge-validation.yml
+ - comment-review-gate.yml
+ - deferral-language-gate.yml
+ - agent-auth-delegation.yml
+ - workflow-execution-gate.yml
+ - copilot-agent-checkin.yml
+ - copilot-agent-session-done.yml
+ - copilot-iterative-self-healing.yml
+ - cost-gate.yml
 
 3. Validate always-required items are `[x]`:
-   - pre-merge-validation.yml: MUST be `[x]`
-   - comment-review-gate.yml: MUST be `[x]`
-   - deferral-language-gate.yml: MUST be `[x]`
-   - agent-auth-delegation.yml: MUST be `[x]`
-   - workflow-execution-gate.yml: MUST be `[x]`
-   - cost-gate.yml: MUST be `[x]`
+ - pre-merge-validation.yml: MUST be `[x]`
+ - comment-review-gate.yml: MUST be `[x]`
+ - deferral-language-gate.yml: MUST be `[x]`
+ - agent-auth-delegation.yml: MUST be `[x]`
+ - workflow-execution-gate.yml: MUST be `[x]`
+ - cost-gate.yml: MUST be `[x]`
 
-**Failure Criterion:** Missing WEC section OR incomplete items OR always-required items unchecked → blocks merge
+**Failure Criterion:** Missing WEC section OR incomplete items OR always-required items unchecked blocks merge
 
 **PR Body Impact:**
 - Record: " WEC Integrity (14/14): All 9 items present, all always-required checked"
@@ -161,7 +161,7 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 2. Use regex + optional ML classifier (TF-IDF)
 3. Report any matches
 
-**Failure Criterion:** Any prohibited phrase detected → blocks merge
+**Failure Criterion:** Any prohibited phrase detected blocks merge
 
 **PR Body Impact:**
 - Record: " Deferral Language (10/10): No prohibited phrases detected"
@@ -192,11 +192,11 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 1. Fetch all PR comments via GitHub API
 2. Filter by author (blocking list)
 3. Check for resolution:
-   - Comment marked as "Resolved" in conversation
-   - OR agent replied with commit SHA pointing to fix
-   - OR maintainer explicitly approved
+ - Comment marked as "Resolved" in conversation
+ - OR agent replied with commit SHA pointing to fix
+ - OR maintainer explicitly approved
 
-**Failure Criterion:** Unresolved blocking comment from maintainer or security bot → blocks merge
+**Failure Criterion:** Unresolved blocking comment from maintainer or security bot blocks merge
 
 **PR Body Impact:**
 - Record: " Comment Review (12/12): All 2 blocking comments resolved"
@@ -214,30 +214,30 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Check `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in last commit
-   ```bash
-   git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
-   ```
+ ```bash
+ git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+ ```
 
 2. Check `CHANGELOG.md` updated in last commit
-   ```bash
-   git diff --name-only HEAD~1 HEAD | grep -q "CHANGELOG.md"
-   ```
+ ```bash
+ git diff --name-only HEAD~1 HEAD | grep -q "CHANGELOG.md"
+ ```
 
 3. Validate entry format:
-   - Timestamp included
-   - Session ID recorded
-   - Changes summarized
-   - Author/agent recorded
+ - Timestamp included
+ - Session ID recorded
+ - Changes summarized
+ - Author/agent recorded
 
 **Auto-Fix Mechanism:**
 - If either file missing from last commit, `session_wrapup_autofix.py --fix` runs automatically
 - Appends minimal entry if needed (marks as "[auto-generated]")
 
-**Failure Criterion:** Either file missing after auto-fix attempt → manual update required OR auto-fix succeeds (no blocking failure)
+**Failure Criterion:** Either file missing after auto-fix attempt manual update required OR auto-fix succeeds (no blocking failure)
 
 **PR Body Impact:**
 - Record: " Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated 2026-07-13
-- Or: "️ Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"
+- Or: " Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"
 
 **Weight:** 8 points
 
@@ -262,11 +262,11 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 3. Compare version against approved list
 4. Auto-fix via: `python scripts/ci/enforce_actions_versions.py --fix`
 
-**Failure Criterion:** Unapproved action version detected after auto-fix → blocks merge
+**Failure Criterion:** Unapproved action version detected after auto-fix blocks merge
 
 **PR Body Impact:**
 - Record: " Action Versions (7/7): All actions use approved versions"
-- Or: " Action Versions (7/7): Auto-fixed 2 action versions (actions/checkout v4→v5, actions/setup-python v5→v6)"
+- Or: " Action Versions (7/7): Auto-fixed 2 action versions (actions/checkout v4v5, actions/setup-python v5v6)"
 
 **Weight:** 7 points
 
@@ -280,17 +280,17 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Run actionlint on all workflow files:
-   ```bash
-   actionlint .github/workflows/*.yml 2>&1 | grep -c error
-   ```
-   - Exit code 0 = pass (0 errors)
-   - Exit code ≠ 0 = fail (errors found)
+ ```bash
+ actionlint .github/workflows/*.yml 2>&1 | grep -c error
+ ```
+ - Exit code 0 = pass (0 errors)
+ - Exit code ≠ 0 = fail (errors found)
 
 2. Run yamllint:
-   ```bash
-   yamllint .github/workflows/ --config-file .yamllint.yml
-   ```
-   - Checks indentation, key ordering, line length
+ ```bash
+ yamllint .github/workflows/ --config-file .yamllint.yml
+ ```
+ - Checks indentation, key ordering, line length
 
 **Common Issues Fixed:**
 - Missing spaces after list markers (e.g., `- name:` vs `-name:`)
@@ -298,7 +298,7 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 - Unquoted long strings with special characters
 - Shell braces in flow scalars (must use `run: |`)
 
-**Failure Criterion:** Any actionlint error OR yamllint error → blocks merge
+**Failure Criterion:** Any actionlint error OR yamllint error blocks merge
 
 **PR Body Impact:**
 - Record: " Workflow Syntax (7/7): 0 actionlint errors, 0 yamllint errors"
@@ -316,21 +316,21 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Check for unresolved merge conflicts:
-   ```bash
-   git diff --name-only --diff-filter=U
-   ```
-   - Must return empty (no unmerged files)
+ ```bash
+ git diff --name-only --diff-filter=U
+ ```
+ - Must return empty (no unmerged files)
 
 2. Verify branch up-to-date:
-   - Compare PR base (usually `main`) to current branch
-   - If diverged, confirm documented reason in PR body
+ - Compare PR base (usually `main`) to current branch
+ - If diverged, confirm documented reason in PR body
 
 3. Check branch protection rules:
-   - All required status checks pass
-   - All required reviews completed
-   - No blocking dismissals
+ - All required status checks pass
+ - All required reviews completed
+ - No blocking dismissals
 
-**Failure Criterion:** Unresolved conflicts OR outdated branch (without documented reason) → blocks merge
+**Failure Criterion:** Unresolved conflicts OR outdated branch (without documented reason) blocks merge
 
 **PR Body Impact:**
 - Record: " Merge Dependencies (3/3): Branch clean, up-to-date with main, all protections satisfied"
@@ -348,35 +348,35 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 merge_readiness_score = Σ(gate_weight × gate_pass_rate)
 
 where:
-  gate_pass_rate = 1.0 if gate passes
-                 = 0.5 if gate partially passes (with documented gap)
-                 = 0.0 if gate fails
+ gate_pass_rate = 1.0 if gate passes
+ = 0.5 if gate partially passes (with documented gap)
+ = 0.0 if gate fails
 ```
 
 ### Example Score Calculation
 
 | Gate | Weight | Status | Rate | Contribution |
 |------|--------|--------|------|--------------|
-| Code Quality | 12 |  Pass | 1.0 | 12 |
-| Test Coverage | 12 |  Pass | 1.0 | 12 |
-| Security | 15 | ️ Partial | 0.5 | 7.5 |
-| WEC Integrity | 14 |  Pass | 1.0 | 14 |
-| Deferral Language | 10 |  Pass | 1.0 | 10 |
-| Comment Review | 12 |  Fail | 0.0 | 0 |
-| Accountability | 8 |  Pass | 1.0 | 8 |
-| Action Versions | 7 |  Pass | 1.0 | 7 |
-| Workflow Syntax | 7 |  Pass | 1.0 | 7 |
-| Merge Dependencies | 3 |  Pass | 1.0 | 3 |
+| Code Quality | 12 | Pass | 1.0 | 12 |
+| Test Coverage | 12 | Pass | 1.0 | 12 |
+| Security | 15 | Partial | 0.5 | 7.5 |
+| WEC Integrity | 14 | Pass | 1.0 | 14 |
+| Deferral Language | 10 | Pass | 1.0 | 10 |
+| Comment Review | 12 | Fail | 0.0 | 0 |
+| Accountability | 8 | Pass | 1.0 | 8 |
+| Action Versions | 7 | Pass | 1.0 | 7 |
+| Workflow Syntax | 7 | Pass | 1.0 | 7 |
+| Merge Dependencies | 3 | Pass | 1.0 | 3 |
 | **TOTAL** | **100** | **8/10 pass, 1 partial** | — | **80.5/100** |
 
 ### Interpretation
 
-- **0–29/100:**  Critical issues — cannot merge
-- **30–69/100:**  Major issues — significant remediation needed
-- **70–89/100:**  Moderate issues — address before merge
-- **90–94/100:**  Minor issues — close to ready
-- **95–99/100:**  Merge-ready (A+ grade)
-- **100/100:**  Perfect — all gates pass
+- **0–29/100:** Critical issues — cannot merge
+- **30–69/100:** Major issues — significant remediation needed
+- **70–89/100:** Moderate issues — address before merge
+- **90–94/100:** Minor issues — close to ready
+- **95–99/100:** Merge-ready (A+ grade)
+- **100/100:** Perfect — all gates pass
 
 ---
 
@@ -385,20 +385,20 @@ where:
 Use this format in every PR body to document gate status:
 
 ```markdown
-##  Merge Readiness Summary
+## Merge Readiness Summary
 
 | Gate | Weight | Status | Score |
 |------|--------|--------|-------|
-| Code Quality | 12 |  | 12/12 |
-| Test Coverage | 12 |  | 12/12 |
-| Security & Secrets | 15 | ️ Partial | 7.5/15 |
-| WEC Integrity | 14 |  | 14/14 |
-| Deferral Language | 10 |  | 10/10 |
-| Comment Review | 12 |  | 0/12 |
-| Accountability Report | 8 |  | 8/8 |
-| Action Versions | 7 |  | 7/7 |
-| Workflow Syntax | 7 |  | 7/7 |
-| Merge Dependencies | 3 |  | 3/3 |
+| Code Quality | 12 | | 12/12 |
+| Test Coverage | 12 | | 12/12 |
+| Security & Secrets | 15 | Partial | 7.5/15 |
+| WEC Integrity | 14 | | 14/14 |
+| Deferral Language | 10 | | 10/10 |
+| Comment Review | 12 | | 0/12 |
+| Accountability Report | 8 | | 8/8 |
+| Action Versions | 7 | | 7/7 |
+| Workflow Syntax | 7 | | 7/7 |
+| Merge Dependencies | 3 | | 3/3 |
 | **TOTAL** | **100** | **8/10** | **80.5/100** |
 
 ### Failing Gates (Remediation Required)
@@ -427,8 +427,8 @@ Use this format in every PR body to document gate status:
 Use this checklist when reviewing PRs against the 10-gate model:
 
 - [ ] **Gate 1:** Run `ruff check` + `mypy` locally on changed files?
-- [ ] **Gate 2:** Coverage ≥ 95%? (Check Actions → test report)
-- [ ] **Gate 3:** No new CodeQL alerts? (Check Actions → CodeQL report)
+- [ ] **Gate 2:** Coverage ≥ 95%? (Check Actions test report)
+- [ ] **Gate 3:** No new CodeQL alerts? (Check Actions CodeQL report)
 - [ ] **Gate 4:** WEC section present with 9 items, all always-required `[x]`?
 - [ ] **Gate 5:** No deferral language detected? (Check Comments)
 - [ ] **Gate 6:** All blocking comments resolved or replied to with commit SHA?
@@ -448,5 +448,5 @@ Use this checklist when reviewing PRs against the 10-gate model:
 
 ---
 
-**Status:**  Ready for Production Use  
+**Status:** Ready for Production Use
 **Last Validated:** 2026-06-25T15:50:00Z

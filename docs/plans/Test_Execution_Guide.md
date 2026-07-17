@@ -1,12 +1,12 @@
 # Test Execution Guide - Complete Instructions
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-**Generated**: 2026-06-22  
-**Status**: Ready for execution  
+**Generated**: 2026-06-22
+**Status**: Ready for execution
 **Expected Coverage**: 49-52% after all tests run
 
 ---
@@ -33,7 +33,7 @@ python -m pytest tests/agents/ --cov=agents --cov-report=term --cov-report=json 
 
 ---
 
-##  Step-by-Step Execution (Recommended for Validation)
+## Step-by-Step Execution (Recommended for Validation)
 
 ### Step 1: Run Phase 1 Completion Tests (5 minutes)
 
@@ -96,7 +96,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Issue: pytest not installed
 
@@ -132,7 +132,7 @@ pip install -e .
 
 ---
 
-##  Alternative: Run Tests by Phase
+## Alternative: Run Tests by Phase
 
 ### Phase 1 Only (All Phase 1 Test Files)
 
@@ -171,7 +171,7 @@ python -m pytest \
 
 ---
 
-##  Coverage Goals Validation
+## Coverage Goals Validation
 
 ### After Phase 1 Tests
 
@@ -200,7 +200,7 @@ python -c "import json; data = json.load(open('coverage.json')); print(f\"Phase 
 
 ---
 
-##  Expected Test Results Summary
+## Expected Test Results Summary
 
 | Test File | Tests | Expected Pass | Expected Skip | Coverage Gain |
 |-----------|-------|---------------|---------------|---------------|
@@ -212,7 +212,7 @@ python -c "import json; data = json.load(open('coverage.json')); print(f\"Phase 
 
 ---
 
-##  If Coverage < 50% - Additional Steps
+## If Coverage < 50% - Additional Steps
 
 ### Analyze Remaining Gaps
 
@@ -246,7 +246,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 
 ---
 
-##  Validation Checklist
+## Validation Checklist
 
 Use this checklist to verify test execution:
 
@@ -261,29 +261,29 @@ Use this checklist to verify test execution:
 
 ---
 
-## 🎉 Success Criteria
+## Success Criteria
 
 ### Minimum Success (Pass)
--  At least 300 tests pass
--  Coverage ≥ 45%
--  No critical import errors
--  Phase 1 target (30%) exceeded
+- At least 300 tests pass
+- Coverage ≥ 45%
+- No critical import errors
+- Phase 1 target (30%) exceeded
 
 ### Expected Success (Good)
--  At least 330 tests pass
--  Coverage ≥ 49%
--  Phase 2 target (50%) nearly achieved
--  Less than 50 tests skipped
+- At least 330 tests pass
+- Coverage ≥ 49%
+- Phase 2 target (50%) nearly achieved
+- Less than 50 tests skipped
 
 ### Optimal Success (Excellent)
--  At least 350 tests pass
--  Coverage ≥ 52%
--  Phase 2 target (50%) exceeded
--  Less than 25 tests skipped
+- At least 350 tests pass
+- Coverage ≥ 52%
+- Phase 2 target (50%) exceeded
+- Less than 25 tests skipped
 
 ---
 
-##  Coverage Report Interpretation
+## Coverage Report Interpretation
 
 ### After Running Tests
 
@@ -299,16 +299,16 @@ firefox htmlcov/index.html  # or your browser
 
 1. **Total Coverage**: Should be 49-52%
 2. **Per-Module Coverage**:
-   - physics_orchestrator: 35-45%
-   - quantum_game_theory: 40-50%
-   - mental_mapping: 40-50%
-   - exceptions: 92%+ (already achieved)
+ - physics_orchestrator: 35-45%
+ - quantum_game_theory: 40-50%
+ - mental_mapping: 40-50%
+ - exceptions: 92%+ (already achieved)
 
 3. **Missing Lines**: Check HTML report for uncovered lines
 
 ---
 
-##  Continuous Integration
+## Continuous Integration
 
 ### For CI/CD Pipeline
 
@@ -327,7 +327,7 @@ firefox htmlcov/index.html  # or your browser
 
 ---
 
-## 📞 Support
+## Support
 
 ### If Tests Fail
 
@@ -351,14 +351,14 @@ firefox htmlcov/index.html  # or your browser
 
 ---
 
-##  Next Steps After Achieving 50%
+## Next Steps After Achieving 50%
 
-### Phase 3 Planning (50% → 70%)
+### Phase 3 Planning (50% 70%)
 
 1. **Analyze integration opportunities**:
    ```bash
    python tools/coverage_physics_toolkit.py --mode analyze --module agents.physics_orchestrator
-   ```
+ ```
 
 2. **Focus on cross-module tests** using Table 3 (Multi-Orchestrator Patterns)
 
@@ -368,7 +368,7 @@ firefox htmlcov/index.html  # or your browser
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Status**: Ready for execution  
+**Document Version**: 1.0
+**Last Updated**: 2026-06-22
+**Status**: Ready for execution
 **Expected Success Rate**: 95%+ (based on validation)

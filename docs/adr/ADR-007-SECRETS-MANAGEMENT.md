@@ -1,11 +1,11 @@
 # ADR-007: Environment-Based Secrets Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Accepted  
-**Date:** 2026-07-10  
-**Author:** @mbaetiong  
-**Session:** S250-doc-arch  
+**Status:** Accepted
+**Date:** 2026-07-10
+**Author:** @mbaetiong
+**Session:** S250-doc-arch
 
 ---
 
@@ -19,9 +19,9 @@ The platform needs to manage secrets (API keys, database passwords, tokens) secu
 4. **Must rotate** — Secrets should rotate without code changes
 
 Previous approaches stored secrets in:
-- Hardcoded strings 
-- Config files 
-- `.env` files (now only for local dev) 
+- Hardcoded strings
+- Config files
+- `.env` files (now only for local dev)
 
 ---
 
@@ -191,16 +191,16 @@ def refresh_secrets():
 ## Security Guarantees
 
 **What is protected:**
- API keys  
- Database passwords  
- Encryption keys  
- OAuth tokens  
- Webhook signing secrets  
+ API keys
+ Database passwords
+ Encryption keys
+ OAuth tokens
+ Webhook signing secrets
 
 **What is NOT in .env:**
- Public configuration (feature flags) — goes in Hydra config  
- Non-sensitive settings — in config files  
- Schema definitions — in code  
+ Public configuration (feature flags) — goes in Hydra config
+ Non-sensitive settings — in config files
+ Schema definitions — in code
 
 ---
 
@@ -229,7 +229,7 @@ jobs:
 ```
 
 **Setting secrets in GitHub UI:**
-- Go to repo Settings → Secrets
+- Go to repo Settings Secrets
 - Click "New repository secret"
 - Name: `OPENAI_API_KEY`, Value: actual key
 - Secrets are masked in logs
@@ -239,17 +239,17 @@ jobs:
 ## Consequences
 
 ### Positive
- Secrets never committed to Git  
- Easy rotation without code changes  
- Different secrets per environment  
- No hardcoded values in codebase  
- Clear separation of concerns (config vs secrets)  
- Compatible with all cloud providers  
+ Secrets never committed to Git
+ Easy rotation without code changes
+ Different secrets per environment
+ No hardcoded values in codebase
+ Clear separation of concerns (config vs secrets)
+ Compatible with all cloud providers
 
 ### Negative
-️ Developers must manage local `.env` files  
-️ Missing secrets cause runtime errors (not startup)  
-️ Requires Vault setup for production  
+ Developers must manage local `.env` files
+ Missing secrets cause runtime errors (not startup)
+ Requires Vault setup for production
 
 ### Mitigations
 - `.env.example` as template for developers
@@ -268,7 +268,7 @@ jobs:
    git filter-branch --force --index-filter \
      'git rm --cached --ignore-unmatch .env' \
      HEAD
-   ```
+ ```
 
 2. **Rotate the secret** — change password/key at source
 3. **Force push** — update the repository

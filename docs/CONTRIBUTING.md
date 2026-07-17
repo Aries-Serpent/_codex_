@@ -1,9 +1,9 @@
 # Contributing to _codex_
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
-**Audience:** Contributors, Maintainers  
+**Audience:** Contributors, Maintainers
 **Related:** [Code Style Guide](guides/code_style_guide.md), [Testing Guide](TESTING.md), [Documentation Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
@@ -13,7 +13,7 @@
 Welcome! This guide helps you contribute to _codex_ successfully.
 
 ! note
-    This repository is designed for and managed by AI Assistants and Agents. All processes are automated and autonomous. Guidelines below support this workflow.
+ This repository is designed for and managed by AI Assistants and Agents. All processes are automated and autonomous. Guidelines below support this workflow.
 
 ---
 
@@ -130,7 +130,7 @@ SKIP=semgrep git commit -m "feat: description"
 ```
 
 ! note
-    Semgrep runs automatically on pre-push and in CI. Use `pre-commit run --all-files` for manual full scans.
+ Semgrep runs automatically on pre-push and in CI. Use `pre-commit run --all-files` for manual full scans.
 
 ---
 
@@ -147,7 +147,7 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 ### Using a Template
 
 1. Copy the template file
-2. Replace all `[PLACEHOLDER: ...]` entries
+2. Replace all `[To be updated by contributor]` entries
 3. Attach supporting assets (tests, notebooks)
 4. Document execution in "Execution Notes"
 5. Validate placeholders are resolved
@@ -155,14 +155,14 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 
 **Example:**
 ```
-[PLACEHOLDER: MIGRATION_INTENT_SUMMARY] 
-→ "Relocate tokenizer helpers to `codex.text`"  # pragma: allowlist secret
+[To be updated by contributor] 
+ "Relocate tokenizer helpers to `codex.text`" # pragma: allowlist secret
 
-[PLACEHOLDER: COMMAND_LIST]
-→ "`codex-cli sync`, `codex-cli diff`"
+[To be updated by contributor]
+ "`codex-cli sync`, `codex-cli diff`"
 
-[PLACEHOLDER: APPROVAL_DEADLINE]
-→ "2025-11-07"
+[To be updated by contributor]
+ "2025-11-07"
 ```
 
 ---
@@ -174,9 +174,9 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 Reinstall hooks:
 ```bash
 pre-commit install --install-hooks \
-  --hook-type pre-commit \
-  --hook-type pre-push \
-  --hook-type commit-msg
+ --hook-type pre-commit \
+ --hook-type pre-push \
+ --hook-type commit-msg
 ```
 
 ### Hook Configuration
@@ -198,13 +198,13 @@ Check `.pre-commit-config.yaml` for available stages. Values match hook names (`
 
 ### What Reviewers Check
 
--  Code follows style guide
--  Tests cover new code
--  Documentation is updated
--  Examples are working
--  No breaking changes (unless major version)
--  Commit messages are clear
--  Related issues are linked
+- Code follows style guide
+- Tests cover new code
+- Documentation is updated
+- Examples are working
+- No breaking changes (unless major version)
+- Commit messages are clear
+- Related issues are linked
 
 ### How to Prepare
 

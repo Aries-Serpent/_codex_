@@ -1,6 +1,6 @@
 # Infrastructure Basics
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > For AI Agents - Last updated: 2026-06-22
 
@@ -10,17 +10,17 @@ This document provides essential infrastructure knowledge for AI agents.
 
 ```
 _codex_/
-├── src/                 # Source code
-│   ├── agent/           # Agent core logic
-│   ├── config/          # Configuration modules
-│   ├── mcp/             # MCP integration
-│   ├── rag/             # RAG pipelines
-│   └── verification/    # CoVe implementation
-├── configs/             # YAML/JSON configuration
-├── prompts/             # System and domain prompts
-├── tests/               # Test suites
-├── docs/                # Documentation
-└── scripts/             # Utility scripts
+ src/ # Source code
+ agent/ # Agent core logic
+ config/ # Configuration modules
+ mcp/ # MCP integration
+ rag/ # RAG pipelines
+ verification/ # CoVe implementation
+ configs/ # YAML/JSON configuration
+ prompts/ # System and domain prompts
+ tests/ # Test suites
+ docs/ # Documentation
+ scripts/ # Utility scripts
 ```
 
 ## Key Configuration Files

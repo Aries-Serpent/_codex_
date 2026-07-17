@@ -1,6 +1,6 @@
 # [Validation]: Ephemeral self-hosted runner — drain queued runs from Codex env
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -25,7 +25,7 @@ bash scripts/runner/drain_queue_ephemeral.sh --owner "Aries-Serpent" --repo "_co
 ```text
 
 4) Watch Actions UI:
-- Each queued run should be picked up one-by-one and transition from Queued → In progress → Completed.
+- Each queued run should be picked up one-by-one and transition from Queued In progress Completed.
 
 Expected results
 - Queued runs decrement to zero.

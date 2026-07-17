@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/SECURITY_BEST_PRACTICES/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Security Best Practices Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2321,11 +2321,11 @@
 <a class="md-nav__link" href="#security-patterns-by-category">
 <span class="md-ellipsis">
       
-        🛡️ Security Patterns by Category
+        Security Patterns by Category
       
     </span>
 </a>
-<nav aria-label="🛡️ Security Patterns by Category" class="md-nav">
+<nav aria-label="Security Patterns by Category" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#model-loading-pytorch">
@@ -2693,7 +2693,7 @@
 <li>Include detailed context in logs</li>
 </ul>
 <hr/>
-<h2 id="security-patterns-by-category">🛡️ Security Patterns by Category<a class="headerlink" href="#security-patterns-by-category" title="Permanent link">¶</a></h2>
+<h2 id="security-patterns-by-category">Security Patterns by Category<a class="headerlink" href="#security-patterns-by-category" title="Permanent link">¶</a></h2>
 <h3 id="model-loading-pytorch">Model Loading (PyTorch)<a class="headerlink" href="#model-loading-pytorch" title="Permanent link">¶</a></h3>
 <h4 id="safe-pattern">SAFE Pattern<a class="headerlink" href="#safe-pattern" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">utils.safe_torch_loader</span> <span class="kn">import</span> <span class="n">safe_load</span>
@@ -2704,7 +2704,7 @@
 </code></pre></div>
 <h2 id="unsafe-pattern">UNSAFE Pattern<a class="headerlink" href="#unsafe-pattern" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># NEVER do this with untrusted models</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'untrusted.pth'</span><span class="p">)</span>  <span class="c1"># RCE vulnerability!</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'untrusted.pth'</span><span class="p">)</span> <span class="c1"># RCE vulnerability!</span>
 </code></pre></div>
 <p><strong>Why</strong>: <code>torch.load()</code> without <code>weights_only=True</code> can execute arbitrary code during deserialization.</p>
 <hr/>
@@ -2718,7 +2718,7 @@
 <h2 id="unsafe-pattern_1">UNSAFE Pattern<a class="headerlink" href="#unsafe-pattern_1" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># NEVER deserialize untrusted pickle data directly</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'untrusted.pkl'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  <span class="c1"># RCE vulnerability!</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># RCE vulnerability!</span>
 </code></pre></div>
 <p><strong>Why</strong>: Pickle can execute arbitrary code during deserialization. Only use RestrictedUnpickler for untrusted sources.</p>
 <p><strong>Alternative</strong>: Use safer formats for data exchange:
@@ -2740,9 +2740,9 @@
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="c1"># Use list form - safe from command injection</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">'git'</span><span class="p">,</span> <span class="s1">'status'</span><span class="p">,</span> <span class="s1">'--short'</span><span class="p">],</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>                       <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>                       <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>                       <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># If you must parse a string command</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="n">command</span> <span class="o">=</span> <span class="s2">"git status --short"</span>
@@ -2752,7 +2752,7 @@
 <h2 id="unsafe-pattern_2">UNSAFE Pattern<a class="headerlink" href="#unsafe-pattern_2" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># NEVER use shell=True with user input</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">user_input</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'file'</span><span class="p">)</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s1">'cat </span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Command injection!</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s1">'cat </span><span class="si">{</span><span class="n">user_input</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Command injection!</span>
 </code></pre></div>
 <p><strong>Why</strong>: <code>shell=True</code> interprets shell metacharacters, allowing command injection.</p>
 <hr/>
@@ -2768,7 +2768,7 @@
 </code></pre></div>
 <h2 id="unsafe-pattern_3">UNSAFE Pattern<a class="headerlink" href="#unsafe-pattern_3" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Don't use MD5 for security without marking it</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">hash_value</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>  <span class="c1"># Security warning!</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">hash_value</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">password</span><span class="p">)</span> <span class="c1"># Security warning!  # pragma: allowlist secret</span>
 </code></pre></div>
 <p><strong>Why</strong>: MD5 is cryptographically broken. Use SHA256+ for security, or explicitly mark MD5 as non-security use.</p>
 <hr/>
@@ -2778,28 +2778,28 @@
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>logger = logging.getLogger(__name__)
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>try:
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    risky_operation()
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> risky_operation()
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>except FileNotFoundError as e:
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    # Specific exception, with logging
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    logger.warning(f"File not found: {e}", exc_info=True)
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    return default_value
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> # Specific exception, with logging
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> logger.warning(f"File not found: {e}", exc_info=True)
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> return default_value
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>except PermissionError as e:
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    # Critical error - log and re-raise
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    logger.error(f"Permission denied: {e}", exc_info=True)
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    raise
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> # Critical error - log and re-raise
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> logger.error(f"Permission denied: {e}", exc_info=True)
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> raise
 </code></pre></div>
 <h4 id="unsafe-pattern_4">UNSAFE Pattern<a class="headerlink" href="#unsafe-pattern_4" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Silent failure - hides bugs</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">risky_operation</span><span class="p">()</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">risky_operation</span><span class="p">()</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="k">except</span><span class="p">:</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="k">pass</span>  <span class="c1"># No logging, no visibility!</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="k">pass</span> <span class="c1"># No logging, no visibility!</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="c1"># Overly broad exception catching</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    <span class="n">operation</span><span class="p">()</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># Too broad</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    <span class="k">pass</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="n">operation</span><span class="p">()</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="c1"># Too broad</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="k">pass</span>
 </code></pre></div>
 <p><strong>Why</strong>: Silent failures make debugging impossible. Always log exceptions with context.</p>
 <hr/>
@@ -2814,25 +2814,25 @@
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/upload"</span><span class="p">)</span>
 <a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">UploadFile</span><span class="p">):</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="c1"># Validate file size</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>    <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">APIConfig</span><span class="o">.</span><span class="n">MAX_UPLOAD_SIZE</span><span class="p">:</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="mi">413</span><span class="p">,</span> <span class="s2">"File too large"</span><span class="p">)</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="c1"># Validate file size</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">APIConfig</span><span class="o">.</span><span class="n">MAX_UPLOAD_SIZE</span><span class="p">:</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="mi">413</span><span class="p">,</span> <span class="s2">"File too large"</span><span class="p">)</span>
 <a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    <span class="c1"># Validate file type</span>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    <span class="n">allowed_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'text/plain'</span><span class="p">,</span> <span class="s1">'application/json'</span><span class="p">}</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">content_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_types</span><span class="p">:</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="mi">415</span><span class="p">,</span> <span class="s2">"Unsupported media type"</span><span class="p">)</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> <span class="c1"># Validate file type</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> <span class="n">allowed_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'text/plain'</span><span class="p">,</span> <span class="s1">'application/json'</span><span class="p">}</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">content_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_types</span><span class="p">:</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="mi">415</span><span class="p">,</span> <span class="s2">"Unsupported media type"</span><span class="p">)</span>
 <a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>    <span class="c1"># Process file safely</span>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>    <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">}</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="c1"># Process file safely</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a> <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">}</span>
 </code></pre></div>
 <h4 id="unsafe-pattern_5">UNSAFE Pattern<a class="headerlink" href="#unsafe-pattern_5" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># No validation, no size limits</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/upload"</span><span class="p">)</span>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">UploadFile</span><span class="p">):</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># No size limit! DoS risk</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="nb">eval</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>  <span class="c1"># Never eval user input! RCE risk</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># No size limit! DoS risk</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="nb">eval</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="c1"># Never eval user input! RCE risk</span>
 </code></pre></div>
 <p><strong>Why</strong>: Always validate and limit user input. Never execute user-provided code.</p>
 <hr/>
@@ -2970,8 +2970,8 @@
 <li><strong>Stay updated</strong>: Follow security advisories for dependencies</li>
 </ul>
 <hr/>
-<p><strong>Last Updated</strong>: 2025-12-22<br/>
-<strong>Version</strong>: 1.0<br/>
+<p><strong>Last Updated</strong>: 2025-12-22
+<strong>Version</strong>: 1.0
 <strong>Owner</strong>: Security Team</p>
 </article>
 </div>
@@ -3002,6 +3002,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

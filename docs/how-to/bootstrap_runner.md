@@ -1,9 +1,9 @@
-# [How-to]: Bootstrap Self‑Hosted GitHub Actions Runner  
+# [How-to]: Bootstrap Self‑Hosted GitHub Actions Runner
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Prereqs
 - Online opt‑in: CODEX_NET_MODE=online_allowlist; CODEX_ALLOWLIST_HOSTS=api.github.com
@@ -26,7 +26,7 @@ python -m scripts.ops.bootstrap_self_hosted_runner --owner <org> --repo <name> -
 ```text
 
 Notes
-- Uses ephemeral App→Installation tokens, then a short‑lived runner registration token.
+- Uses ephemeral AppInstallation tokens, then a short‑lived runner registration token.
 - No tokens are persisted to disk.
 - Service install requires sudo; use --no-service to skip.
 

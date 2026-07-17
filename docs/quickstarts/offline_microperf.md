@@ -1,6 +1,6 @@
 # Offline micro-perf & observability (addendum)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -45,11 +45,16 @@ export MLFLOW_TRACKING_URI="file:./artifacts/mlruns"
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CLI, Trainer / Bench'}}%%
+
 flowchart LR
   subgraph Local
+
     U[CLI] --> T[Trainer / Bench]
+
     T -->|metrics| ML[(MLflow file store)]
+
     T -->|checkpoints| A[(./artifacts)]
+
     T -->|system stats| LOG[(logs)]
   end
 ```text

@@ -1,6 +1,6 @@
 # Guide: Security Logging and Redaction Policy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -9,7 +9,7 @@
 - Maintain actionable audit trails with minimal exposure.
 
 ## Redaction Rules
-- Tokens, API keys, secrets → redact to `"***"`.
+- Tokens, API keys, secrets redact to `"***"`.
 - File paths may be truncated to basename in user-facing logs.
 - Request/response bodies: log schema-only summaries for PII-prone endpoints.
 

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PRE_COMMIT_VERIFICATION/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Pre-commit Verification Hook - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2330,11 +2330,11 @@
 <a class="md-nav__link" href="#sample-output">
 <span class="md-ellipsis">
       
-        📄 Sample Output
+        Sample Output
       
     </span>
 </a>
-<nav aria-label="📄 Sample Output" class="md-nav">
+<nav aria-label="Sample Output" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#all-files-staged">
@@ -2349,7 +2349,7 @@
 <a class="md-nav__link" href="#missing-files">
 <span class="md-ellipsis">
       
-        Missing Files ️
+        Missing Files
       
     </span>
 </a>
@@ -2441,7 +2441,7 @@
 <a class="md-nav__link" href="#testing">
 <span class="md-ellipsis">
       
-        🧪 Testing
+        Testing
       
     </span>
 </a>
@@ -2468,7 +2468,7 @@
 <a class="md-nav__link" href="#safety-features">
 <span class="md-ellipsis">
       
-        🛡️ Safety Features
+        Safety Features
       
     </span>
 </a>
@@ -2477,7 +2477,7 @@
 <a class="md-nav__link" href="#support">
 <span class="md-ellipsis">
       
-        📞 Support
+        Support
       
     </span>
 </a>
@@ -2493,8 +2493,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Version:</strong> 1.0.0<br/>
-<strong>Status:</strong>  Active<br/>
+<p><strong>Version:</strong> 1.0.0
+<strong>Status:</strong> Active
 <strong>Last Updated: 2026-07-11
 </strong>Cognitive Brain Plan:** Plan 1 of Short-term Planset (CB-ST-2026-02-05)</p>
 </blockquote>
@@ -2503,22 +2503,18 @@
 <p>The Pre-commit Verification Hook ensures that all files logged in <code>action_log.ndjson</code> as created or modified are properly staged before commit. This prevents accidental omission of files that were worked on during a session.</p>
 <hr/>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│                Pre-commit Verification Hook                  │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────┤
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│                                                              │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│  │   Action     │    │    Git       │    │   Report     │  │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│  │ Log Parser   │───▶│  Status      │───▶│  Generator   │  │
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│  └──────────────┘    └──────────────┘    └──────────────┘  │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│         │                   │                    │          │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│         ▼                   ▼                    ▼          │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│  │  Expected    │    │   Staged     │    │ Verification │  │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│  │   Files      │    │   Files      │    │    Result    │  │
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│  └──────────────┘    └──────────────┘    └──────────────┘  │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│                                                              │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└─────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Pre-commit Verification Hook 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Action Git Report 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Log Parser Status Generator 
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> Expected Staged Verification 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> Files Files Result 
 </code></pre></div>
 <hr/>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¶</a></h2>
@@ -2590,7 +2586,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="sample-output">📄 Sample Output<a class="headerlink" href="#sample-output" title="Permanent link">¶</a></h2>
+<h2 id="sample-output">Sample Output<a class="headerlink" href="#sample-output" title="Permanent link">¶</a></h2>
 <h3 id="all-files-staged">All Files Staged<a class="headerlink" href="#all-files-staged" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>============================================================
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>Pre-commit Verification Report
@@ -2601,16 +2597,16 @@
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>Missing from staging: 0
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> Staged Files (Correct):
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>   - scripts/hooks/pre_commit_verify.py
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>   - tests/hooks/test_pre_commit_verify.py
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>   - .pre-commit-config.yaml
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>   - docs/PRE_COMMIT_VERIFICATION.md
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>   - .codex/action_log.ndjson
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> - scripts/hooks/pre_commit_verify.py
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> - tests/hooks/test_pre_commit_verify.py
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> - .pre-commit-config.yaml
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> - docs/PRE_COMMIT_VERIFICATION.md
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> - .codex/action_log.ndjson
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>============================================================
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>INFO: All expected files are staged 
 </code></pre></div>
-<h3 id="missing-files">Missing Files ️<a class="headerlink" href="#missing-files" title="Permanent link">¶</a></h3>
+<h3 id="missing-files">Missing Files<a class="headerlink" href="#missing-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>============================================================
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Pre-commit Verification Report
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>============================================================
@@ -2620,19 +2616,19 @@
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>Missing from staging: 2
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> Staged Files (Correct):
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>   - scripts/hooks/pre_commit_verify.py
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>   - tests/hooks/test_pre_commit_verify.py
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>   - .pre-commit-config.yaml
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> - scripts/hooks/pre_commit_verify.py
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> - tests/hooks/test_pre_commit_verify.py
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> - .pre-commit-config.yaml
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>️  Modified but not staged (need `git add`):
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>   - docs/PRE_COMMIT_VERIFICATION.md
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> Modified but not staged (need `git add`):
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> - docs/PRE_COMMIT_VERIFICATION.md
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>️  Untracked files (need `git add`):
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>   - .codex/new_file.md
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> Untracked files (need `git add`):
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> - .codex/new_file.md
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
 <a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>To stage missing files:
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>   git add docs/PRE_COMMIT_VERIFICATION.md
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>   git add .codex/new_file.md
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> git add docs/PRE_COMMIT_VERIFICATION.md
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> git add .codex/new_file.md
 <a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>
 <a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>============================================================
 <a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>ERROR: Some expected files are not staged!
@@ -2676,14 +2672,14 @@
 <h2 id="pre-commit-configuration">Pre-commit Configuration<a class="headerlink" href="#pre-commit-configuration" title="Permanent link">¶</a></h2>
 <p>The hook is configured in <code>.pre-commit-config.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">hooks</span><span class="p">:</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">verify-expected-files</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify expected files from action log are staged</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">      </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/hooks/pre_commit_verify.py --check-only --quiet</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">      </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">system</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">      </span><span class="nt">pass_filenames</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">      </span><span class="nt">always_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">      </span><span class="nt">stages</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">commit</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w w-Error"> </span><span class="nt">hooks</span><span class="p">:</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">verify-expected-files</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify expected files from action log are staged</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/hooks/pre_commit_verify.py --check-only --quiet</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">system</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nt">pass_filenames</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="nt">always_run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w"> </span><span class="nt">stages</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">commit</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="configuration-options">Configuration Options<a class="headerlink" href="#configuration-options" title="Permanent link">¶</a></h3>
 <table>
@@ -2713,7 +2709,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="testing">🧪 Testing<a class="headerlink" href="#testing" title="Permanent link">¶</a></h2>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">¶</a></h2>
 <p>Run the test suite:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Run all tests</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>pytest<span class="w"> </span>tests/hooks/test_pre_commit_verify.py<span class="w"> </span>-v
@@ -2742,7 +2738,7 @@
 <li>Session Manager: <code>scripts/cognitive/session_manager.py</code></li>
 </ul>
 <hr/>
-<h2 id="safety-features">🛡️ Safety Features<a class="headerlink" href="#safety-features" title="Permanent link">¶</a></h2>
+<h2 id="safety-features">Safety Features<a class="headerlink" href="#safety-features" title="Permanent link">¶</a></h2>
 <ol>
 <li><strong>Check-only Mode:</strong> Won't block commits by default</li>
 <li><strong>Quiet Mode:</strong> Minimal output for clean git experience</li>
@@ -2751,12 +2747,12 @@
 <li><strong>Graceful Degradation:</strong> Works even if action log is missing</li>
 </ol>
 <hr/>
-<h2 id="support">📞 Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <p>For issues or enhancements:
 - Create an issue with <code>[pre-commit-verify]</code> tag
 - Contact: @mbaetiong</p>
 <hr/>
-<p><strong>Document Version:</strong> 1.0.0<br/>
+<p><strong>Document Version:</strong> 1.0.0
 **Last Updated: 2026-07-11</p>
 </article>
 </div>
@@ -2787,6 +2783,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

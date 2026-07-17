@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260303-first-d-capable-promotion/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-20260303: First D_CAPABLE Agent Promotion — ci-testing-agent - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2387,8 +2387,8 @@ Status: Accepted
 Related PRs: #3494</p>
 </blockquote>
 <h2 id="1-context">1. Context<a class="headerlink" href="#1-context" title="Permanent link">¶</a></h2>
-<p>The E→D Transition Readiness Gate (<code>e-to-d-transition-gate.yml</code>) has held
-a 5/5 score since PR #3447 merged the Soft→GROUNDED infrastructure.
+<p>The ED Transition Readiness Gate (<code>e-to-d-transition-gate.yml</code>) has held
+a 5/5 score since PR #3447 merged the SoftGROUNDED infrastructure.
 All prerequisite conditions for D_CAPABLE promotion have been met:</p>
 <table>
 <thead>
@@ -2421,7 +2421,7 @@ All prerequisite conditions for D_CAPABLE promotion have been met:</p>
 </tbody>
 </table>
 <p>The follow-up prompt for PR #3492 (<code>.codex/docs/FOLLOWUP_PROMPT_PR3492.md</code>)
-identifies Priority 2 as: <em>First D_CAPABLE Promotion</em>.  This ADR documents
+identifies Priority 2 as: <em>First D_CAPABLE Promotion</em>. This ADR documents
 the criteria, candidate selection, and decision for that initial promotion.</p>
 <h2 id="2-d_capable-criteria">2. D_CAPABLE Criteria<a class="headerlink" href="#2-d_capable-criteria" title="Permanent link">¶</a></h2>
 <p>An agent qualifies for <code>autonomy_model: D_CAPABLE</code> when it satisfies <strong>all</strong> of:</p>
@@ -2548,7 +2548,7 @@ operating model matures.</p>
 <tbody>
 <tr>
 <td>Infrastructure readiness</td>
-<td>E→D gate 5/5  — prerequisites fully met</td>
+<td>ED gate 5/5 — prerequisites fully met</td>
 </tr>
 <tr>
 <td>Highest frequency agent</td>
@@ -2612,19 +2612,19 @@ operating model matures.</p>
 <h3 id="risks-mitigations">Risks &amp; Mitigations<a class="headerlink" href="#risks-mitigations" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Risk</strong>: D_CAPABLE status allows autonomous execution that bypasses advisory review.
-  <strong>Mitigation</strong>: <code>enforcement_tier: GROUNDED</code> means all actions are CI-gated; the
-  <code>e-to-d-transition-gate.yml</code> demotion-annotation step catches any future compliance gap.</li>
+ <strong>Mitigation</strong>: <code>enforcement_tier: GROUNDED</code> means all actions are CI-gated; the
+ <code>e-to-d-transition-gate.yml</code> demotion-annotation step catches any future compliance gap.</li>
 <li><strong>Risk</strong>: Premature promotion before full D_CAPABLE semantics are implemented in orchestrator.
-  <strong>Mitigation</strong>: <code>orchestrator_routing.py</code> already differentiates E vs D_CAPABLE routing;
-  the promotion only changes the registry label, not the agent's code.</li>
+ <strong>Mitigation</strong>: <code>orchestrator_routing.py</code> already differentiates E vs D_CAPABLE routing;
+ the promotion only changes the registry label, not the agent's code.</li>
 <li><strong>Risk</strong>: Other agents promoted prematurely by following this precedent.
-  <strong>Mitigation</strong>: This ADR documents explicit criteria; future promotions must reference these criteria.</li>
+ <strong>Mitigation</strong>: This ADR documents explicit criteria; future promotions must reference these criteria.</li>
 </ul>
 <h2 id="8-provenance-compliance">8. Provenance &amp; Compliance<a class="headerlink" href="#8-provenance-compliance" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Gate</strong>: <code>e-to-d-transition-gate.yml</code> — score 5/5 at time of promotion</li>
 <li><strong>Follow-up</strong>: <code>.codex/docs/FOLLOWUP_PROMPT_PR3492.md</code> — Priority 2</li>
-<li><strong>Registry version</strong>: v0.2.1 → v0.2.1 (patch increment for D_CAPABLE field change)</li>
+<li><strong>Registry version</strong>: v0.2.1 v0.2.1 (patch increment for D_CAPABLE field change)</li>
 <li><strong>Change log</strong>: PR #3494 (this PR)</li>
 <li><strong>Next review</strong>: Promote second D_CAPABLE agent after 2-sprint observation period</li>
 </ul>
@@ -2657,6 +2657,6 @@ operating model matures.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

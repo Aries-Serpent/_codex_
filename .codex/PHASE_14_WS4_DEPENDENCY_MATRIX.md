@@ -26,7 +26,7 @@ Phase 14 Start (2026-07-24)
          ├─→ Feature rollout 10% → 100%
          |        (dependent on infra stability)
          |        ↓
-    v0.2.1 GA (T+6w)
+    v0.2.0 GA (T+6w)
          |
          ├─→ Security validation passes
          |
@@ -49,7 +49,7 @@ Phase 14 Start (2026-07-24)
 | **Owner** | WS2 lead (workflow-health-monitor) |
 | **Gate Condition** | Infrastructure deployment ≥80% complete |
 | **Gate Date** | Target: 2026-08-07T20:10Z (T+2 weeks) |
-| **Impact if Missed** | Feature rollout pauses at current %; v0.2.1 GA delayed |
+| **Impact if Missed** | Feature rollout pauses at current %; v0.2.0 GA delayed |
 | **Risk Level** | 🟡 MEDIUM (infrastructure deployment complexity) |
 | **Verification** | `.codex/PHASE_14_WS2_INFRASTRUCTURE_STATUS.md` section: "Completion Percentage" |
 | **Gate Bypass Authority** | @mbaetiong only (emergency override) |

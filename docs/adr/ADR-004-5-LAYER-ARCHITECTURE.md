@@ -1,11 +1,11 @@
 # ADR-004: 5-Layer Architecture for ML Platform Scalability
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Accepted  
-**Date:** 2026-07-10  
-**Author:** @mbaetiong  
-**Session:** S250-doc-arch  
+**Status:** Accepted
+**Date:** 2026-07-10
+**Author:** @mbaetiong
+**Session:** S250-doc-arch
 
 ---
 
@@ -43,16 +43,16 @@ Adopt a **5-layer architecture** with clear separation of concerns:
 ## Consequences
 
 ### Positive
- Clear responsibility boundaries make onboarding faster  
- Horizontal scaling easier with clear module boundaries  
- Independent testing and CI/CD per layer  
- Easier to replace/upgrade individual components  
- Reduces merge conflicts in large teams  
+ Clear responsibility boundaries make onboarding faster
+ Horizontal scaling easier with clear module boundaries
+ Independent testing and CI/CD per layer
+ Easier to replace/upgrade individual components
+ Reduces merge conflicts in large teams
 
 ### Negative
-️ More complex codebase structure initially  
-️ Requires documentation to maintain boundaries  
-️ May introduce slight performance overhead from abstraction layers  
+ More complex codebase structure initially
+ Requires documentation to maintain boundaries
+ May introduce slight performance overhead from abstraction layers
 
 ### Mitigations
 - Comprehensive documentation of interfaces
@@ -81,10 +81,10 @@ Adopt a **5-layer architecture** with clear separation of concerns:
 ---
 
 ## Implementation Status
- Architecture documented (this file)  
- Layer interfaces defined in codebase  
- CI/CD updated to respect layer boundaries  
-️ Legacy code gradually being refactored into layers  
+ Architecture documented (this file)
+ Layer interfaces defined in codebase
+ CI/CD updated to respect layer boundaries
+ Legacy code gradually being refactored into layers
 
 ---
 

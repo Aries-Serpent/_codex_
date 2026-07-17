@@ -1,11 +1,11 @@
 # [Report]: Expanded Transformed PR Overview — Deterministic Docs, Agent-Run, Optional Metrics & Stubs
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-> Generated: 2026-06-22 13:11:49 | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 13:11:49 | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## 1) Executive Summary
 
@@ -23,26 +23,26 @@ This PR establishes a deterministic docs build pipeline (S‑17), Agent‑run ha
 | Baselines | capture_baseline.sh, rotate_baselines.py | Provenance snapshots + rotation |
 | CI | space-audit.yml, tests.yml, docs.yml, PR template | Fast defaults, artifact uploads, opt‑ins |
 
-## 3) Review Feedback → Resolution Plan
+## 3) Review Feedback Resolution Plan
 
 | Finding | Impact | Resolution |
 |---------|--------|------------|
-| Makefile recipe lines missing tabs | Syntax error prevents make execution |  Fixed: Added tab characters to all recipe lines (status, quick, test, lint, env, perf, scan, deps targets) |
-| SKIP_OPTIONAL/FAIL_ON_MISSING variable assignment | Correct usage of ?= at Makefile top level |  Verified: Variables properly defined outside recipes using Makefile conditional assignment syntax |
-| Environment gating for heavy tests | Ensures fast CI defaults |  Implemented: pytest.ini markers, tests.yml workflow, run_tests.sh with ACCELERATE_TEST, RUN_LORA_TESTS, RUN_PERF_SMOKE gates |
-| Determinism verification | Critical for reproducible builds |  Implemented: canonicalize_artifacts.py, Determinism_Checklist.md with validation steps |
-| YAML linting configuration | Maintains workflow quality |  Implemented: .yamllint.yml with line-length: 140, truthy warnings, no document-start requirement |
+| Makefile recipe lines missing tabs | Syntax error prevents make execution | Fixed: Added tab characters to all recipe lines (status, quick, test, lint, env, perf, scan, deps targets) |
+| SKIP_OPTIONAL/FAIL_ON_MISSING variable assignment | Correct usage of ?= at Makefile top level | Verified: Variables properly defined outside recipes using Makefile conditional assignment syntax |
+| Environment gating for heavy tests | Ensures fast CI defaults | Implemented: pytest.ini markers, tests.yml workflow, run_tests.sh with ACCELERATE_TEST, RUN_LORA_TESTS, RUN_PERF_SMOKE gates |
+| Determinism verification | Critical for reproducible builds | Implemented: canonicalize_artifacts.py, Determinism_Checklist.md with validation steps |
+| YAML linting configuration | Maintains workflow quality | Implemented: .yamllint.yml with line-length: 140, truthy warnings, no document-start requirement |
 
 ## 4) S-ID Implementation Status
 
 | S-ID | Status | Artifacts | Notes |
 |------|--------|-----------|-------|
-| S‑17 |  Complete | docs_build.sh, noxfile.py, workflows, baselines | Deterministic docs pipeline with SKIP_OPTIONAL/FAIL_ON_MISSING |
-| S‑vector |  Complete | vector_stores/*, detector, tests | PGVector/Weaviate stubs with informative errors |
-| S‑02 |  Complete | _optional_bleu_rouge.py, docs/metrics.md | BLEU/ROUGE with graceful degradation |
-| S‑14 |  Validated | training/accelerate_init_guard.py | CPU-safe distributed init with structured diagnostics |
-| S‑15 |  Validated | registry.py, registry_names.py | Deterministic list() and stable name mapping |
-| S‑12 |  Partial | docs/modeling/LoRA.md | Documentation complete, test utils ready for extension |
+| S‑17 | Complete | docs_build.sh, noxfile.py, workflows, baselines | Deterministic docs pipeline with SKIP_OPTIONAL/FAIL_ON_MISSING |
+| S‑vector | Complete | vector_stores/*, detector, tests | PGVector/Weaviate stubs with informative errors |
+| S‑02 | Complete | _optional_bleu_rouge.py, docs/metrics.md | BLEU/ROUGE with graceful degradation |
+| S‑14 | Validated | training/accelerate_init_guard.py | CPU-safe distributed init with structured diagnostics |
+| S‑15 | Validated | registry.py, registry_names.py | Deterministic list() and stable name mapping |
+| S‑12 | Partial | docs/modeling/LoRA.md | Documentation complete, test utils ready for extension |
 
 ## 5) Key Features
 
@@ -121,7 +121,7 @@ All acceptance criteria met:
 ## 10) References
 
 - S-17 Spec: Deterministic Docs Pipeline
-- S-02 Spec: Optional BLEU/ROUGE Metrics  
+- S-02 Spec: Optional BLEU/ROUGE Metrics
 - S-14 Spec: Distributed Training Guards
 - S-15 Spec: Registry Stabilization
 - S-vector Spec: Vector Store Stubs
@@ -129,6 +129,6 @@ All acceptance criteria met:
 
 ---
 
-**Status**:  Ready for merge  
-**Risk**: Low (infrastructure/tooling only, no core changes)  
+**Status**: Ready for merge
+**Risk**: Low (infrastructure/tooling only, no core changes)
 **Breaking**: None (additive changes with backward compatibility)

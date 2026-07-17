@@ -1,6 +1,6 @@
 # [Playbook]: Gate Policy and Tuning
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
@@ -12,9 +12,9 @@ Defaults:
 - missing detector gate: fail_on_missing_detector = true
 
 Tuning scenarios:
-- Noisy detectors inflating zeros → temporarily set fail_on_low_maturity=false while refining detectors.
-- New capability rollout → add alias under capability_map.overrides before code lands to enforce presence.
-- Stabilizing phase → keep regression delta at 0.02 and revisit monthly.
+- Noisy detectors inflating zeros temporarily set fail_on_low_maturity=false while refining detectors.
+- New capability rollout add alias under capability_map.overrides before code lands to enforce presence.
+- Stabilizing phase keep regression delta at 0.02 and revisit monthly.
 
 Notes:
 - All policy toggles live in .copilot-space/workflow.yaml.

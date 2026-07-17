@@ -1,73 +1,79 @@
 # Cognitive Codebase Map — AI Intuitiveness by Component
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-06-22  
-**Version**: 1.0.0  
-**Purpose**: Component-level cognitive mapping of the _codex_ codebase for AI intuitiveness, enabling agents to navigate, understand, and operate autonomously.  
+**Last Updated**: 2026-06-22
+**Version**: 1.0.0
+**Purpose**: Component-level cognitive mapping of the _codex_ codebase for AI intuitiveness, enabling agents to navigate, understand, and operate autonomously.
 **Methodology**: ACE-aligned scoring per component, cross-referenced with [AAIS V3.0](AI_AGENCY_INTUITIVENESS_SCORE_V3.md)
 
 ---
 
-##  Cognitive Architecture Overview
+## Cognitive Architecture Overview
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "L1: Aspirational (Ethics & Mission)", ".codex/guardrails.md"'}}%%
+
 graph TD
-    subgraph L1["L1: Aspirational (Ethics & Mission)"]
-        E1[".codex/guardrails.md"]
-        E2["CODEBASE_AGENCY_POLICY.md"]
-        E3["SECURITY.md"]
-    end
+ subgraph L1["L1: Aspirational (Ethics & Mission)"]
+ E1[".codex/guardrails.md"]
+ E2["CODEBASE_AGENCY_POLICY.md"]
+ E3["SECURITY.md"]
+ end
 
-    subgraph L2["L2: Global Strategy (Planning)"]
-        S1["docs/ROADMAP.md"]
-        S2["docs/evolution/"]
-        S3[".codex/plans/ (95 files)"]
-    end
+ subgraph L2["L2: Global Strategy (Planning)"]
+ S1["docs/ROADMAP.md"]
+ S2["docs/evolution/"]
+ S3[".codex/plans/ (95 files)"]
+ end
 
-    subgraph L3["L3: Agent Model (Self-Awareness)"]
-        M1["scripts/cognitive/"]
-        M2[".codex/cognitive_brain/"]
-        M3["src/codex/rag/"]
-    end
+ subgraph L3["L3: Agent Model (Self-Awareness)"]
+ M1["scripts/cognitive/"]
+ M2[".codex/cognitive_brain/"]
+ M3["src/codex/rag/"]
+ end
 
-    subgraph L4["L4: Executive Function (Planning)"]
-        X1[".github/agents/ (53+)"]
-        X2["scripts/autonomous_agent.py"]
-        X3[".github/workflows/ (49)"]
-    end
+ subgraph L4["L4: Executive Function (Planning)"]
+ X1[".github/agents/ (53+)"]
+ X2["scripts/autonomous_agent.py"]
+ X3[".github/workflows/ (49)"]
+ end
 
-    subgraph L5["L5: Cognitive Control (Adaptation)"]
-        C1["scripts/ci/auto_fix_common_issues.py"]
-        C2["scripts/validate_*.py"]
-        C3["src/cognitive_brain/quantum/"]
-    end
+ subgraph L5["L5: Cognitive Control (Adaptation)"]
+ C1["scripts/ci/auto_fix_common_issues.py"]
+ C2["scripts/validate_*.py"]
+ C3["src/cognitive_brain/quantum/"]
+ end
 
-    subgraph L6["L6: Task Prosecution (Execution)"]
-        T1["src/codex/ (core library)"]
-        T2["cognitive_app/ (dashboard)"]
-        T3["tests/ (39500+)"]
-    end
+ subgraph L6["L6: Task Prosecution (Execution)"]
+ T1["src/codex/ (core library)"]
+ T2["cognitive_app/ (dashboard)"]
+ T3["tests/ (39500+)"]
+ end
 
-    L1 -->|"Ethics flow down"| L2
-    L2 -->|"Strategy→Plans"| L3
-    L3 -->|"Self-model→Actions"| L4
-    L4 -->|"Plans→Control"| L5
-    L5 -->|"Decisions→Tasks"| L6
-    L6 -->|"Feedback up"| L3
+ L1 -->|"Ethics flow down"| L2
 
-    style L1 fill:#8b5cf6,color:#fff
-    style L2 fill:#3b82f6,color:#fff
-    style L3 fill:#06b6d4,color:#fff
-    style L4 fill:#10b981,color:#fff
-    style L5 fill:#f59e0b,color:#fff
-    style L6 fill:#ef4444,color:#fff
+ L2 -->|"StrategyPlans"| L3
+
+ L3 -->|"Self-modelActions"| L4
+
+ L4 -->|"PlansControl"| L5
+
+ L5 -->|"DecisionsTasks"| L6
+
+ L6 -->|"Feedback up"| L3
+
+ style L1 fill:#8b5cf6,color:#fff
+ style L2 fill:#3b82f6,color:#fff
+ style L3 fill:#06b6d4,color:#fff
+ style L4 fill:#10b981,color:#fff
+ style L5 fill:#f59e0b,color:#fff
+ style L6 fill:#ef4444,color:#fff
 ```
 
 ---
 
-##  Component Intuitiveness Scores
+## Component Intuitiveness Scores
 
 ### Source Code (`src/`)
 
@@ -138,42 +144,42 @@ graph TD
 
 ---
 
-##  Intuitiveness Heatmap
+## Intuitiveness Heatmap
 
 ```text
 Component Intuitiveness Distribution (N=35 components scored)
 
-97  ■ Evolution Center
-96  ■ Roadmap
-95  ■■■ RAG Pipeline, Cognitive Core, Cognitive Brain Data, Security Agents
-94  ■■■■ Codex Core, Doc Index, Plans, CI/CD Agents, Quantum Viz
-93  ■■■■■■ Cognitive Brain, Testing Agents, Config Agents, App Dashboard, Memory, Tests
-92  ■■■■ CI Cache, Doc Agents, Agent Panel, Workflows, Cognitive App Doc
-91  ■■■ Validation Scripts, RAG/ML Agents, Metrics Hook, Architecture, MkDocs
-90  ■■■ CLI, Repository Agents, Configuration, Aspirational (L1)
-89  ■ MCP
-88  ■■ Interpretability, Autonomous Agent
-86  ■ Space Traversal
+97 Evolution Center
+96 Roadmap
+95 RAG Pipeline, Cognitive Core, Cognitive Brain Data, Security Agents
+94 Codex Core, Doc Index, Plans, CI/CD Agents, Quantum Viz
+93 Cognitive Brain, Testing Agents, Config Agents, App Dashboard, Memory, Tests
+92 CI Cache, Doc Agents, Agent Panel, Workflows, Cognitive App Doc
+91 Validation Scripts, RAG/ML Agents, Metrics Hook, Architecture, MkDocs
+90 CLI, Repository Agents, Configuration, Aspirational (L1)
+89 MCP
+88 Interpretability, Autonomous Agent
+86 Space Traversal
 
-Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
+Mean: 92.4/100 | Median: 93/100 | Std Dev: 2.5
 ```
 
 ---
 
-## 🗺️ Navigation Guide for AI Agents
+## Navigation Guide for AI Agents
 
 ### "I need to..." Quick Reference
 
 | Goal | Start Here | ACE Layer |
 |------|-----------|-----------|
-| Understand the codebase | `docs/evolution/INDEX.md` → `docs/ROADMAP.md` | L2 |
-| Run tests | `tests/` → `nox -s tests` | L5 |
-| Fix CI failures | `scripts/ci/auto_fix_common_issues.py` → `scripts/validate_*.py` | L5 |
-| Understand architecture | `docs/architecture/` → `docs/ARCHITECTURE_BLUEPRINT.md` | L2 |
+| Understand the codebase | `docs/evolution/INDEX.md` `docs/ROADMAP.md` | L2 |
+| Run tests | `tests/` `nox -s tests` | L5 |
+| Fix CI failures | `scripts/ci/auto_fix_common_issues.py` `scripts/validate_*.py` | L5 |
+| Understand architecture | `docs/architecture/` `docs/ARCHITECTURE_BLUEPRINT.md` | L2 |
 | Work with RAG | `src/codex/rag/` (device='cpu' initialization, no safe_model_to_device needed) | L3 |
-| Manage agents | `.github/agents/` → `.codex/archive/deprecated/AGENTS.md` | L4 |
-| Update documentation | `docs/` → `mkdocs.yml` → `scripts/validate_docs_links.py` | L2 |
-| Check security | `SECURITY.md` → `.codex/guardrails.md` | L1 |
+| Manage agents | `.github/agents/` `.codex/archive/deprecated/AGENTS.md` | L4 |
+| Update documentation | `docs/` `mkdocs.yml` `scripts/validate_docs_links.py` | L2 |
+| Check security | `SECURITY.md` `.codex/guardrails.md` | L1 |
 | Track evolution | `docs/evolution/EVOLUTION_TIMELINE.md` | L2 |
 | Score AI intuitiveness | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` | L3 |
 | Create a planset | `.codex/cognitive_brain/ps01_status.md` (template) | L4 |
@@ -181,30 +187,30 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 ### Critical Patterns for AI Agents
 
 ```text
-Pattern                          Where                           Why
-─────────────────────────────────────────────────────────────────────────
-device='cpu' initialization      src/codex/rag/*.py              Prevents meta-tensor creation
-Hydra dual-path config          conf/ → configs/ fallback        Backward compatibility
-rfind("-") for cache keys       src/codex/ci/cache_manager.py    Preserves hyphenated components
---check (not --check-only)      scripts/validate_*.py            Correct validation flag
-Pre-commit auto-fix             scripts/ci/auto_fix_common_issues.py  Run before committing
-Windows-safe timestamps         codex.utils.path_utils           No colons in filenames
+Pattern Where Why
+
+device='cpu' initialization src/codex/rag/*.py Prevents meta-tensor creation
+Hydra dual-path config conf/ configs/ fallback Backward compatibility
+rfind("-") for cache keys src/codex/ci/cache_manager.py Preserves hyphenated components
+--check (not --check-only) scripts/validate_*.py Correct validation flag
+Pre-commit auto-fix scripts/ci/auto_fix_common_issues.py Run before committing
+Windows-safe timestamps codex.utils.path_utils No colons in filenames
 ```
 
 ---
 
-##  Score Aggregation
+## Score Aggregation
 
 ### By ACE Layer
 
 | Layer | Components | Avg Score | Status |
 |-------|:----------:|:---------:|--------|
-| L1: Aspirational | 3 | 90.7 |  Solid |
-| L2: Global Strategy | 6 | 94.5 |  Excellent |
-| L3: Agent Model | 9 | 93.2 |  Excellent |
-| L4: Executive Function | 5 | 91.4 |  Solid |
-| L5: Cognitive Control | 8 | 92.4 |  Solid |
-| L6: Task Prosecution | 5 | 91.8 |  Solid |
+| L1: Aspirational | 3 | 90.7 | Solid |
+| L2: Global Strategy | 6 | 94.5 | Excellent |
+| L3: Agent Model | 9 | 93.2 | Excellent |
+| L4: Executive Function | 5 | 91.4 | Solid |
+| L5: Cognitive Control | 8 | 92.4 | Solid |
+| L6: Task Prosecution | 5 | 91.8 | Solid |
 
 ### By Domain
 
@@ -219,7 +225,7 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 
 ---
 
-##  Cross-References
+## Cross-References
 
 - [AAIS V3.0](AI_AGENCY_INTUITIVENESS_SCORE_V3.md) — Composite scoring methodology
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_12_WS4_MAINTENANCE_PROCEDURES/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 12 WS4 - Documentation Freshness Maintenance Procedures - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2619,19 +2619,19 @@
 <article class="md-content__inner md-typeset">
 <h1 id="phase-12-ws4-documentation-freshness-maintenance-procedures">Phase 12 WS4 - Documentation Freshness Maintenance Procedures<a class="headerlink" href="#phase-12-ws4-documentation-freshness-maintenance-procedures" title="Permanent link">¶</a></h1>
 <p><strong>Version</strong>: v0.2.1</p>
-<p><strong>Status:</strong> Phase 4 DELIVERABLE GENERATION<br/>
-<strong>Date:</strong> 2026-07-08<br/>
-<strong>Agent:</strong> doc-freshness-checker<br/>
+<p><strong>Status:</strong> Phase 4 DELIVERABLE GENERATION
+<strong>Date:</strong> 2026-07-08
+<strong>Agent:</strong> doc-freshness-checker
 <strong>Target:</strong> 100% documentation freshness SLA</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>This document establishes the operational procedures for maintaining 100% documentation freshness across the Codex ecosystem. It integrates with the unified-doc-agent (M-02 merge) to provide comprehensive documentation health management.</p>
 <p><strong>Freshness Maintenance SLA:</strong>
--  <strong>98% minimum content freshness</strong> (target: ≥98%)
--  <strong>0% broken links</strong> in active documentation
--  <strong>100% code example validity</strong> (syntax + imports + currency)
--  <strong>&lt; 50 MkDocs warnings</strong> in active docs
--  <strong>Quarterly audit cycle</strong> with rapid remediation</p>
+- <strong>98% minimum content freshness</strong> (target: ≥98%)
+- <strong>0% broken links</strong> in active documentation
+- <strong>100% code example validity</strong> (syntax + imports + currency)
+- <strong>&lt; 50 MkDocs warnings</strong> in active docs
+- <strong>Quarterly audit cycle</strong> with rapid remediation</p>
 <hr/>
 <h2 id="1-documentation-freshness-framework">1. Documentation Freshness Framework<a class="headerlink" href="#1-documentation-freshness-framework" title="Permanent link">¶</a></h2>
 <h3 id="11-freshness-definitions">1.1 Freshness Definitions<a class="headerlink" href="#11-freshness-definitions" title="Permanent link">¶</a></h3>
@@ -2705,8 +2705,8 @@
 <hr/>
 <h2 id="2-maintenance-procedures">2. Maintenance Procedures<a class="headerlink" href="#2-maintenance-procedures" title="Permanent link">¶</a></h2>
 <h3 id="21-weekly-maintenance-cycle">2.1 Weekly Maintenance Cycle<a class="headerlink" href="#21-weekly-maintenance-cycle" title="Permanent link">¶</a></h3>
-<p><strong>Frequency:</strong> Every Monday 9:00 AM UTC<br/>
-<strong>Owner:</strong> Documentation team<br/>
+<p><strong>Frequency:</strong> Every Monday 9:00 AM UTC
+<strong>Owner:</strong> Documentation team
 <strong>Effort:</strong> 30 minutes</p>
 <p><strong>Checklist:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="gu">## Weekly Documentation Check</span>
@@ -2742,78 +2742,78 @@
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="c1"># 2. Sample link check</span>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Checking sample links..."</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="nv">links</span><span class="o">=(</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">  </span><span class="s2">"https://github.com/Aries-Serpent/_codex_"</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">  </span><span class="s2">"https://docs.github.com"</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">  </span><span class="s2">"https://pypi.org"</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="s2">"https://github.com/Aries-Serpent/_codex_"</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="s2">"https://docs.github.com"</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="s2">"https://pypi.org"</span>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="o">)</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="k">for</span><span class="w"> </span>link<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">links</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s2">"%{http_code}"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$link</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"200\|301\|302"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$link</span><span class="s2">"</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">  </span><span class="k">else</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$link</span><span class="s2"> - CHECK MANUALLY"</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">  </span><span class="k">fi</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w"> </span><span class="k">if</span><span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s2">"%{http_code}"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$link</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"200\|301\|302"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$link</span><span class="s2">"</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w"> </span><span class="k">else</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$link</span><span class="s2"> - CHECK MANUALLY"</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="k">fi</span>
 <a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="k">done</span>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="c1"># 3. Report</span>
 <a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Weekly check complete - </span><span class="k">$(</span>date<span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>docs/WEEKLY_CHECKS.log
 </code></pre></div></p>
 <h3 id="22-monthly-validation-cycle">2.2 Monthly Validation Cycle<a class="headerlink" href="#22-monthly-validation-cycle" title="Permanent link">¶</a></h3>
-<p><strong>Frequency:</strong> First Monday of every month<br/>
-<strong>Owner:</strong> Documentation team lead<br/>
+<p><strong>Frequency:</strong> First Monday of every month
+<strong>Owner:</strong> Documentation team lead
 <strong>Effort:</strong> 2 hours</p>
 <p><strong>Comprehensive Validation:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="gu">## Monthly Documentation Validation</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="gu">### Phase 1: Automated Scan (30 min)</span>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">1.</span> Run freshness audit
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sb">   ```bash</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">   </span>python<span class="w"> </span>tools/freshness_audit.py<span class="w"> </span>&gt;<span class="w"> </span>docs/AUDIT_<span class="k">$(</span>date<span class="w"> </span>+%Y-%m<span class="k">)</span>.md
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="sb">   ```</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sb"> ```bash</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span>python<span class="w"> </span>tools/freshness_audit.py<span class="w"> </span>&gt;<span class="w"> </span>docs/AUDIT_<span class="k">$(</span>date<span class="w"> </span>+%Y-%m<span class="k">)</span>.md
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="sb"> ```</span>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="k">2.</span> Validate code examples
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="sb">   ```bash</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">   </span>python<span class="w"> </span>tools/validate_code_examples.py<span class="w"> </span>--report
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="sb">   ```</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="sb"> ```bash</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w"> </span>python<span class="w"> </span>tools/validate_code_examples.py<span class="w"> </span>--report
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="sb"> ```</span>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
 <a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="k">3.</span> Check external links
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="sb">   ```bash</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">   </span>python<span class="w"> </span>tools/link_validator.py<span class="w"> </span>--skip-localhost<span class="w"> </span>--report
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="sb">   ```</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="sb"> ```bash</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w"> </span>python<span class="w"> </span>tools/link_validator.py<span class="w"> </span>--skip-localhost<span class="w"> </span>--report
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="sb"> ```</span>
 <a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
 <a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="gu">### Phase 2: Manual Review (60 min)</span>
 <a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="k">1.</span> Review audit results
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">   </span><span class="k">- [ ]</span> Identify files &gt; 60 days old
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">   </span><span class="k">- [ ]</span> Check for new stale markers
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">   </span><span class="k">- [ ]</span> Review broken link reports
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w"> </span><span class="k">- [ ]</span> Identify files &gt; 60 days old
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w"> </span><span class="k">- [ ]</span> Check for new stale markers
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w"> </span><span class="k">- [ ]</span> Review broken link reports
 <a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
 <a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="k">2.</span> Update findings
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">   </span><span class="k">- [ ]</span> Update docs/FRESHNESS_AUDIT_MONTHLY.md
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">   </span><span class="k">- [ ]</span> Create issues for stale files (if needed)
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">   </span><span class="k">- [ ]</span> Note patterns for improvement
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w"> </span><span class="k">- [ ]</span> Update docs/FRESHNESS_AUDIT_MONTHLY.md
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w"> </span><span class="k">- [ ]</span> Create issues for stale files (if needed)
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w"> </span><span class="k">- [ ]</span> Note patterns for improvement
 <a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>
 <a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="k">3.</span> Quick fixes
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">   </span><span class="k">- [ ]</span> Update timestamps on reviewed files
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">   </span><span class="k">- [ ]</span> Fix any obvious link issues
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="w">   </span><span class="k">- [ ]</span> Update version references
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w"> </span><span class="k">- [ ]</span> Update timestamps on reviewed files
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w"> </span><span class="k">- [ ]</span> Fix any obvious link issues
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="w"> </span><span class="k">- [ ]</span> Update version references
 <a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>
 <a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="gu">### Phase 3: Report &amp; Plan (30 min)</span>
 <a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="k">1.</span> Generate monthly report
-<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="w">   </span><span class="k">- [ ]</span> Freshness score
-<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w">   </span><span class="k">- [ ]</span> Top issues identified
-<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a><span class="w">   </span><span class="k">- [ ]</span> Recommended actions
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="w"> </span><span class="k">- [ ]</span> Freshness score
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w"> </span><span class="k">- [ ]</span> Top issues identified
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a><span class="w"> </span><span class="k">- [ ]</span> Recommended actions
 <a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a>
 <a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="k">2.</span> Post results
-<a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a><span class="w">   </span><span class="k">- [ ]</span> Update docs/FRESHNESS_DASHBOARD.md
-<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="w">   </span><span class="k">- [ ]</span> Post metrics to team wiki
-<a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a><span class="w">   </span><span class="k">- [ ]</span> Highlight critical items
+<a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a><span class="w"> </span><span class="k">- [ ]</span> Update docs/FRESHNESS_DASHBOARD.md
+<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="w"> </span><span class="k">- [ ]</span> Post metrics to team wiki
+<a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a><span class="w"> </span><span class="k">- [ ]</span> Highlight critical items
 <a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a>
 <a href="#__codelineno-3-46" id="__codelineno-3-46" name="__codelineno-3-46"></a><span class="k">3.</span> Schedule work
-<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a><span class="w">   </span><span class="k">- [ ]</span> Create priority issues for Q3
-<a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a><span class="w">   </span><span class="k">- [ ]</span> Schedule fixes in sprint planning
+<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a><span class="w"> </span><span class="k">- [ ]</span> Create priority issues for Q3
+<a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a><span class="w"> </span><span class="k">- [ ]</span> Schedule fixes in sprint planning
 </code></pre></div>
 <h3 id="23-quarterly-audit-cycle">2.3 Quarterly Audit Cycle<a class="headerlink" href="#23-quarterly-audit-cycle" title="Permanent link">¶</a></h3>
-<p><strong>Frequency:</strong> Every 90 days (Jan 1, Apr 1, Jul 1, Oct 1)<br/>
-<strong>Owner:</strong> Documentation lead + team<br/>
+<p><strong>Frequency:</strong> Every 90 days (Jan 1, Apr 1, Jul 1, Oct 1)
+<strong>Owner:</strong> Documentation lead + team
 <strong>Effort:</strong> 8-12 hours</p>
 <p><strong>Major Audit Components:</strong></p>
 <h4 id="audit-1-content-age-analysis">Audit 1: Content Age Analysis<a class="headerlink" href="#audit-1-content-age-analysis" title="Permanent link">¶</a></h4>
@@ -2841,10 +2841,10 @@
 </code></pre></div>
 <h4 id="audit-3-external-link-health">Audit 3: External Link Health<a class="headerlink" href="#audit-3-external-link-health" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>python<span class="w"> </span>tools/comprehensive_link_validator.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span>--skip-localhost<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span>--skip-templates<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span>--timeout<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span>--report<span class="w"> </span>quarterly
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span>--skip-localhost<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>--skip-templates<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span>--timeout<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span>--report<span class="w"> </span>quarterly
 </code></pre></div>
 <h4 id="audit-4-documentation-structure-review">Audit 4: Documentation Structure Review<a class="headerlink" href="#audit-4-documentation-structure-review" title="Permanent link">¶</a></h4>
 <ul class="task-list">
@@ -2864,8 +2864,8 @@
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>python<span class="w"> </span>tools/update_version_refs.py<span class="w"> </span>--dry-run
 </code></pre></div>
 <h3 id="24-annual-comprehensive-review">2.4 Annual Comprehensive Review<a class="headerlink" href="#24-annual-comprehensive-review" title="Permanent link">¶</a></h3>
-<p><strong>Frequency:</strong> Once per year (January 1)<br/>
-<strong>Owner:</strong> Documentation governance<br/>
+<p><strong>Frequency:</strong> Once per year (January 1)
+<strong>Owner:</strong> Documentation governance
 <strong>Effort:</strong> 40-60 hours (spread over month)</p>
 <p><strong>Annual Review Scope:</strong></p>
 <ol class="task-list">
@@ -2917,127 +2917,127 @@
 <p><strong>Workflow 1: PR Freshness Check</strong> (on every doc PR)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Documentation Freshness Check</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'docs/**'</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'mkdocs.yml'</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span><span class="nt">pull_request</span><span class="p">:</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'docs/**'</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'mkdocs.yml'</span>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">  </span><span class="nt">freshness</span><span class="p">:</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="w">          </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Full history for comparison</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w"> </span><span class="nt">freshness</span><span class="p">:</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="w"> </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># Full history for comparison</span>
 <a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="w"> </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
 <a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a><span class="w">          </span><span class="no">pip install -r requirements-dev.txt</span>
-<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="w">          </span><span class="no">pip install mkdocs mkdocs-material pymdown-extensions</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -r requirements-dev.txt</span>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install mkdocs mkdocs-material pymdown-extensions</span>
 <a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>
-<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Code Example Validation</span>
-<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a><span class="w">          </span><span class="no">python tools/validate_code_examples.py \</span>
-<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a><span class="w">            </span><span class="no">--files ${{ github.event.pull_request.title }} \</span>
-<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a><span class="w">            </span><span class="no">--strict</span>
-<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a><span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Code Example Validation</span>
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/validate_code_examples.py \</span>
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--files ${{ github.event.pull_request.title }} \</span>
+<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--strict</span>
+<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a><span class="w"> </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-8-32" id="__codelineno-8-32" name="__codelineno-8-32"></a>
-<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Link Validation</span>
-<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a><span class="w">          </span><span class="no">python tools/link_validator.py \</span>
-<a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a><span class="w">            </span><span class="no">--skip-localhost \</span>
-<a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a><span class="w">            </span><span class="no">--skip-templates</span>
-<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a><span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Link Validation</span>
+<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/link_validator.py \</span>
+<a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--skip-localhost \</span>
+<a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--skip-templates</span>
+<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a><span class="w"> </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-8-39" id="__codelineno-8-39" name="__codelineno-8-39"></a>
-<a href="#__codelineno-8-40" id="__codelineno-8-40" name="__codelineno-8-40"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MkDocs Build Check</span>
-<a href="#__codelineno-8-41" id="__codelineno-8-41" name="__codelineno-8-41"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-8-42" id="__codelineno-8-42" name="__codelineno-8-42"></a><span class="w">          </span><span class="no">mkdocs build --strict</span>
-<a href="#__codelineno-8-43" id="__codelineno-8-43" name="__codelineno-8-43"></a><span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-8-40" id="__codelineno-8-40" name="__codelineno-8-40"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MkDocs Build Check</span>
+<a href="#__codelineno-8-41" id="__codelineno-8-41" name="__codelineno-8-41"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-8-42" id="__codelineno-8-42" name="__codelineno-8-42"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdocs build --strict</span>
+<a href="#__codelineno-8-43" id="__codelineno-8-43" name="__codelineno-8-43"></a><span class="w"> </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-8-44" id="__codelineno-8-44" name="__codelineno-8-44"></a>
-<a href="#__codelineno-8-45" id="__codelineno-8-45" name="__codelineno-8-45"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Post Results</span>
-<a href="#__codelineno-8-46" id="__codelineno-8-46" name="__codelineno-8-46"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
-<a href="#__codelineno-8-47" id="__codelineno-8-47" name="__codelineno-8-47"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v6</span>
-<a href="#__codelineno-8-48" id="__codelineno-8-48" name="__codelineno-8-48"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-8-49" id="__codelineno-8-49" name="__codelineno-8-49"></a><span class="w">          </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-8-50" id="__codelineno-8-50" name="__codelineno-8-50"></a><span class="w">            </span><span class="no">github.rest.issues.createComment({</span>
-<a href="#__codelineno-8-51" id="__codelineno-8-51" name="__codelineno-8-51"></a><span class="w">              </span><span class="no">issue_number: context.issue.number,</span>
-<a href="#__codelineno-8-52" id="__codelineno-8-52" name="__codelineno-8-52"></a><span class="w">              </span><span class="no">owner: context.repo.owner,</span>
-<a href="#__codelineno-8-53" id="__codelineno-8-53" name="__codelineno-8-53"></a><span class="w">              </span><span class="no">repo: context.repo.repo,</span>
-<a href="#__codelineno-8-54" id="__codelineno-8-54" name="__codelineno-8-54"></a><span class="w">              </span><span class="no">body: '️ Documentation freshness issues detected. See workflow logs.'</span>
-<a href="#__codelineno-8-55" id="__codelineno-8-55" name="__codelineno-8-55"></a><span class="w">            </span><span class="no">})</span>
+<a href="#__codelineno-8-45" id="__codelineno-8-45" name="__codelineno-8-45"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Post Results</span>
+<a href="#__codelineno-8-46" id="__codelineno-8-46" name="__codelineno-8-46"></a><span class="w"> </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
+<a href="#__codelineno-8-47" id="__codelineno-8-47" name="__codelineno-8-47"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v6</span>
+<a href="#__codelineno-8-48" id="__codelineno-8-48" name="__codelineno-8-48"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-8-49" id="__codelineno-8-49" name="__codelineno-8-49"></a><span class="w"> </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-8-50" id="__codelineno-8-50" name="__codelineno-8-50"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.rest.issues.createComment({</span>
+<a href="#__codelineno-8-51" id="__codelineno-8-51" name="__codelineno-8-51"></a><span class="w"> </span><span class="nt">issue_number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">context.issue.number,</span>
+<a href="#__codelineno-8-52" id="__codelineno-8-52" name="__codelineno-8-52"></a><span class="w"> </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">context.repo.owner,</span>
+<a href="#__codelineno-8-53" id="__codelineno-8-53" name="__codelineno-8-53"></a><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">context.repo.repo,</span>
+<a href="#__codelineno-8-54" id="__codelineno-8-54" name="__codelineno-8-54"></a><span class="w"> </span><span class="nt">body</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">Documentation</span><span class="nv"> </span><span class="s">freshness</span><span class="nv"> </span><span class="s">issues</span><span class="nv"> </span><span class="s">detected.</span><span class="nv"> </span><span class="s">See</span><span class="nv"> </span><span class="s">workflow</span><span class="nv"> </span><span class="s">logs.'</span>
+<a href="#__codelineno-8-55" id="__codelineno-8-55" name="__codelineno-8-55"></a><span class="w"> </span><span class="err">}</span><span class="l l-Scalar l-Scalar-Plain">)</span>
 </code></pre></div>
 <p><strong>Workflow 2: Weekly Freshness Audit</strong> (Monday 9 AM UTC)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Weekly Documentation Audit</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">9</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1'</span><span class="w">  </span><span class="c1"># Every Monday at 9 AM UTC</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="nt">schedule</span><span class="p">:</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">9</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1'</span><span class="w"> </span><span class="c1"># Every Monday at 9 AM UTC</span>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">  </span><span class="nt">audit</span><span class="p">:</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w"> </span><span class="nt">audit</span><span class="p">:</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Freshness Audit</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/freshness_audit.py &gt; /tmp/audit.md</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Freshness Audit</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/freshness_audit.py &gt; /tmp/audit.md</span>
 <a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create Issue if Needed</span>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="w">          </span><span class="no">if grep -q "STALE\|BROKEN" /tmp/audit.md; then</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="w">            </span><span class="no">gh issue create \</span>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="w">              </span><span class="no">--title " Weekly Doc Audit: Stale Content Found" \</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="w">              </span><span class="no">--body "$(cat /tmp/audit.md)" \</span>
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="w">              </span><span class="no">--label "documentation" \</span>
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a><span class="w">              </span><span class="no">--label "maintenance"</span>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="w">          </span><span class="no">fi</span>
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
-<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="w">          </span><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create Issue if Needed</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">if grep -q "STALE\|BROKEN" /tmp/audit.md; then</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh issue create \</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--title " Weekly Doc Audit</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Stale Content Found" \</span>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--body "$(cat /tmp/audit.md)" \</span>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--label "documentation" \</span>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--label "maintenance"</span>
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fi</span>
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a><span class="w"> </span><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="w"> </span><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
 <a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update Dashboard</span>
-<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/update_doc_dashboard.py</span>
+<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update Dashboard</span>
+<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/update_doc_dashboard.py</span>
 </code></pre></div>
 <p><strong>Workflow 3: Monthly Comprehensive Audit</strong> (1st of month)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Monthly Comprehensive Documentation Audit</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">10</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*'</span><span class="w">  </span><span class="c1"># 1st of month at 10 AM UTC</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="nt">schedule</span><span class="p">:</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">10</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*'</span><span class="w"> </span><span class="c1"># 1st of month at 10 AM UTC</span>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="w">  </span><span class="nt">comprehensive_audit</span><span class="p">:</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="w"> </span><span class="nt">comprehensive_audit</span><span class="p">:</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 <a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Comprehensive Freshness Check</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w">          </span><span class="no">python tools/comprehensive_freshness_audit.py \</span>
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="w">            </span><span class="no">--full-report \</span>
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="w">            </span><span class="no">--output docs/AUDIT_$(date +%Y-%m-%d).md</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Comprehensive Freshness Check</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/comprehensive_freshness_audit.py \</span>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--full-report \</span>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--output docs/AUDIT_$(date +%Y-%m-%d).md</span>
 <a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Code Example Testing</span>
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a><span class="w">          </span><span class="no">python tools/test_code_examples.py --all</span>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Code Example Testing</span>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/test_code_examples.py --all</span>
 <a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">External Link Validation</span>
-<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a><span class="w">          </span><span class="no">python tools/validate_external_links.py \</span>
-<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a><span class="w">            </span><span class="no">--timeout 10 \</span>
-<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a><span class="w">            </span><span class="no">--report</span>
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">External Link Validation</span>
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/validate_external_links.py \</span>
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--timeout 10 \</span>
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--report</span>
 <a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a>
-<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Commit &amp; Push Results</span>
-<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a><span class="w">          </span><span class="no">git add docs/AUDIT_*.md</span>
-<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a><span class="w">          </span><span class="no">git commit -m "docs: monthly freshness audit $(date +%Y-%m-%d)"</span>
-<a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a><span class="w">          </span><span class="no">git push</span>
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Commit &amp; Push Results</span>
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git add docs/AUDIT_*.md</span>
+<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git commit -m "docs</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">monthly freshness audit $(date +%Y-%m-%d)"</span>
+<a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git push</span>
 <a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a>
-<a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Post Summary</span>
-<a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a><span class="w">          </span><span class="no">python tools/post_audit_summary.py</span>
+<a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Post Summary</span>
+<a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/post_audit_summary.py</span>
 </code></pre></div>
 <h3 id="32-cicd-integration-points">3.2 CI/CD Integration Points<a class="headerlink" href="#32-cicd-integration-points" title="Permanent link">¶</a></h3>
 <p><strong>Integration 1: Pre-commit Hook</strong></p>
@@ -3047,9 +3047,9 @@
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="c1"># Check for TODO without context</span>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Checking for orphaned TODOs..."</span>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="k">if</span><span class="w"> </span>git<span class="w"> </span>diff<span class="w"> </span>--cached<span class="w"> </span>--<span class="w"> </span>docs/<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"^\+.*TODO\|^\+.*FIXME"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^+.*TODO:.*"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" ERROR: TODO/FIXME without description found"</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Add context: TODO: &lt;description&gt;"</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" ERROR: TODO/FIXME without description found"</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Add context: TODO: &lt;description&gt;"</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="k">fi</span>
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="c1"># Validate markdown syntax</span>
@@ -3057,8 +3057,8 @@
 <a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>python<span class="w"> </span>tools/validate_markdown.py<span class="w"> </span>docs/
 <a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$?</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" Markdown validation failed"</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" Markdown validation failed"</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="k">fi</span>
 <a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>
 <a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Pre-commit checks passed"</span>
@@ -3119,12 +3119,12 @@
 - Documentation structure suggestions
 - <strong>Action:</strong> Include in next major update cycle</p>
 <h3 id="42-issue-escalation-matrix">4.2 Issue Escalation Matrix<a class="headerlink" href="#42-issue-escalation-matrix" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Severity    Freshness Impact    Response Time    Owner
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>─────────────────────────────────────────────────────
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>CRITICAL    &gt; 2%               &lt; 4 hours        Team lead
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>HIGH        1-2%               &lt; 24 hours       Assigned dev
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>MEDIUM      &lt; 1%               &lt; 1 week         Backlog
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>LOW         None               Quarterly        Future sprint
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Severity Freshness Impact Response Time Owner
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>CRITICAL &gt; 2% &lt; 4 hours Team lead
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>HIGH 1-2% &lt; 24 hours Assigned dev
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>MEDIUM &lt; 1% &lt; 1 week Backlog
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>LOW None Quarterly Future sprint
 </code></pre></div>
 <h3 id="43-communication-protocol">4.3 Communication Protocol<a class="headerlink" href="#43-communication-protocol" title="Permanent link">¶</a></h3>
 <p><strong>For CRITICAL Issues:</strong>
@@ -3188,9 +3188,9 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>---
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>created: YYYY-MM-DD
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>updated: YYYY-MM-DD
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>version: vX.Y.Z  # Last version this was valid for
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>version: vX.Y.Z # Last version this was valid for
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>status: active|archived|draft
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="gu">review_date: YYYY-MM-DD  # Next scheduled review</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="gu">review_date: YYYY-MM-DD # Next scheduled review</span>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="gu">---</span>
 </code></pre></div></p>
 <p><strong>Code Examples Should Include:</strong>
@@ -3206,23 +3206,23 @@
 - [ ] Include last-verified date</p>
 <h3 id="53-documentation-review-rubric">5.3 Documentation Review Rubric<a class="headerlink" href="#53-documentation-review-rubric" title="Permanent link">¶</a></h3>
 <p><strong>For Every Documentation PR:</strong></p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>Code Quality    [50 points]
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>   Examples are syntactically valid      [10 pts]
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>   Examples use current API              [10 pts]
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>   Examples include error handling       [10 pts]
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>   No hardcoded secrets/credentials      [10 pts]
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>   Performance appropriate               [10 pts]
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>Code Quality [50 points]
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> Examples are syntactically valid [10 pts]
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> Examples use current API [10 pts]
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> Examples include error handling [10 pts]
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> No hardcoded secrets/credentials [10 pts]
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> Performance appropriate [10 pts]
 <a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>Content Quality [30 points]
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>   Clear and concise writing             [10 pts]
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>   Proper formatting and structure       [10 pts]
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>   All links are valid                   [10 pts]
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a> Clear and concise writing [10 pts]
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a> Proper formatting and structure [10 pts]
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a> All links are valid [10 pts]
 <a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>Freshness       [20 points]
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>   Metadata/timestamps current           [5 pts]
-<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>   Matches current implementation        [5 pts]
-<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>   No stale markers (TODO/FIXME)         [5 pts]
-<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>   Version references accurate           [5 pts]
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>Freshness [20 points]
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a> Metadata/timestamps current [5 pts]
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a> Matches current implementation [5 pts]
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a> No stale markers (TODO/FIXME) [5 pts]
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a> Version references accurate [5 pts]
 <a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>
 <a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>PASS Threshold: 70+ points
 </code></pre></div>
@@ -3268,11 +3268,11 @@
 <a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>
 <a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>| KPI | Target | Current | Trend | Status |
 <a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>|-----|--------|---------|-------|--------|
-<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>| Content Freshness | ≥98% | 98.3% | ↗ |  PASS |
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>| Code Example Validity | ≥99% | 97.2% | ↘ | ️ WATCH |
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>| Link Integrity | ≥99% | 98.8% | ↗ |  PASS |
-<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>| Doc Coverage | ≥95% | 92.1% | → | ️ LOW |
-<a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>| Issue Resolution | &lt;7d | 5.2d | ↗ |  PASS |
+<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>| Content Freshness | ≥98% | 98.3% | | PASS |
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>| Code Example Validity | ≥99% | 97.2% | | WATCH |
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>| Link Integrity | ≥99% | 98.8% | | PASS |
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>| Doc Coverage | ≥95% | 92.1% | | LOW |
+<a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>| Issue Resolution | &lt;7d | 5.2d | | PASS |
 <a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a>
 <a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a><span class="gu">## Issues &amp; Actions</span>
 <a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a>
@@ -3320,42 +3320,42 @@
 <tr>
 <td>Content age tracking</td>
 <td>Primary</td>
-<td>ℹ️ Input</td>
+<td>ℹ Input</td>
 </tr>
 <tr>
 <td>Code example validation</td>
 <td>Primary</td>
-<td>ℹ️ Input</td>
+<td>ℹ Input</td>
 </tr>
 <tr>
 <td>External link checking</td>
 <td>Primary</td>
-<td>🤝 Coordinate</td>
+<td>Coordinate</td>
 </tr>
 <tr>
 <td>Archive management</td>
-<td>ℹ️ Input</td>
+<td>ℹ Input</td>
 <td>Primary</td>
 </tr>
 <tr>
 <td>Duplication detection</td>
-<td>ℹ️ Input</td>
+<td>ℹ Input</td>
 <td>Primary</td>
 </tr>
 <tr>
 <td>Cross-references</td>
 <td>Check</td>
-<td>🤝 Update</td>
+<td>Update</td>
 </tr>
 <tr>
 <td>MkDocs warnings</td>
 <td>Track</td>
-<td>🤝 Resolve</td>
+<td>Resolve</td>
 </tr>
 <tr>
 <td>Maintenance automation</td>
 <td>Primary</td>
-<td>ℹ️ Input</td>
+<td>ℹ Input</td>
 </tr>
 </tbody>
 </table>
@@ -3382,10 +3382,10 @@
 <h2 id="9-implementation-timeline">9. Implementation Timeline<a class="headerlink" href="#9-implementation-timeline" title="Permanent link">¶</a></h2>
 <h3 id="week-1-this-week-jul-8-12">Week 1 (This Week - Jul 8-12)<a class="headerlink" href="#week-1-this-week-jul-8-12" title="Permanent link">¶</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Complete Phase 1 audit  DONE</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Generate Phase 2 validation report  DONE</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Create Phase 3 improvement plan  DONE</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Document Phase 4 procedures  DONE</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Complete Phase 1 audit DONE</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Generate Phase 2 validation report DONE</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Create Phase 3 improvement plan DONE</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Document Phase 4 procedures DONE</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update 5 Priority 1 files</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Fix 20 GitHub URL links</li>
 </ul>
@@ -3419,11 +3419,11 @@
 - <strong>Doc Freshness Checker Agent:</strong> Ready for Phase 4 finalization
 - <strong>Unified Doc Agent (M-02):</strong> Coordination pending
 - <strong>Link Validator Agent:</strong> Partnership established
-- <strong>Campaign Status:</strong> PHASE 4 IN PROGRESS → COMPLETION TARGET: 2026-07-12</p>
+- <strong>Campaign Status:</strong> PHASE 4 IN PROGRESS COMPLETION TARGET: 2026-07-12</p>
 <hr/>
-<p><strong>Report Date:</strong> 2026-07-08<br/>
-<strong>Agent:</strong> doc-freshness-checker<br/>
-<strong>Campaign:</strong> Phase 12 WS3 Documentation<br/>
+<p><strong>Report Date:</strong> 2026-07-08 
+<strong>Agent:</strong> doc-freshness-checker 
+<strong>Campaign:</strong> Phase 12 WS3 Documentation 
 <strong>Next Review:</strong> 2026-07-15 (Weekly)</p>
 </article>
 </div>
@@ -3454,6 +3454,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

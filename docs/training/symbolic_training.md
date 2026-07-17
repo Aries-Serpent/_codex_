@@ -1,24 +1,24 @@
 # ChatGPT Codex — Symbolic Training Summary (Updated)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Stages (conceptual)
 
 1. **Pretraining**
-   Large-scale next-token modeling on code + text → general coding fluency. ([OpenAI][1], [OpenAI][2])
+ Large-scale next-token modeling on code + text general coding fluency. ([OpenAI][1], [OpenAI][2])
 
 1. **Supervised Fine-Tuning (SFT)**
-   Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. ([OpenAI][1])
+ Curated demonstrations (coding tasks, fixes, explanations) align outputs toward developer intent. ([OpenAI][1])
 
 1. **RLHF (policy optimization)**
-   Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. ([OpenAI][3], [OpenAI][4])
+ Train a reward model from human preferences; optimize the policy (e.g., PPO). Extensions may include rule-based rewards for safety. ([OpenAI][3], [OpenAI][4])
 
 ### Symbolic pipeline
 
 ``` text
 Let M₀ = Base Codex (pretrained)
 Codex:
- M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
+ M₀ — SFT(curated code demos) M₁ — RLHF(reward model, PPO) M₂ (deployed utility)
 ```
 Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
 
@@ -66,7 +66,7 @@ Demonstrations ($D\_{\\text{demos}}$) and preference pairs ($D\_{\\text{prefs}}$
 
 ### Notes specific to Codex
 
-- Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining → SFT → RLHF paradigm used across deployed assistants. ([OpenAI][5])
+- Codex is an OpenAI coding agent/product line built on our most capable models; its training lineage follows the Pretraining SFT RLHF paradigm used across deployed assistants. ([OpenAI][5])
 
 ### Implementation notes
 
@@ -74,12 +74,12 @@ The accompanying `symbolic_pipeline` module implements these stages with real
 training loops and evaluation metrics:
 
 - **Tokenisation & data handling** – all text is tokenised so that token counts
-  and supervised cross‑entropy losses are computed accurately.
+ and supervised cross‑entropy losses are computed accurately.
 - **Reward model & PPO** – a logistic reward model is trained on preference
-  pairs and a PPO loop with a KL safety penalty optimises the policy against it.
+ pairs and a PPO loop with a KL safety penalty optimises the policy against it.
 - **Reproducibility & validation** – deterministic seeds are built in and tests
-  cover edge cases such as empty datasets or mis‑specified configurations to
-  ensure robustness.
+ cover edge cases such as empty datasets or mis‑specified configurations to
+ ensure robustness.
 
 [1]: https://openai.com/index/chatgpt/?utm_source=chatgpt.com "Introducing ChatGPT"
 [2]: https://cdn.openai.com/papers/gpt-4.pdf?utm_source=chatgpt.com "GPT-4 Technical Report"

@@ -1,28 +1,28 @@
 # Quickstart: `_codex_` Status v1.2 (One‑Pager)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Author Quickstart Curator], [Secondary: Reviewer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Author Quickstart Curator], [Secondary: Reviewer] Energy: 5
 
 Goal
 - Produce a daily, schema‑valid status in under 10 minutes.
 
 Steps (TL;DR)
 1) Create JSON skeleton
-   - python tools/status_report.py --title "📍 `_codex_` : Status Update $(date -u +%Y-%m-%d-%H:%M:UTC)" --out reports/daily/$(date -u +%Y-%m-%d).json
+ - python tools/status_report.py --title " `_codex_` : Status Update $(date -u +%Y-%m-%d-%H:%M:UTC)" --out reports/daily/$(date -u +%Y-%m-%d).json
 2) Fill these minimum fields
-   - snapshot.capabilities (at least 2 items with severity/confidence)
-   - snapshot.findings (1–3 items)
-   - tests_gates.coverage_percent and quality_gates
-   - schema validation results (section 2.6 in the MD report)
+ - snapshot.capabilities (at least 2 items with severity/confidence)
+ - snapshot.findings (1–3 items)
+ - tests_gates.coverage_percent and quality_gates
+ - schema validation results (section 2.6 in the MD report)
 3) Validate
-   - pytest -q tests/status/test_example_report_schema.py
-   - python tools/link_id_crossref.py --report reports/daily/$(date -u +%Y-%m-%d).json
+ - pytest -q tests/status/test_example_report_schema.py
+ - python tools/link_id_crossref.py --report reports/daily/$(date -u +%Y-%m-%d).json
 4) Build audit manifest (optional but recommended)
-   - python scripts/audit/build_integrity_chain.py
+ - python scripts/audit/build_integrity_chain.py
 5) Publish
-   - Commit under reports/daily/ and open PR
+ - Commit under reports/daily/ and open PR
 
 What Good Looks Like (Checklist)
 - Title uses exact format and UTC
@@ -34,15 +34,15 @@ What Good Looks Like (Checklist)
 
 Handy Commands
 - Validate all training configs:
-  - python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
+ - python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
 - Ad‑hoc data+schema validation:
-  - python tools/schema_validate.py --data runs/last/evaluation.json --schema configs/schemas/evaluation.schema.json
+ - python tools/schema_validate.py --data runs/last/evaluation.json --schema configs/schemas/evaluation.schema.json
 - Full status cycle:
-  - bash scripts/status/run_full_status_cycle.sh
+ - bash scripts/status/run_full_status_cycle.sh
 - Cross-reference validation:
-  - python tools/link_id_crossref.py --report reports/daily/YYYY-MM-DD.json
+ - python tools/link_id_crossref.py --report reports/daily/YYYY-MM-DD.json
 - Schema drift detection:
-  - python tools/schema_diff.py --old old.schema.json --new new.schema.json
+ - python tools/schema_diff.py --old old.schema.json --new new.schema.json
 
 Quick Reference: Minimum Required Sections
 1. metadata.title, timestamp_utc, template_version, git_context, environment

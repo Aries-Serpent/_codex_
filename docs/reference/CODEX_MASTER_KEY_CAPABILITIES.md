@@ -1,11 +1,11 @@
 # CODEX_MASTER_KEY Capabilities Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Generated:** 2026-06-29  
+> **Generated:** 2026-06-29
 > **Last Updated: 2026-06-29
-> **Scope Count:** 23 total scopes  
-> **Processes:** 10 core workflows documented  
+> **Scope Count:** 23 total scopes
+> **Processes:** 10 core workflows documented
 > **Test Coverage:** 100% scope coverage with 50+ API operations
 
 ## Overview
@@ -107,7 +107,7 @@ This document provides complete scope-to-operation mapping, per-process API endp
 
 ---
 
-## Part 2: Process → Scope Mapping
+## Part 2: Process Scope Mapping
 
 ### Process 1: Repository Variable Management (`repo` scope)
 
@@ -221,8 +221,8 @@ This document provides complete scope-to-operation mapping, per-process API endp
 **Scopes Required:** All 23 scopes (coordinated through token broker)
 
 **Operations:**
-- Token resolution hierarchy: MASTER → BACKUP → GH_TOKEN → GITHUB_TOKEN
-- Role-based access control: observer → contributor → admin
+- Token resolution hierarchy: MASTER BACKUP GH_TOKEN GITHUB_TOKEN
+- Role-based access control: observer contributor admin
 - Session-level token delegation
 - Rate limit coordination across agents
 - Concurrent authorization handling
@@ -293,24 +293,24 @@ env:
 ## Part 6: Best Practices
 
 1. **Token Security:**
-   - Never log token values
-   - Rotate CODEX_MASTER_KEY quarterly
-   - Keep CODEX_BACKUP_KEY in separate secure location
+ - Never log token values
+ - Rotate CODEX_MASTER_KEY quarterly
+ - Keep CODEX_BACKUP_KEY in separate secure location
 
 2. **Rate Limiting:**
-   - Implement exponential backoff: 1s, 2s, 4s, 8s...
-   - Monitor X-RateLimit-Remaining before operations
-   - Batch operations when possible
+ - Implement exponential backoff: 1s, 2s, 4s, 8s...
+ - Monitor X-RateLimit-Remaining before operations
+ - Batch operations when possible
 
 3. **Error Handling:**
-   - Retry transient errors (429, 5xx)
-   - Escalate permission errors (403) to admin
-   - Log all API errors for audit trail
+ - Retry transient errors (429, 5xx)
+ - Escalate permission errors (403) to admin
+ - Log all API errors for audit trail
 
 4. **Scope Management:**
-   - Use minimum required scopes for each operation
-   - Document scope requirements for each script
-   - Audit token scope usage periodically
+ - Use minimum required scopes for each operation
+ - Document scope requirements for each script
+ - Audit token scope usage periodically
 
 ---
 

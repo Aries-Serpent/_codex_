@@ -1,9 +1,9 @@
 # [Reference]: P6 Advanced Features — AST, Synonyms, Context, Federation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: copilot  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: copilot
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## 1. Overview
 
@@ -25,7 +25,7 @@ Detect structural code duplication beyond simple token similarity. Two files wit
 ### 2.2 Mechanism
 ```text
 # Extract AST node type counts
-ast.parse(source) → {FunctionDef: 5, ClassDef: 2, Call: 12, ...}
+ast.parse(source) {FunctionDef: 5, ClassDef: 2, Call: 12, ...}
 
 # Compute pairwise cosine similarity
 ast_uniqueness = 1 - avg_pairwise_similarity
@@ -49,14 +49,14 @@ Consistency blend modes:
 ### 2.5 Output
 ```json
 {
-  "capabilities": [
-    {
-      "id": "training-engine",
-      "ast_uniqueness": 0.7234,
-      "python_files_analyzed": 12
-    }
-  ],
-  "warnings": ["read_fail:src/broken.py"]
+ "capabilities": [
+ {
+ "id": "training-engine",
+ "ast_uniqueness": 0.7234,
+ "python_files_analyzed": 12
+ }
+ ],
+ "warnings": ["read_fail:src/broken.py"]
 }
 ```text
 
@@ -70,9 +70,9 @@ Expand pattern matching via semantic equivalents. Maps domain terms to their syn
 ### 3.2 Synonym Map Format
 ```json
 {
-  "train": ["training", "epoch", "fit", "optimizer"],
-  "checkpoint": ["save_checkpoint", "restore", "snapshot"],
-  "tokenizer": ["tokenize", "encode", "decode", "vocab"]
+ "train": ["training", "epoch", "fit", "optimizer"],
+ "checkpoint": ["save_checkpoint", "restore", "snapshot"],
+ "tokenizer": ["tokenize", "encode", "decode", "vocab"]
 }
 ```text
 
@@ -150,15 +150,15 @@ Local multi-repo capability discovery. Scans specified repositories for capabili
 ### 5.4 Output
 ```json
 {
-  "repositories": [
-    {
-      "path": "/path/to/repo",
-      "capabilities": ["training", "checkpoint"],
-      "evidence_count": 42
-    }
-  ],
-  "total_scanned": 2,
-  "total_capabilities": 5
+ "repositories": [
+ {
+ "path": "/path/to/repo",
+ "capabilities": ["training", "checkpoint"],
+ "evidence_count": 42
+ }
+ ],
+ "total_scanned": 2,
+ "total_capabilities": 5
 }
 ```text
 
@@ -169,14 +169,14 @@ Local multi-repo capability discovery. Scans specified repositories for capabili
 ### 6.1 New Provenance Fields
 ```json
 {
-  "version": "1.5.0",
-  "ast_similarity_enabled": true,
-  "synonym_map_hash": "a1b2c3d4e5f6g7h8",
-  "secret_context_elevated": 3,
-  "federation_repos_scanned": 2,
-  "archival_operations": [
-    {"action": "bundle", "timestamp": "...", "adr": "ADR-042"}
-  ]
+ "version": "1.5.0",
+ "ast_similarity_enabled": true,
+ "synonym_map_hash": "a1b2c3d4e5f6g7h8",
+ "secret_context_elevated": 3,
+ "federation_repos_scanned": 2,
+ "archival_operations": [
+ {"action": "bundle", "timestamp": "...", "adr": "ADR-042"}
+ ]
 }
 ```text
 

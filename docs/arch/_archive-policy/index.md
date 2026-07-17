@@ -1,6 +1,6 @@
 # Archive & Deprecation Policy Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Last updated: 2026-06-22
 > Status: Canonical policy consolidated; historical summaries retained for reference only.
@@ -10,10 +10,10 @@ materials here replace the prior scattering of notes across audit artifacts and 
 
 ## Canonical Policy
 
-- 📄 [Canonical Archiving Policy](./canonical-archiving-policy.md)
-  - Covers governance, cadence, evidence logging, PR checklist expectations, hygiene passes, repository archival, and retention
-    practices.
-  - References required evidence artifacts such as `.codex/evidence/archive_ops.jsonl` and ADRs in `docs/arch/`.
+- [Canonical Archiving Policy](./canonical-archiving-policy.md)
+ - Covers governance, cadence, evidence logging, PR checklist expectations, hygiene passes, repository archival, and retention
+ practices.
+ - References required evidence artifacts such as `.codex/evidence/archive_ops.jsonl` and ADRs in `docs/arch/`.
 
 ## Deprecated Summaries
 

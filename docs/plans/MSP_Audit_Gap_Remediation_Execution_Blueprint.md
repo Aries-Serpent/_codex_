@@ -1,6 +1,6 @@
-# MSP Audit Gap Remediation Execution Blueprint (v0.2.1)
+# MSP Audit Gap Remediation Execution Blueprint (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -8,9 +8,9 @@
 This blueprint documents the implementation of gap surfacing, policy gates, enhanced reporting, and remediation guidance for the Copilot Space Capability Audit workflow.
 
 ## Version History
-- v0.2.1 (2025-11-01): Gap remediation implementation with missing patterns, component gaps, policy gates
-- v0.2.1: Component caps and duplication heuristic options
-- v0.2.1: Initial capability audit framework
+- v0.2.0 (2025-11-01): Gap remediation implementation with missing patterns, component gaps, policy gates
+- v0.2.0: Component caps and duplication heuristic options
+- v0.2.0: Initial capability audit framework
 
 ## Scope of Change
 
@@ -40,9 +40,9 @@ This blueprint documents the implementation of gap surfacing, policy gates, enha
 
 ### Validators Module (validators.py)
 New reusable module with:
-- `check_low_threshold(gaps_path)` → (count, low_list)
-- `check_missing_detectors(scored_path, overrides)` → missing_ids
-- `emit_summary(low_list, missing_ids, thresholds)` → markdown text
+- `check_low_threshold(gaps_path)` (count, low_list)
+- `check_missing_detectors(scored_path, overrides)` missing_ids
+- `emit_summary(low_list, missing_ids, thresholds)` markdown text
 
 ### Template Updates (capability_matrix.md.j2)
 - Show `Missing Patterns` column in low maturity table

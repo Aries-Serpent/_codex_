@@ -1,6 +1,6 @@
 # Configuration Consolidation Guide (D4)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,35 +12,35 @@ This guide documents the unified configuration structure for the Codex ML projec
 
 ```
 configs/
-├── __init__.py              # Package marker
-├── README.md                # Configuration overview
-├── CONFIGURATION_STRUCTURE.md  # This file
-├── base/                    # Base configurations (defaults)
-│   ├── training.yaml
-│   ├── model.yaml
-│   ├── data.yaml
-│   ├── tracking.yaml
-│   ├── validation.yaml
-│   ├── reproducibility.yaml
-│   └── ... (other base configs)
-├── production/              # Production overrides
-│   ├── tracking.yaml
-│   ├── features.yaml
-│   ├── data_validation.yaml
-│   ├── evaluation.yaml
-│   ├── training.yaml
-│   └── monitoring.yaml
-├── development/             # Development overrides
-│   ├── minimal_train.yaml
-│   ├── minimal_eval.yaml
-│   └── minimal.yaml
-├── experiments/             # Experiment-specific configs
-│   ├── default.yaml
-│   ├── sweep.yaml
-│   └── basic.yaml
-├── hydra/                   # Hydra-specific configs
-│   └── config.yaml          # Main Hydra configuration
-└── ... (other config directories)
+ __init__.py # Package marker
+ README.md # Configuration overview
+ CONFIGURATION_STRUCTURE.md # This file
+ base/ # Base configurations (defaults)
+ training.yaml
+ model.yaml
+ data.yaml
+ tracking.yaml
+ validation.yaml
+ reproducibility.yaml
+ ... (other base configs)
+ production/ # Production overrides
+ tracking.yaml
+ features.yaml
+ data_validation.yaml
+ evaluation.yaml
+ training.yaml
+ monitoring.yaml
+ development/ # Development overrides
+ minimal_train.yaml
+ minimal_eval.yaml
+ minimal.yaml
+ experiments/ # Experiment-specific configs
+ default.yaml
+ sweep.yaml
+ basic.yaml
+ hydra/ # Hydra-specific configs
+ config.yaml # Main Hydra configuration
+ ... (other config directories)
 ```
 
 ## Unified Configuration Access
@@ -80,7 +80,7 @@ python -m codex_ml.training --multirun training.batch_size=8,16,32
 The following directories were consolidated into `configs/`:
 
 - `conf/` - Legacy Hydra configurations
-- `config/` - Legacy application configurations  
+- `config/` - Legacy application configurations
 
 These directories are preserved for backward compatibility during the transition period but should not be used for new configurations.
 
@@ -98,10 +98,10 @@ python scripts/migrate_configs.py --execute
 
 ## Migration Results
 
--  11 legacy configuration files migrated to unified structure
--  Hydra configuration created at `configs/hydra/config.yaml`
--  Directory structure validated
--  Import paths updated in `src/codex_ml/config/__init__.py`
+- 11 legacy configuration files migrated to unified structure
+- Hydra configuration created at `configs/hydra/config.yaml`
+- Directory structure validated
+- Import paths updated in `src/codex_ml/config/__init__.py`
 
 ## Configuration Best Practices
 
@@ -117,12 +117,12 @@ python scripts/migrate_configs.py --execute
 ```yaml
 # configs/base/training.yaml
 defaults:
-  - _self_
+ - _self_
 
 training:
-  epochs: 10
-  batch_size: 32
-  learning_rate: 1e-4
+ epochs: 10
+ batch_size: 32
+ learning_rate: 1e-4
 ```
 
 ## 3. Use Composition
@@ -130,12 +130,12 @@ training:
 ```yaml
 # configs/hydra/config.yaml
 defaults:
-  - base/training
-  - base/model
-  - base/data
-  - _self_
+ - base/training
+ - base/model
+ - base/data
+ - _self_
 
-env: development  # Override via CLI: env=production
+env: development # Override via CLI: env=production
 ```
 
 ## 4. Document Your Configs
@@ -144,9 +144,9 @@ Add comments explaining non-obvious parameters:
 
 ```yaml
 training:
-  epochs: 10  # Number of training epochs
-  batch_size: 32  # Batch size per GPU
-  gradient_accumulation_steps: 4  # Effective batch = 32 * 4 = 128
+ epochs: 10 # Number of training epochs
+ batch_size: 32 # Batch size per GPU
+ gradient_accumulation_steps: 4 # Effective batch = 32 * 4 = 128
 ```
 
 ## Hydra Integration
@@ -162,11 +162,11 @@ The Hydra configuration is set up to search for configs in:
 
 ```yaml
 hydra:
-  run:
-    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  sweep:
-    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${hydra.job.num}
+ run:
+ dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+ sweep:
+ dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+ subdir: ${hydra.job.num}
 ```
 
 ## Troubleshooting
@@ -176,11 +176,11 @@ hydra:
 **Solution**: Ensure you're referencing configs relative to the `configs/` directory:
 
 ```python
-#  Wrong
+# Wrong
 get_config("training.yaml")
 
-#  Correct
-get_config("base/training")  # No .yaml extension needed
+# Correct
+get_config("base/training") # No .yaml extension needed
 ```
 
 ## Issue: "Hydra initialization error"
@@ -196,10 +196,10 @@ pip install hydra-core omegaconf
 **Solution**: Use proper Hydra override syntax:
 
 ```bash
-#  Wrong
+# Wrong
 python train.py --epochs=100
 
-#  Correct
+# Correct
 python train.py training.epochs=100
 ```
 
@@ -224,22 +224,22 @@ ls -la configs/base configs/production configs/development configs/experiments c
 2026-07-13
 
 ### Deliverables Completed
- Migration script (`scripts/migrate_configs.py`)  
- Unified config structure under `configs/`  
- Hydra configuration (`configs/hydra/config.yaml`)  
- Python API for config loading (`codex_ml.config.get_config`, `load_yaml`)  
- Documentation (this file)  
- Verification tests  
+ Migration script (`scripts/migrate_configs.py`)
+ Unified config structure under `configs/`
+ Hydra configuration (`configs/hydra/config.yaml`)
+ Python API for config loading (`codex_ml.config.get_config`, `load_yaml`)
+ Documentation (this file)
+ Verification tests
 
 ### Verification Status
- All directory structures in place  
- Migration script tested (dry-run and execute)  
- Config loading functions verified  
- YAML parsing validated  
- Backward compatibility maintained  
+ All directory structures in place
+ Migration script tested (dry-run and execute)
+ Config loading functions verified
+ YAML parsing validated
+ Backward compatibility maintained
 
 ### Next Steps
-1.  Phase 1: Config consolidation complete
+1. Phase 1: Config consolidation complete
 2. Continue with D1: Docker Optimization
 3. Continue with D2: Plugin Registry
 4. Continue with D3: Multi-node Training

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/bridge/governance/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Bridge Governance &amp; Guardrails - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2320,11 +2320,11 @@ development environments.</p>
 <h2 id="access-control">Access control<a class="headerlink" href="#access-control" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>API keys</strong> are short-lived. Generate them with <code>python services/ita/scripts/issue_api_key.py</code>.
-  Hashes are stored in <code>services/ita/runtime/api_keys.json</code>, which is ignored by git.</li>
+ Hashes are stored in <code>services/ita/runtime/api_keys.json</code>, which is ignored by git.</li>
 <li><strong>Environment overrides</strong>: set <code>ITA_API_KEYS_PATH</code> to relocate the key store or
-  <code>ITA_ADDITIONAL_API_KEYS</code> when you must honour pre-provisioned credentials (comma separated).</li>
+ <code>ITA_ADDITIONAL_API_KEYS</code> when you must honour pre-provisioned credentials (comma separated).</li>
 <li><strong>GitHub App credentials</strong> live outside the repository. Export <code>GITHUB_APP_ID</code>,
-  <code>GITHUB_INSTALLATION_ID</code>, and <code>GITHUB_PRIVATE_KEY_PEM</code> in the shell that runs Codex or Copilot.</li>
+ <code>GITHUB_INSTALLATION_ID</code>, and <code>GITHUB_PRIVATE_KEY_PEM</code> in the shell that runs Codex or Copilot.</li>
 </ul>
 <h2 id="operational-semantics">Operational semantics<a class="headerlink" href="#operational-semantics" title="Permanent link">¶</a></h2>
 <p>All write-like endpoints share the same safety semantics:</p>
@@ -2357,21 +2357,21 @@ development environments.</p>
 <h2 id="logging-observability">Logging &amp; observability<a class="headerlink" href="#logging-observability" title="Permanent link">¶</a></h2>
 <ul>
 <li>The ITA issues structured logs that include the hashed API key, request identifier, and endpoint
-  metadata. Forward them to your preferred aggregator on Ubuntu (e.g. <code>journalctl</code>, <code>fluent-bit</code>).</li>
+ metadata. Forward them to your preferred aggregator on Ubuntu (e.g. <code>journalctl</code>, <code>fluent-bit</code>).</li>
 <li>Clients should log the <code>X-Request-Id</code> they generated so cross-system tracing is trivial.</li>
 <li>Enable <code>morgan</code> logging inside the Copilot Express shim (already configured) to audit inbound
-  extension calls.</li>
+ extension calls.</li>
 </ul>
 <h2 id="threat-model-touchpoints">Threat model touchpoints<a class="headerlink" href="#threat-model-touchpoints" title="Permanent link">¶</a></h2>
 <p>The STRIDE snapshot under <code>ops/threat_model/STRIDE.md</code> captures the baseline controls. A quick
 translation for operators:</p>
 <ul>
-<li><strong>Spoofing</strong> → Pair short-lived API keys with GitHub App JWTs exchanged for installation tokens.</li>
-<li><strong>Tampering</strong> → Idempotent write flows plus <code>confirm</code> gating keep destructive actions deliberate.</li>
-<li><strong>Repudiation</strong> → Persist correlation IDs and hashed API keys in audit logs.</li>
-<li><strong>Information Disclosure</strong> → Keep scopes minimal and redact tokens in logs or telemetry.</li>
-<li><strong>Denial of Service</strong> → Clients implement exponential backoff; the ITA is ready for rate limiting.</li>
-<li><strong>Elevation of Privilege</strong> → Hard-code repository/org allowlists before enabling write operations.</li>
+<li><strong>Spoofing</strong> Pair short-lived API keys with GitHub App JWTs exchanged for installation tokens.</li>
+<li><strong>Tampering</strong> Idempotent write flows plus <code>confirm</code> gating keep destructive actions deliberate.</li>
+<li><strong>Repudiation</strong> Persist correlation IDs and hashed API keys in audit logs.</li>
+<li><strong>Information Disclosure</strong> Keep scopes minimal and redact tokens in logs or telemetry.</li>
+<li><strong>Denial of Service</strong> Clients implement exponential backoff; the ITA is ready for rate limiting.</li>
+<li><strong>Elevation of Privilege</strong> Hard-code repository/org allowlists before enabling write operations.</li>
 </ul>
 <p>For deeper architectural context, read the <a href="../overview/">bridge overview</a> and keep the knowledge base
 entries up to date so Codex can surface the latest operational expectations.</p>
@@ -2404,6 +2404,6 @@ entries up to date so Codex can surface the latest operational expectations.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

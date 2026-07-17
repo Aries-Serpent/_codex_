@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/validation/CI_FIX_SUMMARY/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI/CD Fixes Applied - PR #2968 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2480,7 +2480,7 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <p><strong>Date:2026-07-13
-</strong>Commit:<strong> ea7f255c2607c9832347e2c96d6005f6436049d3<br/>
+</strong>Commit:<strong> ea7f255c2607c9832347e2c96d6005f6436049d3
 </strong>Status:<strong> </strong>15+ Critical Fixes Applied**</p>
 <hr/>
 <h2 id="summary-of-fixes">Summary of Fixes<a class="headerlink" href="#summary-of-fixes" title="Permanent link">¶</a></h2>
@@ -2489,7 +2489,7 @@
 <p><strong>File:</strong> <code>.codex/agents/rfc-compliance-checker/run.py</code>, <code>.codex/agents/security-input-validator/run.py</code></p>
 <p><strong>Changes:</strong>
 - Fixed 100+ whitespace issues (W293) using <code>ruff check --fix --unsafe-fixes</code>
-- Fixed ambiguous variable name <code>l</code> → <code>line</code> (E741)
+- Fixed ambiguous variable name <code>l</code> <code>line</code> (E741)
 - Removed unused variable <code>e</code> (F841)
 - Auto-fixed trailing whitespace (W291)</p>
 <p><strong>Verification:</strong>
@@ -2508,7 +2508,7 @@
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">()[</span><span class="s2">"f1_score"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1.0</span>  <span class="c1">#  Correct</span>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1"># When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)</span>
 </code></pre></div></p>
-<p><strong>Test Result:</strong>  PASS
+<p><strong>Test Result:</strong> PASS
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>tests/metrics/test_f1_score.py::test_f1_micro_handles_zero_division PASSED
 </code></pre></div></p>
 <hr/>
@@ -2534,7 +2534,7 @@
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>                <span class="k">pass</span>
 </code></pre></div></p>
-<p><strong>Test Result:</strong>  ALL 11 TESTS PASS
+<p><strong>Test Result:</strong> ALL 11 TESTS PASS
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>tests/test_prometheus_metrics.py::test_metrics_collector_initializes PASSED
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>tests/test_prometheus_metrics.py::test_metrics_collector_available_property PASSED
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>tests/test_prometheus_metrics.py::test_metrics_collector_record_request_no_error PASSED
@@ -2585,7 +2585,7 @@
 <a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>    <span class="n">business_impact</span><span class="o">=</span><span class="mf">0.5</span>  <span class="c1">#  Float 0-1</span>
 <a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="p">)</span>
 </code></pre></div></p>
-<p><strong>Status:</strong>  API mismatch fixed (test now fails on different issue - method name)</p>
+<p><strong>Status:</strong> API mismatch fixed (test now fails on different issue - method name)</p>
 <hr/>
 <h2 id="5-test-collection-warnings-fixed">5. Test Collection Warnings - FIXED<a class="headerlink" href="#5-test-collection-warnings-fixed" title="Permanent link">¶</a></h2>
 <p><strong>Files:</strong>
@@ -2624,7 +2624,7 @@
 - Updated all type hints in <code>uncertainty.py</code>
 - Added backward compatibility aliases in <code>__init__.py</code>
 - Exported both old and new names for compatibility</p>
-<p><strong>Test Result:</strong>  Warnings eliminated</p>
+<p><strong>Test Result:</strong> Warnings eliminated</p>
 <hr/>
 <h2 id="fixes-summary-table">Fixes Summary Table<a class="headerlink" href="#fixes-summary-table" title="Permanent link">¶</a></h2>
 <table>
@@ -2729,9 +2729,9 @@
 </code></pre></div></p>
 <p><strong>Action Required:</strong> Review performance assertions</p>
 <hr/>
-<h4 id="7-checkpoint-provenance-p2-flaky">7. Checkpoint Provenance (P2) ️ FLAKY<a class="headerlink" href="#7-checkpoint-provenance-p2-flaky" title="Permanent link">¶</a></h4>
+<h4 id="7-checkpoint-provenance-p2-flaky">7. Checkpoint Provenance (P2) FLAKY<a class="headerlink" href="#7-checkpoint-provenance-p2-flaky" title="Permanent link">¶</a></h4>
 <p><strong>Test:</strong> <code>tests/test_checkpoint_provenance.py::test_checkpoint_includes_commit_and_system</code></p>
-<p><strong>Status:</strong> ️ Passes in isolation, fails in full suite</p>
+<p><strong>Status:</strong> Passes in isolation, fails in full suite</p>
 <p><strong>Error (Intermittent):</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>CheckpointLoadError: failed to save checkpoint via pickle:
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>issubclass() arg 2 must be a class, a tuple of classes, or a union
@@ -2742,7 +2742,7 @@
 <h3 id="tests-fixed-15">Tests Fixed: 15+<a class="headerlink" href="#tests-fixed-15" title="Permanent link">¶</a></h3>
 <ul>
 <li>1 F1 score test</li>
-<li>11 Prometheus metrics tests  </li>
+<li>11 Prometheus metrics tests</li>
 <li>0 collection warnings</li>
 <li>100+ linting violations</li>
 </ul>
@@ -2752,7 +2752,7 @@
 <li>2 train loop tests</li>
 <li>3 cognitive brain tests</li>
 <li>2 agent load tests</li>
-<li>️ 1 flaky checkpoint test</li>
+<li>1 flaky checkpoint test</li>
 </ul>
 <h3 id="success-rate-improvement">Success Rate Improvement<a class="headerlink" href="#success-rate-improvement" title="Permanent link">¶</a></h3>
 <ul>
@@ -2772,17 +2772,17 @@
 </ol>
 <h3 id="next-session-medium-priority">Next Session (Medium Priority)<a class="headerlink" href="#next-session-medium-priority" title="Permanent link">¶</a></h3>
 <ol>
-<li>⏭️ Fix Hydra configuration missing file</li>
-<li>⏭️ Fix config validation schema errors</li>
-<li>⏭️ Fix train loop <code>__version__</code> error</li>
-<li>⏭️ Fix EntanglementManager signature</li>
-<li>⏭️ Fix cognitive brain integration test method name</li>
-<li>⏭️ Review agent load test assertions</li>
+<li>Fix Hydra configuration missing file</li>
+<li>Fix config validation schema errors</li>
+<li>Fix train loop <code>__version__</code> error</li>
+<li>Fix EntanglementManager signature</li>
+<li>Fix cognitive brain integration test method name</li>
+<li>Review agent load test assertions</li>
 </ol>
 <h3 id="future-low-priority">Future (Low Priority)<a class="headerlink" href="#future-low-priority" title="Permanent link">¶</a></h3>
 <ol>
-<li>⏭️ Add flaky marker to checkpoint test</li>
-<li>⏭️ Investigate PyTorch serialization issue</li>
+<li>Add flaky marker to checkpoint test</li>
+<li>Investigate PyTorch serialization issue</li>
 </ol>
 <hr/>
 <h2 id="commands-for-verification">Commands for Verification<a class="headerlink" href="#commands-for-verification" title="Permanent link">¶</a></h2>
@@ -2805,7 +2805,7 @@
 <h2 id="files-modified">Files Modified<a class="headerlink" href="#files-modified" title="Permanent link">¶</a></h2>
 <ol>
 <li><code>.codex/agents/rfc-compliance-checker/run.py</code> - Fixed linting</li>
-<li><code>.codex/agents/security-input-validator/run.py</code> - Fixed linting  </li>
+<li><code>.codex/agents/security-input-validator/run.py</code> - Fixed linting</li>
 <li><code>.codex/agents/test-coverage-guardian/run.py</code> - Fixed linting</li>
 <li><code>tests/metrics/test_f1_score.py</code> - Fixed assertion</li>
 <li><code>tests/test_prometheus_metrics.py</code> - Added fixture</li>
@@ -2814,19 +2814,19 @@
 <li><code>src/cognitive_brain/quantum/__init__.py</code> - Added aliases</li>
 </ol>
 <hr/>
-<p><strong>Total Files Modified:</strong> 8<br/>
-<strong>Total Lines Changed:</strong> ~150<br/>
-<strong>Tests Fixed:</strong> 15+<br/>
+<p><strong>Total Files Modified:</strong> 8
+<strong>Total Lines Changed:</strong> ~150
+<strong>Tests Fixed:</strong> 15+
 <strong>Remaining Failures:</strong> 8+</p>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
-<p><strong>Phase 1 (P0 Critical Fixes):  COMPLETE</strong></p>
+<p><strong>Phase 1 (P0 Critical Fixes): COMPLETE</strong></p>
 <p>We have successfully:
--  Fixed 100+ linting violations
--  Fixed F1 score test logic
--  Fixed 11 Prometheus test isolation issues
--  Fixed AuditResult API mismatch
--  Eliminated test collection warnings</p>
+- Fixed 100+ linting violations
+- Fixed F1 score test logic
+- Fixed 11 Prometheus test isolation issues
+- Fixed AuditResult API mismatch
+- Eliminated test collection warnings</p>
 <p><strong>Next Phase:</strong> Address remaining P0/P1 issues (Hydra configs, train loop, cognitive brain tests)</p>
 <p><strong>CI/CD Status:</strong> Significant improvement - 62% reduction in test failures</p>
 </article>
@@ -2858,6 +2858,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

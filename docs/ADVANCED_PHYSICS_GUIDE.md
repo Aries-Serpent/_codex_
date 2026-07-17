@@ -1,6 +1,6 @@
 # Advanced Physics Paradigms Integration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -29,7 +29,7 @@ This document describes the integration of six emerging physics paradigms into t
 Logistic map: x_{n+1} = r * x_n * (1 - x_n)
 
 Lyapunov exponent (measure of chaos):
-λ = lim_{n→∞} (1/n) * Σ log|f'(x_i)|
+λ = lim_{n∞} (1/n) * Σ log|f'(x_i)|
 ```
 
 **Usage**:
@@ -63,7 +63,7 @@ perturbed = cnn.inject_chaos(base_value=0.5, chaos_strength=0.2)
 **Key Equations**:
 ```
 # Box-counting dimension
-D = lim_{ε→0} log(N(ε)) / log(1/ε)
+D = lim_{ε0} log(N(ε)) / log(1/ε)
 
 # Self-similarity measure
 S = Σ_scales pattern_similarity(scale_i, scale_j)
@@ -77,10 +77,10 @@ analyzer = FractalAnalyzer()
 
 # Analyze code tree structure
 code_tree = {
-    'module': {
-        'class1': {'method1': {}, 'method2': {}},
-        'class2': {'method3': {}, 'method4': {}}
-    }
+ 'module': {
+ 'class1': {'method1': {}, 'method2': {}},
+ 'class2': {'method3': {}, 'method4': {}}
+ }
 }
 analysis = analyzer.analyze_code_tree(code_tree)
 
@@ -163,13 +163,13 @@ import numpy as np
 router = EMFieldRouter(grid_resolution=30)
 
 # Add code hotspots as charges
-router.add_charge(np.array([0.3, 0.7]), charge=5.0)  # High-risk area
-router.add_charge(np.array([0.7, 0.3]), charge=3.0)  # Medium-risk
+router.add_charge(np.array([0.3, 0.7]), charge=5.0) # High-risk area
+router.add_charge(np.array([0.7, 0.3]), charge=3.0) # Medium-risk
 
 # Route reviewer along field lines
 trajectory = router.route_agent(
-    start_position=np.array([0.1, 0.1]),
-    steps=40
+ start_position=np.array([0.1, 0.1]),
+ steps=40
 )
 
 # Identify priority regions
@@ -195,7 +195,7 @@ regions = router.prioritize_regions(num_regions=5)
 ∂²u/∂t² = c²∇²u - γ∂u/∂t
 
 # Interference
-I_total = |A_1 + A_2|²  # Constructive if in phase
+I_total = |A_1 + A_2|² # Constructive if in phase
 ```
 
 **Usage**:
@@ -214,7 +214,7 @@ history = wave.propagate(dt=0.1, steps=100)
 # Measure interference
 interference = wave.measure_interference(position=(27, 27))
 if interference['constructive'] > 0:
-    print("Signals reinforce (agreement)")
+ print("Signals reinforce (agreement)")
 ```
 
 ## 6. Relativistic Effects
@@ -236,7 +236,7 @@ if interference['constructive'] > 0:
 γ = 1 / √(1 - v²/c²)
 
 # Time dilation
-τ = t / γ  # Proper time
+τ = t / γ # Proper time
 
 # Communication delay
 Δt = distance / c
@@ -251,14 +251,14 @@ scheduler = RelativityScheduler(speed_of_light=100.0)
 
 # Add distributed agents
 scheduler.add_agent(
-    agent_id='service_a',
-    position=np.array([0.0, 0.0]),
-    velocity=np.array([10.0, 0.0])
+ agent_id='service_a',
+ position=np.array([0.0, 0.0]),
+ velocity=np.array([10.0, 0.0])
 )
 scheduler.add_agent(
-    agent_id='service_b',
-    position=np.array([50.0, 0.0]),
-    velocity=np.array([50.0, 0.0])  # Fast-moving
+ agent_id='service_b',
+ position=np.array([50.0, 0.0]),
+ velocity=np.array([50.0, 0.0]) # Fast-moving
 )
 
 # Synchronize clocks
@@ -266,10 +266,10 @@ corrections = scheduler.synchronize_clocks()
 
 # Schedule task with relativistic corrections
 result = scheduler.schedule_task(
-    task_id='task1',
-    agent_id='service_b',
-    deadline=10.0,
-    priority=1.0
+ task_id='task1',
+ agent_id='service_b',
+ deadline=10.0,
+ priority=1.0
 )
 ```
 
@@ -286,19 +286,19 @@ orchestrator = AdvancedPhysicsOrchestrator()
 
 # Comprehensive analysis
 decision_space = {
-    'exploration': True,
-    'param_ranges': [(0, 1), (0, 10)],
-    'structure': code_tree,
-    'workflow': True,
-    'hotspots': [(np.array([0.5, 0.5]), 1.0)],
-    'signals': [{'position': (25, 25), 'amplitude': 1.0, 'frequency': 1.0}],
-    'agents': [{'agent_id': 'a1', 'position': np.array([0.0, 0.0])}]
+ 'exploration': True,
+ 'param_ranges': [(0, 1), (0, 10)],
+ 'structure': code_tree,
+ 'workflow': True,
+ 'hotspots': [(np.array([0.5, 0.5]), 1.0)],
+ 'signals': [{'position': (25, 25), 'amplitude': 1.0, 'frequency': 1.0}],
+ 'agents': [{'agent_id': 'a1', 'position': np.array([0.0, 0.0])}]
 }
 
 results = orchestrator.full_analysis(decision_space)
 
 # Check status
-status = orchestrator.get_status()  # All paradigms: 'active'
+status = orchestrator.get_status() # All paradigms: 'active'
 ```
 
 ## Software Developer Orchestrator
@@ -334,10 +334,10 @@ orchestrator = create_developer_orchestrator()
 
 # 2. Define requirements (partial is OK!)
 requirements = {
-    'app_type': 'python_cli',
-    'app_name': 'data_processor',
-    'description': 'CLI tool for data processing',
-    'commands': ['process', 'validate', 'export'],
+ 'app_type': 'python_cli',
+ 'app_name': 'data_processor',
+ 'description': 'CLI tool for data processing',
+ 'commands': ['process', 'validate', 'export'],
 }
 
 # 3. Analyze - identifies missing variables
@@ -347,10 +347,10 @@ print(f"Completeness: {analysis['completeness']*100:.1f}%")
 
 # 4. Review missing variables with AI suggestions
 for var in analysis['missing_variables']:
-    print(f"{var['name']}: {var['suggested_options']}")
-    # Example output:
-    # cli_framework: ['argparse', 'typer', 'click']
-    # python_version: ['3.10', '3.11', '3.12']
+ print(f"{var['name']}: {var['suggested_options']}")
+ # Example output:
+ # cli_framework: ['argparse', 'typer', 'click']
+ # python_version: ['3.10', '3.11', '3.12']
 
 # 5. Complete requirements
 requirements['cli_framework'] = 'typer'
@@ -365,13 +365,13 @@ print(f"Fractal dimension: {fractal_dim:.3f}")
 
 # EM fields prioritize critical components
 sorted_components = sorted(
-    architecture['components'],
-    key=lambda c: c['priority'],
-    reverse=True
+ architecture['components'],
+ key=lambda c: c['priority'],
+ reverse=True
 )
 print("Top priority components:")
 for comp in sorted_components[:3]:
-    print(f"  Component: {comp['name']}, Priority: {comp['priority']:.2f}")
+ print(f" Component: {comp['name']}, Priority: {comp['priority']:.2f}")
 
 # Dependency analysis determines build order
 build_order = architecture.get('recommended_order', [])
@@ -522,6 +522,6 @@ For questions or issues:
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-12  
+**Version**: 1.0.0
+**Last Updated**: 2025-12-12
 **Maintainer**: Codex Development Team

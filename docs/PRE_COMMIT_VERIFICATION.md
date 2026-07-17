@@ -1,9 +1,9 @@
 # Pre-commit Verification Hook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version:** 1.0.0 
-> **Status:** Active 
+> **Version:** 1.0.0
+> **Status:** Active
 > **Last Updated: 2026-07-11
 > **Cognitive Brain Plan:** Plan 1 of Short-term Planset (CB-ST-2026-02-05)
 
@@ -18,22 +18,22 @@ The Pre-commit Verification Hook ensures that all files logged in `action_log.nd
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Pre-commit Verification Hook │
-├─────────────────────────────────────────────────────────────┤
-│ │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
-│ │ Action │ │ Git │ │ Report │ │
-│ │ Log Parser │───▶│ Status │───▶│ Generator │ │
-│ └──────────────┘ └──────────────┘ └──────────────┘ │
-│ │ │ │ │
-│ ▼ ▼ ▼ │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
-│ │ Expected │ │ Staged │ │ Verification │ │
-│ │ Files │ │ Files │ │ Result │ │
-│ └──────────────┘ └──────────────┘ └──────────────┘ │
-│ │
-└─────────────────────────────────────────────────────────────┘
+
+ Pre-commit Verification Hook 
+
+ 
+ 
+ Action Git Report 
+ Log Parser Status Generator 
+ 
+ 
+ 
+ 
+ Expected Staged Verification 
+ Files Files Result 
+ 
+ 
+
 ```
 
 ---
@@ -88,7 +88,7 @@ python scripts/hooks/pre_commit_verify.py --action-log /path/to/action_log.ndjso
 
 ## Sample Output
 
-### All Files Staged 
+### All Files Staged
 
 ```
 ============================================================
@@ -110,7 +110,7 @@ Missing from staging: 0
 INFO: All expected files are staged 
 ```
 
-### Missing Files ️
+### Missing Files
 
 ```
 ============================================================
@@ -126,10 +126,10 @@ Missing from staging: 2
  - tests/hooks/test_pre_commit_verify.py
  - .pre-commit-config.yaml
 
-️ Modified but not staged (need `git add`):
+ Modified but not staged (need `git add`):
  - docs/PRE_COMMIT_VERIFICATION.md
 
-️ Untracked files (need `git add`):
+ Untracked files (need `git add`):
  - .codex/new_file.md
 
 To stage missing files:
@@ -217,7 +217,7 @@ The hook is configured in `.pre-commit-config.yaml`:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Run the test suite:
 
@@ -255,7 +255,7 @@ The hook helps maintain the 98%+ commit verification rate identified in the sess
 
 ---
 
-## ️ Safety Features
+## Safety Features
 
 1. **Check-only Mode:** Won't block commits by default
 2. **Quiet Mode:** Minimal output for clean git experience
@@ -273,5 +273,5 @@ For issues or enhancements:
 
 ---
 
-**Document Version:** 1.0.0 
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-11

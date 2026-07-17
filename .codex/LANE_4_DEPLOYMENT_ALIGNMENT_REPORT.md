@@ -22,7 +22,7 @@ Lane 4 validates the GitHub Pages deployment configuration for both web (https:/
 |---------|-------|----------|--------|
 | **site_url** | https://aries-serpent.github.io/_codex_/ | https://aries-serpent.github.io/_codex_/ | ✅ CORRECT |
 | **repo_url** | https://github.com/Aries-Serpent/_codex_ | https://github.com/Aries-Serpent/_codex_ | ✅ CORRECT |
-| **site_name** | Codex Docs v0.2.1 | v0.2.1+ | ✅ CORRECT |
+| **site_name** | Codex Docs v0.2.0 | v0.2.0+ | ✅ CORRECT |
 | **theme.name** | material | material | ✅ CORRECT |
 | **strict mode** | false | false (by design) | ✅ CORRECT |
 

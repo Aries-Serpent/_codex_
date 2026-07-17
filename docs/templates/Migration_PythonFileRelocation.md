@@ -1,10 +1,10 @@
 # [Template]: Python File Relocation with Backward Compatibility
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version:** v0.2.1  
+**Version:** v0.2.0
 **Last Updated: 2026-07-11
-**Role Workflow:** Developers draft → Maintainers execute → Reviewers certify
+**Role Workflow:** Developers draft Maintainers execute Reviewers certify
 
 > [PLACEHOLDER: MIGRATION_INTENT_SUMMARY]
 

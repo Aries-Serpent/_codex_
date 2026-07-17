@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3607/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3607 (Phase 5 CI Robustness — S138) - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2332,10 +2332,10 @@
 <h1 id="cognitive-brain-status-pr-3607-phase-5-ci-robustness-s138">Cognitive Brain Status — PR #3607 (Phase 5 CI Robustness — S138)<a class="headerlink" href="#cognitive-brain-status-pr-3607-phase-5-ci-robustness-s138" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Generated:</strong> 2026-03-17T08:38Z<br/>
-<strong>PR:</strong> #3607 — <code>0D_base</code> — CI workflow robustness, PR comment upsert race-safety, reviewer fix batch<br/>
-<strong>Branch:</strong> <code>copilot/sub-pr-3606</code><br/>
-<strong>Status:</strong>  COMPLETE — All S138 deliverables done; Phase 5 active<br/>
+<p><strong>Generated:</strong> 2026-03-17T08:38Z
+<strong>PR:</strong> #3607 — <code>0D_base</code> — CI workflow robustness, PR comment upsert race-safety, reviewer fix batch
+<strong>Branch:</strong> <code>copilot/sub-pr-3606</code>
+<strong>Status:</strong> COMPLETE — All S138 deliverables done; Phase 5 active
 <strong>Agent:</strong> copilot-swe-agent[bot]</p>
 <hr/>
 <h2 id="session-s138-deliverables">Session S138 — Deliverables<a class="headerlink" href="#session-s138-deliverables" title="Permanent link">¶</a></h2>
@@ -2390,51 +2390,67 @@
 <hr/>
 <h2 id="phase-5-ci-robustness-data-flow">Phase 5 CI Robustness — Data Flow<a class="headerlink" href="#phase-5-ci-robustness-data-flow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR body submitted", "check_deferral_language.scan()"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    PR["PR body submitted"] --&gt; DL["check_deferral_language.scan()"]
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    subgraph DL["Deferral Scanner — S138 hardened"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        direction TB
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        L1["Line iteration"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        L1 --&gt; FO{"Fence opener\n(\`\`\` or ~~~)?"}
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        FO -- yes --&gt; BUF["fence_buffer.append(opener_line)\n⬆ NEW S138 fix"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        FO -- no --&gt; SCAN["lines_to_scan.append(line)"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        BUF --&gt; INSIDE["Scan inside-fence lines\nto fence_buffer"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        INSIDE --&gt; CLOSE{"Matching close?"}
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        CLOSE -- yes --&gt; DISCARD["fence_buffer.clear()\n(real code — safe)"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        CLOSE -- no / EOF --&gt; BYPASS["lines_to_scan.extend(fence_buffer)\n(bypass prevention — scans opener too)"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    end
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> PR["PR body submitted"] --&gt; DL["check_deferral_language.scan()"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> subgraph DL["Deferral Scanner — S138 hardened"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> direction TB
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> L1["Line iteration"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> L1 --&gt; FO{"Fence opener\n(\`\`\` or ~~~)?"}
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> FO -- yes --&gt; BUF["fence_buffer.append(opener_line)\n⬆ NEW S138 fix"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> FO -- no --&gt; SCAN["lines_to_scan.append(line)"]
 <a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    SCAN --&gt; REGEX["DEFERRAL_TRIGGERS regex"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    BYPASS --&gt; REGEX
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    REGEX --&gt; EXEMPT{"Exempt?"}
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    EXEMPT -- yes --&gt; PASS[" PASS"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    EXEMPT -- no --&gt; FAIL[" violation reported"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> BUF --&gt; INSIDE["Scan inside-fence lines\nto fence_buffer"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> INSIDE --&gt; CLOSE{"Matching close?"}
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> CLOSE -- yes --&gt; DISCARD["fence_buffer.clear()\n(real code — safe)"]
 <a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    style BUF fill:#ffd700,color:#000
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    style BYPASS fill:#f97316,color:#fff
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    style PASS fill:#22c55e,color:#fff
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    style FAIL fill:#ef4444,color:#fff
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> CLOSE -- no / EOF --&gt; BYPASS["lines_to_scan.extend(fence_buffer)\n(bypass prevention — scans opener too)"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> end
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> SCAN --&gt; REGEX["DEFERRAL_TRIGGERS regex"]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> BYPASS --&gt; REGEX
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> REGEX --&gt; EXEMPT{"Exempt?"}
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> EXEMPT -- yes --&gt; PASS[" PASS"]
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> EXEMPT -- no --&gt; FAIL[" violation reported"]
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> style BUF fill:#ffd700,color:#000
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> style BYPASS fill:#f97316,color:#fff
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> style PASS fill:#22c55e,color:#fff
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> style FAIL fill:#ef4444,color:#fff
 </code></pre></div>
 <hr/>
 <h2 id="run_validationsh-doc_metrics_sync-integration-s138"><code>run_validation.sh</code> doc_metrics_sync Integration — S138<a class="headerlink" href="#run_validationsh-doc_metrics_sync-integration-s138" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram showing @'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>sequenceDiagram
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    participant SH as run_validation.sh
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    participant PC as PRECOMMIT_FILES[]
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    participant SYNC as doc_metrics_sync.py
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    participant GIT as git diff
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    participant PRE as pre-commit
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    SH-&gt;&gt;PC: Build from HEAD tracked + untracked changes
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    SH-&gt;&gt;SYNC: python scripts/tools/doc_metrics_sync.py --fix
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    Note over SYNC: May modify docs/ROADMAP.md,&lt;br/&gt;docs/CHANGELOG.md, etc.
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    SYNC--&gt;&gt;SH: exit 0 (or non-zero warning only)
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    SH-&gt;&gt;GIT: git diff --name-only (detect sync-modified files)
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    GIT--&gt;&gt;SH: list of newly modified files
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    SH-&gt;&gt;PC: Augment PRECOMMIT_FILES with new files (dedup via SEEN_FILES)
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    SH-&gt;&gt;PRE: pre-commit run --files ${PRECOMMIT_FILES[@]}
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    Note over PRE: Now includes doc_metrics_sync-modified&lt;br/&gt;files — hooks see updated content
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>sequenceDiagram
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> participant SH as run_validation.sh
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> participant PC as PRECOMMIT_FILES[]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> participant SYNC as doc_metrics_sync.py
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> participant GIT as git diff
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> participant PRE as pre-commit
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> SH-&gt;&gt;PC: Build from HEAD tracked + untracked changes
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> SH-&gt;&gt;SYNC: python scripts/tools/doc_metrics_sync.py --fix
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> Note over SYNC: May modify docs/ROADMAP.md,&lt;br/&gt;docs/CHANGELOG.md, etc.
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> SYNC--&gt;&gt;SH: exit 0 (or non-zero warning only)
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> SH-&gt;&gt;GIT: git diff --name-only (detect sync-modified files)
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> GIT--&gt;&gt;SH: list of newly modified files
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> SH-&gt;&gt;PC: Augment PRECOMMIT_FILES with new files (dedup via SEEN_FILES)
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> SH-&gt;&gt;PRE: pre-commit run --files ${PRECOMMIT_FILES[@]}
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> Note over PRE: Now includes doc_metrics_sync-modified&lt;br/&gt;files — hooks see updated content
 </code></pre></div>
 <hr/>
 <h2 id="pr-bot-comment-race-safety-s136s137-summary">PR Bot Comment Race Safety — S136–S137 Summary<a class="headerlink" href="#pr-bot-comment-race-safety-s136s137-summary" title="Permanent link">¶</a></h2>
@@ -2508,85 +2524,102 @@
 <hr/>
 <h2 id="cognitive-brain-architecture-phase-5-state">Cognitive Brain Architecture — Phase 5 State<a class="headerlink" href="#cognitive-brain-architecture-phase-5-state" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing "Input Layer", "GitHub Events\n(PR, Push, Issue)"'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>graph TB
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    subgraph INPUT["Input Layer"]
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>        GH["GitHub Events\n(PR, Push, Issue)"]
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>        CI["CI Failures\n(Actions logs)"]
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>        SEC["Security Alerts\n(CodeQL, Dependabot)"]
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    end
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    subgraph CB["Cognitive Brain Core (k₁=0.35)"]
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        PDA["PDA Loop\n(Perception→Decision→Action→Aftermath)"]
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>        QS["Quantum Superposition\n(Coherence ≥ 0.7 gate)"]
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>        PC["PatternCompressor\n(/health endpoint )"]
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>        MEM["Memory: STM→LTM\n(SQLiteMemory)"]
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>        PAT["Pattern Library\n(ci_failure_patterns.yaml)"]
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    end
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    subgraph AGENTS["Agent Ecosystem (53+ agents)"]
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>        DSCN["Deferral Scanner  S138\nFence-opener bypass fix"]
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>        CMNT["PR Comment Consolidator  S137\nRace-safe upsert + dedup"]
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>        RVAL["run_validation.sh  S138\nPRECOMMIT augmentation"]
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>        AUTH["agent-auth-delegation\ncontents:write  S135"]
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>        BRAI["Brain Client\n4-token chain"]
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>    end
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    subgraph OUT["Output Layer"]
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>        FIX["Fixed Code / CI"]
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>        STAT["Status Comments\n(deduplicated)"]
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>        LOGS["Audit Trail\n(session JSONL)"]
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>    end
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>    GH --&gt; PDA
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>    CI --&gt; PDA
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>    SEC --&gt; PDA
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>    PDA --&gt; QS
-<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>    QS --&gt; PC
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>    PC --&gt; MEM
-<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>    MEM --&gt; PAT
-<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a>    PAT --&gt; AGENTS
-<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a>    DSCN --&gt; FIX
-<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a>    CMNT --&gt; STAT
-<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a>    RVAL --&gt; FIX
-<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a>    AUTH --&gt; LOGS
-<a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a>    BRAI --&gt; MEM
-<a href="#__codelineno-2-44" id="__codelineno-2-44" name="__codelineno-2-44"></a>    FIX --&gt; OUT
-<a href="#__codelineno-2-45" id="__codelineno-2-45" name="__codelineno-2-45"></a>    STAT --&gt; OUT
-<a href="#__codelineno-2-46" id="__codelineno-2-46" name="__codelineno-2-46"></a>    LOGS --&gt; OUT
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>graph TB
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> subgraph INPUT["Input Layer"]
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> GH["GitHub Events\n(PR, Push, Issue)"]
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> CI["CI Failures\n(Actions logs)"]
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> SEC["Security Alerts\n(CodeQL, Dependabot)"]
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> end
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> subgraph CB["Cognitive Brain Core (k₁=0.35)"]
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> PDA["PDA Loop\n(PerceptionDecisionActionAftermath)"]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> QS["Quantum Superposition\n(Coherence ≥ 0.7 gate)"]
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> PC["PatternCompressor\n(/health endpoint )"]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> MEM["Memory: STMLTM\n(SQLiteMemory)"]
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> PAT["Pattern Library\n(ci_failure_patterns.yaml)"]
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> end
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> subgraph AGENTS["Agent Ecosystem (53+ agents)"]
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> DSCN["Deferral Scanner S138\nFence-opener bypass fix"]
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> CMNT["PR Comment Consolidator S137\nRace-safe upsert + dedup"]
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> RVAL["run_validation.sh S138\nPRECOMMIT augmentation"]
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a> AUTH["agent-auth-delegation\ncontents:write S135"]
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> BRAI["Brain Client\n4-token chain"]
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> end
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> subgraph OUT["Output Layer"]
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> FIX["Fixed Code / CI"]
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a> STAT["Status Comments\n(deduplicated)"]
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> LOGS["Audit Trail\n(session JSONL)"]
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> end
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a> GH --&gt; PDA
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a> CI --&gt; PDA
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a> SEC --&gt; PDA
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a> PDA --&gt; QS
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a>
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a> QS --&gt; PC
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a>
+<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a> PC --&gt; MEM
+<a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a>
+<a href="#__codelineno-2-44" id="__codelineno-2-44" name="__codelineno-2-44"></a> MEM --&gt; PAT
+<a href="#__codelineno-2-45" id="__codelineno-2-45" name="__codelineno-2-45"></a>
+<a href="#__codelineno-2-46" id="__codelineno-2-46" name="__codelineno-2-46"></a> PAT --&gt; AGENTS
 <a href="#__codelineno-2-47" id="__codelineno-2-47" name="__codelineno-2-47"></a>
-<a href="#__codelineno-2-48" id="__codelineno-2-48" name="__codelineno-2-48"></a>    style CB fill:#8b5cf6,color:#fff
-<a href="#__codelineno-2-49" id="__codelineno-2-49" name="__codelineno-2-49"></a>    style DSCN fill:#22c55e,color:#fff
-<a href="#__codelineno-2-50" id="__codelineno-2-50" name="__codelineno-2-50"></a>    style CMNT fill:#22c55e,color:#fff
-<a href="#__codelineno-2-51" id="__codelineno-2-51" name="__codelineno-2-51"></a>    style RVAL fill:#22c55e,color:#fff
-<a href="#__codelineno-2-52" id="__codelineno-2-52" name="__codelineno-2-52"></a>    style AUTH fill:#22c55e,color:#fff
+<a href="#__codelineno-2-48" id="__codelineno-2-48" name="__codelineno-2-48"></a> DSCN --&gt; FIX
+<a href="#__codelineno-2-49" id="__codelineno-2-49" name="__codelineno-2-49"></a>
+<a href="#__codelineno-2-50" id="__codelineno-2-50" name="__codelineno-2-50"></a> CMNT --&gt; STAT
+<a href="#__codelineno-2-51" id="__codelineno-2-51" name="__codelineno-2-51"></a>
+<a href="#__codelineno-2-52" id="__codelineno-2-52" name="__codelineno-2-52"></a> RVAL --&gt; FIX
+<a href="#__codelineno-2-53" id="__codelineno-2-53" name="__codelineno-2-53"></a>
+<a href="#__codelineno-2-54" id="__codelineno-2-54" name="__codelineno-2-54"></a> AUTH --&gt; LOGS
+<a href="#__codelineno-2-55" id="__codelineno-2-55" name="__codelineno-2-55"></a>
+<a href="#__codelineno-2-56" id="__codelineno-2-56" name="__codelineno-2-56"></a> BRAI --&gt; MEM
+<a href="#__codelineno-2-57" id="__codelineno-2-57" name="__codelineno-2-57"></a>
+<a href="#__codelineno-2-58" id="__codelineno-2-58" name="__codelineno-2-58"></a> FIX --&gt; OUT
+<a href="#__codelineno-2-59" id="__codelineno-2-59" name="__codelineno-2-59"></a>
+<a href="#__codelineno-2-60" id="__codelineno-2-60" name="__codelineno-2-60"></a> STAT --&gt; OUT
+<a href="#__codelineno-2-61" id="__codelineno-2-61" name="__codelineno-2-61"></a>
+<a href="#__codelineno-2-62" id="__codelineno-2-62" name="__codelineno-2-62"></a> LOGS --&gt; OUT
+<a href="#__codelineno-2-63" id="__codelineno-2-63" name="__codelineno-2-63"></a>
+<a href="#__codelineno-2-64" id="__codelineno-2-64" name="__codelineno-2-64"></a> style CB fill:#8b5cf6,color:#fff
+<a href="#__codelineno-2-65" id="__codelineno-2-65" name="__codelineno-2-65"></a> style DSCN fill:#22c55e,color:#fff
+<a href="#__codelineno-2-66" id="__codelineno-2-66" name="__codelineno-2-66"></a> style CMNT fill:#22c55e,color:#fff
+<a href="#__codelineno-2-67" id="__codelineno-2-67" name="__codelineno-2-67"></a> style RVAL fill:#22c55e,color:#fff
+<a href="#__codelineno-2-68" id="__codelineno-2-68" name="__codelineno-2-68"></a> style AUTH fill:#22c55e,color:#fff
 </code></pre></div>
 <hr/>
 <h2 id="phase-progression">Phase Progression<a class="headerlink" href="#phase-progression" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Diagram'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>gantt
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    title Cognitive Brain Phase Roadmap
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    dateFormat  YYYY-MM-DD
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    axisFormat  %b %d
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    section Phase 4 (Production Hardening)
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    PatternCompressor /health     :done, p4a, 2026-02-20, 2026-02-25
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    BrainClient health            :done, p4b, 2026-02-25, 2026-03-01
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    Redis RAG + Feast             :done, p4c, 2026-02-28, 2026-03-05
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    CrossEncoderReranker          :done, p4d, 2026-03-01, 2026-03-05
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    capability_detectors tests    :done, p4e, 2026-03-05, 2026-03-10
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    section Phase 5 (CI Robustness)
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    Deferral fence-opener fix      :done, p5b, 2026-03-17, 2026-03-17
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    PRECOMMIT doc_metrics_sync     :done, p5c, 2026-03-17, 2026-03-17
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    Template indent fix            :done, p5d, 2026-03-17, 2026-03-17
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    STALE_BRANCH_DAYS guardrail    :active, p5e, 2026-03-18, 2026-03-20
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    slow-test marker audit         :p5f, 2026-03-20, 2026-03-22
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    section Phase 6 (Observability)
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    OTEL workflow histogram        :p6a, 2026-03-22, 2026-03-28
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    CB dashboard v2                :p6b, 2026-03-25, 2026-04-01
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>    Token rotation e2e (admin)     :p6c, 2026-04-01, 2026-04-07
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>gantt
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> title Cognitive Brain Phase Roadmap
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> dateFormat YYYY-MM-DD
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> axisFormat %b %d
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> section Phase 4 (Production Hardening)
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> PatternCompressor /health :done, p4a, 2026-02-20, 2026-02-25
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> BrainClient health :done, p4b, 2026-02-25, 2026-03-01
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> Redis RAG + Feast :done, p4c, 2026-02-28, 2026-03-05
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> CrossEncoderReranker :done, p4d, 2026-03-01, 2026-03-05
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> capability_detectors tests :done, p4e, 2026-03-05, 2026-03-10
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> section Phase 5 (CI Robustness)
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> Deferral fence-opener fix :done, p5b, 2026-03-17, 2026-03-17
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> PRECOMMIT doc_metrics_sync :done, p5c, 2026-03-17, 2026-03-17
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> Template indent fix :done, p5d, 2026-03-17, 2026-03-17
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> STALE_BRANCH_DAYS guardrail :active, p5e, 2026-03-18, 2026-03-20
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> slow-test marker audit :p5f, 2026-03-20, 2026-03-22
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> section Phase 6 (Observability)
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> OTEL workflow histogram :p6a, 2026-03-22, 2026-03-28
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> CB dashboard v2 :p6b, 2026-03-25, 2026-04-01
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> Token rotation e2e (admin) :p6c, 2026-04-01, 2026-04-07
 </code></pre></div>
 <hr/>
 <p><em>Generated by Copilot coding agent (S138) — 2026-03-17T08:38Z</em></p>
@@ -2619,6 +2652,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

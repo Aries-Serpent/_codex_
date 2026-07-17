@@ -1,6 +1,6 @@
 # [Runbook]: Convergence & Audit Verification
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
@@ -326,7 +326,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 **Updated Files**:
 - `Usage_Guide.md` - Added CI Regression Baseline Workflow section
 - `Convergence_Runbook.md` - Added Reviewer Sign-off Checklist
-- `Traversal_Workflow.md` - Enhanced with v0.2.1 features
+- `Traversal_Workflow.md` - Enhanced with v0.2.0 features
 - `WAVE2_FINAL_VALIDATION.md` - Comprehensive validation report
 
 ### Artifacts & Evidence

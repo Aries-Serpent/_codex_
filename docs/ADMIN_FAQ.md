@@ -1,6 +1,6 @@
 # _codex_ Admin FAQ
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -119,7 +119,7 @@
 ### Q: Workflows are failing with permission errors
 
 **A:** Check these settings:
-1. Go to: Settings → Actions → General
+1. Go to: Settings Actions General
 2. Set Workflow permissions to "Read and write"
 3. Enable "Allow GitHub Actions to create and approve pull requests"
 4. Save changes
@@ -137,7 +137,7 @@
 **A:** Yes:
 1. Rename the file with `.disabled` extension (e.g., `workflow.yml.disabled`)
 2. Or use the workflow's `on:` trigger conditions
-3. Or disable via Settings → Actions → Runners
+3. Or disable via Settings Actions Runners
 
 ---
 
@@ -146,11 +146,11 @@
 ### Q: What security features should I enable?
 
 **A:** Enable all of these:
--  Dependency graph
--  Dependabot alerts
--  Dependabot security updates
--  Secret scanning
--  Push protection
+- Dependency graph
+- Dependabot alerts
+- Dependabot security updates
+- Secret scanning
+- Push protection
 
 ### Q: Why is push protection blocking my commits?
 
@@ -192,41 +192,41 @@
 
 ```
 Issue: Workflow failing
-├── Permission error?
-│   └── Check: Settings → Actions → Workflow permissions
-├── Missing secret?
-│   └── Check: Settings → Secrets and variables → Actions
-├── Timeout?
-│   └── Check: Workflow has `timeout-minutes` set appropriately
-└── Unknown error?
-    └── Check: Workflow logs for specific error message
+ Permission error?
+ Check: Settings Actions Workflow permissions
+ Missing secret?
+ Check: Settings Secrets and variables Actions
+ Timeout?
+ Check: Workflow has `timeout-minutes` set appropriately
+ Unknown error?
+ Check: Workflow logs for specific error message
 ```
 
 ```
 Issue: Can't create GitHub App
-├── Not an org owner?
-│   └── Ask org owner or create under personal account
-├── App name already taken?
-│   └── Choose a different name
-└── Missing required fields?
-    └── Ensure all required fields are filled
+ Not an org owner?
+ Ask org owner or create under personal account
+ App name already taken?
+ Choose a different name
+ Missing required fields?
+ Ensure all required fields are filled
 ```
 
 ```
 Issue: Secrets not working
-├── Secret name typo?
-│   └── Verify exact name matches workflow reference
-├── Secret in wrong scope?
-│   └── Check if using org vs repo secrets correctly
-└── Secret recently added?
-    └── Re-run the workflow (secrets are loaded at run start)
+ Secret name typo?
+ Verify exact name matches workflow reference
+ Secret in wrong scope?
+ Check if using org vs repo secrets correctly
+ Secret recently added?
+ Re-run the workflow (secrets are loaded at run start)
 ```
 
 ---
 
 ## Still Need Help?
 
-1. **Check logs:** Actions → Select run → View job logs
+1. **Check logs:** Actions Select run View job logs
 2. **Search issues:** `https://github.com/Aries-Serpent/_codex_/issues`
 3. **GitHub Docs:** `https://docs.github.com`
 4. **Create issue:** Use the repository issue tracker

@@ -10,9 +10,9 @@
 <link href="../ROADMAP/" rel="prev"/>
 <link href="changelog_codex/" rel="next"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Changelog - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -212,7 +212,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -896,7 +896,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1787,7 +1787,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -3006,18 +3006,18 @@
 <h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Documentation Links</strong>: All broken links resolved and validated</li>
-<li><strong>Version References</strong>: Updated all version references across documentation (0.1.0 → 0.2.1)</li>
+<li><strong>Version References</strong>: Updated all version references across documentation (0.1.0 0.2.1)</li>
 <li><strong>Installation Examples</strong>: Updated pip install commands with v0.2.1 references</li>
 <li><strong>Release Metadata</strong>: Updated GitHub Pages configuration with new release information</li>
 </ul>
 <h3 id="release-verification">Release Verification<a class="headerlink" href="#release-verification" title="Permanent link">¶</a></h3>
 <ul>
-<li>Phase 1-3 Improvements verified </li>
-<li>SBOM validation complete </li>
-<li>Production deployment confirmed </li>
-<li>Distribution quality assured </li>
-<li>Zero new vulnerabilities introduced </li>
-<li>Full backward compatibility maintained </li>
+<li>Phase 1-3 Improvements verified</li>
+<li>SBOM validation complete</li>
+<li>Production deployment confirmed</li>
+<li>Distribution quality assured</li>
+<li>Zero new vulnerabilities introduced</li>
+<li>Full backward compatibility maintained</li>
 </ul>
 <hr/>
 <h2 id="011-2026-07-10">[0.1.1] — 2026-07-10<a class="headerlink" href="#011-2026-07-10" title="Permanent link">¶</a></h2>
@@ -3032,7 +3032,7 @@
 </ul>
 <h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>build:</strong> Version constraint update v0.2.1 → v0.2.1 (pyproject.toml)</li>
+<li><strong>build:</strong> Version constraint update v0.2.1 v0.2.1 (pyproject.toml)</li>
 <li><strong>release:</strong> Post-merge release automation configured with 4-step deployment process (tag, GitHub release, PyPI publish, community announcement)</li>
 </ul>
 <h3 id="updated">Updated<a class="headerlink" href="#updated" title="Permanent link">¶</a></h3>
@@ -3042,44 +3042,44 @@
 </ul>
 <h3 id="release-verification_1">Release Verification<a class="headerlink" href="#release-verification_1" title="Permanent link">¶</a></h3>
 <ul>
-<li>All 32 certification gates passed  (inherited from v0.2.1-final)</li>
-<li>Production readiness score: 100/100 </li>
-<li>Zero new vulnerabilities introduced </li>
-<li>Full backward compatibility maintained </li>
+<li>All 32 certification gates passed (inherited from v0.2.1-final)</li>
+<li>Production readiness score: 100/100</li>
+<li>Zero new vulnerabilities introduced</li>
+<li>Full backward compatibility maintained</li>
 </ul>
 <hr/>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">¶</a></h2>
 <h3 id="fixed-s255-pr-3831-2026-03-31">Fixed (S255 — PR #3831 — 2026-03-31)<a class="headerlink" href="#fixed-s255-pr-3831-2026-03-31" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>fix(ci):</strong> <code>tests/config/conftest.py</code> — always-first sys.path pattern: remove existing <code>_SRC</code> entries then insert at index 0 (review thread suggestion).</li>
-<li><strong>fix(changelog):</strong> Corrected S254 perf numbers to 55K→45K/20ms→40ms (accurate net diff vs. main; review thread).</li>
+<li><strong>fix(changelog):</strong> Corrected S254 perf numbers to 55K45K/20ms40ms (accurate net diff vs. main; review thread).</li>
 <li><strong>feat(auto-post):</strong> <code>copilot-agent-session-done.yml</code> wired to auto-fix pre-flight REQ-4/5 when <code>Auto-Post @copilot review After Agent Session</code> checkbox is checked.</li>
 <li><strong>feat(wrapup):</strong> <code>session_wrapup_autofix.py</code> — new <code>Auto-Post</code> checkbox added to <code>_REQUIRED_PR_CHECKBOXES</code>.</li>
 </ul>
 <h3 id="fixed-s254-pr-3831-2026-03-31">Fixed (S254 — PR #3831 — 2026-03-31)<a class="headerlink" href="#fixed-s254-pr-3831-2026-03-31" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>fix(mlflow):</strong> <code>maybe_mlflow()</code> generator refactored — <code>mlflow.start_run()</code> moved before <code>yield</code> to prevent <code>RuntimeError: generator didn't stop after throw()</code> (gemini HIGH alert). <code>return</code> after <code>yield _NoOpLogger()</code> ensures correct generator termination.</li>
-<li><strong>fix(perf):</strong> Performance threshold <code>dict_lookup_10000</code> adjusted 55K→45K; latency assert tightened 20ms→40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).</li>
+<li><strong>fix(perf):</strong> Performance threshold <code>dict_lookup_10000</code> adjusted 55K45K; latency assert tightened 20ms40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).</li>
 <li><strong>feat(pr-template):</strong> <code>Auto-Post @copilot review After Agent Session</code> checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).</li>
 <li>
-<p><strong>feat(brain):</strong> <code>cognitive-brain-manager.md</code> v4.4→v4.5 — S254 status, gemini review thread resolution patterns.</p>
+<p><strong>feat(brain):</strong> <code>cognitive-brain-manager.md</code> v4.4v4.5 — S254 status, gemini review thread resolution patterns.</p>
 </li>
 <li>
 <p><strong>fix(ci):</strong> <code>tests/config/conftest.py</code> — added explicit <code>sys.path.insert(0, src/)</code> guard
-  (with directory-depth comment) to fix <code>ModuleNotFoundError: No module named 'config.openai_client'</code>
-  in the Resilient Validation Suite. Root cause: pytest-split workers resolve <code>tests/config/</code> ahead
-  of the root <code>conftest.py</code> path injection. Verified: 24/24 <code>test_openai_client.py</code> tests pass.</p>
+ (with directory-depth comment) to fix <code>ModuleNotFoundError: No module named 'config.openai_client'</code>
+ in the Resilient Validation Suite. Root cause: pytest-split workers resolve <code>tests/config/</code> ahead
+ of the root <code>conftest.py</code> path injection. Verified: 24/24 <code>test_openai_client.py</code> tests pass.</p>
 </li>
-<li><strong>feat(brain):</strong> <code>.github/agents/cognitive-brain-manager.md</code> v4.3→v4.4 — Sprint 13 status table,
-  iterative self-review loop Mermaid architecture diagram, AfterMath patterns
-  (RP-NEW-001/002/003), Phase 3+4 next-phase plan, PDA Loop front-matter enabled.</li>
-<li><strong>feat(agent):</strong> <code>.github/agents/post-merge-doc-alignment-agent.md</code> v1.0→v1.1 — PDA Loop
-  integration, <code>self_healing</code> config block (enabled, max 3 iterations), <code>iteration_history</code>
-  tracking S244/S251/S252/S253 runs, <code>cognitive_integration_level: 3</code>.</li>
+<li><strong>feat(brain):</strong> <code>.github/agents/cognitive-brain-manager.md</code> v4.3v4.4 — Sprint 13 status table,
+ iterative self-review loop Mermaid architecture diagram, AfterMath patterns
+ (RP-NEW-001/002/003), Phase 3+4 next-phase plan, PDA Loop front-matter enabled.</li>
+<li><strong>feat(agent):</strong> <code>.github/agents/post-merge-doc-alignment-agent.md</code> v1.0v1.1 — PDA Loop
+ integration, <code>self_healing</code> config block (enabled, max 3 iterations), <code>iteration_history</code>
+ tracking S244/S251/S252/S253 runs, <code>cognitive_integration_level: 3</code>.</li>
 <li><strong>fix(docs):</strong> <code>docs/index.md</code> "Last Updated" refreshed to 2026-03-31.</li>
-<li><strong>health(sweep):</strong> Issue #3829 nightly health sweep S200 completed — ruff check  0 violations;
-  CodeQL on main  success (3 consecutive); last 5 CI runs on main: success/skipped ;
-  cognitive brain metadata updated; accountability report updated.</li>
+<li><strong>health(sweep):</strong> Issue #3829 nightly health sweep S200 completed — ruff check 0 violations;
+ CodeQL on main success (3 consecutive); last 5 CI runs on main: success/skipped ;
+ cognitive brain metadata updated; accountability report updated.</li>
 </ul>
 <h3 id="fixed-auto-update-pr-3831">Fixed (auto-update — PR #3831)<a class="headerlink" href="#fixed-auto-update-pr-3831" title="Permanent link">¶</a></h3>
 <ul>
@@ -3088,14 +3088,14 @@
 </li>
 <li>
 <p><strong>CI Rescue Pipeline</strong> (<code>docs/ci/CI_RESCUE_PIPELINE.md</code>): New canonical reference documenting
-  the end-to-end lifecycle from workflow failure to Copilot fix session. Includes 9 Mermaid
-  diagrams (flowchart, sequence, state machine, timeline, dependency graph, anti-pattern maps)
-  and a component responsibility matrix. Golden-path example from PR #3818 comment #4158728043.</p>
+ the end-to-end lifecycle from workflow failure to Copilot fix session. Includes 9 Mermaid
+ diagrams (flowchart, sequence, state machine, timeline, dependency graph, anti-pattern maps)
+ and a component responsibility matrix. Golden-path example from PR #3818 comment #4158728043.</p>
 </li>
 <li><strong>CI/CD Index updated</strong> (<code>docs/ci/INDEX.md</code>): CI Rescue Pipeline added as the top entry under
-  a new " CI Rescue Pipeline (Golden Path)" section.</li>
+ a new " CI Rescue Pipeline (Golden Path)" section.</li>
 <li><strong>Homepage quick-links updated</strong> (<code>docs/index.md</code>): " CI Rescue &amp; Health" section added with
-  direct link to the new CI Rescue Pipeline doc.</li>
+ direct link to the new CI Rescue Pipeline doc.</li>
 <li><strong>Nav entry added</strong> (<code>mkdocs.yml</code>): "CI Rescue &amp; Health" section with CI Rescue Pipeline at top.</li>
 <li><strong>8 CI scripts shipped</strong> (all under <code>scripts/ci/</code>):</li>
 <li><code>ci_rescue.py</code> — Pattern-analysis engine for structured RCA comments</li>
@@ -3107,7 +3107,7 @@
 <li><code>generate_coverage_map.py</code> — Multi-suite coverage map generator (<code>coverage_map.json</code>)</li>
 <li><code>check_deferral_language.py</code> — Deferral-language gate for commits/PRs</li>
 <li><strong>New test file</strong>: <code>tests/ci/test_generate_coverage_map.py</code> — unit tests for the coverage
-  map generator (multi-suite merge, branch-rate calculation, edge cases).</li>
+ map generator (multi-suite merge, branch-rate calculation, edge cases).</li>
 </ul>
 <h3 id="fixed-2025-12-16-cicd-pipeline-restoration-pr-2509">Fixed (2025-12-16) - CI/CD Pipeline Restoration (PR #2509)<a class="headerlink" href="#fixed-2025-12-16-cicd-pipeline-restoration-pr-2509" title="Permanent link">¶</a></h3>
 <ul>
@@ -3121,14 +3121,14 @@
 <p><strong>Workflow Fixes</strong> (7+ critical errors resolved):</p>
 </li>
 <li><code>scheduled-archival.yml</code>: Fixed GITHUB_OUTPUT format (grouped outputs with count-first ordering)</li>
-<li><code>self-healing-feedback-loop.yml</code>: Upgraded <code>actions/upload-artifact@v3</code> → <code>@v4</code> (4 occurrences)</li>
+<li><code>self-healing-feedback-loop.yml</code>: Upgraded <code>actions/upload-artifact@v3</code> <code>@v4</code> (4 occurrences)</li>
 <li><code>optimized-ci.yml</code>: Added missing <code>pytest-split</code> dependency for test sharding</li>
 <li><code>audit-improvement-pipeline.yml</code>: Added filename sanitization for NTFS compatibility, removed invalid CLI args</li>
 <li><code>detect-duplicates.yml</code>: Added PR context guards for <code>workflow_dispatch</code> manual runs</li>
-<li><code>pre-release-deployment.yml</code>: Upgraded <code>actions/upload-artifact@v3</code> → <code>@v4</code> (6 occurrences)</li>
+<li><code>pre-release-deployment.yml</code>: Upgraded <code>actions/upload-artifact@v3</code> <code>@v4</code> (6 occurrences)</li>
 <li><code>workflow-validator.yml</code>: Fixed duplicate PR comment issue (now updates existing comments)</li>
 <li>
-<p><code>decode-validate-artifact.yml</code>: Upgraded <code>actions/checkout@v3</code> → <code>@v4</code></p>
+<p><code>decode-validate-artifact.yml</code>: Upgraded <code>actions/checkout@v3</code> <code>@v4</code></p>
 </li>
 <li>
 <p><strong>YAML Syntax Fixes</strong> (3 workflow files):</p>
@@ -3156,8 +3156,8 @@
 <h3 id="changed-2025-12-16-cicd-improvements-pr-2509">Changed (2025-12-16) - CI/CD Improvements (PR #2509)<a class="headerlink" href="#changed-2025-12-16-cicd-improvements-pr-2509" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>All 45 workflow files now pass YAML validation</strong> (was 42/45)</li>
-<li><strong>CI/CD Success Rate</strong>: 14% → 100% (pending GitHub Pages manual config - now complete)</li>
-<li><strong>Build Success Rate</strong>: 0% (12/12 failures) → 100%</li>
+<li><strong>CI/CD Success Rate</strong>: 14% 100% (pending GitHub Pages manual config - now complete)</li>
+<li><strong>Build Success Rate</strong>: 0% (12/12 failures) 100%</li>
 </ul>
 <hr/>
 <h2 id="unreleased_1">Unreleased<a class="headerlink" href="#unreleased_1" title="Permanent link">¶</a></h2>
@@ -3225,32 +3225,32 @@
 <h3 id="added-continued">Added (continued)<a class="headerlink" href="#added-continued" title="Permanent link">¶</a></h3>
 <ul>
 <li>Safety: training and evaluation CLIs honor new <code>sanitize_prompts</code> flags and
-  sanitize inline datasets by default.</li>
+ sanitize inline datasets by default.</li>
 <li>Checkpointing: PEFT/LoRA adapters are bundled alongside standard model
-  weights, enabling seamless resume when <code>peft</code> is available.</li>
+ weights, enabling seamless resume when <code>peft</code> is available.</li>
 <li>Tooling: <code>tools/validate_configs.py</code> validates Hydra configs against JSON/YAML
-  schemas and is wired into the <code>nox -s gates</code> session.</li>
+ schemas and is wired into the <code>nox -s gates</code> session.</li>
 <li>Tooling: <code>tools/ndjson_to_csv.py</code> converts metrics logs to CSV; sample data
-  lives at <code>samples/metrics_sample.ndjson</code>.</li>
+ lives at <code>samples/metrics_sample.ndjson</code>.</li>
 <li>Plugins: opt-in entry-point discovery via <code>plugins.enable_entry_points</code> and
-  config-driven group overrides.</li>
+ config-driven group overrides.</li>
 <li>Tooling: Documented fence validator architecture and added focused tests
-  covering default returns, skip lists, and warn-mode output.</li>
+ covering default returns, skip lists, and warn-mode output.</li>
 </ul>
 <h3 id="fixed-2025-11-19-metrics">Fixed (2025-11-19) - Metrics<a class="headerlink" href="#fixed-2025-11-19-metrics" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>BLEU brevity penalty</strong>: Corrected corpus BLEU brevity penalty logic in
-  <code>src/codex_ml/metrics/generation.py</code> to iterate over hypotheses and their
-  reference sets in lockstep, preventing <code>norm_refs.index(refs)</code> from pairing
-  multiple references with the first hypothesis when reference lists are reused.</li>
+ <code>src/codex_ml/metrics/generation.py</code> to iterate over hypotheses and their
+ reference sets in lockstep, preventing <code>norm_refs.index(refs)</code> from pairing
+ multiple references with the first hypothesis when reference lists are reused.</li>
 <li><strong>Regression tests</strong>: Added <code>tests/metrics/test_bleu_brevity_penalty.py</code> to
-  reproduce the misalignment, assert the fixed penalty, and validate
-  <code>compute_corpus_bleu()</code> precision.</li>
+ reproduce the misalignment, assert the fixed penalty, and validate
+ <code>compute_corpus_bleu()</code> precision.</li>
 <li><strong>Impact</strong>: BLEU scores for corpora that reuse or duplicate reference lists
-  will now reflect the correct brevity penalty and may change relative to prior
-  (buggy) calculations. A migration/email template for model owners lives at
-  <code>docs/migrations/bleu_brevity_penalty_migration.md</code> to guide downstream
-  threshold updates.</li>
+ will now reflect the correct brevity penalty and may change relative to prior
+ (buggy) calculations. A migration/email template for model owners lives at
+ <code>docs/migrations/bleu_brevity_penalty_migration.md</code> to guide downstream
+ threshold updates.</li>
 </ul>
 <h2 id="2025-10-26">2025-10-26<a class="headerlink" href="#2025-10-26" title="Permanent link">¶</a></h2>
 <h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">¶</a></h3>
@@ -3335,6 +3335,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -270,7 +270,7 @@ tail -n 10000 /var/log/application.log | grep -i "critical\|fatal"
 ### 5.4 Schedule Follow-Up
 - [ ] Schedule post-mortem within 24 hours
 - [ ] Identify v0.2.0 issue for hotfix
-- [ ] Plan v0.2.1 hotfix release
+- [ ] Plan v0.2.0 hotfix release
 - [ ] Document lessons learned
 
 ---

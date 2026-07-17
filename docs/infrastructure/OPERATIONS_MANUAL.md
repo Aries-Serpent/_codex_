@@ -1,11 +1,11 @@
 # Infrastructure Operations Manual - Codex ML
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-08
-**Authority:** Phase 12 WS3 Documentation Lane 8  
-**Audience:** SREs, DevOps Engineers, Operations Team  
+**Authority:** Phase 12 WS3 Documentation Lane 8
+**Audience:** SREs, DevOps Engineers, Operations Team
 **Status:** Production Guide
 
 ---
@@ -74,7 +74,7 @@ kubectl logs -n codex deployment/api-server --tail=100 | grep -i error
 ```bash
 # Check for errors in past hour
 kubectl logs -n codex --since=1h --timestamps=true \
-  -l app=api-server | grep -i error
+ -l app=api-server | grep -i error
 
 # Check training job logs
 kubectl logs -n codex job/training-job-123
@@ -88,7 +88,7 @@ kubectl logs -f -n codex deployment/api-server
 ```bash
 # Verify database backups completed
 aws s3 ls s3://codex-backups/postgres/ --recursive \
-  | tail -10
+ | tail -10
 
 # Check backup size and timestamps
 aws s3 ls s3://codex-backups/postgres/daily/ --recursive
@@ -132,44 +132,44 @@ kubectl rollout status deployment/api-server -n codex
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: api-server-hpa
-  namespace: codex
+ name: api-server-hpa
+ namespace: codex
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: api-server
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
-  behavior:
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 15
-    scaleUp:
-      stabilizationWindowSeconds: 0
-      policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 2
-        periodSeconds: 15
+ scaleTargetRef:
+ apiVersion: apps/v1
+ kind: Deployment
+ name: api-server
+ minReplicas: 2
+ maxReplicas: 10
+ metrics:
+ - type: Resource
+ resource:
+ name: cpu
+ target:
+ type: Utilization
+ averageUtilization: 70
+ - type: Resource
+ resource:
+ name: memory
+ target:
+ type: Utilization
+ averageUtilization: 80
+ behavior:
+ scaleDown:
+ stabilizationWindowSeconds: 300
+ policies:
+ - type: Percent
+ value: 50
+ periodSeconds: 15
+ scaleUp:
+ stabilizationWindowSeconds: 0
+ policies:
+ - type: Percent
+ value: 100
+ periodSeconds: 15
+ - type: Pods
+ value: 2
+ periodSeconds: 15
 ```
 
 ### Vertical Scaling (Node Upgrade)
@@ -231,8 +231,8 @@ redis-cli --cluster rebalance 192.168.1.1:6379
 ```bash
 # 1. Update image
 kubectl set image deployment/api-server \
-  api-server=codex/api-server:v0.2.1 \
-  -n codex
+ api-server=codex/api-server:v0.2.0 \
+ -n codex
 
 # 2. Monitor rollout
 kubectl rollout status deployment/api-server -n codex
@@ -252,13 +252,13 @@ kubectl apply -f model-server-v2.yaml
 
 # 2. Test with canary (5% traffic)
 kubectl patch virtualservice api-traffic -n codex \
-  --type merge -p '{"spec":{"hosts":[{"name":"model-server","subsets":[{"name":"v1","weight":95},{"name":"v2","weight":5}]}]}}'
+ --type merge -p '{"spec":{"hosts":[{"name":"model-server","subsets":[{"name":"v1","weight":95},{"name":"v2","weight":5}]}]}}'
 
 # 3. Monitor metrics for v2
 kubectl logs -n codex deployment/model-server-v2 --follow
 
 # 4. Gradually increase traffic
-# 5% → 25% → 50% → 100% (over 30 minutes)
+# 5% 25% 50% 100% (over 30 minutes)
 kubectl patch virtualservice...
 
 # 6. Remove old version
@@ -302,7 +302,7 @@ VACUUM ANALYZE;
 
 -- Check table bloat
 SELECT schemaname, tablename, 
-  pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
+ pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
 FROM pg_tables
 WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
 ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
@@ -338,24 +338,24 @@ kubectl apply -f - <<EOF
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: postgres-backup
-  namespace: codex
+ name: postgres-backup
+ namespace: codex
 spec:
-  schedule: "0 2 * * *"  # 02:00 UTC daily
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: backup
-            image: codex/backup:latest
-            command:
-            - /bin/bash
-            - -c
-            - |
-              pg_dump -U postgres codex | gzip | \
-              aws s3 cp - s3://codex-backups/postgres/daily/\$(date +%Y-%m-%d).sql.gz
-          restartPolicy: OnFailure
+ schedule: "0 2 * * *" # 02:00 UTC daily
+ jobTemplate:
+ spec:
+ template:
+ spec:
+ containers:
+ - name: backup
+ image: codex/backup:latest
+ command:
+ - /bin/bash
+ - -c
+ - |
+ pg_dump -U postgres codex | gzip | \
+ aws s3 cp - s3://codex-backups/postgres/daily/\$(date +%Y-%m-%d).sql.gz
+ restartPolicy: OnFailure
 EOF
 ```
 
@@ -370,7 +370,7 @@ ALTER SYSTEM SET wal_keep_size = '1GB';
 -- WAL archiving to S3
 ALTER SYSTEM SET archive_mode = on;
 ALTER SYSTEM SET archive_command = 
-  'aws s3 cp pg_wal/%f s3://codex-backups/wal/';
+ 'aws s3 cp pg_wal/%f s3://codex-backups/wal/';
 
 -- Reload configuration
 SELECT pg_reload_conf();
@@ -400,7 +400,7 @@ kubectl exec -it postgres-0 -n codex -- psql -U postgres codex_restore < backup.
 kubectl exec -it postgres-0 -n codex -- psql -U postgres codex_restore -c "SELECT COUNT(*) FROM models;"
 
 # 7. Swap databases (if successful)
-# Rename codex → codex_old, codex_restore → codex
+# Rename codex codex_old, codex_restore codex
 
 # 8. Restart applications
 kubectl scale deployment api-server -n codex --replicas=3
@@ -542,13 +542,13 @@ curl http://api-server:8080/health/ready
 curl http://api-server:8080/health/status
 # Response:
 # {
-#   "status": "healthy",
-#   "timestamp": "2024-07-08T15:30:00Z",
-#   "checks": {
-#     "database": "ok",
-#     "cache": "ok",
-#     "storage": "ok"
-#   }
+# "status": "healthy",
+# "timestamp": "2024-07-08T15:30:00Z",
+# "checks": {
+# "database": "ok",
+# "cache": "ok",
+# "storage": "ok"
+# }
 # }
 ```
 
@@ -569,7 +569,7 @@ kubectl get componentstatus
 
 # Network connectivity
 kubectl run -it --rm netcheck --image=nicolaka/netshoot -- \
-  bash -c "for i in {1..5}; do curl -s http://api-server:8080/health; done"
+ bash -c "for i in {1..5}; do curl -s http://api-server:8080/health; done"
 ```
 
 ### Database Health Checks
@@ -592,7 +592,7 @@ ORDER BY mean_time DESC LIMIT 10;
 
 -- Table bloat
 SELECT schemaname, tablename, 
-  round(100 * (pg_total_relation_size(schemaname||'.'||tablename) - pg_relation_size(schemaname||'.'||tablename)) / pg_total_relation_size(schemaname||'.'||tablename)) AS bloat_percent
+ round(100 * (pg_total_relation_size(schemaname||'.'||tablename) - pg_relation_size(schemaname||'.'||tablename)) / pg_total_relation_size(schemaname||'.'||tablename)) AS bloat_percent
 FROM pg_tables
 WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
 ORDER BY bloat_percent DESC;
@@ -607,30 +607,30 @@ ORDER BY bloat_percent DESC;
 ```yaml
 # Tuning parameters
 performance_tuning:
-  # Connection pooling
-  database:
-    pool_size: 20
-    max_overflow: 10
-    pool_recycle: 3600
-  
-  # HTTP settings
-  http:
-    worker_threads: 8
-    keepalive_timeout: 30
-    request_timeout: 60
-  
-  # Caching
-  cache:
-    enabled: true
-    backend: redis
-    ttl: 3600
-    max_size: 1000000
-  
-  # Compression
-  compression:
-    enabled: true
-    min_size_bytes: 1024
-    level: 6
+ # Connection pooling
+ database:
+ pool_size: 20
+ max_overflow: 10
+ pool_recycle: 3600
+ 
+ # HTTP settings
+ http:
+ worker_threads: 8
+ keepalive_timeout: 30
+ request_timeout: 60
+ 
+ # Caching
+ cache:
+ enabled: true
+ backend: redis
+ ttl: 3600
+ max_size: 1000000
+ 
+ # Compression
+ compression:
+ enabled: true
+ min_size_bytes: 1024
+ level: 6
 ```
 
 ### Database Optimization
@@ -667,8 +667,8 @@ watch -n 1 nvidia-smi
 
 # Set GPU clock scaling (persistence mode)
 nvidia-smi -pm 1
-nvidia-smi -lmc 1215  # Lock memory clock to 1215 MHz
-nvidia-smi -lgc 1410  # Lock GPU clock to 1410 MHz
+nvidia-smi -lmc 1215 # Lock memory clock to 1215 MHz
+nvidia-smi -lgc 1410 # Lock GPU clock to 1410 MHz
 
 # Monitor GPU memory fragmentation
 nvidia-smi --query-gpu=memory.used,memory.free --format=csv --loop=1
@@ -681,7 +681,7 @@ nvidia-smi --query-gpu=memory.used,memory.free --format=csv --loop=1
 ping -c 100 <target> | grep loss
 
 # Monitor network interface
-iftop -n  # Interface top
+iftop -n # Interface top
 
 # Check TCP metrics
 netstat -s | grep -E "retransmit|dropped"
@@ -699,42 +699,42 @@ sysctl -w net.ipv4.tcp_max_syn_backlog=65535
 
 ```
 Level 1 (Triage): @platform-on-call
-  - Verify incident impact
-  - Check dashboards
-  - Restart services
-  
+ - Verify incident impact
+ - Check dashboards
+ - Restart services
+ 
 Level 2 (Debugging): @platform-lead
-  - Root cause analysis
-  - Database debugging
-  - Infrastructure changes
-  
+ - Root cause analysis
+ - Database debugging
+ - Infrastructure changes
+ 
 Level 3 (Executive): @vp-engineering
-  - Major data loss
-  - Complete outage >30min
-  - Customer communication
+ - Major data loss
+ - Complete outage >30min
+ - Customer communication
 ```
 
 ### Quick Fixes Checklist
 
 ```
 [ ] Check if it's a known issue
-    - Review incidents list
-    - Check #incidents Slack channel
+ - Review incidents list
+ - Check #incidents Slack channel
 
 [ ] Try standard troubleshooting
-    - Restart service: kubectl rollout restart deployment/...
-    - Check logs: kubectl logs -f deployment/...
-    - Check resources: kubectl top pods
-    
+ - Restart service: kubectl rollout restart deployment/...
+ - Check logs: kubectl logs -f deployment/...
+ - Check resources: kubectl top pods
+ 
 [ ] Monitor recovery
-    - Watch dashboards
-    - Check error rates
-    - Verify customer impact
+ - Watch dashboards
+ - Check error rates
+ - Verify customer impact
 
 [ ] Document if resolved
-    - Create post-mortem
-    - Update runbook
-    - Notify stakeholders
+ - Create post-mortem
+ - Update runbook
+ - Notify stakeholders
 ```
 
 ---

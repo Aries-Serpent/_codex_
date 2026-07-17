@@ -1,6 +1,6 @@
 # Rollback Procedures
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -38,21 +38,33 @@ This document outlines rollback procedures for the Codex platform. Follow these 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Issue Detected, Emergency Rollback'}}%%
+
 graph TD
+
     A[Issue Detected] --> B{Severity?}
+
     B -->|Critical| C[Emergency Rollback]
+
     B -->|High| D[Fast Rollback]
+
     B -->|Medium| E[Staged Rollback]
+
     B -->|Low| F[Hotfix Forward]
 
     C --> G[Execute: emergency-stop.sh]
+
     D --> H[Execute: rollback.sh --to-previous]
+
     E --> I[Execute: staged-rollback.sh]
+
     F --> J[Create & Deploy Hotfix]
 
     G --> K[Notify Stakeholders]
+
     H --> K
+
     I --> K
+
     J --> K
 ```
 

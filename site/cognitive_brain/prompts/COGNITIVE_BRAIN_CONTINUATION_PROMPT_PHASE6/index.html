@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE6/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Continuation Prompt — Phase 6 Production Graduation - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2370,11 +2370,11 @@
 <a class="md-nav__link" href="#key-technical-facts-verified-2026-02-19">
 <span class="md-ellipsis">
       
-        🔑 Key Technical Facts (verified 2026-02-19)
+        Key Technical Facts (verified 2026-02-19)
       
     </span>
 </a>
-<nav aria-label="🔑 Key Technical Facts (verified 2026-02-19)" class="md-nav">
+<nav aria-label="Key Technical Facts (verified 2026-02-19)" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#hf_pinningpy-priority-order">
@@ -2451,7 +2451,7 @@
 </strong>Blocking PR<strong>: <a href="https://github.com/Aries-Serpent/_codex_/pull/3336">#3336</a> — CI fixes pending
 </strong>Full Planset<strong>: <code>.codex/plans/PHASE6_CONTINUATION_PLANSET.md</code>
 </strong>Consolidation Map<strong>: <code>.codex/PRODUCTION_READINESS_CONSOLIDATION_MAP.md</code> 🆕
-</strong>Previous Phase:<strong> Phase 5 + CI Remediation (Sessions 35–43) —  COMPLETE
+</strong>Previous Phase:<strong> Phase 5 + CI Remediation (Sessions 35–43) — COMPLETE
 </strong>Branch:<strong> <code>copilot/sub-pr-3336</code>
 </strong>PR:** #3336</p>
 </blockquote>
@@ -2459,9 +2459,9 @@
 <h2 id="session-start-checklist-must-do-first">Session Start Checklist (MUST DO FIRST)<a class="headerlink" href="#session-start-checklist-must-do-first" title="Permanent link">¶</a></h2>
 <ol>
 <li><strong>Verify CI green</strong> — check if Resilient Validation Suite (run 22203971518 on commit 756c152,
-   then the follow-up commit with evaluator.py fix) passed:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>gh<span class="w"> </span>run<span class="w"> </span>view<span class="w"> </span><span class="m">22203971518</span><span class="w"> </span>--job<span class="w"> </span><span class="m">64224708717</span><span class="w">  </span><span class="c1"># slow</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>gh<span class="w"> </span>run<span class="w"> </span>view<span class="w"> </span><span class="m">22203971518</span><span class="w"> </span>--job<span class="w"> </span><span class="m">64224708718</span><span class="w">  </span><span class="c1"># quick</span>
+ then the follow-up commit with evaluator.py fix) passed:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>gh<span class="w"> </span>run<span class="w"> </span>view<span class="w"> </span><span class="m">22203971518</span><span class="w"> </span>--job<span class="w"> </span><span class="m">64224708717</span><span class="w"> </span><span class="c1"># slow</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>gh<span class="w"> </span>run<span class="w"> </span>view<span class="w"> </span><span class="m">22203971518</span><span class="w"> </span>--job<span class="w"> </span><span class="m">64224708718</span><span class="w"> </span><span class="c1"># quick</span>
 </code></pre></div></li>
 <li><strong>Load memories</strong>: Review stored facts for hf_pinning, CI false positives, conftest xfail</li>
 <li><strong>Check git status</strong>: <code>git log --oneline -5 &amp;&amp; git status --short</code></li>
@@ -2546,8 +2546,8 @@
 <p><strong>What was fixed</strong> (last commit before this session):
 - Removed <code>revision=get_hf_revision()</code> from <code>src/codex_ml/eval/evaluator.py</code> lines 122+129
 - This allows <code>ensure_pinned_kwargs</code> to check <code>KNOWN_MODEL_REVISIONS</code> (real hash) before env vars (fake <code>abcdef0</code>)
-- Previously: <code>get_hf_revision()</code> returned <code>HF_REVISION=abcdef0</code> → HuggingFace 404 error
-- Now: <code>KNOWN_MODEL_REVISIONS["sshleifer/tiny-gpt2"]</code> = real commit hash → works or graceful skip</p>
+- Previously: <code>get_hf_revision()</code> returned <code>HF_REVISION=abcdef0</code> HuggingFace 404 error
+- Now: <code>KNOWN_MODEL_REVISIONS["sshleifer/tiny-gpt2"]</code> = real commit hash works or graceful skip</p>
 <p><strong>If test_run_eval_cli STILL fails after this fix</strong>, check:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a># src/codex_ml/eval/run_eval.py — does it also call get_hf_revision() explicitly?
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>grep -n "get_hf_revision\|revision=" src/codex_ml/eval/run_eval.py
@@ -2556,7 +2556,7 @@
 <p><strong>Condition</strong>: Only after base-branch (<code>copilot/investigate-coherence-issue</code>) CI is confirmed green.</p>
 <p><strong>Change</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># pyproject.toml</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12"</span><span class="w">  </span><span class="c1"># Restore from "&gt;=3.11,&lt;3.13"</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12"</span><span class="w"> </span><span class="c1"># Restore from "&gt;=3.11,&lt;3.13"</span>
 </code></pre></div></p>
 <p><strong>Verification</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>src<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-v<span class="w"> </span>--timeout<span class="o">=</span><span class="m">300</span><span class="w"> </span>-x<span class="w"> </span>-q<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-20
@@ -2571,22 +2571,22 @@
 <p><strong>Feature flag</strong>: Set <code>CODEX_ACTIVE_LEARNING=true</code> in production config
 <strong>Budget enforcement</strong>: Add <code>_enforce_query_budget()</code> in <code>hook.py</code>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">def</span> <span class="nf">_enforce_query_budget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_daily_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">today</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_budget_per_day</span><span class="p">:</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Active learning query budget (</span><span class="si">%d</span><span class="s2">/day) exceeded"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_budget_per_day</span><span class="p">)</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="k">return</span> <span class="kc">False</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_daily_counts</span><span class="p">[</span><span class="n">today</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="k">return</span> <span class="kc">True</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_daily_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">today</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_budget_per_day</span><span class="p">:</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Active learning query budget (</span><span class="si">%d</span><span class="s2">/day) exceeded"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_budget_per_day</span><span class="p">)</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="k">return</span> <span class="kc">False</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_daily_counts</span><span class="p">[</span><span class="n">today</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="k">return</span> <span class="kc">True</span>
 </code></pre></div></p>
 <p><strong>Tests</strong>: Add <code>test_query_budget_enforced</code> in <code>tests/cognitive_brain/active_learning/</code></p>
 <hr/>
 <h2 id="priority-2-extended-noise-validation-1000-scenarios">Priority 2 — Extended Noise Validation (1000 scenarios)<a class="headerlink" href="#priority-2-extended-noise-validation-1000-scenarios" title="Permanent link">¶</a></h2>
-<p><strong>Current</strong>: 91.4% accuracy at 10% gate error on 200 scenarios 
+<p><strong>Current</strong>: 91.4% accuracy at 10% gate error on 200 scenarios
 <strong>Target</strong>: Verify ≥90% at 10% gate error on 1000 scenarios</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>src<span class="w"> </span>python<span class="w"> </span>src/cognitive_brain/experiments/exp1b_revalidation.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span>--multi-seed<span class="w"> </span>--scenarios<span class="w"> </span><span class="m">1000</span><span class="w"> </span>--noise-rate<span class="w"> </span><span class="m">0</span>.10<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span>--save-json<span class="w"> </span>audit_artifacts/validation/noise_10percent_1000scenarios.json
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span>--multi-seed<span class="w"> </span>--scenarios<span class="w"> </span><span class="m">1000</span><span class="w"> </span>--noise-rate<span class="w"> </span><span class="m">0</span>.10<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span>--save-json<span class="w"> </span>audit_artifacts/validation/noise_10percent_1000scenarios.json
 </code></pre></div>
 <hr/>
 <h2 id="priority-3-enhancement">Priority 3 — Enhancement<a class="headerlink" href="#priority-3-enhancement" title="Permanent link">¶</a></h2>
@@ -2595,34 +2595,34 @@
 <p><strong>Method</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># In src/cognitive_brain/analytics/bayesian.py</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="k">def</span> <span class="nf">update_cpds_em</span><span class="p">(</span><span class="n">corpus</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="sd">"""Expectation-Maximization update of Conditional Probability Distributions."""</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="o">...</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="sd">"""Expectation-Maximization update of Conditional Probability Distributions."""</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="o">...</span>
 </code></pre></div></p>
 <h2 id="chain-prompting-integration-tests">Chain Prompting Integration Tests<a class="headerlink" href="#chain-prompting-integration-tests" title="Permanent link">¶</a></h2>
 <p><strong>Goal</strong>: Validate multi-agent compliance workflows end-to-end.</p>
 <p><strong>File</strong>: <code>tests/cognitive_brain/integration/test_chain_prompting.py</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">def</span> <span class="nf">test_compliance_chain_prompting_workflow</span><span class="p">():</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">brain</span> <span class="o">=</span> <span class="n">CognitiveBrain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">QuantumConfig</span><span class="p">())</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="c1"># Step 1: Initial assessment</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">decision1</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="s2">"review"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"score"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">"risk"</span><span class="p">:</span> <span class="s2">"medium"</span><span class="p">})</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="c1"># Step 2: Follow-up with context</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    <span class="n">decision2</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="s2">"escalation"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"prior_decision"</span><span class="p">:</span> <span class="n">decision1</span><span class="o">.</span><span class="n">decision</span><span class="p">},</span> <span class="n">session_id</span><span class="o">=</span><span class="n">decision1</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="k">assert</span> <span class="n">decision2</span><span class="o">.</span><span class="n">session_id</span> <span class="o">==</span> <span class="n">decision1</span><span class="o">.</span><span class="n">session_id</span>  <span class="c1"># Same session chain</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="n">brain</span> <span class="o">=</span> <span class="n">CognitiveBrain</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">QuantumConfig</span><span class="p">())</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="c1"># Step 1: Initial assessment</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="n">decision1</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="s2">"review"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"score"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s2">"risk"</span><span class="p">:</span> <span class="s2">"medium"</span><span class="p">})</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="c1"># Step 2: Follow-up with context</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> <span class="n">decision2</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="s2">"escalation"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"prior_decision"</span><span class="p">:</span> <span class="n">decision1</span><span class="o">.</span><span class="n">decision</span><span class="p">},</span> <span class="n">session_id</span><span class="o">=</span><span class="n">decision1</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="k">assert</span> <span class="n">decision2</span><span class="o">.</span><span class="n">session_id</span> <span class="o">==</span> <span class="n">decision1</span><span class="o">.</span><span class="n">session_id</span> <span class="c1"># Same session chain</span>
 </code></pre></div>
 <hr/>
-<h2 id="key-technical-facts-verified-2026-02-19">🔑 Key Technical Facts (verified 2026-02-19)<a class="headerlink" href="#key-technical-facts-verified-2026-02-19" title="Permanent link">¶</a></h2>
+<h2 id="key-technical-facts-verified-2026-02-19">Key Technical Facts (verified 2026-02-19)<a class="headerlink" href="#key-technical-facts-verified-2026-02-19" title="Permanent link">¶</a></h2>
 <h3 id="hf_pinningpy-priority-order">hf_pinning.py priority order<a class="headerlink" href="#hf_pinningpy-priority-order" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>ensure_pinned_kwargs priority:
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>1. Caller-supplied revision/commit_id in kwargs  ← evaluator.py WAS here (wrong)
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>2. KNOWN_MODEL_REVISIONS (curated production pins)  ← evaluator.py NOW hits here 
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>1. Caller-supplied revision/commit_id in kwargs evaluator.py WAS here (wrong)
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>2. KNOWN_MODEL_REVISIONS (curated production pins) evaluator.py NOW hits here 
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>3. Environment variables (HF_REVISION, etc.) — only for unknown models
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>4. ValueError — remote models must have a pin
 </code></pre></div>
 <h3 id="graceful-degradation-confirmed">Graceful degradation (confirmed )<a class="headerlink" href="#graceful-degradation-confirmed" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>load_from_pretrained():
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>  1. Try local cache (fast, offline) → local_files_only=True
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>  2. Try network download → fallback
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  3. Raise HFModelUnavailableError → tests call pytest.skip()
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> 1. Try local cache (fast, offline) local_files_only=True
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> 2. Try network download fallback
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> 3. Raise HFModelUnavailableError tests call pytest.skip()
 </code></pre></div>
 <h3 id="ci-false-positive-pattern">CI false positive pattern<a class="headerlink" href="#ci-false-positive-pattern" title="Permanent link">¶</a></h3>
 <ul>
@@ -2695,6 +2695,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Research Note 09 — Edge Cases and Synthesis for Adaptive Energy-Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -142,7 +142,7 @@ learn energy weights from outcomes
 Adaptive energy-management across thermal, electrical, electromagnetic, chemical, mechanical, informational, and security/access domains follows the same control pattern:
 
 ```text
-sense → estimate → forecast → optimize → route/convert/store/dissipate → observe → learn
+sense estimate forecast optimize route/convert/store/dissipate observe learn
 ```
 
 The electromagnetic spectrum adds a key lesson: sustained presence is not sustained usefulness. Energy must be coupled, converted, stored, and constrained safely. This maps directly back to access governance: a sustained identity session is not sustained trust; trust must be re-measured, context-coupled, scoped, logged, and decayed.
@@ -188,19 +188,32 @@ Useful adaptive energy is capacity times context-sensitive intensity, corrected 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Scenario input, Map observed variables'}}%%
+
 flowchart TD
-    Scenario[Scenario input] --> Variables[Map observed variables]
-    Variables --> Supply[P_in / P_incident]
-    Variables --> Demand[P_load]
-    Variables --> Reserve[S_d / SOC / storage]
-    Variables --> Context[Phi_d / trust / alignment]
-    Variables --> Risk[R_d / blast radius]
-    Supply --> Decision[Adaptive response]
-    Demand --> Decision
-    Reserve --> Decision
-    Context --> Decision
-    Risk --> Decision
-    Decision --> Actions[harvest / store / shift / scope / shed]
+
+ Scenario[Scenario input] --> Variables[Map observed variables]
+
+ Variables --> Supply[P_in / P_incident]
+
+ Variables --> Demand[P_load]
+
+ Variables --> Reserve[S_d / SOC / storage]
+
+ Variables --> Context[Phi_d / trust / alignment]
+
+ Variables --> Risk[R_d / blast radius]
+
+ Supply --> Decision[Adaptive response]
+
+ Demand --> Decision
+
+ Reserve --> Decision
+
+ Context --> Decision
+
+ Risk --> Decision
+
+ Decision --> Actions[harvest / store / shift / scope / shed]
 ```
 
 ---

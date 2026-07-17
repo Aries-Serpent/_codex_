@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/audit/v1.5.x_CHANGELOG/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Audit Pipeline v1.5.x Changelog - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2498,11 +2498,11 @@
 <a class="md-nav__link" href="#migration-guide-v021-v15x">
 <span class="md-ellipsis">
       
-        Migration Guide: v0.2.1 → v1.5.x
+        Migration Guide: v0.2.1 v1.5.x
       
     </span>
 </a>
-<nav aria-label="Migration Guide: v0.2.1 → v1.5.x" class="md-nav">
+<nav aria-label="Migration Guide: v0.2.1 v1.5.x" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#breaking-changes">
@@ -2952,30 +2952,30 @@
 <li><code>docs/audit/v1.5.x_CHANGELOG.md</code></li>
 </ul>
 <hr/>
-<h2 id="migration-guide-v021-v15x">Migration Guide: v0.2.1 → v1.5.x<a class="headerlink" href="#migration-guide-v021-v15x" title="Permanent link">¶</a></h2>
+<h2 id="migration-guide-v021-v15x">Migration Guide: v0.2.1 v1.5.x<a class="headerlink" href="#migration-guide-v021-v15x" title="Permanent link">¶</a></h2>
 <h3 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">¶</a></h3>
 <p>None. v1.5.x is fully backward compatible with v0.2.1.</p>
 <h3 id="recommended-steps">Recommended Steps<a class="headerlink" href="#recommended-steps" title="Permanent link">¶</a></h3>
 <ol>
 <li>
 <p><strong>Enable trend tracking</strong> (optional):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># .copilot-space/workflow.yaml</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nt">trends</span><span class="p">:</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">database_path</span><span class="p">:</span><span class="w"> </span><span class="s">"audit_artifacts/trends.db"</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">auto_store</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</code></pre></div></p>
+   <code>yaml
+   # .copilot-space/workflow.yaml
+   trends:
+     enabled: true
+     database_path: "audit_artifacts/trends.db"
+     auto_store: true</code></p>
 </li>
 <li>
 <p><strong>Run migrations</strong> (automatic on first use):
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.migrations</span> <span class="kn">import</span> <span class="n">run_migrations</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">run_migrations</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/trends.db"</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.migrations</span> <span class="kn">import</span> <span class="n">run_migrations</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">run_migrations</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/trends.db"</span><span class="p">))</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Store historical data</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>python<span class="w"> </span>-m<span class="w"> </span>scripts.space_traversal.audit_runner<span class="w"> </span>store-trend
-</code></pre></div></p>
+   <code>bash
+   python -m scripts.space_traversal.audit_runner store-trend</code></p>
 </li>
 </ol>
 <hr/>
@@ -3000,53 +3000,53 @@
 <hr/>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">¶</a></h2>
 <h3 id="trenddatabase">TrendDatabase<a class="headerlink" href="#trenddatabase" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.trend_db</span> <span class="kn">import</span> <span class="n">TrendDatabase</span><span class="p">,</span> <span class="n">create_snapshot_from_artifacts</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="c1"># Initialize database</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">db</span> <span class="o">=</span> <span class="n">TrendDatabase</span><span class="p">(</span><span class="s2">"audit_artifacts/trends.db"</span><span class="p">)</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="c1"># Store snapshot</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="n">snapshot</span> <span class="o">=</span> <span class="n">create_snapshot_from_artifacts</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts"</span><span class="p">))</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="n">run_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">store_snapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># Query trends</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="n">trend</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_trend</span><span class="p">(</span><span class="s2">"checkpointing"</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="n">scores</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_latest_scores</span><span class="p">()</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="n">regressions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_regressions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.trend_db</span> <span class="kn">import</span> <span class="n">TrendDatabase</span><span class="p">,</span> <span class="n">create_snapshot_from_artifacts</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="c1"># Initialize database</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="n">db</span> <span class="o">=</span> <span class="n">TrendDatabase</span><span class="p">(</span><span class="s2">"audit_artifacts/trends.db"</span><span class="p">)</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1"># Store snapshot</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="n">snapshot</span> <span class="o">=</span> <span class="n">create_snapshot_from_artifacts</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts"</span><span class="p">))</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="n">run_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">store_snapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1"># Query trends</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="n">trend</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_trend</span><span class="p">(</span><span class="s2">"checkpointing"</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="n">scores</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_latest_scores</span><span class="p">()</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="n">regressions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_regressions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="visualization">Visualization<a class="headerlink" href="#visualization" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.viz_ascii</span> <span class="kn">import</span> <span class="n">sparkline</span><span class="p">,</span> <span class="n">bar_chart</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.viz_html</span> <span class="kn">import</span> <span class="n">generate_dashboard</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># ASCII visualization</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">sparkline</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.82</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">]))</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">bar_chart</span><span class="p">({</span><span class="s2">"cap1"</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s2">"cap2"</span><span class="p">:</span> <span class="mf">0.78</span><span class="p">}))</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="c1"># HTML dashboard</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="n">generate_dashboard</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">trend_data</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"dashboard.html"</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.viz_ascii</span> <span class="kn">import</span> <span class="n">sparkline</span><span class="p">,</span> <span class="n">bar_chart</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.viz_html</span> <span class="kn">import</span> <span class="n">generate_dashboard</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># ASCII visualization</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">sparkline</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.82</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">]))</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">bar_chart</span><span class="p">({</span><span class="s2">"cap1"</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s2">"cap2"</span><span class="p">:</span> <span class="mf">0.78</span><span class="p">}))</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="c1"># HTML dashboard</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="n">generate_dashboard</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">trend_data</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"dashboard.html"</span><span class="p">))</span>
 </code></pre></div>
 <h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.webhooks</span> <span class="kn">import</span> <span class="n">AuditEvent</span><span class="p">,</span> <span class="n">send_webhook</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="n">event</span> <span class="o">=</span> <span class="n">AuditEvent</span><span class="p">(</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">event_type</span><span class="o">=</span><span class="s2">"audit_complete"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">repo_name</span><span class="o">=</span><span class="s2">"my-repo"</span><span class="p">,</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">avg_score</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">capability_count</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">regression_count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="n">details</span><span class="o">=</span><span class="p">{}</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.webhooks</span> <span class="kn">import</span> <span class="n">AuditEvent</span><span class="p">,</span> <span class="n">send_webhook</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="n">event</span> <span class="o">=</span> <span class="n">AuditEvent</span><span class="p">(</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="n">event_type</span><span class="o">=</span><span class="s2">"audit_complete"</span><span class="p">,</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">repo_name</span><span class="o">=</span><span class="s2">"my-repo"</span><span class="p">,</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">avg_score</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="n">capability_count</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="n">regression_count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="n">details</span><span class="o">=</span><span class="p">{}</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="ci-integration">CI Integration<a class="headerlink" href="#ci-integration" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.ci_integration</span> <span class="kn">import</span> <span class="p">(</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    <span class="n">detect_ci_environment</span><span class="p">,</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="n">write_github_step_summary</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="p">)</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="n">env</span> <span class="o">=</span> <span class="n">detect_ci_environment</span><span class="p">()</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">ci</span> <span class="o">==</span> <span class="s2">"github_actions"</span><span class="p">:</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="n">write_github_step_summary</span><span class="p">(</span><span class="n">avg_score</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">,</span> <span class="n">regressions</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">scripts.space_traversal.ci_integration</span> <span class="kn">import</span> <span class="p">(</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">detect_ci_environment</span><span class="p">,</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">write_github_step_summary</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="p">)</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="n">env</span> <span class="o">=</span> <span class="n">detect_ci_environment</span><span class="p">()</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">ci</span> <span class="o">==</span> <span class="s2">"github_actions"</span><span class="p">:</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">write_github_step_summary</span><span class="p">(</span><span class="n">avg_score</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">,</span> <span class="n">regressions</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <p><em>Report generated by Audit Pipeline v0.2.1</em></p>
@@ -3079,6 +3079,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

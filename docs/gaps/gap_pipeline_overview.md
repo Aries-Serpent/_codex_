@@ -1,6 +1,6 @@
 # _codex_ Gap Pipeline Overview
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This document describes how the Gap Registry, YAML task sequence, and runner
 work together to track and resolve implementation gaps across the `_codex_`

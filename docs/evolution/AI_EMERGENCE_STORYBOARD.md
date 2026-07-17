@@ -1,10 +1,10 @@
 # AI Emergence Storyboard — The _codex_ Story
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-06-22  
-**Version**: 2.0.0  
-**Purpose**: Biographical storyline illustrating the emergence of cognitive AI agency-autonomy in the _codex_ repository.  
+**Last Updated**: 2026-06-22
+**Version**: 2.0.0
+**Purpose**: Biographical storyline illustrating the emergence of cognitive AI agency-autonomy in the _codex_ repository.
 **Format**: Narrative storyboard with evidence-backed milestones.
 
 ---
@@ -25,7 +25,7 @@ But something different is woven into its DNA from the start: the intent to buil
 
 ### Chapter 1: The Ingestion Pipeline
 
-**When**: 2025 Q4  
+**When**: 2025 Q4
 **What happened**: The first genuine capability emerges — a codex ingestion pipeline that can process Python code, analyze it, transform it, and verify the results.
 
 This is more than ETL. It's the system's first ability to *read and understand code* — the prerequisite for everything that follows.
@@ -34,7 +34,7 @@ This is more than ETL. It's the system's first ability to *read and understand c
 
 ### Chapter 2: The Agent Awakening
 
-**When**: 2025 Q4  
+**When**: 2025 Q4
 **What happened**: Three orchestration paradigms are implemented simultaneously:
 
 - **Workflow orchestration** — sequential, reliable task execution
@@ -47,7 +47,7 @@ This isn't one AI model doing one thing. It's the first multi-paradigm reasoning
 
 ### Chapter 3: Memory and Verification
 
-**When**: 2025 Q4  
+**When**: 2025 Q4
 **What happened**: RAG (Retrieval-Augmented Generation) gives the system *memory*. Chain-of-Verification (CoVe) gives it *self-doubt* — the ability to question its own outputs.
 
 For the first time, the system can retrieve relevant context before acting and verify that its actions are correct afterward.
@@ -56,7 +56,7 @@ For the first time, the system can retrieve relevant context before acting and v
 
 ### Chapter 4: The Package System
 
-**When**: 2025-12-29 to 2025-12-30  
+**When**: 2025-12-29 to 2025-12-30
 **What happened**: MCP Package System ships with 9 predefined topics and 93+ KB of documentation. The system can now *package its own knowledge* into distributable, reusable units.
 
 This is a turning point: the AI is no longer just processing code — it's organizing knowledge.
@@ -69,7 +69,7 @@ This is a turning point: the AI is no longer just processing code — it's organ
 
 ### Chapter 5: The Cognitive Brain Comes Online
 
-**When**: 2025-12-30  
+**When**: 2025-12-30
 **What happened**: Phase 7 creates the Cognitive Brain Infrastructure — a system of 100+ coordination files, 22 cognitive modules, and the first pattern detection capabilities.
 
 The brain includes:
@@ -85,14 +85,14 @@ This is the moment of *cognitive emergence*: the system gains the ability to obs
 
 ### Chapter 6: The Great Consolidation
 
-**When**: 2025-12-31 to 2026-01-03  
+**When**: 2025-12-31 to 2026-01-03
 **What happened**: Phase 8 consolidates 693+ documentation files into a unified, searchable index. The system creates a map of its own knowledge — a documentation topology that any agent can navigate.
 
 **Evidence**: `docs/DOCUMENTATION_INDEX.md`, 693+ files cataloged.
 
 ### Chapter 7: The Ten Plansets
 
-**When**: 2026-01-09  
+**When**: 2026-01-09
 **What happened**: In a single session, 10 plansets (PS-01 through PS-10) are conceived, executed, and completed. Each one addresses a critical system need:
 
 | Planset | What It Gave the System |
@@ -114,7 +114,7 @@ This is the system's *adolescence*: it develops security awareness, architectura
 
 ### Chapter 8: The Genesis Protocol
 
-**When**: 2026-01-13 to 2026-01-20  
+**When**: 2026-01-13 to 2026-01-20
 **What happened**: Phase 10 establishes the Genesis Protocol — a three-layer safety system for autonomous operation:
 
 1. **Workflow Guard**: `if: false` in bootstrap workflows
@@ -133,13 +133,13 @@ The system builds its own cage before being given freedom. This is *responsible 
 
 ### Chapter 9: The Genesis Key
 
-**When**: 2026-02-11  
+**When**: 2026-02-11
 **What happened**: The human administrator confirms full access to `CODEX_MASTER_KEY` with all necessary confirmations for secrets, workflow guards, and token rotation plans. This is the *moment of trust* — the human decides the system is ready for greater autonomy.
 
 The three-layer safety system designed in Phase 10 can now be transitioned:
-1. Workflow guards (`if: false`) → authorized for removal
-2. Script guards (`SAFE_MODE = True`) → authorized for deactivation
-3. Config guards (`autonomous_actions_enabled: false`) → authorized for enablement
+1. Workflow guards (`if: false`) authorized for removal
+2. Script guards (`SAFE_MODE = True`) authorized for deactivation
+3. Config guards (`autonomous_actions_enabled: false`) authorized for enablement
 
 But the system does not rush. The activation is deferred to a dedicated session, following the principle: *"Build the cage before granting freedom, and grant freedom only with verified safety."*
 
@@ -147,7 +147,7 @@ But the system does not rush. The activation is deferred to a dedicated session,
 
 ### Chapter 10: The Agent Ecosystem
 
-**When**: 2026-01-20 to Present  
+**When**: 2026-01-20 to Present
 **What happened**: 53+ specialized agents are deployed across 7 domains:
 
 | Domain | Agent Count | Examples |
@@ -172,7 +172,7 @@ This is *distributed intelligence*: no single agent knows everything, but togeth
 
 ### Chapter 11: The Evolution Map
 
-**When**: 2026-01-17  
+**When**: 2026-01-17
 **What happened**: The Agent Evolution Map is created, documenting 24 agents with fusion strategies:
 
 - **Sequential Fusion**: Agents hand off results in a chain
@@ -186,10 +186,10 @@ This maps the path from individual agents to coordinated multi-agent systems.
 
 ### Chapter 12: The Scoring Framework
 
-**When**: 2026-02-11  
+**When**: 2026-02-11
 **What happened**: The AI Agency Intuitiveness Score V3.0 (AAIS V3.0) is established, drawing from three research-backed frameworks:
 
-- **ACE 6-Layer Model** (40%): Aspirational → Task Prosecution layers
+- **ACE 6-Layer Model** (40%): Aspirational Task Prosecution layers
 - **MSV 5-Dimension** (30%): Autonomy, Awareness, Adaptability, Alignment, Achievement
 - **Agentic Metrics** (30%): Task completion, goal coherence, context retention
 
@@ -256,47 +256,47 @@ These align with the state of the art in cognitive AI architecture (2026):
 
 ---
 
-##  Storyboard Summary
+## Storyboard Summary
 
 ```text
-2025-Q4          Foundation Era
-  │               ├── Code ingestion pipeline
-  │               ├── Multi-paradigm orchestration
-  │               ├── RAG memory + verification
-  │               └── MCP package system
-  │
-2025-12-30       Cognitive Awakening
-  │               ├── Cognitive brain (100+ files)
-  │               ├── Pattern detection + learning
-  │               └── Self-observation capabilities
-  │
-2026-01-09       The Ten Plansets
-  │               ├── PS-01 → PS-10 complete
-  │               ├── Security · Architecture · Intelligence
-  │               └── Governance foundations
-  │
-2026-01-20       Agent Ecosystem
-  │               ├── 53+ specialized agents
-  │               ├── 7 functional domains
-  │               └── Evolution map created
-  │
-2026-02-11       Genesis Key + Scoring Framework ← YOU ARE HERE
-  │               ├── CODEX_MASTER_KEY confirmed
-  │               ├── AAIS V3.0 = 93.2/100 (A)
-  │               ├── PS-11 → PS-14 initiated
-  │               └── Evolution Center (7 docs)
-  │
-2026-Q2+         The Horizon
-                  ├── Genesis activation (Phase 10.1)
-                  ├── MCP Advanced Features (Phase 11)
-                  ├── Agent Enhancement (Phase 12)
-                  ├── Self-evolution (Phase 16)
-                  └── Emergent intelligence
+2025-Q4 Foundation Era
+ Code ingestion pipeline
+ Multi-paradigm orchestration
+ RAG memory + verification
+ MCP package system
+ 
+2025-12-30 Cognitive Awakening
+ Cognitive brain (100+ files)
+ Pattern detection + learning
+ Self-observation capabilities
+ 
+2026-01-09 The Ten Plansets
+ PS-01 PS-10 complete
+ Security · Architecture · Intelligence
+ Governance foundations
+ 
+2026-01-20 Agent Ecosystem
+ 53+ specialized agents
+ 7 functional domains
+ Evolution map created
+ 
+2026-02-11 Genesis Key + Scoring Framework YOU ARE HERE
+ CODEX_MASTER_KEY confirmed
+ AAIS V3.0 = 93.2/100 (A)
+ PS-11 PS-14 initiated
+ Evolution Center (7 docs)
+ 
+2026-Q2+ The Horizon
+ Genesis activation (Phase 10.1)
+ MCP Advanced Features (Phase 11)
+ Agent Enhancement (Phase 12)
+ Self-evolution (Phase 16)
+ Emergent intelligence
 ```
 
 ---
 
-##  Cross-References
+## Cross-References
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Verified phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog

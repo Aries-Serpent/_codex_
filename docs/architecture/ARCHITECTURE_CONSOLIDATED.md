@@ -1,12 +1,12 @@
 # Codex ML Architecture - Consolidated Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version**: 1.1.0 (Consolidated)  
-> **Last Updated**: 2026-06-22  
-> **Status**: Production-Ready Living Document  
-> **Audience**: Developers, Architects, AI Agents, DevOps Engineers  
-> **Managed By**: AI Assistant Autonomous System  
+> **Version**: 1.1.0 (Consolidated)
+> **Last Updated**: 2026-06-22
+> **Status**: Production-Ready Living Document
+> **Audience**: Developers, Architects, AI Agents, DevOps Engineers
+> **Managed By**: AI Assistant Autonomous System
 
 ---
 
@@ -70,27 +70,27 @@ The system is built on three core principles:
 ### System Boundaries
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Codex ML: Production-Grade ML Framework                   │
-│                                                             │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  Internal: Core ML Platform + Agent System        │    │
-│  │  ├── Training & Evaluation Engines                │    │
-│  │  ├── MCP Ecosystem (Model Context Protocol)       │    │
-│  │  ├── Cognitive Brain (Decision Making)            │    │
-│  │  ├── Python Ingestion Pipeline                    │    │
-│  │  └── 145 Active Autonomous Agents                 │    │
-│  └────────────────────────────────────────────────────┘    │
-│                                                             │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  External Integrations                            │    │
-│  │  ├── Hugging Face Hub (Models + Datasets)        │    │
-│  │  ├── MLflow (Experiment Tracking)                │    │
-│  │  ├── Cloud Storage (S3/Azure/GCS)                │    │
-│  │  ├── Ray Cluster (Distributed Compute)           │    │
-│  │  └── GitHub (PR Automation + Actions)            │    │
-│  └────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
+
+ Codex ML: Production-Grade ML Framework 
+ 
+ 
+ Internal: Core ML Platform + Agent System 
+ Training & Evaluation Engines 
+ MCP Ecosystem (Model Context Protocol) 
+ Cognitive Brain (Decision Making) 
+ Python Ingestion Pipeline 
+ 145 Active Autonomous Agents 
+ 
+ 
+ 
+ External Integrations 
+ Hugging Face Hub (Models + Datasets) 
+ MLflow (Experiment Tracking) 
+ Cloud Storage (S3/Azure/GCS) 
+ Ray Cluster (Distributed Compute) 
+ GitHub (PR Automation + Actions) 
+ 
+
 ```
 
 ### External Actors
@@ -107,58 +107,58 @@ The system is built on three core principles:
 ### High-Level System Components
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  codex-ml v0.2.1 System                                        │
-│                                                                │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │  Core ML Platform                                       │  │
-│  │  • CLI Interface (Typer/Click)                         │  │
-│  │  • Training Engine (PyTorch + Transformers)            │  │
-│  │  • Evaluation Engine (lm-eval + custom metrics)        │  │
-│  │  • Model Serving (Ray Serve + FastAPI)                 │  │
-│  │  • Configuration Management (Hydra + OmegaConf)        │  │
-│  │  • Session Logging (SQLite + Telemetry)                │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │  Cognitive Brain (k₁=0.35, 2.86x Advantage)            │  │
-│  │  • Decision Engine (Superposition + Entanglement)      │  │
-│  │  • Memory Manager (STM/LTM + Patterns, 60% Compression)│  │
-│  │  • Adaptive Scoring (ML-inspired Weights)              │  │
-│  │  • Pattern Learning (289 patterns learned)             │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │  MCP Ecosystem (Model Context Protocol)                │  │
-│  │  • MCP Core (Standardized Protocol)                    │  │
-│  │  • Adapters (Pinecone/Mock/Custom)                     │  │
-│  │  • Background Workers (Embeddings + Checkpoints)       │  │
-│  │  • Metrics & Telemetry (Observability)                 │  │
-│  │  • 134 active workflows, 298 workflow files            │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │  Python Ingestion Pipeline                             │  │
-│  │  • Ingest Module (File/ZIP/Git/URL)                    │  │
-│  │  • Analysis Module (AST + Runtime)                     │  │
-│  │  • Transform Module (Tier A/B/C LLM-guided)            │  │
-│  │  • Verify Module (Behavior Compare + Test Gen)         │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │  Agent System (145 Active Autonomous Agents)           │  │
-│  │  • Agent Core (RAG + RAGIndexer)                        │  │
-│  │  • Tool Registry (Centralized Discovery)               │  │
-│  │  • Agent Memory (SQLite Persistent Pattern Library)    │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │  Infrastructure                                        │  │
-│  │  • Security Layer (48 CVEs Fixed, Production-Grade)    │  │
-│  │  • CI/CD Automation (Auto-Fix + Self-Heal)             │  │
-│  │  • Plugin Framework (Dynamic Loading)                  │  │
-│  └─────────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────┘
+
+ codex-ml v0.2.0 System 
+ 
+ 
+ Core ML Platform 
+ • CLI Interface (Typer/Click) 
+ • Training Engine (PyTorch + Transformers) 
+ • Evaluation Engine (lm-eval + custom metrics) 
+ • Model Serving (Ray Serve + FastAPI) 
+ • Configuration Management (Hydra + OmegaConf) 
+ • Session Logging (SQLite + Telemetry) 
+ 
+ 
+ 
+ Cognitive Brain (k₁=0.35, 2.86x Advantage) 
+ • Decision Engine (Superposition + Entanglement) 
+ • Memory Manager (STM/LTM + Patterns, 60% Compression) 
+ • Adaptive Scoring (ML-inspired Weights) 
+ • Pattern Learning (289 patterns learned) 
+ 
+ 
+ 
+ MCP Ecosystem (Model Context Protocol) 
+ • MCP Core (Standardized Protocol) 
+ • Adapters (Pinecone/Mock/Custom) 
+ • Background Workers (Embeddings + Checkpoints) 
+ • Metrics & Telemetry (Observability) 
+ • 134 active workflows, 298 workflow files 
+ 
+ 
+ 
+ Python Ingestion Pipeline 
+ • Ingest Module (File/ZIP/Git/URL) 
+ • Analysis Module (AST + Runtime) 
+ • Transform Module (Tier A/B/C LLM-guided) 
+ • Verify Module (Behavior Compare + Test Gen) 
+ 
+ 
+ 
+ Agent System (145 Active Autonomous Agents) 
+ • Agent Core (RAG + RAGIndexer) 
+ • Tool Registry (Centralized Discovery) 
+ • Agent Memory (SQLite Persistent Pattern Library) 
+ 
+ 
+ 
+ Infrastructure 
+ • Security Layer (48 CVEs Fixed, Production-Grade) 
+ • CI/CD Automation (Auto-Fix + Self-Heal) 
+ • Plugin Framework (Dynamic Loading) 
+ 
+
 ```
 
 ---
@@ -168,34 +168,34 @@ The system is built on three core principles:
 ### Component Interaction Model
 
 ```
-┌──────────────────────────────┐
-│  CLI Interface               │
-│  (Entry Point)               │
-└──────────────┬───────────────┘
-               │
-      ┌────────┴────────┐
-      │                 │
-┌─────▼──────┐  ┌──────▼─────┐
-│ Training   │  │ Evaluation │
-│ Engine     │  │ Engine     │
-└─────┬──────┘  └──────┬─────┘
-      │                │
-      └────────┬───────┘
-               │
-      ┌────────▼──────────┐
-      │ Session Logging   │
-      │ + Telemetry       │
-      └───────────────────┘
-               │
-      ┌────────▼──────────┐
-      │ Cognitive Brain   │
-      │ (Decision Logic)  │
-      └───────────────────┘
-               │
-      ┌────────▼──────────┐
-      │ MCP Ecosystem     │
-      │ + Agent System    │
-      └───────────────────┘
+
+ CLI Interface 
+ (Entry Point) 
+
+ 
+ 
+ 
+ 
+ Training Evaluation 
+ Engine Engine 
+ 
+ 
+ 
+ 
+ 
+ Session Logging 
+ + Telemetry 
+ 
+ 
+ 
+ Cognitive Brain 
+ (Decision Logic) 
+ 
+ 
+ 
+ MCP Ecosystem 
+ + Agent System 
+ 
 ```
 
 ---
@@ -206,40 +206,40 @@ The system is built on three core principles:
 
 ```
 _codex_/
-├── .codex/                      # Codex environment kit & setup scripts
-├── .github/                     # CI/CD workflows (gated for cost)
-├── agents/                      # AI Agent infrastructure (145 agents)
-│   ├── prompts/                 # Structured prompt library
-│   ├── workflow_navigator.py   # Token-based workflow execution
-│   └── codex_client/           # GitHub bridge client
-├── src/codex_ml/               # Core ML framework (production)
-│   ├── training/               # Training pipelines
-│   ├── evaluation/             # Evaluation metrics
-│   ├── connectors/             # Storage connectors
-│   ├── plugins/                # Plugin system
-│   ├── config/                 # Configuration management
-│   ├── callbacks/              # Training callbacks
-│   ├── cli/                    # CLI interface
-│   └── utils/                  # Utility functions
-├── tests/                       # Test suite (2,130+ files)
-│   ├── capabilities/           # Feature-specific tests
-│   ├── tokenization/           # Tokenization parity
-│   ├── training/               # Training pipeline tests
-│   └── integration/            # End-to-end tests
-├── docs/                        # Documentation (700+ files)
-│   ├── api/                    # API reference
-│   ├── guides/                 # User guides
-│   ├── deployment/             # Deployment guides
-│   ├── architecture/           # Architecture docs
-│   └── admin/                  # Admin guides
-├── scripts/                     # Utility scripts (195+ files)
-│   └── space_traversal/        # Audit pipeline v0.2.1
-├── configs/                     # Hydra configurations
-├── deploy/                      # Deployment manifests
-├── monitoring/                  # Observability tools
-├── pyproject.toml              # Python project config
-├── requirements.txt            # Production dependencies
-└── README.md                    # Repository overview
+ .codex/ # Codex environment kit & setup scripts
+ .github/ # CI/CD workflows (gated for cost)
+ agents/ # AI Agent infrastructure (145 agents)
+ prompts/ # Structured prompt library
+ workflow_navigator.py # Token-based workflow execution
+ codex_client/ # GitHub bridge client
+ src/codex_ml/ # Core ML framework (production)
+ training/ # Training pipelines
+ evaluation/ # Evaluation metrics
+ connectors/ # Storage connectors
+ plugins/ # Plugin system
+ config/ # Configuration management
+ callbacks/ # Training callbacks
+ cli/ # CLI interface
+ utils/ # Utility functions
+ tests/ # Test suite (2,130+ files)
+ capabilities/ # Feature-specific tests
+ tokenization/ # Tokenization parity
+ training/ # Training pipeline tests
+ integration/ # End-to-end tests
+ docs/ # Documentation (700+ files)
+ api/ # API reference
+ guides/ # User guides
+ deployment/ # Deployment guides
+ architecture/ # Architecture docs
+ admin/ # Admin guides
+ scripts/ # Utility scripts (195+ files)
+ space_traversal/ # Audit pipeline v0.2.0
+ configs/ # Hydra configurations
+ deploy/ # Deployment manifests
+ monitoring/ # Observability tools
+ pyproject.toml # Python project config
+ requirements.txt # Production dependencies
+ README.md # Repository overview
 ```
 
 ---
@@ -262,15 +262,15 @@ _codex_/
 **Key Classes**:
 ```text
 class TrainingEngine:
-    """Base training engine"""
-    def train_epoch(train_loader, val_loader) -> Dict[str, float]
-    def save_checkpoint(path: str) -> None
-    def load_checkpoint(path: str) -> None
+ """Base training engine"""
+ def train_epoch(train_loader, val_loader) -> Dict[str, float]
+ def save_checkpoint(path: str) -> None
+ def load_checkpoint(path: str) -> None
 
 class HFTrainer(TrainingEngine):
-    """HuggingFace Transformers wrapper"""
-    def train(resume_from_checkpoint=None) -> TrainOutput
-    def evaluate(eval_dataset) -> Dict[str, float]
+ """HuggingFace Transformers wrapper"""
+ def train(resume_from_checkpoint=None) -> TrainOutput
+ def evaluate(eval_dataset) -> Dict[str, float]
 ```
 
 ### 2. Evaluation Engine
@@ -287,9 +287,9 @@ class HFTrainer(TrainingEngine):
 **Key Classes**:
 ```text
 class Evaluator:
-    def evaluate(eval_loader, metrics) -> Dict[str, float]
-    def evaluate_on_file(file_path, format) -> Dict[str, float]
-    def compute_metric(predictions, references, metric_name) -> float
+ def evaluate(eval_loader, metrics) -> Dict[str, float]
+ def evaluate_on_file(file_path, format) -> Dict[str, float]
+ def compute_metric(predictions, references, metric_name) -> float
 ```
 
 ### 3. MCP Ecosystem
@@ -305,11 +305,11 @@ class Evaluator:
 **Components**:
 ```
 MCP Core
-├── Pinecone Adapter (production vector DB)
-├── Mock Adapter (testing)
-├── Custom Adapter (extensible)
-├── Workers (embeddings, checkpoints)
-└── Metrics (observability)
+ Pinecone Adapter (production vector DB)
+ Mock Adapter (testing)
+ Custom Adapter (extensible)
+ Workers (embeddings, checkpoints)
+ Metrics (observability)
 ```
 
 ### 4. Cognitive Brain
@@ -334,11 +334,11 @@ MCP Core
 **Components**:
 ```
 Agent System (145 Active Agents)
-├── CI/CD Automation (50 agents)
-├── Testing & Coverage (30 agents)
-├── Documentation (25 agents)
-├── Security & Compliance (20 agents)
-└── Deployment & Operations (20 agents)
+ CI/CD Automation (50 agents)
+ Testing & Coverage (30 agents)
+ Documentation (25 agents)
+ Security & Compliance (20 agents)
+ Deployment & Operations (20 agents)
 ```
 
 **Tool Registry**: Centralized discovery of available tools
@@ -352,22 +352,22 @@ Agent System (145 Active Agents)
 
 ```
 User Config
-    ↓
+ 
 [Hydra Configuration Manager]
-    ↓
-[Data Loading] → [Data Preprocessing]
-    ↓
+ 
+[Data Loading] [Data Preprocessing]
+ 
 [Training Loop]
-├── Forward Pass
-├── Loss Computation
-├── Backward Pass
-├── Optimizer Step
-└── Validation
-    ↓
+ Forward Pass
+ Loss Computation
+ Backward Pass
+ Optimizer Step
+ Validation
+ 
 [Checkpoint Saving]
-    ↓
+ 
 [Telemetry/Logging]
-    ↓
+ 
 [Model Registry (MLflow)]
 ```
 
@@ -375,18 +375,18 @@ User Config
 
 ```
 Trained Model
-    ↓
+ 
 [Model Loading]
-    ↓
+ 
 [Evaluation Data]
-    ↓
+ 
 [Inference]
-    ↓
+ 
 [Metric Computation]
-├── Per-sample metrics
-├── Aggregated metrics
-└── Statistical analysis
-    ↓
+ Per-sample metrics
+ Aggregated metrics
+ Statistical analysis
+ 
 [Results Reporting]
 ```
 
@@ -395,20 +395,20 @@ Trained Model
 ```
 Input Source
 (File/ZIP/Git/URL)
-    ↓
+ 
 [Ingest Module]
-    ↓
+ 
 [Analysis Module]
 (AST + Runtime analysis)
-    ↓
+ 
 [Transform Module]
 (Tier A/B/C transformations)
-    ↓
+ 
 [Verify Module]
 (Behavior validation)
-    ↓
+ 
 [Test Generation]
-    ↓
+ 
 [Output Artifacts]
 ```
 
@@ -483,19 +483,19 @@ Input Source
 
 ```
 Agent Input
-    ↓
+ 
 [Tool Registry Discovery]
-    ↓
+ 
 [Agent Memory Lookup]
 (Pattern matching)
-    ↓
+ 
 [Cognitive Brain Decision]
 (Physics-inspired logic)
-    ↓
+ 
 [Tool Execution]
-    ↓
+ 
 [Agent Memory Update]
-    ↓
+ 
 [Telemetry Logging]
 ```
 
@@ -521,35 +521,35 @@ Agents interact with the platform through the standardized Model Context Protoco
 ### Local Development
 
 1. **Environment Setup** (See: `docs/guides/local-development-setup.md`)
-   - Python 3.11+ venv
-   - PostgreSQL for local database
-   - Pre-commit hooks for code quality
+ - Python 3.11+ venv
+ - PostgreSQL for local database
+ - Pre-commit hooks for code quality
 
 2. **Testing** (See: `docs/testing.md`)
-   - Unit tests with pytest
-   - Coverage requirements (80%+ critical paths)
-   - Integration tests for components
+ - Unit tests with pytest
+ - Coverage requirements (80%+ critical paths)
+ - Integration tests for components
 
 3. **Code Review**
-   - Automated checks (Black, isort, flake8, mypy)
-   - PR reviews by maintainers
-   - Approval required for merge
+ - Automated checks (Black, isort, flake8, mypy)
+ - PR reviews by maintainers
+ - Approval required for merge
 
 ### CI/CD Pipeline
 
 ```
 Push to Branch
-    ↓
+ 
 [Unit Tests] (2,130+ files, <5min)
-    ↓
+ 
 [Integration Tests] (10-15min)
-    ↓
+ 
 [Security Scanning] (CodeQL, bandit)
-    ↓
+ 
 [Coverage Check] (80%+ threshold)
-    ↓
+ 
 [Documentation Check] (links, spelling)
-    ↓
+ 
 [Merge Decision]
 ```
 
@@ -655,10 +655,10 @@ See: `docs/deployment/kubernetes-guide.md`
 
 ### Phase 1: Consolidation (Current)
 
--  Single authoritative architecture document
--  Merged documentation sources
--  Redirect notices for old docs
--  Link validation and cross-references
+- Single authoritative architecture document
+- Merged documentation sources
+- Redirect notices for old docs
+- Link validation and cross-references
 
 ### Phase 2: Enhancement (Planned)
 
@@ -693,9 +693,9 @@ See: `docs/deployment/kubernetes-guide.md`
 
 > **Note**: The following files are superseded by this consolidated document. They are kept for historical reference only. Please use this document as the single source of truth.
 
-- ~~`ARCHITECTURE.md`~~ → See [System Context](#system-context) and [Container Architecture](#container-architecture)
-- ~~`Architecture.md`~~ → See [Repository Structure](#repository-structure)
-- ~~`ARCHITECTURE_BLUEPRINT.md`~~ → See [Core Components Deep Dive](#core-components-deep-dive)
+- ~~`ARCHITECTURE.md`~~ See [System Context](#system-context) and [Container Architecture](#container-architecture)
+- ~~`Architecture.md`~~ See [Repository Structure](#repository-structure)
+- ~~`ARCHITECTURE_BLUEPRINT.md`~~ See [Core Components Deep Dive](#core-components-deep-dive)
 
 ---
 
@@ -735,7 +735,7 @@ See: `docs/deployment/kubernetes-guide.md`
 
 ---
 
-**Document Owner**: AI Assistant Autonomous System  
-**Last Reviewed**: 2026-06-22  
-**Next Review**: 2026-09-22  
+**Document Owner**: AI Assistant Autonomous System
+**Last Reviewed**: 2026-06-22
+**Next Review**: 2026-09-22
 **Status**: Active - Living Document

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/audits/AGENTIC_BASELINE_AUDIT_v2/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Agentic Baseline Audit v2 - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2321,7 +2321,7 @@
 <a class="md-nav__link" href="#ed-transition-gaps">
 <span class="md-ellipsis">
       
-        E→D Transition Gaps
+        ED Transition Gaps
       
     </span>
 </a>
@@ -2354,7 +2354,7 @@
 <li><a href="#reconciliation-notes">Reconciliation Notes</a></li>
 <li><a href="#top-20-agents-by-activation-frequency">Top-20 Agents by Activation Frequency</a></li>
 <li><a href="#agent-enforcement-classification">Agent Enforcement Classification</a></li>
-<li><a href="#ed-transition-gaps">E→D Transition Gaps</a></li>
+<li><a href="#ed-transition-gaps">ED Transition Gaps</a></li>
 <li><a href="#kpi-baselines-phase-0">KPI Baselines (Phase 0)</a></li>
 </ul>
 <h2 id="agent-inventory-reconciliation">Agent Inventory Reconciliation<a class="headerlink" href="#agent-inventory-reconciliation" title="Permanent link">¶</a></h2>
@@ -2406,18 +2406,18 @@
 </table>
 <h3 id="reconciliation-notes">Reconciliation Notes<a class="headerlink" href="#reconciliation-notes" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>372 → 197 .md files</strong>: The problem statement referenced 372 files; the actual
-  count of <code>.md</code> files in <code>.github/agents/</code> is 197-198 (varies slightly across scans
-  as new agent docs are added). 372 likely counted all file-system entries including
-  sub-directories, JSON files, YAML, and other non-.md artefacts.
-  Of the 197 <code>.md</code> files, <strong>149</strong> are genuine agent definitions (lowercase stem).</li>
+<li><strong>372 197 .md files</strong>: The problem statement referenced 372 files; the actual
+ count of <code>.md</code> files in <code>.github/agents/</code> is 197-198 (varies slightly across scans
+ as new agent docs are added). 372 likely counted all file-system entries including
+ sub-directories, JSON files, YAML, and other non-.md artefacts.
+ Of the 197 <code>.md</code> files, <strong>149</strong> are genuine agent definitions (lowercase stem).</li>
 <li><strong>128 registered (AGENT_REGISTRY.yaml v0.2.1)</strong>: The authoritative registry
-  includes agents with full metadata (id, status, capabilities).</li>
+ includes agents with full metadata (id, status, capabilities).</li>
 <li><strong>193 plan reference</strong>: <code>soft_to_GROUNDED.md</code> references 193 as the target
-  registry size after Phase 1 expansion. This is the <strong>target</strong>, not current state.</li>
+ registry size after Phase 1 expansion. This is the <strong>target</strong>, not current state.</li>
 <li><strong>Current canonical active count</strong>: 151 unique agent identifiers
-  (registry + filesystem union). Phase 1 task is to reconcile to a single
-  authoritative list and update AGENT_REGISTRY.yaml to cover all.</li>
+ (registry + filesystem union). Phase 1 task is to reconcile to a single
+ authoritative list and update AGENT_REGISTRY.yaml to cover all.</li>
 </ul>
 <hr/>
 <h2 id="top-20-agents-by-activation-frequency">Top-20 Agents by Activation Frequency<a class="headerlink" href="#top-20-agents-by-activation-frequency" title="Permanent link">¶</a></h2>
@@ -3820,7 +3820,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="ed-transition-gaps">E→D Transition Gaps<a class="headerlink" href="#ed-transition-gaps" title="Permanent link">¶</a></h2>
+<h2 id="ed-transition-gaps">ED Transition Gaps<a class="headerlink" href="#ed-transition-gaps" title="Permanent link">¶</a></h2>
 <p><strong>Agents with <code>enforcement_tier=SOFT</code> AND <code>handoff_protocol=none</code></strong> (20 agents):
 These are the highest-priority candidates for Phase 2 grounding.</p>
 <table>
@@ -3914,7 +3914,7 @@ These are the highest-priority candidates for Phase 2 grounding.</p>
 </tbody>
 </table>
 <p><strong>Agents with no <code>accepts_handoff_from</code> declared</strong> (151 agents):
-These agents cannot participate in orchestrator→specialist delegation.</p>
+These agents cannot participate in orchestratorspecialist delegation.</p>
 <hr/>
 <h2 id="kpi-baselines-phase-0">KPI Baselines (Phase 0)<a class="headerlink" href="#kpi-baselines-phase-0" title="Permanent link">¶</a></h2>
 <table>
@@ -3982,7 +3982,7 @@ These agents cannot participate in orchestrator→specialist delegation.</p>
 <td>&lt;20%</td>
 </tr>
 <tr>
-<td>E→D transition conditions met</td>
+<td>ED transition conditions met</td>
 <td>0/5</td>
 <td>5/5</td>
 </tr>
@@ -4024,6 +4024,6 @@ These agents cannot participate in orchestrator→specialist delegation.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

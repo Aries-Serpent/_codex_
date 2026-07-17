@@ -1,6 +1,6 @@
 # Gap Pipeline Quickstart
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -11,24 +11,24 @@ unified CLI.
 
 - A recent audit file, e.g.:
 
-  - `_codex_: Status Update 2026-07-13
-    `_codex_status_update-2025-11-27.md`
+ - `_codex_: Status Update 2026-07-13
+ `_codex_status_update-2025-11-27.md`
 
 - Local environment with:
-  - Python 3.10+ (or similar)
-  - `pyyaml` installed
+ - Python 3.10+ (or similar)
+ - `pyyaml` installed
 
 ## 2. Optional metadata files
 
 The pipeline will automatically use these files if they exist:
 
 - `codex_hardship.yaml`
-  - Gap-level risk and notes metadata.
-  - Validated by `tools/codex_hardship_validate.py`.
+ - Gap-level risk and notes metadata.
+ - Validated by `tools/codex_hardship_validate.py`.
 
 - `codex_capability_map.yaml`
-  - Capability → locations mapping (code / tests / docs).
-  - Validated by `tools/codex_capability_map_validate.py`.
+ - Capability locations mapping (code / tests / docs).
+ - Validated by `tools/codex_capability_map_validate.py`.
 
 ## 3. Run the gap pipeline
 
@@ -49,8 +49,8 @@ On success you should see:
 
 ## 4. Next steps
 - Use codex_gap_bootstrap.py <gap_id> to create per-gap docs under
-  docs/gaps/.
+ docs/gaps/.
 - Use the registry and capability map to identify where to implement code,
-  tests, and docs for each gap.
+ tests, and docs for each gap.
 - Re-run the pipeline after each implementation round to keep the registry
-  and reports up to date.
+ and reports up to date.

@@ -1,6 +1,6 @@
 # docs/ops/RUNBOOK.md — Codex Run as a Dynamical System
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -10,7 +10,7 @@
 
 1. Quick start
 2. The model (state, phases, gates, patches)
-3. Quality gates → exact commands
+3. Quality gates exact commands
 4. Patch workflow (small, atomic diffs)
 5. Module notes (Tokenizer, Ingestion, MLflow)
 6. Error capture format
@@ -51,20 +51,20 @@ H(t)&=\sum_{p\in\{\mathrm{P1..P6}\}} u_p(t)\,H_p,\\[4pt]
 $$
 
 * **Phase operators** $H_p$:
-  P1 prep · P2 search · P3 build · P4 prune · P5 error-log · P6 final.
+ P1 prep · P2 search · P3 build · P4 prune · P5 error-log · P6 final.
 * **Quality gate projector** $\mathcal P_G$: filter onto passing subspace.
 * **Patch superoperator** $\mathcal P_{\Delta}$: apply a unified diff (atomic edit).
 
 ---
 
-## 3) Quality gates → exact commands
+## 3) Quality gates exact commands
 
-| Gate (projector)                  | Definition (what must pass) | Minimal local command                                                        |
+| Gate (projector) | Definition (what must pass) | Minimal local command |
 | --------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| $\Pi_{\text{lint}}$               | Code style & lint pass      | `ruff check src tests && ruff format --check .` (Ruff provides both lint and a fast formatter).                    |
-| $\Pi_{\text{tests}}$              | All tests green             | `pytest -q` (or with coverage flags below).                                                                        |
-| $\Pi_{\text{cov}}$                | Coverage ≥ threshold        | `pytest --cov --cov-fail-under=3.5` (threshold configurable via CLI or coverage config).                          |
-| $\Pi_{\text{types}}$ *(optional)* | Type checks pass            | `pyright` (if configured in the repo).                                                                             |
+| $\Pi_{\text{lint}}$ | Code style & lint pass | `ruff check src tests && ruff format --check .` (Ruff provides both lint and a fast formatter). |
+| $\Pi_{\text{tests}}$ | All tests green | `pytest -q` (or with coverage flags below). |
+| $\Pi_{\text{cov}}$ | Coverage ≥ threshold | `pytest --cov --cov-fail-under=3.5` (threshold configurable via CLI or coverage config). |
+| $\Pi_{\text{types}}$ *(optional)* | Type checks pass | `pyright` (if configured in the repo). |
 
 **Strict vs soft gating.** For release builds, use strict pass/fail (treat the projector as Lüders post-selection). For iterative dev, allow “soft” gating (record failures, continue, and open a ticket).
 

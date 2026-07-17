@@ -1,11 +1,11 @@
 # Test Patterns Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Status**: Active  
-**Created**: 2026-01-18  
+**Status**: Active
+**Created**: 2026-01-18
 **Phase**: 14.0 - Test Coverage Foundation
 
 ---
@@ -20,20 +20,20 @@ This document describes the standard test patterns used in the Codex repository.
 
 ```
 tests/
-├── conftest.py              # Global fixtures and configuration
-├── conftest_shared.py       # Shared fixtures for all test types
-├── templates/               # Test templates for new modules
-│   ├── test_cli_template.py
-│   ├── test_api_template.py
-│   ├── test_data_template.py
-│   └── test_ml_template.py
-├── cli/                     # CLI tests
-├── data/                    # Data module tests
-├── training/                # Training pipeline tests
-├── security/                # Security tests
-├── safety/                  # Safety module tests
-├── integration/             # Integration tests
-└── unit/                    # Unit tests
+ conftest.py # Global fixtures and configuration
+ conftest_shared.py # Shared fixtures for all test types
+ templates/ # Test templates for new modules
+ test_cli_template.py
+ test_api_template.py
+ test_data_template.py
+ test_ml_template.py
+ cli/ # CLI tests
+ data/ # Data module tests
+ training/ # Training pipeline tests
+ security/ # Security tests
+ safety/ # Safety module tests
+ integration/ # Integration tests
+ unit/ # Unit tests
 ```
 
 ### Naming Conventions
@@ -53,23 +53,23 @@ Unit tests focus on individual functions or methods in isolation.
 import pytest
 
 def test_function_returns_expected_value():
-    """Test that function returns the expected value."""
-    result = target_function(input_value)
-    assert result == expected_value
+ """Test that function returns the expected value."""
+ result = target_function(input_value)
+ assert result == expected_value
 
 def test_function_handles_edge_case():
-    """Test edge case handling."""
-    with pytest.raises(ValueError, match="expected error"):
-        target_function(invalid_input)
+ """Test edge case handling."""
+ with pytest.raises(ValueError, match="expected error"):
+ target_function(invalid_input)
 
 @pytest.mark.parametrize("input_val,expected", [
-    (1, 2),
-    (2, 4),
-    (0, 0),
+ (1, 2),
+ (2, 4),
+ (0, 0),
 ])
 def test_function_parametrized(input_val, expected):
-    """Test multiple input/output combinations."""
-    assert target_function(input_val) == expected
+ """Test multiple input/output combinations."""
+ assert target_function(input_val) == expected
 ```
 
 ### Integration Tests
@@ -82,21 +82,21 @@ import pytest
 
 @pytest.mark.integration
 class TestPipelineIntegration:
-    """Integration tests for the data pipeline."""
+ """Integration tests for the data pipeline."""
 
-    def test_data_flows_through_pipeline(self, temp_index_dir):
-        """Test end-to-end data flow."""
-        # Setup
-        loader = DataLoader(temp_index_dir)
-        processor = DataProcessor()
+ def test_data_flows_through_pipeline(self, temp_index_dir):
+ """Test end-to-end data flow."""
+ # Setup
+ loader = DataLoader(temp_index_dir)
+ processor = DataProcessor()
 
-        # Execute
-        raw_data = loader.load()
-        processed = processor.process(raw_data)
+ # Execute
+ raw_data = loader.load()
+ processed = processor.process(raw_data)
 
-        # Verify
-        assert processed.is_valid()
-        assert len(processed.records) > 0
+ # Verify
+ assert processed.is_valid()
+ assert len(processed.records) > 0
 ```
 
 ### CLI Tests
@@ -112,29 +112,29 @@ import pytest
 
 
 def test_cli_help_displays_usage():
-    """Test that --help displays usage information."""
-    result = subprocess.run(
-        [sys.executable, "-m", "codex_ml.cli", "--help"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert result.returncode == 0
-    assert "Usage:" in result.stdout
+ """Test that --help displays usage information."""
+ result = subprocess.run(
+ [sys.executable, "-m", "codex_ml.cli", "--help"],
+ capture_output=True,
+ text=True,
+ check=False,
+ )
+ assert result.returncode == 0
+ assert "Usage:" in result.stdout
 
 
 def test_cli_command_executes_successfully(tmp_path):
-    """Test CLI command execution."""
-    config_file = tmp_path / "config.yaml"
-    config_file.write_text("key: value")
+ """Test CLI command execution."""
+ config_file = tmp_path / "config.yaml"
+ config_file.write_text("key: value")
 
-    result = subprocess.run(
-        [sys.executable, "-m", "codex_ml.cli", "validate", str(config_file)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert result.returncode == 0
+ result = subprocess.run(
+ [sys.executable, "-m", "codex_ml.cli", "validate", str(config_file)],
+ capture_output=True,
+ text=True,
+ check=False,
+ )
+ assert result.returncode == 0
 ```
 
 ### Data Tests
@@ -148,27 +148,27 @@ import pytest
 
 @pytest.fixture
 def sample_dataset(tmp_path):
-    """Create a sample dataset for testing."""
-    data_file = tmp_path / "data.jsonl"
-    data_file.write_text('{"id": 1, "text": "sample"}\n')
-    return data_file
+ """Create a sample dataset for testing."""
+ data_file = tmp_path / "data.jsonl"
+ data_file.write_text('{"id": 1, "text": "sample"}\n')
+ return data_file
 
 
 class TestDataLoader:
-    """Tests for the data loader module."""
+ """Tests for the data loader module."""
 
-    def test_loads_jsonl_file(self, sample_dataset):
-        """Test loading a JSONL file."""
-        loader = DataLoader()
-        records = loader.load(sample_dataset)
-        assert len(records) == 1
-        assert records[0]["id"] == 1
+ def test_loads_jsonl_file(self, sample_dataset):
+ """Test loading a JSONL file."""
+ loader = DataLoader()
+ records = loader.load(sample_dataset)
+ assert len(records) == 1
+ assert records[0]["id"] == 1
 
-    def test_validates_schema(self, sample_dataset):
-        """Test schema validation."""
-        loader = DataLoader(schema={"id": int, "text": str})
-        records = loader.load(sample_dataset)
-        assert all(isinstance(r["id"], int) for r in records)
+ def test_validates_schema(self, sample_dataset):
+ """Test schema validation."""
+ loader = DataLoader(schema={"id": int, "text": str})
+ records = loader.load(sample_dataset)
+ assert all(isinstance(r["id"], int) for r in records)
 ```
 
 ### Security Tests
@@ -181,29 +181,29 @@ import pytest
 
 
 class TestInputSanitization:
-    """Security tests for input sanitization."""
+ """Security tests for input sanitization."""
 
-    @pytest.mark.security
-    def test_blocks_sql_injection(self):
-        """Test that SQL injection attempts are blocked."""
-        malicious_input = "'; DROP TABLE users; --"
-        result = sanitize_input(malicious_input)
-        assert "DROP" not in result
-        assert "'" not in result
+ @pytest.mark.security
+ def test_blocks_sql_injection(self):
+ """Test that SQL injection attempts are blocked."""
+ malicious_input = "'; DROP TABLE users; --"
+ result = sanitize_input(malicious_input)
+ assert "DROP" not in result
+ assert "'" not in result
 
-    @pytest.mark.security
-    def test_blocks_xss_attacks(self):
-        """Test that XSS attacks are blocked."""
-        malicious_input = "<script>alert('xss')</script>"
-        result = sanitize_html(malicious_input)
-        assert "<script>" not in result
+ @pytest.mark.security
+ def test_blocks_xss_attacks(self):
+ """Test that XSS attacks are blocked."""
+ malicious_input = "<script>alert('xss')</script>"
+ result = sanitize_html(malicious_input)
+ assert "<script>" not in result
 
-    @pytest.mark.security
-    def test_validates_path_traversal(self):
-        """Test that path traversal is blocked."""
-        malicious_path = "../../../etc/passwd"
-        with pytest.raises(SecurityError):
-            validate_path(malicious_path)
+ @pytest.mark.security
+ def test_validates_path_traversal(self):
+ """Test that path traversal is blocked."""
+ malicious_path = "../../../etc/passwd"
+ with pytest.raises(SecurityError):
+ validate_path(malicious_path)
 ```
 
 ## Common Fixtures
@@ -213,10 +213,10 @@ class TestInputSanitization:
 ```python
 @pytest.fixture
 def temp_data_dir(tmp_path):
-    """Create a temporary data directory."""
-    data_dir = tmp_path / "data"
-    data_dir.mkdir()
-    return data_dir
+ """Create a temporary data directory."""
+ data_dir = tmp_path / "data"
+ data_dir.mkdir()
+ return data_dir
 ```
 
 ### Mock Services
@@ -224,10 +224,10 @@ def temp_data_dir(tmp_path):
 ```python
 @pytest.fixture
 def mock_api_client(mocker):
-    """Mock external API client."""
-    mock = mocker.patch("module.api_client.Client")
-    mock.return_value.get.return_value = {"status": "ok"}
-    return mock
+ """Mock external API client."""
+ mock = mocker.patch("module.api_client.Client")
+ mock.return_value.get.return_value = {"status": "ok"}
+ return mock
 ```
 
 ### Deterministic RNG
@@ -235,11 +235,11 @@ def mock_api_client(mocker):
 ```python
 @pytest.fixture
 def deterministic_seed():
-    """Set deterministic random seed."""
-    import random
-    random.seed(42)
-    yield
-    # Cleanup if needed
+ """Set deterministic random seed."""
+ import random
+ random.seed(42)
+ yield
+ # Cleanup if needed
 ```
 
 ## Markers
@@ -247,12 +247,12 @@ def deterministic_seed():
 Use these markers to categorize tests:
 
 ```text
-@pytest.mark.smoke        # Quick validation tests
-@pytest.mark.integration  # Integration tests
-@pytest.mark.security     # Security tests
-@pytest.mark.slow         # Long-running tests
-@pytest.mark.gpu          # GPU-specific tests
-@pytest.mark.requires_torch  # Needs PyTorch
+@pytest.mark.smoke # Quick validation tests
+@pytest.mark.integration # Integration tests
+@pytest.mark.security # Security tests
+@pytest.mark.slow # Long-running tests
+@pytest.mark.gpu # GPU-specific tests
+@pytest.mark.requires_torch # Needs PyTorch
 ```
 
 ## Best Practices
@@ -282,15 +282,15 @@ Use these markers to categorize tests:
 ```python
 # Good: Granular assertions with messages
 def test_user_creation():
-    user = create_user(name="test", email="test@example.com")
-    assert user is not None, "User should be created"
-    assert user.name == "test", f"Expected name 'test', got '{user.name}'"
-    assert user.email == "test@example.com"
+ user = create_user(name="test", email="test@example.com")
+ assert user is not None, "User should be created"
+ assert user.name == "test", f"Expected name 'test', got '{user.name}'"
+ assert user.email == "test@example.com"
 
 # Avoid: Compound assertions that obscure failure cause
 def test_user_creation_bad():
-    user = create_user(name="test", email="test@example.com")
-    assert user and user.name == "test" and user.email == "test@example.com"
+ user = create_user(name="test", email="test@example.com")
+ assert user and user.name == "test" and user.email == "test@example.com"
 ```
 
 ## Test Data Management
@@ -299,15 +299,15 @@ def test_user_creation_bad():
 # Good: Test data in fixtures
 @pytest.fixture
 def sample_user_data():
-    return {"name": "test", "email": "test@example.com"}
+ return {"name": "test", "email": "test@example.com"}
 
 def test_create_user(sample_user_data):
-    user = create_user(**sample_user_data)
-    assert user.name == sample_user_data["name"]
+ user = create_user(**sample_user_data)
+ assert user.name == sample_user_data["name"]
 
 # Avoid: Inline test data
 def test_create_user_bad():
-    user = create_user(name="test", email="test@example.com")  # Duplicated data
+ user = create_user(name="test", email="test@example.com") # Duplicated data
 ```
 
 ## Don't

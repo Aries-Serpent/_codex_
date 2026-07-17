@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V18_COMPLETE/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status - Phase 19.0 IN PROGRESS - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2349,7 +2349,7 @@
 <a class="md-nav__link" href="#phase-190-in-progress-125-tests">
 <span class="md-ellipsis">
       
-        Phase 19.0: 🚧 IN PROGRESS (125+ tests)
+        Phase 19.0: IN PROGRESS (125+ tests)
       
     </span>
 </a>
@@ -2376,9 +2376,9 @@
 <h1 id="cognitive-brain-status-phase-190-in-progress">Cognitive Brain Status - Phase 19.0 IN PROGRESS<a class="headerlink" href="#cognitive-brain-status-phase-190-in-progress" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Version:</strong> V19.0.1<br/>
+<p><strong>Version:</strong> V19.0.1
 <strong>Updated: 2026-07-11
-</strong>Status:** 🚧 PHASE 19.0 IN PROGRESS | CodeQL CHUNKING IMPLEMENTED</p>
+</strong>Status:** PHASE 19.0 IN PROGRESS | CodeQL CHUNKING IMPLEMENTED</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Phase 19.0 (100% Coverage Push) is in progress with:
@@ -2387,7 +2387,7 @@
 - <strong>125+ new tests</strong> added for edge cases and CodeQL validation
 - <strong>Total tests:</strong> 1425+</p>
 <hr/>
-<h2 id="codeql-chunking-solution-implemented">CodeQL Chunking Solution  IMPLEMENTED<a class="headerlink" href="#codeql-chunking-solution-implemented" title="Permanent link">¶</a></h2>
+<h2 id="codeql-chunking-solution-implemented">CodeQL Chunking Solution IMPLEMENTED<a class="headerlink" href="#codeql-chunking-solution-implemented" title="Permanent link">¶</a></h2>
 <h3 id="problem">Problem<a class="headerlink" href="#problem" title="Permanent link">¶</a></h3>
 <p>Repository size: <strong>22,786,897 bytes</strong> (22MB) exceeds <strong>10,000,000 bytes</strong> (10MB) limit</p>
 <h3 id="solution-implemented">Solution Implemented<a class="headerlink" href="#solution-implemented" title="Permanent link">¶</a></h3>
@@ -2395,13 +2395,13 @@
 <li><strong><code>.github/workflows/codeql-chunked.yml</code></strong> - Directory-based chunked analysis</li>
 <li>
 <p><strong>Chunk Configuration:</strong>
-   | Chunk | Directory | Est. Size |
-   |-------|-----------|-----------|
-   | core | <code>src/codex/</code> | ~2MB |
-   | ml | <code>src/codex_ml/</code> | ~3MB |
-   | agents | <code>agents/</code> | ~1MB |
-   | training | <code>training/</code> | ~2MB |
-   | scripts | <code>scripts/</code> | ~1MB |</p>
+ | Chunk | Directory | Est. Size |
+ |-------|-----------|-----------|
+ | core | <code>src/codex/</code> | ~2MB |
+ | ml | <code>src/codex_ml/</code> | ~3MB |
+ | agents | <code>agents/</code> | ~1MB |
+ | training | <code>training/</code> | ~2MB |
+ | scripts | <code>scripts/</code> | ~1MB |</p>
 </li>
 <li>
 <p><strong>SARIF Merge:</strong> <code>scripts/merge_sarif.py</code> merges all chunk results</p>
@@ -2420,7 +2420,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Coverage threshold: 90% → 95%</td>
+<td>Coverage threshold: 90% 95%</td>
 <td></td>
 <td>pyproject.toml</td>
 </tr>
@@ -2441,7 +2441,7 @@
 </tr>
 <tr>
 <td>Update Phase 19 planset</td>
-<td>🚧</td>
+<td></td>
 <td>In Progress</td>
 </tr>
 </tbody>
@@ -2476,7 +2476,7 @@
 </table>
 <hr/>
 <h2 id="phase-completion-summary">Phase Completion Summary<a class="headerlink" href="#phase-completion-summary" title="Permanent link">¶</a></h2>
-<h3 id="phases-14-18-complete-1300-tests">Phases 14-18:  COMPLETE (1300+ tests)<a class="headerlink" href="#phases-14-18-complete-1300-tests" title="Permanent link">¶</a></h3>
+<h3 id="phases-14-18-complete-1300-tests">Phases 14-18: COMPLETE (1300+ tests)<a class="headerlink" href="#phases-14-18-complete-1300-tests" title="Permanent link">¶</a></h3>
 <ul>
 <li>14.x: Test Coverage Foundation (545+ tests)</li>
 <li>15.x: Advanced Testing &amp; Quality (220+ tests)</li>
@@ -2484,7 +2484,7 @@
 <li>17.x: Reliability, Performance, Automation (265+ tests)</li>
 <li>18.x: Production Deployment (75+ tests)</li>
 </ul>
-<h3 id="phase-190-in-progress-125-tests">Phase 19.0: 🚧 IN PROGRESS (125+ tests)<a class="headerlink" href="#phase-190-in-progress-125-tests" title="Permanent link">¶</a></h3>
+<h3 id="phase-190-in-progress-125-tests">Phase 19.0: IN PROGRESS (125+ tests)<a class="headerlink" href="#phase-190-in-progress-125-tests" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> CodeQL chunking workflow</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Coverage threshold 95%</li>
@@ -2503,7 +2503,7 @@
 </ul>
 <hr/>
 <p><strong>Last Updated: 2026-07-11
-</strong>Cognitive Brain Version:<strong> V19.0.1 (Phase 19.0 In Progress)<br/>
+</strong>Cognitive Brain Version:<strong> V19.0.1 (Phase 19.0 In Progress)
 </strong>Next Phase:** 19.1 (AI/ML Testing Infrastructure)</p>
 </article>
 </div>
@@ -2534,6 +2534,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

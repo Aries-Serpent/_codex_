@@ -1,143 +1,143 @@
-#  Codex ML Documentation Guide - Complete Index
+# Codex ML Documentation Guide - Complete Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
-**Scope:** All user guides, tutorials, and reference materials  
+**Scope:** All user guides, tutorials, and reference materials
 **Target Audience:** Everyone using Codex ML
 
 ---
 
-##  Start Here Based on Your Role
+## Start Here Based on Your Role
 
-### 👨‍ Business Users / Decision Makers
+### Business Users / Decision Makers
 **Time to first prediction:** 5 minutes
 
 1. **[Getting Started for End Users](./GETTING_STARTED_END_USER.md)** ⭐ START HERE
-   - Web interface overview
-   - Making predictions (no coding)
-   - Sharing results with teams
-   - FAQ for end users
+ - Web interface overview
+ - Making predictions (no coding)
+ - Sharing results with teams
+ - FAQ for end users
 
 2. **[Using the Web Dashboard](../tutorials/WEB_DASHBOARD_TUTORIAL.md)**
-   - Step-by-step video walkthroughs
-   - Common tasks (upload, analyze, export)
-   - Best practices for data quality
+ - Step-by-step video walkthroughs
+ - Common tasks (upload, analyze, export)
+ - Best practices for data quality
 
 3. **[Business Value Guide](../business/BUSINESS_VALUE_GUIDE.md)**
-   - ROI calculations
-   - Use case examples
-   - Case studies
+ - ROI calculations
+ - Use case examples
+ - Case studies
 
 ---
 
-### 🔬 Data Scientists
+### Data Scientists
 **Time to first model:** 15 minutes
 
 1. **[Getting Started for Data Scientists](./GETTING_STARTED_DATA_SCIENTIST.md)** ⭐ START HERE
-   - Environment setup (local or Docker)
-   - Your first training job
-   - Experiment tracking
-   - Troubleshooting common issues
+ - Environment setup (local or Docker)
+ - Your first training job
+ - Experiment tracking
+ - Troubleshooting common issues
 
 2. **[Common Workflows](./COMMON_WORKFLOWS.md)**
-   - Training from scratch
-   - Fine-tuning models
-   - Hyperparameter tuning
-   - Debugging poor predictions
+ - Training from scratch
+ - Fine-tuning models
+ - Hyperparameter tuning
+ - Debugging poor predictions
 
 3. **[Advanced Data Science Topics](./ADVANCED_TOPICS_INDEX.md#intermediate-6-12-months-ml-experience)**
-   - Data augmentation strategies
-   - Domain adaptation techniques
-   - Handling imbalanced data
-   - Transfer learning patterns
+ - Data augmentation strategies
+ - Domain adaptation techniques
+ - Handling imbalanced data
+ - Transfer learning patterns
 
 4. **[API Reference - Training](../api/TRAINING_API.md)**
-   - Complete API documentation
-   - Configuration schema
-   - Advanced parameters
+ - Complete API documentation
+ - Configuration schema
+ - Advanced parameters
 
 ---
 
-###  ML Engineers & MLOps
+### ML Engineers & MLOps
 **Time to first deployment:** 20 minutes
 
 1. **[Getting Started for ML Engineers](./GETTING_STARTED_ML_ENGINEER.md)** ⭐ START HERE
-   - Model registration & versioning
-   - Production serving (Ray Serve, FastAPI)
-   - Monitoring & alerting
-   - Canary & blue-green deployments
+ - Model registration & versioning
+ - Production serving (Ray Serve, FastAPI)
+ - Monitoring & alerting
+ - Canary & blue-green deployments
 
 2. **[Common Workflows](./COMMON_WORKFLOWS.md)**
-   - Deploy to production
-   - Monitor performance
-   - A/B test models
-   - Auto-retrain on drift
+ - Deploy to production
+ - Monitor performance
+ - A/B test models
+ - Auto-retrain on drift
 
 3. **[Advanced MLOps Topics](./ADVANCED_TOPICS_INDEX.md#advanced-1-3-years-ml-experience)**
-   - Multi-model deployments
-   - Ensemble methods
-   - Federated learning
-   - Edge deployment
+ - Multi-model deployments
+ - Ensemble methods
+ - Federated learning
+ - Edge deployment
 
 4. **[API Reference - Serving](../api/SERVING_API.md)**
-   - Ray Serve API
-   - FastAPI integration
-   - Kubernetes manifests
+ - Ray Serve API
+ - FastAPI integration
+ - Kubernetes manifests
 
 ---
 
-### 🛠️ DevOps / Infrastructure Engineers
+### DevOps / Infrastructure Engineers
 **Time to production infrastructure:** 25 minutes
 
 1. **[Getting Started for DevOps](./GETTING_STARTED_DEVOPS.md)** ⭐ START HERE
-   - Local development setup (Docker Compose)
-   - Kubernetes deployment (Kind)
-   - Production infrastructure (AWS/GCP/Azure)
-   - Monitoring & observability
+ - Local development setup (Docker Compose)
+ - Kubernetes deployment (Kind)
+ - Production infrastructure (AWS/GCP/Azure)
+ - Monitoring & observability
 
 2. **[Common Workflows](./COMMON_WORKFLOWS.md)**
-   - Deploy to production
-   - Monitor infrastructure
-   - Auto-scale based on load
-   - Cost optimization
+ - Deploy to production
+ - Monitor infrastructure
+ - Auto-scale based on load
+ - Cost optimization
 
 3. **[Infrastructure Reference](../infrastructure/INFRASTRUCTURE_REFERENCE.md)**
-   - Terraform modules
-   - Kubernetes YAML templates
-   - Helm charts
-   - Docker optimization
+ - Terraform modules
+ - Kubernetes YAML templates
+ - Helm charts
+ - Docker optimization
 
 ---
 
-### 🔌 API Consumers / Application Developers
+### API Consumers / Application Developers
 **Time to first API call:** 10 minutes
 
 1. **[Getting Started for API Consumers](./GETTING_STARTED_API_CONSUMER.md)** ⭐ START HERE
-   - API authentication & setup
-   - Python SDK quickstart
-   - REST API examples
-   - Error handling & retries
+ - API authentication & setup
+ - Python SDK quickstart
+ - REST API examples
+ - Error handling & retries
 
 2. **[Common Workflows](./COMMON_WORKFLOWS.md)**
-   - Batch processing
-   - Streaming predictions
-   - Caching for repeated requests
-   - Rate limiting handling
+ - Batch processing
+ - Streaming predictions
+ - Caching for repeated requests
+ - Rate limiting handling
 
 3. **[API Reference - Complete](../API_REFERENCE.md)**
-   - Endpoint documentation
-   - Request/response schemas
-   - Code examples (Python, Node.js, curl)
-   - Rate limit info
+ - Endpoint documentation
+ - Request/response schemas
+ - Code examples (Python, Node.js, curl)
+ - Rate limit info
 
 ---
 
-##  Learning Paths by Experience Level
+## Learning Paths by Experience Level
 
 ### Beginner (0-3 months with Codex ML)
 ```
-1. Choose your role → Start Here guide
+1. Choose your role Start Here guide
 2. Read Common Workflows (relevant sections)
 3. Follow video tutorials
 4. Try examples in docs/examples/
@@ -170,7 +170,7 @@
 
 ---
 
-##  Find What You Need
+## Find What You Need
 
 ### By Task
 
@@ -239,7 +239,7 @@
 
 ---
 
-##  Complete Guide List
+## Complete Guide List
 
 ## Getting Started (5 guides)
 - [Data Scientists](./GETTING_STARTED_DATA_SCIENTIST.md)
@@ -270,7 +270,7 @@
 
 ---
 
-## 🎥 Video Tutorials
+## Video Tutorials
 
 ## Getting Started Series (5 videos, 5 min each)
 - Role selection
@@ -297,7 +297,7 @@
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 | Section | Purpose | Audience |
 |---------|---------|----------|
@@ -310,7 +310,7 @@
 
 ---
 
-## 📞 Getting Help
+## Getting Help
 
 ### Different Ways to Get Help
 
@@ -325,16 +325,16 @@
 | **Chat** | Real-time | Enterprise only |
 
 ### Quick Links
--  [Full Documentation](../index.md)
-- 💬 [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
-- 🐛 [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new)
-- 💌 [Email Support](mailto:support@codex-ml.dev)
-- 📺 [Video Tutorials](https://youtube.com/codex-ml)
+- [Full Documentation](../index.md)
+- [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
+- [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new)
+- [Email Support](mailto:support@codex-ml.dev)
+- [Video Tutorials](https://youtube.com/codex-ml)
 - 🆘 [Status Page](https://status.codex-ml.dev)
 
 ---
 
-##  Pro Tips
+## Pro Tips
 
 1. **Bookmark your guide** - You'll reference it often
 2. **Skim the Table of Contents** - Find what you need faster
@@ -345,16 +345,15 @@
 
 ---
 
-## 🎓 Certification Programs
+## Certification Programs
 
-*Coming Soon!*
 - Codex ML Practitioner (Level 1)
 - Codex ML Professional (Level 2)
 - Codex ML Expert (Level 3)
 
 ---
 
-##  Documentation Stats
+## Documentation Stats
 
 - **Total Guides:** 27
 - **Total Workflows:** 10
@@ -366,8 +365,8 @@
 
 ---
 
-##  You're Ready!
+## You're Ready!
 
-Pick your role above and get started. Welcome to Codex ML! 🎉
+Pick your role above and get started. Welcome to Codex ML!
 
-Questions? Ask in [Discussions](https://github.com/Aries-Serpent/_codex_/discussions) 💬
+Questions? Ask in [Discussions](https://github.com/Aries-Serpent/_codex_/discussions)

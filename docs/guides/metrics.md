@@ -1,6 +1,6 @@
 # Evaluation Metrics Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -64,7 +64,7 @@ score = metric(
 
 ## Generative Metrics
 
-> ℹ️ When running via the Typer evaluation CLI, provide
+> ℹ When running via the Typer evaluation CLI, provide
 > `--prediction-transform` / `--target-transform` (or configure
 > `evaluation.prediction_transform`) so that raw model outputs are decoded to
 > text before these metrics are computed.

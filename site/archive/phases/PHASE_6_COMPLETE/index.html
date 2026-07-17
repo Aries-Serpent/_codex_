@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_6_COMPLETE/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 6: Governance &amp; Enforcement - COMPLETE - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2361,11 +2361,11 @@
 <a class="md-nav__link" href="#all-phases-complete">
 <span class="md-ellipsis">
       
-        🎉 ALL PHASES COMPLETE
+        ALL PHASES COMPLETE
       
     </span>
 </a>
-<nav aria-label="🎉 ALL PHASES COMPLETE" class="md-nav">
+<nav aria-label="ALL PHASES COMPLETE" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#phase-completion-summary">
@@ -2423,11 +2423,11 @@
 <a class="md-nav__link" href="#key-achievements">
 <span class="md-ellipsis">
       
-        🎓 Key Achievements
+        Key Achievements
       
     </span>
 </a>
-<nav aria-label="🎓 Key Achievements" class="md-nav">
+<nav aria-label="Key Achievements" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#technical-excellence">
@@ -2583,7 +2583,7 @@
 <a class="md-nav__link" href="#support-resources">
 <span class="md-ellipsis">
       
-        📞 Support &amp; Resources
+        Support &amp; Resources
       
     </span>
 </a>
@@ -2592,7 +2592,7 @@
 <a class="md-nav__link" href="#project-completion">
 <span class="md-ellipsis">
       
-        🎊 Project Completion
+        Project Completion
       
     </span>
 </a>
@@ -2609,27 +2609,27 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <p><strong>Date:2026-07-13
-</strong>Branch:<strong> copilot/sub-pr-2968<br/>
-</strong>Status:<strong>  Phase 6 Complete - ALL PHASES DONE<br/>
-</strong>Progress:** 6 of 6 phases (100% complete) 🎉</p>
+</strong>Branch:<strong> copilot/sub-pr-2968
+</strong>Status:<strong> Phase 6 Complete - ALL PHASES DONE
+</strong>Progress:** 6 of 6 phases (100% complete)</p>
 <hr/>
 <h2 id="phase-6-objective">Phase 6 Objective<a class="headerlink" href="#phase-6-objective" title="Permanent link">¶</a></h2>
 <p><strong>Goal:</strong> Establish long-term governance, automation, and enforcement mechanisms to prevent Python version drift and ensure Python 3.12 standardization is maintained.</p>
-<p><strong>Duration:</strong> ~80 minutes<br/>
+<p><strong>Duration:</strong> ~80 minutes
 <strong>Focus:</strong> Operationalize Python 3.12 single-version standard with automated enforcement</p>
 <hr/>
 <h2 id="phase-6-accomplishments">Phase 6 Accomplishments<a class="headerlink" href="#phase-6-accomplishments" title="Permanent link">¶</a></h2>
-<h3 id="task-61-automated-enforcement-mechanisms-complete">Task 6.1: Automated Enforcement Mechanisms  COMPLETE<a class="headerlink" href="#task-61-automated-enforcement-mechanisms-complete" title="Permanent link">¶</a></h3>
+<h3 id="task-61-automated-enforcement-mechanisms-complete">Task 6.1: Automated Enforcement Mechanisms COMPLETE<a class="headerlink" href="#task-61-automated-enforcement-mechanisms-complete" title="Permanent link">¶</a></h3>
 <p><strong>Validation Script Created:</strong>
 - <strong>File:</strong> <code>scripts/validate_python_version.py</code>
 - <strong>Purpose:</strong> Validates Python version consistency across all configuration files
 - <strong>Features:</strong>
-  - Checks <code>.python-version</code> file (expects 3.12.10)
-  - Validates <code>pyproject.toml</code> requires-python (expects &gt;=3.12,&lt;3.13)
-  - Validates <code>runtime.txt</code> if present
-  - Checks current Python environment
-  - Returns exit code 0 for success, 1 for failure
-  - Clear error messages for debugging</p>
+ - Checks <code>.python-version</code> file (expects 3.12.10)
+ - Validates <code>pyproject.toml</code> requires-python (expects &gt;=3.12,&lt;3.13)
+ - Validates <code>runtime.txt</code> if present
+ - Checks current Python environment
+ - Returns exit code 0 for success, 1 for failure
+ - Clear error messages for debugging</p>
 <p><strong>Usage:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>scripts/validate_python_version.py
 </code></pre></div></p>
@@ -2638,16 +2638,16 @@
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> .python-version: 3.12.10
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> pyproject.toml: requires-python = "&gt;=3.12,&lt;3.13"
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>ℹ️  runtime.txt not found (optional)
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>ℹ runtime.txt not found (optional)
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> Current Python: 3.12.10
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>============================================================
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> All checks passed (4/4)
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>🎉 Python 3.12 version configuration is valid!
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> Python 3.12 version configuration is valid!
 </code></pre></div></p>
 <hr/>
-<h3 id="task-62-python-version-policy-document-complete">Task 6.2: Python Version Policy Document  COMPLETE<a class="headerlink" href="#task-62-python-version-policy-document-complete" title="Permanent link">¶</a></h3>
+<h3 id="task-62-python-version-policy-document-complete">Task 6.2: Python Version Policy Document COMPLETE<a class="headerlink" href="#task-62-python-version-policy-document-complete" title="Permanent link">¶</a></h3>
 <p><strong>Policy Document Created:</strong>
 - <strong>File:</strong> <code>.codex/python_version_policy.md</code>
 - <strong>Version:</strong> 1.0.0
@@ -2656,19 +2656,19 @@
 <p><strong>Policy Highlights:</strong>
 1. <strong>Strict Requirement:</strong> Python 3.12.10+ only (&lt; 3.13)
 2. <strong>Prohibited Patterns:</strong>
-   - Version conditionals (<code>sys.version_info</code>)
-   - Compatibility imports (try/except)
-   - Version-specific test markers
+ - Version conditionals (<code>sys.version_info</code>)
+ - Compatibility imports (try/except)
+ - Version-specific test markers
 3. <strong>Enforcement Mechanisms:</strong>
-   - Pre-commit hooks
-   - CI/CD validation
-   - Automated validation script
-   - Code review requirements
+ - Pre-commit hooks
+ - CI/CD validation
+ - Automated validation script
+ - Code review requirements
 4. <strong>Exception Process:</strong> Rare cases, requires business justification and approval
 5. <strong>Compliance Monitoring:</strong> Quarterly reviews
 6. <strong>Upgrade Process:</strong> Documented for future Python 3.13 migration</p>
 <hr/>
-<h3 id="task-63-pre-commit-integration-verified">Task 6.3: Pre-Commit Integration  VERIFIED<a class="headerlink" href="#task-63-pre-commit-integration-verified" title="Permanent link">¶</a></h3>
+<h3 id="task-63-pre-commit-integration-verified">Task 6.3: Pre-Commit Integration VERIFIED<a class="headerlink" href="#task-63-pre-commit-integration-verified" title="Permanent link">¶</a></h3>
 <p><strong>Existing Configuration:</strong>
 - <strong>File:</strong> <code>.pre-commit-config.yaml</code> (already exists)
 - <strong>Status:</strong> Verified and adequate for Python 3.12 enforcement</p>
@@ -2684,7 +2684,7 @@
 - Version conditional blocker
 - Compatibility import blocker</p>
 <hr/>
-<h3 id="task-64-documentation-knowledge-artifacts-complete">Task 6.4: Documentation &amp; Knowledge Artifacts  COMPLETE<a class="headerlink" href="#task-64-documentation-knowledge-artifacts-complete" title="Permanent link">¶</a></h3>
+<h3 id="task-64-documentation-knowledge-artifacts-complete">Task 6.4: Documentation &amp; Knowledge Artifacts COMPLETE<a class="headerlink" href="#task-64-documentation-knowledge-artifacts-complete" title="Permanent link">¶</a></h3>
 <p><strong>Files Created in Phase 6:</strong>
 1. <strong><code>scripts/validate_python_version.py</code></strong> - Validation script
 2. <strong><code>.codex/python_version_policy.md</code></strong> - Governance policy
@@ -2718,26 +2718,26 @@
 <li><strong>Code Review:</strong> Requirements documented</li>
 </ul>
 <hr/>
-<h2 id="all-phases-complete">🎉 ALL PHASES COMPLETE<a class="headerlink" href="#all-phases-complete" title="Permanent link">¶</a></h2>
+<h2 id="all-phases-complete">ALL PHASES COMPLETE<a class="headerlink" href="#all-phases-complete" title="Permanent link">¶</a></h2>
 <h3 id="phase-completion-summary">Phase Completion Summary<a class="headerlink" href="#phase-completion-summary" title="Permanent link">¶</a></h3>
-<p><strong>Phase 1: Diagnostic &amp; Environment Validation</strong> 
+<p><strong>Phase 1: Diagnostic &amp; Environment Validation</strong>
 - Duration: ~1 hour
 - Issues Resolved: 117+
 - Impact: 62% failure reduction</p>
-<p><strong>Phase 2: Python 3.12 Compliance Analysis</strong> 
+<p><strong>Phase 2: Python 3.12 Compliance Analysis</strong>
 - Duration: ~2 hours
 - Issues Resolved: 31+
 - Impact: All configuration issues fixed</p>
-<p><strong>Phase 3: Implementation &amp; Fixes</strong> 
+<p><strong>Phase 3: Implementation &amp; Fixes</strong>
 - Duration: ~45 minutes
 - Impact: Python 3.12 standardization complete</p>
-<p><strong>Phase 4: Validation &amp; Testing Preparation</strong> 
+<p><strong>Phase 4: Validation &amp; Testing Preparation</strong>
 - Duration: ~50 minutes
 - Impact: CI/CD validation framework established</p>
-<p><strong>Phase 5: Documentation &amp; Retrospective</strong> 
+<p><strong>Phase 5: Documentation &amp; Retrospective</strong>
 - Duration: ~60 minutes
 - Impact: Comprehensive documentation and migration guide</p>
-<p><strong>Phase 6: Governance &amp; Enforcement</strong> 
+<p><strong>Phase 6: Governance &amp; Enforcement</strong>
 - Duration: ~80 minutes
 - Impact: Long-term enforcement mechanisms established</p>
 <hr/>
@@ -2878,7 +2878,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="key-achievements">🎓 Key Achievements<a class="headerlink" href="#key-achievements" title="Permanent link">¶</a></h2>
+<h2 id="key-achievements">Key Achievements<a class="headerlink" href="#key-achievements" title="Permanent link">¶</a></h2>
 <h3 id="technical-excellence">Technical Excellence<a class="headerlink" href="#technical-excellence" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>148+ Issues Resolved</strong> - Comprehensive problem-solving</li>
@@ -2945,13 +2945,13 @@
 </ul>
 <h3 id="overall-project-objectives">Overall Project Objectives<a class="headerlink" href="#overall-project-objectives" title="Permanent link">¶</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>148+ Issues Resolved</strong> </li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Python 3.12 Standardized</strong> </li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Test Suite Fixed</strong> </li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>CI/CD Simplified</strong> </li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Documentation Comprehensive</strong> </li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Governance Established</strong> </li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>All 6 Phases Complete</strong> </li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>148+ Issues Resolved</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Python 3.12 Standardized</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Test Suite Fixed</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>CI/CD Simplified</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Documentation Comprehensive</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Governance Established</strong></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>All 6 Phases Complete</strong></li>
 </ul>
 <hr/>
 <h2 id="final-recommendations">Final Recommendations<a class="headerlink" href="#final-recommendations" title="Permanent link">¶</a></h2>
@@ -2977,10 +2977,10 @@
 <li><strong>Establish Governance</strong> - Policies and review processes</li>
 </ol>
 <hr/>
-<h2 id="support-resources">📞 Support &amp; Resources<a class="headerlink" href="#support-resources" title="Permanent link">¶</a></h2>
-<p><strong>Primary Contact:</strong> @mbaetiong<br/>
-<strong>Repository:</strong> Aries-Serpent/<em>codex</em><br/>
-<strong>PR:</strong> #2968<br/>
+<h2 id="support-resources">Support &amp; Resources<a class="headerlink" href="#support-resources" title="Permanent link">¶</a></h2>
+<p><strong>Primary Contact:</strong> @mbaetiong
+<strong>Repository:</strong> Aries-Serpent/<em>codex</em>
+<strong>PR:</strong> #2968
 <strong>Branch:</strong> copilot/sub-pr-2968</p>
 <p><strong>Key Documents:</strong>
 - Policy: <code>.codex/python_version_policy.md</code>
@@ -2988,7 +2988,7 @@
 - Validation Script: <code>scripts/validate_python_version.py</code>
 - Phase Summaries: <code>PHASE_[1-6]_*.md</code></p>
 <hr/>
-<h2 id="project-completion">🎊 Project Completion<a class="headerlink" href="#project-completion" title="Permanent link">¶</a></h2>
+<h2 id="project-completion">Project Completion<a class="headerlink" href="#project-completion" title="Permanent link">¶</a></h2>
 <p><strong>Status:</strong> <strong>ALL 6 PHASES COMPLETE</strong></p>
 <p><strong>Timeline:</strong>
 - Phase 1: ~1 hour
@@ -3000,13 +3000,13 @@
 - <strong>Total:</strong> ~6.25 hours</p>
 <p><strong>Outcome:</strong> Successful Python 3.12 standardization with comprehensive documentation, governance, and enforcement mechanisms.</p>
 <p><strong>Impact:</strong>
--  Faster CI/CD (50% improvement projected)
--  Cost savings ($648/year estimated)
-- 🧹 Cleaner codebase (no version conditionals)
--  Comprehensive documentation (10 files)
-- 🛡️ Automated enforcement (validation + policy)</p>
+- Faster CI/CD (50% improvement projected)
+- Cost savings ($648/year estimated)
+- Cleaner codebase (no version conditionals)
+- Comprehensive documentation (10 files)
+- Automated enforcement (validation + policy)</p>
 <hr/>
-<p><strong>Status:</strong>  100% COMPLETE | 🎉 ALL PHASES DONE | 🏆 PROJECT SUCCESS<br/>
+<p><strong>Status:</strong> 100% COMPLETE | ALL PHASES DONE | PROJECT SUCCESS
 <strong>Achievement Unlocked:</strong> Systematic Python 3.12 standardization with full governance framework</p>
 </article>
 </div>
@@ -3037,6 +3037,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

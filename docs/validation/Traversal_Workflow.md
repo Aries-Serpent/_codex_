@@ -1,10 +1,10 @@
-# [Doc]: Copilot Space Traversal Workflow (v0.2.1)
+# [Doc]: Copilot Space Traversal Workflow (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
- Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor]  Energy: 5
+ Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor] Energy: 5
 
 ## 1. Objective
 Codify a reproducible, explainable capability maturity assessment pipeline with deterministic outputs.
@@ -12,19 +12,19 @@ Codify a reproducible, explainable capability maturity assessment pipeline with 
 ## 2. Flow (Conceptual)
 ```text
 FILES
-  ↓ (S1 Index: enumerate + hash)
+ (S1 Index: enumerate + hash)
 FACETS
-  ↓ (S2 Regex cluster)
+ (S2 Regex cluster)
 CAPABILITIES_RAW
-  ↓ (S3 Static + dynamic detectors)
+ (S3 Static + dynamic detectors)
 CAPABILITIES_SCORED
-  ↓ (S4 Component weighting)
+ (S4 Component weighting)
 GAPS
-  ↓ (S5 Threshold segmentation)
+ (S5 Threshold segmentation)
 REPORT (Markdown)
-  ↓ (S6 Jinja rendering)
+ (S6 Jinja rendering)
 MANIFEST
-  ↓ (S7 Integrity chain)
+ (S7 Integrity chain)
 ```text
 
 ## 3. Component Score Formula
@@ -42,24 +42,24 @@ Weights normalized if Σ != 1.0 (warning added to manifest).
 ### 3.1 Component Caps (New, Optional)
 - Per-component caps allow bounding influence of any component before weighting.
 - Formula:
-  - v_i_raw = clamp(v_i, 0, 1)
-  - v_i' = min(v_i_raw, cap_i), where cap_i ∈ (0,1], default cap_i = 1 if unspecified
-  - score = Σ_i (weight_i * v_i')
+ - v_i_raw = clamp(v_i, 0, 1)
+ - v_i' = min(v_i_raw, cap_i), where cap_i ∈ (0,1], default cap_i = 1 if unspecified
+ - score = Σ_i (weight_i * v_i')
 - YAML:
 ```yaml
 scoring:
-  component_caps:
-    functionality: 1.0
-    consistency: 1.0
-    tests: 0.9
-    safeguards: 1.0
-    documentation: 1.0
+ component_caps:
+ functionality: 1.0
+ consistency: 1.0
+ tests: 0.9
+ safeguards: 1.0
+ documentation: 1.0
 ```text
 
 ### 3.2 Duplication Heuristic Switch (Optional)
 - scoring.dup.heuristic:
-  - simple: file-stem duplication ratio (default)
-  - token_similarity: token Jaccard similarity over stems (scaffolded; offline)
+ - simple: file-stem duplication ratio (default)
+ - token_similarity: token Jaccard similarity over stems (scaffolded; offline)
 - Fallback: if token_similarity is selected but module unavailable, pipeline warns and uses simple.
 
 ## 4. Evidence Prioritization Heuristics
@@ -88,7 +88,7 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 | Sorted traversal | Use `sorted(Path.rglob())` |
 | Read truncation | Cap file read length (200KB) |
 | Hash chain | Manifest collects per-artifact SHA |
-| Template fingerprint | Concatenate `.j2` files → SHA |
+| Template fingerprint | Concatenate `.j2` files SHA |
 | Weight normalization | Auto-correct + record warning |
 
 ## 8. Diff Usage
@@ -116,11 +116,11 @@ Outputs component contributions + normalized weights.
 ## 11. Manifest Anatomy (Excerpt)
 ```json
 {
-  "repo_root_sha": "<sha>",
-  "artifacts": [{"name": "capabilities_scored.json", "sha": "<sha>"}],
-  "template_hash": "<sha>",
-  "weights": {"functionality": 0.25, "consistency": 0.2, "tests": 0.25, "safeguards": 0.15, "documentation": 0.15},
-  "warnings": []
+ "repo_root_sha": "<sha>",
+ "artifacts": [{"name": "capabilities_scored.json", "sha": "<sha>"}],
+ "template_hash": "<sha>",
+ "weights": {"functionality": 0.25, "consistency": 0.2, "tests": 0.25, "safeguards": 0.15, "documentation": 0.15},
+ "warnings": []
 }
 ```text
 

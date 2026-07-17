@@ -1,9 +1,9 @@
 # GitHub Actions Workflow Audit Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Generated**: Comprehensive audit of all 207 GitHub Actions workflows 
-**Objective**: Identify root-level file references and assess cleanup impact 
+**Generated**: Comprehensive audit of all 207 GitHub Actions workflows
+**Objective**: Identify root-level file references and assess cleanup impact
 **Status**: Complete - Ready for remediation planning
 
 ---
@@ -24,9 +24,9 @@
 
 ```
 Total Workflows: 207
-├─ CRITICAL: 4 workflows (1.9%) 
-├─ HIGH-RISK: 129 workflows (62.3%) 
-└─ SAFE: 74 workflows (35.7%) 
+ CRITICAL: 4 workflows (1.9%) 
+ HIGH-RISK: 129 workflows (62.3%) 
+ SAFE: 74 workflows (35.7%) 
 ```
 
 ### Root File Reference Distribution
@@ -54,7 +54,7 @@ These 4 workflows will **completely break** if root files are moved:
 - **References**: `pyproject.toml`, `.github/workflows/`, `.codex/`
 - **Impact**: Workflow won't trigger when setup configuration changes
 - **Severity**: CRITICAL
-- **Action Required**: 
+- **Action Required**:
  - Remove or update `on.push.paths` filter
  - Update environment setup references
 
@@ -131,22 +131,22 @@ on:
 ### High-Risk Workflows by Category
 
 **CI Configuration & Workflows (89):**
-actionlint-audit, adaptive-agent-delegation, admin-action-t03, admin_setup_verification, 
-agent-auth-delegation, agent-handoff-gate, agent-orchestration-unified, auto-approve-workflows, 
+actionlint-audit, adaptive-agent-delegation, admin-action-t03, admin_setup_verification,
+agent-auth-delegation, agent-handoff-gate, agent-orchestration-unified, auto-approve-workflows,
 ... (80 more)
 
 **Python Configuration (41):**
-agent_infrastructure_manager, auto-fix-pr-check, benchmarks, build-agent-env-cache, 
+agent_infrastructure_manager, auto-fix-pr-check, benchmarks, build-agent-env-cache,
 build-preview-image, codebase-health-sweep, cognitive-analysis-feed, cognitive-k8s-provisioning,
 ... (33 more)
 
 **Test Dependencies (35):**
-agent-health-check, auth-tests, codebase-health-sweep, code-quality-coverage-suite, 
+agent-health-check, auth-tests, codebase-health-sweep, code-quality-coverage-suite,
 codeql.yml, container-scan.yml, coverage-ratchet, coverage-with-timeout,
 ... (27 more)
 
 **Documentation (18):**
-agent-auth-delegation, app-package-download, api-documentation, docs-health, 
+agent-auth-delegation, app-package-download, api-documentation, docs-health,
 docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-examples,
 ... (10 more)
 
@@ -185,33 +185,33 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 ### File Reference Breakdown
 
 ```
-┌─ Configuration Files (96 references)
-│ ├─ pyproject.toml: 41 workflows
-│ ├─ setup.py: 14 workflows
-│ ├─ noxfile.py: 7 workflows
-│ ├─ mkdocs.yml: 12 workflows
-│ ├─ Makefile: 8 workflows
-│ └─ Other: 14 workflows
-│
-├─ Infrastructure (215 references)
-│ ├─ .codex/: 126 workflows
-│ ├─ .github/workflows/: 89 workflows
-│ └─ tests/: 68 workflows
-│
-├─ Dependencies (35 references)
-│ ├─ requirements-*.txt: 35 workflows
-│ └─ Other: 12 workflows
-│
-└─ Documentation (18 references)
- ├─ README.md: 18 workflows
- └─ .github/docs/: 3 workflows
+ Configuration Files (96 references)
+ pyproject.toml: 41 workflows
+ setup.py: 14 workflows
+ noxfile.py: 7 workflows
+ mkdocs.yml: 12 workflows
+ Makefile: 8 workflows
+ Other: 14 workflows
+
+ Infrastructure (215 references)
+ .codex/: 126 workflows
+ .github/workflows/: 89 workflows
+ tests/: 68 workflows
+
+ Dependencies (35 references)
+ requirements-*.txt: 35 workflows
+ Other: 12 workflows
+
+ Documentation (18 references)
+ README.md: 18 workflows
+ .github/docs/: 3 workflows
 ```
 
 ### Trigger Filter Analysis
 
-**Workflows using on.push.paths filter:** 87 
-**Workflows using on.pull_request.paths filter:** 56 
-**Workflows using on.pull_request_target.paths filter:** 12 
+**Workflows using on.push.paths filter:** 87
+**Workflows using on.pull_request.paths filter:** 56
+**Workflows using on.pull_request_target.paths filter:** 12
 
 **Most Common Path Filters:**
 - `.github/workflows/` - 89 workflows
@@ -222,11 +222,11 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ---
 
-## ️ Remediation Strategy
+## Remediation Strategy
 
 ### Phase 1: Critical Fix (Immediate - 4 workflows)
 
-**Effort**: 30-45 minutes 
+**Effort**: 30-45 minutes
 **Complexity**: Low
 
 1. **copilot-setup-steps.yml**
@@ -302,34 +302,34 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ```
 repository/
-├─ .github/
-│ ├─ workflows/ (keep as-is)
-│ ├─ actions/ (keep as-is)
-│ └─ docs/ (keep as-is)
-├─ config/ (NEW: Move config files here)
-│ ├─ pyproject.toml
-│ ├─ setup.py
-│ ├─ setup.cfg
-│ ├─ pytest.ini
-│ ├─ mypy.ini
-│ ├─ .mypy_baseline
-│ ├─ bandit.yaml
-│ ├─ mkdocs.yml
-│ └─ commitlint.config.mjs
-├─ build/ (NEW: Move build files here)
-│ ├─ Makefile
-│ ├─ noxfile.py
-│ ├─ Dockerfile
-│ └─ docker-compose.yml
-├─ requirements/ (NEW: Move requirements here)
-│ ├─ requirements.txt
-│ ├─ requirements-dev.txt
-│ ├─ requirements-test.txt
-│ └─ ... (other requirements files)
-├─ docs/ (Keep as-is, update references)
-├─ tests/ (Keep as-is)
-├─ src/ (Keep as-is)
-└─ ... (other directories)
+ .github/
+ workflows/ (keep as-is)
+ actions/ (keep as-is)
+ docs/ (keep as-is)
+ config/ (NEW: Move config files here)
+ pyproject.toml
+ setup.py
+ setup.cfg
+ pytest.ini
+ mypy.ini
+ .mypy_baseline
+ bandit.yaml
+ mkdocs.yml
+ commitlint.config.mjs
+ build/ (NEW: Move build files here)
+ Makefile
+ noxfile.py
+ Dockerfile
+ docker-compose.yml
+ requirements/ (NEW: Move requirements here)
+ requirements.txt
+ requirements-dev.txt
+ requirements-test.txt
+ ... (other requirements files)
+ docs/ (Keep as-is, update references)
+ tests/ (Keep as-is)
+ src/ (Keep as-is)
+ ... (other directories)
 ```
 
 ### Workflows That Need Updating
@@ -417,8 +417,8 @@ run: pytest --cov=src --cov-report=xml # (no change needed - finds cwd automatic
  - Group by workflow category
 
 2. **Test incrementally**
- - Fix critical → test
- - Fix high-risk batch → test
+ - Fix critical test
+ - Fix high-risk batch test
  - Verify no regressions
 
 3. **Monitor workflow runs**
@@ -490,6 +490,6 @@ The GitHub Actions workflow audit reveals:
 
 ---
 
-**Report Generated**: 2025-01-23 
-**Repository**: Aries-Serpent/_codex_ 
+**Report Generated**: 2025-01-23
+**Repository**: Aries-Serpent/_codex_
 **Next Steps**: Review critical workflows and schedule remediation

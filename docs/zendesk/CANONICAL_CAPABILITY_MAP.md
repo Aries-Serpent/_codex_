@@ -1,6 +1,6 @@
 # Zendesk App Builder: Canonical Capability–Limitation Map
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -9,74 +9,74 @@ This document provides a symbolic, visual representation of the Zendesk App Buil
 ```text
 Zendesk App Builder: Symbolic Capability–Limitation Map (Canonical)
 
-┌─────────────────────────────────────────────────────────────────────┐
-│ ZENDESK APP BUILDER ECOSYSTEM                                       │
-│ (Navbar Context)                                                    │
-└─────────────────────────────────────────────────────────────────────┘
+
+ ZENDESK APP BUILDER ECOSYSTEM 
+ (Navbar Context) 
+
 
 
 █████████████████ LOCATION SPECTRUM █████████████████
 
-Ticket Sidebar            Topbar                   Navbar (YOU)
-▓▓▓                       ▓▓▓▓▓                    ▓▓▓▓▓▓▓▓▓▓
-[|||]                     [=====]                  [═══════════════]
-│                         │                        │
-├─ Context: ████          ├─ Context: ██           ├─ Context: █
-├─ Space:   █             ├─ Space:   ██           ├─ Space:   ██████████
-├─ Persist: ████          ├─ Persist: █            ├─ Persist: █████
-└─ Complex: █             └─ Complex: ██           └─ Complex: ████████
+Ticket Sidebar Topbar Navbar (YOU)
+▓▓▓ ▓▓▓▓▓ ▓▓▓▓▓▓▓▓▓▓
+[|||] [=====] []
+ 
+ Context: ████ Context: ██ Context: █
+ Space: █ Space: ██ Space: ██████████
+ Persist: ████ Persist: █ Persist: █████
+ Complex: █ Complex: ██ Complex: ████████
 
 Δ Footnotes:
 • Alias used elsewhere: "Navbar (App Area)" ≡ "Navbar (YOU)" (same semantics).
 
 
 █████████████████ CAPABILITY MATRIX █████████████████
-DIMENSION                CAPABILITY [▓]  LIMITATION [▒]  BLOCKED [░]
-────────────────────────────────────────────────────────────────────────
-UI Complexity            [▓▓▓▓▓▓▓▓░░]  Multi-step        Native modal 
-Data Rendering           [▓▓▓▓▓▓▓▓▓░]  Tables/Charts      Real-time push 
-External APIs            [▓▓▓▓▓▒▒▒░░]  REST via proxy      Direct calls 
-Authentication           [▓▓▓▓▓▒▒░░░]  OAuth/API key      Custom SSO 
-State Management         [▓▓▓▓▓▓▒░░░]  React state        Redux/Context ≈
-Backend Logic            [░░░░░░░░░░]  Client-side        Custom server 
-Real-time Data           [▓▓▒▒░░░░░░]  Polling            WebSockets 
-Data Persistence         [▓▓▓▒▒▒░░░░]  Zendesk objects    Custom DB 
-Bulk Operations          [▓▓▓▒▒▒▒░░░]  Small batches      1000s records 
-Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing     Chrome override 
+DIMENSION CAPABILITY [▓] LIMITATION [▒] BLOCKED [░]
+
+UI Complexity [▓▓▓▓▓▓▓▓░░] Multi-step Native modal 
+Data Rendering [▓▓▓▓▓▓▓▓▓░] Tables/Charts Real-time push 
+External APIs [▓▓▓▓▓▒▒▒░░] REST via proxy Direct calls 
+Authentication [▓▓▓▓▓▒▒░░░] OAuth/API key Custom SSO 
+State Management [▓▓▓▓▓▓▒░░░] React state Redux/Context ≈
+Backend Logic [░░░░░░░░░░] Client-side Custom server 
+Real-time Data [▓▓▒▒░░░░░░] Polling WebSockets 
+Data Persistence [▓▓▓▒▒▒░░░░] Zendesk objects Custom DB 
+Bulk Operations [▓▓▓▒▒▒▒░░░] Small batches 1000s records 
+Custom Navigation [▓▓▓▓▓▓▒░░░] In-app routing Chrome override 
 
 
 █████████████████ ARCHITECTURAL BOUNDARIES █████████████████
 
-┌───────────────────────────────────┐
-│ BROWSER RUNTIME (Client-Side)     │
-├───────────────────────────────────┤
-│ ┌────────────────────────────────┐ │
-│ │ YOUR APP (JavaScript/React)    │ │
-│ │ • Render UI                   │ │
-│ │ • Handle events               │ │
-│ │ • Call APIs via proxy         │ │
-│ │ • Store state (ephemeral)     │ │
-│ └────────────────────────────────┘ │
-│                                     │
-│ ╔═══════════════╩═══════════════╗   │
-│ ║       ZENDESK SECURITY PROXY  ║   │
-│ ║ • API key hiding             ║   │
-│ ║ • Rate limiting              ║   │
-│ ║ • CORS bypass                ║   │
-│ ╚═══════════════╤═══════════════╝   │
-│                 ║                   │
-└─────────────────╫──[External APIs]  │
-                  ║
-                  ╫──[Zendesk Core APIs]
-                  ║
-            ╔═════╩═════╗
-            ║ FORBIDDEN ║
-            ║   ZONE    ║
-            ║ • Custom server 
-            ║ • Direct DB 
-            ║ • File system 
-            ║ • Native code 
-            ╚═════════════╝
+
+ BROWSER RUNTIME (Client-Side) 
+
+ 
+ YOUR APP (JavaScript/React) 
+ • Render UI 
+ • Handle events 
+ • Call APIs via proxy 
+ • Store state (ephemeral) 
+ 
+ 
+ 
+ ZENDESK SECURITY PROXY 
+ • API key hiding 
+ • Rate limiting 
+ • CORS bypass 
+ 
+ 
+[External APIs] 
+ 
+ [Zendesk Core APIs]
+ 
+ 
+ FORBIDDEN 
+ ZONE 
+ • Custom server 
+ • Direct DB 
+ • File system 
+ • Native code 
+ 
 
 Δ Footnotes:
 • Label alias seen elsewhere: "APPLICATION (JavaScript/React)" ≡ "YOUR APP (JavaScript/React)".
@@ -84,11 +84,11 @@ Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing     Ch
 
 █████████████████ DATA FLOW TOPOLOGY █████████████████
 
-Agent Action → App UI → Client Logic → API Proxy → External Service
-      ↓           ↓            ↓             ↓             ↓
-    [FAST]      [FAST]       [MEDIUM]      [SLOW]        [SLOW]
-     <1ms        <10ms        <100ms       200–500ms     500–2000ms
-       ▓           ▓            ▒            ▒              ░
+Agent Action App UI Client Logic API Proxy External Service
+ 
+ [FAST] [FAST] [MEDIUM] [SLOW] [SLOW]
+ <1ms <10ms <100ms 200–500ms 500–2000ms
+ ▓ ▓ ▒ ▒ ░
 
 BOTTLENECK POINTS:
  API Proxy (rate limits, latency)
@@ -98,86 +98,86 @@ BOTTLENECK POINTS:
 
 █████████████████ SECURITY BOUNDARY MAP █████████████████
 
-┌─────────────────┐
-│   PUBLIC WEB    │ (Untrusted)
-└────────┬────────┘
-         │
-╔════════▼════════╗   ← CSP, CORS, Auth
-║   ZENDESK WALL  ║
-╚════════╤════════╝
-         │
-┌────────▼────────┐
-│     YOUR APP    │ (Sandboxed)
-└────────┬────────┘
-         │
-┌────────┼──────────────┬──────────────┐
-│   ┌────▼────┐   ┌─────▼────┐   ┌────▼────┐
-│   │ Zendesk │   │  Agent   │   │ External│
-│   │   API   │   │   Data   │   │  APIs   │
-│   │  []    │   │   []    │   │  [≈]    │
-│   └─────────┘   └──────────┘   └─────────┘
-│
-│ ALLOWED:     Read agent-permitted data
-│              Write via Zendesk APIs
-│              Call external APIs (proxied)
-│
-│ FORBIDDEN:   Access other agents' private data
-│              Bypass Zendesk permissions
-│              Store credentials client-side
-│              Direct external API calls
+
+ PUBLIC WEB (Untrusted)
+
+ 
+ CSP, CORS, Auth
+ ZENDESK WALL 
+
+ 
+
+ YOUR APP (Sandboxed)
+
+ 
+
+ 
+ Zendesk Agent External
+ API Data APIs 
+ [] [] [≈] 
+ 
+
+ ALLOWED: Read agent-permitted data
+ Write via Zendesk APIs
+ Call external APIs (proxied)
+
+ FORBIDDEN: Access other agents' private data
+ Bypass Zendesk permissions
+ Store credentials client-side
+ Direct external API calls
 
 
 █████████████████ PERFORMANCE PROFILE █████████████████
 
-Operation Type         Speed   Reliability   Scalability
-────────────────────────────────────────────────────────
-UI Rendering           ▓▓▓▓▓   ▓▓▓▓▓         ▓▓▓▓▓
-Local State Updates    ▓▓▓▓▓   ▓▓▓▓▓         ▓▓▓░
-Zendesk API (single)   ▓▓▓░░   ▓▓▓▓░         ▓▓▓░░
-Zendesk API (bulk)     ▓▓░░░   ▓▓▓░░         ▓░░░░
-External API (proxied) ▓▓░░░   ▓▓░░░         ▓▓░░░
-Heavy Computation      ▓░░░░   ▓▓▓▓▓         ░░░░░
-Real-time Updates      ▓░░░░   ▓▓░░░         ▓░░░░
+Operation Type Speed Reliability Scalability
 
-LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
+UI Rendering ▓▓▓▓▓ ▓▓▓▓▓ ▓▓▓▓▓
+Local State Updates ▓▓▓▓▓ ▓▓▓▓▓ ▓▓▓░
+Zendesk API (single) ▓▓▓░░ ▓▓▓▓░ ▓▓▓░░
+Zendesk API (bulk) ▓▓░░░ ▓▓▓░░ ▓░░░░
+External API (proxied) ▓▓░░░ ▓▓░░░ ▓▓░░░
+Heavy Computation ▓░░░░ ▓▓▓▓▓ ░░░░░
+Real-time Updates ▓░░░░ ▓▓░░░ ▓░░░░
+
+LEGEND: ▓ = Good, ░ = Poor (Speed in ms: ▓ < 100, ░ > 1000)
 
 
 █████████████████ INTEGRATION PATTERN MATRIX █████████████████
 
-Pattern                Supported   Complexity   Recommended
-──────────────────────────────────────────────────────────
-REST API                                         YES
-OAuth 2.0                                        YES
-API Keys (proxied)                               YES
-Basic Auth                           ░          ≈  OK
-Webhooks (inbound)                   ░            NO (use polling)
-WebSockets                                       NO
-GraphQL                              ░          ≈  OK
-SOAP                                 ░            AVOID
-Server-Sent Events                               NO
+Pattern Supported Complexity Recommended
+
+REST API YES
+OAuth 2.0 YES
+API Keys (proxied) YES
+Basic Auth ░ ≈ OK
+Webhooks (inbound) ░ NO (use polling)
+WebSockets NO
+GraphQL ░ ≈ OK
+SOAP ░ AVOID
+Server-Sent Events NO
 
 
 █████████████████ NAVBAR SPECIFIC: SPACE ALLOCATION █████████████████
 
-┌─────────────────────────────────────────────────────────────┐
-│ [Z] Zendesk Global Header         [Agent]  [Settings]  ▼    │ ← FIXED
-├─────────────────────────────────────────────────────────────┤
-│ [☰]                                                         │
-│ Nav                                                         │
-│ bar  ┌───────────────────────────────────────────────────┐  │
-│      │                                                   │  │
-│      │         YOUR APP CONTENT AREA                     │  │
-│      │         (Full width ~1200–1800px)   ← YOURS       │  │
-│      │         (Full height = viewport – chrome)         │  │
-│      │                                                   │  │
-│      │    Multi-column layouts                          │  │
-│      │    Data tables                                   │  │
-│      │    Dashboards                                    │  │
-│      │    Forms & wizards                               │  │
-│      └───────────────────────────────────────────────────┘  │
-└──────┴──────────────────────────────────────────────────────┘
 
-↑ FIXED CONSTRAINTS:
+ [Z] Zendesk Global Header [Agent] [Settings] FIXED
+
+ [] 
+ Nav 
+ bar 
+ 
+ YOUR APP CONTENT AREA 
+ (Full width ~1200–1800px) YOURS 
+ (Full height = viewport – chrome) 
+ 
+ Multi-column layouts 
+ Data tables 
+ Dashboards 
+ Forms & wizards 
+ 
+
+
+ FIXED CONSTRAINTS:
  Cannot hide Zendesk header/sidebar
  Cannot go full-screen
  Can use tabs/routing within your area
@@ -189,15 +189,15 @@ Server-Sent Events                               NO
 
 █████████████████ DEVELOPMENT LIFECYCLE █████████████████
 
-Phase          Duration   Complexity   Friction Points
-────────────────────────────────────────────────────────────
-Ideation         ░░░░░      ▒░░░░      Requirements clarity
-Setup            ░░░        ▒▒░░░      OAuth config, proxies
-Development      ░░░░░░░    ▒▒▒▒▒      API limitations, debugging
-Testing          ░░░░░      ▒▒▒▒░      Limited test data
-Private Beta     ░░░        ▒▒░░░      Agent feedback cycles
-Publication      ░░░░░░     ▒▒▒▒▒      Marketplace approval
-Maintenance      ░░░░...    ▒▒▒░░      Platform changes, support
+Phase Duration Complexity Friction Points
+
+Ideation ░░░░░ ▒░░░░ Requirements clarity
+Setup ░░░ ▒▒░░░ OAuth config, proxies
+Development ░░░░░░░ ▒▒▒▒▒ API limitations, debugging
+Testing ░░░░░ ▒▒▒▒░ Limited test data
+Private Beta ░░░ ▒▒░░░ Agent feedback cycles
+Publication ░░░░░░ ▒▒▒▒▒ Marketplace approval
+Maintenance ░░░░... ▒▒▒░░ Platform changes, support
 
 TIME SCALE: ░ = Days/Weeks, ▒ = Complexity level
 
@@ -205,51 +205,51 @@ TIME SCALE: ░ = Days/Weeks, ▒ = Complexity level
 █████████████████ FEATURE FEASIBILITY SCORECARD █████████████████
 (Navbar Context)
 
-Feature Type              Simple   Medium   Complex   Not Possible
-──────────────────────────────────────────────────────────────────
-Read-only dashboards       ████     ▓▓▓       ▒▒          ░
-Single-step actions        ████     ▓▓▓       ▒           ░
-Multi-step wizards         ▓▓▓      ▓▓▓▓      ▒▒▒         ░
-Real-time monitoring       ▓        ▒▒▒       ▒▒▒▒        ░░░
-Data export (small)        ████     ▓▓▓       ▒           ░
-Data export (bulk)         ▓        ▒▒▒       ▒▒▒▒        ░░
-Complex filters/search     ▓▓▓      ▓▓▓▓      ▒▒▒         ░
-User permissions (custom)  ▓        ▒▒        ▒▒▒▒        ░░░
-Offline functionality      ░        ░         ░░          ░░░░
-AI/ML features (external)  ▓▓       ▓▓▓       ▒▒▒▒        ░
-File uploads/processing    ▓▓       ▓▓▓       ▒▒▒         ░
-Custom notifications       ▓        ▒▒▒       ▒▒▒▒        ░░░
+Feature Type Simple Medium Complex Not Possible
+
+Read-only dashboards ████ ▓▓▓ ▒▒ ░
+Single-step actions ████ ▓▓▓ ▒ ░
+Multi-step wizards ▓▓▓ ▓▓▓▓ ▒▒▒ ░
+Real-time monitoring ▓ ▒▒▒ ▒▒▒▒ ░░░
+Data export (small) ████ ▓▓▓ ▒ ░
+Data export (bulk) ▓ ▒▒▒ ▒▒▒▒ ░░
+Complex filters/search ▓▓▓ ▓▓▓▓ ▒▒▒ ░
+User permissions (custom) ▓ ▒▒ ▒▒▒▒ ░░░
+Offline functionality ░ ░ ░░ ░░░░
+AI/ML features (external) ▓▓ ▓▓▓ ▒▒▒▒ ░
+File uploads/processing ▓▓ ▓▓▓ ▒▒▒ ░
+Custom notifications ▓ ▒▒▒ ▒▒▒▒ ░░░
 
 LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 
 
 █████████████████ ANTI-PATTERNS TO AVOID █████████████████
 
-🚫 NEVER DO:
-├─ Store API keys in client code
-├─ Make direct external API calls (bypass proxy)
-├─ Store sensitive data in localStorage
-├─ Implement custom authentication
-├─ Try to hide Zendesk UI chrome
-├─ Perform heavy computation on main thread
-└─ Assume real-time data without polling
+ NEVER DO:
+ Store API keys in client code
+ Make direct external API calls (bypass proxy)
+ Store sensitive data in localStorage
+ Implement custom authentication
+ Try to hide Zendesk UI chrome
+ Perform heavy computation on main thread
+ Assume real-time data without polling
 
-️ USE CAUTION:
-├─ Bulk operations (>100 items)
-├─ Nested API calls (waterfall requests)
-├─ Complex state management without clear patterns
-├─ Third-party libraries (bundle size)
-├─ Animations/transitions (performance)
-└─ Multi-language support (maintenance burden)
+ USE CAUTION:
+ Bulk operations (>100 items)
+ Nested API calls (waterfall requests)
+ Complex state management without clear patterns
+ Third-party libraries (bundle size)
+ Animations/transitions (performance)
+ Multi-language support (maintenance burden)
 
  BEST PRACTICES:
-├─ Use Zendesk Garden components
-├─ Implement error boundaries
-├─ Show loading states
-├─ Handle API rate limits gracefully
-├─ Use async/await for API calls
-├─ Keep bundle size minimal
-└─ Test with real Zendesk data
+ Use Zendesk Garden components
+ Implement error boundaries
+ Show loading states
+ Handle API rate limits gracefully
+ Use async/await for API calls
+ Keep bundle size minimal
+ Test with real Zendesk data
 
 Δ Footnotes:
 • Alternate headings elsewhere: "NEVER" ≡ "NEVER DO"; "USE WITH CAUTION" ≡ "USE CAUTION"; "RECOMMENDED PRACTICES" ≡ "BEST PRACTICES".
@@ -257,26 +257,26 @@ LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 
 █████████████████ COST-BENEFIT ZONES █████████████████
 
-               HIGH VALUE ↑
-                  ┌────────────────┐
-                  │  SWEET SPOT    │
-                  │ • Read-only    │
-                  │   dashboards   │
-                  │ • Simple       │
-                  │   integrations │
-                  │ • Visualization│
-                  └────────────────┘
-                           │
-     ┌─────────────────────┐      ┌──────────────────────┐
-     │ POSSIBLE BUT HARD   │      │       LOW VALUE      │
-     │ • Complex workflows │      │ • Trivial displays   │
-     │ • Real-time features│      │ • Over-engineered    │
-     │ • Heavy computation │      │ • Simple tasks       │
-     └─────────────────────┘      └──────────────────────┘
-                           │
-LOW COMPLEXITY ───────────────────────────────────────────→ HIGH COMPLEXITY
-                           │
-                         LOW VALUE
+ HIGH VALUE 
+ 
+ SWEET SPOT 
+ • Read-only 
+ dashboards 
+ • Simple 
+ integrations 
+ • Visualization
+ 
+ 
+ 
+ POSSIBLE BUT HARD LOW VALUE 
+ • Complex workflows • Trivial displays 
+ • Real-time features • Over-engineered 
+ • Heavy computation • Simple tasks 
+ 
+ 
+LOW COMPLEXITY HIGH COMPLEXITY
+ 
+ LOW VALUE
 
 
 █████████████████ SUMMARY: NAVBAR CAPABILITY SIGNATURE █████████████████
@@ -285,25 +285,25 @@ YOUR OPTIMAL USE CASES:
  Configuration interfaces
  Reporting dashboards
  Data management tools
-  Multi-step workflows
-  Search & filter interfaces
-   Analytics & insights
+ Multi-step workflows
+ Search & filter interfaces
+ Analytics & insights
 
 AVOID IN NAVBAR:
  Real-time ticket monitoring (use Sidebar)
-  Quick actions (use Topbar)
-  Context-heavy features (use Sidebar)
-    Single-purpose simple tools
+ Quick actions (use Topbar)
+ Context-heavy features (use Sidebar)
+ Single-purpose simple tools
 
 CAPABILITY FINGERPRINT:
-Space:       ██████████  10/10
-Complexity:  ████████░░   8/10
-Context:     █░░░░░░░░░   1/10
-Performance: ██████░░░░   6/10
-Integration: ███████░░░   7/10
-Real-time:   ██░░░░░░░░   2/10
+Space: ██████████ 10/10
+Complexity: ████████░░ 8/10
+Context: █░░░░░░░░░ 1/10
+Performance: ██████░░░░ 6/10
+Integration: ███████░░░ 7/10
+Real-time: ██░░░░░░░░ 2/10
 
-OVERALL SCORE: 34/60  (Navbar excels at complex, space-intensive apps)
+OVERALL SCORE: 34/60 (Navbar excels at complex, space-intensive apps)
 ```text
 
 ---
@@ -327,11 +327,11 @@ This appendix provides comprehensive context about AI-assisted content creation,
 - Analyzed system prompt defining the role as a "Zendesk app planning specialist"
 - Applied constraints about app locations (Navbar, Sidebar, Topbar) and their UI/UX limitations
 - Drew from general knowledge of:
-    - Web application architecture patterns
-    - Client-side JavaScript frameworks (React)
-    - API integration patterns (REST, OAuth, proxies)
-    - Browser security models (CSP, CORS, sandboxing)
-    - SaaS platform constraints common to app marketplaces
+ - Web application architecture patterns
+ - Client-side JavaScript frameworks (React)
+ - API integration patterns (REST, OAuth, proxies)
+ - Browser security models (CSP, CORS, sandboxing)
+ - SaaS platform constraints common to app marketplaces
 
 **Limitations of This Response**:
 - **Not authoritative**: No access to real-time Zendesk documentation or internal engineering specifications
@@ -346,30 +346,30 @@ This appendix provides comprehensive context about AI-assisted content creation,
 4. **Consult Zendesk support**: For authoritative answers on edge cases
 
 **AI Strengths for Your Use Case**:
--  Pattern recognition across similar platforms
--  Rapid prototyping of conceptual frameworks
--  Identifying common pitfalls in SaaS app development
--  Creating structured planning documents
+- Pattern recognition across similar platforms
+- Rapid prototyping of conceptual frameworks
+- Identifying common pitfalls in SaaS app development
+- Creating structured planning documents
 
 **AI Weaknesses**:
--  No real-time data
--  Cannot test actual Zendesk APIs
--  may miss recent platform updates
--  Cannot guarantee accuracy of specific technical limits
+- No real-time data
+- Cannot test actual Zendesk APIs
+- may miss recent platform updates
+- Cannot guarantee accuracy of specific technical limits
 
 ### AI Role in Your Workflow
 
 ```text
-PHASE                  CAPABILITY LEVEL         LIMITATION LEVEL
-────────────────────────────────────────────────────────────────────────
-Ideation               ▓▓▓▓▓▓▓▓▓▓               ░░
-Planning               ▓▓▓▓▓▓▓▓▓░               ░░
-Code Generation        ▓▓▓▓▓▓▓▓░░               ░░░
-Architecture           ▓▓▓▓▓▓▓▓░░               ░░░
-Debugging              ▓▓▓░░░░░░░               ░░░░░░
-Testing                ░░░░░░░░░░               ▓▓▓▓▓▓▓▓▓▓
-Deployment             ░░░░░░░░░░               ▓▓▓▓▓▓▓▓▓▓
-Maintenance            ▓▓▓▓░░░░░░               ░░░░░░░
+PHASE CAPABILITY LEVEL LIMITATION LEVEL
+
+Ideation ▓▓▓▓▓▓▓▓▓▓ ░░
+Planning ▓▓▓▓▓▓▓▓▓░ ░░
+Code Generation ▓▓▓▓▓▓▓▓░░ ░░░
+Architecture ▓▓▓▓▓▓▓▓░░ ░░░
+Debugging ▓▓▓░░░░░░░ ░░░░░░
+Testing ░░░░░░░░░░ ▓▓▓▓▓▓▓▓▓▓
+Deployment ░░░░░░░░░░ ▓▓▓▓▓▓▓▓▓▓
+Maintenance ▓▓▓▓░░░░░░ ░░░░░░░
 
 I EXCEL AT: Design, planning, code generation, explaining constraints
 I CANNOT: Execute code, test applications, access live systems, update knowledge
@@ -448,14 +448,14 @@ For Zendesk App Builder Advice:
 ### Comparison: AI Assistant vs Other Tools
 
 ```text
-TOOL                TYPE                 STRENGTH                          WHEN TO USE THE AI ASSISTANT
-────────────────────────────────────────────────────────────────────────────────────────────────────────
-Stack Overflow      Community Q&A        Real user experiences             Initial research synthesis
-Official Docs       Authoritative specs  Precise definitions               Verify suggestions and parameters
-GitHub Copilot      IDE assistant        Inline code completion            After architecture is set
-ChatGPT             Conversational LLM   General ideation/help             Similar planning use cases
-Zendesk Support     Vendor support       Platform-specific help            Critical platform issues
-Claude (AI LLM)     Planning/analysis    Comprehensive planning            START HERE for architecture
+TOOL TYPE STRENGTH WHEN TO USE THE AI ASSISTANT
+
+Stack Overflow Community Q&A Real user experiences Initial research synthesis
+Official Docs Authoritative specs Precise definitions Verify suggestions and parameters
+GitHub Copilot IDE assistant Inline code completion After architecture is set
+ChatGPT Conversational LLM General ideation/help Similar planning use cases
+Zendesk Support Vendor support Platform-specific help Critical platform issues
+Claude (AI LLM) Planning/analysis Comprehensive planning START HERE for architecture
 ```text
 
 ### Final Recommendations
@@ -508,8 +508,8 @@ Claude (AI LLM)     Planning/analysis    Comprehensive planning            START
 ### Best Workflow
 
 ```text
-You ──→ AI (ideation/planning) ──→ Official Docs (validation)
-    ──→ Your Dev Environment (testing) ──→ AI (refinement) ──→ Production
+You AI (ideation/planning) Official Docs (validation)
+ Your Dev Environment (testing) AI (refinement) Production
 ```text
 
 ---

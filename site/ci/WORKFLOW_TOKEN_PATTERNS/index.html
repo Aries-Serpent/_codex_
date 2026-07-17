@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/WORKFLOW_TOKEN_PATTERNS/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Workflow Token Patterns Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2444,11 +2444,11 @@
 <a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">            </span><span class="no">-f environment=production</span>
 </code></pre></div></p>
 <p><strong>When to Use:</strong>
--  Modifying PR properties (title, body, labels)
--  Writing to repository variables
--  Triggering workflow dispatch
--  Creating/updating workflow runs
--  Managing repository settings via API</p>
+- Modifying PR properties (title, body, labels)
+- Writing to repository variables
+- Triggering workflow dispatch
+- Creating/updating workflow runs
+- Managing repository settings via API</p>
 <hr/>
 <h3 id="pattern-b-standard-operations">Pattern B: Standard Operations<a class="headerlink" href="#pattern-b-standard-operations" title="Permanent link">¶</a></h3>
 <p>Use this pattern for read-only operations or standard interactions like listing runs, posting comments, managing artifacts, or checking status.</p>
@@ -2485,11 +2485,11 @@
 <a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">            </span><span class="no">--json status,conclusion</span>
 </code></pre></div></p>
 <p><strong>When to Use:</strong>
--  Listing/viewing workflow runs
--  Posting PR/issue comments
--  Managing artifacts (download, upload)
--  Reading repository data
--  Checking CI/CD status</p>
+- Listing/viewing workflow runs
+- Posting PR/issue comments
+- Managing artifacts (download, upload)
+- Reading repository data
+- Checking CI/CD status</p>
 <hr/>
 <h3 id="pattern-c-mixed-operations">Pattern C: Mixed Operations<a class="headerlink" href="#pattern-c-mixed-operations" title="Permanent link">¶</a></h3>
 <p>Use this pattern when a workflow performs both elevated and standard operations. The elevated token allows all operations while maintaining compatibility.</p>
@@ -2523,9 +2523,9 @@
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">            </span><span class="no">-f value="$CHECKS"</span>
 </code></pre></div></p>
 <p><strong>When to Use:</strong>
--  Workflows combining read and write operations
--  CI gates that read status and update variables
--  Monitoring workflows that collect data and post results</p>
+- Workflows combining read and write operations
+- CI gates that read status and update variables
+- Monitoring workflows that collect data and post results</p>
 <hr/>
 <h2 id="section-2-critical-operations-pattern">Section 2: Critical Operations Pattern<a class="headerlink" href="#section-2-critical-operations-pattern" title="Permanent link">¶</a></h2>
 <p>Critical operations are those that enforce system policies, manage rate limits, handle session management, or perform essential infrastructure tasks. These <strong>MUST</strong> use CODEX_MASTER_KEY without fallback to github.token.</p>
@@ -2769,66 +2769,67 @@ The token being used lacks required permissions for the operation. This typicall
 <p><strong>Solution:</strong>
 1. Check the operation type against the reference table
 2. If it's ELEVATED or CRITICAL, add CODEX_MASTER_KEY to the fallback chain:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}</span>
-</code></pre></div>
+   <code>yaml
+   GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}</code>
 3. For CRITICAL operations, remove github.token fallback:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}</span>
-</code></pre></div>
+   <code>yaml
+   GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}</code>
 4. Verify CODEX_MASTER_KEY secret exists in repository settings</p>
 <hr/>
 <h3 id="error-token-not-found">Error: "token not found"<a class="headerlink" href="#error-token-not-found" title="Permanent link">¶</a></h3>
 <p><strong>Symptoms:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Error: could not read secret: token not found
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Error: could not read secret: token not found
 </code></pre></div></p>
 <p><strong>Root Cause:</strong>
 Referenced secret doesn't exist in repository.</p>
 <p><strong>Solution:</strong>
 1. Check secret name spelling and capitalization
-2. Verify secret exists in repository Settings → Secrets and variables → Actions
+2. Verify secret exists in repository Settings Secrets and variables Actions
 3. If using <code>secrets.GITHUB_TOKEN</code> - this doesn't exist! Use <code>github.token</code> instead
 4. Create missing secrets if needed:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_MASTER_KEY<span class="w"> </span>--body<span class="w"> </span><span class="s2">"your-token"</span>
-</code></pre></div></p>
+   <code>bash
+   gh secret set CODEX_MASTER_KEY --body "your-token"</code></p>
 <hr/>
 <h3 id="error-gh-not-found">Error: "gh: not found"<a class="headerlink" href="#error-gh-not-found" title="Permanent link">¶</a></h3>
 <p><strong>Symptoms:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>sh: gh: command not found
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>sh: gh: command not found
 </code></pre></div></p>
 <p><strong>Root Cause:</strong>
 GitHub CLI (gh) not installed in the runner environment.</p>
 <p><strong>Solution:</strong>
 Add setup step before using gh commands:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install GitHub CLI</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">    </span><span class="no">sudo apt-get update</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w">    </span><span class="no">sudo apt-get install -y gh</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">    </span><span class="no">gh --version</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install GitHub CLI</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="no">sudo apt-get update</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">    </span><span class="no">sudo apt-get install -y gh</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">    </span><span class="no">gh --version</span>
 </code></pre></div></p>
 <p>Or use a pre-built action:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install GitHub CLI</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cli/setup-gh-action@v1</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install GitHub CLI</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cli/setup-gh-action@v1</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="error-api-rate-limit-exceeded">Error: "api rate limit exceeded"<a class="headerlink" href="#error-api-rate-limit-exceeded" title="Permanent link">¶</a></h3>
 <p><strong>Symptoms:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Error: API rate limit exceeded
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Error: API rate limit exceeded
 </code></pre></div></p>
 <p><strong>Root Cause:</strong>
 Too many API calls in short time period. GitHub allows 5,000 requests per hour per token.</p>
 <p><strong>Solution:</strong>
 1. Check rate limits before operations:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check rate limits</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh api /rate_limit -q '.rate | "\(.remaining)/\(.limit)"'</span>
-</code></pre></div></p>
+   <code>yaml
+   - name: Check rate limits
+     run: gh api /rate_limit -q '.rate | "\(.remaining)/\(.limit)"'</code></p>
 <ol>
+<li>Implement exponential backoff:
+   ```yaml</li>
 <li>
-<p>Implement exponential backoff:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Retry with backoff</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">    </span><span class="no">for attempt in {1..3}; do</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">      </span><span class="no">gh api ... &amp;&amp; break || sleep $((2**attempt))</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w">    </span><span class="no">done</span>
-</code></pre></div></p>
+<p>name: Retry with backoff
+     run: |
+       for attempt in {1..3}; do
+         gh api ... &amp;&amp; break || sleep $((2**attempt))
+       done
+ ```</p>
 </li>
 <li>
 <p>Reduce API call frequency where possible</p>
@@ -2844,25 +2845,26 @@ Too many API calls in short time period. GitHub allows 5,000 requests per hour p
 Environment differences between local and CI. Token scopes, permissions, or authentication context differs.</p>
 <p><strong>Solution:</strong>
 1. Add <code>--verbose</code> flag to gh commands for debugging:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh pr view --verbose</span>
-</code></pre></div></p>
+   <code>yaml
+   run: gh pr view --verbose</code></p>
 <ol>
 <li>
 <p>Check workflow permissions:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">  </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w">  </span><span class="c1"># Add required scopes</span>
-</code></pre></div></p>
+   <code>yaml
+   permissions:
+     contents: read
+     pull-requests: read  # Add required scopes</code></p>
 </li>
 <li>
 <p>Verify secrets are set (note: they won't display in logs)</p>
 </li>
 <li>Use <code>gh auth status</code> to verify authentication:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify auth</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w">    </span><span class="no">gh auth status</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">    </span><span class="no">gh auth token | head -c 20  # Show first 20 chars only</span>
-</code></pre></div></li>
+   ```yaml</li>
+<li>name: Verify auth
+     run: |
+       gh auth status
+       gh auth token | head -c 20  # Show first 20 chars only
+ ```</li>
 </ol>
 <hr/>
 <h2 id="quick-reference-checklist">Quick Reference Checklist<a class="headerlink" href="#quick-reference-checklist" title="Permanent link">¶</a></h2>
@@ -2915,6 +2917,6 @@ Environment differences between local and CI. Token scopes, permissions, or auth
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

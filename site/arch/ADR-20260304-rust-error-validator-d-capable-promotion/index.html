@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260304-rust-error-validator-d-capable-promotion/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-20260304: Third D_CAPABLE Agent Promotion — rust-error-validator - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2282,7 +2282,7 @@
 <a class="md-nav__link" href="#ed-gate-state-at-time-of-promotion">
 <span class="md-ellipsis">
       
-        E→D Gate State at Time of Promotion
+        ED Gate State at Time of Promotion
       
     </span>
 </a>
@@ -2353,7 +2353,7 @@ Predecessor ADR: ADR-20260304-third-d-capable-evaluation.md</p>
 </blockquote>
 <h2 id="1-context">1. Context<a class="headerlink" href="#1-context" title="Permanent link">¶</a></h2>
 <p><code>workflow-ci-fixer</code> was promoted to <code>D_CAPABLE</code> in PR #3494 W-104
-(<code>ADR-20260304-second-d-capable-promotion.md</code>).  The evaluation ADR for the
+(<code>ADR-20260304-second-d-capable-promotion.md</code>). The evaluation ADR for the
 third D_CAPABLE slot (<code>ADR-20260304-third-d-capable-evaluation.md</code>) deferred
 <code>rust-error-validator</code> on two gaps:</p>
 <table>
@@ -2377,15 +2377,15 @@ third D_CAPABLE slot (<code>ADR-20260304-third-d-capable-evaluation.md</code>) d
 <p>Both gaps have now been resolved:</p>
 <ul>
 <li><strong>C7 resolved:</strong> @mbaetiong signed off on <code>maturity: production</code> for
-  <code>rust-error-validator</code> on 2026-03-04 (PR #3495 review comment).</li>
+ <code>rust-error-validator</code> on 2026-03-04 (PR #3495 review comment).</li>
 <li><strong>C4 resolved:</strong> Historical data reviewed across all session logs, CI run
-  outcomes, and <code>.codex/</code> audit trails.  <code>.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md</code>
-  records <code>rust-error-validator</code> as 24/24 tests passing, 100% pass rate, status
-  <code>Complete</code>.  Zero GROUNDED-tier enforcement violations found in the observable
-  history.  <code>violations_30d: 0</code> set by owner direction in lieu of a real-time
-  30-day window, as historical data is sufficient evidence.</li>
+ outcomes, and <code>.codex/</code> audit trails. <code>.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md</code>
+ records <code>rust-error-validator</code> as 24/24 tests passing, 100% pass rate, status
+ <code>Complete</code>. Zero GROUNDED-tier enforcement violations found in the observable
+ history. <code>violations_30d: 0</code> set by owner direction in lieu of a real-time
+ 30-day window, as historical data is sufficient evidence.</li>
 </ul>
-<h3 id="ed-gate-state-at-time-of-promotion">E→D Gate State at Time of Promotion<a class="headerlink" href="#ed-gate-state-at-time-of-promotion" title="Permanent link">¶</a></h3>
+<h3 id="ed-gate-state-at-time-of-promotion">ED Gate State at Time of Promotion<a class="headerlink" href="#ed-gate-state-at-time-of-promotion" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2499,7 +2499,7 @@ third D_CAPABLE slot (<code>ADR-20260304-third-d-capable-evaluation.md</code>) d
 <tbody>
 <tr>
 <td><code>.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md</code> line 100</td>
-<td><code>rust-error-validator</code> 24/24 tests  100% pass rate, status Complete</td>
+<td><code>rust-error-validator</code> 24/24 tests 100% pass rate, status Complete</td>
 </tr>
 <tr>
 <td><code>.codex/qa_walkthrough/capability_registry.json</code></td>
@@ -2520,8 +2520,8 @@ satisfy the 30-day observation window for <code>rust-error-validator</code>.</p>
 <h2 id="4-decision">4. Decision<a class="headerlink" href="#4-decision" title="Permanent link">¶</a></h2>
 <p><strong><code>rust-error-validator</code> promoted to <code>D_CAPABLE</code>.</strong></p>
 <p>Changes applied to <code>AGENT_REGISTRY.yaml</code> v0.2.1 (this PR):
-- <code>maturity: beta</code> → <code>maturity: production</code>
-- <code>autonomy_model: E</code> → <code>autonomy_model: D_CAPABLE</code>
+- <code>maturity: beta</code> <code>maturity: production</code>
+- <code>autonomy_model: E</code> <code>autonomy_model: D_CAPABLE</code>
 - <code>violations_30d: 0</code> added</p>
 <h2 id="5-updated-d_capable-roster">5. Updated D_CAPABLE Roster<a class="headerlink" href="#5-updated-d_capable-roster" title="Permanent link">¶</a></h2>
 <table>
@@ -2621,6 +2621,6 @@ satisfy the 30-day observation window for <code>rust-error-validator</code>.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

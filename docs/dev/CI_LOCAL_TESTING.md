@@ -1,6 +1,6 @@
 # CI/Local Testing Parity Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,7 +12,7 @@
 ## Why this matters
 
 GitHub Actions spins up a clean Python 3.12 environment, installs dependencies
-in a specific order, and runs pytest with specific flags.  Running a slightly
+in a specific order, and runs pytest with specific flags. Running a slightly
 different set of flags locally (e.g., missing `--timeout`, wrong marker
 expressions, different plugin versions) means a test can pass locally but fail
 in CI — or vice-versa.
@@ -54,13 +54,13 @@ The script:
 
 1. **Warns** if Python ≠ 3.12 (CI targets 3.12).
 2. Creates `.venv_ci/` at the repo root (dedicated name avoids polluting your
-   default venv).
+ default venv).
 3. Installs **pytest plugins first** — this is the same order as
-   `resilient_validation.yml`.  Installing plugins before the package prevents
-   pip from downgrading them while resolving the package's looser constraints.
+ `resilient_validation.yml`. Installing plugins before the package prevents
+ pip from downgrading them while resolving the package's looser constraints.
 4. Installs the package with `pip install -e .[dev]`.
 5. Installs PyTorch CPU build from `https://download.pytorch.org/whl/cpu`
-   (same index as CI).
+ (same index as CI).
 6. Runs `pre-commit install --install-hooks`.
 7. Optionally installs `markdown-link-check` via npm.
 8. Verifies all tools are on `PATH` and prints version numbers.
@@ -75,7 +75,7 @@ The script:
 bash scripts/ci_local.sh <subcommand>
 ```
 
-### CI workflow → local subcommand mapping
+### CI workflow local subcommand mapping
 
 | CI Workflow | YAML file | Subcommand | When to run |
 |---|---|---|---|
@@ -170,7 +170,7 @@ Ruff + pre-commit on changed files (fast, good for tight inner loops).
 bash scripts/ci_local.sh all
 ```
 
-Runs `fast → quick → premerge` in sequence and prints a combined summary.
+Runs `fast quick premerge` in sequence and prints a combined summary.
 
 ---
 
@@ -365,9 +365,9 @@ Most common reasons:
 
 1. **Different Python version** — CI uses 3.12; check `python --version`.
 2. **Plugin version mismatch** — run `pip list | grep pytest` and compare
-   against the pinned versions in `resilient_validation.yml`.
+ against the pinned versions in `resilient_validation.yml`.
 3. **Missing environment variable** — CI sets `CI=true` and `GITHUB_*`
-   variables; some tests check for these.
+ variables; some tests check for these.
 4. **Stale `.venv_ci`** — delete and recreate (see above).
 
 ---
@@ -393,7 +393,7 @@ venv: ${{ runner.os }}-venv-py<version>-<hash(pyproject.toml, requirements/lock.
 ```
 
 A **venv cache hit** means the entire `pip install` step is skipped — only the
-already-installed `.venv_ci` directory is restored.  A **venv cache miss**
+already-installed `.venv_ci` directory is restored. A **venv cache miss**
 triggers a fresh install and saves the result for the next run.
 
 #### Local cache reuse
@@ -432,13 +432,13 @@ Expected sizes:
 bash scripts/dev_env_setup.sh --clean
 ```
 
-Runs `pip cache purge` and deletes `.venv_ci`.  The next run rebuilds from
+Runs `pip cache purge` and deletes `.venv_ci`. The next run rebuilds from
 scratch (downloading fresh wheels into `~/.cache/pip`).
 
 ### Predict CI cache misses
 
 A CI cache miss happens whenever `pyproject.toml` or `requirements/lock.txt`
-changes.  You can predict the new key before pushing:
+changes. You can predict the new key before pushing:
 
 ```bash
 sha256sum pyproject.toml requirements/lock.txt | sha256sum | cut -c1-16

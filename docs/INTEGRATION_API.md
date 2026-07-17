@@ -1,10 +1,10 @@
 # Integration & GitHub API Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Phase 2 - Master API Documentation  
-**Coverage:** 78+ public functions & classes  
-**Modules:** github/*, auth/*  
+**Status:** Phase 2 - Master API Documentation
+**Coverage:** 78+ public functions & classes
+**Modules:** github/*, auth/*
 **Last Updated: 2026-07-08
 
 ---
@@ -21,8 +21,8 @@
 
 ## GitHub MCP Poster
 
-**File:** `src/codex/github/mcp_poster.py`  
-**Purpose:** Model Context Protocol integration for GitHub interactions  
+**File:** `src/codex/github/mcp_poster.py`
+**Purpose:** Model Context Protocol integration for GitHub interactions
 **LOC:** 686 | **API:** 32 public functions
 
 ### Classes
@@ -49,9 +49,9 @@ Initialize MCP poster for a repository.
 from codex.github.mcp_poster import MCPPoster
 
 poster = MCPPoster(
-    repo_owner="Aries-Serpent",
-    repo_name="_codex_",
-    token="ghp_xxxxxxxxxxxx"
+ repo_owner="Aries-Serpent",
+ repo_name="_codex_",
+ token="ghp_xxxxxxxxxxxx"
 )
 ```
 
@@ -77,10 +77,10 @@ Post comment on pull request.
 **Example:**
 ```python
 comment_meta = poster.post_comment(
-    pr_number=42,
-    comment=" API documentation complete\n\n" +
-            "- [ ] Core module\n" +
-            "- [x] Storage module"
+ pr_number=42,
+ comment=" API documentation complete\n\n" +
+ "- [ ] Core module\n" +
+ "- [x] Storage module"
 )
 ```
 
@@ -103,9 +103,9 @@ Post review on pull request.
 **Example:**
 ```python
 review = poster.post_review(
-    pr_number=42,
-    review_body="LGTM - excellent documentation",
-    event="APPROVE"
+ pr_number=42,
+ review_body="LGTM - excellent documentation",
+ event="APPROVE"
 )
 ```
 
@@ -128,9 +128,9 @@ Update commit status check.
 **Example:**
 ```python
 status = poster.update_status(
-    commit_sha="abc123def456",
-    state="success",
-    description="API documentation generation complete"
+ commit_sha="abc123def456",
+ state="success",
+ description="API documentation generation complete"
 )
 ```
 
@@ -153,9 +153,9 @@ Create new issue in repository.
 **Example:**
 ```python
 issue = poster.post_issue(
-    title="API Documentation Gap: Auth Module",
-    body="The auth module has 0% API documentation\n\nScope:\n- 25 public functions\n- 5 classes",
-    labels=["docs", "priority:high"]
+ title="API Documentation Gap: Auth Module",
+ body="The auth module has 0% API documentation\n\nScope:\n- 25 public functions\n- 5 classes",
+ labels=["docs", "priority:high"]
 )
 ```
 
@@ -177,9 +177,9 @@ Format structured update as Markdown.
 **Example:**
 ```python
 sections = {
-    "Summary": " Complete",
-    "Metrics": "- Coverage: 25%\n- Functions: 200+",
-    "Next": "Phase 3"
+ "Summary": " Complete",
+ "Metrics": "- Coverage: 25%\n- Functions: 200+",
+ "Next": "Phase 3"
 }
 markdown = poster.format_markdown("Campaign Status", sections)
 ```
@@ -188,8 +188,8 @@ markdown = poster.format_markdown("Campaign Status", sections)
 
 ## GitHub Discussion Manager
 
-**File:** `src/codex/github/discussion_manager.py`  
-**Purpose:** GitHub Discussions API integration for community engagement  
+**File:** `src/codex/github/discussion_manager.py`
+**Purpose:** GitHub Discussions API integration for community engagement
 **LOC:** 965 | **API:** 21 public functions
 
 ### Classes
@@ -270,9 +270,9 @@ Create new discussion.
 **Example:**
 ```python
 discussion = manager.create_discussion(
-    title="API Documentation Phase Complete",
-    body="WS1 API documentation has reached 20% coverage...",
-    category="Announcements"
+ title="API Documentation Phase Complete",
+ body="WS1 API documentation has reached 20% coverage...",
+ category="Announcements"
 )
 ```
 
@@ -310,8 +310,8 @@ Mark comment as answer in Q&A discussion.
 
 ## GitHub App Authentication
 
-**File:** `src/codex/auth/github_app.py`  
-**Purpose:** GitHub App authentication and OAuth handling  
+**File:** `src/codex/auth/github_app.py`
+**Purpose:** GitHub App authentication and OAuth handling
 **LOC:** 677 | **API:** 25 public functions
 
 ### Classes
@@ -354,10 +354,10 @@ Get installation access token.
 **Example:**
 ```python
 auth = GitHubAppAuth(
-    app_id="12345",
-    private_key=open("private_key.pem").read(),
-    client_id="client_id",
-    client_secret="client_secret"
+ app_id="12345",
+ private_key=open("private_key.pem").read(),
+ client_id="client_id",
+ client_secret="client_secret"
 )
 
 token = auth.get_access_token(installation_id=98765)
@@ -416,8 +416,8 @@ Refresh an access token.
 
 ## Token Broker
 
-**File:** `src/codex/autonomy/token_broker.py`  
-**Purpose:** Token lifecycle management and authentication coordination  
+**File:** `src/codex/autonomy/token_broker.py`
+**Purpose:** Token lifecycle management and authentication coordination
 **LOC:** 561 | **API:** 28 public functions
 
 ### Classes
@@ -447,9 +447,9 @@ from codex.autonomy.token_broker import TokenBroker
 
 broker = TokenBroker()
 token = broker.issue_token(
-    user_id="user123",
-    scope="write",
-    ttl=3600  # 1 hour
+ user_id="user123",
+ scope="write",
+ ttl=3600 # 1 hour
 )
 ```
 
@@ -535,31 +535,31 @@ Rotate all tokens for a user (revoke old, issue new).
 from codex.github.mcp_poster import MCPPoster
 
 poster = MCPPoster(
-    repo_owner="Aries-Serpent",
-    repo_name="_codex_",
-    token="ghp_xxxxxxxxxxxx"
+ repo_owner="Aries-Serpent",
+ repo_name="_codex_",
+ token="ghp_xxxxxxxxxxxx"
 )
 
 # Post status update on PR
 poster.post_comment(
-    pr_number=42,
-    comment=" API documentation phase complete\n\n" +
-            "**Coverage:** 4.3% → 20%\n" +
-            "**Signatures:** 200+ documented"
+ pr_number=42,
+ comment=" API documentation phase complete\n\n" +
+ "**Coverage:** 4.3% 20%\n" +
+ "**Signatures:** 200+ documented"
 )
 
 # Post approval review
 poster.post_review(
-    pr_number=42,
-    review_body="Excellent documentation quality",
-    event="APPROVE"
+ pr_number=42,
+ review_body="Excellent documentation quality",
+ event="APPROVE"
 )
 
 # Create tracking issue
 poster.post_issue(
-    title="Document remaining 300 API signatures",
-    body="Continue expanding API documentation for Phase 13 readiness",
-    labels=["docs", "phase-13"]
+ title="Document remaining 300 API signatures",
+ body="Continue expanding API documentation for Phase 13 readiness",
+ labels=["docs", "phase-13"]
 )
 ```
 
@@ -569,10 +569,10 @@ poster.post_issue(
 from codex.auth.github_app import GitHubAppAuth
 
 auth = GitHubAppAuth(
-    app_id="123456",
-    private_key=open("private_key.pem").read(),
-    client_id="Iv1.xxx",
-    client_secret="ghp_xxx"
+ app_id="123456",
+ private_key=open("private_key.pem").read(),
+ client_id="Iv1.xxx",
+ client_secret="ghp_xxx"
 )
 
 # Get access token for installation
@@ -592,9 +592,9 @@ broker = TokenBroker()
 
 # Issue token
 token = broker.issue_token(
-    user_id="user@example.com",
-    scope="write",
-    ttl=3600  # 1 hour
+ user_id="user@example.com",
+ scope="write",
+ ttl=3600 # 1 hour
 )
 
 # Verify token
@@ -608,11 +608,11 @@ broker.revoke_token(token)
 
 ## Coverage Status
 
-**Documented Signatures:** 18/78 (23%)  
+**Documented Signatures:** 18/78 (23%)
 **Next Phase:** Complete remaining integration functions
 
 ---
 
-**Generated:** 2026-07-08  
-**Campaign:** WS1 API Documentation Expansion  
+**Generated:** 2026-07-08
+**Campaign:** WS1 API Documentation Expansion
 **Phase:** 2 - Master API References

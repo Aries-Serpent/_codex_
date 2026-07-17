@@ -1,11 +1,11 @@
 # Cognitive Brain Status — PR #3575 (CI Failure Triage + Auto-Fix Mechanism)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-03-14T04:45Z
-**PR:** #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
+**PR:** #3575 — fix: CI failures — Python 3.113.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
 **Branch:** `copilot/ci-failure-triage-report`
-**Status:**  IN PROGRESS — Sessions 22–24 complete, awaiting final CI green
+**Status:** IN PROGRESS — Sessions 22–24 complete, awaiting final CI green
 **Agent:** github-actions[bot] / copilot-swe-agent
 
 ---
@@ -14,18 +14,18 @@
 
 | Phase | Status | Description |
 |-------|--------|-------------|
-| Phase 1 — Python version alignment |  COMPLETE | 4 workflows updated 3.11 → 3.12 |
-| Phase 2 — Deferral scanner hardening |  COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
-| Phase 3 — actionlint SC2170 fix |  COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
-| Phase 4 — Agent auth branch resolution |  COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
-| Phase 5 — Cognitive Pre-flight auto-fix |  COMPLETE | `session_wrapup_autofix.py` + workflow step |
-| Phase 6 — PR review thread resolution |  COMPLETE | `is` → `==`, exemption anchor tightened |
-| Phase 7 — Documentation compliance |  COMPLETE | Accountability report + CHANGELOG updated |
-| Phase 8 — Double-backtick span fix (Session 23) |  COMPLETE | `_INLINE_CODE_SPAN` extended to strip double-bt spans first (Deferral Gate run #71) |
-| Phase 9 — Outer-single-bt display wrapper fix (Session 24) |  COMPLETE | Three-tier `_INLINE_CODE_SPAN` pattern; test isolation fixture (Deferral Gate run #74) |
-| Phase 10 — Full docs/QA/configs/mermaid review (Session 24) |  COMPLETE | 27 Mermaid diagrams, 8 QA docs, 24 ADRs, Pattern #25, status doc all updated |
-| Phase 11 — Cognitive brain state files update (Session 24) |  COMPLETE | session_tracker.md, objectives_tracker.md, pattern_learning_store.json refreshed |
-| Phase 12 — Infrastructure failures |  ADMIN REQUIRED | GHCR, CodeQL, Dependency Submission need admin action |
+| Phase 1 — Python version alignment | COMPLETE | 4 workflows updated 3.11 3.12 |
+| Phase 2 — Deferral scanner hardening | COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
+| Phase 3 — actionlint SC2170 fix | COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
+| Phase 4 — Agent auth branch resolution | COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
+| Phase 5 — Cognitive Pre-flight auto-fix | COMPLETE | `session_wrapup_autofix.py` + workflow step |
+| Phase 6 — PR review thread resolution | COMPLETE | `is` `==`, exemption anchor tightened |
+| Phase 7 — Documentation compliance | COMPLETE | Accountability report + CHANGELOG updated |
+| Phase 8 — Double-backtick span fix (Session 23) | COMPLETE | `_INLINE_CODE_SPAN` extended to strip double-bt spans first (Deferral Gate run #71) |
+| Phase 9 — Outer-single-bt display wrapper fix (Session 24) | COMPLETE | Three-tier `_INLINE_CODE_SPAN` pattern; test isolation fixture (Deferral Gate run #74) |
+| Phase 10 — Full docs/QA/configs/mermaid review (Session 24) | COMPLETE | 27 Mermaid diagrams, 8 QA docs, 24 ADRs, Pattern #25, status doc all updated |
+| Phase 11 — Cognitive brain state files update (Session 24) | COMPLETE | session_tracker.md, objectives_tracker.md, pattern_learning_store.json refreshed |
+| Phase 12 — Infrastructure failures | ADMIN REQUIRED | GHCR, CodeQL, Dependency Submission need admin action |
 
 ---
 
@@ -33,27 +33,34 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR body text line", "Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"'}}%%
+
 flowchart TD
-    PR["PR body text line"] --> S1
 
-    subgraph "Pre-processing: _INLINE_CODE_SPAN.sub('', line)"
-        S1["Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"]
-        S2["Step 2: Double-backtick span\n`` content ``\ne.g. `` `future task` ``"]
-        S3["Step 3: Single-backtick span\n` content `\ne.g. `future task`"]
-        S1 --> S2 --> S3
-    end
+ PR["PR body text line"] --> S1
 
-    S3 --> SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
-    SCAN -->|match| EXEMPTION["Exemption check\n(# noqa, <!-- noqa -->, path anchors)"]
-    SCAN -->|no match| PASS[" PASS"]
-    EXEMPTION -->|exempt| PASS
-    EXEMPTION -->|not exempt| FAIL[" FAIL — policy violation"]
+ subgraph "Pre-processing: _INLINE_CODE_SPAN.sub('', line)"
+ S1["Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"]
+ S2["Step 2: Double-backtick span\n`` content ``\ne.g. `` `future task` ``"]
+ S3["Step 3: Single-backtick span\n` content `\ne.g. `future task`"]
 
-    style S1 fill:#ffd700
-    style S2 fill:#98fb98
-    style S3 fill:#87ceeb
-    style PASS fill:#90EE90
-    style FAIL fill:#ff6b6b
+ S1 --> S2 --> S3
+ end
+
+ S3 --> SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
+
+ SCAN -->|match| EXEMPTION["Exemption check\n(# noqa, <!-- noqa -->, path anchors)"]
+
+ SCAN -->|no match| PASS[" PASS"]
+
+ EXEMPTION -->|exempt| PASS
+
+ EXEMPTION -->|not exempt| FAIL[" FAIL — policy violation"]
+
+ style S1 fill:#ffd700
+ style S2 fill:#98fb98
+ style S3 fill:#87ceeb
+ style PASS fill:#90EE90
+ style FAIL fill:#ff6b6b
 ```
 
 **Three-tier priority order is mandatory**: outer-single-bt wrapper MUST be stripped before
@@ -92,26 +99,34 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Agent Token Delegation\nenabled", "cognitive-preflight job"'}}%%
+
 flowchart TD
-    ATD["Agent Token Delegation\nenabled"] --> CPF
 
-    subgraph CPF["cognitive-preflight job"]
-        R4["REQ-4: accountability_check"]
-        R5["REQ-5: changelog_check"]
-        AFX["autofix_docs step\n(if REQ-4 OR REQ-5 failed)"]
-        R4 -->|FAIL| AFX
-        R5 -->|FAIL| AFX
-        AFX --> FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
-        FIX --> PUSH["git commit [skip ci]\ngit push → PR branch"]
-        PUSH --> NEXT["Next non-skip run:\nREQ-4  REQ-5 "]
-    end
+ ATD["Agent Token Delegation\nenabled"] --> CPF
 
-    R4 -->|PASS| DONE[" continue"]
-    R5 -->|PASS| DONE
+ subgraph CPF["cognitive-preflight job"]
+ R4["REQ-4: accountability_check"]
+ R5["REQ-5: changelog_check"]
+ AFX["autofix_docs step\n(if REQ-4 OR REQ-5 failed)"]
 
-    style AFX fill:#ffd700
-    style FIX fill:#98fb98
-    style DONE fill:#90EE90
+ R4 -->|FAIL| AFX
+
+ R5 -->|FAIL| AFX
+
+ AFX --> FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
+
+ FIX --> PUSH["git commit [skip ci]\ngit push PR branch"]
+
+ PUSH --> NEXT["Next non-skip run:\nREQ-4 REQ-5 "]
+ end
+
+ R4 -->|PASS| DONE[" continue"]
+
+ R5 -->|PASS| DONE
+
+ style AFX fill:#ffd700
+ style FIX fill:#98fb98
+ style DONE fill:#90EE90
 ```
 
 ---
@@ -121,22 +136,22 @@ flowchart TD
 ### Pattern #24 (PREFLIGHT_001 — Updated)
 ```yaml
 - id: accountability_report_not_updated
-  description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
-  auto_fixable: true
-  fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
-  workflow_step: "agent-auth-delegation.yml:autofix_docs"
-  sessions_affected: [22, 23, 24]
+ description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+ auto_fixable: true
+ fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
+ workflow_step: "agent-auth-delegation.yml:autofix_docs"
+ sessions_affected: [22, 23, 24]
 ```
 
 ### Pattern #25 (DEFERRAL_001 — Updated Session 24)
 ```yaml
 - id: deferral_language_gate_false_positive
-  description: "PR description contains nested backtick code span examples triggering scanner"
-  three_tier_fix:
-    tier_1: "outer ` `` content `` ` display wrapper — strip FIRST"
-    tier_2: "double-backtick span `` content `` — strip SECOND"
-    tier_3: "single-backtick span `content` — strip THIRD"
-  sessions_affected: [22, 23, 24]
+ description: "PR description contains nested backtick code span examples triggering scanner"
+ three_tier_fix:
+ tier_1: "outer ` `` content `` ` display wrapper — strip FIRST"
+ tier_2: "double-backtick span `` content `` — strip SECOND"
+ tier_3: "single-backtick span `content` — strip THIRD"
+ sessions_affected: [22, 23, 24]
 ```
 
 ---
@@ -145,15 +160,15 @@ flowchart TD
 
 | CI Gate | Before PR #3575 | Session 22 | Session 23 | Session 24 |
 |---------|-----------------|------------|------------|------------|
-| Deferral Gate — plain text |  Fails |  `noqa` + single-bt |  |  |
-| Deferral Gate — double-bt span |  Fails |  Not handled |  Double-bt first |  |
-| Deferral Gate — outer-single-bt |  Fails |  |  |  Three-tier pattern |
-| Cognitive Pre-flight REQ-4 |  Manual fix |  Auto-heal |  |  |
-| Cognitive Pre-flight REQ-5 |  Manual fix |  Auto-heal |  |  |
-| Python version mismatch |  Fail |  3.12 |  |  |
-| actionlint SC2170 |  Flags |  Fixed |  |  |
-| Agent auth branch |  Pushes to merge ref |  Guard |  |  |
-| Brain interface tests (`_MIN_CONFIDENCE`) |  3 failing |  |  |  Fixture isolation |
+| Deferral Gate — plain text | Fails | `noqa` + single-bt | | |
+| Deferral Gate — double-bt span | Fails | Not handled | Double-bt first | |
+| Deferral Gate — outer-single-bt | Fails | | | Three-tier pattern |
+| Cognitive Pre-flight REQ-4 | Manual fix | Auto-heal | | |
+| Cognitive Pre-flight REQ-5 | Manual fix | Auto-heal | | |
+| Python version mismatch | Fail | 3.12 | | |
+| actionlint SC2170 | Flags | Fixed | | |
+| Agent auth branch | Pushes to merge ref | Guard | | |
+| Brain interface tests (`_MIN_CONFIDENCE`) | 3 failing | | | Fixture isolation |
 
 ---
 
@@ -161,19 +176,19 @@ flowchart TD
 
 | Workflow | Root Cause | Status |
 |----------|-----------|--------|
-| Build & Push Preview Image | GHCR package write permissions |  Admin required |
-| CodeQL | `JOB_STATUS_CONFIGURATION_ERROR` on feature branches |  Admin required |
-| Automatic Dependency Submission | Transient GitHub API 500 |  Transient/infra |
-| Copilot coding agent | Internal Copilot infrastructure |  Copilot infra |
+| Build & Push Preview Image | GHCR package write permissions | Admin required |
+| CodeQL | `JOB_STATUS_CONFIGURATION_ERROR` on feature branches | Admin required |
+| Automatic Dependency Submission | Transient GitHub API 500 | Transient/infra |
+| Copilot coding agent | Internal Copilot infrastructure | Copilot infra |
 
 ---
 
 _Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-001 cognitive-preflight gate_
 
 **Generated:** 2026-03-14T03:20Z
-**PR:** #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
+**PR:** #3575 — fix: CI failures — Python 3.113.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
 **Branch:** `copilot/ci-failure-triage-report`
-**Status:**  IN PROGRESS — auto-fix mechanism deployed, awaiting CI validation
+**Status:** IN PROGRESS — auto-fix mechanism deployed, awaiting CI validation
 **Agent:** github-actions[bot] / copilot-swe-agent
 
 ---
@@ -182,13 +197,13 @@ _Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-0
 
 | Phase | Status | Description |
 |-------|--------|-------------|
-| Phase 1 — Python version alignment |  COMPLETE | 4 workflows updated 3.11 → 3.12 |
-| Phase 2 — Deferral scanner hardening |  COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
-| Phase 3 — actionlint SC2170 fix |  COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
-| Phase 4 — Agent auth branch resolution |  COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
-| Phase 5 — Cognitive Pre-flight auto-fix |  COMPLETE | `session_wrapup_autofix.py` + workflow step |
-| Phase 6 — PR review thread resolution |  COMPLETE | `is` → `==`, exemption anchor tightened |
-| Phase 7 — Documentation compliance |  COMPLETE | Accountability report + CHANGELOG updated |
+| Phase 1 — Python version alignment | COMPLETE | 4 workflows updated 3.11 3.12 |
+| Phase 2 — Deferral scanner hardening | COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
+| Phase 3 — actionlint SC2170 fix | COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
+| Phase 4 — Agent auth branch resolution | COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
+| Phase 5 — Cognitive Pre-flight auto-fix | COMPLETE | `session_wrapup_autofix.py` + workflow step |
+| Phase 6 — PR review thread resolution | COMPLETE | `is` `==`, exemption anchor tightened |
+| Phase 7 — Documentation compliance | COMPLETE | Accountability report + CHANGELOG updated |
 
 ---
 
@@ -198,7 +213,7 @@ _Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-0
 
 **Frequency:** 5 consecutive failures before this session
 **Root cause:** Every commit pushed to the branch (including automated merge-from-main commits)
-must touch `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.  Commits that don't
+must touch `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`. Commits that don't
 (e.g. workflow-only fixes, cognitive brain metadata updates from main) fail REQ-4.
 
 **Fix applied:**
@@ -224,25 +239,25 @@ that the scanner is designed to catch. These appear as plain text (not code span
 ## Architecture Diagram: Auto-Fix Flow
 
 ```
-Agent Token Delegation enabled  # pragma: allowlist secret
-         │
-         ▼
-┌─────────────────────────────────────────────────────────┐
-│            cognitive-preflight job                       │
-│                                                          │
-│  REQ-4: accountability_check ──── PASS ──► continue     │
-│                     │                                    │
-│                   FAIL                                   │
-│                     ▼                                    │
-│  REQ-5: changelog_check ─────── PASS/FAIL               │
-│                     │                                    │
-│  Auto-fix step (always, if REQ-4 or REQ-5 failed):      │
-│    1. session_wrapup_autofix.py --fix-accountability     │
-│                                 --fix-changelog          │
-│    2. git add + git commit [skip ci]                     │
-│    3. git push → PR branch (CODEX_MASTER_KEY)           │
-│    4. Next non-skip run: REQ-4 , REQ-5               │
-└─────────────────────────────────────────────────────────┘
+Agent Token Delegation enabled # pragma: allowlist secret
+ 
+ 
+
+ cognitive-preflight job 
+ 
+ REQ-4: accountability_check PASS continue 
+ 
+ FAIL 
+ 
+ REQ-5: changelog_check PASS/FAIL 
+ 
+ Auto-fix step (always, if REQ-4 or REQ-5 failed): 
+ 1. session_wrapup_autofix.py --fix-accountability 
+ --fix-changelog 
+ 2. git add + git commit [skip ci] 
+ 3. git push PR branch (CODEX_MASTER_KEY) 
+ 4. Next non-skip run: REQ-4 , REQ-5 
+
 ```
 
 ---
@@ -252,24 +267,24 @@ Agent Token Delegation enabled  # pragma: allowlist secret
 ### New Pattern Added (Pattern #20)
 ```yaml
 - id: accountability_report_not_updated
-  description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
-  trigger: "Cognitive Pre-flight REQ-4 failure"
-  auto_fixable: true
-  fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
-  workflow_step: "agent-auth-delegation.yml:autofix_docs"
-  frequency: high
-  sessions_affected: [22, 21, 20, 19, 18]
+ description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+ trigger: "Cognitive Pre-flight REQ-4 failure"
+ auto_fixable: true
+ fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
+ workflow_step: "agent-auth-delegation.yml:autofix_docs"
+ frequency: high
+ sessions_affected: [22, 21, 20, 19, 18]
 ```
 
 ### Updated Pattern (Pattern #5)
 ```yaml
 - id: deferral_language_gate_false_positive
-  description: "PR description contains example deferral phrases triggering false positive"
-  trigger: "Deferral Language Gate PR_SCAN failure"
-  auto_fixable: false  # Requires PR description update
-  fix_guidance: "Wrap example phrases in backtick code spans OR add <!-- noqa: deferral --> comment"
-  frequency: medium
-  sessions_affected: [22]
+ description: "PR description contains example deferral phrases triggering false positive"
+ trigger: "Deferral Language Gate PR_SCAN failure"
+ auto_fixable: false # Requires PR description update
+ fix_guidance: "Wrap example phrases in backtick code spans OR add <!-- noqa: deferral --> comment"
+ frequency: medium
+ sessions_affected: [22]
 ```
 
 ---
@@ -299,12 +314,12 @@ Agent Token Delegation enabled  # pragma: allowlist secret
 
 | CI Gate | Before This PR | After This PR |
 |---------|----------------|---------------|
-| Deferral Language Gate |  Fails on doc examples |  Inline code spans exempt |
-| Cognitive Pre-flight REQ-4 |  Manual fix required |  Auto-heal via `session_wrapup_autofix.py` |
-| Cognitive Pre-flight REQ-5 |  Manual fix required |  Auto-heal via `session_wrapup_autofix.py` |
-| Python version mismatch |  `pip install` fails |  All 4 workflows use 3.12 |
-| actionlint SC2170 |  Flags arithmetic in workflow |  `(( ${VAR:-0} > 0 ))` |
-| Agent auth branch |  Pushes to merge ref |  `^[0-9]+/merge$` guard |
+| Deferral Language Gate | Fails on doc examples | Inline code spans exempt |
+| Cognitive Pre-flight REQ-4 | Manual fix required | Auto-heal via `session_wrapup_autofix.py` |
+| Cognitive Pre-flight REQ-5 | Manual fix required | Auto-heal via `session_wrapup_autofix.py` |
+| Python version mismatch | `pip install` fails | All 4 workflows use 3.12 |
+| actionlint SC2170 | Flags arithmetic in workflow | `(( ${VAR:-0} > 0 ))` |
+| Agent auth branch | Pushes to merge ref | `^[0-9]+/merge$` guard |
 
 ---
 

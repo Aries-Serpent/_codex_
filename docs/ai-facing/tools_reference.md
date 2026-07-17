@@ -1,6 +1,6 @@
 # Tools Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > For AI Agents - Last updated: 2026-06-22
 

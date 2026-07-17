@@ -1,43 +1,43 @@
 # Copilot Workflow Agent - Batchset Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2026-06-22 | Version: 1.0.0  
+> Generated: 2026-06-22 | Version: 1.0.0
 > Purpose: Work batches for iterative implementation with acceptance criteria
 
 ## Batch Overview
 
 | Batch | Name | Phase | Status | Checkpoint |
 |-------|------|-------|--------|------------|
-| B0 | Plan Documentation | 0 |  COMPLETE | `B0-COMPLETE` |
-| B1 | GitHub API Client | 1 |  COMPLETE | `B1-COMPLETE` |
-| B2 | Workflow Inventory | 1 | 🔜 PENDING | `B2-COMPLETE` |
-| B3 | Session State | 1 | 🔜 PENDING | `B3-COMPLETE` |
-| B4 | Agent Orchestrator | 1 | 🔜 PENDING | `B4-COMPLETE` |
-| B5 | Failure Detector | 2 | 🔜 PENDING | `B5-COMPLETE` |
-| B6 | Auto-Remediator | 2 | 🔜 PENDING | `B6-COMPLETE` |
-| B7 | Agent Surface | 3 | 🔜 PENDING | `B7-COMPLETE` |
-| B8 | Approval Engine | 3 | 🔜 PENDING | `B8-COMPLETE` |
-| B9 | Production Hardening | 4 | 🔜 PENDING | `B9-COMPLETE` |
+| B0 | Plan Documentation | 0 | COMPLETE | `B0-COMPLETE` |
+| B1 | GitHub API Client | 1 | COMPLETE | `B1-COMPLETE` |
+| B2 | Workflow Inventory | 1 | PENDING | `B2-COMPLETE` |
+| B3 | Session State | 1 | PENDING | `B3-COMPLETE` |
+| B4 | Agent Orchestrator | 1 | PENDING | `B4-COMPLETE` |
+| B5 | Failure Detector | 2 | PENDING | `B5-COMPLETE` |
+| B6 | Auto-Remediator | 2 | PENDING | `B6-COMPLETE` |
+| B7 | Agent Surface | 3 | PENDING | `B7-COMPLETE` |
+| B8 | Approval Engine | 3 | PENDING | `B8-COMPLETE` |
+| B9 | Production Hardening | 4 | PENDING | `B9-COMPLETE` |
 
 ---
 
 ## B0 — Plan Documentation
 
-**Status**:  IN PROGRESS  
+**Status**: IN PROGRESS
 **Checkpoint**: `B0-COMPLETE`
 
 ### Missing Files
-- `docs/plans/copilot-workflow-agent/README.md` 
-- `docs/plans/copilot-workflow-agent/00-PLANSET.md` 
-- `docs/plans/copilot-workflow-agent/01-BATCHSET.md` 
-- `docs/plans/copilot-workflow-agent/02-PATCHSET.md` 🔜
-- `docs/plans/copilot-workflow-agent/03-ARCHITECTURE.md` 🔜
-- `docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md` 🔜
-- `docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md` 🔜
+- `docs/plans/copilot-workflow-agent/README.md`
+- `docs/plans/copilot-workflow-agent/00-PLANSET.md`
+- `docs/plans/copilot-workflow-agent/01-BATCHSET.md`
+- `docs/plans/copilot-workflow-agent/02-PATCHSET.md`
+- `docs/plans/copilot-workflow-agent/03-ARCHITECTURE.md`
+- `docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md`
+- `docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md`
 
 ### Prompt
 > Create comprehensive plan documentation for the Copilot Workflow Agent including master planset, work batches, patch prompts, architecture design, checkpoint system, and continuation prompts. Follow existing batchset/patchset patterns in docs/plans/.
@@ -58,16 +58,16 @@ ls -la docs/plans/copilot-workflow-agent/
 
 ## B1 — GitHub API Client
 
-**Status**:  COMPLETE  
-**Checkpoint**: `B1-COMPLETE`  
+**Status**: COMPLETE
+**Checkpoint**: `B1-COMPLETE`
 **Dependencies**: B0
 
 ### Target Files
-- `src/services/github/__init__.py` 
-- `src/services/github/client.py` 
-- `src/services/github/types.py` 
-- `src/services/github/exceptions.py` 
-- `tests/services/github/test_client.py` 
+- `src/services/github/__init__.py`
+- `src/services/github/client.py`
+- `src/services/github/types.py`
+- `src/services/github/exceptions.py`
+- `tests/services/github/test_client.py`
 
 ### Prompt
 > Implement a GitHub API client wrapper with typed interfaces for workflow operations. Include methods for triggering workflows via workflow_dispatch, polling run status, retrieving job logs, and downloading artifacts. Use async/await, implement retry with exponential backoff, handle rate limits gracefully, and support both PAT and GitHub App authentication.
@@ -100,8 +100,8 @@ print(client.list_workflows('Aries-Serpent', '_codex_'))
 
 ## B2 — Workflow Inventory
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B2-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B2-COMPLETE`
 **Dependencies**: B0
 
 ### Target Files
@@ -140,8 +140,8 @@ pytest tests/services/workflow/ -v
 
 ## B3 — Session State
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B3-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B3-COMPLETE`
 **Dependencies**: B0
 
 ### Target Files
@@ -186,8 +186,8 @@ pytest tests/services/session/ -v
 
 ## B4 — Agent Orchestrator
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B4-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B4-COMPLETE`
 **Dependencies**: B1, B2, B3
 
 ### Target Files
@@ -198,10 +198,10 @@ pytest tests/services/session/ -v
 - `tests/services/agent/test_orchestrator.py`
 
 ### Prompt
-> Implement the agent orchestrator that coordinates workflow operations. Follow PLAN→ACT→OBSERVE→VERIFY pattern. Integrate GitHub client, workflow inventory, and session state. Handle action queueing, execution, result collection, and state updates. Support dry-run mode and action cancellation.
+> Implement the agent orchestrator that coordinates workflow operations. Follow PLANACTOBSERVEVERIFY pattern. Integrate GitHub client, workflow inventory, and session state. Handle action queueing, execution, result collection, and state updates. Support dry-run mode and action cancellation.
 
 ### Acceptance Criteria
-- [ ] PLAN→ACT→OBSERVE→VERIFY flow
+- [ ] PLANACTOBSERVEVERIFY flow
 - [ ] Action queue with priorities
 - [ ] Dry-run mode for previews
 - [ ] Cancellation support
@@ -226,8 +226,8 @@ pytest tests/services/agent/ -v
 
 ## B5 — Failure Detector
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B5-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B5-COMPLETE`
 **Dependencies**: B1, B4
 
 ### Target Files
@@ -275,8 +275,8 @@ pytest tests/services/healing/ -v
 
 ## B6 — Auto-Remediator
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B6-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B6-COMPLETE`
 **Dependencies**: B5
 
 ### Target Files
@@ -320,8 +320,8 @@ pytest tests/services/healing/test_remediator.py -v
 
 ## B7 — Agent Surface
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B7-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B7-COMPLETE`
 **Dependencies**: B4
 
 ### Target Files
@@ -359,8 +359,8 @@ pytest tests/services/agent/test_surface.py -v
 
 ## B8 — Approval Engine
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B8-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B8-COMPLETE`
 **Dependencies**: B4, B7
 
 ### Target Files
@@ -401,8 +401,8 @@ pytest tests/services/agent/test_approval.py -v
 
 ## B9 — Production Hardening
 
-**Status**: 🔜 PENDING  
-**Checkpoint**: `B9-COMPLETE`  
+**Status**: PENDING
+**Checkpoint**: `B9-COMPLETE`
 **Dependencies**: B1-B8
 
 ### Target Files
@@ -453,20 +453,35 @@ pytest tests/services/ -v --cov
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing B0: Plan Documentation, B1: GitHub API Client'}}%%
+
 graph TD
+
     B0[B0: Plan Documentation] --> B1[B1: GitHub API Client]
+
     B0 --> B2[B2: Workflow Inventory]
+
     B0 --> B3[B3: Session State]
+
     B1 --> B4[B4: Agent Orchestrator]
+
     B2 --> B4
+
     B3 --> B4
+
     B1 --> B5[B5: Failure Detector]
+
     B4 --> B5
+
     B5 --> B6[B6: Auto-Remediator]
+
     B4 --> B7[B7: Agent Surface]
+
     B4 --> B8[B8: Approval Engine]
+
     B7 --> B8
+
     B1 --> B9[B9: Production Hardening]
+
     B8 --> B9
 ```
 

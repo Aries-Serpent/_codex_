@@ -1,6 +1,6 @@
 # COPILOT_SETUP_STEPS_GUARD — Do Not Refactor
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -53,18 +53,18 @@ is the authoritative version. It is the only version that simultaneously has:
 ## Canonical Session Preload Step — DO NOT CHANGE
 
 ```yaml
-      # ️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
-      # Canonical form: block scalar run: | with if ! ...; then syntax.
-      # This step has been broken 4+ times by agents converting it to flow scalar
-      # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
-      # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
-      # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
-      - name: " Session Context Pre-load (memory + policy + accountability + PDA)"
-        continue-on-error: true   # non-blocking: agent must start even if preload fails
-        run: |
-          if ! python3 .github/scripts/session_preload.py; then
-            echo "️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
-          fi
+ # DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+ # Canonical form: block scalar run: | with if ! ...; then syntax.
+ # This step has been broken 4+ times by agents converting it to flow scalar
+ # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
+ # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
+ # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
+ - name: " Session Context Pre-load (memory + policy + accountability + PDA)"
+ continue-on-error: true # non-blocking: agent must start even if preload fails
+ run: |
+ if ! python3 .github/scripts/session_preload.py; then
+ echo " session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+ fi
 ```
 
 ---
@@ -75,7 +75,7 @@ If you must restore this file from the canonical commit:
 
 ```bash
 git show 12f7a861a067ed5d9f1e1939119325f896624588:.github/workflows/copilot-setup-steps.yml \
-  > .github/workflows/copilot-setup-steps.yml
+ > .github/workflows/copilot-setup-steps.yml
 python3 scripts/ci/patch_session_preload.py
 ```
 
@@ -83,7 +83,7 @@ python3 scripts/ci/patch_session_preload.py
 
 ## Agent Instruction
 
-> ️ **If you are a Copilot coding agent reading this:**
+> **If you are a Copilot coding agent reading this:**
 > Do NOT refactor, simplify, or touch the session preload step in `copilot-setup-steps.yml`.
 > If a CI failure led you here, identify and fix the **other** file that is failing.
 > If `copilot-setup-steps.yml` itself is failing, run the restore procedure above.

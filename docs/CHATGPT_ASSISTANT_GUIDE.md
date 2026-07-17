@@ -1,10 +1,10 @@
 # Codex ML - ChatGPT Assistant Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Date:2026-07-13
 **Purpose:** Enable ChatGPT Codex Assistant to effectively leverage the repository
 
@@ -15,7 +15,7 @@
 ### System Status
 
 ```
-Status:  PRODUCTION READY
+Status: PRODUCTION READY
 Azure MLOps Level: 4 (Perfect 71/71 - 100%)
 Components: 38 major systems
 Test Coverage: 90% (125+ tests, 100% pass rate)
@@ -29,11 +29,11 @@ Security: 0 vulnerabilities
 ./setup.sh
 
 # Maintenance (routine)
-./maintenance.sh all           # Run all checks
-./maintenance.sh health        # System health only
-./maintenance.sh features      # Feature store check
-./maintenance.sh k8s           # Kubernetes status
-./maintenance.sh security      # Security scans
+./maintenance.sh all # Run all checks
+./maintenance.sh health # System health only
+./maintenance.sh features # Feature store check
+./maintenance.sh k8s # Kubernetes status
+./maintenance.sh security # Security scans
 ```
 
 ---
@@ -43,26 +43,26 @@ Security: 0 vulnerabilities
 ### Core Components
 
 1. **Kubernetes Orchestration** (`manifests/k8s/`)
-   - Base manifests: deployment, service, HPA, resource quotas
-   - Environment overlays: dev, production
-   - Deployment script: `scripts/k8s_deploy.sh`
+ - Base manifests: deployment, service, HPA, resource quotas
+ - Environment overlays: dev, production
+ - Deployment script: `scripts/k8s_deploy.sh`
 
 2. **Feature Store** (`src/codex_ml/features/`)
-   - Core: `feature_store.py` - versioning, caching, materialization
-   - Monitoring: `monitoring.py` - health, freshness tracking
-   - CLI: `src/codex_ml/cli/features.py`
+ - Core: `feature_store.py` - versioning, caching, materialization
+ - Monitoring: `monitoring.py` - health, freshness tracking
+ - CLI: `src/codex_ml/cli/features.py`
 
 3. **Cloud Events** (`src/codex_ml/events/`)
-   - Base: `base.py` - EventType, Event, EventBus
-   - Azure: `azure_events.py` - Event Grid integration
-   - AWS: `aws_events.py` - EventBridge integration
-   - Training: `training/event_integration.py` - lifecycle events
+ - Base: `base.py` - EventType, Event, EventBus
+ - Azure: `azure_events.py` - Event Grid integration
+ - AWS: `aws_events.py` - EventBridge integration
+ - Training: `training/event_integration.py` - lifecycle events
 
 4. **Monitoring** (`src/codex_ml/monitoring/`)
-   - Health: `health.py` - /health, /ready, /healthz, /readyz
-   - Metrics: `prometheus_metrics.py` - /metrics endpoint
-   - Drift: `drift_detection.py` - data drift monitoring
-   - Freshness: `feature_freshness_drift.py` - feature monitoring
+ - Health: `health.py` - /health, /ready, /healthz, /readyz
+ - Metrics: `prometheus_metrics.py` - /metrics endpoint
+ - Drift: `drift_detection.py` - data drift monitoring
+ - Freshness: `feature_freshness_drift.py` - feature monitoring
 
 ---
 
@@ -72,33 +72,33 @@ Security: 0 vulnerabilities
 
 ```
 _codex_/
-├── setup.sh                    ← Run first
-├── maintenance.sh              ← Run routinely
-├── .codex/archive/deprecated/AGENTS.md                   ← Full agent guide
-├── README.md                   ← Project overview
-│
-├── .github/
-│   ├── COPILOT_INTEGRATION_GUIDE.md  ← How this was built
-│   └── prompts/followup_execution_plan/
-│       ├── AZURE_MLOPS_CAPABILITY_ASSESSMENT.md  ← 71/71 proof
-│       ├── COMPARISON_RATING.md                   ← Before/after
-│       └── IMPLEMENTATION_ROADMAP.md              ← 30 prompts
-│
-├── docs/
-│   └── IMPLEMENTATION_COMPLETE.md  ← Comprehensive summary
-│
-├── manifests/k8s/              ← Kubernetes (12 files)
-│   ├── base/
-│   └── overlays/
-│
-├── src/codex_ml/
-│   ├── features/               ← Feature store (3 files)
-│   ├── events/                 ← Cloud events (5 files)
-│   ├── monitoring/             ← Health & metrics
-│   └── training/               ← Training pipeline
-│
-└── scripts/
-    └── k8s_deploy.sh           ← K8s deployment
+ setup.sh Run first
+ maintenance.sh Run routinely
+ .codex/archive/deprecated/AGENTS.md Full agent guide
+ README.md Project overview
+
+ .github/
+ COPILOT_INTEGRATION_GUIDE.md How this was built
+ prompts/followup_execution_plan/
+ AZURE_MLOPS_CAPABILITY_ASSESSMENT.md 71/71 proof
+ COMPARISON_RATING.md Before/after
+ IMPLEMENTATION_ROADMAP.md 30 prompts
+
+ docs/
+ IMPLEMENTATION_COMPLETE.md Comprehensive summary
+
+ manifests/k8s/ Kubernetes (12 files)
+ base/
+ overlays/
+
+ src/codex_ml/
+ features/ Feature store (3 files)
+ events/ Cloud events (5 files)
+ monitoring/ Health & metrics
+ training/ Training pipeline
+
+ scripts/
+ k8s_deploy.sh K8s deployment
 ```
 
 ### Documentation Map
@@ -196,14 +196,14 @@ EOF
 import importlib.util
 
 components = {
-    'features': 'src.codex_ml.features',
-    'events': 'src.codex_ml.events',
-    'k8s': 'manifests/k8s/base',
+ 'features': 'src.codex_ml.features',
+ 'events': 'src.codex_ml.events',
+ 'k8s': 'manifests/k8s/base',
 }
 
 for name, module in components.items():
-    exists = importlib.util.find_spec(module) is not None
-    print(f"{name}: {'' if exists else ''}")
+ exists = importlib.util.find_spec(module) is not None
+ print(f"{name}: {'' if exists else ''}")
 ```
 
 ## Pattern 2: Verify Capability Coverage
@@ -219,13 +219,13 @@ grep -c " Met" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_AS
 
 ```bash
 # K8s manifests
-find manifests/k8s -name "*.yaml" | wc -l  # Expected: 12
+find manifests/k8s -name "*.yaml" | wc -l # Expected: 12
 
 # Feature store files
-find src/codex_ml/features -name "*.py" | wc -l  # Expected: 3
+find src/codex_ml/features -name "*.py" | wc -l # Expected: 3
 
 # Event files
-find src/codex_ml/events -name "*.py" | wc -l  # Expected: 5
+find src/codex_ml/events -name "*.py" | wc -l # Expected: 5
 ```
 
 ---
@@ -269,7 +269,7 @@ kubectl version --client
 
 # Validate each manifest individually
 for f in manifests/k8s/base/*.yaml; do
-    kubectl apply --dry-run=client -f "$f"
+ kubectl apply --dry-run=client -f "$f"
 done
 ```
 
@@ -405,5 +405,5 @@ export TRANSFORMERS_OFFLINE="1"
 ---
 
 **Last Updated:2026-07-13
-**Status:** Production Ready   
-**Capabilities:** 71/71 (100%) 
+**Status:** Production Ready
+**Capabilities:** 71/71 (100%)

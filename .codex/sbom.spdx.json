@@ -1,0 +1,403 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "Codex ML Platform - Software Bill of Materials",
+  "documentNamespace": "https://github.com/aries-serpent/_codex_/sbom-2026-07-17T18:22:19.790525",
+  "creationInfo": {
+    "created": "2026-07-17T18:22:19.790536Z",
+    "creators": [
+      "Tool: phase-8-lane-4-cvs-agent"
+    ],
+    "licenseListVersion": "3.22"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Pip-0",
+      "name": "typer",
+      "downloadLocation": "https://pypi.org/project/typer/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.12",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-1",
+      "name": "cryptography",
+      "downloadLocation": "https://pypi.org/project/cryptography/",
+      "filesAnalyzed": false,
+      "versionInfo": "48.0.1,<50.0.0  # Security: Phase 5 Track 2 - Updated to fix GHSA-537c-gmf6-5ccf (OpenSSL vulnerability in wheels <48.0.1)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-2",
+      "name": "PyJWT",
+      "downloadLocation": "https://pypi.org/project/PyJWT/",
+      "filesAnalyzed": false,
+      "versionInfo": "2.13.0,<3.0.0  # Security: Phase 14 WS1 - Updated to fix PYSEC-2026-120 (PyJWT <2.12.0 has JWT validation bypass)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-3",
+      "name": "wheel",
+      "downloadLocation": "https://pypi.org/project/wheel/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.46.2  # Security: Phase 9 Lane 2 - Updated to fix CVE-2026-24049 (path traversal in wheel.cli.unpack)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-4",
+      "name": "PyNaCl",
+      "downloadLocation": "https://pypi.org/project/PyNaCl/",
+      "filesAnalyzed": false,
+      "versionInfo": "1.5.0,<2.0.0  # Security: Cryptographic library",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-5",
+      "name": "pyOpenSSL",
+      "downloadLocation": "https://pypi.org/project/pyOpenSSL/",
+      "filesAnalyzed": false,
+      "versionInfo": "26.0.0,<27.0.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-27448/27459 (pyOpenSSL <26.0.0 has vulnerabilities)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-6",
+      "name": "jsonschema",
+      "downloadLocation": "https://pypi.org/project/jsonschema/",
+      "filesAnalyzed": false,
+      "versionInfo": "4.26.0",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-7",
+      "name": "psutil",
+      "downloadLocation": "https://pypi.org/project/psutil/",
+      "filesAnalyzed": false,
+      "versionInfo": "5.9; platform_system != \"Windows\"  # optional sys-metrics",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-8",
+      "name": "tomli",
+      "downloadLocation": "https://pypi.org/project/tomli/",
+      "filesAnalyzed": false,
+      "versionInfo": "2.0; python_version < \"3.11\"",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-9",
+      "name": "pytest",
+      "downloadLocation": "https://pypi.org/project/pytest/",
+      "filesAnalyzed": false,
+      "versionInfo": "9.0.3,<10.0.0  # CVE-2025-71176: >=9.0.3 required",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-10",
+      "name": "pytest-cov",
+      "downloadLocation": "https://pypi.org/project/pytest-cov/",
+      "filesAnalyzed": false,
+      "versionInfo": "7.1.0",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-11",
+      "name": "pytest-xdist",
+      "downloadLocation": "https://pypi.org/project/pytest-xdist/",
+      "filesAnalyzed": false,
+      "versionInfo": "3.5.0,<4.0.0",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-12",
+      "name": "nox",
+      "downloadLocation": "https://pypi.org/project/nox/",
+      "filesAnalyzed": false,
+      "versionInfo": "2026.4.10,<2027  # Pinned for reproducibility",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-13",
+      "name": "numpy",
+      "downloadLocation": "https://pypi.org/project/numpy/",
+      "filesAnalyzed": false,
+      "versionInfo": "2.4.6,<3",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-18",
+      "name": "--extra-index-url",
+      "downloadLocation": "https://pypi.org/project/--extra-index-url/",
+      "filesAnalyzed": false,
+      "versionInfo": "https://download.pytorch.org/whl/cpu",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-19",
+      "name": "torch",
+      "downloadLocation": "https://pypi.org/project/torch/",
+      "filesAnalyzed": false,
+      "versionInfo": "2.6.1,<3.0.0; sys_platform == \"linux\" or sys_platform == \"darwin\"  # CPU-only for Linux/macOS",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-20",
+      "name": "transformers",
+      "downloadLocation": "https://pypi.org/project/transformers/",
+      "filesAnalyzed": false,
+      "versionInfo": "5.12.1,<6  # Security: Updated from 4.41 to fix deserialization vulnerabilities",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-22",
+      "name": "defusedxml",
+      "downloadLocation": "https://pypi.org/project/defusedxml/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.7.1,<1.0.0",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-23",
+      "name": "pyyaml",
+      "downloadLocation": "https://pypi.org/project/pyyaml/",
+      "filesAnalyzed": false,
+      "versionInfo": "6.0",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-25",
+      "name": "jinja2",
+      "downloadLocation": "https://pypi.org/project/jinja2/",
+      "filesAnalyzed": false,
+      "versionInfo": "3.1.6  # Security: Fixes CVE-2024-56326, CVE-2024-56201, CVE-2024-XXXXX, CVE-2024-YYYYY (RCE via sandbox escape, template injection)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-26",
+      "name": "certifi",
+      "downloadLocation": "https://pypi.org/project/certifi/",
+      "filesAnalyzed": false,
+      "versionInfo": "2026.6.17  # Security: Fixes CVE-2024-39689 (root cert trust issue)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-27",
+      "name": "filelock",
+      "downloadLocation": "https://pypi.org/project/filelock/",
+      "filesAnalyzed": false,
+      "versionInfo": "3.29.0  # Security: Fixes CVE-2025-68146, CVE-2026-22701 (TOCTOU attacks)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-28",
+      "name": "idna",
+      "downloadLocation": "https://pypi.org/project/idna/",
+      "filesAnalyzed": false,
+      "versionInfo": "3.18  # Security: Fixes CVE-2024-3651 (DoS via quadratic complexity)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-29",
+      "name": "urllib3",
+      "downloadLocation": "https://pypi.org/project/urllib3/",
+      "filesAnalyzed": false,
+      "versionInfo": "2.7.0  # Security: Fixes CVE-2024-37891, CVE-2025-50181 (proxy/redirect issues)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Pip-30",
+      "name": "requests",
+      "downloadLocation": "https://pypi.org/project/requests/",
+      "filesAnalyzed": false,
+      "versionInfo": "2.33.0  # Security: Phase 14 WS1 - Updated to fix CVE-2026-25645 (requests <2.33.0 has TLS bypass vulnerability)",
+      "supplier": "Organization: PyPI",
+      "originator": "Organization: PyPI"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-3",
+      "name": "description",
+      "downloadLocation": "https://crates.io/crates/description/",
+      "filesAnalyzed": false,
+      "versionInfo": "Rust orchestration layer for Codex AI Agent Swarm",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-4",
+      "name": "license",
+      "downloadLocation": "https://crates.io/crates/license/",
+      "filesAnalyzed": false,
+      "versionInfo": "MIT",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-9",
+      "name": "rayon",
+      "downloadLocation": "https://crates.io/crates/rayon/",
+      "filesAnalyzed": false,
+      "versionInfo": "1.8.1",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-10",
+      "name": "dashmap",
+      "downloadLocation": "https://crates.io/crates/dashmap/",
+      "filesAnalyzed": false,
+      "versionInfo": "5.5.3",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-12",
+      "name": "serde",
+      "downloadLocation": "https://crates.io/crates/serde/",
+      "filesAnalyzed": false,
+      "versionInfo": "1.1.2",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-13",
+      "name": "lz4",
+      "downloadLocation": "https://crates.io/crates/lz4/",
+      "filesAnalyzed": false,
+      "versionInfo": "1.24.0",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-15",
+      "name": "flate2",
+      "downloadLocation": "https://crates.io/crates/flate2/",
+      "filesAnalyzed": false,
+      "versionInfo": "1.1",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-16",
+      "name": "crossbeam",
+      "downloadLocation": "https://crates.io/crates/crossbeam/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.8.4",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-17",
+      "name": "parking_lot",
+      "downloadLocation": "https://crates.io/crates/parking_lot/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.12",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-18",
+      "name": "anyhow",
+      "downloadLocation": "https://crates.io/crates/anyhow/",
+      "filesAnalyzed": false,
+      "versionInfo": "1.0.80",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-19",
+      "name": "tracing",
+      "downloadLocation": "https://crates.io/crates/tracing/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.1.40",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-20",
+      "name": "subscriber",
+      "downloadLocation": "https://crates.io/crates/subscriber/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.3.18",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-21",
+      "name": "config",
+      "downloadLocation": "https://crates.io/crates/config/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.24.1",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-22",
+      "name": "criterion",
+      "downloadLocation": "https://crates.io/crates/criterion/",
+      "filesAnalyzed": false,
+      "versionInfo": "0.5",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Cargo-25",
+      "name": "source",
+      "downloadLocation": "https://crates.io/crates/source/",
+      "filesAnalyzed": false,
+      "versionInfo": "src",
+      "supplier": "Organization: Cargo",
+      "originator": "Organization: Cargo"
+    },
+    {
+      "SPDXID": "SPDXRef-Go-github.com-spf13-cobra",
+      "name": "github.com/spf13/cobra",
+      "downloadLocation": "https://pkg.go.dev/github.com/spf13/cobra/",
+      "filesAnalyzed": false,
+      "versionInfo": "v1.8.0",
+      "supplier": "Organization: Go",
+      "originator": "Organization: Go"
+    },
+    {
+      "SPDXID": "SPDXRef-Go-github.com-zalando-go-keyring",
+      "name": "github.com/zalando/go-keyring",
+      "downloadLocation": "https://pkg.go.dev/github.com/zalando/go-keyring/",
+      "filesAnalyzed": false,
+      "versionInfo": "v0.2.3",
+      "supplier": "Organization: Go",
+      "originator": "Organization: Go"
+    },
+    {
+      "SPDXID": "SPDXRef-Go-golang.org-x-crypto",
+      "name": "golang.org/x/crypto",
+      "downloadLocation": "https://pkg.go.dev/golang.org/x/crypto/",
+      "filesAnalyzed": false,
+      "versionInfo": "v0.52.0",
+      "supplier": "Organization: Go",
+      "originator": "Organization: Go"
+    }
+  ]
+}

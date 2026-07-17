@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/DOC_FRESHNESS_AUDIT_2026-03-17/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Documentation Freshness Audit &amp; Remediation Plan - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2426,11 +2426,11 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Audit Date:2026-07-13
-</strong>Auditor:<strong> Copilot Agent S142<br/>
-</strong>Repository:<strong> Aries-Serpent/<em>codex</em><br/>
-</strong>Total docs audited:<strong> 1,381 markdown files<br/>
-</strong>Stale docs found:** 533 (38.6%) — contain date 2026-07-13</p>
+<p><strong>Audit Date:2026-07-16
+</strong>Auditor:<strong> Copilot Agent S142
+</strong>Repository:<strong> Aries-Serpent/<em>codex</em>
+</strong>Total docs audited:<strong> 1,381 markdown files
+</strong>Stale docs found:** 533 (38.6%) — contain date 2026-07-16</p>
 </blockquote>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
@@ -2447,13 +2447,13 @@
 <tr>
 <td><strong>P0</strong> — CI/Admin-critical</td>
 <td>15</td>
-<td>Updated 2026-07-13</td>
+<td>Updated 2026-07-16</td>
 <td></td>
 </tr>
 <tr>
 <td><strong>P1</strong> — Developer how-to &amp; ops</td>
 <td>46</td>
-<td>️ Partial (9 updated)</td>
+<td>Partial (9 updated)</td>
 <td>Remainder: systematic script</td>
 </tr>
 <tr>
@@ -2465,14 +2465,14 @@
 <tr>
 <td><strong>P3</strong> — Archive</td>
 <td>410</td>
-<td>🗄️ Low priority</td>
+<td>Low priority</td>
 <td>Add archive notice headers</td>
 </tr>
 </tbody>
 </table>
 <hr/>
 <h2 id="p0-updated-in-s142">P0 — Updated in S142<a class="headerlink" href="#p0-updated-in-s142" title="Permanent link">¶</a></h2>
-<p>These docs were updated 2026-07-13</p>
+<p>These docs were updated 2026-07-16</p>
 <table>
 <thead>
 <tr>
@@ -2601,10 +2601,10 @@ They require a content review in addition to date stamp updates.</p>
 <h3 id="automated-date-stamp-update-run-this-script">Automated Date-Stamp Update (run this script)<a class="headerlink" href="#automated-date-stamp-update-run-this-script" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Run from repo root — updates date headers only, does NOT change content</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>python3<span class="w"> </span>scripts/ci/update_doc_freshness.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span>--dirs<span class="w"> </span>docs/ops<span class="w"> </span>docs/mcp<span class="w"> </span>docs/ci<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span>--cutoff<span class="w"> </span><span class="m">2026</span>-02-17<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span>--new-date<span class="w"> </span><span class="m">2026</span>-07-13
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span>--dry-run<span class="w">   </span><span class="c1"># remove --dry-run to apply</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span>--dirs<span class="w"> </span>docs/ops<span class="w"> </span>docs/mcp<span class="w"> </span>docs/ci<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w"> </span>--cutoff<span class="w"> </span><span class="m">2026</span>-02-17<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w"> </span>--new-date<span class="w"> </span><span class="m">2026</span>-07-16
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w"> </span>--dry-run<span class="w"> </span><span class="c1"># remove --dry-run to apply</span>
 </code></pre></div>
 <h2 id="files-requiring-content-review-p1">Files Requiring Content Review (P1)<a class="headerlink" href="#files-requiring-content-review-p1" title="Permanent link">¶</a></h2>
 <table>
@@ -2647,26 +2647,26 @@ They require a content review in addition to date stamp updates.</p>
 - [ ] Check authentication flow matches current implementation</p>
 <p><strong><code>docs/mcp/MCP_SECURITY_GUIDE.md</code></strong>
 - [ ] Update secret scanning guidance to reflect GitHub Advanced Security status
-- [ ] Add CODEX_MASTER_KEY rotation reference → <code>docs/admin/TOKEN_ROTATION_GUIDE.md</code></p>
+- [ ] Add CODEX_MASTER_KEY rotation reference <code>docs/admin/TOKEN_ROTATION_GUIDE.md</code></p>
 <hr/>
 <h2 id="p2-plans-specs-62-files">P2 — Plans &amp; Specs (62 files)<a class="headerlink" href="#p2-plans-specs-62-files" title="Permanent link">¶</a></h2>
 <p>Most <code>docs/plans/</code> files are historical decision records. They MUST NOT be rewritten
 but SHOULD receive an "archived" notice header.</p>
 <h3 id="automated-archive-notice-run-this-script">Automated Archive Notice (run this script)<a class="headerlink" href="#automated-archive-notice-run-this-script" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>python3<span class="w"> </span>scripts/ci/update_doc_freshness.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span>--dirs<span class="w"> </span>docs/plans<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span>--cutoff<span class="w"> </span><span class="m">2026</span>-02-17<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span>--mode<span class="w"> </span>archive-notice<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span>--dry-run
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span>--dirs<span class="w"> </span>docs/plans<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span>--cutoff<span class="w"> </span><span class="m">2026</span>-02-17<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span>--mode<span class="w"> </span>archive-notice<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span>--dry-run
 </code></pre></div>
 <h3 id="archive-notice-template">Archive Notice Template<a class="headerlink" href="#archive-notice-template" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">&gt; </span><span class="ge">**️ ARCHIVED PLAN** — This document was accurate as of its creation date.</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">&gt; </span><span class="ge">** ARCHIVED PLAN** — This document was accurate as of its creation date.</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">&gt; </span><span class="ge">Current implementation may differ. See `docs/cognitive_brain/` and</span>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">&gt; </span><span class="ge">`docs/admin/CONTINUATION_ROADMAP.md` for current state.</span>
 </code></pre></div>
 <h3 id="content-review-items-p2">Content Review Items (P2)<a class="headerlink" href="#content-review-items-p2" title="Permanent link">¶</a></h3>
 <p><strong><code>docs/plans/DEAD_CODE_IMPROVEMENT_PLAN.md</code></strong> — Phase 4 items are marked pending but S133 completed them
-- [ ] Mark Phase 4 as COMPLETE<br/>
+- [ ] Mark Phase 4 as COMPLETE
 - [ ] Update Phase 5/6 status from S140–S142</p>
 <hr/>
 <h2 id="p3-archive-docs-410-files">P3 — Archive Docs (410 files)<a class="headerlink" href="#p3-archive-docs-410-files" title="Permanent link">¶</a></h2>
@@ -2674,9 +2674,9 @@ but SHOULD receive an "archived" notice header.</p>
 content-updated, but should receive a one-line archive notice in their first line.</p>
 <p><strong>Automated action</strong> (low risk, no content change):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>python3<span class="w"> </span>scripts/ci/update_doc_freshness.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span>--dirs<span class="w"> </span>docs/archive<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span>--mode<span class="w"> </span>archive-header-only<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span>--dry-run
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span>--dirs<span class="w"> </span>docs/archive<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span>--mode<span class="w"> </span>archive-header-only<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span>--dry-run
 </code></pre></div></p>
 <hr/>
 <h2 id="systematic-update-script">Systematic Update Script<a class="headerlink" href="#systematic-update-script" title="Permanent link">¶</a></h2>
@@ -2686,9 +2686,9 @@ content-updated, but should receive a one-line archive notice in their first lin
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="sd">update_doc_freshness.py — Bulk-update date headers in stale docs.</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="sd">Usage:</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="sd">  python3 scripts/ci/update_doc_freshness.py --dirs docs/ops docs/mcp --cutoff 2026-02-17 --new-date 2026-07-13</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="sd">  python3 scripts/ci/update_doc_freshness.py --dirs docs/plans --mode archive-notice</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="sd">  python3 scripts/ci/update_doc_freshness.py --dirs docs/archive --mode archive-header-only</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="sd"> python3 scripts/ci/update_doc_freshness.py --dirs docs/ops docs/mcp --cutoff 2026-02-17 --new-date 2026-07-16</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="sd"> python3 scripts/ci/update_doc_freshness.py --dirs docs/plans --mode archive-notice</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="sd"> python3 scripts/ci/update_doc_freshness.py --dirs docs/archive --mode archive-header-only</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="sd">"""</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1"># See scripts/ci/ for implementation</span>
 </code></pre></div>
@@ -2697,14 +2697,14 @@ content-updated, but should receive a one-line archive notice in their first lin
 <p>To prevent future staleness, add a documentation freshness check to CI:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># In .github/workflows/doc-freshness-check.yml</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check for stale docs</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="no">STALE=$(python3 scripts/ci/update_doc_freshness.py \</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">      </span><span class="no">--dirs docs/admin docs/agent docs/how-to \</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">      </span><span class="no">--cutoff $(date -d '-90 days' +%Y-%m-%d) \</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">      </span><span class="no">--check-only 2&gt;&amp;1)</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="no">if [ -n "$STALE" ]; then</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">      </span><span class="no">echo "::warning::$STALE"</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="no">fi</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STALE=$(python3 scripts/ci/update_doc_freshness.py \</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--dirs docs/admin docs/agent docs/how-to \</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--cutoff $(date -d '-90 days' +%Y-%m-%d) \</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--check-only 2&gt;&amp;1)</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">if [ -n "$STALE" ]; then</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "::warning::$STALE"</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fi</span>
 </code></pre></div>
 <p>This runs as a <strong>warning</strong> (non-blocking) so it doesn't break CI on old docs,
 but alerts maintainers to docs older than 90 days.</p>
@@ -2794,6 +2794,6 @@ but alerts maintainers to docs older than 90 days.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

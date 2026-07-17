@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 02
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 2 of 32  
 **Sessions:** S_PR3954_SELF_HEALING to S_PR3958_CTEP_SWEEP  

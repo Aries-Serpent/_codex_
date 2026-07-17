@@ -1,6 +1,6 @@
 # Plan for CI Failures Resolution
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -14,21 +14,21 @@ Apply minimal configuration fixes, then validate via focused test runs. Introduc
 
 ## 2. Components
 - **Test Config**
-  - Files: `pytest.ini`, `configs/development/pytest.ini`
-  - Concerns: marker completeness, strict-markers behavior, config drift between environments.
+ - Files: `pytest.ini`, `configs/development/pytest.ini`
+ - Concerns: marker completeness, strict-markers behavior, config drift between environments.
 - **CI Workflows**
-  - Files: `.github/workflows/mcp-ci.yml`, `optimized-ci.yml` (context)
-  - Concerns: test env vars, rate-limit stability, secret clearing.
+ - Files: `.github/workflows/mcp-ci.yml`, `optimized-ci.yml` (context)
+ - Concerns: test env vars, rate-limit stability, secret clearing.
 - **Rate Limiter / Middleware**
-  - Files: locate via search (e.g., `RATE_LIMIT_RATE` / `RATE_LIMIT_BURST`)
-  - Concerns: init-time env reads, global state across tests.
+ - Files: locate via search (e.g., `RATE_LIMIT_RATE` / `RATE_LIMIT_BURST`)
+ - Concerns: init-time env reads, global state across tests.
 - **Tests**
-  - Files: `tests/callbacks/test_callbacks_comprehensive.py`, `tests/mcp/test_facade.py`
-  - Concerns: marker enforcement, CI rate-limit exposure, environment isolation.
+ - Files: `tests/callbacks/test_callbacks_comprehensive.py`, `tests/mcp/test_facade.py`
+ - Concerns: marker enforcement, CI rate-limit exposure, environment isolation.
 - **Observability**
-  - CI logs, pytest output, and iteration reports under `tools/self_heal/`.
+ - CI logs, pytest output, and iteration reports under `tools/self_heal/`.
 - **Self-Healing**
-  - Analyzer → Fixer → Verifier → Reporter → Orchestrator loop for CI failures.
+ - Analyzer Fixer Verifier Reporter Orchestrator loop for CI failures.
 
 ## 3. Root Causes
 - **Pytest marker gap:** `ml_comprehensive` is used in tests but absent from `pytest.ini`, causing `--strict-markers` failure.

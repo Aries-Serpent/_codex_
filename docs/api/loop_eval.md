@@ -1,11 +1,11 @@
 # API: Evaluation Loop & CLI
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version:** 1.0.0 | **Release Date:** 2026-06-22
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Doc Author], [Secondary: Verifier]  Energy: 5/5  
-⚛️ Physics: Path️ [Model → Dataloader → Loss → Metrics → Logger] Fields [CPU-safe, Deterministic] Patterns️ [Lazy imports, batch+epoch logging] Redundancy [Unit+Integration tests] Balance️ [Minimal default, extensible hooks]
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Doc Author], [Secondary: Verifier] Energy: 5/5
+ Physics: Path [Model Dataloader Loss Metrics Logger] Fields [CPU-safe, Deterministic] Patterns [Lazy imports, batch+epoch logging] Redundancy [Unit+Integration tests] Balance [Minimal default, extensible hooks]
 
 ## Purpose
 Provide a minimal, deterministic evaluation loop with pluggable metrics and logging sinks for reference CPU workflows.

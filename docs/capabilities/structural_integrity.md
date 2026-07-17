@@ -1,6 +1,6 @@
 # Structural Integrity Detection
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -34,17 +34,17 @@ The detector analyzes directory structure to identify:
 ```text
 # Pseudocode for structural integrity detection
 for each file in repository:
-    extract directory structure
+ extract directory structure
 
 identify split-brain patterns:
-    intersection = root_dirs ∩ src_dirs
+ intersection = root_dirs ∩ src_dirs
 
 identify shadowing patterns:
-    shadows = root_dirs ∩ known_pypi_packages
+ shadows = root_dirs ∩ known_pypi_packages
 
 assess risk_level:
-    high: if split-brain OR shadowing detected
-    low: otherwise
+ high: if split-brain OR shadowing detected
+ low: otherwise
 ```
 
 ## Configuration
@@ -56,12 +56,12 @@ The detector is configured in `scripts/space_traversal/detectors/structure_integ
 ```python
 # Known libraries that should not exist as root directories
 KNOWN_SHADOW_RISKS = {
-    "hydra", "torch", "numpy", "requests",
-    "wandb", "mlflow", "pandas"
+ "hydra", "torch", "numpy", "requests",
+ "wandb", "mlflow", "pandas"
 }
 
 # Evidence limit for file samples
-evidence_limit = 10  # Configurable per detect() call
+evidence_limit = 10 # Configurable per detect() call
 ```
 
 ## Excluded Directories
@@ -79,26 +79,26 @@ Standard directories excluded from risk assessment:
 **Repository Structure:**
 ```
 project/
-├── src/
-│   └── myapp/
-│       ├── __init__.py
-│       └── core.py
-├── tests/
-├── docs/
-└── scripts/
+ src/
+ myapp/
+ __init__.py
+ core.py
+ tests/
+ docs/
+ scripts/
 ```
 
 **Detection Result:**
 ```json
 {
-  "id": "structural-integrity",
-  "evidence_files": [],
-  "found_patterns": [],
-  "meta": {
-    "risk_level": "low",
-    "split_dirs": [],
-    "shadow_dirs": []
-  }
+ "id": "structural-integrity",
+ "evidence_files": [],
+ "found_patterns": [],
+ "meta": {
+ "risk_level": "low",
+ "split_dirs": [],
+ "shadow_dirs": []
+ }
 }
 ```
 
@@ -107,27 +107,27 @@ project/
 **Repository Structure:**
 ```
 project/
-├── myapp/          # ️ Duplicate at root
-│   └── utils.py
-├── src/
-│   └── myapp/      # ️ Also in src/
-│       └── core.py
+ myapp/ # Duplicate at root
+ utils.py
+ src/
+ myapp/ # Also in src/
+ core.py
 ```
 
 **Detection Result:**
 ```json
 {
-  "id": "structural-integrity",
-  "evidence_files": [
-    "myapp/utils.py",
-    "src/myapp/core.py"
-  ],
-  "found_patterns": ["split-brain"],
-  "meta": {
-    "risk_level": "high",
-    "split_dirs": ["myapp"],
-    "shadow_dirs": []
-  }
+ "id": "structural-integrity",
+ "evidence_files": [
+ "myapp/utils.py",
+ "src/myapp/core.py"
+ ],
+ "found_patterns": ["split-brain"],
+ "meta": {
+ "risk_level": "high",
+ "split_dirs": ["myapp"],
+ "shadow_dirs": []
+ }
 }
 ```
 
@@ -136,23 +136,23 @@ project/
 **Repository Structure:**
 ```
 project/
-├── torch/          # ️ Shadows PyTorch
-│   └── custom.py
-├── src/
-│   └── myapp/
+ torch/ # Shadows PyTorch
+ custom.py
+ src/
+ myapp/
 ```
 
 **Detection Result:**
 ```json
 {
-  "id": "structural-integrity",
-  "evidence_files": ["torch/custom.py"],
-  "found_patterns": ["lib-shadowing"],
-  "meta": {
-    "risk_level": "high",
-    "split_dirs": [],
-    "shadow_dirs": ["torch"]
-  }
+ "id": "structural-integrity",
+ "evidence_files": ["torch/custom.py"],
+ "found_patterns": ["lib-shadowing"],
+ "meta": {
+ "risk_level": "high",
+ "split_dirs": [],
+ "shadow_dirs": ["torch"]
+ }
 }
 ```
 
@@ -161,22 +161,22 @@ project/
 **Repository Structure:**
 ```
 project/
-├── numpy/          # ️ Shadows NumPy
-├── utils/          # ️ Duplicate
-└── src/
-    └── utils/      # ️ Duplicate
+ numpy/ # Shadows NumPy
+ utils/ # Duplicate
+ src/
+ utils/ # Duplicate
 ```
 
 **Detection Result:**
 ```json
 {
-  "id": "structural-integrity",
-  "found_patterns": ["lib-shadowing", "split-brain"],
-  "meta": {
-    "risk_level": "high",
-    "split_dirs": ["utils"],
-    "shadow_dirs": ["numpy"]
-  }
+ "id": "structural-integrity",
+ "found_patterns": ["lib-shadowing", "split-brain"],
+ "meta": {
+ "risk_level": "high",
+ "split_dirs": ["utils"],
+ "shadow_dirs": ["numpy"]
+ }
 }
 ```
 
@@ -206,9 +206,9 @@ result = structure_integrity.detect(file_index, evidence_limit=20)
 
 # Check for issues
 if result["meta"]["risk_level"] == "high":
-    print(f"Found issues: {result['found_patterns']}")
-    print(f"Split-brain dirs: {result['meta']['split_dirs']}")
-    print(f"Shadowing dirs: {result['meta']['shadow_dirs']}")
+ print(f"Found issues: {result['found_patterns']}")
+ print(f"Split-brain dirs: {result['meta']['split_dirs']}")
+ print(f"Shadowing dirs: {result['meta']['shadow_dirs']}")
 ```
 
 ## Risk Mitigation
@@ -219,21 +219,21 @@ if result["meta"]["risk_level"] == "high":
 
 **Solutions**:
 1. **Consolidate to `src/`** (recommended):
-   ```bash
-   git mv mymodule/ src/mymodule/
-   # Update imports throughout codebase
-   ```
+ ```bash
+ git mv mymodule/ src/mymodule/
+ # Update imports throughout codebase
+ ```
 
 2. **Rename one module**:
-   ```bash
-   mv mymodule/ mymodule_legacy/
-   # Update references
-   ```
+ ```bash
+ mv mymodule/ mymodule_legacy/
+ # Update references
+ ```
 
 3. **Use explicit namespacing**:
 ```python
 # In root module
-from src.mymodule import *  # Explicit delegation
+from src.mymodule import * # Explicit delegation
 ```
 
 ### Resolving Library Shadowing
@@ -242,68 +242,68 @@ from src.mymodule import *  # Explicit delegation
 
 **Solutions**:
 1. **Rename local directory** (recommended):
-   ```bash
-   mv torch/ torch_custom/
-   mv numpy/ numpy_extensions/
-   ```
+ ```bash
+ mv torch/ torch_custom/
+ mv numpy/ numpy_extensions/
+ ```
 
 2. **Move to `src/`**:
-   ```bash
-   mkdir -p src/project_torch
-   git mv torch/* src/project_torch/
-   ```
+ ```bash
+ mkdir -p src/project_torch
+ git mv torch/* src/project_torch/
+ ```
 
 3. **Use package prefix**:
-   ```bash
-   mv torch/ myproject_torch/
-   ```
+ ```bash
+ mv torch/ myproject_torch/
+ ```
 
 ## Best Practices
 
 ### Architecture Guidelines
 
 1. **Use `src/` layout** for all application code:
-   ```
-   project/
-   ├── src/
-   │   └── myapp/
-   ├── tests/
-   ├── docs/
-   └── scripts/
-   ```
+ ```
+ project/
+ src/
+ myapp/
+ tests/
+ docs/
+ scripts/
+ ```
 
 2. **Avoid namespace conflicts**:
-   - Never name directories after PyPI packages
-   - Use project-specific prefixes for utilities
+ - Never name directories after PyPI packages
+ - Use project-specific prefixes for utilities
 
 3. **Maintain single source of truth**:
-   - Each module should exist in exactly one location
-   - Use explicit imports, not duplicate code
+ - Each module should exist in exactly one location
+ - Use explicit imports, not duplicate code
 
 4. **Follow PEP 420** (Implicit Namespace Packages):
-   - Use `__init__.py` for all packages
-   - Avoid relying on implicit namespace behavior
+ - Use `__init__.py` for all packages
+ - Avoid relying on implicit namespace behavior
 
 ### Detection Configuration
 
 1. **Evidence Limit**: Adjust for repository size
 ```python
-result = detect(file_index, evidence_limit=50)  # Larger repos
+result = detect(file_index, evidence_limit=50) # Larger repos
 ```
 
 2. **Custom Shadow Risks**: Extend `KNOWN_SHADOW_RISKS`
 ```python
 KNOWN_SHADOW_RISKS = {
-    *KNOWN_SHADOW_RISKS,
-    "custom_lib", "internal_package"
+ *KNOWN_SHADOW_RISKS,
+ "custom_lib", "internal_package"
 }
 ```
 
 3. **Exclude Additional Directories**: Modify exclusion list
 ```python
 excluded = {
-    ".git", "tests", "docs", "scripts",
-    "vendor", "third_party"  # Add project-specific
+ ".git", "tests", "docs", "scripts",
+ "vendor", "third_party" # Add project-specific
 }
 ```
 
@@ -367,15 +367,15 @@ python scripts/space_traversal/trend_aggregator.py --lookback-days 30
 ```yaml
 # .github/workflows/quality-gate.yml
 - name: Check Structural Integrity
-  run: |
-    python scripts/space_traversal/audit_runner.py run
-    python -c "
-    import json
-    with open('audit_artifacts/capabilities_scored.json') as f:
-        data = json.load(f)
-    cap = next(c for c in data['capabilities'] if c['id']=='structural-integrity')
-    assert cap['score'] >= 0.70, f'Structural integrity score {cap[\"score\"]} below threshold'
-    "
+ run: |
+ python scripts/space_traversal/audit_runner.py run
+ python -c "
+ import json
+ with open('audit_artifacts/capabilities_scored.json') as f:
+ data = json.load(f)
+ cap = next(c for c in data['capabilities'] if c['id']=='structural-integrity')
+ assert cap['score'] >= 0.70, f'Structural integrity score {cap[\"score\"]} below threshold'
+ "
 ```
 
 ## Related Capabilities
@@ -410,8 +410,8 @@ The structural integrity detector includes the following safeguards:
 
 ---
 
-**Last Updated**: 2025-12-09  
-**Maintainer**: Codex Audit System  
+**Last Updated**: 2025-12-09
+**Maintainer**: Codex Audit System
 **Capability ID**: structural-integrity
 
 ## Advanced Safeguards

@@ -1,11 +1,11 @@
 # T1 Coverage Gate Implementation - Solution Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
-**Generated**: 2026-06-22T00:00:00Z  
-**Author**: Copilot (based on guidance from @mbaetiong)  
+**Generated**: 2026-06-22T00:00:00Z
+**Author**: Copilot (based on guidance from @mbaetiong)
 **Commit**: 2021bae000000000000000000000000000000000000
 
 ## Overview
@@ -147,7 +147,7 @@ def run_inference(prompt: str) -> tuple[str, str]:
 **Created**: Comprehensive sanitization tests
 
 5 test cases covering:
-- Script tag escaping (`<script>` → `&lt;script&gt;`)
+- Script tag escaping (`<script>` `&lt;script&gt;`)
 - None input handling (returns empty string)
 - Quote escaping (both single and double)
 - Ampersand escaping
@@ -161,19 +161,19 @@ def run_inference(prompt: str) -> tuple[str, str]:
 
 ## Validation Results
 
- **All tests passing**: 5/5 sanitize tests pass  
- **Sanitization working**: CLI correctly escapes malicious input  
- **Coverage gate enforced**: pytest.ini and noxfile.py configured  
- **Deterministic fixture**: autouse=True ensures all tests use it  
-️ **Overall coverage**: Currently 1.19% (needs additional tests)
+ **All tests passing**: 5/5 sanitize tests pass
+ **Sanitization working**: CLI correctly escapes malicious input
+ **Coverage gate enforced**: pytest.ini and noxfile.py configured
+ **Deterministic fixture**: autouse=True ensures all tests use it
+ **Overall coverage**: Currently 1.19% (needs additional tests)
 
 ## Next Steps
 
 ### Immediate (T1 Completion)
 1. Add focused unit tests to raise coverage to >= 70%
-   - Target critical logic in `src/` and `training/`
-   - Use `pytest --cov-report=term-missing` to identify uncovered lines
-   - Prioritize high-value modules (checkpointing, tokenization, training engine)
+ - Target critical logic in `src/` and `training/`
+ - Use `pytest --cov-report=term-missing` to identify uncovered lines
+ - Prioritize high-value modules (checkpointing, tokenization, training engine)
 
 ### Phase 1 Continuation
 2. **T5**: Integrate sanitization more broadly (all user input points)

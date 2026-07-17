@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/api/skills-api-reference/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Skills Module API Reference - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2443,8 +2443,8 @@
 <h1 id="skills-module-api-reference">Skills Module API Reference<a class="headerlink" href="#skills-module-api-reference" title="Permanent link">¶</a></h1>
 <p><strong>Version</strong>: v0.2.1
 <strong>Last Updated:</strong> 2026-07-11</p>
-<p><strong>Module Path</strong>: <code>src/codex/skills/</code><br/>
-<strong>Version</strong>: Phase 10+<br/>
+<p><strong>Module Path</strong>: <code>src/codex/skills/</code>
+<strong>Version</strong>: Phase 10+
 <strong>Purpose</strong>: Skill registry, execution, discovery, and lifecycle management</p>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2453,11 +2453,11 @@
 <h3 id="skillregistry">SkillRegistry<a class="headerlink" href="#skillregistry" title="Permanent link">¶</a></h3>
 <p>Central registry for skill management and discovery.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">class</span> <span class="nc">SkillRegistry</span><span class="p">:</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">    </span><span class="sd">"""Central skill registry and discovery system.</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w"> </span><span class="sd">"""Central skill registry and discovery system.</span>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="sd">    Manages skill registration, capability matching, versioning,</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd">    and execution coordination.</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="sd"> Manages skill registration, capability matching, versioning,</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd"> and execution coordination.</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="register_skillskill_definition-version-capabilitiesnone"><code>register_skill(skill_definition, version, capabilities=None)</code><a class="headerlink" href="#register_skillskill_definition-version-capabilitiesnone" title="Permanent link">¶</a></h4>
@@ -2471,16 +2471,16 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">registry</span> <span class="o">=</span> <span class="n">SkillRegistry</span><span class="p">()</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="n">skill_def</span> <span class="o">=</span> <span class="n">SkillDefinition</span><span class="p">(</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"code-analyzer"</span><span class="p">,</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Analyzes code for quality issues"</span><span class="p">,</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"code"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">"language"</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"issues"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Issue</span><span class="p">],</span> <span class="s2">"score"</span><span class="p">:</span> <span class="nb">float</span><span class="p">}</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"code-analyzer"</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Analyzes code for quality issues"</span><span class="p">,</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"code"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">"language"</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"issues"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Issue</span><span class="p">],</span> <span class="s2">"score"</span><span class="p">:</span> <span class="nb">float</span><span class="p">}</span>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="p">)</span>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="n">registration</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">register_skill</span><span class="p">(</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">skill_definition</span><span class="o">=</span><span class="n">skill_def</span><span class="p">,</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="n">capabilities</span><span class="o">=</span><span class="p">[</span><span class="s2">"static-analysis"</span><span class="p">,</span> <span class="s2">"code-quality"</span><span class="p">]</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="n">skill_definition</span><span class="o">=</span><span class="n">skill_def</span><span class="p">,</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> <span class="n">capabilities</span><span class="o">=</span><span class="p">[</span><span class="s2">"static-analysis"</span><span class="p">,</span> <span class="s2">"code-quality"</span><span class="p">]</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="find_skills_with_capabilitycapability"><code>find_skills_with_capability(capability)</code><a class="headerlink" href="#find_skills_with_capabilitycapability" title="Permanent link">¶</a></h4>
@@ -2491,7 +2491,7 @@
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">analysis_skills</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">find_skills_with_capability</span><span class="p">(</span><span class="s2">"static-analysis"</span><span class="p">)</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">for</span> <span class="n">skill_info</span> <span class="ow">in</span> <span class="n">analysis_skills</span><span class="p">:</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">skill_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> v</span><span class="si">{</span><span class="n">skill_info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">skill_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> v</span><span class="si">{</span><span class="n">skill_info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="get_skillskill_name-versionnone"><code>get_skill(skill_name, version=None)</code><a class="headerlink" href="#get_skillskill_name-versionnone" title="Permanent link">¶</a></h4>
 <p>Retrieve a registered skill.</p>
@@ -2503,11 +2503,11 @@
 <h3 id="executionenvelope">ExecutionEnvelope<a class="headerlink" href="#executionenvelope" title="Permanent link">¶</a></h3>
 <p>Encapsulates skill execution with input/output handling.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">class</span> <span class="nc">ExecutionEnvelope</span><span class="p">:</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">    </span><span class="sd">"""Skill execution container with IO management.</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span><span class="sd">"""Skill execution container with IO management.</span>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="sd">    Handles skill invocation, timeout management, error handling,</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sd">    and result validation.</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="sd"> Handles skill invocation, timeout management, error handling,</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sd"> and result validation.</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="run"><code>run()</code><a class="headerlink" href="#run" title="Permanent link">¶</a></h4>
@@ -2515,20 +2515,20 @@
 <p><strong>Returns</strong>: <code>ExecutionResult</code> with status, output, and metadata</p>
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">skill_name</span><span class="o">=</span><span class="s2">"data-transform"</span><span class="p">,</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">dataset</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">},</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">300</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> <span class="n">skill_name</span><span class="o">=</span><span class="s2">"data-transform"</span><span class="p">,</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">dataset</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">:</span> <span class="s2">"json"</span><span class="p">},</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">300</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">)</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="n">output</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Transformed data: </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="n">output</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Transformed data: </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Skill execution timed out"</span><span class="p">)</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Skill execution timed out"</span><span class="p">)</span>
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="get_output"><code>get_output()</code><a class="headerlink" href="#get_output" title="Permanent link">¶</a></h4>
 <p>Get execution result data.</p>
@@ -2551,11 +2551,11 @@
 <h3 id="skilldocloader">SkillDocLoader<a class="headerlink" href="#skilldocloader" title="Permanent link">¶</a></h3>
 <p>Load and manage skill documentation and manifests.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">class</span> <span class="nc">SkillDocLoader</span><span class="p">:</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">    </span><span class="sd">"""Load and parse skill documentation.</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="sd">"""Load and parse skill documentation.</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="sd">    Handles manifest loading, documentation parsing,</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="sd">    and example extraction.</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="sd"> Handles manifest loading, documentation parsing,</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="sd"> and example extraction.</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="load_manifestpath-static"><code>load_manifest(path)</code> (static)<a class="headerlink" href="#load_manifestpath-static" title="Permanent link">¶</a></h4>
@@ -2578,23 +2578,23 @@
 <p><strong>Returns</strong>: List of <code>SkillManifest</code> objects</p>
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="n">manifests</span> <span class="o">=</span> <span class="n">SkillDocLoader</span><span class="o">.</span><span class="n">load_many</span><span class="p">([</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    <span class="s2">"skills/code-analyzer/manifest.yaml"</span><span class="p">,</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="s2">"skills/test-generator/manifest.yaml"</span><span class="p">,</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="s2">"skills/doc-writer/manifest.yaml"</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> <span class="s2">"skills/code-analyzer/manifest.yaml"</span><span class="p">,</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="s2">"skills/test-generator/manifest.yaml"</span><span class="p">,</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="s2">"skills/doc-writer/manifest.yaml"</span>
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="p">])</span>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="k">for</span> <span class="n">manifest</span> <span class="ow">in</span> <span class="n">manifests</span><span class="p">:</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded: </span><span class="si">{</span><span class="n">manifest</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded: </span><span class="si">{</span><span class="n">manifest</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="aaisscorer">AAISScorer<a class="headerlink" href="#aaisscorer" title="Permanent link">¶</a></h3>
 <p>Evaluates skill quality using AI Agent Intuitiveness Score (AAIS).</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">class</span> <span class="nc">AAISScorer</span><span class="p">:</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">    </span><span class="sd">"""Score skills using AAIS metrics.</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="sd">"""Score skills using AAIS metrics.</span>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="sd">    Evaluates skill quality, usability, and effectiveness</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="sd">    against AAIS criteria.</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="sd"> Evaluates skill quality, usability, and effectiveness</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="sd"> against AAIS criteria.</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="scoreskill_info"><code>score(skill_info)</code><a class="headerlink" href="#scoreskill_info" title="Permanent link">¶</a></h4>
@@ -2608,47 +2608,47 @@
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="n">aais_score</span> <span class="o">=</span> <span class="n">scorer</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">skill_info</span><span class="p">)</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Overall AAIS Score: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">overall</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Intuitiveness: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">intuitiveness</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Reliability: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">reliability</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Usability: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">usability</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Intuitiveness: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">intuitiveness</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Reliability: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">reliability</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Usability: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">usability</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="k">if</span> <span class="n">aais_score</span><span class="o">.</span><span class="n">overall</span> <span class="o">&lt;</span> <span class="mi">70</span><span class="p">:</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: Low AAIS score. Issues: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">issues</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: Low AAIS score. Issues: </span><span class="si">{</span><span class="n">aais_score</span><span class="o">.</span><span class="n">issues</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="function-signatures">Function Signatures<a class="headerlink" href="#function-signatures" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Registry operations</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="k">def</span> <span class="nf">register_skill</span><span class="p">(</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="n">skill_definition</span><span class="p">:</span> <span class="n">SkillDefinition</span><span class="p">,</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">capabilities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> <span class="n">skill_definition</span><span class="p">:</span> <span class="n">SkillDefinition</span><span class="p">,</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="n">capabilities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkillRegistration</span><span class="p">:</span> <span class="o">...</span>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">def</span> <span class="nf">find_skills_with_capability</span><span class="p">(</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="n">capability</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="n">capability</span><span class="p">:</span> <span class="nb">str</span>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SkillInfo</span><span class="p">]:</span> <span class="o">...</span>
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="k">def</span> <span class="nf">get_skill</span><span class="p">(</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    <span class="n">skill_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="n">skill_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SkillInfo</span><span class="p">]:</span> <span class="o">...</span>
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>
 <a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="k">def</span> <span class="nf">list_all_skills</span><span class="p">(</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SkillInfo</span><span class="p">]:</span> <span class="o">...</span>
 <a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>
 <a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="k">def</span> <span class="nf">unregister_skill</span><span class="p">(</span>
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>    <span class="n">skill_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> <span class="n">skill_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a> <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span> <span class="o">...</span>
 <a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>
 <a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="c1"># Execution</span>
 <a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a><span class="k">def</span> <span class="nf">run_skill</span><span class="p">(</span>
-<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>    <span class="n">skill_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>    <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>    <span class="n">timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>    <span class="n">retry_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RetryPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a> <span class="n">skill_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a> <span class="n">timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a> <span class="n">retry_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RetryPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecutionResult</span><span class="p">:</span> <span class="o">...</span>
 <a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>
 <a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a><span class="c1"># Documentation</span>
@@ -2665,24 +2665,24 @@
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># Define a skill</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="n">skill_def</span> <span class="o">=</span> <span class="n">SkillDefinition</span><span class="p">(</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"test-generator"</span><span class="p">,</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Generates unit tests from code"</span><span class="p">,</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>        <span class="s2">"code"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>        <span class="s2">"test_framework"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>        <span class="s2">"coverage_target"</span><span class="p">:</span> <span class="nb">int</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="p">},</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>    <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>        <span class="s2">"tests"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>        <span class="s2">"coverage_estimate"</span><span class="p">:</span> <span class="nb">float</span>
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>    <span class="p">}</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"test-generator"</span><span class="p">,</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Generates unit tests from code"</span><span class="p">,</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="s2">"code"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="s2">"test_framework"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="s2">"coverage_target"</span><span class="p">:</span> <span class="nb">int</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="p">},</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> <span class="s2">"tests"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> <span class="s2">"coverage_estimate"</span><span class="p">:</span> <span class="nb">float</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> <span class="p">}</span>
 <a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a><span class="p">)</span>
 <a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>
 <a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a><span class="c1"># Register it</span>
 <a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a><span class="n">registration</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">register_skill</span><span class="p">(</span>
-<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>    <span class="n">skill_definition</span><span class="o">=</span><span class="n">skill_def</span><span class="p">,</span>
-<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>    <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>    <span class="n">capabilities</span><span class="o">=</span><span class="p">[</span><span class="s2">"test-generation"</span><span class="p">,</span> <span class="s2">"unit-testing"</span><span class="p">]</span>
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> <span class="n">skill_definition</span><span class="o">=</span><span class="n">skill_def</span><span class="p">,</span>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a> <span class="n">capabilities</span><span class="o">=</span><span class="p">[</span><span class="s2">"test-generation"</span><span class="p">,</span> <span class="s2">"unit-testing"</span><span class="p">]</span>
 <a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a><span class="p">)</span>
 <a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>
 <a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Registered: </span><span class="si">{</span><span class="n">registration</span><span class="o">.</span><span class="n">skill_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -2690,41 +2690,41 @@
 <a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a><span class="c1"># Discover skills with test-generation capability</span>
 <a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a><span class="n">test_skills</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">find_skills_with_capability</span><span class="p">(</span><span class="s2">"test-generation"</span><span class="p">)</span>
 <a href="#__codelineno-12-31" id="__codelineno-12-31" name="__codelineno-12-31"></a><span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">test_skills</span><span class="p">:</span>
-<a href="#__codelineno-12-32" id="__codelineno-12-32" name="__codelineno-12-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (v</span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<a href="#__codelineno-12-32" id="__codelineno-12-32" name="__codelineno-12-32"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" - </span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (v</span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="example-2-skill-execution-with-error-handling">Example 2: Skill Execution with Error Handling<a class="headerlink" href="#example-2-skill-execution-with-error-handling" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">codex.skills</span> <span class="kn">import</span> <span class="n">ExecutionEnvelope</span><span class="p">,</span> <span class="n">ExecutionStatus</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="k">def</span> <span class="nf">safe_skill_execution</span><span class="p">(</span><span class="n">skill_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>            <span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>                <span class="n">skill_name</span><span class="o">=</span><span class="n">skill_name</span><span class="p">,</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>                <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>                <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">300</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>            <span class="p">)</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">skill_name</span><span class="o">=</span><span class="n">skill_name</span><span class="p">,</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">300</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> <span class="p">)</span>
 <a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>                <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>            <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Timeout"</span><span class="p">)</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>                    <span class="k">continue</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill </span><span class="si">{</span><span class="n">skill_name</span><span class="si">}</span><span class="s2"> timed out"</span><span class="p">)</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>            <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>                <span class="n">error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span>
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a>                <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>                    <span class="k">continue</span>
-<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a>                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a> <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Timeout"</span><span class="p">)</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a> <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> <span class="k">continue</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill </span><span class="si">{</span><span class="n">skill_name</span><span class="si">}</span><span class="s2"> timed out"</span><span class="p">)</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> <span class="n">error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span>
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a> <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a> <span class="k">continue</span>
+<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a>
-<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a>            <span class="k">if</span> <span class="n">attempt</span> <span class="o">==</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a>                <span class="k">raise</span>
-<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, retrying..."</span><span class="p">)</span>
-<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a>            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">attempt</span><span class="p">)</span>  <span class="c1"># Exponential backoff</span>
+<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a> <span class="k">if</span> <span class="n">attempt</span> <span class="o">==</span> <span class="n">max_retries</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a> <span class="k">raise</span>
+<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, retrying..."</span><span class="p">)</span>
+<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">attempt</span><span class="p">)</span> <span class="c1"># Exponential backoff</span>
 </code></pre></div>
 <h3 id="example-3-batch-skill-loading">Example 3: Batch Skill Loading<a class="headerlink" href="#example-3-batch-skill-loading" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">codex.skills</span> <span class="kn">import</span> <span class="n">SkillDocLoader</span><span class="p">,</span> <span class="n">SkillRegistry</span>
@@ -2739,11 +2739,11 @@
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="c1"># Register all loaded skills</span>
 <a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="n">registry</span> <span class="o">=</span> <span class="n">SkillRegistry</span><span class="p">()</span>
 <a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="k">for</span> <span class="n">manifest</span> <span class="ow">in</span> <span class="n">manifests</span><span class="p">:</span>
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">register_skill</span><span class="p">(</span>
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>        <span class="n">skill_definition</span><span class="o">=</span><span class="n">SkillDefinition</span><span class="o">.</span><span class="n">from_manifest</span><span class="p">(</span><span class="n">manifest</span><span class="p">),</span>
-<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>        <span class="n">version</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
-<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a>        <span class="n">capabilities</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">capabilities</span>
-<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>    <span class="p">)</span>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> <span class="n">registry</span><span class="o">.</span><span class="n">register_skill</span><span class="p">(</span>
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> <span class="n">skill_definition</span><span class="o">=</span><span class="n">SkillDefinition</span><span class="o">.</span><span class="n">from_manifest</span><span class="p">(</span><span class="n">manifest</span><span class="p">),</span>
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> <span class="n">version</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a> <span class="n">capabilities</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">capabilities</span>
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a> <span class="p">)</span>
 </code></pre></div>
 <h3 id="example-4-skill-quality-scoring">Example 4: Skill Quality Scoring<a class="headerlink" href="#example-4-skill-quality-scoring" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">codex.skills</span> <span class="kn">import</span> <span class="n">AAISScorer</span><span class="p">,</span> <span class="n">SkillRegistry</span>
@@ -2756,105 +2756,105 @@
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>
 <a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="n">high_quality_skills</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="k">for</span> <span class="n">skill_info</span> <span class="ow">in</span> <span class="n">all_skills</span><span class="p">:</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>    <span class="n">score</span> <span class="o">=</span> <span class="n">scorer</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">skill_info</span><span class="p">)</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a> <span class="n">score</span> <span class="o">=</span> <span class="n">scorer</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">skill_info</span><span class="p">)</span>
 <a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">skill_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="o">.</span><span class="n">overall</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">skill_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="o">.</span><span class="n">overall</span><span class="si">}</span><span class="s2">/100"</span><span class="p">)</span>
 <a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>    <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">overall</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>        <span class="n">high_quality_skills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">skill_info</span><span class="p">)</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>    <span class="k">elif</span> <span class="n">score</span><span class="o">.</span><span class="n">overall</span> <span class="o">&lt;</span> <span class="mi">70</span><span class="p">:</span>
-<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ️ Low quality score. Issues: </span><span class="si">{</span><span class="n">score</span><span class="o">.</span><span class="n">issues</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a> <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">overall</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a> <span class="n">high_quality_skills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">skill_info</span><span class="p">)</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a> <span class="k">elif</span> <span class="n">score</span><span class="o">.</span><span class="n">overall</span> <span class="o">&lt;</span> <span class="mi">70</span><span class="p">:</span>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Low quality score. Issues: </span><span class="si">{</span><span class="n">score</span><span class="o">.</span><span class="n">issues</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a>
 <a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">High-quality skills: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">high_quality_skills</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
 <h3 id="1-skill-definition">1. Skill Definition<a class="headerlink" href="#1-skill-definition" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1">#  GOOD: Clear, well-documented skill definition</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># GOOD: Clear, well-documented skill definition</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="n">skill_def</span> <span class="o">=</span> <span class="n">SkillDefinition</span><span class="p">(</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"code-analyzer"</span><span class="p">,</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Analyzes Python code for quality issues, complexity, and style violations"</span><span class="p">,</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>    <span class="n">long_description</span><span class="o">=</span><span class="s2">"""</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="s2">    Performs static analysis on Python code including:</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="s2">    - Code quality metrics</span>
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="s2">    - Complexity analysis</span>
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="s2">    - PEP 8 compliance</span>
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="s2">    - Security vulnerability detection</span>
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="s2">    """</span><span class="p">,</span>
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>    <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>        <span class="s2">"code"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># Python source code</span>
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>        <span class="s2">"language"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># Programming language</span>
-<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>        <span class="s2">"config"</span><span class="p">:</span> <span class="n">Dict</span>  <span class="c1"># Analysis configuration</span>
-<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>    <span class="p">},</span>
-<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>    <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>        <span class="s2">"issues"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeIssue</span><span class="p">],</span>
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>        <span class="s2">"metrics"</span><span class="p">:</span> <span class="n">CodeMetrics</span><span class="p">,</span>
-<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>        <span class="s2">"suggestions"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>    <span class="p">},</span>
-<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>    <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
-<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a>    <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">backoff_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"code-analyzer"</span><span class="p">,</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Analyzes Python code for quality issues, complexity, and style violations"</span><span class="p">,</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> <span class="n">long_description</span><span class="o">=</span><span class="s2">"""</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="s2"> Performs static analysis on Python code including:</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="s2"> - Code quality metrics</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="s2"> - Complexity analysis</span>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="s2"> - PEP 8 compliance</span>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="s2"> - Security vulnerability detection</span>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="s2"> """</span><span class="p">,</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a> <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> <span class="s2">"code"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="c1"># Python source code</span>
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a> <span class="s2">"language"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="c1"># Programming language</span>
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a> <span class="s2">"config"</span><span class="p">:</span> <span class="n">Dict</span> <span class="c1"># Analysis configuration</span>
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a> <span class="p">},</span>
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a> <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a> <span class="s2">"issues"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodeIssue</span><span class="p">],</span>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a> <span class="s2">"metrics"</span><span class="p">:</span> <span class="n">CodeMetrics</span><span class="p">,</span>
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a> <span class="s2">"suggestions"</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a> <span class="p">},</span>
+<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
+<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a> <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">backoff_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a><span class="p">)</span>
 <a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a>
-<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a><span class="c1">#  POOR: Vague, undocumented definition</span>
+<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a><span class="c1"># POOR: Vague, undocumented definition</span>
 <a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a><span class="n">skill_def</span> <span class="o">=</span> <span class="n">SkillDefinition</span><span class="p">(</span>
-<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"analyzer"</span><span class="p">,</span>
-<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Analyzes code"</span><span class="p">,</span>
-<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a>    <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">Any</span><span class="p">},</span>
-<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a>    <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"result"</span><span class="p">:</span> <span class="n">Any</span><span class="p">}</span>
+<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"analyzer"</span><span class="p">,</span>
+<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Analyzes code"</span><span class="p">,</span>
+<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a> <span class="n">input_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">Any</span><span class="p">},</span>
+<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a> <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"result"</span><span class="p">:</span> <span class="n">Any</span><span class="p">}</span>
 <a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="2-execution-with-timeout">2. Execution with Timeout<a class="headerlink" href="#2-execution-with-timeout" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1">#  GOOD: Proper timeout handling</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># GOOD: Proper timeout handling</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>    <span class="n">skill_name</span><span class="o">=</span><span class="s2">"long-running-analysis"</span><span class="p">,</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">large_dataset</span><span class="p">},</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>    <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">600</span>  <span class="c1"># 10 minute timeout</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a> <span class="n">skill_name</span><span class="o">=</span><span class="s2">"long-running-analysis"</span><span class="p">,</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">large_dataset</span><span class="p">},</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">600</span> <span class="c1"># 10 minute timeout</span>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="p">)</span>
 <a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>
 <a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Skill execution exceeded timeout"</span><span class="p">)</span>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>    <span class="c1"># Handle gracefully - perhaps with partial results</span>
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>    <span class="n">cleanup_resources</span><span class="p">()</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Skill execution exceeded timeout"</span><span class="p">)</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a> <span class="c1"># Handle gracefully - perhaps with partial results</span>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> <span class="n">cleanup_resources</span><span class="p">()</span>
 <a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>
-<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="c1">#  POOR: No timeout protection</span>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="c1"># POOR: No timeout protection</span>
 <a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a><span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
-<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a>    <span class="n">skill_name</span><span class="o">=</span><span class="s2">"long-running-analysis"</span><span class="p">,</span>
-<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a>    <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">large_dataset</span><span class="p">}</span>
-<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a>    <span class="c1"># No timeout specified - could hang indefinitely</span>
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a> <span class="n">skill_name</span><span class="o">=</span><span class="s2">"long-running-analysis"</span><span class="p">,</span>
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">large_dataset</span><span class="p">}</span>
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a> <span class="c1"># No timeout specified - could hang indefinitely</span>
 <a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="3-error-recovery">3. Error Recovery<a class="headerlink" href="#3-error-recovery" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1">#  GOOD: Comprehensive error handling</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># GOOD: Comprehensive error handling</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="k">def</span> <span class="nf">robust_skill_execution</span><span class="p">(</span><span class="n">skill_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>    <span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>        <span class="n">skill_name</span><span class="o">=</span><span class="n">skill_name</span><span class="p">,</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>        <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>        <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">300</span>
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> <span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> <span class="n">skill_name</span><span class="o">=</span><span class="n">skill_name</span><span class="p">,</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">300</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> <span class="p">)</span>
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>        <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>            <span class="n">error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span>
-<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill execution failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>            <span class="k">raise</span> <span class="n">SkillExecutionError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ExecutionStatus</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a> <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a> <span class="n">error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span>
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill execution failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a> <span class="k">raise</span> <span class="n">SkillExecutionError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 <a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a>
-<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a>    <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
-<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill </span><span class="si">{</span><span class="n">skill_name</span><span class="si">}</span><span class="s2"> timed out"</span><span class="p">)</span>
-<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a>        <span class="k">raise</span>
-<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unexpected error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a>        <span class="k">raise</span>
+<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a> <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
+<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Skill </span><span class="si">{</span><span class="n">skill_name</span><span class="si">}</span><span class="s2"> timed out"</span><span class="p">)</span>
+<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a> <span class="k">raise</span>
+<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a> <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unexpected error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a> <span class="k">raise</span>
 <a href="#__codelineno-18-25" id="__codelineno-18-25" name="__codelineno-18-25"></a>
-<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a><span class="c1">#  POOR: No error handling</span>
+<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a><span class="c1"># POOR: No error handling</span>
 <a href="#__codelineno-18-27" id="__codelineno-18-27" name="__codelineno-18-27"></a><span class="k">def</span> <span class="nf">unsafe_skill_execution</span><span class="p">(</span><span class="n">skill_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-<a href="#__codelineno-18-28" id="__codelineno-18-28" name="__codelineno-18-28"></a>    <span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span><span class="n">skill_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
-<a href="#__codelineno-18-29" id="__codelineno-18-29" name="__codelineno-18-29"></a>    <span class="k">return</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span>  <span class="c1"># Crashes on any error</span>
+<a href="#__codelineno-18-28" id="__codelineno-18-28" name="__codelineno-18-28"></a> <span class="n">envelope</span> <span class="o">=</span> <span class="n">ExecutionEnvelope</span><span class="p">(</span><span class="n">skill_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+<a href="#__codelineno-18-29" id="__codelineno-18-29" name="__codelineno-18-29"></a> <span class="k">return</span> <span class="n">envelope</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">get_output</span><span class="p">()</span> <span class="c1"># Crashes on any error</span>
 </code></pre></div>
 <hr/>
 <h2 id="related-apis">Related APIs<a class="headerlink" href="#related-apis" title="Permanent link">¶</a></h2>
@@ -2864,8 +2864,8 @@
 <li><a href="../brain-api-reference/">Brain API Reference</a></li>
 </ul>
 <hr/>
-<p><strong>Last Updated</strong>: 2026-07-08<br/>
-<strong>Status</strong>: Phase 10+ (Active)<br/>
+<p><strong>Last Updated</strong>: 2026-07-08
+<strong>Status</strong>: Phase 10+ (Active)
 <strong>Author</strong>: Codex Skills Team</p>
 </article>
 </div>
@@ -2896,6 +2896,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

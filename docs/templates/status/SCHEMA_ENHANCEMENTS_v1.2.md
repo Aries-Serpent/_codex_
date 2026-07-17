@@ -1,13 +1,13 @@
 # Schema Enhancements v1.2 — Context-Aware Updates for `_codex_`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Schema Architect], [Secondary: Repository Analyst]  Energy: 5  
-⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Schema Architect], [Secondary: Repository Analyst] Energy: 5
+ Physics: Path Fields Patterns Redundancy Balance
 
 ## Executive Summary
-This document details the enhancements made to the status update schema (v1.1 → v1.2) based on deep analysis of the `_codex_` repository structure, tooling, and workflows. All enhancements are grounded in actual repository capabilities and designed to support the offline-first, reproducible ML training environment.
+This document details the enhancements made to the status update schema (v1.1 v1.2) based on deep analysis of the `_codex_` repository structure, tooling, and workflows. All enhancements are grounded in actual repository capabilities and designed to support the offline-first, reproducible ML training environment.
 
 ## Key Enhancements
 
@@ -149,7 +149,7 @@ This document details the enhancements made to the status update schema (v1.1 �
 - Optional fields do not break existing reports
 - Enum values are additive (old values remain valid)
 
-## Migration Path (v1.1 → v1.2)
+## Migration Path (v1.1 v1.2)
 1. **Existing reports remain valid**: v1.2 schema accepts all v1.1 reports
 2. **Gradual enrichment**: New fields can be populated incrementally
 3. **Tooling updates**: Update status report generators to populate new fields
@@ -157,38 +157,38 @@ This document details the enhancements made to the status update schema (v1.1 �
 
 ## Implementation Recommendations
 1. **Update report generator** (`tools/status_report.py` or equivalent):
-   - Add git context extraction (via `gitpython` or subprocess)
-   - Add environment capture (Python version, PyTorch, CUDA detection)
-   - Populate nox session results from `nox` CLI output
-   - Integrate MLflow tracking query
-   - Add capability autodiscovery (file/module scanning)
+ - Add git context extraction (via `gitpython` or subprocess)
+ - Add environment capture (Python version, PyTorch, CUDA detection)
+ - Populate nox session results from `nox` CLI output
+ - Integrate MLflow tracking query
+ - Add capability autodiscovery (file/module scanning)
 
 2. **Enhance automation hooks**:
-   - Parse GitHub Issues/PRs API responses into structured objects
-   - Run `pip-audit` and parse output into `dependency_audit`
-   - Run `bandit`/`detect-secrets` and parse into `security_scan`
-   - Capture performance benchmarks from training logs
+ - Parse GitHub Issues/PRs API responses into structured objects
+ - Run `pip-audit` and parse output into `dependency_audit`
+ - Run `bandit`/`detect-secrets` and parse into `security_scan`
+ - Capture performance benchmarks from training logs
 
 3. **Create tooling for cross-referencing**:
-   - Script to link patches to findings/capabilities
-   - Validation script to ensure all CAP-XXX / FIND-XXX / PATCH-XXX / REPRO-XXX references exist
+ - Script to link patches to findings/capabilities
+ - Validation script to ensure all CAP-XXX / FIND-XXX / PATCH-XXX / REPRO-XXX references exist
 
 4. **Establish ID conventions**:
-   - CAP-XXX: Zero-padded, sequential (CAP-001, CAP-002, ...)
-   - FIND-XXX: Same pattern
-   - PATCH-XXX: Same pattern
-   - REPRO-XXX: Same pattern
-   - Q-XXX: Questions
-   - Phase 12-XXX: Decisions
-   - DEFER-XXX: Deferred items
+ - CAP-XXX: Zero-padded, sequential (CAP-001, CAP-002, ...)
+ - FIND-XXX: Same pattern
+ - PATCH-XXX: Same pattern
+ - REPRO-XXX: Same pattern
+ - Q-XXX: Questions
+ - Phase 12-XXX: Decisions
+ - DEFER-XXX: Deferred items
 
 ## Validation
 The updated schema has been validated against:
--  JSON Schema Draft 2020-12 specification
--  Backward compatibility with v1.1 sample reports
--  Repository structure (`_codex_` codebase analysis)
--  Existing tooling (`nox`, `pytest`, `mlflow`, `hydra`)
--  Sample status reports (3 provided examples)
+- JSON Schema Draft 2020-12 specification
+- Backward compatibility with v1.1 sample reports
+- Repository structure (`_codex_` codebase analysis)
+- Existing tooling (`nox`, `pytest`, `mlflow`, `hydra`)
+- Sample status reports (3 provided examples)
 
 ## Next Steps
 1. **Approve schema v1.2** for production use
@@ -203,4 +203,4 @@ The updated schema has been validated against:
 - Primary: `docs/templates/status/codex_status_template.schema_v1.2.json`
 - YAML: `docs/templates/status/codex_status_template.schema_v1.2.yaml` (to be generated from JSON)
 - Documentation: This file (`SCHEMA_ENHANCEMENTS_v1.2.md`)
-- Authoring Guide: Update `authoring_guide_v1.1.md` → `authoring_guide_v1.2.md`
+- Authoring Guide: Update `authoring_guide_v1.1.md` `authoring_guide_v1.2.md`

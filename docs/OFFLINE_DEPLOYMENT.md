@@ -1,6 +1,6 @@
 # Offline Deployment Procedure - Phase 8
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version**: 1.0.0-phase8-groundwork 
 **Timeline**: 3 days post-merge (2026-07-09 activation) 

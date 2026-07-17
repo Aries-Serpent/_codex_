@@ -1,4 +1,3 @@
----
 name: Validation Pipeline
 on:
   pull_request:
@@ -53,12 +52,33 @@ jobs:
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'fast' || inputs.mode == ''))
     timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Log token fallback tier selection (fast-validation)
+        run: |
+          set -euo pipefail
+          TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
+          # Determine which token tier is active
+          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+            TOKEN_TIER="TIER_1_MASTER_KEY"
+          elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+            TOKEN_TIER="TIER_2_BACKUP_KEY"
+          else
+            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
+          fi
+
+          # Emit telemetry event (non-sensitive, just the tier name)
+          TELEMETRY_MSG="[TELEMETRY] ${TIMESTAMP} | workflow=validate"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | job=fast-validation | event=token-selection"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}"
+          echo "$TELEMETRY_MSG"
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
         with:
@@ -125,8 +145,6 @@ jobs:
           path: validation_summary.json
           retention-days: 30
           if-no-files-found: warn
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
   rescue-comment:
     name: Post rescue comment on failure
@@ -150,6 +168,31 @@ jobs:
           persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
+      - name: Log token fallback tier selection (rescue-comment)
+        run: |
+          set -euo pipefail
+          TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
+          # Determine which token tier is active
+          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+            TOKEN_TIER="TIER_1_MASTER_KEY"
+          elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+            TOKEN_TIER="TIER_2_BACKUP_KEY"
+          else
+            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
+          fi
+
+          # Emit telemetry event (non-sensitive, just the tier name)
+          TELEMETRY_MSG="[TELEMETRY] ${TIMESTAMP} | workflow=validate"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | job=rescue-comment | event=token-selection"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | pr_number=${{ github.event.pull_request.number }}"
+          echo "$TELEMETRY_MSG"
+
+          # Store in step summary
+          echo "## 🔑 Token Fallback Tier (rescue-comment)" >> $GITHUB_STEP_SUMMARY
+          echo "Selected tier: \`${TOKEN_TIER}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Timestamp: \`${TIMESTAMP}\`" >> $GITHUB_STEP_SUMMARY
       - name: Post or update rescue comment
         run: python scripts/ci/post_rescue_comment.py
 

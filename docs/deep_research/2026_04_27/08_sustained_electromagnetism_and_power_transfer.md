@@ -1,6 +1,6 @@
 # Research Note 08 — Sustained Electromagnetism, Wireless Power, and Spectrum-Aware Control
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -116,14 +116,23 @@ P_useful(λ,f,t) = P_incident(λ,f,t) · A_eff(λ,f) · η_capture · η_convert
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing P_incident lambda f t, A_eff capture capacity'}}%%
+
 flowchart LR
+
     Incident[P_incident lambda f t] --> Aperture[A_eff capture capacity]
+
     Aperture --> Capture[eta_capture]
+
     Capture --> Convert[eta_convert]
+
     Align[Phi_align context] --> Convert
+
     Convert --> Useful[P_useful]
+
     Loss[P_loss] --> Useful
+
     Safety[P_safety_margin] --> Useful
+
     Useful --> Store[storage or load service]
 ```
 
@@ -133,30 +142,49 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Energy sources, Thermal'}}%%
+
 flowchart LR
+
     Sources[Energy sources] --> Thermal[Thermal]
+
     Sources --> Solar[Solar photons]
+
     Sources --> RF[Ambient or directed RF]
+
     Sources --> Magnetic[Inductive/resonant magnetic field]
+
     Sources --> Chemical[Chemical/electrochemical]
 
     Thermal --> State[State estimator]
+
     Solar --> State
+
     RF --> State
+
     Magnetic --> State
+
     Chemical --> State
 
     State --> Safety[Safety and interference limits]
+
     State --> Demand[Demand forecast]
+
     State --> Storage[Storage state]
+
     Safety --> Optimizer[Spectrum-aware optimizer]
+
     Demand --> Optimizer
+
     Storage --> Optimizer
 
     Optimizer --> Harvest[Harvest]
+
     Optimizer --> Transfer[Transfer]
+
     Optimizer --> Store[Store]
+
     Optimizer --> Shed[Shed or dissipate]
+
     Optimizer --> Deny[Block unsafe coupling]
 ```
 

@@ -1,6 +1,6 @@
 # LFS Policy — Large-File Storage
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Large binary artifacts must **not** be committed directly to Git. Use the guidelines below to handle any file that exceeds normal size limits or is unsuitable for text-based version control.
 

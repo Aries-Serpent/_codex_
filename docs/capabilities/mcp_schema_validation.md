@@ -1,6 +1,6 @@
 # MCP Schema Validation
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -24,22 +24,22 @@ Provides schema validation for MCP services through:
 ### Validation Stack
 
 ```
-┌─────────────────────────────────────┐
-│   OpenAPI Specification             │
-│   (openapi.yaml)                    │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Pydantic BaseModel Classes        │
-│   (runtime validation)              │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   MCP Service Endpoints             │
-│   (FastAPI routes)                  │
-└─────────────────────────────────────┘
+
+ OpenAPI Specification 
+ (openapi.yaml) 
+
+ 
+ 
+
+ Pydantic BaseModel Classes 
+ (runtime validation) 
+
+ 
+ 
+
+ MCP Service Endpoints 
+ (FastAPI routes) 
+
 ```
 
 ### Detection Strategy
@@ -58,23 +58,23 @@ The detector identifies schema validation by:
 from pydantic import BaseModel, Field, validator
 
 class MCPToolRequest(BaseModel):
-    """Schema for MCP tool invocation request."""
-    tool_name: str = Field(..., min_length=1, description="Tool identifier")
-    parameters: dict = Field(default_factory=dict, description="Tool parameters")
-    context: dict = Field(default_factory=dict, description="Execution context")
+ """Schema for MCP tool invocation request."""
+ tool_name: str = Field(..., min_length=1, description="Tool identifier")
+ parameters: dict = Field(default_factory=dict, description="Tool parameters")
+ context: dict = Field(default_factory=dict, description="Execution context")
 
-    @validator('tool_name')
-    def validate_tool_name(cls, v):
-        if not v.isidentifier():
-            raise ValueError('tool_name must be valid Python identifier')
-        return v
+ @validator('tool_name')
+ def validate_tool_name(cls, v):
+ if not v.isidentifier():
+ raise ValueError('tool_name must be valid Python identifier')
+ return v
 
 class MCPToolResponse(BaseModel):
-    """Schema for MCP tool invocation response."""
-    success: bool
-    result: Any
-    error: Optional[str] = None
-    execution_time_ms: float
+ """Schema for MCP tool invocation response."""
+ success: bool
+ result: Any
+ error: Optional[str] = None
+ execution_time_ms: float
 ```
 
 ## OpenAPI Configuration
@@ -83,38 +83,38 @@ class MCPToolResponse(BaseModel):
 # openapi.yaml
 openapi: 3.0.0
 info:
-  title: MCP Service API
-  version: 1.0.0
+ title: MCP Service API
+ version: 1.0.0
 paths:
-  /tools/invoke:
-    post:
-      summary: Invoke MCP tool
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MCPToolRequest'
-      responses:
-        '200':
-          description: Successful invocation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MCPToolResponse'
+ /tools/invoke:
+ post:
+ summary: Invoke MCP tool
+ requestBody:
+ required: true
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/MCPToolRequest'
+ responses:
+ '200':
+ description: Successful invocation
+ content:
+ application/json:
+ schema:
+ $ref: '#/components/schemas/MCPToolResponse'
 
 components:
-  schemas:
-    MCPToolRequest:
-      type: object
-      required: [tool_name]
-      properties:
-        tool_name:
-          type: string
-        parameters:
-          type: object
-        context:
-          type: object
+ schemas:
+ MCPToolRequest:
+ type: object
+ required: [tool_name]
+ properties:
+ tool_name:
+ type: string
+ parameters:
+ type: object
+ context:
+ type: object
 ```
 
 ## Usage Examples
@@ -125,21 +125,21 @@ components:
 from pydantic import BaseModel, ValidationError
 
 class ExecuteRequest(BaseModel):
-    command: str
-    timeout_seconds: int = 30
+ command: str
+ timeout_seconds: int = 30
 
 # Valid request
 try:
-    req = ExecuteRequest(command="ls -la", timeout_seconds=10)
-    print(f" Valid: {req}")
+ req = ExecuteRequest(command="ls -la", timeout_seconds=10)
+ print(f" Valid: {req}")
 except ValidationError as e:
-    print(f" Invalid: {e}")
+ print(f" Invalid: {e}")
 
 # Invalid request (missing required field)
 try:
-    req = ExecuteRequest(timeout_seconds=10)  # Missing 'command'
+ req = ExecuteRequest(timeout_seconds=10) # Missing 'command'
 except ValidationError as e:
-    print(f" Validation error: {e}")
+ print(f" Validation error: {e}")
 ```
 
 ## Example 2: Complex Nested Validation
@@ -149,28 +149,28 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 class MCPCapability(BaseModel):
-    name: str
-    version: str
-    enabled: bool = True
+ name: str
+ version: str
+ enabled: bool = True
 
 class MCPServerConfig(BaseModel):
-    server_id: str = Field(..., min_length=1)
-    capabilities: List[MCPCapability]
-    max_connections: int = Field(100, gt=0, le=1000)
-    timeout_ms: Optional[int] = Field(None, gt=0)
+ server_id: str = Field(..., min_length=1)
+ capabilities: List[MCPCapability]
+ max_connections: int = Field(100, gt=0, le=1000)
+ timeout_ms: Optional[int] = Field(None, gt=0)
 
-    class Config:
-        # Enable validation on assignment
-        validate_assignment = True
+ class Config:
+ # Enable validation on assignment
+ validate_assignment = True
 
 # Usage
 config = MCPServerConfig(
-    server_id="mcp-001",
-    capabilities=[
-        MCPCapability(name="code_analysis", version="1.0"),
-        MCPCapability(name="documentation", version="2.1", enabled=False)
-    ],
-    max_connections=500
+ server_id="mcp-001",
+ capabilities=[
+ MCPCapability(name="code_analysis", version="1.0"),
+ MCPCapability(name="documentation", version="2.1", enabled=False)
+ ],
+ max_connections=500
 )
 ```
 
@@ -181,18 +181,18 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="MCP Service",
-    version="1.0.0",
-    description="Model Context Protocol Service API"
+ title="MCP Service",
+ version="1.0.0",
+ description="Model Context Protocol Service API"
 )
 
 class HealthResponse(BaseModel):
-    status: str
-    uptime_seconds: float
+ status: str
+ uptime_seconds: float
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
-    return HealthResponse(status="healthy", uptime_seconds=123.45)
+ return HealthResponse(status="healthy", uptime_seconds=123.45)
 
 # Auto-generated OpenAPI available at /docs
 # Export with: app.openapi()
@@ -206,22 +206,22 @@ from typing import Optional
 
 # Version 1
 class RequestV1(BaseModel):
-    user_id: str
+ user_id: str
 
 # Version 2 (backward compatible)
 class RequestV2(BaseModel):
-    user_id: str
-    session_id: Optional[str] = None  # New optional field
+ user_id: str
+ session_id: Optional[str] = None # New optional field
 
-    class Config:
-        # Allow extra fields for forward compatibility
-        extra = "allow"
+ class Config:
+ # Allow extra fields for forward compatibility
+ extra = "allow"
 
 # Version 3 (with deprecation)
 class RequestV3(BaseModel):
-    user_id: str = Field(..., deprecated=True)
-    account_id: str  # New required field (breaking change)
-    session_id: Optional[str] = None
+ user_id: str = Field(..., deprecated=True)
+ account_id: str # New required field (breaking change)
+ session_id: Optional[str] = None
 ```
 
 ## Integration with Audit Pipeline
@@ -237,7 +237,7 @@ python scripts/space_traversal/audit_runner.py run
 
 # View evidence files
 cat audit_artifacts/capabilities_raw.json | \
-  jq '.capabilities[] | select(.id=="mcp-schema-validation")'
+ jq '.capabilities[] | select(.id=="mcp-schema-validation")'
 ```
 
 ## Programmatic Detection
@@ -247,10 +247,10 @@ from scripts.space_traversal.detectors import mcp_schema_validation
 
 # Run detector
 file_index = {
-    "files": [
-        {"path": "src/services/mcp/models.py"},
-        {"path": "docs/api/openapi.yaml"}
-    ]
+ "files": [
+ {"path": "src/services/mcp/models.py"},
+ {"path": "docs/api/openapi.yaml"}
+ ]
 }
 
 result = mcp_schema_validation.detect(file_index)
@@ -280,9 +280,9 @@ timeout: int = Field(..., description="Request timeout in seconds", gt=0, le=300
 ```python
 @validator('end_date')
 def end_after_start(cls, v, values):
-    if 'start_date' in values and v < values['start_date']:
-        raise ValueError('end_date must be after start_date')
-    return v
+ if 'start_date' in values and v < values['start_date']:
+ raise ValueError('end_date must be after start_date')
+ return v
 ```
 
 4. **Use Enums for Fixed Values**
@@ -290,10 +290,10 @@ def end_after_start(cls, v, values):
 from enum import Enum
 
 class Status(str, Enum):
-    PENDING = "pending"
-    RUNNING = "running"
-    COMPLETED = "completed"
-    FAILED = "failed"
+ PENDING = "pending"
+ RUNNING = "running"
+ COMPLETED = "completed"
+ FAILED = "failed"
 ```
 
 ### OpenAPI Best Practices
@@ -323,9 +323,9 @@ class Status(str, Enum):
 **Solution**:
 ```python
 try:
-    model = MyModel(**data)
+ model = MyModel(**data)
 except ValidationError as e:
-    print(e.json(indent=2))  # Detailed error information
+ print(e.json(indent=2)) # Detailed error information
 ```
 
 ### Issue: OpenAPI Schema Mismatch
@@ -338,7 +338,7 @@ from pydantic.schema import schema
 
 schemas = schema([MyModel, OtherModel])
 with open('openapi.yaml', 'w') as f:
-    yaml.dump(schemas, f)
+ yaml.dump(schemas, f)
 ```
 
 ### Issue: Circular References
@@ -351,8 +351,8 @@ from __future__ import annotations
 from typing import Optional
 
 class Node(BaseModel):
-    value: str
-    children: Optional[List[Node]] = None
+ value: str
+ children: Optional[List[Node]] = None
 
 Node.update_forward_refs()
 ```
@@ -389,14 +389,14 @@ total_requests = 0
 
 @app.middleware("http")
 async def track_validation(request, call_next):
-    global validation_errors, total_requests
-    total_requests += 1
-    try:
-        response = await call_next(request)
-        return response
-    except ValidationError:
-        validation_errors += 1
-        raise
+ global validation_errors, total_requests
+ total_requests += 1
+ try:
+ response = await call_next(request)
+ return response
+ except ValidationError:
+ validation_errors += 1
+ raise
 
 # Log metrics
 print(f"Validation failure rate: {validation_errors/total_requests:.2%}")
@@ -409,7 +409,7 @@ print(f"Validation failure rate: {validation_errors/total_requests:.2%}")
 python -c "
 import yaml
 with open('openapi.yaml') as f:
-    spec = yaml.safe_load(f)
+ spec = yaml.safe_load(f)
 paths = len(spec.get('paths', {}))
 schemas = len(spec.get('components', {}).get('schemas', {}))
 print(f'Documented: {paths} paths, {schemas} schemas')
@@ -449,6 +449,6 @@ The MCP schema validation system includes:
 
 ---
 
-**Last Updated**: 2025-12-09  
-**Maintainer**: Codex MCP Team  
+**Last Updated**: 2025-12-09
+**Maintainer**: Codex MCP Team
 **Capability ID**: mcp-schema-validation

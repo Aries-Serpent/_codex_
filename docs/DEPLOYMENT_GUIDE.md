@@ -1,12 +1,12 @@
 # _codex_ Deployment Guide
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 > **Last Updated: 2026-07-16
-> **Status:** Phase 3 - Documentation Enhancement Campaign 
-> **Reading Level:** 8th Grade (Flesch-Kincaid) 
-> **Scope:** Local Development → Docker → Cloud (AWS/Azure/GCP)
+> **Status:** Phase 3 - Documentation Enhancement Campaign
+> **Reading Level:** 8th Grade (Flesch-Kincaid)
+> **Scope:** Local Development Docker Cloud (AWS/Azure/GCP)
 
 ---
 
@@ -187,7 +187,7 @@ docker run -p 8000:8000 \
  codex-model:1.0
 
 # Note: 
-# - `-p 8000:8000` means "port 8000 inside container → port 8000 outside"
+# - `-p 8000:8000` means "port 8000 inside container port 8000 outside"
 # - `-v $(pwd)/runs:/app/runs` means "mount local runs/ directory"
 ```
 
@@ -293,13 +293,13 @@ curl http://localhost:80/predict # Load balancer routes to v1 or v2
 ### Architecture
 ```
 Your Computer
- ↓
+ 
  API Request
- ↓
+ 
  AWS API Gateway
- ↓
+ 
  AWS SageMaker Endpoint
- ↓
+ 
  Your Model (Running)
 ```
 
@@ -806,5 +806,5 @@ gcloud run deploy codex-model --image gcr.io/project/codex-model:1.0
 
 ---
 
-**Maintained by:** _codex_ Documentation Team 
+**Maintained by:** _codex_ Documentation Team
 **Last updated: 2026-07-16

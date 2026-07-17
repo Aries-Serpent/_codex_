@@ -1,6 +1,6 @@
 # Quantum-Relativistic-Dirac Orchestrator Framework
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -75,28 +75,28 @@ from codex.quantum_orchestrator.orchestrator import create_orchestrator
 
 # Create orchestrator
 orch = create_orchestrator(
-    max_throughput=100.0,  # Maximum tasks/second
-    work_granularity=1.0,  # Minimum work unit
-    time_step=0.1          # Evolution time step
+ max_throughput=100.0, # Maximum tasks/second
+ work_granularity=1.0, # Minimum work unit
+ time_step=0.1 # Evolution time step
 )
 
 # Add tasks
 orch.add_task(
-    task_id="task_1",
-    name="Initialize System",
-    priority=0.9,
-    complexity=2.0,
-    rest_mass=2.0
+ task_id="task_1",
+ name="Initialize System",
+ priority=0.9,
+ complexity=2.0,
+ rest_mass=2.0
 )
 
 orch.add_task(
-    task_id="task_2",
-    name="Process Data",
-    priority=0.8,
-    complexity=5.0,
-    rest_mass=5.0,
-    dependencies=["task_1"],
-    deadline=10.0  # SLA deadline
+ task_id="task_2",
+ name="Process Data",
+ priority=0.8,
+ complexity=5.0,
+ rest_mass=5.0,
+ dependencies=["task_1"],
+ deadline=10.0 # SLA deadline
 )
 
 # Run orchestration
@@ -108,9 +108,9 @@ print(f"Time: {results['final_timestamp']:.2f}")
 # Get task status
 status = orch.get_task_status()
 for task_id, info in status.items():
-    print(f"{task_id}: {info['probability']:.2%} complete")
-    print(f"  Stable: {info['stable']}")
-    print(f"  Energy: {info['energy']:.2f}")
+ print(f"{task_id}: {info['probability']:.2%} complete")
+ print(f" Stable: {info['stable']}")
+ print(f" Energy: {info['energy']:.2f}")
 ```
 
 ## Core Components
@@ -145,13 +145,13 @@ print(f"Regression probability: {spinor.negative_energy_prob}")
 Complete task representation:
 ```python
 task = TaskState(
-    task_id="example",
-    name="Example Task",
-    position=TaskVector(priority=0.8, complexity=2.0),
-    rest_mass=2.0,
-    deadline=10.0,
-    dependencies=["dep1", "dep2"],
-    required_resources={"cpu": 4.0, "memory": 8.0}
+ task_id="example",
+ name="Example Task",
+ position=TaskVector(priority=0.8, complexity=2.0),
+ rest_mass=2.0,
+ deadline=10.0,
+ dependencies=["dep1", "dep2"],
+ required_resources={"cpu": 4.0, "memory": 8.0}
 )
 ```
 
@@ -164,16 +164,16 @@ The orchestrator automatically detects and corrects:
 **Zitterbewegung (Instability)**:
 ```python
 unstable_tasks = orch.check_stability()
-orch.self_heal()  # Stabilizes unstable tasks
+orch.self_heal() # Stabilizes unstable tasks
 ```
 
 **Bottlenecks**:
 ```python
 bottlenecks = orch.flow_analyzer.identify_bottlenecks(
-    orch.state, prev_state, dt=0.1
+ orch.state, prev_state, dt=0.1
 )
 for bn in bottlenecks:
-    print(f"Bottleneck: {bn['task_id']}, severity={bn['severity']}")
+ print(f"Bottleneck: {bn['task_id']}, severity={bn['severity']}")
 ```
 
 ### 2. Flow Analysis
@@ -182,13 +182,13 @@ Monitor probability flow:
 ```python
 # Current flow rate
 current = orch.current_op.task_current(
-    current_state, prev_state, task_id, dt
+ current_state, prev_state, task_id, dt
 )
 print(f"Flow rate: {current:.3f}")
 
 # Efficiency
 efficiency = orch.flow_analyzer.flow_efficiency(
-    current_state, prev_state, dt
+ current_state, prev_state, dt
 )
 print(f"System efficiency: {efficiency:.1%}")
 ```
@@ -250,24 +250,24 @@ Tests cover:
 
 ```
 src/codex/quantum_orchestrator/
-├── __init__.py              # Package exports
-├── constants.py             # Physical constants
-├── orchestrator.py          # Main implementation
-├── state/
-│   ├── task_vector.py       # Position in task space
-│   ├── task_state.py        # Complete task state
-│   ├── spinor_state.py      # Dirac spinor
-│   └── orchestrator_state.py # System state
-├── operators/
-│   ├── momentum.py          # p̂ = -iℏ∇
-│   ├── energy.py            # Ê = iℏ∂/∂t
-│   ├── hamiltonian.py       # Ĥ = T̂ + V̂
-│   ├── klein_gordon.py      # Relativistic extension
-│   ├── probability_current.py # Flow analysis
-│   └── dirac.py             # Dirac equation
-└── dynamics/
-    ├── evolution.py         # Time evolution
-    └── self_healing.py      # Self-healing logic
+ __init__.py # Package exports
+ constants.py # Physical constants
+ orchestrator.py # Main implementation
+ state/
+ task_vector.py # Position in task space
+ task_state.py # Complete task state
+ spinor_state.py # Dirac spinor
+ orchestrator_state.py # System state
+ operators/
+ momentum.py # p̂ = -iℏ∇
+ energy.py # Ê = iℏ∂/∂t
+ hamiltonian.py # Ĥ = T̂ + V̂
+ klein_gordon.py # Relativistic extension
+ probability_current.py # Flow analysis
+ dirac.py # Dirac equation
+ dynamics/
+ evolution.py # Time evolution
+ self_healing.py # Self-healing logic
 ```
 
 ## Physics Validation
@@ -276,27 +276,27 @@ The implementation maintains physical accuracy:
 
 ### Energy-Momentum Relation
 ```text
-E² ≈ p²c² + m²c⁴  # Verified in tests
+E² ≈ p²c² + m²c⁴ # Verified in tests
 ```
 
 ### Lorentz Factor
 ```text
-γ = 1/√(1 - v²/c²) ≥ 1  # Always satisfied
+γ = 1/√(1 - v²/c²) ≥ 1 # Always satisfied
 ```
 
 ### Speed Limit
 ```python
-v < c  # Enforced via apply_force()
+v < c # Enforced via apply_force()
 ```
 
 ### Probability Conservation
 ```text
-∂ρ/∂t + ∇·j = 0  # Checked via ContinuityChecker
+∂ρ/∂t + ∇·j = 0 # Checked via ContinuityChecker
 ```
 
 ### Dirac Current Bound
 ```text
-|j| ≤ c  # Always subluminal
+|j| ≤ c # Always subluminal
 ```
 
 ## Performance Considerations

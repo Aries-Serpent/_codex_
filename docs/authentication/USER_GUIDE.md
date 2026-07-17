@@ -1,6 +1,6 @@
 # Codex Authentication System - User Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version**: 1.0
 **Last Updated**: 2026-06-22
@@ -44,10 +44,10 @@ print("Authentication system ready!")
 
 ### Step 1: Create GitHub OAuth App
 
-1. Go to GitHub Settings → Developer Settings → OAuth Apps
+1. Go to GitHub Settings Developer Settings OAuth Apps
 2. Click "New OAuth App"
 3. Fill in the details:
-   - **Application name**: Codex Auth
+ - **Application name**: Codex Auth
 4. Click "Register application"
 5. Copy the **Client ID** and **Client Secret**
 

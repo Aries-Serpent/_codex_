@@ -1,5 +1,5 @@
 # API Reference
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version:** 1.0.0 | **Release Date:** 2026-06-22
 

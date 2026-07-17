@@ -1,10 +1,10 @@
 # [Template]: CLI Module Hardening & Test Coverage Enhancement
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version:** v0.2.1  
+**Version:** v0.2.0
 **Last Updated: 2026-07-11
-**Role Workflow:** Developers draft → Maintainers approve → Release engineers monitor
+**Role Workflow:** Developers draft Maintainers approve Release engineers monitor
 
 > [PLACEHOLDER: CLI_HARDENING_SUMMARY]
 

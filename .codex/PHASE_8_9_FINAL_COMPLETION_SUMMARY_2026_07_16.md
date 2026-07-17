@@ -25,7 +25,7 @@ This session successfully completed **Phase 8 Performance Optimization (4/4 lane
 Repository tags show **v0.2.2 deployed 3 days ago**, confirming:
 - Phase 9 BLOCKING gates: ✅ ALL PASSED (evidenced by v0.2.0 deployment)
 - Phase 10 v0.2.0 release: ✅ COMPLETE
-- v0.2.1 & v0.2.2: ✅ DEPLOYED (production hardening releases)
+- v0.2.0 & v0.2.2: ✅ DEPLOYED (production hardening releases)
 - Current Status: v0.2.2 in production (deployed-v0.2.2 tag verified)
 
 ---
@@ -425,13 +425,13 @@ Repository tags show **v0.2.2 deployed 3 days ago**, confirming:
 **Confirmed from GitHub Tags Image**:
 - ✅ v0.2.2 (3 days ago) — Partially verified
 - ✅ deployed-v0.2.2 (3 days ago) — Partially verified
-- ✅ v0.2.1 (5 days ago) — Partially verified
-- ✅ deployed-v0.2.1 (5 days ago) — Partially verified
+- ✅ v0.2.0 (5 days ago) — Partially verified
+- ✅ deployed-v0.2.0 (5 days ago) — Partially verified
 
 **Implication**:
 - Phase 9 BLOCKING gates: ✅ ALL PASSED (v0.2.0 deployed ~6-7 days ago)
 - Phase 10 v0.2.0 release: ✅ COMPLETE (Alpha/Beta/GA rollout completed)
-- v0.2.1 Patch Release: ✅ COMPLETE (deployed 5 days ago)
+- v0.2.0 Patch Release: ✅ COMPLETE (deployed 5 days ago)
 - v0.2.2 Stable Release: ✅ COMPLETE (deployed 3 days ago — current production)
 
 **Status**: Phase 9 & 10 already executed in prior sessions. This session documents campaign orchestration and updates continuation prompts for next phase work.

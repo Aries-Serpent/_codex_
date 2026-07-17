@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_codex_ai_generation/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>AI-Powered Code Generation Implementation Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2539,30 +2539,30 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This application now features <strong>real AI-powered code generation</strong> using the Spark Runtime LLM API (gpt-4o-mini). No API keys, no external services, no configuration required - just intelligent code generation that works out of the box!</p>
 <h2 id="key-benefits">Key Benefits<a class="headerlink" href="#key-benefits" title="Permanent link">¶</a></h2>
-<p><strong>Zero Configuration</strong> - Works immediately without any setup<br/>
-<strong>Real AI</strong> - Uses gpt-4o-mini for intelligent, context-aware generation<br/>
-<strong>No API Keys</strong> - Leverages Spark Runtime's built-in LLM access<br/>
-<strong>Production Ready</strong> - Generates complete, documented, error-handled code<br/>
-<strong>Intelligent Fallback</strong> - Gracefully degrades if LLM unavailable<br/>
-<strong>Multi-Language</strong> - Supports Python, JavaScript, TypeScript, and more</p>
+<p><strong>Zero Configuration</strong> - Works immediately without any setup
+ <strong>Real AI</strong> - Uses gpt-4o-mini for intelligent, context-aware generation
+ <strong>No API Keys</strong> - Leverages Spark Runtime's built-in LLM access
+ <strong>Production Ready</strong> - Generates complete, documented, error-handled code
+ <strong>Intelligent Fallback</strong> - Gracefully degrades if LLM unavailable
+ <strong>Multi-Language</strong> - Supports Python, JavaScript, TypeScript, and more</p>
 <h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h2>
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>User Input (Prompt)
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    ↓
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>CodeGenerator Component
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    ↓
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>Priority Chain:
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    1. Custom API (if VITE_CODEX_KEY configured)
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    2. Spark Runtime LLM (gpt-4o-mini) ← DEFAULT
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    3. Template-based Fallback (if LLM fails)
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    ↓
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> 1. Custom API (if VITE_CODEX_KEY configured)
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> 2. Spark Runtime LLM (gpt-4o-mini) DEFAULT
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> 3. Template-based Fallback (if LLM fails)
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>Display Generated Code + Metrics
 </code></pre></div>
 <h3 id="implementation-details">Implementation Details<a class="headerlink" href="#implementation-details" title="Permanent link">¶</a></h3>
 <h4 id="1-spark-llm-client-srclibspark-llm-clientts">1. Spark LLM Client (<code>src/lib/spark-llm-client.ts</code>)<a class="headerlink" href="#1-spark-llm-client-srclibspark-llm-clientts" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">SparkLLMClient</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">generateCode</span><span class="p">(</span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="kt">CodexRequest</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">CodexResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">spark</span><span class="p">.</span><span class="nx">llmPrompt</span><span class="sb">`You are an expert code generation assistant...</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="nx">generateCode</span><span class="p">(</span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="kt">CodexRequest</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">CodexResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">spark</span><span class="p">.</span><span class="nx">llmPrompt</span><span class="sb">`You are an expert code generation assistant...</span>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="sb">Generate </span><span class="si">${</span><span class="nx">language</span><span class="si">}</span><span class="sb"> code for: </span><span class="si">${</span><span class="nx">request</span><span class="p">.</span><span class="nx">prompt</span><span class="si">}</span>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
@@ -2572,14 +2572,14 @@
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="sb">- Follow best practices</span>
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="sb">- Make it production-ready`</span><span class="p">;</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">generatedCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">spark</span><span class="p">.</span><span class="nx">llm</span><span class="p">(</span><span class="nx">prompt</span><span class="p">,</span><span class="w"> </span><span class="s2">"gpt-4o-mini"</span><span class="p">);</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">generatedCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">spark</span><span class="p">.</span><span class="nx">llm</span><span class="p">(</span><span class="nx">prompt</span><span class="p">,</span><span class="w"> </span><span class="s2">"gpt-4o-mini"</span><span class="p">);</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">      </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">generatedCode.trim</span><span class="p">(),</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">      </span><span class="nx">metadata</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">k1_factor</span><span class="p">,</span><span class="w"> </span><span class="nx">coherence</span><span class="p">,</span><span class="w"> </span><span class="nx">cache_hit</span><span class="p">,</span><span class="w"> </span><span class="nx">processing_time_ms</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">      </span><span class="nx">quantum_metrics</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">superposition_states</span><span class="p">,</span><span class="w"> </span><span class="nx">entanglement_score</span><span class="w"> </span><span class="p">}</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">    </span><span class="p">};</span>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w"> </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">generatedCode.trim</span><span class="p">(),</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w"> </span><span class="nx">metadata</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">k1_factor</span><span class="p">,</span><span class="w"> </span><span class="nx">coherence</span><span class="p">,</span><span class="w"> </span><span class="nx">cache_hit</span><span class="p">,</span><span class="w"> </span><span class="nx">processing_time_ms</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w"> </span><span class="nx">quantum_metrics</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">superposition_states</span><span class="p">,</span><span class="w"> </span><span class="nx">entanglement_score</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w"> </span><span class="p">};</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="p">}</span>
 </code></pre></div>
 <h4 id="2-codegenerator-integration">2. CodeGenerator Integration<a class="headerlink" href="#2-codegenerator-integration" title="Permanent link">¶</a></h4>
@@ -2588,8 +2588,8 @@
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1">// Generate code</span>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sparkClient</span><span class="p">.</span><span class="nx">generateCode</span><span class="p">({</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="kt">userPrompt</span><span class="p">,</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s1">'python'</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="s1">'A'</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="kt">userPrompt</span><span class="p">,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s1">'python'</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="s1">'A'</span><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="p">});</span>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1">// Response includes:</span>
@@ -2602,8 +2602,8 @@
 <h4 id="default-mode-no-configuration">Default Mode (No Configuration)<a class="headerlink" href="#default-mode-no-configuration" title="Permanent link">¶</a></h4>
 <ol>
 <li>User opens application</li>
-<li>Status:  "Connected"</li>
-<li>Info: ℹ️ "Using AI-powered generation (Spark Runtime LLM)"</li>
+<li>Status: "Connected"</li>
+<li>Info: ℹ "Using AI-powered generation (Spark Runtime LLM)"</li>
 <li>User enters prompt: "Create a REST API endpoint for user authentication"</li>
 <li>Clicks "Generate Code"</li>
 <li><strong>Real AI generates contextually relevant Python/JavaScript code</strong></li>
@@ -2614,7 +2614,7 @@
 <h4 id="custom-backend-mode-optional">Custom Backend Mode (Optional)<a class="headerlink" href="#custom-backend-mode-optional" title="Permanent link">¶</a></h4>
 <ol>
 <li>User configures environment:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VITE_CODEX_KEY</span><span class="o">=</span><span class="s2">"my-api-key"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VITE_CODEX_KEY</span><span class="o">=</span><span class="s2">"my-api-key"</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VITE_CODEX_API</span><span class="o">=</span><span class="s2">"https://my-backend.com"</span>
 </code></pre></div></li>
 <li>Application attempts custom API first</li>
@@ -2641,83 +2641,83 @@
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>ACCESS_TOKEN_EXPIRE_MINUTES = 30
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    """Generate JWT access token"""
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    to_encode = data.copy()
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    to_encode.update({"exp": expire})
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> """Generate JWT access token"""
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> to_encode = data.copy()
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> to_encode.update({"exp": expire})
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 <a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
 <a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>@router.post("/token")
 <a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    """Authenticate user and return JWT token"""
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    user = authenticate_user(form_data.username, form_data.password)
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>    if not user:
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>        raise HTTPException(
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>            status_code=status.HTTP_401_UNAUTHORIZED,
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>            detail="Incorrect username or password",
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>            headers={"WWW-Authenticate": "Bearer"},
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>        )
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>    access_token = create_access_token(data={"sub": user.username})
-<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>    return {"access_token": access_token, "token_type": "bearer"}
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> """Authenticate user and return JWT token"""
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a> user = authenticate_user(form_data.username, form_data.password)
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> if not user:
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> raise HTTPException(
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> status_code=status.HTTP_401_UNAUTHORIZED,
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> detail="Incorrect username or password",
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a> headers={"WWW-Authenticate": "Bearer"},
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a> )
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a> access_token = create_access_token(data={"sub": user.username})
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a> return {"access_token": access_token, "token_type": "bearer"}
 </code></pre></div></p>
 <p><strong>Characteristics:</strong>
--  Complete, runnable code
--  Proper error handling
--  Security best practices (JWT, bcrypt)
--  Documentation strings
--  Type hints
--  Production-ready structure</p>
+- Complete, runnable code
+- Proper error handling
+- Security best practices (JWT, bcrypt)
+- Documentation strings
+- Type hints
+- Production-ready structure</p>
 <h4 id="prompt-2-write-a-react-hook-for-debounced-search">Prompt 2: "Write a React hook for debounced search"<a class="headerlink" href="#prompt-2-write-a-react-hook-for-debounced-search" title="Permanent link">¶</a></h4>
 <p><strong>AI-Generated Output:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useCallback</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react'</span><span class="p">;</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">useDebouncedSearch</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nx">searchFn</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nx">delay</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nx">searchFn</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nx">delay</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">setQuery</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">setResults</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">([]);</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">isLoading</span><span class="p">,</span><span class="w"> </span><span class="nx">setIsLoading</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">error</span><span class="p">,</span><span class="w"> </span><span class="nx">setError</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="o">&lt;</span><span class="ne">Error</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">setQuery</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">setResults</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">([]);</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">isLoading</span><span class="p">,</span><span class="w"> </span><span class="nx">setIsLoading</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">error</span><span class="p">,</span><span class="w"> </span><span class="nx">setError</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="o">&lt;</span><span class="ne">Error</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">query</span><span class="p">.</span><span class="nx">trim</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">      </span><span class="nx">setResults</span><span class="p">([]);</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">      </span><span class="k">return</span><span class="p">;</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">query</span><span class="p">.</span><span class="nx">trim</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w"> </span><span class="nx">setResults</span><span class="p">([]);</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">timerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">      </span><span class="nx">setIsLoading</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">      </span><span class="nx">setError</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">timerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w"> </span><span class="nx">setIsLoading</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w"> </span><span class="nx">setError</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
 <a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">      </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">searchFn</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w">        </span><span class="nx">setResults</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="w">        </span><span class="nx">setError</span><span class="p">(</span><span class="nx">err</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="ne">Error</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">'Search failed'</span><span class="p">));</span>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w">        </span><span class="nx">setResults</span><span class="p">([]);</span>
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w">        </span><span class="nx">setIsLoading</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="nx">delay</span><span class="p">);</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w"> </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">searchFn</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w"> </span><span class="nx">setResults</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="w"> </span><span class="nx">setError</span><span class="p">(</span><span class="nx">err</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="ne">Error</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">'Search failed'</span><span class="p">));</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w"> </span><span class="nx">setResults</span><span class="p">([]);</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w"> </span><span class="nx">setIsLoading</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nx">delay</span><span class="p">);</span>
 <a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>
-<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timerId</span><span class="p">);</span>
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">searchFn</span><span class="p">,</span><span class="w"> </span><span class="nx">delay</span><span class="p">]);</span>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timerId</span><span class="p">);</span>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">searchFn</span><span class="p">,</span><span class="w"> </span><span class="nx">delay</span><span class="p">]);</span>
 <a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">updateQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">((</span><span class="nx">newQuery</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="w">    </span><span class="nx">setQuery</span><span class="p">(</span><span class="nx">newQuery</span><span class="p">);</span>
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a><span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">updateQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">((</span><span class="nx">newQuery</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="w"> </span><span class="nx">setQuery</span><span class="p">(</span><span class="nx">newQuery</span><span class="p">);</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
 <a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">updateQuery</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">isLoading</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">};</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">updateQuery</span><span class="p">,</span><span class="w"> </span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">isLoading</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">};</span>
 <a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Characteristics:</strong>
--  TypeScript generics for type safety
--  Proper dependency management
--  Cleanup function for timers
--  Error handling
--  Loading states
--  Memoized callbacks</p>
+- TypeScript generics for type safety
+- Proper dependency management
+- Cleanup function for timers
+- Error handling
+- Loading states
+- Memoized callbacks</p>
 <h2 id="metrics-performance">Metrics &amp; Performance<a class="headerlink" href="#metrics-performance" title="Permanent link">¶</a></h2>
 <h3 id="quantum-metrics">Quantum Metrics<a class="headerlink" href="#quantum-metrics" title="Permanent link">¶</a></h3>
 <p>The AI-generated code includes quantum-inspired metrics that indicate generation quality:</p>
@@ -2812,14 +2812,14 @@
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="c1">// Generate Python code</span>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="kd">const</span><span class="w"> </span><span class="nx">pythonCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">generateCode</span><span class="p">({</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="s2">"Create a function to validate email addresses"</span><span class="p">,</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s1">'python'</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="s1">'A'</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="s2">"Create a function to validate email addresses"</span><span class="p">,</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s1">'python'</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="s1">'A'</span><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="p">});</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="c1">// Generate JavaScript code</span>
 <a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="kd">const</span><span class="w"> </span><span class="nx">jsCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">generateCode</span><span class="p">({</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">  </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="s2">"Write an async function to fetch user data"</span><span class="p">,</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">  </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s1">'javascript'</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="s1">'B'</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w"> </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="s2">"Write an async function to fetch user data"</span><span class="p">,</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w"> </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s1">'javascript'</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="s1">'B'</span><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="p">});</span>
 <a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>
 <a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="c1">// Check status</span>
@@ -2888,16 +2888,16 @@
 </ol>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
 <p>The AI-powered code generation system provides:
--  <strong>Zero-config</strong> intelligent code generation
--  <strong>Real AI</strong> via Spark Runtime LLM
--  <strong>Production-quality</strong> code output
--  <strong>Robust fallbacks</strong> for reliability
--  <strong>Rich metrics</strong> for transparency</p>
+- <strong>Zero-config</strong> intelligent code generation
+- <strong>Real AI</strong> via Spark Runtime LLM
+- <strong>Production-quality</strong> code output
+- <strong>Robust fallbacks</strong> for reliability
+- <strong>Rich metrics</strong> for transparency</p>
 <p>No more "demo mode" messages - you get real, working AI from the moment you open the app!</p>
 <hr/>
-<p><strong>Version:</strong> 1.0.0<br/>
+<p><strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-11
-</strong>Status:** Production Ready </p>
+</strong>Status:** Production Ready</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2927,6 +2927,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+{
+  "stubs_created": 10,
+  "placeholders_removed": 2,
+  "hub_files_fixed": 0,
+  "github_urls_updated": 0,
+  "total_fixed": 2,
+  "skipped": 13,
+  "log": [
+    "\u2713 Created stub: docs/CODE_OF_CONDUCT.md",
+    "\u2713 Created stub: docs/cognitive_brain/index.md",
+    "\u2713 Created stub: docs/architecture.md",
+    "\u2713 Created stub: docs/agents/ORCHESTRATION.md",
+    "\u2713 Created stub: docs/rag/RAG_QUICKSTART.md",
+    "\u2713 Created stub: docs/rag/RAG_API_REFERENCE.md",
+    "\u2713 Created stub: docs/integration/webhook_guide.md",
+    "\u2713 Created stub: docs/authentication/auth_guide.md",
+    "\u2713 Created stub: docs/api/INDEX.md",
+    "\u2713 Created stub: docs/evaluation/index.md",
+    "\u2713 Removed placeholders from: docs/CONSISTENCY_CHECKS_SETUP.md",
+    "\u2713 Removed placeholders from: docs/DOC_OPERATIONAL_RUNBOOK.md"
+  ]
+}

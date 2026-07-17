@@ -1,6 +1,6 @@
 # Documentation System
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -25,28 +25,28 @@ Provides documentation infrastructure through:
 ### Documentation Layers
 
 ```
-┌─────────────────────────────────────┐
-│   Source Code                       │
-│   (Docstrings, Type hints)          │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Documentation Generator           │
-│   (MkDocs, Sphinx, pdoc)            │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Static Site                       │
-│   (HTML, CSS, JS)                   │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Validation & Publishing           │
-│   (CI checks, GitHub Pages)         │
-└─────────────────────────────────────┘
+
+ Source Code 
+ (Docstrings, Type hints) 
+
+ 
+ 
+
+ Documentation Generator 
+ (MkDocs, Sphinx, pdoc) 
+
+ 
+ 
+
+ Static Site 
+ (HTML, CSS, JS) 
+
+ 
+ 
+
+ Validation & Publishing 
+ (CI checks, GitHub Pages) 
+
 ```
 
 ## Configuration
@@ -60,50 +60,50 @@ site_description: Comprehensive documentation for the Codex ML platform
 site_author: Codex Team
 
 theme:
-  name: material
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - search.suggest
-    - search.highlight
-  palette:
-    primary: indigo
-    accent: indigo
+ name: material
+ features:
+ - navigation.tabs
+ - navigation.sections
+ - navigation.expand
+ - search.suggest
+ - search.highlight
+ palette:
+ primary: indigo
+ accent: indigo
 
 nav:
-  - Home: index.md
-  - Getting Started:
-    - Installation: getting-started/installation.md
-    - Quick Start: getting-started/quickstart.md
-    - Configuration: getting-started/configuration.md
-  - Capabilities:
-    - Overview: capabilities/index.md
-    - MCP: capabilities/mcp/index.md
-    - Training: capabilities/training/index.md
-    - Serving: capabilities/serving/index.md
-  - API Reference:
-    - Core: api/core.md
-    - Training: api/training.md
-    - Serving: api/serving.md
-  - Contributing: contributing.md
+ - Home: index.md
+ - Getting Started:
+ - Installation: getting-started/installation.md
+ - Quick Start: getting-started/quickstart.md
+ - Configuration: getting-started/configuration.md
+ - Capabilities:
+ - Overview: capabilities/index.md
+ - MCP: capabilities/mcp/index.md
+ - Training: capabilities/training/index.md
+ - Serving: capabilities/serving/index.md
+ - API Reference:
+ - Core: api/core.md
+ - Training: api/training.md
+ - Serving: api/serving.md
+ - Contributing: contributing.md
 
 plugins:
-  - search
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            show_source: true
-            docstring_style: google
+ - search
+ - mkdocstrings:
+ handlers:
+ python:
+ options:
+ show_source: true
+ docstring_style: google
 
 markdown_extensions:
-  - admonition
-  - codehilite
-  - toc:
-      permalink: true
-  - pymdownx.superfences
-  - pymdownx.tabbed
+ - admonition
+ - codehilite
+ - toc:
+ permalink: true
+ - pymdownx.superfences
+ - pymdownx.tabbed
 ```
 
 ## Sphinx Configuration
@@ -115,11 +115,11 @@ copyright = '2024, Codex Team'
 author = 'Codex Team'
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.intersphinx',
-    'sphinx_rtd_theme',
+ 'sphinx.ext.autodoc',
+ 'sphinx.ext.napoleon',
+ 'sphinx.ext.viewcode',
+ 'sphinx.ext.intersphinx',
+ 'sphinx_rtd_theme',
 ]
 
 templates_path = ['_templates']
@@ -195,35 +195,35 @@ Links to related documentation.
 
 ```python
 def example_function(param1: str, param2: int = 10) -> dict:
-    """
-    Brief description of the function.
+ """
+ Brief description of the function.
 
-    Detailed description of what the function does,
-    including any important notes.
+ Detailed description of what the function does,
+ including any important notes.
 
-    Args:
-        param1: Description of param1.
-        param2: Description of param2. Defaults to 10.
+ Args:
+ param1: Description of param1.
+ param2: Description of param2. Defaults to 10.
 
-    Returns:
-        Description of return value.
+ Returns:
+ Description of return value.
 
-    Raises:
-        ValueError: When param1 is empty.
-        TypeError: When param2 is not an integer.
+ Raises:
+ ValueError: When param1 is empty.
+ TypeError: When param2 is not an integer.
 
-    Example:
-        >>> result = example_function("test", 20)
-        >>> print(result)
-        {'status': 'success'}
+ Example:
+ >>> result = example_function("test", 20)
+ >>> print(result)
+ {'status': 'success'}
 
-    Note:
-        Additional notes about usage.
+ Note:
+ Additional notes about usage.
 
-    See Also:
-        related_function: For similar functionality.
-    """
-    pass
+ See Also:
+ related_function: For similar functionality.
+ """
+ pass
 ```
 
 ## Usage Examples
@@ -270,42 +270,42 @@ import re
 from pathlib import Path
 
 def validate_links(docs_dir: Path) -> list:
-    """
-    Validate all markdown links in documentation.
+ """
+ Validate all markdown links in documentation.
 
-    Safeguard: Bounded file reads to prevent memory issues.
-    """
-    broken_links = []
+ Safeguard: Bounded file reads to prevent memory issues.
+ """
+ broken_links = []
 
-    for md_file in docs_dir.glob("**/*.md"):
-        content = md_file.read_text()[:100000]  # Bounded read
+ for md_file in docs_dir.glob("**/*.md"):
+ content = md_file.read_text()[:100000] # Bounded read
 
-        # Find markdown links
-        links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+ # Find markdown links
+ links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
 
-        for text, url in links:
-            if url.startswith('#') or url.startswith('http'):
-                continue
+ for text, url in links:
+ if url.startswith('#') or url.startswith('http'):
+ continue
 
-            # Check relative links
-            target = md_file.parent / url
-            if not target.exists():
-                broken_links.append({
-                    'file': str(md_file),
-                    'link': url,
-                    'text': text
-                })
+ # Check relative links
+ target = md_file.parent / url
+ if not target.exists():
+ broken_links.append({
+ 'file': str(md_file),
+ 'link': url,
+ 'text': text
+ })
 
-    return broken_links
+ return broken_links
 
 if __name__ == "__main__":
-    broken = validate_links(Path("docs"))
-    if broken:
-        print(f"Found {len(broken)} broken links")
-        for link in broken:
-            print(f"  {link['file']}: {link['link']}")
-        exit(1)
-    print("All links valid!")
+ broken = validate_links(Path("docs"))
+ if broken:
+ print(f"Found {len(broken)} broken links")
+ for link in broken:
+ print(f" {link['file']}: {link['link']}")
+ exit(1)
+ print("All links valid!")
 ```
 
 ## Example 4: CI Documentation Check
@@ -315,34 +315,34 @@ if __name__ == "__main__":
 name: Documentation
 
 on:
-  push:
-    paths:
-      - 'docs/**'
-      - 'src/**/*.py'
+ push:
+ paths:
+ - 'docs/**'
+ - 'src/**/*.py'
 
 jobs:
-  build-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+ build-docs:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+ - name: Setup Python
+ uses: actions/setup-python@v4
+ with:
+ python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install mkdocs mkdocs-material mkdocstrings
+ - name: Install dependencies
+ run: pip install mkdocs mkdocs-material mkdocstrings
 
-      - name: Build documentation
-        run: mkdocs build --strict
+ - name: Build documentation
+ run: mkdocs build --strict
 
-      - name: Validate links
-        run: python scripts/validate_docs.py
+ - name: Validate links
+ run: python scripts/validate_docs.py
 
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
-        run: mkdocs gh-deploy --force
+ - name: Deploy to GitHub Pages
+ if: github.ref == 'refs/heads/main'
+ run: mkdocs gh-deploy --force
 ```
 
 ## Example 5: Auto-generate README Sections
@@ -358,27 +358,27 @@ from pathlib import Path
 import ast
 
 def extract_module_docstrings(src_dir: Path) -> dict:
-    """Extract module-level docstrings from Python files."""
-    modules = {}
+ """Extract module-level docstrings from Python files."""
+ modules = {}
 
-    for py_file in src_dir.glob("**/*.py"):
-        try:
-            content = py_file.read_text()[:50000]  # Bounded read
-            tree = ast.parse(content)
-            docstring = ast.get_docstring(tree)
-            if docstring:
-                modules[py_file.stem] = docstring.split('\n')[0]
-        except SyntaxError:
-            continue
+ for py_file in src_dir.glob("**/*.py"):
+ try:
+ content = py_file.read_text()[:50000] # Bounded read
+ tree = ast.parse(content)
+ docstring = ast.get_docstring(tree)
+ if docstring:
+ modules[py_file.stem] = docstring.split('\n')[0]
+ except SyntaxError:
+ continue
 
-    return modules
+ return modules
 
 def generate_module_list(modules: dict) -> str:
-    """Generate markdown list of modules."""
-    lines = ["## Modules\n"]
-    for name, desc in sorted(modules.items()):
-        lines.append(f"- **{name}**: {desc}")
-    return '\n'.join(lines)
+ """Generate markdown list of modules."""
+ lines = ["## Modules\n"]
+ for name, desc in sorted(modules.items()):
+ lines.append(f"- **{name}**: {desc}")
+ return '\n'.join(lines)
 ```
 
 ## Safeguards
@@ -396,21 +396,21 @@ def generate_module_list(modules: dict) -> str:
 ```yaml
 # Safe documentation build with validation
 docs-build:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Build with strict mode
-      run: mkdocs build --strict
-      # Fails on warnings
+ runs-on: ubuntu-latest
+ steps:
+ - name: Build with strict mode
+ run: mkdocs build --strict
+ # Fails on warnings
 
-    - name: Validate HTML
-      run: |
-        pip install html5validator
-        html5validator --root site/
+ - name: Validate HTML
+ run: |
+ pip install html5validator
+ html5validator --root site/
 
-    - name: Check for broken links
-      run: |
-        pip install linkchecker
-        linkchecker site/index.html
+ - name: Check for broken links
+ run: |
+ pip install linkchecker
+ linkchecker site/index.html
 ```
 
 ## Best Practices
@@ -466,9 +466,9 @@ grep "search" mkdocs.yml
 ```json
 // .vscode/settings.json
 {
-  "python.analysis.typeCheckingMode": "basic",
-  "python.linting.pylintEnabled": true,
-  "autoDocstring.docstringFormat": "google"
+ "python.analysis.typeCheckingMode": "basic",
+ "python.linting.pylintEnabled": true,
+ "autoDocstring.docstringFormat": "google"
 }
 ```
 
@@ -477,13 +477,13 @@ grep "search" mkdocs.yml
 ```yaml
 # .pre-commit-config.yaml
 repos:
-  - repo: local
-    hooks:
-      - id: validate-docs
-        name: Validate Documentation
-        entry: python scripts/validate_docs.py
-        language: python
-        types: [markdown]
+ - repo: local
+ hooks:
+ - id: validate-docs
+ name: Validate Documentation
+ entry: python scripts/validate_docs.py
+ language: python
+ types: [markdown]
 ```
 
 ## Related Capabilities

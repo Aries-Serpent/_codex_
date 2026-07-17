@@ -1,14 +1,14 @@
 # Code Quality Tooling
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [ GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [ Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [ GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
 
 ## Overview
 
-**Status**:  Complete - Comprehensive code quality tooling guide with configurations and examples
+**Status**: Complete - Comprehensive code quality tooling guide with configurations and examples
 
 This capability covers comprehensive code quality tooling for the _codex_ repository, including linting, formatting, type checking, and static analysis tools.
 
@@ -42,19 +42,19 @@ The _codex_ repository uses a modern Python code quality stack configured in `py
 target-version = "py311"
 line-length = 100
 select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "N",   # pep8-naming
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "C4",  # flake8-comprehensions
-    "S",   # flake8-bandit (security)
+ "E", # pycodestyle errors
+ "W", # pycodestyle warnings
+ "F", # pyflakes
+ "I", # isort
+ "N", # pep8-naming
+ "UP", # pyupgrade
+ "B", # flake8-bugbear
+ "C4", # flake8-comprehensions
+ "S", # flake8-bandit (security)
 ]
 ignore = [
-    "E501",  # Line too long (handled by Black)
-    "S101",  # Use of assert (acceptable in tests)
+ "E501", # Line too long (handled by Black)
+ "S101", # Use of assert (acceptable in tests)
 ]
 
 [tool.ruff.per-file-ignores]
@@ -69,9 +69,9 @@ target-version = ['py311']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  | archive
-  | .hypothesis
-  | .nox
+ | archive
+ | .hypothesis
+ | .nox
 )/
 '''
 
@@ -90,7 +90,7 @@ strict_equality = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
-disallow_untyped_defs = false  # Less strict for tests
+disallow_untyped_defs = false # Less strict for tests
 
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -103,9 +103,9 @@ python_functions = "test_*"
 [tool.coverage.run]
 source = ["agents"]
 omit = [
-    "*/tests/*",
-    "*/test_*.py",
-    "*/__pycache__/*",
+ "*/tests/*",
+ "*/test_*.py",
+ "*/__pycache__/*",
 ]
 
 [tool.coverage.report]
@@ -113,14 +113,14 @@ precision = 2
 show_missing = true
 skip_covered = false
 exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == \"__main__\":",
-    "if TYPE_CHECKING:",
-    "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod",
+ "pragma: no cover",
+ "def __repr__",
+ "raise AssertionError",
+ "raise NotImplementedError",
+ "if __name__ == \"__main__\":",
+ "if TYPE_CHECKING:",
+ "class .*\\bProtocol\\):",
+ "@(abc\\.)?abstractmethod",
 ]
 ```
 
@@ -134,10 +134,10 @@ pip install -e ".[dev]"
 nox
 
 # Run individual checks
-nox -s lint      # Ruff linting
-nox -s format    # Black formatting
+nox -s lint # Ruff linting
+nox -s format # Black formatting
 nox -s typecheck # mypy type checking
-nox -s tests     # pytest with coverage
+nox -s tests # pytest with coverage
 
 # Quick checks before commit
 pre-commit run --all-files
@@ -154,64 +154,64 @@ import nox
 
 @nox.session(python=["3.11", "3.12"])
 def tests(session):
-    """Run the test suite with pytest."""
-    session.install("-e", ".[dev]")
-    session.run("pytest", "-v", "--cov=agents", "--cov-report=term-missing")
+ """Run the test suite with pytest."""
+ session.install("-e", ".[dev]")
+ session.run("pytest", "-v", "--cov=agents", "--cov-report=term-missing")
 
 @nox.session
 def lint(session):
-    """Run linting with ruff."""
-    session.install("ruff")
-    session.run("ruff", "check", ".")
+ """Run linting with ruff."""
+ session.install("ruff")
+ session.run("ruff", "check", ".")
 
 @nox.session
 def format(session):
-    """Check code formatting with black."""
-    session.install("black")
-    session.run("black", "--check", ".")
+ """Check code formatting with black."""
+ session.install("black")
+ session.run("black", "--check", ".")
 
 @nox.session
 def typecheck(session):
-    """Run type checking with mypy."""
-    session.install("mypy", "-e", ".[dev]")
-    session.run("mypy", "agents")
+ """Run type checking with mypy."""
+ session.install("mypy", "-e", ".[dev]")
+ session.run("mypy", "agents")
 
 @nox.session
 def security(session):
-    """Run security scanning with bandit."""
-    session.install("bandit[toml]")
-    session.run("bandit", "-r", "agents", "-c", "pyproject.toml")
+ """Run security scanning with bandit."""
+ session.install("bandit[toml]")
+ session.run("bandit", "-r", "agents", "-c", "pyproject.toml")
 ```
 
 ### Pre-commit Configuration
 
 ```.pre-commit-config.yaml
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v0.2.1
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-      - id: check-merge-conflict
+ - repo: https://github.com/pre-commit/pre-commit-hooks
+ rev: v0.2.0
+ hooks:
+ - id: trailing-whitespace
+ - id: end-of-file-fixer
+ - id: check-yaml
+ - id: check-added-large-files
+ - id: check-merge-conflict
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.1
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+ - repo: https://github.com/astral-sh/ruff-pre-commit
+ rev: v0.2.0
+ hooks:
+ - id: ruff
+ args: [--fix, --exit-non-zero-on-fix]
 
-  - repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-      - id: black
+ - repo: https://github.com/psf/black
+ rev: 23.12.1
+ hooks:
+ - id: black
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.2.1
-    hooks:
-      - id: mypy
-        additional_dependencies: [types-all]
+ - repo: https://github.com/pre-commit/mirrors-mypy
+ rev: v0.2.0
+ hooks:
+ - id: mypy
+ additional_dependencies: [types-all]
 ```
 
 ### CI Integration
@@ -224,34 +224,34 @@ name: Code Quality
 on: [push, pull_request]
 
 jobs:
-  quality-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+ quality-checks:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+ - uses: actions/setup-python@v5
+ with:
+ python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install nox
+ - name: Install dependencies
+ run: |
+ pip install -e ".[dev]"
+ pip install nox
 
-      - name: Run linting
-        run: nox -s lint
+ - name: Run linting
+ run: nox -s lint
 
-      - name: Check formatting
-        run: nox -s format
+ - name: Check formatting
+ run: nox -s format
 
-      - name: Type checking
-        run: nox -s typecheck
+ - name: Type checking
+ run: nox -s typecheck
 
-      - name: Run tests
-        run: nox -s tests
+ - name: Run tests
+ run: nox -s tests
 
-      - name: Security scan
-        run: nox -s security
+ - name: Security scan
+ run: nox -s security
 ```
 
 ## Related Capabilities
@@ -263,51 +263,51 @@ jobs:
 ## Best Practices
 
 1. **Run Checks Before Committing**
-   ```bash
-   # Install pre-commit hooks
-   pre-commit install
+ ```bash
+ # Install pre-commit hooks
+ pre-commit install
 
-   # Hooks will run automatically on git commit
-   # Or run manually:
-   pre-commit run --all-files
-   ```
+ # Hooks will run automatically on git commit
+ # Or run manually:
+ pre-commit run --all-files
+ ```
 
 2. **Fix Issues Automatically**
-   ```bash
-   # Auto-fix linting issues
-   ruff check --fix .
+ ```bash
+ # Auto-fix linting issues
+ ruff check --fix .
 
-   # Auto-format code
-   black .
+ # Auto-format code
+ black .
 
-   # Both together
-   ruff check --fix . && black .
-   ```
+ # Both together
+ ruff check --fix . && black .
+ ```
 
 3. **Ignore Specific Issues Sparingly**
 ```python
 # Inline ignore (use only when necessary)
-result = eval(user_input)  # noqa: S307
+result = eval(user_input) # noqa: S307
 
 # Type ignore (document why)
-value = some_untyped_library()  # type: ignore[no-untyped-call]
+value = some_untyped_library() # type: ignore[no-untyped-call]
 ```
 
 4. **Configure Per-File Rules**
-   ```toml
-   [tool.ruff.per-file-ignores]
-   "tests/*.py" = ["S101"]  # Allow asserts in tests
-   "scripts/*.py" = ["T201"]  # Allow prints in scripts
-   ```
+ ```toml
+ [tool.ruff.per-file-ignores]
+ "tests/*.py" = ["S101"] # Allow asserts in tests
+ "scripts/*.py" = ["T201"] # Allow prints in scripts
+ ```
 
 5. **Monitor Coverage Trends**
-   ```bash
-   # Generate HTML coverage report
-   pytest --cov=agents --cov-report=html
+ ```bash
+ # Generate HTML coverage report
+ pytest --cov=agents --cov-report=html
 
-   # View in browser
-   open htmlcov/index.html
-   ```
+ # View in browser
+ open htmlcov/index.html
+ ```
 
 ## Integration with Development Workflow
 
@@ -335,59 +335,59 @@ git commit -m "feat: add new feature"
 ## CI/CD Pipeline Integration
 
 ```
-┌─────────────┐
-│ Push/PR     │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ Lint (Ruff) │ ← Fast feedback (seconds)
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ Format      │ ← Code style check
-│ (Black)     │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ Type Check  │ ← Static analysis
-│ (mypy)      │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ Tests       │ ← Unit + integration
-│ (pytest)    │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ Security    │ ← Vulnerability scan
-│ (bandit)    │
-└──────┬──────┘
-       │
-       v
-    Success!
+
+ Push/PR 
+
+ 
+ v
+
+ Lint (Ruff) Fast feedback (seconds)
+
+ 
+ v
+
+ Format Code style check
+ (Black) 
+
+ 
+ v
+
+ Type Check Static analysis
+ (mypy) 
+
+ 
+ v
+
+ Tests Unit + integration
+ (pytest) 
+
+ 
+ v
+
+ Security Vulnerability scan
+ (bandit) 
+
+ 
+ v
+ Success!
 ```
 
 ## Tool Comparison
 
 | Feature | Ruff | Black | mypy | pytest |
 |---------|------|-------|------|--------|
-| Speed |  (100x faster) |  |  |  |
-| Auto-fix |  |  |  | N/A |
-| Customizable |  High | ️ Limited |  High |  High |
-| Error Messages |  Clear | N/A | ️ Can be cryptic |  Clear |
+| Speed | (100x faster) | | | |
+| Auto-fix | | | | N/A |
+| Customizable | High | Limited | High | High |
+| Error Messages | Clear | N/A | Can be cryptic | Clear |
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Ruff conflicts with Black**
-   - Solution: Ruff's `E501` (line too long) is ignored by default
-   - Let Black handle formatting, Ruff handles linting logic
+ - Solution: Ruff's `E501` (line too long) is ignored by default
+ - Let Black handle formatting, Ruff handles linting logic
 
 2. **mypy type errors in third-party libraries**
 ```text
@@ -402,20 +402,20 @@ ignore_missing_imports = true
 ```
 
 3. **Pre-commit hooks too slow**
-   ```bash
-   # Skip hooks temporarily
-   git commit --no-verify -m "WIP: skip hooks"
+ ```bash
+ # Skip hooks temporarily
+ git commit --no-verify -m "skip hooks"
 
-   # Or run specific hooks
-   pre-commit run ruff --all-files
-   ```
+ # Or run specific hooks
+ pre-commit run ruff --all-files
+ ```
 
 4. **Coverage not reflecting changes**
-   ```bash
-   # Clear cache and re-run
-   rm -rf .coverage htmlcov/
-   pytest --cov=agents --cov-report=html
-   ```
+ ```bash
+ # Clear cache and re-run
+ rm -rf .coverage htmlcov/
+ pytest --cov=agents --cov-report=html
+ ```
 
 ## Future Enhancements
 

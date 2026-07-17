@@ -1,6 +1,6 @@
 # MCP Authentication
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-11
 
@@ -22,6 +22,7 @@ This repository ships an MCP authentication baseline to keep previews lightweigh
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Auth Validator: Valid/Invali'}}%%
+
 sequenceDiagram
     participant Client
     participant MCP Server
@@ -31,16 +32,23 @@ sequenceDiagram
     Client->>MCP Server: Request + X-MCP-API-Key header
     MCP Server->>Auth Validator: validate_api_key(key)
     Auth Validator->>Secrets Store: Check key validity
+
     Secrets Store-->>Auth Validator: Valid/Invalid
 
     alt Valid Key
+
         Auth Validator-->>MCP Server: Authenticated
+
         MCP Server-->>Client: 200 OK + Response
     else Invalid Key
+
         Auth Validator-->>MCP Server: Unauthorized
+
         MCP Server-->>Client: 401 Unauthorized
     else Offline Mode
+
         Auth Validator-->>MCP Server: Bypass (local only)
+
         MCP Server-->>Client: 200 OK + Response
     end
 ```
@@ -193,25 +201,25 @@ wrangler secret list
 ### Key Management Best Practices
 
 1. **Never commit keys to source control**
-   - Use `.env.local` for local development (gitignored)
-   - Use platform secret stores for production
-   - Rotate keys regularly (every 90 iterations minimum)
+ - Use `.env.local` for local development (gitignored)
+ - Use platform secret stores for production
+ - Rotate keys regularly (every 90 iterations minimum)
 
 2. **Use per-principal keys**
-   - Issue unique keys per service/user
-   - Enable audit trails for key usage
-   - Implement key revocation mechanism
+ - Issue unique keys per service/user
+ - Enable audit trails for key usage
+ - Implement key revocation mechanism
 
 3. **Enforce TLS for all traffic**
-   - Production requires HTTPS/TLS 1.2+
-   - Use platform edge TLS (Cloudflare, Fly.io)
-   - Never transmit keys over unencrypted channels
+ - Production requires HTTPS/TLS 1.2+
+ - Use platform edge TLS (Cloudflare, Fly.io)
+ - Never transmit keys over unencrypted channels
 
 4. **Implement defense in depth**
-   - Combine auth with rate limiting
-   - Log all authentication attempts
-   - Monitor for suspicious patterns
-   - Implement IP allowlisting where appropriate
+ - Combine auth with rate limiting
+ - Log all authentication attempts
+ - Monitor for suspicious patterns
+ - Implement IP allowlisting where appropriate
 
 ### Key Rotation Procedure
 
@@ -298,15 +306,15 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Provide lightweight, secure API key authentication for MCP servers with offline bypass for development and production-ready key management.
 
 **Energy Level:** 4/5 (High Priority - Security Critical)
 
-**Operational Status:**  **ACTIVE** - Production-ready with FastAPI/Workers implementations
+**Operational Status:** **ACTIVE** - Production-ready with FastAPI/Workers implementations
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] API key validation via `X-MCP-API-Key` header
 - [x] Fallback to `Authorization: Bearer` token
@@ -325,33 +333,33 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - TLS certificate for production deployments
 - Generated API keys (32+ byte entropy recommended)
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Authentication Success Rate** | >99.9% | 99.95% |  |
-| **Invalid Key Rejection** | 100% | 100% |  |
-| **Offline Mode Bypass** | Works locally |  Works |  |
-| **Key Rotation Downtime** | 0 seconds | 0 seconds |  |
-| **Secret Exposure Incidents** | 0 | 0 |  |
-| **TLS Enforcement** | 100% production | 100% |  |
-| **Auth Latency** | <10ms | 3-5ms |  |
-| **Test Coverage** | >90% | 95% |  |
+| **Authentication Success Rate** | >99.9% | 99.95% | |
+| **Invalid Key Rejection** | 100% | 100% | |
+| **Offline Mode Bypass** | Works locally | Works | |
+| **Key Rotation Downtime** | 0 seconds | 0 seconds | |
+| **Secret Exposure Incidents** | 0 | 0 | |
+| **TLS Enforcement** | 100% production | 100% | |
+| **Auth Latency** | <10ms | 3-5ms | |
+| **Test Coverage** | >90% | 95% | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Sequential Authentication Flow:**
-1. Extract API key from request headers (`X-MCP-API-Key` → `Authorization`)
+1. Extract API key from request headers (`X-MCP-API-Key` `Authorization`)
 2. Check offline mode bypass
 3. Validate key against configured secret
 4. Return 401 if invalid, proceed if valid
 
 **Flow Dependencies:**
-- Header extraction → Validation → Authorization decision
+- Header extraction Validation Authorization decision
 - No authentication = No API access (except offline mode)
 
-### Fields 
+### Fields
 **State Management:**
 - **Stateless:** Each request independently validated
 - **Secret Rotation:** Dual-key support during transition
@@ -362,7 +370,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - Platform secrets (production: Fly, Cloudflare)
 - Fallback defaults (dev-key for local only)
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Log all authentication attempts (success/failure)
 - Track API key usage per principal
@@ -374,31 +382,31 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - Middleware authentication (Workers)
 - Header-based auth
 
-### Redundancy 
+### Redundancy
 **Failure Modes:**
-1. **Missing key** → 401 Unauthorized
-2. **Invalid key** → 401 Unauthorized + log attempt
-3. **Expired key** → Rotation with dual-key support
-4. **Compromised key** → Immediate revocation via secret store
+1. **Missing key** 401 Unauthorized
+2. **Invalid key** 401 Unauthorized + log attempt
+3. **Expired key** Rotation with dual-key support
+4. **Compromised key** Immediate revocation via secret store
 
 **Recovery:**
 - Key rotation with zero downtime
 - Offline mode for local development
 - Multiple header support (X-MCP-API-Key, Authorization)
 
-### Balance ️
+### Balance
 **Security vs Usability:**
--  Simple API key model (low friction)
--  Offline bypass for development
--  Production-grade secret management
-- ️ Trade-off: API keys vs OAuth2 (complexity vs features)
+- Simple API key model (low friction)
+- Offline bypass for development
+- Production-grade secret management
+- Trade-off: API keys vs OAuth2 (complexity vs features)
 
 **Performance vs Security:**
 - Fast validation (3-5ms) vs cryptographic signing
 - Header-based vs session-based auth
 - Stateless validation vs centralized auth service
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -408,7 +416,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 | **P1** | Key rotation | 10% | Operational security |
 | **P2** | Audit logging | 5% | Compliance & monitoring |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

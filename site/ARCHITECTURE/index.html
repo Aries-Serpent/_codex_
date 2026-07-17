@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ARCHITECTURE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Architecture Documentation - Aries-Serpent v0.2.1 - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2647,28 +2647,32 @@
 <h1 id="architecture-documentation-aries-serpent-v021">Architecture Documentation - Aries-Serpent v0.2.1<a class="headerlink" href="#architecture-documentation-aries-serpent-v021" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Document Type:</strong> Architecture &amp; Design Guide<br/>
-<strong>Audience:</strong> Architects, Senior Developers, DevOps Engineers<br/>
-**Last Updated: 2026-07-09</p>
+<p><strong>Document Type:</strong> Architecture &amp; Design Guide
+<strong>Audience:</strong> Architects, Senior Developers, DevOps Engineers
+**Last Updated: 2026-07-16</p>
 <h2 id="system-overview">System Overview<a class="headerlink" href="#system-overview" title="Permanent link">¶</a></h2>
 <p>Aries-Serpent is a modular AI agent framework with three main components:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>graph TB
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    CB[" Cognitive Brain&lt;br/&gt;(Pattern Recognition &amp; Memory)"]
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    CORE[" Core&lt;br/&gt;(OODA Loop &amp; Protocol Engine)"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    ML[" ML Components&lt;br/&gt;(Inference &amp; Training)"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    API["📡 API Layer&lt;br/&gt;(FastAPI Services)"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    CB --&gt;|Patterns| CORE
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    CORE --&gt;|Strategies| ML
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    ML --&gt;|Results| API
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    API --&gt;|Requests| CORE
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    CORE --&gt;|Queries| CB
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> CB[" Cognitive Brain&lt;br/&gt;(Pattern Recognition &amp; Memory)"]
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> CORE[" Core&lt;br/&gt;(OODA Loop &amp; Protocol Engine)"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> ML[" ML Components&lt;br/&gt;(Inference &amp; Training)"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> API[" API Layer&lt;br/&gt;(FastAPI Services)"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> CB --&gt;|Patterns| CORE
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> CORE --&gt;|Strategies| ML
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> ML --&gt;|Results| API
 <a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    style CB fill:#ff9999
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    style CORE fill:#99ccff
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    style ML fill:#99ff99
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    style API fill:#ffcc99
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> API --&gt;|Requests| CORE
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> CORE --&gt;|Queries| CB
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> style CB fill:#ff9999
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> style CORE fill:#99ccff
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> style ML fill:#99ff99
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> style API fill:#ffcc99
 </code></pre></div>
 <h2 id="component-architecture">Component Architecture<a class="headerlink" href="#component-architecture" title="Permanent link">¶</a></h2>
 <h3 id="1-cognitive-brain-system">1. Cognitive Brain System<a class="headerlink" href="#1-cognitive-brain-system" title="Permanent link">¶</a></h3>
@@ -2680,14 +2684,14 @@
 - <code>DecisionEngine</code> - Strategy selection</p>
 <p><strong>Location:</strong> <code>src/codex/cognitive_brain/</code></p>
 <p><strong>Capabilities:</strong>
--  Real-time pattern recognition
--  Short-term &amp; long-term memory
--  Probabilistic decision making
--  Learning from feedback</p>
+- Real-time pattern recognition
+- Short-term &amp; long-term memory
+- Probabilistic decision making
+- Learning from feedback</p>
 <h3 id="2-core-system-ooda-loop">2. Core System (OODA Loop)<a class="headerlink" href="#2-core-system-ooda-loop" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Autonomous action orchestration and protocol-based integration</p>
 <p><strong>Components:</strong>
-- <code>OODALoop</code> - Observe → Orient → Decide → Act cycle
+- <code>OODALoop</code> - Observe Orient Decide Act cycle
 - <code>ProtocolEngine</code> - Message routing and transformation
 - <code>ActionQueue</code> - Async action execution</p>
 <p><strong>Location:</strong> <code>src/codex/core/</code></p>
@@ -2719,136 +2723,146 @@
 <h2 id="data-flow-diagrams">Data Flow Diagrams<a class="headerlink" href="#data-flow-diagrams" title="Permanent link">¶</a></h2>
 <h3 id="query-processing-flow">Query Processing Flow<a class="headerlink" href="#query-processing-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>sequenceDiagram
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    Client-&gt;&gt;API: POST /api/v1/query
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    API-&gt;&gt;CORE: Process query
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    CORE-&gt;&gt;CB: Request pattern match
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    CB--&gt;&gt;CORE: Matched patterns
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    CORE-&gt;&gt;ML: Generate strategy
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    ML--&gt;&gt;CORE: Model prediction
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    CORE-&gt;&gt;API: Action &amp; result
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    API--&gt;&gt;Client: Response
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> Client-&gt;&gt;API: POST /api/v1/query
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> API-&gt;&gt;CORE: Process query
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> CORE-&gt;&gt;CB: Request pattern match
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> CB--&gt;&gt;CORE: Matched patterns
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> CORE-&gt;&gt;ML: Generate strategy
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> ML--&gt;&gt;CORE: Model prediction
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> CORE-&gt;&gt;API: Action &amp; result
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> API--&gt;&gt;Client: Response
 </code></pre></div>
 <h3 id="learning-flow">Learning Flow<a class="headerlink" href="#learning-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>sequenceDiagram
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    System-&gt;&gt;CORE: Action result
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    CORE-&gt;&gt;CB: Record outcome
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    CB--&gt;&gt;CORE: Updated patterns
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    CORE-&gt;&gt;ML: Training signal
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    ML-&gt;&gt;ML: Update model
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    ML--&gt;&gt;CORE: New checkpoint
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    CORE-&gt;&gt;CORE: Update strategy
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> System-&gt;&gt;CORE: Action result
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> CORE-&gt;&gt;CB: Record outcome
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> CB--&gt;&gt;CORE: Updated patterns
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> CORE-&gt;&gt;ML: Training signal
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> ML-&gt;&gt;ML: Update model
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> ML--&gt;&gt;CORE: New checkpoint
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> CORE-&gt;&gt;CORE: Update strategy
 </code></pre></div>
 <h2 id="module-structure">Module Structure<a class="headerlink" href="#module-structure" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>src/codex/
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>├── cognitive_brain/
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>│   ├── api.py                 # Main interface
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>│   ├── pattern_recognizer.py  # Pattern detection
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>│   ├── memory_manager.py      # STM/LTM management
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>│   └── decision_engine.py     # Strategy selection
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>├── core/
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>│   ├── ooda_loop.py          # OODA orchestration
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>│   ├── protocol_engine.py    # Message routing
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>│   └── action_queue.py       # Action execution
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>├── ml/
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>│   ├── training.py           # Training pipeline
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>│   ├── inference.py          # Model inference
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>│   └── registry.py           # Model management
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>├── api/
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>│   ├── main.py               # FastAPI app
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>│   ├── routes.py             # API endpoints
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>│   └── models.py             # Pydantic schemas
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>└── config/
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    ├── hydra/               # Hydra configurations
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    └── defaults.yaml        # Default settings
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> cognitive_brain/
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> api.py # Main interface
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> pattern_recognizer.py # Pattern detection
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> memory_manager.py # STM/LTM management
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> decision_engine.py # Strategy selection
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> core/
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> ooda_loop.py # OODA orchestration
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> protocol_engine.py # Message routing
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> action_queue.py # Action execution
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> ml/
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> training.py # Training pipeline
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> inference.py # Model inference
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> registry.py # Model management
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> api/
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> main.py # FastAPI app
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> routes.py # API endpoints
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> models.py # Pydantic schemas
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> config/
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> hydra/ # Hydra configurations
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> defaults.yaml # Default settings
 </code></pre></div>
 <h2 id="deployment-architectures">Deployment Architectures<a class="headerlink" href="#deployment-architectures" title="Permanent link">¶</a></h2>
 <h3 id="single-node-docker-deployment">Single-Node Docker Deployment<a class="headerlink" href="#single-node-docker-deployment" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>┌─────────────────────────────┐
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>│     Docker Container        │
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>├─────────────────────────────┤
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>│  Cognitive Brain (STM/LTM)  │
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>│  Core (OODA Loop)          │
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>│  ML Models (Cached)        │
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>│  API Server (FastAPI)      │
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>└─────────────────────────────┘
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>         ↓
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    ┌─────────┐
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    │ PostgreSQL
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    └─────────┘
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>         ↓
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    ┌─────────┐
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>    │ Redis   │
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    └─────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a> Docker Container 
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> Cognitive Brain (STM/LTM) 
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> Core (OODA Loop) 
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> ML Models (Cached) 
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> API Server (FastAPI) 
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> PostgreSQL
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> Redis 
 </code></pre></div>
 <h3 id="kubernetes-multi-pod-deployment">Kubernetes Multi-Pod Deployment<a class="headerlink" href="#kubernetes-multi-pod-deployment" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>┌──────────────────────────────────────┐
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>│  Kubernetes Cluster                   │
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>├──────────────────────┬────────────────┤
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>│  API Pod(s)         │  ML Pod(s)     │
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>│  (FastAPI, 3x)      │  (Inference)   │
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>├──────────────────────┼────────────────┤
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>│  Cognitive Brain    │  Training Pod  │
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>│  Pod (Shared STM)   │  (Batch Jobs)  │
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>├──────────────────────┴────────────────┤
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>│  Stateful Services                     │
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>│  - PostgreSQL StatefulSet             │
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>│  - Redis Deployment                   │
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>│  - Prometheus/Grafana                 │
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>└──────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a> Kubernetes Cluster 
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> API Pod(s) ML Pod(s) 
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> (FastAPI, 3x) (Inference) 
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> Cognitive Brain Training Pod 
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> Pod (Shared STM) (Batch Jobs) 
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> Stateful Services 
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> - PostgreSQL StatefulSet 
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> - Redis Deployment 
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> - Prometheus/Grafana 
 </code></pre></div>
 <h2 id="integration-patterns">Integration Patterns<a class="headerlink" href="#integration-patterns" title="Permanent link">¶</a></h2>
 <h3 id="protocol-based-integration">Protocol-Based Integration<a class="headerlink" href="#protocol-based-integration" title="Permanent link">¶</a></h3>
 <p>Aries-Serpent uses a protocol-based architecture for flexible integration:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Any system can integrate via protocol</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">class</span> <span class="nc">ProtocolClient</span><span class="p">:</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">        </span><span class="sd">"""</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="sd">        Send message following Aries-Serpent protocol</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="k">async</span> <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="sd"> Send message following Aries-Serpent protocol</span>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="sd">        Supported message types:</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="sd">        - QUERY: Request pattern recognition</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="sd">        - LEARN: Provide feedback for learning</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="sd">        - ACTION: Execute system action</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="sd">        """</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol_engine</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="sd"> Supported message types:</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="sd"> - QUERY: Request pattern recognition</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="sd"> - LEARN: Provide feedback for learning</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="sd"> - ACTION: Execute system action</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="sd"> """</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol_engine</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="webhook-based-feedback-loop">Webhook-Based Feedback Loop<a class="headerlink" href="#webhook-based-feedback-loop" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>External System
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    ↓
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    POST /webhook/feedback
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    {
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>      "event_id": "evt_123",
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>      "outcome": "success|failure",
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>      "metrics": {...}
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    }
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    ↓
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> POST /webhook/feedback
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> {
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> "event_id": "evt_123",
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> "outcome": "success|failure",
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> "metrics": {...}
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> }
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>Cognitive Brain
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    ↓
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
 <a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>Updates patterns &amp; models
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    ↓
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
 <a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>Improves decision quality
 </code></pre></div>
 <h2 id="dependency-graph">Dependency Graph<a class="headerlink" href="#dependency-graph" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>graph LR
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    A["API Layer&lt;br/&gt;FastAPI"]
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    B["Core&lt;br/&gt;OODA Loop"]
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    C["Cognitive Brain&lt;br/&gt;Pattern Engine"]
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    D["ML&lt;br/&gt;PyTorch/HF"]
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    E["Config&lt;br/&gt;Hydra"]
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    F["Storage&lt;br/&gt;PostgreSQL"]
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    G["Cache&lt;br/&gt;Redis"]
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    A --&gt;|routes| B
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    B --&gt;|patterns| C
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    B --&gt;|inference| D
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    B --&gt;|config| E
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    C --&gt;|memory| F
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    B --&gt;|cache| G
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>    D --&gt;|models| F
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>    style E fill:#e1f5ff
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>    style F fill:#fff3e0
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>    style G fill:#f3e5f5
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> A["API Layer&lt;br/&gt;FastAPI"]
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> B["Core&lt;br/&gt;OODA Loop"]
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> C["Cognitive Brain&lt;br/&gt;Pattern Engine"]
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> D["ML&lt;br/&gt;PyTorch/HF"]
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> E["Config&lt;br/&gt;Hydra"]
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> F["Storage&lt;br/&gt;PostgreSQL"]
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> G["Cache&lt;br/&gt;Redis"]
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> A --&gt;|routes| B
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> B --&gt;|patterns| C
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> B --&gt;|inference| D
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> B --&gt;|config| E
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> C --&gt;|memory| F
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> B --&gt;|cache| G
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> D --&gt;|models| F
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a> style E fill:#e1f5ff
+<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a> style F fill:#fff3e0
+<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a> style G fill:#f3e5f5
 </code></pre></div>
 <h2 id="technology-stack">Technology Stack<a class="headerlink" href="#technology-stack" title="Permanent link">¶</a></h2>
 <table>
@@ -3091,8 +3105,8 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multi-tenant architecture</li>
 </ul>
 <hr/>
-<p><strong>Status:</strong>  COMPLETE<br/>
-**Last Updated: 2026-07-09</p>
+<p><strong>Status:</strong> COMPLETE
+**Last Updated: 2026-07-16</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3122,6 +3136,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Architecture Layers
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Domain**: D1 — Architecture & Layer Boundaries  
 **Owner**: `code-analysis-agent`  

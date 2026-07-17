@@ -25,7 +25,7 @@
 - 6-week execution timeline (Weeks 1-6, 2026-07-24 → 2026-08-25)
 - 6 parallel workstreams with specialist agent assignments
 - 5 critical checkpoints with measurable deliverables
-- v0.2.1 feature implementation + canary + A/B testing + gradual rollout framework
+- v0.2.0 feature implementation + canary + A/B testing + gradual rollout framework
 - Risk mitigation & SLA maintenance procedures
 - **Success Criteria:** 9 must-pass objectives including GA deployment, 0 critical bugs, <0.05% error rate
 
@@ -95,7 +95,7 @@
 | **2026-08-07** | Canary live (10%) | Zero-trust live | MFA enforcement | Checkpoint 2 |
 | **2026-08-14** | A/B testing live | Cache optimization | Secrets rotation | Checkpoint 3 |
 | **2026-08-21** | — | — | — | Monitoring |
-| **2026-08-25** | **v0.2.1 GA (100%)** | — | — | Checkpoint 4 |
+| **2026-08-25** | **v0.2.0 GA (100%)** | — | — | Checkpoint 4 |
 | **2026-09-04** | — | **Infrastructure GA** | — | Checkpoint 5 |
 | **2026-09-18** | — | — | **Security GA** | Checkpoint 6 |
 

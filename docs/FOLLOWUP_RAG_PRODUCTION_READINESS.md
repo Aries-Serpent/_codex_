@@ -1,6 +1,6 @@
 # Follow-Up Prompt for GitHub Copilot - RAG Production Readiness
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -124,13 +124,21 @@ triggers:
 **Implementation**:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing GitHub Trigger, Agent Controller'}}%%
+
 graph LR
+
     A[GitHub Trigger] --> B[Agent Controller]
+
     B --> C[RAG Indexer]
+
     B --> D[Query Processor]
+
     C --> E[FAISS Index]
+
     D --> E
+
     E --> F[Result Formatter]
+
     F --> G[GitHub Comment]
 ```
 

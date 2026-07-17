@@ -1,27 +1,27 @@
 # Branch Protection Checklist (Archive & Hygiene)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
 This checklist aligns GitHub Branch Protection with our Archive & Hygiene workflow so that merges are gated on evidence, provenance, and governance.
 
-> Apply to your default branch (usually `main`). Navigate: **Settings → Branches → Branch protection rules → Add rule**.
+> Apply to your default branch (usually `main`). Navigate: **Settings Branches Branch protection rules Add rule**.
 
 ## 1) Branch name pattern
 - **Branch name pattern**: `main` (or your default branch)
 
 ## 2) Protect matching branches
 - [x] **Require a pull request before merging**
-  - **Require approvals**: `1` (or more as needed)
-  - [x] **Require review from Code Owners**
-  - [x] **Dismiss stale pull request approvals when new commits are pushed**
-  - [x] **Require conversation resolution before merging**
+ - **Require approvals**: `1` (or more as needed)
+ - [x] **Require review from Code Owners**
+ - [x] **Dismiss stale pull request approvals when new commits are pushed**
+ - [x] **Require conversation resolution before merging**
 - [x] **Require status checks to pass before merging**
-  - [x] **Require branches to be up to date before merging** (recommended)
-  - **Status checks that are required** (match workflow job names):
-    - `Lint commit messages (Conventional Commits)`
-    - `Archive PR gates`
+ - [x] **Require branches to be up to date before merging** (recommended)
+ - **Status checks that are required** (match workflow job names):
+ - `Lint commit messages (Conventional Commits)`
+ - `Archive PR gates`
 - [ ] **Require signed commits** (optional; enable if your org mandates it)
 - [ ] **Require linear history** (optional; recommended for simpler audit trails)
 - [ ] **Include administrators** (optional; recommended if you want policy enforced org-wide)

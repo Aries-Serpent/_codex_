@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cli/DOCUMENTATION_SUMMARY/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CLI Documentation Summary Report - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2669,9 +2669,9 @@
 <h1 id="cli-documentation-summary-report">CLI Documentation Summary Report<a class="headerlink" href="#cli-documentation-summary-report" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Generated:</strong> 2026-01-21<br/>
-<strong>Task Status:</strong>  COMPLETE<br/>
-<strong>Coverage Improvement:</strong> 32% → 98%</p>
+<p><strong>Generated:</strong> 2026-01-21
+<strong>Task Status:</strong> COMPLETE
+<strong>Coverage Improvement:</strong> 32% 98%</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>This report documents the comprehensive CLI documentation effort for the Aries-Serpent/<em>codex</em> repository. The task involved extracting, analyzing, and documenting <strong>50+ CLI commands</strong> across <strong>8 modules</strong>, improving coverage from 32% (12/37 documented) to 98% (48/50 documented).</p>
@@ -2736,14 +2736,14 @@
 - <strong>Core Module</strong> (20+ commands) - Training, logging, auth
 - <strong>Role/QA/Mapping Modules</strong> (3 commands) - Support utilities</p>
 <h4 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¶</a></h4>
-<p><strong>Organized by module</strong> - Easy navigation by functional area<br/>
-<strong>Complete parameters</strong> - Type, default, constraints, description<br/>
-<strong>Usage examples</strong> - Real-world command invocations<br/>
-<strong>Output formats</strong> - Expected results and data structures<br/>
-<strong>Cross-references</strong> - Links between related commands<br/>
-<strong>Exit codes</strong> - Standard error codes and meanings<br/>
-<strong>Environment variables</strong> - Required and optional env configs<br/>
-<strong>Quick start workflows</strong> - End-to-end examples  </p>
+<p><strong>Organized by module</strong> - Easy navigation by functional area
+ <strong>Complete parameters</strong> - Type, default, constraints, description
+ <strong>Usage examples</strong> - Real-world command invocations
+ <strong>Output formats</strong> - Expected results and data structures
+ <strong>Cross-references</strong> - Links between related commands
+ <strong>Exit codes</strong> - Standard error codes and meanings
+ <strong>Environment variables</strong> - Required and optional env configs
+ <strong>Quick start workflows</strong> - End-to-end examples</p>
 <h3 id="2-source-code-documentation">2. Source Code Documentation<a class="headerlink" href="#2-source-code-documentation" title="Permanent link">¶</a></h3>
 <p><strong>Docstrings Added:</strong> 10 commands</p>
 <p>Enhanced commands with comprehensive docstrings:</p>
@@ -2778,14 +2778,14 @@
 - Special notes (Safety, Requirements, etc.)</p>
 <h3 id="3-documentation-organization">3. Documentation Organization<a class="headerlink" href="#3-documentation-organization" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>docs/cli/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── COMMAND_REFERENCE.md (complete reference)
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── DOCUMENTATION_SUMMARY.md (this file)
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└── [future: module-specific guides]
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> COMMAND_REFERENCE.md (complete reference)
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> DOCUMENTATION_SUMMARY.md (this file)
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> [future: module-specific guides]
 </code></pre></div>
 <hr/>
 <h2 id="detailed-command-inventory">Detailed Command Inventory<a class="headerlink" href="#detailed-command-inventory" title="Permanent link">¶</a></h2>
 <h3 id="module-clipy-core">Module: cli.py (Core)<a class="headerlink" href="#module-clipy-core" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (existing docstrings)<br/>
+<p><strong>Status:</strong> Documented (existing docstrings)
 <strong>Commands:</strong> 20+</p>
 <p>Key commands:
 - <code>logs</code> group - Session logging (init, ingest, query, export)
@@ -2798,7 +2798,7 @@
 - <code>auth</code> group - Authentication management
 - <code>session-logger</code>, <code>viewer</code>, <code>query-logs</code> - Session tools</p>
 <h3 id="module-cli_ragpy">Module: cli_rag.py<a class="headerlink" href="#module-cli_ragpy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (8/8 commands)<br/>
+<p><strong>Status:</strong> Documented (8/8 commands)
 <strong>Commands:</strong> 8</p>
 <p>All documented with comprehensive examples:
 1. <code>build</code> - Build FAISS index
@@ -2810,7 +2810,7 @@
 7. <code>metrics</code> - Export metrics
 8. <code>benchmark</code> - Run performance benchmarks</p>
 <h3 id="module-cli_zendeskpy">Module: cli_zendesk.py<a class="headerlink" href="#module-cli_zendeskpy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (9/9 commands)<br/>
+<p><strong>Status:</strong> Documented (9/9 commands)
 <strong>Commands:</strong> 9</p>
 <p>All documented with IaC workflow examples:
 1. <code>env-check</code> - Validate credentials
@@ -2823,15 +2823,15 @@
 8. <code>apply</code> - Apply plan
 9. <code>metrics</code> - Register metrics</p>
 <h3 id="module-cli_knowledgepy">Module: cli_knowledge.py<a class="headerlink" href="#module-cli_knowledgepy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (4/4 commands) [10 NEW]<br/>
+<p><strong>Status:</strong> Documented (4/4 commands) [10 NEW]
 <strong>Commands:</strong> 4</p>
 <p>Now documented with comprehensive docstrings:
 1. <code>build-kb</code> - Build KB from docs [NEW DOCSTRING]
 2. <code>archive-and-manifest</code> - Archive KB [NEW DOCSTRING]
 3. <code>pack-release</code> - Pack bundle [NEW DOCSTRING]
-4. <code>sync-mermaid-map</code> - Sync Mermaid maps </p>
+4. <code>sync-mermaid-map</code> - Sync Mermaid maps</p>
 <h3 id="module-cli_releasepy">Module: cli_release.py<a class="headerlink" href="#module-cli_releasepy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (4/4 commands) [NEW]<br/>
+<p><strong>Status:</strong> Documented (4/4 commands) [NEW]
 <strong>Commands:</strong> 4</p>
 <p>Now documented with comprehensive docstrings:
 1. <code>init-manifest</code> - Create manifest [NEW DOCSTRING]
@@ -2839,51 +2839,51 @@
 3. <code>verify</code> - Verify bundle [NEW DOCSTRING]
 4. <code>unpack</code> - Extract bundle [NEW DOCSTRING]</p>
 <h3 id="module-cli_rolespy">Module: cli_roles.py<a class="headerlink" href="#module-cli_rolespy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (1/1 command) [NEW]<br/>
+<p><strong>Status:</strong> Documented (1/1 command) [NEW]
 <strong>Commands:</strong> 1</p>
 <p>Now documented:
 1. <code>export-matrix</code> - Export role matrices [NEW DOCSTRING]</p>
 <h3 id="module-cli_qapy">Module: cli_qa.py<a class="headerlink" href="#module-cli_qapy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (1/1 command) [NEW]<br/>
+<p><strong>Status:</strong> Documented (1/1 command) [NEW]
 <strong>Commands:</strong> 1</p>
 <p>Now documented:
 1. <code>score</code> - Score QA results [NEW DOCSTRING]</p>
 <h3 id="module-cli_mapspy">Module: cli_maps.py<a class="headerlink" href="#module-cli_mapspy" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  Documented (1/1 command)<br/>
+<p><strong>Status:</strong> Documented (1/1 command)
 <strong>Commands:</strong> 1</p>
 <p>Already documented:
-1. <code>inspect</code> - Inspect mapping tables </p>
+1. <code>inspect</code> - Inspect mapping tables</p>
 <hr/>
 <h2 id="coverage-analysis">Coverage Analysis<a class="headerlink" href="#coverage-analysis" title="Permanent link">¶</a></h2>
 <h3 id="before-documentation">Before Documentation<a class="headerlink" href="#before-documentation" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Documented:    12 commands (32%)
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├─ cli.py:           8 commands
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>├─ cli_rag.py:       3 commands  
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>├─ cli_zendesk.py:   1 command (snapshot only)
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>└─ Others:           0 commands
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Documented: 12 commands (32%)
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> cli.py: 8 commands
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> cli_rag.py: 3 commands 
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> cli_zendesk.py: 1 command (snapshot only)
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> Others: 0 commands
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>Undocumented:  25 commands (68%)
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>├─ cli_rag.py:       5 commands
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>├─ cli_zendesk.py:   8 commands
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>├─ cli_knowledge.py: 4 commands
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>├─ cli_release.py:   4 commands
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>├─ cli_roles.py:     1 command
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>├─ cli_qa.py:        1 command
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>└─ cli_maps.py:      1 command
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>Undocumented: 25 commands (68%)
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> cli_rag.py: 5 commands
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> cli_zendesk.py: 8 commands
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> cli_knowledge.py: 4 commands
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> cli_release.py: 4 commands
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> cli_roles.py: 1 command
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> cli_qa.py: 1 command
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> cli_maps.py: 1 command
 </code></pre></div>
 <h3 id="after-documentation">After Documentation<a class="headerlink" href="#after-documentation" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Documented:    48 commands (98%)
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├─ cli.py:           20+ commands
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>├─ cli_rag.py:       8 commands 
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>├─ cli_zendesk.py:   9 commands 
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>├─ cli_knowledge.py: 4 commands  (3 docstrings added)
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>├─ cli_release.py:   4 commands  (4 docstrings added)
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>├─ cli_roles.py:     1 command  (1 docstring added)
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>├─ cli_qa.py:        1 command  (1 docstring added)
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>└─ cli_maps.py:      1 command 
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Documented: 48 commands (98%)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> cli.py: 20+ commands
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> cli_rag.py: 8 commands 
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> cli_zendesk.py: 9 commands 
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> cli_knowledge.py: 4 commands (3 docstrings added)
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> cli_release.py: 4 commands (4 docstrings added)
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> cli_roles.py: 1 command (1 docstring added)
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> cli_qa.py: 1 command (1 docstring added)
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> cli_maps.py: 1 command 
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>Remaining:     2 commands (2%)
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>└─ Minor internal utilities
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>Remaining: 2 commands (2%)
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> Minor internal utilities
 </code></pre></div>
 <hr/>
 <h2 id="documentation-quality-metrics">Documentation Quality Metrics<a class="headerlink" href="#documentation-quality-metrics" title="Permanent link">¶</a></h2>
@@ -2987,35 +2987,35 @@
 <p>Each docstring includes:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">"example"</span><span class="p">)</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">def</span> <span class="nf">example_cmd</span><span class="p">(</span><span class="n">param1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">param2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="sd">"""One-line summary.</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="sd">"""One-line summary.</span>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sd">    Detailed description explaining:</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="sd">    - What the command does</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="sd">    - When to use it</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="sd">    - Key features</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sd"> Detailed description explaining:</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="sd"> - What the command does</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="sd"> - When to use it</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="sd"> - Key features</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="sd">    Args:</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="sd">        param1: Type and description</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="sd">        param2: Type and description</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="sd"> param1: Type and description</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="sd"> param2: Type and description</span>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="sd">    Output:</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="sd">        Description of output format with structure</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="sd"> Output:</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="sd"> Description of output format with structure</span>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="sd">    Examples:</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="sd">        # Simple usage</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="sd">        codex module example</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="sd"> Examples:</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="sd"> # Simple usage</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="sd"> codex module example</span>
 <a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="sd">        # With parameters</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="sd">        codex module example --param value</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="sd"> # With parameters</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="sd"> codex module example --param value</span>
 <a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="sd">    See Also:</span>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="sd">        codex other-command - Related operation</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="sd"> See Also:</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="sd"> codex other-command - Related operation</span>
 <a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="sd">    Notes:</span>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="sd">        - Safety considerations</span>
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="sd">        - Requirements</span>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="sd">        - Limitations</span>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="sd">    """</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="sd"> Notes:</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="sd"> - Safety considerations</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="sd"> - Requirements</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="sd"> - Limitations</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="sd"> """</span>
 </code></pre></div>
 <hr/>
 <h2 id="validation-testing">Validation &amp; Testing<a class="headerlink" href="#validation-testing" title="Permanent link">¶</a></h2>
@@ -3133,9 +3133,9 @@
 <li><strong>Maintainability:</strong> Docstrings embedded with code for easy updates</li>
 </ul>
 <hr/>
-<p><strong>Document Status:</strong> COMPLETE <br/>
+<p><strong>Document Status:</strong> COMPLETE
 <strong>Last Updated: 2026-07-11
-</strong>Maintainer:<strong> Documentation Team<br/>
+</strong>Maintainer:<strong> Documentation Team
 </strong>Review Status:** Ready for integration</p>
 </article>
 </div>
@@ -3166,6 +3166,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 # MCP Capabilities Reference Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version:** 1.0  
+**Version:** 1.0
 **Last Updated: 2026-07-11
 **Status:** Production Ready
 
@@ -18,7 +18,7 @@ The following 10 MCP capabilities are implemented and actively monitored:
 
 **Description**: FastAPI and JSON-RPC protocol endpoints implementing the MCP specification.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - JSON-RPC 2.0 server implementation (`mcp/server/server.py`)
@@ -37,10 +37,10 @@ server = MCPJSONRPCServer(config)
 
 # Handle JSON-RPC request
 request = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "listTools",
-    "params": {}
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "listTools",
+ "params": {}
 }
 response = server.handle_request(request)
 ```
@@ -59,7 +59,7 @@ response = server.handle_request(request)
 
 **Description**: Pydantic models and OpenAPI schema validation for MCP tool definitions and parameters.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - JSON schema validation for tool parameters
@@ -72,19 +72,19 @@ response = server.handle_request(request)
 from pydantic import BaseModel, ValidationError
 
 class ToolSchema(BaseModel):
-    name: str
-    description: str
-    parameters: dict
+ name: str
+ description: str
+ parameters: dict
 
 # Validate tool definition
 try:
-    tool = ToolSchema(
-        name="example_tool",
-        description="Example MCP tool",
-        parameters={"type": "object"}
-    )
+ tool = ToolSchema(
+ name="example_tool",
+ description="Example MCP tool",
+ parameters={"type": "object"}
+ )
 except ValidationError as e:
-    print(f"Validation failed: {e}")
+ print(f"Validation failed: {e}")
 ```
 
 **Security Considerations**:
@@ -100,7 +100,7 @@ except ValidationError as e:
 
 **Description**: Tool discovery, registration, and introspection through MCPToolRegistry.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - MCPToolRegistry class (`mcp/registry.py`)
@@ -117,13 +117,13 @@ registry = MCPToolRegistry()
 
 # Register a tool
 def my_tool(param1: str, param2: int):
-    return f"Processed: {param1} x {param2}"
+ return f"Processed: {param1} x {param2}"
 
 registry.register_tool(
-    "my_tool",
-    handler=my_tool,
-    schema={"type": "object", "properties": {...}},
-    metadata={"version": "1.0", "category": "processing"}
+ "my_tool",
+ handler=my_tool,
+ schema={"type": "object", "properties": {...}},
+ metadata={"version": "1.0", "category": "processing"}
 )
 
 # List all tools
@@ -146,7 +146,7 @@ result = registry.get_tool("my_tool")("test", 42)
 
 **Description**: API key authentication and authorization mechanisms for MCP requests.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - MCPAuthenticator class (`mcp/auth.py`)
@@ -166,8 +166,8 @@ principal = authenticator.authenticate("api_key_here")
 # Authorization
 authorizer = MCPAuthorizer()
 if authorizer.authorize(principal, "sensitive_tool"):
-    # Execute tool
-    pass
+ # Execute tool
+ pass
 ```
 
 **Security Considerations**:
@@ -184,7 +184,7 @@ if authorizer.authorize(principal, "sensitive_tool"):
 
 **Description**: Token bucket rate limiter for MCP tool invocations.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - MCPRateLimiter class (`mcp/rate_limit.py`)
@@ -202,11 +202,11 @@ limiter = MCPRateLimiter(rate=5.0, capacity=20, seed=42)
 
 # Check rate limit
 if limiter.allow("user_id", "tool_name"):
-    # Execute request
-    pass
+ # Execute request
+ pass
 else:
-    # Reject with RateLimitExceeded error
-    raise RateLimitExceeded("Too many requests")
+ # Reject with RateLimitExceeded error
+ raise RateLimitExceeded("Too many requests")
 ```
 
 **Security Considerations**:
@@ -223,7 +223,7 @@ else:
 
 **Description**: Structured error classes mapping JSON-RPC codes to HTTP statuses.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - MCPError hierarchy (`mcp/errors.py`)
@@ -238,16 +238,16 @@ from mcp.errors import ToolNotFound, RateLimitExceeded, Unauthorized
 
 # Raise specific errors
 try:
-    tool = registry.get_tool("nonexistent")
-    if not tool:
-        raise ToolNotFound("Tool 'nonexistent' not found")
+ tool = registry.get_tool("nonexistent")
+ if not tool:
+ raise ToolNotFound("Tool 'nonexistent' not found")
 except ToolNotFound as e:
-    # Returns JSON-RPC code -32601, HTTP 404
-    error_response = {
-        "code": e.code,
-        "message": str(e),
-        "http_status": e.http_status
-    }
+ # Returns JSON-RPC code -32601, HTTP 404
+ error_response = {
+ "code": e.code,
+ "message": str(e),
+ "http_status": e.http_status
+ }
 ```
 
 **Security Considerations**:
@@ -263,7 +263,7 @@ except ToolNotFound as e:
 
 **Description**: Logging, metrics, tracing, and monitoring for MCP operations.
 
-**Implementation Status**:  **PRESENT** - **MEDIUM MATURITY (0.70+)**
+**Implementation Status**: **PRESENT** - **MEDIUM MATURITY (0.70+)**
 
 **Key Components**:
 - X-Request-Id header propagation
@@ -283,17 +283,17 @@ logger = logging.getLogger('mcp')
 # Request tracing
 request_id = str(uuid.uuid4())
 logger.info(f"Processing request {request_id}", extra={
-    "request_id": request_id,
-    "principal": "user123",
-    "tool": "example_tool"
+ "request_id": request_id,
+ "principal": "user123",
+ "tool": "example_tool"
 })
 
 # Metrics collection
 metrics = {
-    "requests_total": 1000,
-    "requests_successful": 950,
-    "requests_failed": 50,
-    "avg_response_time_ms": 45.2
+ "requests_total": 1000,
+ "requests_successful": 950,
+ "requests_failed": 50,
+ "avg_response_time_ms": 45.2
 }
 ```
 
@@ -311,7 +311,7 @@ metrics = {
 
 **Description**: MCP version negotiation and backward compatibility helpers.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - MCP_VERSIONS constant (`mcp/versioning.py`)
@@ -344,7 +344,7 @@ print(f"Using MCP version: {negotiated}")
 
 **Description**: Tenant isolation patterns and multi-tenancy support.
 
-**Implementation Status**:  **PARTIAL**
+**Implementation Status**: **PARTIAL**
 
 **Key Components**:
 - Tenant-scoped principals
@@ -358,14 +358,14 @@ from mcp.auth import Principal
 
 # Create tenant-scoped principal
 tenant_principal = Principal(
-    principal_id="user123",
-    tenant_id="tenant_abc"
+ principal_id="user123",
+ tenant_id="tenant_abc"
 )
 
 # Validate tenant isolation
 def check_tenant_access(principal, resource):
-    if resource.tenant_id != principal.tenant_id:
-        raise Unauthorized("Cross-tenant access denied")
+ if resource.tenant_id != principal.tenant_id:
+ raise Unauthorized("Cross-tenant access denied")
 ```
 
 **Security Considerations**:
@@ -382,7 +382,7 @@ def check_tenant_access(principal, resource):
 
 **Description**: Integration patterns between MCP tools and ITA endpoints.
 
-**Implementation Status**:  **PRESENT**
+**Implementation Status**: **PRESENT**
 
 **Key Components**:
 - ITA endpoint mapping
@@ -399,9 +399,9 @@ config = MCPConfig.load()
 
 # Tools reference ITA endpoints
 for tool in config.tools:
-    print(f"Tool: {tool.name}")
-    print(f"Endpoint: {tool.endpoint}")
-    print(f"ITA Base URL: {config.ita_url}")
+ print(f"Tool: {tool.name}")
+ print(f"Endpoint: {tool.endpoint}")
+ print(f"ITA Base URL: {config.ita_url}")
 ```
 
 **Security Considerations**:
@@ -447,12 +447,12 @@ server = MCPJSONRPCServer(config, registry=registry)
 
 # Register tools
 def example_tool(input_text: str) -> str:
-    return f"Processed: {input_text}"
+ return f"Processed: {input_text}"
 
 registry.register_tool("example", example_tool)
 
 # Handle requests
-request = {...}  # JSON-RPC request
+request = {...} # JSON-RPC request
 response = server.handle_request(request)
 ```
 
@@ -470,20 +470,20 @@ rate_limiter = MCPRateLimiter(rate=10.0, capacity=20)
 
 # Secure execution workflow
 def execute_tool_securely(api_key, tool_name, params):
-    # 1. Authenticate
-    principal = authenticator.authenticate(api_key)
+ # 1. Authenticate
+ principal = authenticator.authenticate(api_key)
 
-    # 2. Check rate limit
-    if not rate_limiter.allow(principal.principal_id, tool_name):
-        raise RateLimitExceeded("Rate limit exceeded")
+ # 2. Check rate limit
+ if not rate_limiter.allow(principal.principal_id, tool_name):
+ raise RateLimitExceeded("Rate limit exceeded")
 
-    # 3. Authorize
-    if not authorizer.authorize(principal, tool_name):
-        raise Unauthorized("Not authorized")
+ # 3. Authorize
+ if not authorizer.authorize(principal, tool_name):
+ raise Unauthorized("Not authorized")
 
-    # 4. Execute
-    tool = registry.get_tool(tool_name)
-    return tool(**params)
+ # 4. Execute
+ tool = registry.get_tool(tool_name)
+ return tool(**params)
 ```
 
 ## Validation Commands
@@ -525,20 +525,20 @@ python3 test_mcp_server.py
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Provide comprehensive reference documentation for all 10 MCP capabilities with implementation details, code examples, security considerations, and validation commands for developers and security engineers.
 
-**Energy Level**:  (5/5) - Critical Technical Reference
+**Energy Level**: (5/5) - Critical Technical Reference
 - Critical impact: Authoritative source for all MCP capabilities
 - High detail: Complete implementation specifications
 - Long-term value: Foundation for all MCP development
 
-**Status**:  Production Ready |  Comprehensive Reference |  Continuously Updated
+**Status**: Production Ready | Comprehensive Reference | Continuously Updated
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **Capability Coverage**:
 - [ ] All 10 capabilities documented
@@ -563,41 +563,41 @@ python3 test_mcp_server.py
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Capability Documentation | 10/10 | 10/10 |  Complete |
-| Code Example Accuracy | 100% | 100% |  Verified |
-| Average Safeguard Score | ≥70% | ~75% |  Excellent |
-| Developer Reference Usage | High | ~85% consult |  High Adoption |
-| Documentation Freshness | <30 iterations | 0 iterations |  Current |
-| Technical Debt | Low | Minimal |  Healthy |
+| Capability Documentation | 10/10 | 10/10 | Complete |
+| Code Example Accuracy | 100% | 100% | Verified |
+| Average Safeguard Score | ≥70% | ~75% | Excellent |
+| Developer Reference Usage | High | ~85% consult | High Adoption |
+| Documentation Freshness | <30 iterations | 0 iterations | Current |
+| Technical Debt | Low | Minimal | Healthy |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Capability Development)
+### Path (Capability Development)
 ```
-Capability identified → Designed → Implemented → Tested → Scored → Documented → Deployed → Maintained
+Capability identified Designed Implemented Tested Scored Documented Deployed Maintained
 ```
 
-### Fields  (Development Energy)
-Developer needs capability → Consult reference → Implement per spec → Test → Deploy → Monitor → Enhance
+### Fields (Development Energy)
+Developer needs capability Consult reference Implement per spec Test Deploy Monitor Enhance
 
-### Patterns ️ (Documentation Patterns)
-**Structure**: Capability → Status → Components → Example → Security | **Validation**: Evidence files + audit scores | **Integration**: Cross-references to related docs
+### Patterns (Documentation Patterns)
+**Structure**: Capability Status Components Example Security | **Validation**: Evidence files + audit scores | **Integration**: Cross-references to related docs
 
-### Redundancy  (Validation Layers)
-Code examples → Evidence files → Audit scoring → Test suites → Production validation
+### Redundancy (Validation Layers)
+Code examples Evidence files Audit scoring Test suites Production validation
 
-### Balance ️
-Completeness (all capabilities) ↔ Clarity (understandable) ↔ Maintainability (updatable)
+### Balance
+Completeness (all capabilities) Clarity (understandable) Maintainability (updatable)
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 **P0 - Core Capabilities (50%)**:
 - mcp-protocol-surface (FastAPI + JSON-RPC)
@@ -617,7 +617,7 @@ Completeness (all capabilities) ↔ Clarity (understandable) ↔ Maintainability
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Capability Documentation Accuracy**:
 1. **Code Example Testing**: All examples must execute successfully
@@ -642,9 +642,9 @@ Completeness (all capabilities) ↔ Clarity (understandable) ↔ Maintainability
 
 ---
 
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Version**: 2.0  
-**Capabilities Documented**: 10/10  
-**Average Safeguard Score**: ~75%  
-**Status**: Production Ready   
-**Template Compliance**:  Phase 2 Physics-Aligned
+**Last Updated**: 2026-01-23T11:45:00Z
+**Version**: 2.0
+**Capabilities Documented**: 10/10
+**Average Safeguard Score**: ~75%
+**Status**: Production Ready
+**Template Compliance**: Phase 2 Physics-Aligned

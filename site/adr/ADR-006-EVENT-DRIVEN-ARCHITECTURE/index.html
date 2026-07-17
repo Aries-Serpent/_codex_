@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/adr/ADR-006-EVENT-DRIVEN-ARCHITECTURE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-006: Event-Driven Architecture for Cross-Layer Communication - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2381,10 +2381,10 @@
 <h1 id="adr-006-event-driven-architecture-for-cross-layer-communication">ADR-006: Event-Driven Architecture for Cross-Layer Communication<a class="headerlink" href="#adr-006-event-driven-architecture-for-cross-layer-communication" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Accepted<br/>
-<strong>Date:</strong> 2026-07-10<br/>
-<strong>Author:</strong> @mbaetiong<br/>
-<strong>Session:</strong> S250-doc-arch  </p>
+<p><strong>Status:</strong> Accepted
+<strong>Date:</strong> 2026-07-10
+<strong>Author:</strong> @mbaetiong
+<strong>Session:</strong> S250-doc-arch</p>
 <hr/>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
 <p>With a 5-layer architecture, components in different layers need to communicate. Options are:</p>
@@ -2403,69 +2403,69 @@
 <p>Adopt <strong>event-driven architecture</strong> for cross-layer communication using a <strong>local event bus</strong> (in-process) with provisions for distributed event streaming (Kafka, RabbitMQ) in future phases.</p>
 <p><strong>Event types:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>ConfigurationLayer
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├─ config.loaded
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─ config.validated
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└─ config.error
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> config.loaded
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> config.validated
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> config.error
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>DataLayer
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├─ data.ingestion.started
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├─ data.ingestion.completed
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├─ data.validation.failed
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└─ data.quality.metrics
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> data.ingestion.started
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> data.ingestion.completed
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> data.validation.failed
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> data.quality.metrics
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
 <a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>MLLayer
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>├─ training.epoch.started
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>├─ training.batch.completed
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>├─ training.validation.started
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>├─ model.checkpoint.saved
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>└─ training.error
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> training.epoch.started
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> training.batch.completed
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> training.validation.started
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> model.checkpoint.saved
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> training.error
 <a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
 <a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>RAGLayer
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>├─ embedding.computed
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>├─ vector.search.completed
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>└─ knowledge_graph.updated
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> embedding.computed
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> vector.search.completed
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> knowledge_graph.updated
 <a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
 <a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>APILayer
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>├─ request.received
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>├─ response.sent
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>└─ error.occurred
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> request.received
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> response.sent
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> error.occurred
 </code></pre></div>
 <hr/>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">class</span> <span class="nc">Event</span><span class="p">:</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""Base event class."""</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">source_layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>                 <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">=</span> <span class="n">source_layer</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">or</span> <span class="p">{}</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="sd">"""Base event class."""</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">source_layer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> <span class="bp">self</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">=</span> <span class="n">source_layer</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">or</span> <span class="p">{}</span>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="k">class</span> <span class="nc">EventBus</span><span class="p">:</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">    </span><span class="sd">"""Local event bus for in-process communication."""</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w"> </span><span class="sd">"""Local event bus for in-process communication."""</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event_history</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="bp">self</span><span class="o">.</span><span class="n">event_history</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Event</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">        </span><span class="sd">"""Register handler for event."""</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>        <span class="k">if</span> <span class="n">event_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w"> </span><span class="sd">"""Register handler for event."""</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> <span class="k">if</span> <span class="n">event_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 <a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">Event</span><span class="p">):</span>
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w">        </span><span class="sd">"""Publish event to all subscribers."""</span>
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">Event</span><span class="p">):</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w"> </span><span class="sd">"""Publish event to all subscribers."""</span>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> <span class="bp">self</span><span class="o">.</span><span class="n">event_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>                <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>                    <span class="n">handler</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="s2">"error.handler_failed"</span><span class="p">,</span> 
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>                                      <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">"EventBus"</span><span class="p">,</span> 
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>                                      <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}))</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> <span class="n">handler</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> <span class="bp">self</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="s2">"error.handler_failed"</span><span class="p">,</span> 
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">"EventBus"</span><span class="p">,</span> 
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}))</span>
 <a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>
 <a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a><span class="c1"># Global event bus</span>
 <a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="n">event_bus</span> <span class="o">=</span> <span class="n">EventBus</span><span class="p">()</span>
@@ -2473,58 +2473,62 @@
 <p><strong>Usage example:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Layer 2 (Data) publishes event</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">def</span> <span class="nf">on_data_loaded</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">"data.ingestion.completed"</span><span class="p">,</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>        <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="n">source_layer</span><span class="o">=</span><span class="s2">"DataLayer"</span><span class="p">,</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"num_samples"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">"features"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="p">)</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"data.ingestion.completed"</span><span class="p">,</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">source_layer</span><span class="o">=</span><span class="s2">"DataLayer"</span><span class="p">,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"num_samples"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">"features"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="p">)</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="n">event_bus</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="c1"># Layer 3 (ML) subscribes to event</span>
 <a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="k">def</span> <span class="nf">on_data_ready</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Event</span><span class="p">):</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Training starting with </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'num_samples'</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples"</span><span class="p">)</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="n">trainer</span><span class="o">.</span><span class="n">start_training</span><span class="p">()</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Training starting with </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'num_samples'</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples"</span><span class="p">)</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="n">trainer</span><span class="o">.</span><span class="n">start_training</span><span class="p">()</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="n">event_bus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">"data.ingestion.completed"</span><span class="p">,</span> <span class="n">on_data_ready</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="event-flow-diagram">Event Flow Diagram<a class="headerlink" href="#event-flow-diagram" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>graph LR
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    subgraph Layer1["Config Layer"]
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>        A["Config Manager"]
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    end
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    subgraph Layer2["Data Layer"]
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>        B["Data Pipeline"]
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    end
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    subgraph Layer3["ML Layer"]
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>        C["Trainer"]
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    end
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    A --&gt;|config.validated| EventBus["Event Bus&lt;br/&gt;(Central Hub)"]
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    EventBus --&gt;|subscribe| B
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> subgraph Layer1["Config Layer"]
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> A["Config Manager"]
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> end
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> subgraph Layer2["Data Layer"]
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> B["Data Pipeline"]
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> end
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> subgraph Layer3["ML Layer"]
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> C["Trainer"]
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> end
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> A --&gt;|config.validated| EventBus["Event Bus&lt;br/&gt;(Central Hub)"]
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    B --&gt;|data.ingestion.completed| EventBus
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    EventBus --&gt;|subscribe| C
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    C --&gt;|model.checkpoint.saved| EventBus
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>    EventBus --&gt;|subscribe| Monitor["Monitoring"]
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> EventBus --&gt;|subscribe| B
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> B --&gt;|data.ingestion.completed| EventBus
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> EventBus --&gt;|subscribe| C
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> C --&gt;|model.checkpoint.saved| EventBus
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> EventBus --&gt;|subscribe| Monitor["Monitoring"]
 </code></pre></div>
 <hr/>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
 <h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">¶</a></h3>
-<p>Loose coupling between layers — easy to modify individual layers<br/>
- Asynchronous processing — non-blocking operations<br/>
- Natural audit trail — all events logged<br/>
- Easy to add monitoring and alerting<br/>
- Testing easier — mock event bus<br/>
- Future-proof for distributed systems  </p>
+<p>Loose coupling between layers — easy to modify individual layers
+ Asynchronous processing — non-blocking operations
+ Natural audit trail — all events logged
+ Easy to add monitoring and alerting
+ Testing easier — mock event bus
+ Future-proof for distributed systems</p>
 <h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">¶</a></h3>
-<p>️ Learning curve for event-driven patterns<br/>
-️ Harder to debug — flow is implicit rather than explicit<br/>
-️ Eventual consistency rather than immediate consistency  </p>
+<p>Learning curve for event-driven patterns
+ Harder to debug — flow is implicit rather than explicit
+ Eventual consistency rather than immediate consistency</p>
 <h3 id="mitigations">Mitigations<a class="headerlink" href="#mitigations" title="Permanent link">¶</a></h3>
 <ul>
 <li>Comprehensive event documentation</li>
@@ -2538,17 +2542,17 @@
 <p><strong>Apache Kafka:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Topic partitioning by layer</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">topics</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="s2">"config"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="s2">"training"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="s2">"api"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> <span class="s2">"config"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="s2">"training"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="s2">"api"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"partitions"</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>RabbitMQ:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Topic exchanges for fanout</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">exchanges</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="s2">"config"</span><span class="p">:</span> <span class="n">rabbitmq</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="s2">"config"</span><span class="p">,</span> <span class="s2">"topic"</span><span class="p">),</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="s2">"data"</span><span class="p">:</span> <span class="n">rabbitmq</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="s2">"topic"</span><span class="p">),</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> <span class="s2">"config"</span><span class="p">:</span> <span class="n">rabbitmq</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="s2">"config"</span><span class="p">,</span> <span class="s2">"topic"</span><span class="p">),</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="s2">"data"</span><span class="p">:</span> <span class="n">rabbitmq</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="s2">"topic"</span><span class="p">),</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="p">}</span>
 </code></pre></div></p>
 <p>Both provide ordering, persistence, and scalability beyond in-process pub/sub.</p>
@@ -2598,6 +2602,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

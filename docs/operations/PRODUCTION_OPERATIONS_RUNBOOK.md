@@ -1,17 +1,17 @@
 # Production Operations Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
-**Date:** 2026-06-14T04:05:00Z  
-**Owner:** Operations Team  
-**Status:** Ready for Production Deployment  
+**Version:** 1.0.0
+**Date:** 2026-06-14T04:05:00Z
+**Owner:** Operations Team
+**Status:** Ready for Production Deployment
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 1. [Daily Operations](#daily-operations)
 2. [Scaling & Performance](#scaling--performance)
@@ -61,13 +61,13 @@ BACKUP_TIME=$(stat -c %y /var/backups/postgres_backup.sql.gz | cut -d' ' -f1)
 CURRENT_TIME=$(date +%Y-%m-%d)
 
 if [[ $BACKUP_TIME == $CURRENT_TIME ]]; then
-  echo " Database backup completed today"
-  echo "  Backup size: $(du -h /var/backups/postgres_backup.sql.gz)"
-  echo "  Backup time: $(stat -c %y /var/backups/postgres_backup.sql.gz)"
+ echo " Database backup completed today"
+ echo " Backup size: $(du -h /var/backups/postgres_backup.sql.gz)"
+ echo " Backup time: $(stat -c %y /var/backups/postgres_backup.sql.gz)"
 else
-  echo " ALERT: Database backup not completed today!"
-  # Send alert
-  send_alert "critical" "Database backup failed"
+ echo " ALERT: Database backup not completed today!"
+ # Send alert
+ send_alert "critical" "Database backup failed"
 fi
 
 # Check filesystem backup
@@ -90,15 +90,15 @@ grep -i "error\|warning" /var/log/codex/*.log | tail -20
 
 # Monthly: Certificate check
 for cert in /etc/ssl/certs/*.pem; do
-  openssl x509 -enddate -noout -in $cert | \
-    awk -v cert=$cert '{ \
-      cmd="date +%s -d \"" $0 "\""; \
-      cmd | getline exp; \
-      close(cmd); \
-      days_left=(exp-systime())/86400; \
-      if(days_left<30) \
-        print "️  " cert " expires in " days_left " days" \
-    }'
+ openssl x509 -enddate -noout -in $cert | \
+ awk -v cert=$cert '{ \
+ cmd="date +%s -d \"" $0 "\""; \
+ cmd | getline exp; \
+ close(cmd); \
+ days_left=(exp-systime())/86400; \
+ if(days_left<30) \
+ print " " cert " expires in " days_left " days" \
+ }'
 done
 
 # Monthly: Disk space check
@@ -151,19 +151,19 @@ kubectl top pods -l app=codex-api
 ```bash
 # Check slow queries
 mysql -h $DB_HOST -u root -p$DB_PASSWORD -e \
-  "SELECT * FROM mysql.slow_log ORDER BY query_time DESC LIMIT 10;"
+ "SELECT * FROM mysql.slow_log ORDER BY query_time DESC LIMIT 10;"
 
 # Analyze table
 mysql -h $DB_HOST -u root -p$DB_PASSWORD -e \
-  "ANALYZE TABLE codex_sessions;"
+ "ANALYZE TABLE codex_sessions;"
 
 # Optimize table
 mysql -h $DB_HOST -u root -p$DB_PASSWORD -e \
-  "OPTIMIZE TABLE codex_sessions;"
+ "OPTIMIZE TABLE codex_sessions;"
 
 # Add index if needed
 mysql -h $DB_HOST -u root -p$DB_PASSWORD -e \
-  "CREATE INDEX idx_session_created ON codex_sessions(created_at);"
+ "CREATE INDEX idx_session_created ON codex_sessions(created_at);"
 ```
 
 ## Cache Optimization
@@ -173,7 +173,7 @@ mysql -h $DB_HOST -u root -p$DB_PASSWORD -e \
 redis-cli INFO stats | grep -E "hits|misses"
 
 # Clear cache (if needed)
-redis-cli FLUSHALL  # USE WITH CAUTION
+redis-cli FLUSHALL # USE WITH CAUTION
 
 # Monitor cache keys
 redis-cli --scan --pattern "*" | head -20
@@ -199,17 +199,17 @@ mkdir -p $BACKUP_DIR
 # Backup database
 echo "Backing up database..."
 pg_dump -h $DB_HOST -U $DB_USER $DB_NAME | \
-  gzip > $BACKUP_DIR/database_$TIMESTAMP.sql.gz
+ gzip > $BACKUP_DIR/database_$TIMESTAMP.sql.gz
 
 # Backup configuration
 echo "Backing up configuration..."
 tar czf $BACKUP_DIR/config_$TIMESTAMP.tar.gz \
-  /etc/codex /etc/systemd /home/*/.*config
+ /etc/codex /etc/systemd /home/*/.*config
 
 # Backup application data
 echo "Backing up data..."
 tar czf $BACKUP_DIR/data_$TIMESTAMP.tar.gz \
-  /var/lib/codex /var/log/codex
+ /var/lib/codex /var/log/codex
 
 # Checksum all backups
 cd $BACKUP_DIR
@@ -227,7 +227,7 @@ echo " Backup completed: $BACKUP_DIR"
 #!/bin/bash
 # Restore from backup
 
-BACKUP_DATE=$1  # Pass YYYYMMDD_HHMMSS
+BACKUP_DATE=$1 # Pass YYYYMMDD_HHMMSS
 
 echo "Recovering from backup: $BACKUP_DATE"
 
@@ -237,7 +237,7 @@ systemctl stop codex-api codex-worker
 # Restore database
 echo "Restoring database..."
 gunzip < /var/backups/manual_$BACKUP_DATE/database_$BACKUP_DATE.sql.gz | \
-  psql -h $DB_HOST -U $DB_USER $DB_NAME
+ psql -h $DB_HOST -U $DB_USER $DB_NAME
 
 # Restore configuration
 echo "Restoring configuration..."
@@ -318,9 +318,9 @@ kubectl rollout undo deployment/codex-api
 # 7. Verify service
 echo "\n=== Verifying Service ==="
 for i in {1..10}; do
-  curl -s https://api.codex.io/health && echo " Service responding" && break
-  echo "Attempt $i failed, retrying..."
-  sleep 5
+ curl -s https://api.codex.io/health && echo " Service responding" && break
+ echo "Attempt $i failed, retrying..."
+ sleep 5
 done
 
 # 8. Update incident
@@ -339,9 +339,9 @@ echo "Current error rate: $ERROR_RATE%"
 # 1. Identify error source
 echo "\n=== Identifying Error Source ==="
 curl -s https://logs.codex.io/search -d '{
-  "query": "status:error",
-  "timerange": "1h",
-  "limit": 100
+ "query": "status:error",
+ "timerange": "1h",
+ "limit": 100
 }' | jq '.errors | group_by(.type) | sort_by(length) | reverse'
 
 # 2. Check recent deployments
@@ -374,15 +374,15 @@ echo "=== Rotating Secrets ==="
 echo "Rotating database password..."
 NEW_PASSWORD=$(openssl rand -base64 24)
 psql -h $DB_HOST -U postgres -c \
-  "ALTER USER $DB_USER WITH PASSWORD '$NEW_PASSWORD';"
+ "ALTER USER $DB_USER WITH PASSWORD '$NEW_PASSWORD';"
 # Update .env and redeploy
 
 # 2. Rotate API tokens
 echo "Rotating API tokens..."
 for token in $(vault list secret/codex/api_tokens); do
-  vault delete secret/codex/api_tokens/$token
-  NEW_TOKEN=$(openssl rand -hex 32)
-  vault write secret/codex/api_tokens/$token value=$NEW_TOKEN
+ vault delete secret/codex/api_tokens/$token
+ NEW_TOKEN=$(openssl rand -hex 32)
+ vault write secret/codex/api_tokens/$token value=$NEW_TOKEN
 done
 
 # 3. Rotate encryption keys (with caution)
@@ -423,7 +423,7 @@ grep "$(date +%Y-%m-%d)" /var/log/vpn/access.log | tail -20
 # 5. Check for unused credentials
 echo "\nUnused Credentials (>90 days):"
 aws iam get-credential-report | \
-  jq '.[] | select(.password_last_used < now - 7776000)'
+ jq '.[] | select(.password_last_used < now - 7776000)'
 ```
 
 ---
@@ -447,22 +447,22 @@ aws iam get-credential-report | \
 # Add alert rule to Prometheus
 cat > /etc/prometheus/rules/custom.yaml << 'EOF'
 groups:
-  - name: custom_alerts
-    interval: 30s
-    rules:
-      - alert: HighMemoryUsage
-        expr: container_memory_usage_bytes > 1e9
-        for: 5m
-        annotations:
-          summary: "High memory usage detected"
-          description: "Memory usage is {{ $value | humanize }}"
+ - name: custom_alerts
+ interval: 30s
+ rules:
+ - alert: HighMemoryUsage
+ expr: container_memory_usage_bytes > 1e9
+ for: 5m
+ annotations:
+ summary: "High memory usage detected"
+ description: "Memory usage is {{ $value | humanize }}"
 
-      - alert: SlowQuery
-        expr: mysql_slow_queries > 10
-        for: 5m
-        annotations:
-          summary: "Slow queries detected"
-          description: "{{ $value }} slow queries in last 5 minutes"
+ - alert: SlowQuery
+ expr: mysql_slow_queries > 10
+ for: 5m
+ annotations:
+ summary: "Slow queries detected"
+ description: "{{ $value }} slow queries in last 5 minutes"
 EOF
 
 # Reload Prometheus
@@ -471,7 +471,7 @@ systemctl reload prometheus
 
 ---
 
-## 📞 Escalation Contacts
+## Escalation Contacts
 
 **On-Call Rotation:**
 - Week 1: Alice (alice@codex.io, +1-555-0001)

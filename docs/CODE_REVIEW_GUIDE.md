@@ -1,8 +1,8 @@
 # Code Review Guidelines
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-08 
+**Last Updated**: 2026-07-08
 **Version**: 1.0.0
 
 Code reviews are critical for maintaining code quality, sharing knowledge, and fostering collaboration. This guide helps reviewers and contributors make the code review process smooth and productive.
@@ -442,17 +442,17 @@ Here's our docstring style:
 ```python
 def process_data(items: list[dict], batch_size: int = 32) -> Iterator[list]:
  \"\"\"Process items in batches.
- 
+
  Args:
  items: List of data items to process
  batch_size: Number of items per batch (default: 32)
- 
+
  Returns:
  Iterator of batches
- 
+
  Raises:
  ValueError: If batch_size is not positive
- 
+
  Example:
  >>> data = [{'id': 1}, {'id': 2}]
  >>> for batch in process_data(data, batch_size=1):
@@ -583,10 +583,10 @@ Some things still need humans:
 
 ## Questions?
 
-- **"How strict should I be?"** → Focus on critical issues, suggest others
-- **"How long should reviews take?"** → 5-30 min for most PRs
-- **"What if I disagree?"** → Discuss respectfully, don't block without reason
-- **"How do I handle criticism?"** → View it as opportunity to learn
-- **"What if someone is rude?"** → Report to conduct@aries-serpent.dev
+- **"How strict should I be?"** Focus on critical issues, suggest others
+- **"How long should reviews take?"** 5-30 min for most PRs
+- **"What if I disagree?"** Discuss respectfully, don't block without reason
+- **"How do I handle criticism?"** View it as opportunity to learn
+- **"What if someone is rude?"** Report to conduct@aries-serpent.dev
 
 Happy reviewing! 

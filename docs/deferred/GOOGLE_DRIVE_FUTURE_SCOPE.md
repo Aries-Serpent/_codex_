@@ -1,53 +1,53 @@
 # Google Drive Integration — Future Scope (DEFERRED)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [ Cognitive Brain: Deferral Policy & Classification](#-cognitive-brain-deferral-policy--classification)
-  - [AI Agency Policy on Deferrals](#ai-agency-policy-on-deferrals)
-  - [Why This is a Human Deferral (ALLOWED)](#why-this-is-a-human-deferral-allowed)
-  - [Implementation Responsibilities](#implementation-responsibilities)
+ - [AI Agency Policy on Deferrals](#ai-agency-policy-on-deferrals)
+ - [Why This is a Human Deferral (ALLOWED)](#why-this-is-a-human-deferral-allowed)
+ - [Implementation Responsibilities](#implementation-responsibilities)
 - [Executive Summary](#executive-summary)
 - [1. Components Requiring Google Drive Authentication](#1-components-requiring-google-drive-authentication)
-  - [1.1 GitHub Actions Workflow](#11-github-actions-workflow)
-  - [1.2 Scripts and Tools](#12-scripts-and-tools)
-  - [1.3 Documentation References](#13-documentation-references)
+ - [1.1 GitHub Actions Workflow](#11-github-actions-workflow)
+ - [1.2 Scripts and Tools](#12-scripts-and-tools)
+ - [1.3 Documentation References](#13-documentation-references)
 - [2. Required GitHub Secrets](#2-required-github-secrets)
 - [Run validation script after configuring secrets](#run-validation-script-after-configuring-secrets)
 - [3. Google Cloud Setup Prerequisites (HA-GC-001)](#3-google-cloud-setup-prerequisites-ha-gc-001)
-  - [3.1 Project Creation](#31-project-creation)
-  - [3.2 Service Account Setup (Recommended for CI)](#32-service-account-setup-recommended-for-ci)
-  - [3.3 OAuth 2.0 Client Setup (Optional — Interactive Use Only)](#33-oauth-20-client-setup-optional--interactive-use-only)
-  - [3.4 Verification](#34-verification)
+ - [3.1 Project Creation](#31-project-creation)
+ - [3.2 Service Account Setup (Recommended for CI)](#32-service-account-setup-recommended-for-ci)
+ - [3.3 OAuth 2.0 Client Setup (Optional — Interactive Use Only)](#33-oauth-20-client-setup-optional--interactive-use-only)
+ - [3.4 Verification](#34-verification)
 - [Verify project exists](#verify-project-exists)
 - [Verify Drive API is enabled](#verify-drive-api-is-enabled)
 - [Verify service account exists](#verify-service-account-exists)
 - [4. NotebookLM Integration (HA-NB-001)](#4-notebooklm-integration-ha-nb-001)
-  - [4.1 Notebook Setup](#41-notebook-setup)
-  - [4.2 Claude Code Integration (HA-CC-001)](#42-claude-code-integration-ha-cc-001)
+ - [4.1 Notebook Setup](#41-notebook-setup)
+ - [4.2 Claude Code Integration (HA-CC-001)](#42-claude-code-integration-ha-cc-001)
 - [5. Known Issues & Solutions](#5-known-issues--solutions)
-  - [5.1 OAuth2 Interactive Flow Incompatibility](#51-oauth2-interactive-flow-incompatibility)
-  - [5.2 Alternative Actions](#52-alternative-actions)
-  - [5.3 Rate Limiting](#53-rate-limiting)
-  - [5.4 File Overwrite Strategy](#54-file-overwrite-strategy)
+ - [5.1 OAuth2 Interactive Flow Incompatibility](#51-oauth2-interactive-flow-incompatibility)
+ - [5.2 Alternative Actions](#52-alternative-actions)
+ - [5.3 Rate Limiting](#53-rate-limiting)
+ - [5.4 File Overwrite Strategy](#54-file-overwrite-strategy)
 - [6. Future Implementation Checklist](#6-future-implementation-checklist)
-  - [Phase 1: Google Cloud Setup (HA-GC-001) — 20-30 minutes](#phase-1-google-cloud-setup-ha-gc-001--20-30-minutes)
-  - [Phase 2: GitHub Secrets Configuration (HA-GH-001) — 10-15 minutes](#phase-2-github-secrets-configuration-ha-gh-001--10-15-minutes)
-  - [Phase 3: CI/CD Authentication Fix — 30-45 minutes](#phase-3-cicd-authentication-fix--30-45-minutes)
-  - [Phase 4: Workflow Validation — 15-20 minutes](#phase-4-workflow-validation--15-20-minutes)
-  - [Phase 5: NotebookLM Integration (HA-NB-001) — 15-20 minutes](#phase-5-notebooklm-integration-ha-nb-001--15-20-minutes)
-  - [Phase 6: Claude Code Integration (HA-CC-001) — 30-45 minutes](#phase-6-claude-code-integration-ha-cc-001--30-45-minutes)
-  - [Phase 7: Re-enable Workflow — 10-15 minutes](#phase-7-re-enable-workflow--10-15-minutes)
-  - [Phase 8: Production Monitoring — Ongoing (1 phase minimum)](#phase-8-production-monitoring--ongoing-1-phase-minimum)
+ - [Phase 1: Google Cloud Setup (HA-GC-001) — 20-30 minutes](#phase-1-google-cloud-setup-ha-gc-001--20-30-minutes)
+ - [Phase 2: GitHub Secrets Configuration (HA-GH-001) — 10-15 minutes](#phase-2-github-secrets-configuration-ha-gh-001--10-15-minutes)
+ - [Phase 3: CI/CD Authentication Fix — 30-45 minutes](#phase-3-cicd-authentication-fix--30-45-minutes)
+ - [Phase 4: Workflow Validation — 15-20 minutes](#phase-4-workflow-validation--15-20-minutes)
+ - [Phase 5: NotebookLM Integration (HA-NB-001) — 15-20 minutes](#phase-5-notebooklm-integration-ha-nb-001--15-20-minutes)
+ - [Phase 6: Claude Code Integration (HA-CC-001) — 30-45 minutes](#phase-6-claude-code-integration-ha-cc-001--30-45-minutes)
+ - [Phase 7: Re-enable Workflow — 10-15 minutes](#phase-7-re-enable-workflow--10-15-minutes)
+ - [Phase 8: Production Monitoring — Ongoing (1 phase minimum)](#phase-8-production-monitoring--ongoing-1-phase-minimum)
 - [7. Reference Links](#7-reference-links)
-  - [Repository Files](#repository-files)
-  - [Documentation](#documentation)
-  - [External Resources](#external-resources)
+ - [Repository Files](#repository-files)
+ - [Documentation](#documentation)
+ - [External Resources](#external-resources)
 - [8. Implementation Notes](#8-implementation-notes)
-  - [8.1 For Future Implementers](#81-for-future-implementers)
-  - [8.2 For Copilot Agents](#82-for-copilot-agents)
-  - [8.3 For Human Admins](#83-for-human-admins)
+ - [8.1 For Future Implementers](#81-for-future-implementers)
+ - [8.2 For Copilot Agents](#82-for-copilot-agents)
+ - [8.3 For Human Admins](#83-for-human-admins)
 - [9. Success Criteria](#9-success-criteria)
 - [10. Rollback Plan](#10-rollback-plan)
 
@@ -61,7 +61,7 @@
 
 ---
 
-##  Cognitive Brain: Deferral Policy & Classification
+## Cognitive Brain: Deferral Policy & Classification
 
 **IMPORTANT**: This is a **HUMAN DEFERRAL** (`docs/deferred/`) - the ONLY allowed type of deferral per AI Agency Policy.
 
@@ -198,13 +198,13 @@ Configure these secrets in repository settings before re-enabling the workflow:
    # Via Console: https://console.cloud.google.com/
    # Project Name: "Codex NotebookLM Integration"
    # Project ID: codex-notebooklm-integration
-   ```
+ ```
 
 2. **Enable Drive API**:
    ```bash
    gcloud services enable drive.googleapis.com \
      --project=codex-notebooklm-integration
-   ```
+ ```
 
 ### 3.2 Service Account Setup (Recommended for CI)
 
@@ -213,46 +213,46 @@ Configure these secrets in repository settings before re-enabling the workflow:
    gcloud iam service-accounts create notebooklm-sync \
      --display-name="NotebookLM Sync Service Account" \
      --project=codex-notebooklm-integration
-   ```
+ ```
 
 2. **Grant Drive Permissions**:
-   - Navigate to Google Drive
-   - Create/locate target folder (e.g., `/codex-sync/`)
-   - Share folder with service account email: `notebooklm-sync@codex-notebooklm-integration.iam.gserviceaccount.com`
-   - Grant **Editor** permissions
+ - Navigate to Google Drive
+ - Create/locate target folder (e.g., `/codex-sync/`)
+ - Share folder with service account email: `notebooklm-sync@codex-notebooklm-integration.iam.gserviceaccount.com`
+ - Grant **Editor** permissions
 
 3. **Create and Download JSON Key**:
    ```bash
    gcloud iam service-accounts keys create ~/gdrive-service-account.json \
      --iam-account=notebooklm-sync@codex-notebooklm-integration.iam.gserviceaccount.com
-   ```
+ ```
 
 4. **Inject into GitHub Secrets**:
    ```bash
    gh secret set GDRIVE_SERVICE_ACCOUNT_JSON < ~/gdrive-service-account.json
    # Securely delete local copy after injection
    shred -u ~/gdrive-service-account.json
-   ```
+ ```
 
 ### 3.3 OAuth 2.0 Client Setup (Optional — Interactive Use Only)
 
 **Note**: Not suitable for CI; service account is preferred.
 
 1. **Create OAuth 2.0 Client ID**:
-   - Navigate to: APIs & Services → Credentials
-   - Click "Create Credentials" → "OAuth client ID"
-   - Application Type: **Desktop app**
-   - Name: "Codex NotebookLM Desktop Client"
+ - Navigate to: APIs & Services Credentials
+ - Click "Create Credentials" "OAuth client ID"
+ - Application Type: **Desktop app**
+ - Name: "Codex NotebookLM Desktop Client"
 
 2. **Configure Consent Screen**:
-   - User Type: Internal (if using Google Workspace) or External
-   - Scopes: `https://www.googleapis.com/auth/drive.file`
+ - User Type: Internal (if using Google Workspace) or External
+ - Scopes: `https://www.googleapis.com/auth/drive.file`
 
 3. **Store Credentials**:
    ```bash
    gh secret set GOOGLE_CLIENT_ID --body "YOUR_CLIENT_ID"
    gh secret set GOOGLE_CLIENT_SECRET --body "YOUR_CLIENT_SECRET"
-   ```
+ ```
 
 ### 3.4 Verification
 
@@ -276,19 +276,19 @@ gcloud iam service-accounts list --project=codex-notebooklm-integration
 ### 4.1 Notebook Setup
 
 1. **Create NotebookLM Notebook**:
-   - Navigate to: https://notebooklm.google.com/
-   - Click "New Notebook"
-   - Name: "Codex Architecture Knowledge Base"
+ - Navigate to: https://notebooklm.google.com/
+ - Click "New Notebook"
+ - Name: "Codex Architecture Knowledge Base"
 
 2. **Add Google Drive Source**:
-   - Click "Add Source" → "Google Drive"
-   - Navigate to `/codex-sync/codex-architecture-sync.xml`
-   - Select file and confirm
+ - Click "Add Source" "Google Drive"
+ - Navigate to `/codex-sync/codex-architecture-sync.xml`
+ - Select file and confirm
 
 3. **Configure AI Architect Instructions**:
-   - Open notebook settings
-   - Add custom instructions from `docs/notebooklm-architect-prompt.md`
-   - Save configuration
+ - Open notebook settings
+ - Add custom instructions from `docs/notebooklm-architect-prompt.md`
+ - Save configuration
 
 ### 4.2 Claude Code Integration (HA-CC-001)
 
@@ -382,13 +382,13 @@ When ready to implement Google Drive integration, complete these phases in order
 ### Phase 3: CI/CD Authentication Fix — 30-45 minutes
 
 - [ ] **Option A**: Update workflow to use service account directly
-  - Replace `satackey/action-google-drive@v1` with service-account compatible action
-  - Configure action to use `GDRIVE_SERVICE_ACCOUNT_JSON` secret
-  - Remove interactive OAuth configuration
+ - Replace `satackey/action-google-drive@v1` with service-account compatible action
+ - Configure action to use `GDRIVE_SERVICE_ACCOUNT_JSON` secret
+ - Remove interactive OAuth configuration
 - [ ] **Option B**: Use Google's official action
-  - Implement `google-github-actions/upload-cloud-storage@v1`
-  - Configure bucket/folder structure
-  - Set up appropriate IAM permissions
+ - Implement `google-github-actions/upload-cloud-storage@v1`
+ - Configure bucket/folder structure
+ - Set up appropriate IAM permissions
 - [ ] Add retry logic with exponential backoff for rate limits
 - [ ] Add error handling and alerting for upload failures
 - [ ] Test headless authentication in CI environment (use `workflow_dispatch`)
@@ -507,16 +507,16 @@ When implementing this scope:
 
 The Google Drive integration is considered successfully implemented when:
 
--  Workflow runs automatically on push to main/develop
--  XML files upload successfully to Drive without errors
--  Service account authentication works in CI
--  NotebookLM notebook stays synced with repository changes
--  AI Architect queries return accurate, current information
--  Security scans complete before uploads
--  No authentication failures for 1 phase continuous operation
--  Drive quota usage is within acceptable limits
--  Error handling and retry logic functions correctly
--  Documentation reflects actual implementation
+- Workflow runs automatically on push to main/develop
+- XML files upload successfully to Drive without errors
+- Service account authentication works in CI
+- NotebookLM notebook stays synced with repository changes
+- AI Architect queries return accurate, current information
+- Security scans complete before uploads
+- No authentication failures for 1 phase continuous operation
+- Drive quota usage is within acceptable limits
+- Error handling and retry logic functions correctly
+- Documentation reflects actual implementation
 
 ---
 

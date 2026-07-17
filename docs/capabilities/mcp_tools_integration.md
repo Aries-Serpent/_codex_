@@ -1,6 +1,6 @@
 # MCP Tools Integration - Comprehensive Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -22,7 +22,7 @@ The MCP (Model Context Protocol) Tools Integration capability provides comprehen
 ### Tool Lifecycle
 
 ```
-Registration → Discovery → Validation → Invocation → Result → Cleanup
+Registration Discovery Validation Invocation Result Cleanup
 ```
 
 ## MCP Server Usage
@@ -37,17 +37,17 @@ app = FastAPI(title="MCP Server")
 
 @tool(name="health", description="Health check", category=ToolCategory.UTILITY)
 def health_check():
-    return {"status": "healthy"}
+ return {"status": "healthy"}
 
 @tool(name="query", description="Execute query", timeout=60, requires_auth=True)
 async def execute_query(query: str, limit: int = 100):
-    # Validation safeguards
-    if "DROP" in query.upper():
-        raise ValueError("Destructive queries not allowed")
-    limit = min(limit, 1000)  # Bounded safeguard
+ # Validation safeguards
+ if "DROP" in query.upper():
+ raise ValueError("Destructive queries not allowed")
+ limit = min(limit, 1000) # Bounded safeguard
 
-    results = await db.execute(f"{query} LIMIT {limit}")
-    return {"rows": results, "count": len(results)}
+ results = await db.execute(f"{query} LIMIT {limit}")
+ return {"rows": results, "count": len(results)}
 ```
 
 ## MCP Client Usage
@@ -58,17 +58,17 @@ async def execute_query(query: str, limit: int = 100):
 import httpx
 
 class MCPClient:
-        self.base_url = base_url
-        self.client = httpx.AsyncClient(base_url=base_url)
+ self.base_url = base_url
+ self.client = httpx.AsyncClient(base_url=base_url)
 
-    async def invoke_tool(self, tool_name, parameters, auth_token=None):
-        headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
-        response = await self.client.post(
-            "/tools/invoke",
-            json={"tool_name": tool_name, "parameters": parameters},
-            headers=headers
-        )
-        return response.json()
+ async def invoke_tool(self, tool_name, parameters, auth_token=None):
+ headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
+ response = await self.client.post(
+ "/tools/invoke",
+ json={"tool_name": tool_name, "parameters": parameters},
+ headers=headers
+ )
+ return response.json()
 ```
 
 ## Testing
@@ -102,11 +102,11 @@ pytest tests/mcp/ --cov=src/mcp/tools --cov-report=html
 
 ```yaml
 mcp:
-  tools:
-    max_tools: 100
-    default_timeout: 30
-    max_timeout: 300
-    require_auth_default: false
+ tools:
+ max_tools: 100
+ default_timeout: 30
+ max_timeout: 300
+ require_auth_default: false
 ```
 
 ## Expanding Coverage
@@ -115,11 +115,11 @@ mcp:
 ```python
 @tool(name="custom_analysis", category=ToolCategory.DATA_PROCESSING)
 async def custom_analysis(data: list, analysis_type: str):
-    # Validation
-    if len(data) > 10000:
-        raise ValueError("Data size exceeds maximum")
-    # Processing with safeguards
-    return {"result": processed_data}
+ # Validation
+ if len(data) > 10000:
+ raise ValueError("Data size exceeds maximum")
+ # Processing with safeguards
+ return {"result": processed_data}
 ```
 
 ### Plugin Development
@@ -144,7 +144,7 @@ async def custom_analysis(data: list, analysis_type: str):
 
 ---
 
-**Version**: 1.0  
-**Keywords**: mcp, tools, integration, registry, discovery, invocation, plugins, tooling, api, validation, safeguards  
-**Test Coverage**: Comprehensive integration tests  
+**Version**: 1.0
+**Keywords**: mcp, tools, integration, registry, discovery, invocation, plugins, tooling, api, validation, safeguards
+**Test Coverage**: Comprehensive integration tests
 **Status**: Production-ready

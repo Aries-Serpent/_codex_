@@ -1,6 +1,6 @@
 # Test Coverage Plan: Path to 100%
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -10,28 +10,28 @@
 
 #### Test Files Created:
 1. **tests/test_rag_indexer.py** (16+ tests)
-   - Text chunking with various inputs
-   - Embedding generation
-   - Index persistence and loading
-   - File-based index building
-   - Error handling
-   - Edge cases
+ - Text chunking with various inputs
+ - Embedding generation
+ - Index persistence and loading
+ - File-based index building
+ - Error handling
+ - Edge cases
 
 2. **tests/test_rag_retriever.py** (25+ tests)
-   - Retriever initialization
-   - Query functionality
-   - Multi-index retrieval
-   - Provenance tracking
-   - Statistics
-   - Edge cases
+ - Retriever initialization
+ - Query functionality
+ - Multi-index retrieval
+ - Provenance tracking
+ - Statistics
+ - Edge cases
 
 3. **tests/test_rag_embeddings.py** (30+ tests)
-   - Local provider tests
-   - OpenAI provider tests (mocked)
-   - Cache behavior
-   - Factory function
-   - Integration tests
-   - Edge cases
+ - Local provider tests
+ - OpenAI provider tests (mocked)
+ - Cache behavior
+ - Factory function
+ - Integration tests
+ - Edge cases
 
 ### Coverage Gaps for 100%
 
@@ -43,124 +43,124 @@ The following areas need additional tests to reach 100% coverage:
 
 #### Uncovered Lines/Branches:
 - **Line 323-325**: Error path when file_metadata shows all zero chunks
-  - **Test needed**: Create files that produce empty chunks after processing
+ - **Test needed**: Create files that produce empty chunks after processing
 
 - **Exception handlers in build_index_from_files**:
-  - Non-UTF-8 file encoding errors
-  - Permission denied errors
-  - Disk full errors during persistence
+ - Non-UTF-8 file encoding errors
+ - Permission denied errors
+ - Disk full errors during persistence
 
 #### Missing Test Cases:
 ```python
 # Test 1: Files with problematic encoding
 def test_build_index_with_encoding_errors():
-    """Test handling files with encoding issues"""
-    # Create file with non-UTF-8 bytes
-    # Verify graceful handling
-    pass
+ """Test handling files with encoding issues"""
+ # Create file with non-UTF-8 bytes
+ # Verify graceful handling
+ pass
 
 # Test 2: Large file handling
 def test_build_index_with_large_files():
-    """Test memory efficiency with very large files"""
-    # Create 100MB+ file
-    # Verify streaming/chunking doesn't crash
-    pass
+ """Test memory efficiency with very large files"""
+ # Create 100MB+ file
+ # Verify streaming/chunking doesn't crash
+ pass
 
 # Test 3: Concurrent index building
 def test_concurrent_index_building():
-    """Test thread-safety of index building"""
-    # Build multiple indices concurrently
-    pass
+ """Test thread-safety of index building"""
+ # Build multiple indices concurrently
+ pass
 ```
 
 ## 2. Retriever Module (`src/codex/rag/retriever.py`)
 
 ### Uncovered Lines/Branches:
 - **Line 87-92**: Exception handling in `_load_index`
-  - **Test needed**: Trigger various load failures
+ - **Test needed**: Trigger various load failures
 
 - **Line 195-200**: Edge case in `_extract_file_from_metadata`
-  - **Test needed**: Various metadata structures
+ - **Test needed**: Various metadata structures
 
 - **MultiIndexRetriever error recovery**:
-  - Partial index failures
-  - Query errors on subset of indices
+ - Partial index failures
+ - Query errors on subset of indices
 
 #### Missing Test Cases:
 ```python
 # Test 1: Corrupted FAISS index
 def test_retriever_with_corrupted_faiss_index():
-    """Test handling corrupted FAISS binary"""
-    # Create index, corrupt faiss file
-    # Verify error handling
-    pass
+ """Test handling corrupted FAISS binary"""
+ # Create index, corrupt faiss file
+ # Verify error handling
+ pass
 
 # Test 2: Version mismatch
 def test_retriever_with_version_mismatch():
-    """Test handling indices from different FAISS versions"""
-    pass
+ """Test handling indices from different FAISS versions"""
+ pass
 
 # Test 3: Query performance edge cases
 def test_retriever_query_with_extreme_parameters():
-    """Test with very large top_k, extreme min_score"""
-    pass
+ """Test with very large top_k, extreme min_score"""
+ pass
 
 # Test 4: Metadata edge cases
 def test_extract_file_with_malformed_metadata():
-    """Test file extraction with various malformed metadata"""
-    pass
+ """Test file extraction with various malformed metadata"""
+ pass
 ```
 
 ## 3. Embeddings Module (`src/codex/rag/embeddings.py`)
 
 ### Uncovered Lines/Branches:
 - **OpenAI error handling**:
-  - API rate limits
-  - Network timeouts
-  - Invalid responses
+ - API rate limits
+ - Network timeouts
+ - Invalid responses
 
 - **Cache corruption scenarios**:
-  - Partial writes
-  - Metadata JSON corruption
+ - Partial writes
+ - Metadata JSON corruption
 
 - **Provider initialization errors**:
-  - Import errors for optional dependencies
-  - Model download failures
+ - Import errors for optional dependencies
+ - Model download failures
 
 #### Missing Test Cases:
 ```python
 # Test 1: OpenAI API errors
 @patch("codex.rag.embeddings.OpenAI")
 def test_openai_provider_rate_limit(mock_openai):
-    """Test handling of rate limit errors"""
-    # Mock rate limit exception
-    # Verify proper error propagation
-    pass
+ """Test handling of rate limit errors"""
+ # Mock rate limit exception
+ # Verify proper error propagation
+ pass
 
 # Test 2: Network failures
 @patch("codex.rag.embeddings.OpenAI")
 def test_openai_provider_network_timeout(mock_openai):
-    """Test handling of network timeouts"""
-    pass
+ """Test handling of network timeouts"""
+ pass
 
 # Test 3: Cache metadata corruption
 def test_cached_provider_with_corrupted_metadata():
-    """Test handling of corrupted metadata JSON"""
-    # Create cache with corrupted .meta.json
-    # Verify regeneration
-    pass
+ """Test handling of corrupted metadata JSON"""
+ # Create cache with corrupted .meta.json
+ # Verify regeneration
+ pass
 
 # Test 4: Concurrent cache access
 def test_cached_provider_concurrent_access():
-    """Test thread-safety of cache"""
-    # Multiple threads accessing same cache key
-    pass
+ """Test thread-safety of cache"""
+ # Multiple threads accessing same cache key
+ pass
 
 # Test 5: Model loading failures
 def test_local_provider_model_download_failure():
-    """Test graceful handling of model download failures"""
-    # Mock network error during model init
-    pass
+ """Test graceful handling of model download failures"""
+ # Mock network error during model init
+ pass
 ```
 
 ## 4. Integration Tests
@@ -169,35 +169,35 @@ def test_local_provider_model_download_failure():
 ```python
 # Test 1: Full RAG pipeline
 def test_full_rag_pipeline_end_to_end():
-    """Test complete RAG workflow from docs to retrieval"""
-    # 1. Index large corpus
-    # 2. Query with various patterns
-    # 3. Verify provenance accuracy
-    # 4. Test cache effectiveness
-    pass
+ """Test complete RAG workflow from docs to retrieval"""
+ # 1. Index large corpus
+ # 2. Query with various patterns
+ # 3. Verify provenance accuracy
+ # 4. Test cache effectiveness
+ pass
 
 # Test 2: Multi-tenant isolation
 def test_multi_tenant_isolation():
-    """Verify tenant isolation in storage"""
-    # Create indices for multiple tenants
-    # Verify no cross-tenant access
-    pass
+ """Verify tenant isolation in storage"""
+ # Create indices for multiple tenants
+ # Verify no cross-tenant access
+ pass
 
 # Test 3: Index updates
 def test_index_incremental_updates():
-    """Test updating an existing index"""
-    # Create index
-    # Add new documents
-    # Verify proper merging
-    pass
+ """Test updating an existing index"""
+ # Create index
+ # Add new documents
+ # Verify proper merging
+ pass
 
 # Test 4: Performance benchmarks
 def test_performance_benchmarks():
-    """Benchmark query performance at scale"""
-    # Index 10k, 100k chunks
-    # Measure query latency
-    # Verify acceptable performance
-    pass
+ """Benchmark query performance at scale"""
+ # Index 10k, 100k chunks
+ # Measure query latency
+ # Verify acceptable performance
+ pass
 ```
 
 ## Prioritized Action Items for 100% Coverage
@@ -205,47 +205,47 @@ def test_performance_benchmarks():
 ### Priority 1: Critical Path Coverage (Target: 95%)
 
 1. **Error handling in all three modules**
-   - File I/O errors
-   - Network errors (OpenAI)
-   - Corruption scenarios
-   - Estimated effort: 8 tests, 2 hours
+ - File I/O errors
+ - Network errors (OpenAI)
+ - Corruption scenarios
+ - Estimated effort: 8 tests, 2 hours
 
 2. **Edge cases in metadata handling**
-   - Malformed metadata
-   - Missing fields
-   - Type mismatches
-   - Estimated effort: 6 tests, 1 hour
+ - Malformed metadata
+ - Missing fields
+ - Type mismatches
+ - Estimated effort: 6 tests, 1 hour
 
 3. **Cache behavior edge cases**
-   - Corruption
-   - Concurrent access
-   - Partial writes
-   - Estimated effort: 5 tests, 1.5 hours
+ - Corruption
+ - Concurrent access
+ - Partial writes
+ - Estimated effort: 5 tests, 1.5 hours
 
 ### Priority 2: Integration & Stress Tests (Target: 98%)
 
 4. **Multi-tenant scenarios**
-   - Isolation tests
-   - Concurrent operations
-   - Estimated effort: 4 tests, 1 hour
+ - Isolation tests
+ - Concurrent operations
+ - Estimated effort: 4 tests, 1 hour
 
 5. **Performance edge cases**
-   - Very large files
-   - Many small files
-   - Extreme parameters
-   - Estimated effort: 6 tests, 2 hours
+ - Very large files
+ - Many small files
+ - Extreme parameters
+ - Estimated effort: 6 tests, 2 hours
 
 ### Priority 3: Complete Coverage (Target: 100%)
 
 6. **Rare code paths**
-   - Import errors
-   - Platform-specific behaviors
-   - Deprecation warnings
-   - Estimated effort: 8 tests, 2 hours
+ - Import errors
+ - Platform-specific behaviors
+ - Deprecation warnings
+ - Estimated effort: 8 tests, 2 hours
 
 7. **Documentation examples**
-   - All code examples in docs should be tested
-   - Estimated effort: 10 tests, 2 hours
+ - All code examples in docs should be tested
+ - Estimated effort: 10 tests, 2 hours
 
 ## Test Execution Plan
 
@@ -292,36 +292,36 @@ name: RAG Module Tests
 on: [push, pull_request]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: pip install -e ".[rag,test]"
-      - name: Run tests with coverage
-        run: |
-          pytest tests/test_rag_*.py \
-            --cov=src/codex/rag \
-            --cov-report=xml \
-            --cov-report=term-missing \
-            --cov-fail-under=90
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage.xml
+ test:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Install dependencies
+ run: pip install -e ".[rag,test]"
+ - name: Run tests with coverage
+ run: |
+ pytest tests/test_rag_*.py \
+ --cov=src/codex/rag \
+ --cov-report=xml \
+ --cov-report=term-missing \
+ --cov-fail-under=90
+ - name: Upload coverage
+ uses: codecov/codecov-action@v3
+ with:
+ files: ./coverage.xml
 ```
 
 ## Pre-commit Hook
 ```bash
 # .pre-commit-config.yaml
 - repo: local
-  hooks:
-    - id: rag-test-coverage
-      name: RAG Module Test Coverage
-      entry: bash -c 'pytest tests/test_rag_*.py --cov=src/codex/rag --cov-fail-under=90 || exit 1'
-      language: system
-      pass_filenames: false
-      always_run: true
+ hooks:
+ - id: rag-test-coverage
+ name: RAG Module Test Coverage
+ entry: bash -c 'pytest tests/test_rag_*.py --cov=src/codex/rag --cov-fail-under=90 || exit 1'
+ language: system
+ pass_filenames: false
+ always_run: true
 ```
 
 ## Promptsets for Reaching 100%
@@ -347,7 +347,7 @@ Focus on:
 ```
 Create integration tests for expanded context RAG workflow:
 
-1. End-to-end pipeline: docs → indexing → caching → retrieval
+1. End-to-end pipeline: docs indexing caching retrieval
 2. Multi-tenant isolation and concurrent operations
 3. Index updates and versioning
 4. Cache effectiveness and invalidation
@@ -401,26 +401,26 @@ pip install pytest-cov coverage
 
 # Run with HTML report
 pytest tests/test_rag_*.py \
-  --cov=src/codex/rag \
-  --cov-report=html \
-  --cov-report=term-missing
+ --cov=src/codex/rag \
+ --cov-report=html \
+ --cov-report=term-missing
 
 # View coverage report
 open htmlcov/index.html
 
 # Check specific module
 pytest tests/test_rag_*.py \
-  --cov=src/codex/rag/indexer.py \
-  --cov-report=term-missing
+ --cov=src/codex/rag/indexer.py \
+ --cov-report=term-missing
 
 # Generate badge
 coverage-badge -o coverage.svg -f
 
 # Branch coverage (more strict)
 pytest tests/test_rag_*.py \
-  --cov=src/codex/rag \
-  --cov-branch \
-  --cov-report=term-missing
+ --cov=src/codex/rag \
+ --cov-branch \
+ --cov-report=term-missing
 ```
 
 ## Success Criteria
@@ -462,12 +462,12 @@ pytest tests/test_rag_*.py \
 ```python
 # tests/conftest.py
 def pytest_sessionfinish(session, exitstatus):
-    """Report coverage at end of session"""
-    if session.config.option.cov:
-        print("\n" + "="*80)
-        print("COVERAGE SUMMARY")
-        print("="*80)
-        # Generate summary
+ """Report coverage at end of session"""
+ if session.config.option.cov:
+ print("\n" + "="*80)
+ print("COVERAGE SUMMARY")
+ print("="*80)
+ # Generate summary
 ```
 
 ## Resources

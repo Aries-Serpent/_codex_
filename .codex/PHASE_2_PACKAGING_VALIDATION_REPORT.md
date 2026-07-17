@@ -1,6 +1,6 @@
 # PHASE 2: Release Packaging Task — Dependency Validation Report
 
-**Release:** v0.2.1  
+**Release:** v0.2.0  
 **Repository:** Aries-Serpent/_codex_  
 **Generated:** 2026-07-11 07:51 UTC  
 **Status:** ⚠️ **BLOCKED - Critical Security Issues Found**
@@ -594,7 +594,7 @@ pip-audit --desc --format json | python scripts/check_sbom_vulns.py
 
 ```bash
 git add requirements/lock*.txt sbom.json sbom/
-git commit -m "fix: regenerate lock files and SBOM for v0.2.1 release
+git commit -m "fix: regenerate lock files and SBOM for v0.2.0 release
 
 Fixes security vulnerabilities:
 - PyJWT upgraded from 2.7.0 to 2.13.0 (PYSEC-2026-120)

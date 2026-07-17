@@ -1,5 +1,5 @@
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## 2. Alert Thresholds & Notifications
 
@@ -8,10 +8,10 @@
 **For 90-day rotation tokens** (e.g., CODEX_MASTER_KEY):
 
 ```
-Day 75: 📧 Email to security team
-Day 80: 📧 Second email
-Day 85:  Daily alerts
-Day 90:  ROTATION REQUIRED
+Day 75: Email to security team
+Day 80: Second email
+Day 85: Daily alerts
+Day 90: ROTATION REQUIRED
 ```
 
 ### 2.2 Token Types & Periods
@@ -35,12 +35,12 @@ Token tracking implemented via GitHub Actions scheduled workflows:
 
 ## 4. Sign-off
 
-- **Security Lead**: APPROVED  
-- **Operations Lead**: APPROVED  
-- **Compliance Officer**: APPROVED  
+- **Security Lead**: APPROVED
+- **Operations Lead**: APPROVED
+- **Compliance Officer**: APPROVED
 
 ---
 
-**Document Version**: 1.0  
-**Effective Date**: 2026-06-14  
+**Document Version**: 1.0
+**Effective Date**: 2026-06-14
 **Last Updated**: 2026-06-14

@@ -1,6 +1,6 @@
-# Bridge: Codex ↔ Copilot Co-op (Shared Internal Tools API)
+# Bridge: Codex Copilot Co-op (Shared Internal Tools API)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -11,12 +11,12 @@ auditable backend.
 ## Components
 
 - **services/ita** – FastAPI implementation of the Internal Tools API with contract-first OpenAPI definitions, idempotency,
-  `dry_run`, and `confirm` gates.
+ `dry_run`, and `confirm` gates.
 - **agents/codex_client** – Codex-oriented client that wraps the ITA with retries, streaming-ready responses, and concurrency
-  guards.
+ guards.
 - **copilot/extension** – Starter GitHub Copilot extension shim (GitHub App + service) that forwards chat intents to the ITA.
 - **mcp/server** – Future-ready MCP server skeleton exposing the same tools (no OAuth) for VS Code/Visual Studio Copilot
-  integration.
+ integration.
 - **ops/** – Policy, observability, and threat-model stubs for governance.
 - **tools/codex_safety** – Optional safety hooks and ignore/attribute patterns to avoid noisy diffs.
 

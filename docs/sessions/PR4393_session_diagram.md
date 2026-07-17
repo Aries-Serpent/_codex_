@@ -1,24 +1,40 @@
 # PR #4393 — Session Diagram
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Artifact Retrieved<br/>codeql-alerts-open-codeql-25648728868<br/>249 total alerts, S930 Batch 1<br/>Resolve top 50 fixable alerts'}}%%
+
 graph TD
+
   A[Artifact Retrieved<br/>codeql-alerts-open-codeql-25648728868<br/>249 total alerts] --> B
+
   B[S930 Batch 1<br/>Resolve top 50 fixable alerts] --> C
+
   C[Workflow hardening<br/>permissions + SHA-pinned actions] --> D
+
   D[Code-level fixes<br/>test_peft_utils guard + action.yml syntax] --> E
+
   E[S930 Batch 2<br/>Resolve remaining artifact classes] --> F
+
   F[CodeQL Advanced scope tightened<br/>security-focused + config-file + no actions leg] --> G
+
   G[Validation<br/>pytest + ruff + sync_tracked + pre-commit] --> H
+
   H[Living docs + changelog + accountability updated] --> I
+
   I[S931 Verification<br/>CodeQL + CodeQL Advanced success on d0d1aea] --> J
+
   J[S932 Rebase-Churn Guard<br/>Skip PR-time auth/d00 housekeeping commits] --> K
+
   K[S933 Sweep-Push Guard<br/>Skip universal sweep pushes for active PRs] --> L
+
   L[S934 Monitoring Pass<br/>Head 5e6a479 workflow snapshot captured] --> M
+
   M[S935 Reviewer-Thread Fixes<br/>permissions + guard naming + followup prompt accuracy] --> N
+
   N[S936 Auto-Approve Hardening<br/>high-volume + active-copilot triggers] --> O
+
   O[S937 CI Rescue Follow-up<br/>actionlint cadence compliance + delegation helper soft-fail] --> P
   P[Next: verify latest fetcher artifact totals and residuals]
 ```
@@ -69,15 +85,26 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Start next session, Trigger fetcher and download alerts_summary.json'}}%%
+
 flowchart TD
+
     A[Start next session] --> B{Fresh codeql-alert-fetcher artifact on latest SHA?}
+
     B -->|No| C[Trigger fetcher and download alerts_summary.json]
+
     B -->|Yes| D{Any residual alerts?}
+
     C --> D
+
     D -->|Yes| E[Patch residual files only + validate]
+
     D -->|No| F[Confirm required CI checks green]
+
     E --> F
+
     F -->|Green| G[Ready for merge]
+
     F -->|Not green| H[Triage failures: code-fixable vs infra-only]
+
     H --> E
 ```

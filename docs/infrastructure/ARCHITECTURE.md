@@ -1,10 +1,10 @@
 # Infrastructure Architecture Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.0  
-**Audience**: Infrastructure architects, DevOps engineers, system designers  
+**Last Updated**: 2026-07-08
+**Version**: 1.0
+**Audience**: Infrastructure architects, DevOps engineers, system designers
 **Tier**: Production-Ready
 
 ---
@@ -26,39 +26,39 @@
 ### High-Level System Overview
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                  Multi-Cloud Deployment                  │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  ┌────────────┐  ┌────────────┐  ┌──────────────────┐  │
-│  │    AWS     │  │    GCP     │  │   Azure / On-Prem│  │
-│  │    ECS     │  │ Cloud Run  │  │      AKS / K8s   │  │
-│  └────────────┘  └────────────┘  └──────────────────┘  │
-│        │               │                  │              │
-│  ┌─────▼───────────────▼──────────────────▼──────────┐  │
-│  │     Global Load Balancer / DNS (Route 53/DNS)    │  │
-│  │     - Geographic routing                         │  │
-│  │     - Health checks                              │  │
-│  │     - Failover support                           │  │
-│  └─────┬─────────────────────────────────────────────┘  │
-│        │                                               │
-│  ┌─────▼──────────────────────────────────────────────┐ │
-│  │  Application Layer (Codex ML Services)            │ │
-│  │  - API Services                                   │ │
-│  │  - Worker Services                                │ │
-│  │  - WebSocket Services                             │ │
-│  │  - Cache Layers (In-memory)                       │ │
-│  └─────┬──────────────────────────────────────────────┘ │
-│        │                                               │
-│  ┌─────▼──────────────────────────────────────────────┐ │
-│  │  Data Layer                                        │ │
-│  │  ├─ Primary Database (PostgreSQL)                 │ │
-│  │  ├─ Cache (Redis)                                 │ │
-│  │  ├─ Object Storage (S3/GCS/Blob)                 │ │
-│  │  └─ Message Queue (RabbitMQ/SQS/PubSub)          │ │
-│  └────────────────────────────────────────────────────┘ │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+
+ Multi-Cloud Deployment 
+
+ 
+ 
+ AWS GCP Azure / On-Prem 
+ ECS Cloud Run AKS / K8s 
+ 
+ 
+ 
+ Global Load Balancer / DNS (Route 53/DNS) 
+ - Geographic routing 
+ - Health checks 
+ - Failover support 
+ 
+ 
+ 
+ Application Layer (Codex ML Services) 
+ - API Services 
+ - Worker Services 
+ - WebSocket Services 
+ - Cache Layers (In-memory) 
+ 
+ 
+ 
+ Data Layer 
+ Primary Database (PostgreSQL) 
+ Cache (Redis) 
+ Object Storage (S3/GCS/Blob) 
+ Message Queue (RabbitMQ/SQS/PubSub) 
+ 
+ 
+
 ```
 
 ### Component Responsibilities
@@ -80,38 +80,38 @@
 ### VPC & Subnet Design
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  VPC: 10.0.0.0/16 (codex-ml-vpc)                       │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌───────────────────────────────────────────────────┐ │
-│  │ Public Subnet: 10.0.1.0/24 (Availability Zone A) │ │
-│  │ - NAT Gateway                                     │ │
-│  │ - Load Balancer                                   │ │
-│  │ - Bastion Host                                    │ │
-│  └───────────────────────────────────────────────────┘ │
-│                                                         │
-│  ┌───────────────────────────────────────────────────┐ │
-│  │ Private Subnet A: 10.0.2.0/24 (AZ A)            │ │
-│  │ - Application Servers                            │ │
-│  │ - Worker Nodes                                    │ │
-│  │ - Route: NAT Gateway → Internet                  │ │
-│  └───────────────────────────────────────────────────┘ │
-│                                                         │
-│  ┌───────────────────────────────────────────────────┐ │
-│  │ Private Subnet B: 10.0.3.0/24 (AZ B)            │ │
-│  │ - Database                                        │ │
-│  │ - Cache                                           │ │
-│  │ - No Internet route                              │ │
-│  └───────────────────────────────────────────────────┘ │
-│                                                         │
-│  ┌───────────────────────────────────────────────────┐ │
-│  │ Private Subnet C: 10.0.4.0/24 (AZ C)            │ │
-│  │ - Database Replica                               │ │
-│  │ - Backup Storage                                 │ │
-│  └───────────────────────────────────────────────────┘ │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+
+ VPC: 10.0.0.0/16 (codex-ml-vpc) 
+
+ 
+ 
+ Public Subnet: 10.0.1.0/24 (Availability Zone A) 
+ - NAT Gateway 
+ - Load Balancer 
+ - Bastion Host 
+ 
+ 
+ 
+ Private Subnet A: 10.0.2.0/24 (AZ A) 
+ - Application Servers 
+ - Worker Nodes 
+ - Route: NAT Gateway Internet 
+ 
+ 
+ 
+ Private Subnet B: 10.0.3.0/24 (AZ B) 
+ - Database 
+ - Cache 
+ - No Internet route 
+ 
+ 
+ 
+ Private Subnet C: 10.0.4.0/24 (AZ C) 
+ - Database Replica 
+ - Backup Storage 
+ 
+ 
+
 ```
 
 ### Network Security Groups
@@ -119,24 +119,24 @@
 **Ingress Rules**:
 ```
 ALB from Internet (0.0.0.0/0):
-  - TCP 80 → Port 80
-  - TCP 443 → Port 443
+ - TCP 80 Port 80
+ - TCP 443 Port 443
 
 API Servers from ALB (10.0.1.0/24):
-  - TCP 8000 → Port 8000
-  - TCP 8443 → Port 8443
+ - TCP 8000 Port 8000
+ - TCP 8443 Port 8443
 
 Database from App Servers (10.0.2.0/24):
-  - TCP 5432 → PostgreSQL
-  - TCP 5433 → PostgreSQL replica
+ - TCP 5432 PostgreSQL
+ - TCP 5433 PostgreSQL replica
 
 Cache from App Servers (10.0.2.0/24):
-  - TCP 6379 → Redis
-  - TCP 6380 → Redis SSL
+ - TCP 6379 Redis
+ - TCP 6380 Redis SSL
 
 Workers to Message Queue (10.0.2.0/24):
-  - TCP 5672 → RabbitMQ
-  - TCP 15672 → RabbitMQ Management
+ - TCP 5672 RabbitMQ
+ - TCP 15672 RabbitMQ Management
 ```
 
 ---
@@ -147,79 +147,79 @@ Workers to Message Queue (10.0.2.0/24):
 
 **PostgreSQL Cluster Architecture**:
 ```
-┌────────────────────────────────────────────────────┐
-│  Primary Database (10.0.3.5)                       │
-│  - Accepts read/write                              │
-│  - Streaming replication to replicas               │
-└────────────┬───────────────────────────────────────┘
-             │
-    ┌────────┴─────────┐
-    │                  │
-┌───▼─────────┐  ┌────▼────────┐
-│ Replica 1   │  │ Replica 2    │
-│ (10.0.3.6)  │  │ (10.0.4.5)   │
-│ Read-only   │  │ Read-only    │
-│ Standby     │  │ Async        │
-└─────────────┘  └──────────────┘
+
+ Primary Database (10.0.3.5) 
+ - Accepts read/write 
+ - Streaming replication to replicas 
+
+ 
+ 
+ 
+ 
+ Replica 1 Replica 2 
+ (10.0.3.6) (10.0.4.5) 
+ Read-only Read-only 
+ Standby Async 
+ 
 ```
 
 **Backup Strategy**:
 ```
-┌─────────────────────────────────────────────────────┐
-│  Continuous Archiving (WAL Archive)                 │
-│  - Point-in-time recovery capability                │
-│  - 30-day retention                                 │
-│  - Stored in S3/GCS for durability                 │
-└─────────────────────────────────────────────────────┘
-         │
-    ┌────┴────────────────┐
-    │                     │
-┌───▼──────────┐  ┌──────▼────────┐
-│ Daily Backup │  │ Weekly Backup  │
-│ (Full)       │  │ (Differential) │
-│ 7-day window │  │ 30-day window  │
-└──────────────┘  └────────────────┘
-         │
-    ┌────▼──────────────┐
-    │ Cross-region copy │
-    │ (for DR)          │
-    └───────────────────┘
+
+ Continuous Archiving (WAL Archive) 
+ - Point-in-time recovery capability 
+ - 30-day retention 
+ - Stored in S3/GCS for durability 
+
+ 
+ 
+ 
+ 
+ Daily Backup Weekly Backup 
+ (Full) (Differential) 
+ 7-day window 30-day window 
+ 
+ 
+ 
+ Cross-region copy 
+ (for DR) 
+ 
 ```
 
 ### Cache Architecture
 
 **Redis Deployment**:
 ```
-┌──────────────────────────────────────────────────────┐
-│  Redis Cluster (Nodes: 6, Replicas: 1)             │
-├──────────────────────────────────────────────────────┤
-│                                                      │
-│  [M1] ←→ [M2] ←→ [M3]                              │
-│   ↓      ↓      ↓                                    │
-│  [S1]   [S2]   [S3] (Slave replicas)               │
-│                                                      │
-│  Features:                                           │
-│  - Automatic failover                               │
-│  - Hash slot distribution                           │
-│  - Data persistence (RDB + AOF)                     │
-│  - Monitoring & alerting                            │
-│                                                      │
-└──────────────────────────────────────────────────────┘
+
+ Redis Cluster (Nodes: 6, Replicas: 1) 
+
+ 
+ [M1] [M2] [M3] 
+ 
+ [S1] [S2] [S3] (Slave replicas) 
+ 
+ Features: 
+ - Automatic failover 
+ - Hash slot distribution 
+ - Data persistence (RDB + AOF) 
+ - Monitoring & alerting 
+ 
+
 ```
 
 **Cache Strategy**:
 ```
 Application Request
-    ↓
+ 
 Check Cache (Redis)
-    ↓
-    ├─ HIT → Return cached data
-    │
-    └─ MISS → Query Database
-              ↓
-              Cache result (TTL-based)
-              ↓
-              Return to client
+ 
+ HIT Return cached data
+ 
+ MISS Query Database
+ 
+ Cache result (TTL-based)
+ 
+ Return to client
 ```
 
 ---
@@ -229,69 +229,69 @@ Check Cache (Redis)
 ### Defense in Depth
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Perimeter Security (Network Layer)                 │
-│  - Cloud WAF / DDoS protection                      │
-│  - VPC isolation                                    │
-│  - Network ACLs                                     │
-└─────────────────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────────────────┐
-│  Boundary Security (Application Layer)              │
-│  - API Gateway / Load Balancer                      │
-│  - TLS 1.2+ encryption                              │
-│  - Rate limiting & throttling                       │
-│  - CORS policies                                    │
-└─────────────────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────────────────┐
-│  Authentication & Authorization                    │
-│  - OAuth 2.0 / OIDC                                │
-│  - JWT tokens                                       │
-│  - RBAC (Role-Based Access Control)                │
-│  - Multi-factor authentication                      │
-└─────────────────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────────────────┐
-│  Data Security (Application & Database)            │
-│  - Encryption at rest (AES-256)                    │
-│  - Encryption in transit (TLS)                      │
-│  - Data masking for PII                             │
-│  - Secrets management (Vault/Secret Manager)        │
-└─────────────────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────────────────┐
-│  Infrastructure Security                           │
-│  - Image scanning & vulnerability management       │
-│  - Runtime security monitoring                      │
-│  - Host hardening                                   │
-│  - Security logging & auditing                      │
-└─────────────────────────────────────────────────────┘
+
+ Perimeter Security (Network Layer) 
+ - Cloud WAF / DDoS protection 
+ - VPC isolation 
+ - Network ACLs 
+
+ 
+
+ Boundary Security (Application Layer) 
+ - API Gateway / Load Balancer 
+ - TLS 1.2+ encryption 
+ - Rate limiting & throttling 
+ - CORS policies 
+
+ 
+
+ Authentication & Authorization 
+ - OAuth 2.0 / OIDC 
+ - JWT tokens 
+ - RBAC (Role-Based Access Control) 
+ - Multi-factor authentication 
+
+ 
+
+ Data Security (Application & Database) 
+ - Encryption at rest (AES-256) 
+ - Encryption in transit (TLS) 
+ - Data masking for PII 
+ - Secrets management (Vault/Secret Manager) 
+
+ 
+
+ Infrastructure Security 
+ - Image scanning & vulnerability management 
+ - Runtime security monitoring 
+ - Host hardening 
+ - Security logging & auditing 
+
 ```
 
 ### Secrets Management
 
 ```
 Application
-    ↓
-┌─────────────────────────────┐
-│  Secrets Request            │
-│  (No hardcoded credentials) │
-└─────────────┬───────────────┘
-              │
-    ┌─────────▼────────────┐
-    │ Secrets Vault        │
-    │ - AWS Secrets Manager│
-    │ - GCP Secret Manager │
-    │ - Azure Key Vault    │
-    │ - HashiCorp Vault    │
-    └─────────┬────────────┘
-              │
-    ┌─────────▼────────────┐
-    │ Cache secrets        │
-    │ (TTL: 5 minutes)     │
-    │ (In-memory only)     │
-    └─────────────────────┘
+ 
+
+ Secrets Request 
+ (No hardcoded credentials) 
+
+ 
+ 
+ Secrets Vault 
+ - AWS Secrets Manager
+ - GCP Secret Manager 
+ - Azure Key Vault 
+ - HashiCorp Vault 
+ 
+ 
+ 
+ Cache secrets 
+ (TTL: 5 minutes) 
+ (In-memory only) 
+ 
 ```
 
 ---
@@ -312,32 +312,32 @@ Application
 
 ```
 Primary Region (Active)
-    ├─ Application (ECS/AKS)
-    ├─ Database (Primary)
-    ├─ Cache (Primary)
-    └─ Load Balancer
-         ↓
-    [Continuous Replication]
-         ↓
+ Application (ECS/AKS)
+ Database (Primary)
+ Cache (Primary)
+ Load Balancer
+ 
+ [Continuous Replication]
+ 
 Secondary Region (Standby)
-    ├─ Application (Scaled down)
-    ├─ Database (Replica)
-    ├─ Cache (Replica)
-    └─ Load Balancer
+ Application (Scaled down)
+ Database (Replica)
+ Cache (Replica)
+ Load Balancer
 
 Failover Trigger:
-  - Primary health check fails
-  - Response time > threshold
-  - Error rate > threshold
-  - Manual failover command
+ - Primary health check fails
+ - Response time > threshold
+ - Error rate > threshold
+ - Manual failover command
 
 Failover Process:
-  1. Detect primary failure
-  2. Promote secondary database
-  3. Update DNS/load balancer
-  4. Scale up secondary application
-  5. Run post-failover validation
-  6. Notify operations team
+ 1. Detect primary failure
+ 2. Promote secondary database
+ 3. Update DNS/load balancer
+ 4. Scale up secondary application
+ 5. Run post-failover validation
+ 6. Notify operations team
 ```
 
 ---
@@ -347,36 +347,36 @@ Failover Process:
 ### Monitoring Stack
 
 ```
-┌────────────────────────────────────────────────────┐
-│  Data Collection Layer                             │
-│  - Prometheus (metrics)                            │
-│  - CloudWatch / Stackdriver (platform metrics)     │
-│  - OpenTelemetry (traces)                          │
-│  - Loki (logs)                                     │
-└────────────┬───────────────────────────────────────┘
-             │
-┌────────────▼───────────────────────────────────────┐
-│  Data Aggregation                                  │
-│  - Time-series database                            │
-│  - Log aggregation service                         │
-│  - Trace backend                                   │
-└────────────┬───────────────────────────────────────┘
-             │
-┌────────────▼───────────────────────────────────────┐
-│  Visualization & Analysis                          │
-│  - Grafana (dashboards)                            │
-│  - Kibana (logs)                                   │
-│  - Jaeger (traces)                                 │
-│  - Custom dashboards                               │
-└────────────┬───────────────────────────────────────┘
-             │
-┌────────────▼───────────────────────────────────────┐
-│  Alerting & Response                               │
-│  - AlertManager                                    │
-│  - PagerDuty / OpsGenie                            │
-│  - Automated remediation                           │
-│  - Incident tracking                               │
-└─────────────────────────────────────────────────────┘
+
+ Data Collection Layer 
+ - Prometheus (metrics) 
+ - CloudWatch / Stackdriver (platform metrics) 
+ - OpenTelemetry (traces) 
+ - Loki (logs) 
+
+ 
+
+ Data Aggregation 
+ - Time-series database 
+ - Log aggregation service 
+ - Trace backend 
+
+ 
+
+ Visualization & Analysis 
+ - Grafana (dashboards) 
+ - Kibana (logs) 
+ - Jaeger (traces) 
+ - Custom dashboards 
+
+ 
+
+ Alerting & Response 
+ - AlertManager 
+ - PagerDuty / OpsGenie 
+ - Automated remediation 
+ - Incident tracking 
+
 ```
 
 ### Key Metrics
@@ -421,61 +421,61 @@ Failover Process:
 
 ```
 infrastructure/
-├─ terraform/
-│  ├─ main.tf              # Main configuration
-│  ├─ vpc.tf               # Network resources
-│  ├─ database.tf          # Database resources
-│  ├─ compute.tf           # Compute resources
-│  ├─ monitoring.tf        # Monitoring resources
-│  ├─ variables.tf         # Input variables
-│  ├─ outputs.tf           # Output values
-│  ├─ terraform.tfvars     # Variable assignments
-│  └─ environments/
-│     ├─ dev/
-│     ├─ staging/
-│     └─ prod/
-│
-├─ kubernetes/
-│  ├─ namespaces/
-│  ├─ deployments/
-│  ├─ services/
-│  ├─ configmaps/
-│  ├─ secrets/
-│  ├─ rbac/
-│  └─ helm-charts/
-│
-└─ ansible/
-   ├─ playbooks/
-   ├─ roles/
-   ├─ inventory/
-   └─ group_vars/
+ terraform/
+ main.tf # Main configuration
+ vpc.tf # Network resources
+ database.tf # Database resources
+ compute.tf # Compute resources
+ monitoring.tf # Monitoring resources
+ variables.tf # Input variables
+ outputs.tf # Output values
+ terraform.tfvars # Variable assignments
+ environments/
+ dev/
+ staging/
+ prod/
+
+ kubernetes/
+ namespaces/
+ deployments/
+ services/
+ configmaps/
+ secrets/
+ rbac/
+ helm-charts/
+
+ ansible/
+ playbooks/
+ roles/
+ inventory/
+ group_vars/
 ```
 
 ### Deployment Workflow
 
 ```
 Code Changes
-    ↓
+ 
 Git Push
-    ↓
+ 
 CI/CD Pipeline
-    ├─ Validate IaC
-    ├─ Run tests
-    ├─ Security scanning
-    └─ Generate plan
-    ↓
+ Validate IaC
+ Run tests
+ Security scanning
+ Generate plan
+ 
 Manual Approval
-    ↓
+ 
 Apply Changes
-    ├─ Plan review
-    ├─ Staging deployment
-    ├─ Smoke tests
-    └─ Production deployment
-    ↓
+ Plan review
+ Staging deployment
+ Smoke tests
+ Production deployment
+ 
 Monitoring & Validation
-    ├─ Health checks
-    ├─ Performance validation
-    └─ Rollback capability
+ Health checks
+ Performance validation
+ Rollback capability
 ```
 
 ---

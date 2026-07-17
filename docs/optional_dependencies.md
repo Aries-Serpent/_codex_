@@ -1,6 +1,6 @@
 # Optional Dependencies & Offline Fallbacks
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Phase 4 formalises which third-party libraries are optional, how they surface in the
 codebase, and what behaviour developers should expect when they are absent. A full

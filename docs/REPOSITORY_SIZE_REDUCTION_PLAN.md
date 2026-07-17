@@ -1,16 +1,16 @@
 # Repository Size Reduction & Archival Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Goal**: Reduce repository size from 11.2MB to under 10MB to enable CodeQL scanning  
-**Date**: 2025-12-10  
+**Goal**: Reduce repository size from 11.2MB to under 10MB to enable CodeQL scanning
+**Date**: 2025-12-10
 **Status**: Implementation Phase
 
 ---
 
 ## Current State Analysis
 
-**Total Repository Size**: 77MB (working directory)  
+**Total Repository Size**: 77MB (working directory)
 **Git Repository Size**: ~11.2MB (exceeds 10MB CodeQL limit)
 
 ### Large Files Identified (>200KB)
@@ -41,14 +41,14 @@
 
 ```
 misc/
-├── repo-owner-review/
-│   ├── README.md (explains this is for owner review/deletion)
-│   ├── archived-artifacts/
-│   │   ├── security-reports/
-│   │   ├── old-audit-runs/
-│   │   ├── validation-logs/
-│   │   └── deprecated-scripts/
-│   └── metadata.json (tracks what was moved and when)
+ repo-owner-review/
+ README.md (explains this is for owner review/deletion)
+ archived-artifacts/
+ security-reports/
+ old-audit-runs/
+ validation-logs/
+ deprecated-scripts/
+ metadata.json (tracks what was moved and when)
 ```
 
 ### 2. Files to Move to `misc/repo-owner-review/`
@@ -99,11 +99,11 @@ artifacts/coverage/*.xml
 ## 4. Verification Steps
 
 Before moving files:
-1.  Verify file is not imported/required by active code
-2.  Check if file is referenced in documentation
-3.  Ensure backup exists (git history)
-4.  Run tests after moving to ensure no breakage
-5.  Document in metadata.json
+1. Verify file is not imported/required by active code
+2. Check if file is referenced in documentation
+3. Ensure backup exists (git history)
+4. Run tests after moving to ensure no breakage
+5. Document in metadata.json
 
 ---
 
@@ -144,11 +144,11 @@ Before moving files:
 ## Safety Guarantees
 
 **Files in `misc/repo-owner-review/` are:**
--  Non-essential for functionality
--  Not imported by any active code
--  Not required for builds or tests
--  Backed up in git history
--  Safe for owner to delete
+- Non-essential for functionality
+- Not imported by any active code
+- Not required for builds or tests
+- Backed up in git history
+- Safe for owner to delete
 
 **Files are explicitly marked as:**
 - Subject to deletion by repository owner
@@ -159,9 +159,9 @@ Before moving files:
 
 ## Expected Outcome
 
-**Before**: 11.2MB repository (CodeQL fails)  
-**After**: ~8-9MB repository (CodeQL succeeds)  
-**Space Freed**: ~2-3MB  
+**Before**: 11.2MB repository (CodeQL fails)
+**After**: ~8-9MB repository (CodeQL succeeds)
+**Space Freed**: ~2-3MB
 **Files Preserved**: All files maintained in `misc/` for owner review
 
 ---

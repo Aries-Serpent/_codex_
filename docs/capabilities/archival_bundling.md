@@ -1,6 +1,6 @@
 # Archival & Bundling Capability Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -31,54 +31,54 @@ The **archival-bundling** capability provides comprehensive functionality for pa
 ### Bundling Pipeline
 
 ```
-┌─────────────┐
-│   Source    │
-│  Artifacts  │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│  Metadata   │◄── Environment Info
-│ Collection  │◄── Dependency List
-└──────┬──────┘◄── Git Info
-       │
-       ▼
-┌─────────────┐
-│  Packaging  │
-│   Engine    │──► Compression
-└──────┬──────┘──► Deduplication
-       │
-       ▼
-┌─────────────┐
-│   Archive   │
-│   Storage   │──► Local/Remote
-└─────────────┘
+
+ Source 
+ Artifacts 
+
+ 
+ 
+
+ Metadata Environment Info
+ Collection Dependency List
+ Git Info
+ 
+ 
+
+ Packaging 
+ Engine Compression
+ Deduplication
+ 
+ 
+
+ Archive 
+ Storage Local/Remote
+
 ```
 
 ### Bundle Structure
 
 ```
-experiment_bundle_v0.2.1.tar.gz
-├── manifest.json          # Bundle metadata
-├── models/
-│   ├── model.pkl
-│   └── model_config.json
-├── data/
-│   ├── train_dataset.parquet
-│   └── validation_dataset.parquet
-├── configs/
-│   ├── hyperparameters.yaml
-│   └── training_config.yaml
-├── environment/
-│   ├── requirements.txt
-│   ├── environment.yaml
-│   └── system_info.json
-├── code/
-│   ├── training_script.py
-│   └── preprocessing.py
-└── logs/
-    ├── training.log
-    └── metrics.json
+experiment_bundle_v0.2.0.tar.gz
+ manifest.json # Bundle metadata
+ models/
+ model.pkl
+ model_config.json
+ data/
+ train_dataset.parquet
+ validation_dataset.parquet
+ configs/
+ hyperparameters.yaml
+ training_config.yaml
+ environment/
+ requirements.txt
+ environment.yaml
+ system_info.json
+ code/
+ training_script.py
+ preprocessing.py
+ logs/
+ training.log
+ metrics.json
 ```
 
 ---
@@ -95,17 +95,17 @@ from codex.archival import bundle_experiment
 
 # Bundle current experiment
 bundle = bundle_experiment(
-    experiment_id="exp_2025_01_15",
-    include_data=True,
-    include_code=True,
-    include_environment=True,
-    compression="gzip",
-    dedup=True
+ experiment_id="exp_2025_01_15",
+ include_data=True,
+ include_code=True,
+ include_environment=True,
+ compression="gzip",
+ dedup=True
 )
 
 # Returns: BundleMetadata
-# bundle.path: "/artifacts/bundles/exp_2025_01_15_v0.2.1.tar.gz"
-# bundle.size: 1024567890  # bytes
+# bundle.path: "/artifacts/bundles/exp_2025_01_15_v0.2.0.tar.gz"
+# bundle.size: 1024567890 # bytes
 # bundle.checksum: "sha256:abc123..."
 ```
 
@@ -117,17 +117,17 @@ from codex.archival import create_bundle
 
 # Custom bundle
 bundle = create_bundle(
-    name="model_deployment_v2",
-    artifacts=[
-        {"type": "model", "path": "model.pkl"},
-        {"type": "config", "path": "config.yaml"},
-        {"type": "preprocessor", "path": "preprocessor.pkl"}
-    ],
-    metadata={
-        "purpose": "production_deployment",
-        "version": "2.0.0",
-        "approved_by": "ml_team"
-    }
+ name="model_deployment_v2",
+ artifacts=[
+ {"type": "model", "path": "model.pkl"},
+ {"type": "config", "path": "config.yaml"},
+ {"type": "preprocessor", "path": "preprocessor.pkl"}
+ ],
+ metadata={
+ "purpose": "production_deployment",
+ "version": "2.0.0",
+ "approved_by": "ml_team"
+ }
 )
 ```
 
@@ -139,9 +139,9 @@ from codex.archival import extract_bundle
 
 # Extract bundle
 artifacts = extract_bundle(
-    bundle_path="exp_2025_01_15_v0.2.1.tar.gz",
-    output_dir="/restored/exp_2025_01_15",
-    verify_checksums=True
+ bundle_path="exp_2025_01_15_v0.2.0.tar.gz",
+ output_dir="/restored/exp_2025_01_15",
+ verify_checksums=True
 )
 
 # Access extracted artifacts
@@ -157,15 +157,15 @@ from codex.archival import list_bundles
 
 # List recent bundles
 bundles = list_bundles(
-    experiment_pattern="exp_2025_*",
-    min_date="2025-01-01",
-    max_date="2025-01-31",
-    sort_by="created",
-    limit=10
+ experiment_pattern="exp_2025_*",
+ min_date="2025-01-01",
+ max_date="2025-01-31",
+ sort_by="created",
+ limit=10
 )
 
 for bundle in bundles:
-    print(f"{bundle.name}: {bundle.size_mb}MB, {bundle.created}")
+ print(f"{bundle.name}: {bundle.size_mb}MB, {bundle.created}")
 ```
 
 ---
@@ -177,34 +177,34 @@ for bundle in bundles:
 ```yaml
 # config/archival.yaml
 archival:
-  # Storage location
-  storage:
-    local: /data/artifacts/bundles
-    remote: s3://ml-artifacts/bundles
+ # Storage location
+ storage:
+ local: /data/artifacts/bundles
+ remote: s3://ml-artifacts/bundles
 
-  # Compression settings
-  compression:
-    algorithm: gzip  # gzip, bzip2, xz, lz4
-    level: 6         # 1-9 for gzip
+ # Compression settings
+ compression:
+ algorithm: gzip # gzip, bzip2, xz, lz4
+ level: 6 # 1-9 for gzip
 
-  # Deduplication
-  deduplication:
-    enabled: true
-    block_size: 4096
-    hash_algorithm: sha256
+ # Deduplication
+ deduplication:
+ enabled: true
+ block_size: 4096
+ hash_algorithm: sha256
 
-  # Metadata
-  metadata:
-    include_git_info: true
-    include_environment: true
-    include_dependencies: true
-    include_system_info: true
+ # Metadata
+ metadata:
+ include_git_info: true
+ include_environment: true
+ include_dependencies: true
+ include_system_info: true
 
-  # Retention policy
-  retention:
-    keep_latest: 10
-    keep_days: 90
-    cleanup_interval: 86400  # seconds
+ # Retention policy
+ retention:
+ keep_latest: 10
+ keep_days: 90
+ cleanup_interval: 86400 # seconds
 ```
 
 ## Environment Variables
@@ -238,18 +238,18 @@ results = trainer.train()
 
 # Bundle everything
 bundle = bundle_experiment(
-    experiment_id=trainer.experiment_id,
-    include_data=True,          # Include datasets
-    include_code=True,          # Include training scripts
-    include_environment=True,   # Include dependencies
-    include_logs=True,          # Include training logs
-    compression="gzip",
-    metadata={
-        "model_type": "transformer",
-        "dataset": "wikitext-103",
-        "final_loss": results.final_loss,
-        "training_time": results.elapsed_time
-    }
+ experiment_id=trainer.experiment_id,
+ include_data=True, # Include datasets
+ include_code=True, # Include training scripts
+ include_environment=True, # Include dependencies
+ include_logs=True, # Include training logs
+ compression="gzip",
+ metadata={
+ "model_type": "transformer",
+ "dataset": "wikitext-103",
+ "final_loss": results.final_loss,
+ "training_time": results.elapsed_time
+ }
 )
 
 print(f"Bundle created: {bundle.path}")
@@ -264,22 +264,22 @@ from codex.archival import create_bundle, compare_bundles
 
 # Bundle model v1
 bundle_v1 = create_bundle(
-    name="model_comparison",
-    version="1.0.0",
-    artifacts=[
-        {"type": "model", "path": "model_v1.pkl"},
-        {"type": "metrics", "path": "metrics_v1.json"}
-    ]
+ name="model_comparison",
+ version="1.0.0",
+ artifacts=[
+ {"type": "model", "path": "model_v1.pkl"},
+ {"type": "metrics", "path": "metrics_v1.json"}
+ ]
 )
 
 # Bundle model v2
 bundle_v2 = create_bundle(
-    name="model_comparison",
-    version="2.0.0",
-    artifacts=[
-        {"type": "model", "path": "model_v2.pkl"},
-        {"type": "metrics", "path": "metrics_v2.json"}
-    ]
+ name="model_comparison",
+ version="2.0.0",
+ artifacts=[
+ {"type": "model", "path": "model_v2.pkl"},
+ {"type": "metrics", "path": "metrics_v2.json"}
+ ]
 )
 
 # Compare bundles
@@ -294,17 +294,17 @@ print(f"Metric improvement: {diff.metric_delta}")
 from codex.archival import extract_bundle, validate_bundle
 
 # Validate bundle integrity
-validation = validate_bundle("exp_2025_01_15_v0.2.1.tar.gz")
+validation = validate_bundle("exp_2025_01_15_v0.2.0.tar.gz")
 if not validation.valid:
-    print(f"Bundle corrupted: {validation.errors}")
-    exit(1)
+ print(f"Bundle corrupted: {validation.errors}")
+ exit(1)
 
 # Extract bundle
 artifacts = extract_bundle(
-    bundle_path="exp_2025_01_15_v0.2.1.tar.gz",
-    output_dir="/tmp/restored",
-    verify_checksums=True,
-    restore_environment=True  # Recreate conda env
+ bundle_path="exp_2025_01_15_v0.2.0.tar.gz",
+ output_dir="/tmp/restored",
+ verify_checksums=True,
+ restore_environment=True # Recreate conda env
 )
 
 # Use restored artifacts
@@ -330,27 +330,27 @@ manager = BundleManager(storage_dir="/data/bundles")
 
 # Auto-archive completed experiments
 def archive_completed_experiments():
-    experiments = manager.list_experiments(status="completed")
+ experiments = manager.list_experiments(status="completed")
 
-    for exp in experiments:
-        # Bundle if not already bundled
-        if not manager.has_bundle(exp.id):
-            bundle = manager.bundle_experiment(
-                experiment_id=exp.id,
-                compression="gzip",
-                dedup=True
-            )
-            print(f"Bundled {exp.id}: {bundle.size_mb:.2f}MB")
+ for exp in experiments:
+ # Bundle if not already bundled
+ if not manager.has_bundle(exp.id):
+ bundle = manager.bundle_experiment(
+ experiment_id=exp.id,
+ compression="gzip",
+ dedup=True
+ )
+ print(f"Bundled {exp.id}: {bundle.size_mb:.2f}MB")
 
 # Cleanup old bundles
 def cleanup_old_bundles():
-    cutoff_date = datetime.now() - timedelta(days=90)
+ cutoff_date = datetime.now() - timedelta(days=90)
 
-    old_bundles = manager.list_bundles(max_date=cutoff_date)
-    for bundle in old_bundles:
-        if bundle.retention_policy == "delete":
-            manager.delete_bundle(bundle.id)
-            print(f"Deleted old bundle: {bundle.name}")
+ old_bundles = manager.list_bundles(max_date=cutoff_date)
+ for bundle in old_bundles:
+ if bundle.retention_policy == "delete":
+ manager.delete_bundle(bundle.id)
+ print(f"Deleted old bundle: {bundle.name}")
 
 # Run archival pipeline
 archive_completed_experiments()
@@ -364,65 +364,65 @@ cleanup_old_bundles()
 ### Bundling Strategy
 
 1. **Include Essential Artifacts**
-   - Model files and weights
-   - Training configurations
-   - Preprocessing code
-   - Environment specifications
-   - Validation metrics
+ - Model files and weights
+ - Training configurations
+ - Preprocessing code
+ - Environment specifications
+ - Validation metrics
 
 2. **Metadata Capture**
-   - Git commit hash for code version
-   - Dataset versions and checksums
-   - Training timestamps
-   - Hardware specifications
-   - Hyperparameters used
+ - Git commit hash for code version
+ - Dataset versions and checksums
+ - Training timestamps
+ - Hardware specifications
+ - Hyperparameters used
 
 3. **Deduplication**
-   - Enable for large datasets
-   - Use block-level dedup for efficiency
-   - Store only deltas between versions
+ - Enable for large datasets
+ - Use block-level dedup for efficiency
+ - Store only deltas between versions
 
 4. **Compression Balance**
-   - Higher compression for archival
-   - Lower compression for frequent access
-   - Consider trade-offs (time vs space)
+ - Higher compression for archival
+ - Lower compression for frequent access
+ - Consider trade-offs (time vs space)
 
 ### Version Management
 
 1. **Semantic Versioning**
-   ```
-   v<major>.<minor>.<patch>
-   v0.2.1 - Initial model
-   v0.2.1 - Added feature
-   v0.2.1 - Architecture change
-   ```
+ ```
+ v<major>.<minor>.<patch>
+ v0.2.0 - Initial model
+ v0.2.0 - Added feature
+ v0.2.0 - Architecture change
+ ```
 
 2. **Tagging Bundles**
-   - Tag important milestones
-   - Mark production deployments
-   - Label baseline models
+ - Tag important milestones
+ - Mark production deployments
+ - Label baseline models
 
 3. **Retention Policies**
-   - Keep latest N versions
-   - Archive after time period
-   - Never delete production bundles
+ - Keep latest N versions
+ - Archive after time period
+ - Never delete production bundles
 
 ### Security & Compliance
 
 1. **Access Control**
-   - Restrict bundle access by role
-   - Audit bundle access logs
-   - Encrypt sensitive bundles
+ - Restrict bundle access by role
+ - Audit bundle access logs
+ - Encrypt sensitive bundles
 
 2. **Data Privacy**
-   - Remove PII before bundling
-   - Comply with data retention policies
-   - Document data lineage
+ - Remove PII before bundling
+ - Comply with data retention policies
+ - Document data lineage
 
 3. **Integrity Verification**
-   - Always verify checksums
-   - Sign bundles for authenticity
-   - Detect tampering
+ - Always verify checksums
+ - Sign bundles for authenticity
+ - Detect tampering
 
 ---
 
@@ -443,11 +443,11 @@ cleanup_old_bundles()
 ```python
 # High compression for large bundles
 bundle = bundle_experiment(
-    experiment_id="large_exp",
-    compression="xz",          # Better compression
-    compression_level=9,        # Maximum
-    dedup=True,                # Deduplicate
-    exclude_patterns=["*.tmp", "cache/*"]
+ experiment_id="large_exp",
+ compression="xz", # Better compression
+ compression_level=9, # Maximum
+ dedup=True, # Deduplicate
+ exclude_patterns=["*.tmp", "cache/*"]
 )
 ```
 
@@ -464,10 +464,10 @@ bundle = bundle_experiment(
 ```python
 # Extract with recovery
 artifacts = extract_bundle(
-    bundle_path="corrupted_bundle.tar.gz",
-    output_dir="/tmp/recovery",
-    verify_checksums=False,  # Skip if corrupt
-    continue_on_error=True   # Extract what's possible
+ bundle_path="corrupted_bundle.tar.gz",
+ output_dir="/tmp/recovery",
+ verify_checksums=False, # Skip if corrupt
+ continue_on_error=True # Extract what's possible
 )
 ```
 
@@ -483,10 +483,10 @@ artifacts = extract_bundle(
 ```python
 # Bundle with full environment
 bundle = bundle_experiment(
-    experiment_id="exp_001",
-    include_environment=True,
-    pack_environment=True,  # Include conda env
-    freeze_pip=True         # Freeze pip deps
+ experiment_id="exp_001",
+ include_environment=True,
+ pack_environment=True, # Include conda env
+ freeze_pip=True # Freeze pip deps
 )
 ```
 

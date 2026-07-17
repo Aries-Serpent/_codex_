@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/adr-2025-11-03-evidence-schema-versioning/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-2025-11-03: Evidence Record Schema Versioning - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2346,10 +2346,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Date</strong>: 2025-11-03<br/>
-<strong>Status</strong>: Accepted (Phase 2)<br/>
-<strong>Author</strong>: Archive Standardization Team<br/>
-<strong>Stakeholders</strong>: Architecture, Data Engineering, Operations  </p>
+<p><strong>Date</strong>: 2025-11-03
+<strong>Status</strong>: Accepted (Phase 2)
+<strong>Author</strong>: Archive Standardization Team
+<strong>Stakeholders</strong>: Architecture, Data Engineering, Operations</p>
 <h2 id="problem-statement">Problem Statement<a class="headerlink" href="#problem-statement" title="Permanent link">¶</a></h2>
 <p>The evidence log (<code>.codex/evidence/archive_ops.jsonl</code>) uses a fixed v1 schema. To support standardization enhancements (standardization metadata, cryptographic signatures, future Merkle proofs), we need an evolution strategy that:</p>
 <ul>
@@ -2380,63 +2380,63 @@
 <h3 id="v1-schema-legacy">V1 Schema (Legacy)<a class="headerlink" href="#v1-schema-legacy" title="Permanent link">¶</a></h3>
 <p><code>json
 {
-  "ts": "ISO8601 timestamp",
-  "action": "ARCHIVE|RESTORE|REFERENCE|PURGE",
-  "actor": "string",
-  "tombstone": "UUID",
-  "sha256": "hex string",
-  "repo": "optional string",
-  "path": "optional string",
-  "size": "optional integer",
-  "commit": "optional string"
+ "ts": "ISO8601 timestamp",
+ "action": "ARCHIVE|RESTORE|REFERENCE|PURGE",
+ "actor": "string",
+ "tombstone": "UUID",
+ "sha256": "hex string",
+ "repo": "optional string",
+ "path": "optional string",
+ "size": "optional integer",
+ "commit": "optional string"
 }</code>text</p>
 <h3 id="v2-schema-standardized">V2 Schema (Standardized)<a class="headerlink" href="#v2-schema-standardized" title="Permanent link">¶</a></h3>
 <p>```json
 {
-  // All v1 fields preserved
-  "ts": "...",
-  "action": "...",
-  "actor": "...",</p>
+ // All v1 fields preserved
+ "ts": "...",
+ "action": "...",
+ "actor": "...",</p>
 <p>// NEW: Schema version field
-  "schemaVersion": "2.0",</p>
+ "schemaVersion": "2.0",</p>
 <p>// NEW: Standardization metadata
-  "standardizationMetadata": {
-    "schema_version": "2.0",
-    "slsa_level": "L3",
-    "signature": "base64 Sigstore signature",
-    "certificate_chain": ["PEM certificates"],
-    "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "ISO8601 timestamp",
-    "in_toto_attestation_id": "optional UUID",
-    "merkle_proof": "optional object for Phase 3"
-  }
+ "standardizationMetadata": {
+ "schema_version": "2.0",
+ "slsa_level": "L3",
+ "signature": "base64 Sigstore signature",
+ "certificate_chain": ["PEM certificates"],
+ "issuer": "https://token.actions.githubusercontent.com",
+ "signed_at": "ISO8601 timestamp",
+ "in_toto_attestation_id": "optional UUID",
+ "merkle_proof": "optional object for Phase 3"
+ }
 }
 ```text</p>
 <h3 id="coexistence-strategy">Coexistence Strategy<a class="headerlink" href="#coexistence-strategy" title="Permanent link">¶</a></h3>
 <p><strong>Unified Evidence Log</strong>:
 <code>text
-Line 1: {"ts": "...", "action": "ARCHIVE", ...}                    [v1 record]
-Line 2: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "1.0"}  [v1]
-Line 3: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "2.0", "standardizationMetadata": {...}}  [v2]
+Line 1: {"ts": "...", "action": "ARCHIVE", ...} [v1 record]
+Line 2: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "1.0"} [v1]
+Line 3: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "2.0", "standardizationMetadata": {...}} [v2]
 Line N: ...</code>text
 <strong>Version Detection</strong>:
 ```python
 version = record.get("schemaVersion", auto_detect(record))</p>
 <h1 id="if-no-explicit-version">If no explicit version:<a class="headerlink" href="#if-no-explicit-version" title="Permanent link">¶</a></h1>
-<h1 id="-has-standardizationmetadata-v2">- Has standardizationMetadata? → v2<a class="headerlink" href="#-has-standardizationmetadata-v2" title="Permanent link">¶</a></h1>
-<h1 id="-otherwise-v1">- Otherwise → v1<a class="headerlink" href="#-otherwise-v1" title="Permanent link">¶</a></h1>
+<h1 id="-has-standardizationmetadata-v2">- Has standardizationMetadata? v2<a class="headerlink" href="#-has-standardizationmetadata-v2" title="Permanent link">¶</a></h1>
+<h1 id="-otherwise-v1">- Otherwise v1<a class="headerlink" href="#-otherwise-v1" title="Permanent link">¶</a></h1>
 <p>```text</p>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
 <h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">¶</a></h3>
-<p><strong>Non-Breaking</strong>: v1 records remain valid and queryable<br/>
-<strong>Flexible</strong>: Schema changes don't require all-or-nothing migration<br/>
-<strong>Auditable</strong>: Version field makes record provenance clear<br/>
-<strong>Scalable</strong>: Supports unlimited future schema versions<br/>
-<strong>Safe</strong>: Validation catches malformed records early  </p>
+<p><strong>Non-Breaking</strong>: v1 records remain valid and queryable
+ <strong>Flexible</strong>: Schema changes don't require all-or-nothing migration
+ <strong>Auditable</strong>: Version field makes record provenance clear
+ <strong>Scalable</strong>: Supports unlimited future schema versions
+ <strong>Safe</strong>: Validation catches malformed records early</p>
 <h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">¶</a></h3>
-<p>️ <strong>Parser Complexity</strong>: Code must handle multiple versions<br/>
-️ <strong>Storage</strong>: JSONL file slightly larger (repeated <code>schemaVersion</code> field)<br/>
-️ <strong>Query Complexity</strong>: Queries must account for multiple schemas  </p>
+<p><strong>Parser Complexity</strong>: Code must handle multiple versions
+ <strong>Storage</strong>: JSONL file slightly larger (repeated <code>schemaVersion</code> field)
+ <strong>Query Complexity</strong>: Queries must account for multiple schemas</p>
 <h3 id="mitigation">Mitigation<a class="headerlink" href="#mitigation" title="Permanent link">¶</a></h3>
 <table>
 <thead>
@@ -2465,38 +2465,38 @@ version = record.get("schemaVersion", auto_detect(record))</p>
 <p><code>python
 record = create_evidence_record(...)
 if standardization_enabled:
-    record = standardization_manager.enhance_evidence_record(record)
-    # Validates against v2 schema
+ record = standardization_manager.enhance_evidence_record(record)
+ # Validates against v2 schema
 _evidence_append(record)</code>text</p>
 <h3 id="read-time-validation">Read-Time Validation<a class="headerlink" href="#read-time-validation" title="Permanent link">¶</a></h3>
 <p><code>python
 for record in read_evidence_log():
-    version = auto_detect_version(record)
-    validator.validate(record, version=version)
-    # Use record...</code>text</p>
+ version = auto_detect_version(record)
+ validator.validate(record, version=version)
+ # Use record...</code>text</p>
 <h3 id="migration-optional">Migration (Optional)<a class="headerlink" href="#migration-optional" title="Permanent link">¶</a></h3>
 <p>```bash
 python -m codex.cli archive migrate-evidence-to-v2</p>
-<h1 id="converts-all-v1-v2-creates-backup">Converts all v1 → v2, creates backup<a class="headerlink" href="#converts-all-v1-v2-creates-backup" title="Permanent link">¶</a></h1>
+<h1 id="converts-all-v1-v2-creates-backup">Converts all v1 v2, creates backup<a class="headerlink" href="#converts-all-v1-v2-creates-backup" title="Permanent link">¶</a></h1>
 <p>```text</p>
 <h2 id="backward-compatibility-guarantee">Backward Compatibility Guarantee<a class="headerlink" href="#backward-compatibility-guarantee" title="Permanent link">¶</a></h2>
 <p>All existing v1 records:
--  Remain readable indefinitely
--  Valid for all queries and operations
--  No automatic modification unless explicitly migrated
--  Coexist with v2 records in same log file</p>
+- Remain readable indefinitely
+- Valid for all queries and operations
+- No automatic modification unless explicitly migrated
+- Coexist with v2 records in same log file</p>
 <h2 id="schema-registry">Schema Registry<a class="headerlink" href="#schema-registry" title="Permanent link">¶</a></h2>
 <p>Store schema definitions in <code>schemas/</code> directory:</p>
 <p><code>text
 schemas/
-├── archive_evidence_schema_v1.json   [v1 definition]
-├── archive_evidence_schema_v2.json   [v2 definition]
-└── archive_evidence_schema_v3.json   [future]</code>text
+ archive_evidence_schema_v1.json [v1 definition]
+ archive_evidence_schema_v2.json [v2 definition]
+ archive_evidence_schema_v3.json [future]</code>text
 Each schema is:
--  JSON Schema (draft-07) compliant
--  Self-documenting (includes descriptions)
--  Versioned in git for audit trail
--  Used for runtime validation</p>
+- JSON Schema (draft-07) compliant
+- Self-documenting (includes descriptions)
+- Versioned in git for audit trail
+- Used for runtime validation</p>
 <h2 id="timeline">Timeline<a class="headerlink" href="#timeline" title="Permanent link">¶</a></h2>
 <ol>
 <li><strong>Pre-commit 1-2</strong>: Create schema definitions (v1 + v2)</li>
@@ -2552,6 +2552,6 @@ Each schema is:
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

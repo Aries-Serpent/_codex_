@@ -1,6 +1,6 @@
 # Checkpoint Safety & Test Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide explains why we default to safer checkpoint loading, how the
 `load_checkpoint(safe=True)` regression test works, and how to run it

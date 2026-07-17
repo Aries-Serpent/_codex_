@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/COPILOT_SETUP_VALIDATION/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Copilot Setup Steps Validation Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2634,7 +2634,7 @@
 <a class="md-nav__link" href="#blocking-conditions">
 <span class="md-ellipsis">
       
-        Blocking Conditions 🛑
+        Blocking Conditions
       
     </span>
 </a>
@@ -2736,8 +2736,8 @@
 <h3 id="phase-1-yaml-validation-section-11">Phase 1: YAML Validation (Section 1.1)<a class="headerlink" href="#phase-1-yaml-validation-section-11" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Ensure the workflow file is syntactically valid YAML.</p>
 <p><strong>Tests:</strong>
--  YAML syntax parse (Python yaml.safe_load)
--  Proper indentation (2-space standard)</p>
+- YAML syntax parse (Python yaml.safe_load)
+- Proper indentation (2-space standard)</p>
 <p><strong>Run individually:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>scripts/ci/validate_copilot_setup_steps.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">"YAML"</span>
 </code></pre></div></p>
@@ -2762,8 +2762,8 @@
 <h3 id="phase-3-session-preload-git-diff-protection-section-13-41">Phase 3: Session Preload &amp; Git Diff Protection (Section 1.3 &amp; 4.1)<a class="headerlink" href="#phase-3-session-preload-git-diff-protection-section-13-41" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Protect critical sections of the workflow from being accidentally broken.</p>
 <p><strong>Tests:</strong>
--  Session preload uses block scalar syntax (<code>run: |</code>)
--  Protected sections not removed (lines 99-101, 132-137)</p>
+- Session preload uses block scalar syntax (<code>run: |</code>)
+- Protected sections not removed (lines 99-101, 132-137)</p>
 <p><strong>Protected sections:</strong>
 - Lines 99-101: CCA variables definitions
 - Lines 132-137: Session Context Pre-load step</p>
@@ -2804,9 +2804,9 @@
 <h3 id="phase-5-security-secrets-testing-section-51-53">Phase 5: Security &amp; Secrets Testing (Section 5.1-5.3)<a class="headerlink" href="#phase-5-security-secrets-testing-section-51-53" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Prevent security issues like hardcoded secrets and invalid token references.</p>
 <p><strong>Tests:</strong>
--  Hardcoded secrets scan (pattern matching for token formats)
--  Token reference validation (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)
--  YAML injection prevention (special character escaping)</p>
+- Hardcoded secrets scan (pattern matching for token formats)
+- Token reference validation (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)
+- YAML injection prevention (special character escaping)</p>
 <p><strong>What triggers failures:</strong>
 - Hardcoded GitHub tokens (ghp_, ghu_, ghs_, ghe_ patterns)
 - Hardcoded AWS access keys (AKIA pattern)
@@ -2817,18 +2817,18 @@
 <h3 id="phase-6-regression-testing-section-61-63">Phase 6: Regression Testing (Section 6.1-6.3)<a class="headerlink" href="#phase-6-regression-testing-section-61-63" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Detect unexpected file size growth, complexity increases, or configuration drift.</p>
 <p><strong>Tests:</strong>
--  File size regression (baseline: 673 lines, tolerance: ±5%)
--  Complexity analysis (job/step count)
--  LFS configuration (verify not corrupted)</p>
+- File size regression (baseline: 673 lines, tolerance: ±5%)
+- Complexity analysis (job/step count)
+- LFS configuration (verify not corrupted)</p>
 <p><strong>Thresholds:</strong>
-- ️ Warning: 750+ lines (might indicate bloat)
--  Failure: 1000+ lines (too large, merge blocked)
--  Acceptable: 640-700 lines (±5% tolerance)</p>
+- Warning: 750+ lines (might indicate bloat)
+- Failure: 1000+ lines (too large, merge blocked)
+- Acceptable: 640-700 lines (±5% tolerance)</p>
 <p><strong>Complexity baseline:</strong>
 - 2 jobs (expected)
 - 27 steps (expected)
-- ️ Warning if &gt;30 steps (might indicate bloat)
--  Failure if &gt;50 steps (too complex)</p>
+- Warning if &gt;30 steps (might indicate bloat)
+- Failure if &gt;50 steps (too complex)</p>
 <p><strong>Failure actions:</strong> BLOCKS MERGE if &gt;1000 lines; WARNING if &gt;750 lines</p>
 <hr/>
 <h2 id="running-tests-locally">Running Tests Locally<a class="headerlink" href="#running-tests-locally" title="Permanent link">¶</a></h2>
@@ -3038,7 +3038,7 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multi-turn session smoke test passes</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All documentation updated</li>
 </ul>
-<h3 id="blocking-conditions">Blocking Conditions 🛑<a class="headerlink" href="#blocking-conditions" title="Permanent link">¶</a></h3>
+<h3 id="blocking-conditions">Blocking Conditions<a class="headerlink" href="#blocking-conditions" title="Permanent link">¶</a></h3>
 <ul>
 <li>Any automated test fails</li>
 <li>CCA variables removed or incorrect</li>
@@ -3087,6 +3087,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # API Reference Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,13 +12,13 @@ This document provides comprehensive API reference for all Codex ML modules acro
 
 ---
 
-## 10 Stable Public APIs (v0.2.1)
+## 10 Stable Public APIs (v0.2.0)
 
 **These APIs are production-ready and backward-compatible across all v0.1.x releases.**
 
-### 1️⃣ PromptSanitizer (Safety)
-**Module:** `codex_ml.safety.prompt_sanitizer` 
-**Status:** Stable | **Since:** v0.2.1
+### 1⃣ PromptSanitizer (Safety)
+**Module:** `codex_ml.safety.prompt_sanitizer`
+**Status:** Stable | **Since:** v0.2.0
 
 Sanitizes user prompts to prevent injection attacks.
 
@@ -31,9 +31,9 @@ violations = sanitizer.get_violations(user_input)
 is_safe = sanitizer.is_safe(user_input)
 ```
 
-### 2️⃣ Config (Configuration)
-**Module:** `codex_ml.config` 
-**Status:** Stable | **Since:** v0.2.1
+### 2⃣ Config (Configuration)
+**Module:** `codex_ml.config`
+**Status:** Stable | **Since:** v0.2.0
 
 Configuration management with Hydra + OmegaConf.
 
@@ -44,9 +44,9 @@ config = Config.from_env()
 training_cfg = config.get('training')
 ```
 
-### 3️⃣ Planner (Cognitive Brain)
-**Module:** `cognitive_brain` 
-**Status:** Stable | **Since:** v0.2.1
+### 3⃣ Planner (Cognitive Brain)
+**Module:** `cognitive_brain`
+**Status:** Stable | **Since:** v0.2.0
 
 OODA loop orchestrator for deterministic planning.
 
@@ -58,9 +58,9 @@ planner = Planner(memory=memory)
 decision = planner.execute()
 ```
 
-### 4️⃣ MemoryManager (Cognitive Brain)
-**Module:** `cognitive_brain` 
-**Status:** Stable | **Since:** v0.2.1
+### 4⃣ MemoryManager (Cognitive Brain)
+**Module:** `cognitive_brain`
+**Status:** Stable | **Since:** v0.2.0
 
 Pattern-based memory with STM/LTM hierarchy.
 
@@ -72,9 +72,9 @@ memory.store_pattern(MemoryPattern(...))
 retrieved = memory.recall_pattern(...)
 ```
 
-### 5️⃣ ModelServer (Serving)
-**Module:** `codex_ml.serving` 
-**Status:** Stable | **Since:** v0.2.1
+### 5⃣ ModelServer (Serving)
+**Module:** `codex_ml.serving`
+**Status:** Stable | **Since:** v0.2.0
 
 Ray Serve integration for production inference.
 
@@ -86,9 +86,9 @@ server.start()
 result = server.infer(input_data)
 ```
 
-### 6️⃣ CLI Main (Command-Line Interface)
-**Module:** `codex_ml.cli` 
-**Status:** Stable | **Since:** v0.2.1
+### 6⃣ CLI Main (Command-Line Interface)
+**Module:** `codex_ml.cli`
+**Status:** Stable | **Since:** v0.2.0
 
 Typer-based CLI for training, eval, and serving.
 
@@ -103,9 +103,9 @@ from codex_ml.cli import main
 exit_code = main(['train', '--config', 'config.yaml'])
 ```
 
-### 7️⃣ ObservationData (Cognitive Brain)
-**Module:** `cognitive_brain` 
-**Status:** Stable | **Since:** v0.2.1
+### 7⃣ ObservationData (Cognitive Brain)
+**Module:** `cognitive_brain`
+**Status:** Stable | **Since:** v0.2.0
 
 Data class representing observations in OODA loop.
 
@@ -119,9 +119,9 @@ obs = ObservationData(
 )
 ```
 
-### 8️⃣ Decision (Cognitive Brain)
-**Module:** `cognitive_brain` 
-**Status:** Stable | **Since:** v0.2.1
+### 8⃣ Decision (Cognitive Brain)
+**Module:** `cognitive_brain`
+**Status:** Stable | **Since:** v0.2.0
 
 Decision result from OODA Orient/Decide phase.
 
@@ -135,9 +135,9 @@ decision = Decision(
 )
 ```
 
-### 9️⃣ NetworkPolicy (Safety)
-**Module:** `codex_ml.safety.network_policy` 
-**Status:** Stable | **Since:** v0.2.1
+### 9⃣ NetworkPolicy (Safety)
+**Module:** `codex_ml.safety.network_policy`
+**Status:** Stable | **Since:** v0.2.0
 
 Enforce network access policies (fail-closed by default).
 
@@ -151,8 +151,8 @@ except PolicyViolationError as e:
 ```
 
 ### PatternSet (Cognitive Brain)
-**Module:** `cognitive_brain` 
-**Status:** Stable | **Since:** v0.2.1
+**Module:** `cognitive_brain`
+**Status:** Stable | **Since:** v0.2.0
 
 Collection of learned patterns for decision-making.
 
@@ -522,7 +522,7 @@ manifest.save("data/train_manifest.json")
 
 # Verify integrity on resume
 if manifest.has_drift("data/train_manifest.json"):
- print("️ Dataset drift detected!")
+ print(" Dataset drift detected!")
  diff = manifest.verify("data/train_manifest.json")
  print(f"Modified: {len(diff['modified'])}")
  print(f"Missing: {len(diff['missing'])}")
@@ -857,7 +857,7 @@ results = monitor.monitor_all(
 )
 
 if monitor.has_critical_drift():
- print("️ Critical drift detected!")
+ print(" Critical drift detected!")
  monitor.save_alerts("drift_alerts.json")
  summary = monitor.get_drift_summary()
  print(f"Total alerts: {summary['total_alerts']}")

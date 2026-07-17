@@ -1,10 +1,10 @@
 # Quantum Orchestration API Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Phase 2 - Master API Documentation  
-**Coverage:** 91+ public functions & classes  
-**Modules:** quantum_orchestrator/*, cognitive/quantum_planset_engine.py  
+**Status:** Phase 2 - Master API Documentation
+**Coverage:** 91+ public functions & classes
+**Modules:** quantum_orchestrator/*, cognitive/quantum_planset_engine.py
 **Last Updated: 2026-07-08
 
 ---
@@ -21,8 +21,8 @@
 
 ## Quantum Orchestrator Core
 
-**File:** `src/codex/quantum_orchestrator/orchestrator.py`  
-**Purpose:** Core orchestration engine using quantum-relativistic physics for agent coordination  
+**File:** `src/codex/quantum_orchestrator/orchestrator.py`
+**Purpose:** Core orchestration engine using quantum-relativistic physics for agent coordination
 **LOC:** 655 | **API:** 65 public functions & classes
 
 ### Classes
@@ -360,7 +360,7 @@ Task states evolve according to quantum mechanical principles, with:
 
 ### Klein-Gordon Relativistic Extension
 
-**□²φ + (m/ℏ)²φ = 0**
+**²φ + (m/ℏ)²φ = 0**
 
 Conflicts are resolved using Klein-Gordon equation for relativistic corrections.
 
@@ -375,8 +375,8 @@ Conflicts are resolved using Klein-Gordon equation for relativistic corrections.
 
 ## Quantum Planset Engine
 
-**File:** `src/codex/cognitive/quantum_planset_engine.py`  
-**Purpose:** Quantum-inspired planning engine for agent coordination  
+**File:** `src/codex/cognitive/quantum_planset_engine.py`
+**Purpose:** Quantum-inspired planning engine for agent coordination
 **LOC:** 1,379 | **API:** 26 public signatures
 
 ### Key Classes
@@ -452,7 +452,7 @@ Collapse quantum superposition to concrete state.
 | `simulate()` | quantum_planset | Run simulation | `SimulationResults` |
 | `collapse_superposition()` | quantum_planset | State collapse | `ConcreteState` |
 
-**Total Documented:** 15/91 (16%)  
+**Total Documented:** 15/91 (16%)
 **Next Phase:** Document remaining 76+ functions
 
 ---
@@ -545,14 +545,14 @@ print(f"Success probability: {results.success_probability:.3f}")
 
 ## Coverage Status
 
-**Functions Documented:** 15/65 in orchestrator (23%)  
-**Functions Documented:** 0/26 in planset engine (0%)  
+**Functions Documented:** 15/65 in orchestrator (23%)
+**Functions Documented:** 0/26 in planset engine (0%)
 **Total Signatures:** 15/91 (16%)
 
 **Next Phase:** Complete documentation of remaining 76+ quantum operations
 
 ---
 
-**Generated:** 2026-07-08  
-**Campaign:** WS1 API Documentation Expansion  
+**Generated:** 2026-07-08
+**Campaign:** WS1 API Documentation Expansion
 **Phase:** 2 - Master API References

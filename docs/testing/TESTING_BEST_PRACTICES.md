@@ -1,6 +1,6 @@
 # Testing Best Practices Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -23,14 +23,14 @@ This guide documents best practices for writing tests in the _codex_ repository,
 
 ```
 tests/
-├── unit/           # Fast, isolated unit tests
-├── integration/    # Integration tests (may use real dependencies)
-├── slow/           # Long-running tests (>30s)
-├── utils/          # Shared test utilities and helpers
-│   ├── torch_helpers.py      # PyTorch/ML dependency helpers
-│   ├── quantum_helpers.py    # Quantum plugin mocking utilities
-│   └── doc_refactor_helpers.py  # Documentation validation helpers
-└── conftest.py     # Pytest configuration and fixtures
+ unit/ # Fast, isolated unit tests
+ integration/ # Integration tests (may use real dependencies)
+ slow/ # Long-running tests (>30s)
+ utils/ # Shared test utilities and helpers
+ torch_helpers.py # PyTorch/ML dependency helpers
+ quantum_helpers.py # Quantum plugin mocking utilities
+ doc_refactor_helpers.py # Documentation validation helpers
+ conftest.py # Pytest configuration and fixtures
 ```
 
 ### Test Naming Conventions
@@ -53,9 +53,9 @@ Many tests require optional dependencies (PyTorch, Transformers, MLflow, etc.) t
 from tests.utils.torch_helpers import skip_if_missing, require_module
 
 def test_training_with_torch():
-    """Test training pipeline with PyTorch."""
-    torch = require_module("torch", "PyTorch")
-    # Test code using torch...
+ """Test training pipeline with PyTorch."""
+ torch = require_module("torch", "PyTorch")
+ # Test code using torch...
 ```
 
 #### Multiple Dependencies
@@ -64,9 +64,9 @@ def test_training_with_torch():
 from tests.utils.torch_helpers import skip_if_any_missing
 
 def test_ml_pipeline():
-    """Test full ML pipeline."""
-    skip_if_any_missing("torch", "transformers", "mlflow")
-    # Test code using all three modules...
+ """Test full ML pipeline."""
+ skip_if_any_missing("torch", "transformers", "mlflow")
+ # Test code using all three modules...
 ```
 
 #### PyTorch with Stub Detection
@@ -75,10 +75,10 @@ def test_ml_pipeline():
 from tests.utils.torch_helpers import require_torch
 
 def test_model_training():
-    """Test model training."""
-    torch = require_torch()  # Skips if PyTorch is stub or missing
-    model = torch.nn.Linear(10, 5)
-    # Test code...
+ """Test model training."""
+ torch = require_torch() # Skips if PyTorch is stub or missing
+ model = torch.nn.Linear(10, 5)
+ # Test code...
 ```
 
 ## Mocking Strategies
@@ -91,13 +91,13 @@ When testing quantum plugin behavior without requiring actual module implementat
 from tests.utils.quantum_helpers import quantum_plugin_fixture
 
 def test_plugin_loading(quantum_plugin_fixture):
-    """Test plugin loading with mocked modules."""
-    # Mock the modules that may not exist
-    quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
-    quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
+ """Test plugin loading with mocked modules."""
+ # Mock the modules that may not exist
+ quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
+ quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
 
-    # Test code using mocked modules...
-    # Cleanup happens automatically via fixture
+ # Test code using mocked modules...
+ # Cleanup happens automatically via fixture
 ```
 
 ### Creating Mock Modules
@@ -106,17 +106,17 @@ def test_plugin_loading(quantum_plugin_fixture):
 from tests.utils.quantum_helpers import create_mock_module, install_mock_module
 
 def test_custom_mock():
-    """Test with custom mock attributes."""
-    mock_module = create_mock_module(
-        "src.custom.module",
-        process=lambda x: x.upper(),
-        CONSTANT=42
-    )
-    install_mock_module(mock_module)
+ """Test with custom mock attributes."""
+ mock_module = create_mock_module(
+ "src.custom.module",
+ process=lambda x: x.upper(),
+ CONSTANT=42
+ )
+ install_mock_module(mock_module)
 
-    from src.custom import module
-    assert module.process("hello") == "HELLO"
-    assert module.CONSTANT == 42
+ from src.custom import module
+ assert module.process("hello") == "HELLO"
+ assert module.CONSTANT == 42
 ```
 
 ## Stub Module Detection
@@ -133,15 +133,15 @@ The `torch_helpers.py` module provides utilities to detect and skip tests when s
 from tests.utils.torch_helpers import require_torch
 
 def test_with_real_torch():
-    """This test requires real PyTorch, not a stub."""
-    torch = require_torch()
+ """This test requires real PyTorch, not a stub."""
+ torch = require_torch()
 
-    # Detection checks:
-    # 1. hasattr(torch, 'nn')
-    # 2. hasattr(torch.nn, 'Linear')
-    # 3. hasattr(torch, 'IS_CODEX_STUB')
+ # Detection checks:
+ # 1. hasattr(torch, 'nn')
+ # 2. hasattr(torch.nn, 'Linear')
+ # 3. hasattr(torch, 'IS_CODEX_STUB')
 
-    model = torch.nn.Linear(10, 5)  # Works with real torch
+ model = torch.nn.Linear(10, 5) # Works with real torch
 ```
 
 ### Adding Stub Markers
@@ -150,7 +150,7 @@ If you create a stub module, add a marker so tests can detect it:
 
 ```python
 # stub_module/__init__.py
-IS_CODEX_STUB = True  # Mark as stub module
+IS_CODEX_STUB = True # Mark as stub module
 ```
 
 ## Test Markers
@@ -194,11 +194,11 @@ The `conftest.py` automatically marks tests as `slow` if they:
 from tests.utils.torch_helpers import require_module
 
 def test_with_optional_dep():
-    """Test that requires optional dependency."""
-    transformers = require_module("transformers", "HuggingFace Transformers")
+ """Test that requires optional dependency."""
+ transformers = require_module("transformers", "HuggingFace Transformers")
 
-    model = transformers.AutoModel.from_pretrained("bert-base-uncased")
-    # Test code...
+ model = transformers.AutoModel.from_pretrained("bert-base-uncased")
+ # Test code...
 ```
 
 ### Pattern 2: Multiple Optional Dependencies
@@ -207,13 +207,13 @@ def test_with_optional_dep():
 from tests.utils.torch_helpers import skip_if_any_missing
 
 def test_ml_pipeline():
-    """Test full ML pipeline."""
-    skip_if_any_missing("torch", "transformers", "mlflow")
+ """Test full ML pipeline."""
+ skip_if_any_missing("torch", "transformers", "mlflow")
 
-    import torch
-    import transformers
-    import mlflow
-    # Test code using all three...
+ import torch
+ import transformers
+ import mlflow
+ # Test code using all three...
 ```
 
 ### Pattern 3: Quantum Plugin with Mocks
@@ -223,26 +223,26 @@ from src.quantum import QuantumPlugin, QuantumPluginRegistry, PluginState
 from tests.utils.quantum_helpers import quantum_plugin_fixture
 
 def test_plugin_dependencies(quantum_plugin_fixture):
-    """Test plugin with dependency chain."""
-    # Mock modules
-    quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
-    quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
+ """Test plugin with dependency chain."""
+ # Mock modules
+ quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
+ quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
 
-    registry = QuantumPluginRegistry()
-    registry.register(QuantumPlugin(
-        name="chunking",
-        import_path="src.rag.pipelines.chunking"
-    ))
-    registry.register(QuantumPlugin(
-        name="embedding",
-        import_path="src.rag.pipelines.embedding",
-        dependencies=["chunking"]
-    ))
+ registry = QuantumPluginRegistry()
+ registry.register(QuantumPlugin(
+ name="chunking",
+ import_path="src.rag.pipelines.chunking"
+ ))
+ registry.register(QuantumPlugin(
+ name="embedding",
+ import_path="src.rag.pipelines.embedding",
+ dependencies=["chunking"]
+ ))
 
-    # Load with dependencies
-    module = registry.load_with_dependencies("embedding")
-    assert module is not None
-    assert registry.plugins["chunking"].state == PluginState.COLLAPSED
+ # Load with dependencies
+ module = registry.load_with_dependencies("embedding")
+ assert module is not None
+ assert registry.plugins["chunking"].state == PluginState.COLLAPSED
 ```
 
 ### Pattern 4: Parameterized Tests with Optional Deps
@@ -252,16 +252,16 @@ import pytest
 from tests.utils.torch_helpers import require_module
 
 @pytest.mark.parametrize("model_name", [
-    "bert-base-uncased",
-    "gpt2",
-    "t5-small"
+ "bert-base-uncased",
+ "gpt2",
+ "t5-small"
 ])
 def test_models(model_name):
-    """Test various transformer models."""
-    transformers = require_module("transformers")
+ """Test various transformer models."""
+ transformers = require_module("transformers")
 
-    model = transformers.AutoModel.from_pretrained(model_name)
-    assert model is not None
+ model = transformers.AutoModel.from_pretrained(model_name)
+ assert model is not None
 ```
 
 ### Pattern 5: Conditional Skip at Module Level
@@ -275,12 +275,12 @@ skip_if_missing("mlflow", "MLflow")
 
 # All tests in this module require MLflow
 def test_mlflow_tracking():
-    import mlflow
-    # Test code...
+ import mlflow
+ # Test code...
 
 def test_mlflow_logging():
-    import mlflow
-    # Test code...
+ import mlflow
+ # Test code...
 ```
 
 ## Best Practices Summary

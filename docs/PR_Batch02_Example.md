@@ -1,6 +1,6 @@
-# PR: Legacy Import Refactor — Batch 02 (v0.2.1)
+# PR: Legacy Import Refactor — Batch 02 (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -15,21 +15,21 @@ and validates determinism and tests after the batch. Commits are small and rever
 Mapping Applied
 ---------------
 - training -> src.training
-- tokenization -> src.tokenization  
+- tokenization -> src.tokenization
 - models -> src.modeling
 - hydra (local) -> config_legacy (deprecation shim for compatibility)
 
 Files Changed (representative from dry-run analysis)
 ---------------------------------------------------
-- scripts/train.py                  (training.* imports)
-- cli/task_sequence.py              (training/tokenization references)
-- cli/script_polish.py              (tokenization/modeling references)
-- cli/train_schema_demo.py          (config_legacy already applied)
-- cli/train_codex.py                (src.tokenization already correct)
-- tools/hydra_sweep_smoke.py        (config_legacy already applied)
-- tests/test_training_*.py          (src.training already correct)
-- tests/test_determinism.py         (src.training already correct)
-- tests/test_dataset_hashing.py     (src.training already correct)
+- scripts/train.py (training.* imports)
+- cli/task_sequence.py (training/tokenization references)
+- cli/script_polish.py (tokenization/modeling references)
+- cli/train_schema_demo.py (config_legacy already applied)
+- cli/train_codex.py (src.tokenization already correct)
+- tools/hydra_sweep_smoke.py (config_legacy already applied)
+- tests/test_training_*.py (src.training already correct)
+- tests/test_determinism.py (src.training already correct)
+- tests/test_dataset_hashing.py (src.training already correct)
 
 Commands Executed (exact)
 -------------------------
@@ -64,10 +64,10 @@ Tests Summary
 (paste pytest output here)
 - validation: <PASS/FAIL>
 
-Legacy Import Counts (before → after)
+Legacy Import Counts (before after)
 -------------------------------------
 - Before total (rows): 99
-- After  total  (rows): <count_after>
+- After total (rows): <count_after>
 - Reduction: <delta_pct %>
 
 Regression Diff (if baseline present)

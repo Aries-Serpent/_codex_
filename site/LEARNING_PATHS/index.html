@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/LEARNING_PATHS/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex ML: Structured Learning Paths - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2355,9 +2355,9 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Version:</strong> v0.2.1 Pre-Release<br/>
+<p><strong>Version:</strong> v0.2.1 Pre-Release
 <strong>Last Updated: 2026-06-27
-</strong>Total Estimated Time:** 20-40 hours depending on path  </p>
+</strong>Total Estimated Time:** 20-40 hours depending on path</p>
 </blockquote>
 <hr/>
 <h2 id="choose-your-path">Choose Your Path<a class="headerlink" href="#choose-your-path" title="Permanent link">¶</a></h2>
@@ -2369,9 +2369,9 @@
 </ul>
 <hr/>
 <h2 id="beginner-path">Beginner Path<a class="headerlink" href="#beginner-path" title="Permanent link">¶</a></h2>
-<p><strong>Target Audience:</strong> New developers, ML engineers new to this codebase<br/>
-<strong>Time Commitment:</strong> 2-4 hours<br/>
-<strong>Prerequisites:</strong> Python knowledge, basic ML concepts  </p>
+<p><strong>Target Audience:</strong> New developers, ML engineers new to this codebase
+<strong>Time Commitment:</strong> 2-4 hours
+<strong>Prerequisites:</strong> Python knowledge, basic ML concepts</p>
 <h3 id="step-1-installation-first-run-30-min">Step 1: Installation &amp; First Run (30 min)<a class="headerlink" href="#step-1-installation-first-run-30-min" title="Permanent link">¶</a></h3>
 <p><strong>Goal:</strong> Get the codebase running locally</p>
 <ol>
@@ -2466,35 +2466,34 @@
 </li>
 <li>
 <p><strong>Write a simple test:</strong>
-   ```python# tests/unit/test_beginner.py
+ ```python# tests/unit/test_beginner.py
 def test_codex_imports():
-    from codex.cli import app
-    assert app is not None</p>
+ from codex.cli import app
+ assert app is not None</p>
 </li>
 </ol>
 <p>def test_config_loads():
-    from hydra import compose, initialize
-    from omegaconf import OmegaConf</p>
-<div class="highlight"><pre><span></span><code>initialize(config_path="../../configs")
-cfg = compose(config_name="base")
-assert cfg is not None
-</code></pre></div>
+ from hydra import compose, initialize
+ from omegaconf import OmegaConf</p>
+<p>initialize(config_path="../../configs")
+ cfg = compose(config_name="base")
+ assert cfg is not None</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>4. **Run your test:**
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>   ```bash
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>   pytest tests/unit/test_beginner.py -v
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>   ```
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> ```bash
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> pytest tests/unit/test_beginner.py -v
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> ```
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>4. **Checkpoint:** Test passes 
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>4. **Checkpoint:** Test passes
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>---
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>##  Beginner Path Complete!
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>## Beginner Path Complete!
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
 <a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>You've learned:
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>-  How to set up Codex ML
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>-  The 5-layer architecture
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>-  How Hydra configuration works
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>-  How to write basic tests
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>- How to set up Codex ML
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>- The 5-layer architecture
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>- How Hydra configuration works
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>- How to write basic tests
 <a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
 <a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>**Next:** Choose [Intermediate Path](#intermediate-path) or a [Specialized Path](#specialized-paths)
 <a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>
@@ -2502,9 +2501,9 @@ assert cfg is not None
 <a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
 <a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>## Intermediate Path
 <a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>**Target Audience:** Developers ready to extend Codex ML  
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>**Time Commitment:** 6-8 hours  
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>**Prerequisites:** Completed beginner path  
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>**Target Audience:** Developers ready to extend Codex ML
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>**Time Commitment:** 6-8 hours
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>**Prerequisites:** Completed beginner path
 <a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
 <a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>### Step 1: Understand Configuration Deep Dive (90 min)
 <a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>
@@ -2513,31 +2512,31 @@ assert cfg is not None
 <a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>1. **Read:** [Hydra Advanced Guide](./configuration/hydra-advanced-guide.md)
 <a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>
 <a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>2. **Hands-on: Create a custom model config**
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>   ```yaml
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a>   # configs/models/my_model.yaml
-<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a>   name: my-custom-model
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>   architecture: transformer
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>   hidden_size: 768
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>   num_layers: 12
-<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a>   ```
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a> ```yaml
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a> # configs/models/my_model.yaml
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a> name: my-custom-model
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a> architecture: transformer
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a> hidden_size: 768
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a> num_layers: 12
+<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a> ```
 <a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a>
 <a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a>3. **Hands-on: Create a custom training config**
-<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a>   ```yaml
-<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a>   # configs/train/my_experiment.yaml
-<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a>   defaults:
-<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a>     - base
-<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a>     - models/my_model
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a> ```yaml
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a> # configs/train/my_experiment.yaml
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a> defaults:
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a> - base
+<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a> - models/my_model
 <a href="#__codelineno-5-49" id="__codelineno-5-49" name="__codelineno-5-49"></a>
-<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a>   training:
-<a href="#__codelineno-5-51" id="__codelineno-5-51" name="__codelineno-5-51"></a>     batch_size: 16
-<a href="#__codelineno-5-52" id="__codelineno-5-52" name="__codelineno-5-52"></a>     learning_rate: 0.001
-<a href="#__codelineno-5-53" id="__codelineno-5-53" name="__codelineno-5-53"></a>     warmup_steps: 100
-<a href="#__codelineno-5-54" id="__codelineno-5-54" name="__codelineno-5-54"></a>   ```
+<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a> training:
+<a href="#__codelineno-5-51" id="__codelineno-5-51" name="__codelineno-5-51"></a> batch_size: 16
+<a href="#__codelineno-5-52" id="__codelineno-5-52" name="__codelineno-5-52"></a> learning_rate: 0.001
+<a href="#__codelineno-5-53" id="__codelineno-5-53" name="__codelineno-5-53"></a> warmup_steps: 100
+<a href="#__codelineno-5-54" id="__codelineno-5-54" name="__codelineno-5-54"></a> ```
 <a href="#__codelineno-5-55" id="__codelineno-5-55" name="__codelineno-5-55"></a>
 <a href="#__codelineno-5-56" id="__codelineno-5-56" name="__codelineno-5-56"></a>4. **Test your configs:**
-<a href="#__codelineno-5-57" id="__codelineno-5-57" name="__codelineno-5-57"></a>   ```bash
-<a href="#__codelineno-5-58" id="__codelineno-5-58" name="__codelineno-5-58"></a>   python -m codex.cli train --config configs/train/my_experiment.yaml --help
-<a href="#__codelineno-5-59" id="__codelineno-5-59" name="__codelineno-5-59"></a>   ```
+<a href="#__codelineno-5-57" id="__codelineno-5-57" name="__codelineno-5-57"></a> ```bash
+<a href="#__codelineno-5-58" id="__codelineno-5-58" name="__codelineno-5-58"></a> python -m codex.cli train --config configs/train/my_experiment.yaml --help
+<a href="#__codelineno-5-59" id="__codelineno-5-59" name="__codelineno-5-59"></a> ```
 <a href="#__codelineno-5-60" id="__codelineno-5-60" name="__codelineno-5-60"></a>
 <a href="#__codelineno-5-61" id="__codelineno-5-61" name="__codelineno-5-61"></a>5. **Checkpoint:** Can you override configs from command line?
 <a href="#__codelineno-5-62" id="__codelineno-5-62" name="__codelineno-5-62"></a>
@@ -2548,11 +2547,11 @@ assert cfg is not None
 <a href="#__codelineno-5-67" id="__codelineno-5-67" name="__codelineno-5-67"></a>**Goal:** Train your own model with custom configuration
 <a href="#__codelineno-5-68" id="__codelineno-5-68" name="__codelineno-5-68"></a>
 <a href="#__codelineno-5-69" id="__codelineno-5-69" name="__codelineno-5-69"></a>1. **Choose a training script:**
-<a href="#__codelineno-5-70" id="__codelineno-5-70" name="__codelineno-5-70"></a>   - Use existing: `python -m codex.cli train --config configs/train/base.yaml`
-<a href="#__codelineno-5-71" id="__codelineno-5-71" name="__codelineno-5-71"></a>   - OR create custom: `examples/my_training.py`
+<a href="#__codelineno-5-70" id="__codelineno-5-70" name="__codelineno-5-70"></a> - Use existing: `python -m codex.cli train --config configs/train/base.yaml`
+<a href="#__codelineno-5-71" id="__codelineno-5-71" name="__codelineno-5-71"></a> - OR create custom: `examples/my_training.py`
 <a href="#__codelineno-5-72" id="__codelineno-5-72" name="__codelineno-5-72"></a>
 <a href="#__codelineno-5-73" id="__codelineno-5-73" name="__codelineno-5-73"></a>2. **Create custom training script:**
-<a href="#__codelineno-5-74" id="__codelineno-5-74" name="__codelineno-5-74"></a>   ```python# examples/my_training.py
+<a href="#__codelineno-5-74" id="__codelineno-5-74" name="__codelineno-5-74"></a> ```python# examples/my_training.py
 <a href="#__codelineno-5-75" id="__codelineno-5-75" name="__codelineno-5-75"></a>from codex.training import Trainer
 <a href="#__codelineno-5-76" id="__codelineno-5-76" name="__codelineno-5-76"></a>from hydra import compose, initialize
 <a href="#__codelineno-5-77" id="__codelineno-5-77" name="__codelineno-5-77"></a>
@@ -2576,7 +2575,7 @@ assert cfg is not None
 <p>Check checkpoint in <code>outputs/checkpoints/</code></p>
 </li>
 <li>
-<p><strong>Checkpoint:</strong> Training completes successfully </p>
+<p><strong>Checkpoint:</strong> Training completes successfully</p>
 </li>
 </ol>
 <hr/>
@@ -2590,14 +2589,14 @@ assert cfg is not None
 </li>
 <li>
 <p><strong>Understand metrics:</strong>
-   ```pythonfrom codex.evaluation import list_metrics
+ ```pythonfrom codex.evaluation import list_metrics
 print(list_metrics())</p>
 </li>
 </ol>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>3. **Debug training issues:**
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>   - Add print statements and use `--log-level DEBUG`
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>   - Profile memory with `memory_profiler`
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>   - Check logs in `outputs/logs/`
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> - Add print statements and use `--log-level DEBUG`
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> - Profile memory with `memory_profiler`
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> - Check logs in `outputs/logs/`
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>4. **Checkpoint:** Can you identify training metrics from logs?
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
@@ -2615,9 +2614,9 @@ print(list_metrics())</p>
 <a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>
 <a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>@register_metric("my_metric")
 <a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>class MyMetric(BaseMetric):
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>    def compute(self, predictions, references):
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>        # Your metric implementation
-<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>        return {"score": ...}
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a> def compute(self, predictions, references):
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a> # Your metric implementation
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a> return {"score": ...}
 </code></pre></div>
 <h4 id="option-b-add-a-custom-model">Option B: Add a custom model<a class="headerlink" href="#option-b-add-a-custom-model" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># src/codex/models/my_model.py</span>
@@ -2625,13 +2624,13 @@ print(list_metrics())</p>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="nd">@register_model</span><span class="p">(</span><span class="s2">"my_model"</span><span class="p">)</span>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>        <span class="c1"># Your model implementation</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="c1"># Your model implementation</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">):</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>        <span class="c1"># Your forward pass</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>        <span class="k">return</span> <span class="n">output</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">):</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="c1"># Your forward pass</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="k">return</span> <span class="n">output</span>
 </code></pre></div>
 <h4 id="option-c-add-a-cli-command">Option C: Add a CLI command<a class="headerlink" href="#option-c-add-a-cli-command" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># src/codex/cli/my_command.py</span>
@@ -2642,30 +2641,30 @@ print(list_metrics())</p>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="k">def</span> <span class="nf">my_command</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="sd">"""My custom command."""</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    <span class="c1"># Your command logic</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    <span class="n">typer</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">"Done!"</span><span class="p">)</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w"> </span><span class="sd">"""My custom command."""</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="c1"># Your command logic</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="n">typer</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">"Done!"</span><span class="p">)</span>
 </code></pre></div>
 <ol>
 <li><strong>Write tests for your component:</strong>
-   ```python# tests/unit/test_my_component.py
+ ```python# tests/unit/test_my_component.py
 def test_my_component():
-    from codex.evaluation.custom_metrics import MyMetric
-    metric = MyMetric()
-    result = metric.compute([1, 2], [1, 2])
-    assert result["score"] &gt; 0</li>
+ from codex.evaluation.custom_metrics import MyMetric
+ metric = MyMetric()
+ result = metric.compute([1, 2], [1, 2])
+ assert result["score"] &gt; 0</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>6. **Checkpoint:** Tests pass 
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>6. **Checkpoint:** Tests pass
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>---
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>##  Intermediate Path Complete!
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>## Intermediate Path Complete!
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>You've learned:
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>-  Advanced Hydra configuration
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>-  How to train custom models
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>-  How to evaluate and debug
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>-  How to extend Codex ML
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>- Advanced Hydra configuration
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>- How to train custom models
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>- How to evaluate and debug
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>- How to extend Codex ML
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>
 <a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>**Next:** Choose [Advanced Path](#advanced-path) or a [Specialized Path](#specialized-paths)
 <a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
@@ -2673,9 +2672,9 @@ def test_my_component():
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>
 <a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>## Advanced Path
 <a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>**Target Audience:** Contributors, system architects  
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>**Time Commitment:** 10-16 hours  
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>**Prerequisites:** Completed intermediate path  
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>**Target Audience:** Contributors, system architects
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>**Time Commitment:** 10-16 hours
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>**Prerequisites:** Completed intermediate path
 <a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>
 <a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>### Step 1: Architecture Deep Dive (120 min)
 <a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>
@@ -2684,14 +2683,14 @@ def test_my_component():
 <a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>1. **Read:** [Complete Architecture Guide](./architecture/INDEX.md)
 <a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>
 <a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>2. **Map the architecture:**
-<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>   - Draw each layer on paper
-<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>   - Identify key components in each layer
-<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>   - Trace a request from Layer 5 → Layer 1
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a> - Draw each layer on paper
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a> - Identify key components in each layer
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a> - Trace a request from Layer 5 Layer 1
 <a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a>
 <a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>3. **Study design patterns:**
-<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a>   - Plugin architecture (registry pattern)
-<a href="#__codelineno-11-36" id="__codelineno-11-36" name="__codelineno-11-36"></a>   - Configuration composition (strategy pattern)
-<a href="#__codelineno-11-37" id="__codelineno-11-37" name="__codelineno-11-37"></a>   - Memory management (observer pattern)
+<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a> - Plugin architecture (registry pattern)
+<a href="#__codelineno-11-36" id="__codelineno-11-36" name="__codelineno-11-36"></a> - Configuration composition (strategy pattern)
+<a href="#__codelineno-11-37" id="__codelineno-11-37" name="__codelineno-11-37"></a> - Memory management (observer pattern)
 <a href="#__codelineno-11-38" id="__codelineno-11-38" name="__codelineno-11-38"></a>
 <a href="#__codelineno-11-39" id="__codelineno-11-39" name="__codelineno-11-39"></a>4. **Checkpoint:** Can you explain each layer's responsibility?
 <a href="#__codelineno-11-40" id="__codelineno-11-40" name="__codelineno-11-40"></a>
@@ -2704,33 +2703,32 @@ def test_my_component():
 <a href="#__codelineno-11-47" id="__codelineno-11-47" name="__codelineno-11-47"></a>1. **Read:** [Agent Development Guide](../.codex/archive/deprecated/AGENTS.md)
 <a href="#__codelineno-11-48" id="__codelineno-11-48" name="__codelineno-11-48"></a>
 <a href="#__codelineno-11-49" id="__codelineno-11-49" name="__codelineno-11-49"></a>2. **Explore agent system:**
-<a href="#__codelineno-11-50" id="__codelineno-11-50" name="__codelineno-11-50"></a>   ```python
+<a href="#__codelineno-11-50" id="__codelineno-11-50" name="__codelineno-11-50"></a> ```python
 <a href="#__codelineno-11-51" id="__codelineno-11-51" name="__codelineno-11-51"></a>from codex.agents import list_agents
 <a href="#__codelineno-11-52" id="__codelineno-11-52" name="__codelineno-11-52"></a>agents = list_agents()
 <a href="#__codelineno-11-53" id="__codelineno-11-53" name="__codelineno-11-53"></a>print(f"Available agents: {len(agents)}")
 <a href="#__codelineno-11-54" id="__codelineno-11-54" name="__codelineno-11-54"></a>
 <a href="#__codelineno-11-55" id="__codelineno-11-55" name="__codelineno-11-55"></a>for agent in agents[:5]:
-<a href="#__codelineno-11-56" id="__codelineno-11-56" name="__codelineno-11-56"></a>    print(f"- {agent.name}: {agent.capabilities}")
+<a href="#__codelineno-11-56" id="__codelineno-11-56" name="__codelineno-11-56"></a> print(f"- {agent.name}: {agent.capabilities}")
 </code></pre></div>
 <ol>
 <li><strong>Create a simple agent:</strong>
-   ```python# src/codex/agents/my_agent.py
+ ```python# src/codex/agents/my_agent.py
 from codex.agents.base import BaseAgent</li>
 </ol>
 <p>class MyAgent(BaseAgent):
-    agent_id = "my-agent"
-    capabilities = ["process", "analyze"]</p>
-<div class="highlight"><pre><span></span><code>async def execute(self, task):
-    # Your agent logic
-    return {"result": "..."}
-</code></pre></div>
+ agent_id = "my-agent"
+ capabilities = ["process", "analyze"]</p>
+<p>async def execute(self, task):
+ # Your agent logic
+ return {"result": "..."}</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>4. **Trigger agent execution:**
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>   ```pythonfrom codex.orchestration import get_orchestrator
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> ```pythonfrom codex.orchestration import get_orchestrator
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>orchestrator = get_orchestrator()
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>task_id = orchestrator.submit_to_agent(
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    "my-agent", 
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    {"input": "data"}
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> "my-agent", 
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> {"input": "data"}
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>)
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>result = orchestrator.get_result(task_id)
 </code></pre></div>
@@ -2742,7 +2740,7 @@ from codex.agents.base import BaseAgent</li>
 <p><strong>Goal:</strong> Understand STM/LTM memory with compression</p>
 <ol>
 <li><strong>Study memory architecture:</strong>
-   ```pythonfrom codex.memory import MemoryManager</li>
+ ```pythonfrom codex.memory import MemoryManager</li>
 </ol>
 <p>memory = MemoryManager()</p>
 <h1 id="store-a-pattern">Store a pattern<a class="headerlink" href="#store-a-pattern" title="Permanent link">¶</a></h1>
@@ -2753,16 +2751,16 @@ from codex.agents.base import BaseAgent</li>
 <p>stats = memory.get_stats()
 print(f"Compression ratio: {stats['compression_ratio']}")</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>2. **Implement custom memory patterns:**
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>   ```pythonfrom codex.memory.patterns import BasePattern
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> ```pythonfrom codex.memory.patterns import BasePattern
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>class MyPattern(BasePattern):
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    def __init__(self, pattern_id, data):
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>        self.pattern_id = pattern_id
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>        self.data = data
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> def __init__(self, pattern_id, data):
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> self.pattern_id = pattern_id
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> self.data = data
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>    def compress(self):
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>        # 60% compression target
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>        return compressed_data
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> def compress(self):
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> # 60% compression target
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> return compressed_data
 </code></pre></div>
 <ol>
 <li><strong>Checkpoint:</strong> Can you retrieve and store patterns?</li>
@@ -2772,7 +2770,7 @@ print(f"Compression ratio: {stats['compression_ratio']}")</p>
 <p><strong>Goal:</strong> Optimize Codex ML for production</p>
 <ol>
 <li><strong>Profile performance:</strong>
-   ```pythonimport cProfile
+ ```pythonimport cProfile
 import pstats</li>
 </ol>
 <p>profiler = cProfile.Profile()
@@ -2782,7 +2780,7 @@ profiler.enable()</p>
 stats = pstats.Stats(profiler)
 stats.sort_stats('cumulative').print_stats(20)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>2. **Memory optimization:**
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>   ```pythonimport tracemalloc
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> ```pythonimport tracemalloc
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>
 <a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>tracemalloc.start()
 <a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>
@@ -2808,7 +2806,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Checkpoint:</strong> Achieved 20%+ performance improvement </p>
+<p><strong>Checkpoint:</strong> Achieved 20%+ performance improvement</p>
 </li>
 </ol>
 <hr/>
@@ -2852,23 +2850,23 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <p>Include test results</p>
 </li>
 <li>
-<p><strong>Checkpoint:</strong> PR merged </p>
+<p><strong>Checkpoint:</strong> PR merged</p>
 </li>
 </ol>
 <hr/>
 <h2 id="advanced-path-complete">Advanced Path Complete!<a class="headerlink" href="#advanced-path-complete" title="Permanent link">¶</a></h2>
 <p>You've learned:
--  Complete 5-layer architecture
--  Agent orchestration systems
--  Memory-augmented reasoning
--  Performance optimization
--  Open-source contribution workflow</p>
-<p><strong>Congratulations!</strong> You're now a Codex ML expert! 🎉</p>
+- Complete 5-layer architecture
+- Agent orchestration systems
+- Memory-augmented reasoning
+- Performance optimization
+- Open-source contribution workflow</p>
+<p><strong>Congratulations!</strong> You're now a Codex ML expert!</p>
 <hr/>
 <h2 id="specialized-paths">Specialized Paths<a class="headerlink" href="#specialized-paths" title="Permanent link">¶</a></h2>
 <p>Choose a specialization based on your interests:</p>
 <h3 id="ml-engineering-path">ML Engineering Path<a class="headerlink" href="#ml-engineering-path" title="Permanent link">¶</a></h3>
-<p><strong>Time:</strong> 6-8 hours<br/>
+<p><strong>Time:</strong> 6-8 hours
 <strong>Focus:</strong> Training, evaluation, optimization</p>
 <ol>
 <li><strong><a href="../training/distributed_training_guide/">Distributed Training</a></strong></li>
@@ -2900,8 +2898,8 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li>Batch inference</li>
 <li>Real-time serving</li>
 </ol>
-<h3 id="infrastructure-deployment-path">🏗️ Infrastructure &amp; Deployment Path<a class="headerlink" href="#infrastructure-deployment-path" title="Permanent link">¶</a></h3>
-<p><strong>Time:</strong> 6-8 hours<br/>
+<h3 id="infrastructure-deployment-path">Infrastructure &amp; Deployment Path<a class="headerlink" href="#infrastructure-deployment-path" title="Permanent link">¶</a></h3>
+<p><strong>Time:</strong> 6-8 hours
 <strong>Focus:</strong> DevOps, deployment, monitoring</p>
 <ol>
 <li><strong><a href="../docker_guide/">Docker &amp; Containerization</a></strong></li>
@@ -2934,7 +2932,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li>Deployment automation</li>
 </ol>
 <h3 id="cognitive-systems-agents-path">Cognitive Systems &amp; Agents Path<a class="headerlink" href="#cognitive-systems-agents-path" title="Permanent link">¶</a></h3>
-<p><strong>Time:</strong> 8-10 hours<br/>
+<p><strong>Time:</strong> 8-10 hours
 <strong>Focus:</strong> Agent design, decision-making, memory</p>
 <ol>
 <li><strong><a href="../cognitive_brain/INDEX/">Cognitive Brain Fundamentals</a></strong></li>
@@ -2967,7 +2965,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li>Agent coordination</li>
 </ol>
 <h3 id="data-testing-path">Data &amp; Testing Path<a class="headerlink" href="#data-testing-path" title="Permanent link">¶</a></h3>
-<p><strong>Time:</strong> 6-8 hours<br/>
+<p><strong>Time:</strong> 6-8 hours
 <strong>Focus:</strong> Data engineering, testing strategies</p>
 <ol>
 <li><strong><a href="../data/INDEX/">Data Loading &amp; Processing</a></strong></li>
@@ -3008,7 +3006,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 2: Project structure understood</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 3: Hydra configuration working</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 4: First test running</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Beginner path complete </li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Beginner path complete</li>
 </ul>
 <h3 id="intermediate-path">Intermediate Path<a class="headerlink" href="#intermediate-path" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -3016,7 +3014,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 2: Custom model trained</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 3: Evaluation working</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 4: Custom component added</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Intermediate path complete </li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Intermediate path complete</li>
 </ul>
 <h3 id="advanced-path">Advanced Path<a class="headerlink" href="#advanced-path" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -3025,7 +3023,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 3: Memory systems explored</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 4: Performance optimized</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Step 5: Contribution submitted</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Advanced path complete </li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Advanced path complete</li>
 </ul>
 <hr/>
 <h2 id="resources-by-topic">Resources by Topic<a class="headerlink" href="#resources-by-topic" title="Permanent link">¶</a></h2>
@@ -3103,7 +3101,7 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <li><strong>Want to contribute?</strong> Read <a href="../CONTRIBUTING.md">Contributing Guide</a></li>
 </ul>
 <hr/>
-<p><strong>Happy learning!</strong> </p>
+<p><strong>Happy learning!</strong></p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3133,6 +3131,6 @@ stats.sort_stats('cumulative').print_stats(20)</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

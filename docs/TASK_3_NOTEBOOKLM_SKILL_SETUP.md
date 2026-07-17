@@ -1,11 +1,11 @@
 # Task 3: Configure Agentic Troubleshooting Skill
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 # NotebookLM Claude Code Integration Guide
 
-**Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code 
-**Tool**: `notebooklm-skill` for Claude Code 
+**Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code
+**Tool**: `notebooklm-skill` for Claude Code
 **Integration Level**: Deep (AI Architect queries)
 
 > ** NOTE:** The `scripts/run.py` references in this guide are for the **external** `notebooklm-skill` repository cloned to `~/.claude/skills/notebooklm/`. These scripts are NOT part of the `_codex_` repository. After cloning the external skill, all commands reference its local copy, not the `_codex_` codebase scripts directory.
@@ -123,14 +123,14 @@ python scripts/run.py notebook_manager.py list
 **Expected Output**:
 ```
  Registered Notebooks:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 Name: codex_architecture
 Description: Codex Architecture Knowledge Base - AI-powered development platform
 Notebook ID: [YOUR_NOTEBOOK_ID]
 Sources: 1 (codex-architecture-sync.xml)
 Status: Active
 Last updated: 2026-07-11
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ```
 
 **Test Query**:
@@ -201,14 +201,14 @@ python scripts/run.py config.py show
 **Expected Configuration Output**:
 ```
  NotebookLM Skill Configuration:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 auto_context: true
 context_window: 128000
 enable_cache: true
 cache_ttl: 3600
 query_timeout: 30
 default_notebook: codex_architecture
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ```
 
 ---
@@ -439,7 +439,7 @@ python scripts/run.py config.py set --query-timeout 60
 ls -la ~/.claude/skills/notebooklm/
 
 # Check Claude Code skill settings
-# Settings → Extensions → Claude Skills → Refresh
+# Settings Extensions Claude Skills Refresh
 
 # Restart Claude Code application
 ```
@@ -484,7 +484,7 @@ After successful installation:
 
 ---
 
-**Task Status**: READY FOR EXECUTION 
-**Prerequisites**: Task 1 & 2 must be complete 
-**Estimated Time**: 2 hours 
+**Task Status**: READY FOR EXECUTION
+**Prerequisites**: Task 1 & 2 must be complete
+**Estimated Time**: 2 hours
 **Cognitive Brain Impact**: Self-Healing +3, Knowledge Synthesis +5

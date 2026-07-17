@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_5_ARCHIVE_IMPLEMENTATION_REPORT/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 5: Archive Implementation Report - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2732,10 +2732,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
-<p><strong>Status:</strong>  COMPLETE<br/>
-<strong>Date:</strong> June 23, 2026<br/>
-<strong>Archive Candidates:</strong> 25 sessions identified (&gt;90 days old)<br/>
-<strong>Archive Format:</strong> Parquet (snappy compressed)<br/>
+<p><strong>Status:</strong> COMPLETE
+<strong>Date:</strong> June 23, 2026
+<strong>Archive Candidates:</strong> 25 sessions identified (&gt;90 days old)
+<strong>Archive Format:</strong> Parquet (snappy compressed)
 <strong>Cold Storage Location:</strong> <code>.codex/archive/sessions/YYYY/MM/</code></p>
 <p>Phase 5 implements a complete archive system for session tracking modernization, enabling efficient cold storage of older sessions while maintaining fast retrieval and transparent access patterns.</p>
 <hr/>
@@ -2751,47 +2751,47 @@
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Archive Storage Structure:
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>.codex/
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── sessions.db                    # SQLite (active + archive index)
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── sessions/                      # Active JSONL sessions (working data)
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>└── archive/
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    ├── sessions/
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    │   ├── 2026/
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    │   │   ├── 03/
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    │   │   │   ├── session-1.parquet
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    │   │   │   ├── session-2.parquet
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    │   │   │   └── ...
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    │   │   ├── 04/
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    │   │   ├── 05/
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    │   │   └── ...
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    │   └── ...
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    ├── sessions_archive_index.json    # Archive index (256 sessions)
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    └── retention_log.json             # Audit trail
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> sessions.db # SQLite (active + archive index)
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> sessions/ # Active JSONL sessions (working data)
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> archive/
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> sessions/
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> 2026/
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> 03/
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> session-1.parquet
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> session-2.parquet
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> ...
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> 04/
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> 05/
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> ...
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> ...
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> sessions_archive_index.json # Archive index (256 sessions)
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> retention_log.json # Audit trail
 </code></pre></div>
 <h3 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>ACTIVE SESSION (&lt; 90 days old)
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    ↓
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>In SQLite: archive_status = 'active'
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    ↓
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>Served directly from DB
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>ARCHIVE CANDIDATE (&gt;= 90 days old)
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    ↓
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>Migration Script (scripts/archive_sessions.py)
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    ↓
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>Extract → Compress to Parquet → Store at .codex/archive/sessions/YYYY/MM/
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    ↓
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>Extract Compress to Parquet Store at .codex/archive/sessions/YYYY/MM/
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>Update SQLite: archive_status = 'archived', archive_location = path
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    ↓
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
 <a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>Build Archive Index (sessions_archive_index.json)
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    ↓
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>Session DB → get_session(session_id) → Load from Parquet (transparent)
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>Session DB get_session(session_id) Load from Parquet (transparent)
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>RETENTION CLEANUP (&gt; 30 iterations old)
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    ↓
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
 <a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>Maintenance Script (scripts/archive_maintenance.py)
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    ↓
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>Delete Parquet file + Mark session as 'deleted' in DB
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    ↓
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>Log deletion in retention_log.json
 </code></pre></div>
 <hr/>
@@ -2799,7 +2799,7 @@
 <h3 id="21-database-schema-updates">2.1 Database Schema Updates<a class="headerlink" href="#21-database-schema-updates" title="Permanent link">¶</a></h3>
 <h4 id="new-fields-in-sessions-table">New Fields in <code>sessions</code> Table<a class="headerlink" href="#new-fields-in-sessions-table" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">archive_status</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">'active'</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">    </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">archive_status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'active'</span><span class="p">,</span><span class="w"> </span><span class="s1">'archived'</span><span class="p">,</span><span class="w"> </span><span class="s1">'deleted'</span><span class="p">));</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">archive_status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">'active'</span><span class="p">,</span><span class="w"> </span><span class="s1">'archived'</span><span class="p">,</span><span class="w"> </span><span class="s1">'deleted'</span><span class="p">));</span>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">archive_location</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">;</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">archive_timestamp</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">;</span>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
@@ -2888,7 +2888,7 @@
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="n">db</span> <span class="o">=</span> <span class="n">SessionDB</span><span class="p">()</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1"># Retrieve archived session (transparent)</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="n">session</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_session</span><span class="p">(</span><span class="s2">"session-id"</span><span class="p">)</span>  <span class="c1"># Works for active OR archived</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="n">session</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_session</span><span class="p">(</span><span class="s2">"session-id"</span><span class="p">)</span> <span class="c1"># Works for active OR archived</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="c1"># Force cache usage</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="n">session</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_session</span><span class="p">(</span><span class="s2">"session-id"</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2923,25 +2923,25 @@
 <h2 id="5-archive-index">5. Archive Index<a class="headerlink" href="#5-archive-index" title="Permanent link">¶</a></h2>
 <p><strong>File:</strong> <code>.codex/archive/sessions_archive_index.json</code></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p">{</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-23T02:51:09Z"</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">"sessions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">      </span><span class="nt">"session_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"session-b40bc2bd"</span><span class="p">,</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">      </span><span class="nt">"archive_location"</span><span class="p">:</span><span class="w"> </span><span class="s2">".codex/archive/sessions/2026/03/session-b40bc2bd.parquet"</span><span class="p">,</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">      </span><span class="nt">"file_size_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">15360</span><span class="p">,</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T03:06:28.871414Z"</span><span class="p">,</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">      </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1741264800"</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">    </span><span class="err">...</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">  </span><span class="p">],</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">  </span><span class="nt">"statistics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">    </span><span class="nt">"total_sessions"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">    </span><span class="nt">"total_size_mb"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.39</span><span class="p">,</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="nt">"retention_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Delete archives &gt;30 iterations old"</span><span class="p">,</span>
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w">    </span><span class="nt">"archive_format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Parquet (snappy compressed)"</span><span class="p">,</span>
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w">    </span><span class="nt">"partitioning"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YYYY/MM/ by creation_date"</span>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-23T02:51:09Z"</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">"sessions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">"session_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"session-b40bc2bd"</span><span class="p">,</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nt">"archive_location"</span><span class="p">:</span><span class="w"> </span><span class="s2">".codex/archive/sessions/2026/03/session-b40bc2bd.parquet"</span><span class="p">,</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="nt">"file_size_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">15360</span><span class="p">,</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T03:06:28.871414Z"</span><span class="p">,</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w"> </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1741264800"</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w"> </span><span class="err">...</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w"> </span><span class="p">],</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w"> </span><span class="nt">"statistics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w"> </span><span class="nt">"total_sessions"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w"> </span><span class="nt">"total_size_mb"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.39</span><span class="p">,</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w"> </span><span class="nt">"retention_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Delete archives &gt;30 iterations old"</span><span class="p">,</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w"> </span><span class="nt">"archive_format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Parquet (snappy compressed)"</span><span class="p">,</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w"> </span><span class="nt">"partitioning"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YYYY/MM/ by creation_date"</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="index-queries">Index Queries<a class="headerlink" href="#index-queries" title="Permanent link">¶</a></h3>
@@ -3059,17 +3059,17 @@
 - Manual review recommended before automated cleanup</p>
 <h3 id="example-retention-log">Example Retention Log<a class="headerlink" href="#example-retention-log" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="p">{</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-23T02:51:09Z"</span><span class="p">,</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">  </span><span class="nt">"cleanups"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-20T02:51:09Z"</span><span class="p">,</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">      </span><span class="nt">"deleted_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">      </span><span class="nt">"total_candidates"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">      </span><span class="nt">"max_iterations"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w">      </span><span class="nt">"deletions_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w">  </span><span class="p">]</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-23T02:51:09Z"</span><span class="p">,</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span><span class="nt">"cleanups"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-20T02:51:09Z"</span><span class="p">,</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w"> </span><span class="nt">"deleted_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w"> </span><span class="nt">"total_candidates"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w"> </span><span class="nt">"max_iterations"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w"> </span><span class="nt">"deletions_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w"> </span><span class="p">]</span>
 <a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="retention-automation">Retention Automation<a class="headerlink" href="#retention-automation" title="Permanent link">¶</a></h3>
@@ -3198,11 +3198,11 @@
 </code></pre></div></p>
 <h3 id="issue-cache-full">Issue: "Cache full"<a class="headerlink" href="#issue-cache-full" title="Permanent link">¶</a></h3>
 <p><strong>Solution:</strong> Increase cache size in <code>session_db.py</code>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="bp">self</span><span class="o">.</span><span class="n">cache_max_size</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 50 MB</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="bp">self</span><span class="o">.</span><span class="n">cache_max_size</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="c1"># 50 MB</span>
 </code></pre></div></p>
 <h3 id="issue-old-archives-not-deleted">Issue: "Old archives not deleted"<a class="headerlink" href="#issue-old-archives-not-deleted" title="Permanent link">¶</a></h3>
 <p><strong>Solution:</strong> Run retention cleanup manually:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>python<span class="w"> </span>scripts/archive_maintenance.py<span class="w">  </span><span class="c1"># Not dry-run</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>python<span class="w"> </span>scripts/archive_maintenance.py<span class="w"> </span><span class="c1"># Not dry-run</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="12-success-criteria-verification">12. Success Criteria - VERIFICATION<a class="headerlink" href="#12-success-criteria-verification" title="Permanent link">¶</a></h2>
@@ -3276,7 +3276,7 @@
 </ol>
 <hr/>
 <h2 id="15-completion-summary">15. Completion Summary<a class="headerlink" href="#15-completion-summary" title="Permanent link">¶</a></h2>
-<p><strong>Phase 5 Archive Implementation</strong>  COMPLETE</p>
+<p><strong>Phase 5 Archive Implementation</strong> COMPLETE</p>
 <ul>
 <li>Archive strategy: Directory-based Parquet storage (10:1 compression)</li>
 <li>Sessions: 25 archived, 26 active (51 total)</li>
@@ -3288,10 +3288,10 @@
 </ul>
 <p><strong>Ready to merge for Phase 6: Integration Testing</strong></p>
 <hr/>
-<p><strong>Document:</strong> PHASE_5_ARCHIVE_IMPLEMENTATION_REPORT.md<br/>
-<strong>Version:</strong> 1.0<br/>
-<strong>Date:</strong> 2026-06-23<br/>
-<strong>Status:</strong> COMPLETE </p>
+<p><strong>Document:</strong> PHASE_5_ARCHIVE_IMPLEMENTATION_REPORT.md
+<strong>Version:</strong> 1.0
+<strong>Date:</strong> 2026-06-23
+<strong>Status:</strong> COMPLETE</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3321,6 +3321,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

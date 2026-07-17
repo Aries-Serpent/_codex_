@@ -1,9 +1,9 @@
 # Governance API Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status:** Production Ready  
-**Version:** 1.0.0  
+**Status:** Production Ready
+**Version:** 1.0.0
 **Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
@@ -41,12 +41,12 @@ The Codex platform defines 7 core roles organized by privilege level:
 
 ```
 system_admin
-  ├── agent_operator
-  │   ├── ci_operator
-  │   └── security_reviewer
-  ├── doc_maintainer
-  ├── agent_reader
-  └── guest
+ agent_operator
+ ci_operator
+ security_reviewer
+ doc_maintainer
+ agent_reader
+ guest
 ```
 
 #### System Admin
@@ -129,16 +129,16 @@ enforcer = RBACEnforcer()
 
 # Check if user has permission
 try:
-    enforcer.check_permission(
-        user_id="user123",
-        roles=[CodexRole.AGENT_OPERATOR],
-        action=Action.EXECUTE,
-        resource=ResourceType.AGENTS
-    )
-    # Permission granted, proceed
+ enforcer.check_permission(
+ user_id="user123",
+ roles=[CodexRole.AGENT_OPERATOR],
+ action=Action.EXECUTE,
+ resource=ResourceType.AGENTS
+ )
+ # Permission granted, proceed
 except PermissionDeniedError as e:
-    # Permission denied - log and return error
-    logger.error(f"Access denied: {e.user_id} cannot {e.action} {e.resource}")
+ # Permission denied - log and return error
+ logger.error(f"Access denied: {e.user_id} cannot {e.action} {e.resource}")
 ```
 
 #### Enforce Action
@@ -146,12 +146,12 @@ except PermissionDeniedError as e:
 ```python
 # Enforce and audit simultaneously
 enforcer.enforce_action(
-    user_id="user123",
-    roles=[CodexRole.AGENT_OPERATOR],
-    action=Action.CREATE,
-    resource=ResourceType.AGENTS,
-    resource_id="agent_prod_001",
-    context={"agent_name": "DataProcessor", "environment": "production"}
+ user_id="user123",
+ roles=[CodexRole.AGENT_OPERATOR],
+ action=Action.CREATE,
+ resource=ResourceType.AGENTS,
+ resource_id="agent_prod_001",
+ context={"agent_name": "DataProcessor", "environment": "production"}
 )
 ```
 
@@ -162,9 +162,9 @@ enforcer.enforce_action(
 ### Approval Request Lifecycle
 
 ```
-PENDING → APPROVED → [Execute Action]
-       ↘ REJECTED ↗
-         EXPIRED
+PENDING APPROVED [Execute Action]
+ REJECTED 
+ EXPIRED
 ```
 
 ### Policy States
@@ -205,18 +205,18 @@ service = ApprovalService()
 
 # Submit approval request
 request = service.submit_approval(
-    policy_code="AGENT_DEPLOY_PROD",
-    requester_id="user123",
-    resource_id="agent_prod_001",
-    context={"change_summary": "Update ML model", "risk_level": "high"}
+ policy_code="AGENT_DEPLOY_PROD",
+ requester_id="user123",
+ resource_id="agent_prod_001",
+ context={"change_summary": "Update ML model", "risk_level": "high"}
 )
 
 # Approver decides
 decision = ApprovalDecision(
-    approver_id="approver456",
-    approver_name="Alice Chen",
-    decision="approved",
-    reason="Change reviewed and validated against security policies"
+ approver_id="approver456",
+ approver_name="Alice Chen",
+ decision="approved",
+ reason="Change reviewed and validated against security policies"
 )
 
 service.add_decision(request.request_id, decision)
@@ -289,23 +289,23 @@ service.add_decision(request.request_id, decision)
 Scopes control granular permissions within each token:
 
 ```
-api:agents:read      # Read agent definitions
-api:agents:write     # Create/modify agents
-api:workflows:exec   # Execute workflows
-api:secrets:read     # Read secrets
-governance:approve   # Approve requests
-governance:audit     # Access audit logs
+api:agents:read # Read agent definitions
+api:agents:write # Create/modify agents
+api:workflows:exec # Execute workflows
+api:secrets:read # Read secrets
+governance:approve # Approve requests
+governance:audit # Access audit logs
 ```
 
 ### Token Lifecycle
 
 ```
 Token Issued
-    ↓
+ 
 [TTL countdown]
-    ↓
+ 
 [Refresh via Refresh Token] OR [Token Expires]
-    ↓
+ 
 New Token Issued OR Re-authenticate
 ```
 
@@ -320,15 +320,15 @@ tokens = TokenManager(secret_key="your-secret-key")
 
 # Issue access token
 access_token = tokens.issue_token(
-    user_id="user123",
-    roles=["agent_operator", "ci_operator"],
-    expires_in_seconds=900  # 15 minutes
+ user_id="user123",
+ roles=["agent_operator", "ci_operator"],
+ expires_in_seconds=900 # 15 minutes
 )
 
 # Issue refresh token
 refresh_token = tokens.issue_refresh_token(
-    user_id="user123",
-    expires_in_seconds=2592000  # 30 days
+ user_id="user123",
+ expires_in_seconds=2592000 # 30 days
 )
 ```
 
@@ -337,15 +337,15 @@ refresh_token = tokens.issue_refresh_token(
 ```python
 # Validate and decode token
 try:
-    payload = tokens.validate_token(access_token)
-    user_id = payload["user_id"]
-    roles = payload["roles"]
+ payload = tokens.validate_token(access_token)
+ user_id = payload["user_id"]
+ roles = payload["roles"]
 except TokenExpiredError:
-    # Use refresh token to get new access token
-    new_access_token = tokens.refresh_access_token(refresh_token)
+ # Use refresh token to get new access token
+ new_access_token = tokens.refresh_access_token(refresh_token)
 except TokenInvalidError:
-    # Token is invalid or tampered with
-    return 401_UNAUTHORIZED
+ # Token is invalid or tampered with
+ return 401_UNAUTHORIZED
 ```
 
 #### Revoke Token
@@ -366,77 +366,118 @@ tokens.revoke_all_user_tokens(user_id="user123")
 
 ```mermaid
 graph TD
-    A[Agent Deployment Request] --> B{Target Environment?}
-    B -->|Development| C[Auto-Approve for agent_operator]
-    B -->|Staging| D{Change Type?}
-    B -->|Production| E{Risk Level?}
-    
-    D -->|Security| F[Require security_reviewer approval]
-    D -->|Non-Security| G[Require agent_operator approval]
-    
-    E -->|Low| H[Require agent_operator + 1 reviewer]
-    E -->|Medium| I[Require agent_operator + security_reviewer]
-    E -->|High| J[Require agent_operator + security_reviewer + system_admin]
-    
-    C --> K[Deploy Agent]
-    F --> L[Start Approval Workflow]
-    G --> L
-    H --> L
-    I --> L
-    J --> L
-    L --> M{Approved?}
-    M -->|Yes| K
-    M -->|No| N[Reject Deployment]
+
+ A[Agent Deployment Request] --> B{Target Environment?}
+
+ B -->|Development| C[Auto-Approve for agent_operator]
+
+ B -->|Staging| D{Change Type?}
+
+ B -->|Production| E{Risk Level?}
+ 
+ D -->|Security| F[Require security_reviewer approval]
+
+ D -->|Non-Security| G[Require agent_operator approval]
+ 
+ E -->|Low| H[Require agent_operator + 1 reviewer]
+
+ E -->|Medium| I[Require agent_operator + security_reviewer]
+
+ E -->|High| J[Require agent_operator + security_reviewer + system_admin]
+ 
+ C --> K[Deploy Agent]
+
+ F --> L[Start Approval Workflow]
+
+ G --> L
+
+ H --> L
+
+ I --> L
+
+ J --> L
+
+ L --> M{Approved?}
+
+ M -->|Yes| K
+
+ M -->|No| N[Reject Deployment]
 ```
 
 ### Secret Rotation Decision Tree
 
 ```mermaid
 graph TD
-    A[Secret Rotation Request] --> B{Emergency?}
-    B -->|Yes| C[Incident Mode: 30-min SLA]
-    B -->|No| D[Standard Mode: 2-hour SLA]
-    
-    C --> E[Require system_admin approval]
-    D --> F[Require security_reviewer + system_admin]
-    
-    E --> G{Approved?}
-    F --> G
-    G -->|Yes| H[Rotate Secret]
-    G -->|No| I[Reject Rotation]
-    H --> J[Update All Services]
-    J --> K[Complete]
+
+ A[Secret Rotation Request] --> B{Emergency?}
+
+ B -->|Yes| C[Incident Mode: 30-min SLA]
+
+ B -->|No| D[Standard Mode: 2-hour SLA]
+ 
+ C --> E[Require system_admin approval]
+
+ D --> F[Require security_reviewer + system_admin]
+ 
+ E --> G{Approved?}
+
+ F --> G
+
+ G -->|Yes| H[Rotate Secret]
+
+ G -->|No| I[Reject Rotation]
+
+ H --> J[Update All Services]
+
+ J --> K[Complete]
 ```
 
 ### Approval Escalation Decision Tree
 
 ```mermaid
 graph TD
-    A[Approval Request Submitted] --> B[Start 4-hour SLA]
-    B --> C{L1 Approver Responds?}
-    C -->|Yes| D{Approved?}
-    C -->|No| E[L1 SLA Elapsed]
-    
-    D -->|Approved| F[Complete: APPROVED]
-    D -->|Rejected| G[Complete: REJECTED]
-    
-    E --> H[Escalate to L2]
-    H --> I[Start 4-hour L2 SLA]
-    I --> J{L2 Approver Responds?}
-    J -->|Yes| K{Approved?}
-    J -->|No| L[L2 SLA Elapsed]
-    
-    K -->|Approved| F
-    K -->|Rejected| G
-    L --> M[Escalate to L3]
-    M --> N[Start 4-hour L3 SLA]
-    N --> O{L3 Approver Responds?}
-    O -->|Yes| P{Approved?}
-    O -->|No| Q[Auto-Approve: Quorum Unavailable]
-    
-    P -->|Approved| F
-    P -->|Rejected| G
-    Q --> F
+
+ A[Approval Request Submitted] --> B[Start 4-hour SLA]
+
+ B --> C{L1 Approver Responds?}
+
+ C -->|Yes| D{Approved?}
+
+ C -->|No| E[L1 SLA Elapsed]
+ 
+ D -->|Approved| F[Complete: APPROVED]
+
+ D -->|Rejected| G[Complete: REJECTED]
+ 
+ E --> H[Escalate to L2]
+
+ H --> I[Start 4-hour L2 SLA]
+
+ I --> J{L2 Approver Responds?}
+
+ J -->|Yes| K{Approved?}
+
+ J -->|No| L[L2 SLA Elapsed]
+ 
+ K -->|Approved| F
+
+ K -->|Rejected| G
+
+ L --> M[Escalate to L3]
+
+ M --> N[Start 4-hour L3 SLA]
+
+ N --> O{L3 Approver Responds?}
+
+ O -->|Yes| P{Approved?}
+
+ O -->|No| Q[Auto-Approve: Quorum Unavailable]
+ 
+ P -->|Approved| F
+
+ P -->|Rejected| G
+
+ Q --> F
 ```
 
 ---
@@ -451,17 +492,17 @@ GET /api/v1/governance/rbac/check
 Content-Type: application/json
 
 {
-  "user_id": "user123",
-  "action": "execute",
-  "resource": "agents",
-  "resource_id": "agent_prod_001"
+ "user_id": "user123",
+ "action": "execute",
+ "resource": "agents",
+ "resource_id": "agent_prod_001"
 }
 
 Response:
 {
-  "allowed": true,
-  "roles": ["agent_operator", "ci_operator"],
-  "reason": "agent_operator role permits execute on agents"
+ "allowed": true,
+ "roles": ["agent_operator", "ci_operator"],
+ "reason": "agent_operator role permits execute on agents"
 }
 ```
 
@@ -471,17 +512,17 @@ GET /api/v1/governance/rbac/permissions?user_id=user123
 
 Response:
 {
-  "user_id": "user123",
-  "roles": ["agent_operator"],
-  "permissions": {
-    "agents": ["create", "read", "update", "execute"],
-    "workflows": ["create", "read", "update", "execute"],
-    "secrets": ["read"],
-    "docs": ["read"],
-    "code": ["read", "update"],
-    "reports": ["create", "read"],
-    "audit_logs": ["read"]
-  }
+ "user_id": "user123",
+ "roles": ["agent_operator"],
+ "permissions": {
+ "agents": ["create", "read", "update", "execute"],
+ "workflows": ["create", "read", "update", "execute"],
+ "secrets": ["read"],
+ "docs": ["read"],
+ "code": ["read", "update"],
+ "reports": ["create", "read"],
+ "audit_logs": ["read"]
+ }
 }
 ```
 
@@ -493,23 +534,23 @@ POST /api/v1/governance/approvals
 Content-Type: application/json
 
 {
-  "policy_code": "AGENT_DEPLOY_PROD",
-  "requester_id": "user123",
-  "resource_id": "agent_prod_001",
-  "context": {
-    "agent_name": "DataProcessor",
-    "version": "2.1.0",
-    "change_summary": "ML model update"
-  }
+ "policy_code": "AGENT_DEPLOY_PROD",
+ "requester_id": "user123",
+ "resource_id": "agent_prod_001",
+ "context": {
+ "agent_name": "DataProcessor",
+ "version": "2.1.0",
+ "change_summary": "ML model update"
+ }
 }
 
 Response:
 {
-  "request_id": "req-uuid-123",
-  "status": "pending",
-  "created_at": 1720000000,
-  "expires_at": 1720000300,
-  "approvers": ["approver1@company.com", "approver2@company.com"]
+ "request_id": "req-uuid-123",
+ "status": "pending",
+ "created_at": 1720000000,
+ "expires_at": 1720000300,
+ "approvers": ["approver1@company.com", "approver2@company.com"]
 }
 ```
 
@@ -519,17 +560,17 @@ GET /api/v1/governance/approvals/{request_id}
 
 Response:
 {
-  "request_id": "req-uuid-123",
-  "status": "pending",
-  "decisions": [
-    {
-      "approver": "approver1@company.com",
-      "decision": "approved",
-      "reason": "Change reviewed",
-      "decided_at": 1720000100
-    }
-  ],
-  "auto_approved": false
+ "request_id": "req-uuid-123",
+ "status": "pending",
+ "decisions": [
+ {
+ "approver": "approver1@company.com",
+ "decision": "approved",
+ "reason": "Change reviewed",
+ "decided_at": 1720000100
+ }
+ ],
+ "auto_approved": false
 }
 ```
 
@@ -539,16 +580,16 @@ POST /api/v1/governance/approvals/{request_id}/decision
 Content-Type: application/json
 
 {
-  "approver_id": "approver1@company.com",
-  "decision": "approved",
-  "reason": "Change reviewed and validated"
+ "approver_id": "approver1@company.com",
+ "decision": "approved",
+ "reason": "Change reviewed and validated"
 }
 
 Response:
 {
-  "request_id": "req-uuid-123",
-  "status": "pending",
-  "pending_approvers": ["approver2@company.com"]
+ "request_id": "req-uuid-123",
+ "status": "pending",
+ "pending_approvers": ["approver2@company.com"]
 }
 ```
 
@@ -565,28 +606,28 @@ from codex.governance.approval_service import ApprovalService, ApprovalDecision
 # Step 1: Check if requester has permission
 rbac = RBACEnforcer()
 try:
-    rbac.enforce_action(
-        user_id="alice",
-        roles=[CodexRole.AGENT_OPERATOR],
-        action=Action.EXECUTE,
-        resource=ResourceType.AGENTS,
-        resource_id="agent_prod_001"
-    )
+ rbac.enforce_action(
+ user_id="alice",
+ roles=[CodexRole.AGENT_OPERATOR],
+ action=Action.EXECUTE,
+ resource=ResourceType.AGENTS,
+ resource_id="agent_prod_001"
+ )
 except PermissionDeniedError:
-    print("Alice lacks execute permission on agents")
-    return
+ print("Alice lacks execute permission on agents")
+ return
 
 # Step 2: Submit approval request
 approval_service = ApprovalService()
 request = approval_service.submit_approval(
-    policy_code="AGENT_DEPLOY_PROD",
-    requester_id="alice",
-    resource_id="agent_prod_001",
-    context={
-        "agent_name": "DataProcessor",
-        "version": "2.1.0",
-        "change_summary": "Update ML model for Q3 campaign"
-    }
+ policy_code="AGENT_DEPLOY_PROD",
+ requester_id="alice",
+ resource_id="agent_prod_001",
+ context={
+ "agent_name": "DataProcessor",
+ "version": "2.1.0",
+ "change_summary": "Update ML model for Q3 campaign"
+ }
 )
 
 print(f"Approval request {request.request_id} submitted")
@@ -594,10 +635,10 @@ print(f"Expires at {request.expires_at}")
 
 # Step 3: Security reviewer approves
 decision = ApprovalDecision(
-    approver_id="bob_security_lead",
-    approver_name="Bob Chen",
-    decision="approved",
-    reason="Model validated against Q3 security requirements"
+ approver_id="bob_security_lead",
+ approver_name="Bob Chen",
+ decision="approved",
+ reason="Model validated against Q3 security requirements"
 )
 
 approval_service.add_decision(request.request_id, decision)
@@ -605,8 +646,8 @@ approval_service.add_decision(request.request_id, decision)
 # Step 4: Check if approved
 updated_request = approval_service.get_request(request.request_id)
 if updated_request.status == "approved":
-    print("Deployment approved. Proceeding...")
-    # Execute deployment
+ print("Deployment approved. Proceeding...")
+ # Execute deployment
 ```
 
 ### Example 2: Custom Role with Limited Permissions
@@ -618,9 +659,9 @@ rbac = RBACEnforcer()
 
 # Define custom role with limited scope
 custom_role_permissions = {
-    ResourceType.AGENTS: {Action.READ},
-    ResourceType.WORKFLOWS: {Action.READ, Action.EXECUTE},
-    ResourceType.REPORTS: {Action.READ, Action.CREATE}
+ ResourceType.AGENTS: {Action.READ},
+ ResourceType.WORKFLOWS: {Action.READ, Action.EXECUTE},
+ ResourceType.REPORTS: {Action.READ, Action.CREATE}
 }
 
 # Register custom role
@@ -628,9 +669,9 @@ rbac.register_custom_role("analyst_reporting", custom_role_permissions)
 
 # Check permission
 if rbac.has_permission("user_analyst", "analyst_reporting", Action.READ, ResourceType.AGENTS):
-    print("Analyst can read agents")
+ print("Analyst can read agents")
 else:
-    print("Analyst cannot modify agents")
+ print("Analyst cannot modify agents")
 ```
 
 ---
@@ -646,5 +687,5 @@ else:
 ---
 
 **Last Updated: 2026-07-08
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Status:** Production Ready

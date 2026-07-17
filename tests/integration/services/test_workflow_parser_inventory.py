@@ -2,8 +2,8 @@
 
 import pytest
 
-from services.workflow.inventory import WorkflowInventory
-from services.workflow.parser import WorkflowParser
+from src.services.workflow.inventory import WorkflowInventory
+from src.services.workflow.parser import WorkflowParser
 
 
 @pytest.mark.integration

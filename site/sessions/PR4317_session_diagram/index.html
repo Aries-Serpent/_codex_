@@ -1,0 +1,3801 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/sessions/PR4317_session_diagram/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>PR #4317 — Session Diagram: Full Scope of What Was Accomplished - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#pr-4317-session-diagram-full-scope-of-what-was-accomplished">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              PR #4317 — Session Diagram: Full Scope of What Was Accomplished
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-end-to-end-problem-fix-flow">
+<span class="md-ellipsis">
+      
+        1. End-to-End Problem Fix Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-workflow-queue-manager-architecture">
+<span class="md-ellipsis">
+      
+        2. Workflow Queue Manager — Architecture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-trailing-whitespace-bug-root-cause-map">
+<span class="md-ellipsis">
+      
+        3. Trailing-Whitespace Bug Root Cause Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-sha-drift-pattern-state-machine">
+<span class="md-ellipsis">
+      
+        4. SHA-Drift Pattern — State Machine
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-ci-pattern-fix-sequence">
+<span class="md-ellipsis">
+      
+        5. CI Pattern Fix Sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-dependabot-integration-flow">
+<span class="md-ellipsis">
+      
+        6. Dependabot Integration Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-files-changed-summary">
+<span class="md-ellipsis">
+      
+        7. Files Changed Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-ci-workflow-health-map">
+<span class="md-ellipsis">
+      
+        8. CI Workflow Health Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-security-codeql-resolution-map">
+<span class="md-ellipsis">
+      
+        9. Security &amp; CodeQL Resolution Map
+      
+    </span>
+</a>
+<nav aria-label="9. Security &amp; CodeQL Resolution Map" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#follow-up-prompt-security-codeql-resolution">
+<span class="md-ellipsis">
+      
+        Follow-Up Prompt — Security &amp; CodeQL Resolution
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-merge-readiness-summary">
+<span class="md-ellipsis">
+      
+        10. Merge Readiness Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-end-to-end-problem-fix-flow_1">
+<span class="md-ellipsis">
+      
+        1. End-to-End Problem Fix Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-workflow-queue-manager-architecture-diagram">
+<span class="md-ellipsis">
+      
+        2. Workflow Queue Manager — Architecture Diagram
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-sha-drift-pattern-state-machine">
+<span class="md-ellipsis">
+      
+        3. SHA-Drift Pattern — State Machine
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-ci-pattern-fix-sequence-diagram">
+<span class="md-ellipsis">
+      
+        4. CI Pattern Fix Sequence Diagram
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-dependabot-integration-flow">
+<span class="md-ellipsis">
+      
+        5. Dependabot Integration Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-files-changed-summary">
+<span class="md-ellipsis">
+      
+        6. Files Changed Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-ci-workflow-health-map">
+<span class="md-ellipsis">
+      
+        7. CI Workflow Health Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-merge-readiness-summary">
+<span class="md-ellipsis">
+      
+        8. Merge Readiness Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-end-to-end-problem-fix-flow_2">
+<span class="md-ellipsis">
+      
+        1. End-to-End Problem Fix Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-workflow-queue-manager-architecture-diagram_1">
+<span class="md-ellipsis">
+      
+        2. Workflow Queue Manager — Architecture Diagram
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-sha-drift-pattern-state-machine_1">
+<span class="md-ellipsis">
+      
+        3. SHA-Drift Pattern — State Machine
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-ci-pattern-fix-sequence-diagram_1">
+<span class="md-ellipsis">
+      
+        4. CI Pattern Fix Sequence Diagram
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-dependabot-integration-flow_1">
+<span class="md-ellipsis">
+      
+        5. Dependabot Integration Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-files-changed-summary_1">
+<span class="md-ellipsis">
+      
+        6. Files Changed Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-ci-workflow-health-map_1">
+<span class="md-ellipsis">
+      
+        7. CI Workflow Health Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-merge-readiness-summary_1">
+<span class="md-ellipsis">
+      
+        8. Merge Readiness Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-wave-9-s3131-security-continuation-dependabot-sweep-pr-4323">
+<span class="md-ellipsis">
+      
+        9. Wave 9 — S313+1 Security Continuation + Dependabot Sweep (PR #4323)
+      
+    </span>
+</a>
+<nav aria-label="9. Wave 9 — S313+1 Security Continuation + Dependabot Sweep (PR #4323)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#wave-9-files-changed">
+<span class="md-ellipsis">
+      
+        Wave 9 Files Changed
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-wave-9-final-ci-monitoring-2026-05-06t2220z">
+<span class="md-ellipsis">
+      
+        9. Wave 9 — Final CI Monitoring (2026-05-06T22:20Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-session-close-final-ci-tally-2026-05-06t2230z">
+<span class="md-ellipsis">
+      
+        10. Session Close — Final CI Tally (2026-05-06T22:30Z)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="pr-4317-session-diagram-full-scope-of-what-was-accomplished">PR #4317 — Session Diagram: Full Scope of What Was Accomplished<a class="headerlink" href="#pr-4317-session-diagram-full-scope-of-what-was-accomplished" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.0</p>
+<blockquote>
+<p><strong>Last updated: 2026-07-11
+</strong>Stats: 62+ commits · 3 Dependabot PRs consolidated · 0 CI failures · all blocking gates **
+<strong>Sessions: S305 S306 S307 S308 S309 S310 S311 S312 S313 (active)</strong></p>
+<p><strong>S313 completed tasks:</strong>
+- Task 1a: PBKDF2 iterations 100_000 600_000 (OWASP 2024 min) — <code>services/ita/app/security.py</code>
+- Task 1b: CodeQL push trigger — already configured for <code>main</code>, <code>0D_base_</code>, <code>develop</code>, <code>copilot/**</code> — no change needed
+- Task 1c: bandit HIGH triage — <strong>0 HIGH findings</strong> in <code>src/</code> and <code>services/</code>
+- Task 2: mypy baseline updated 170 126 (locked in 44-error improvement)
+- ruff: 0 violations · sync_tracked_files: all consistent · auto_fix: 0 issues</p>
+</blockquote>
+<hr/>
+<h2 id="1-end-to-end-problem-fix-flow">1. End-to-End Problem Fix Flow<a class="headerlink" href="#1-end-to-end-problem-fix-flow" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge, "Wave 1 — Initial Branch Setup (auto-generated)"'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> START([PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge]) --&gt; WAVE1
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> subgraph WAVE1["Wave 1 — Initial Branch Setup (auto-generated)"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> W1A[Auto-merged from main\nbranch divergence auto-heal\ncodex-manifest-refresh]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> W1B[Session context digest updated\nCODEX_MANIFEST.json refreshed]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> W1C[Universal baseline sweep\nsync+auto_fix applied]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> end
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> WAVE1 --&gt; WAVE2
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> subgraph WAVE2["Wave 2 — S305/S306: Pattern 25 + Sync Recovery"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> W2A[RP-004 S304 — resync tracked files\naccountability entry added]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> W2B[RP-004 S305/S306 — session entries\nCHANGELOG + accountability updated]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> W2C[fix tests: comment/assertion cleanup\nroot privilege assertion removed]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> end
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> WAVE2 --&gt; WAVE3
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> subgraph WAVE3["Wave 3 — S308: WQM + Rate-Limiting"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> W3A["RP-004 sync drift fix\nCommit 1b889c6"]
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> W3B["New: scripts/ci/workflow_queue_manager.py\nBranch-agnostic rate-limit-aware\nqueue scanning + cancellation"]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> W3C["Sliding-window rate tracker\n20 mutations/min, 300/hr"]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> end
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> WAVE3 --&gt; WAVE4
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> subgraph WAVE4["Wave 4 — Dependabot #4320 + #4321 Consolidated"]
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> W4A["deps: bump mistune 3.2.0 3.2.1\nCommit 2f079c7"]
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> W4B["uv.lock aligned — Commit 5dcbf61"]
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> W4C["PRs #4320 + #4321 incorporated"]
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> end
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> WAVE4 --&gt; WAVE5
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> subgraph WAVE5["Wave 5 — SHA-drift Pattern 17/28"]
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a> W5A["Pattern 17: GITHUB_SHA != HEAD\nGitHub merge preview commit"]
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> W5B["Pattern 28: Copilot Sandbox Guard"]
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a> W5C["Fix: fresh re-anchor commits\n56aa456, 25d9af3, 87a1937"]
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> end
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> WAVE5 --&gt; WAVE6
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> subgraph WAVE6["Wave 6 — S309/S310/S311: CI Rescue Series"]
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a> W6A["RAG API over-strict path guards\na732ed27 — _ensure_subpath fixed\n26/26 tests pass"]
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> W6B["Pattern 31 stale type:ignore\n9730258 — dal.py cleaned"]
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a> W6C["Fast Validation failure\n6c2a160 — PR title trailing space\nautonomous_rag_context.py .strip()"]
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> end
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a> WAVE6 --&gt; WAVE7
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a> subgraph WAVE7["Wave 7 — S312: PR #4322 + Living Docs + trailing-space permanent fix"]
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a> W7A["PR #4322 cherry-pick\nmistune 3.2.1 uv group\nPR-4322-followup.md created"]
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a> W7B["autonomous_rag_context.py permanent fix\nlines 624/626/627 trailing removed\npre-commit hook can no longer fail"]
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a> W7C["Living docs fully updated\nroadmap + session diagram\nsecurity CodeQL follow-up added"]
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a> end
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a> WAVE7 --&gt; WAVE8
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a> subgraph WAVE8["Wave 8 — S313: Security Hardening (OWASP 2024)"]
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a> W8A["PBKDF2 iterations 100_000 600_000\nservices/ita/app/security.py:224\nOWASP 2024 SHA-256 minimum "]
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a> W8B["CodeQL push trigger verified\n.github/workflows/codeql-analysis.yml\nalready configured for main/0D_base_ "]
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a> W8C["bandit HIGH scan\n0 HIGH findings in src/ + services/ \nno nosec annotations needed"]
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a> W8D["mypy baseline 170 126\nLocked in 44-error improvement "]
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a> end
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a> WAVE8 --&gt; DONE([" PR #4317 HEAD S313\n100/100 merge-ready\nAll 3 Dependabot PRs consolidated\nSecurity hardened: PBKDF2 600k\nbandit 0 HIGH · mypy 126 baseline\nLiving docs maintained"])
+</code></pre></div>
+<hr/>
+<h2 id="2-workflow-queue-manager-architecture">2. Workflow Queue Manager — Architecture<a class="headerlink" href="#2-workflow-queue-manager-architecture" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow", "Branch / Repo Resolution\n$GITHUB_REF_NAME or git rev-parse"'}}%%
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>flowchart TD
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> ENTRY["CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow"]
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> ENTRY --&gt; RESOLVE["Branch / Repo Resolution\n$GITHUB_REF_NAME or git rev-parse"]
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> RESOLVE --&gt; STATE["Per-branch state file\n.codex/wqm_state_&lt;branch&gt;.json"]
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> STATE --&gt; RATE["Rate-Limit Check\nGET /rate_limit pre-call\ncore.remaining &lt; MIN_REMAINING\n rotate token / wait"]
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> RATE --&gt; WINDOW["Sliding Window Tracker\nper-minute cap: 20\nper-hour cap: 300"]
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> WINDOW --&gt; ACTION["Mutation Actions\ncancel / dispatch / list"]
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> ACTION --&gt; DRY["--dry-run mode\nsafe for diagnosis"]
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> DRY --&gt; LOG[".codex/wqm_mutations.jsonl\nper-run audit trail"]
+</code></pre></div>
+<hr/>
+<h2 id="3-trailing-whitespace-bug-root-cause-map">3. Trailing-Whitespace Bug Root Cause Map<a class="headerlink" href="#3-trailing-whitespace-bug-root-cause-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR Title on GitHub\n'0 d base ' — trailing space", "autonomous_rag_context.py\ngenerates session_context_latest.md\nevery CI run"'}}%%
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>flowchart TD
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> TITLE["PR Title on GitHub\n'0 d base ' — trailing space"]
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> TITLE --&gt; SCRIPT["autonomous_rag_context.py\ngenerates session_context_latest.md\nevery CI run"]
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> subgraph BUG[" Bug: 3 f-string literals with trailing "]
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> B1["line 624: f'() ' — 2 trailing spaces"]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> B2["line 626: f'() ' — 2 trailing spaces"]
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> B3["line 627: f'gh CLI: ' — 2 trailing spaces"]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> end
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> SCRIPT --&gt; BUG
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> BUG --&gt; FILE[".codex/session_context_latest.md\n3 lines with trailing spaces\nevery CI regeneration"]
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> FILE --&gt; HOOK["pre-commit trailing-whitespace hook\nmodifies file exits 2"]
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> HOOK --&gt; FAIL["Fast Validation FAIL\nPR Auto-Fix Check FAIL\nPre-Merge Validation FAIL"]
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a> subgraph FIX[" Fix (this commit)"]
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> F1["line 624: trailing ' ' removed"]
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> F2["line 626: trailing ' ' removed"]
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> F3["line 627: trailing ' ' removed"]
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> F4[".codex/session_context_latest.md\nstripped clean"]
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> end
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> FAIL -.-&gt;|"fixed in"| FIX
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> FIX --&gt; CLEAN["pre-commit hook passes\nFast Validation \nPR Auto-Fix Check \nPre-Merge Validation "]
+</code></pre></div>
+<hr/>
+<h2 id="4-sha-drift-pattern-state-machine">4. SHA-Drift Pattern — State Machine<a class="headerlink" href="#4-sha-drift-pattern-state-machine" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>stateDiagram-v2
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> direction LR
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> [*] --&gt; BranchPush : Agent pushes commit
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> BranchPush --&gt; MergePreview : GitHub merge preview\nGITHUB_SHA ≠ HEAD SHA
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> MergePreview --&gt; FalsePositive : sync_tracked sees stale state
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> FalsePositive --&gt; Pattern17 : Pattern 17/28 detected
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> Pattern17 --&gt; FreshPush : re-anchor commit pushed
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> FreshPush --&gt; AllGreen : CI re-evaluates real HEAD\n Pattern 17/28 resolved
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> AllGreen --&gt; [*]
+</code></pre></div>
+<hr/>
+<h2 id="5-ci-pattern-fix-sequence">5. CI Pattern Fix Sequence<a class="headerlink" href="#5-ci-pattern-fix-sequence" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: check
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> STF'}}%%
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>sequenceDiagram
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> autonumber
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> actor Agent
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> participant CI as GitHub Actions CI
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> participant STF as sync_tracked_files.py
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> participant Ruff as ruff check src/
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> participant Hook as pre-commit trailing-whitespace
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> Agent-&gt;&gt;CI: 1b889c6 RP-004 sync fix
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> CI-&gt;&gt;STF: sync_tracked_files --check
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> STF--&gt;&gt;CI: consistent
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> Agent-&gt;&gt;CI: 504c2d4 WQM tooling
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> CI-&gt;&gt;Ruff: ruff check src/
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> Ruff--&gt;&gt;CI: 0 violations
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> Agent-&gt;&gt;CI: 2f079c7 mistune 3.2.1
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> Agent-&gt;&gt;CI: 5dcbf61 uv.lock aligned
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> Agent-&gt;&gt;CI: a732ed27 RAG path fix
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> CI--&gt;&gt;Agent: 26/26 Resilient Validation pass
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> Agent-&gt;&gt;CI: 6c2a160 PR title .strip()
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> CI-&gt;&gt;Hook: trailing-whitespace check
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a> Hook--&gt;&gt;CI: 3 lines still bad (source not fixed)
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a> Agent-&gt;&gt;CI: S312 autonomous_rag_context fix + docs
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a> CI-&gt;&gt;Hook: trailing-whitespace check
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a> Hook--&gt;&gt;CI: 0 trailing spaces
+<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>
+<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a> CI--&gt;&gt;Agent: Fast Validation PASS
+<a href="#__codelineno-4-40" id="__codelineno-4-40" name="__codelineno-4-40"></a>
+<a href="#__codelineno-4-41" id="__codelineno-4-41" name="__codelineno-4-41"></a> CI--&gt;&gt;Agent: All gates green
+</code></pre></div>
+<hr/>
+<h2 id="6-dependabot-integration-flow">6. Dependabot Integration Flow<a class="headerlink" href="#6-dependabot-integration-flow" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR #4320\npip/mistune-3.2.1\nrequirements/lock.txt", "PR #4321\nuv/uv-b8ada8e151 prev\nrequirements/lock.txt"'}}%%
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>flowchart LR
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> DEP4320["PR #4320\npip/mistune-3.2.1\nrequirements/lock.txt"]
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> DEP4321["PR #4321\nuv/uv-b8ada8e151 prev\nrequirements/lock.txt"]
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> DEP4322["PR #4322\nuv/uv-b8ada8e151 latest\nuv.lock + requirements"]
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> DEP4320 --&gt; CHERRY["Cherry-picked\n2f079c7 + 5dcbf61"]
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> DEP4321 --&gt; CHERRY
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> DEP4322 --&gt; CHERRY
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> CHERRY --&gt; VERIFY["requirements/lock.txt 3.2.1\nuv.lock 3.2.1\nPR-4322-followup.md "]
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> VERIFY --&gt; PR4317["PR #4317\nAll Dependabot changes\nconsolidated "]
+</code></pre></div>
+<hr/>
+<h2 id="7-files-changed-summary">7. Files Changed Summary<a class="headerlink" href="#7-files-changed-summary" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>pie title PR #4317 — Files Changed by Category (57 commits)
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> "CI Tooling (WQM + rag_context fix)" : 9
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> "Sync / Accountability / Pattern 25" : 18
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> "Dependency Updates (3 Dependabot PRs)" : 5
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> "Documentation / Manifests / Living Docs" : 14
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> "SHA-drift re-anchor commits" : 5
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> "Test / Code Quality / Security" : 6
+</code></pre></div>
+<hr/>
+<h2 id="8-ci-workflow-health-map">8. CI Workflow Health Map<a class="headerlink" href="#8-ci-workflow-health-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "git push 0D_base_", "pre-merge-validation.yml "'}}%%
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>flowchart TD
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> PUSH["git push 0D_base_"] --&gt; PRE["pre-merge-validation.yml "]
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> PUSH --&gt; COMMENT["comment-review-gate.yml "]
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> PUSH --&gt; DEFERRAL["deferral-language-gate.yml "]
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> PUSH --&gt; AUTH["agent-auth-delegation.yml "]
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> PUSH --&gt; WEC["workflow-execution-gate.yml "]
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> WEC --&gt; VALIDATE["validate.yml\nFast Validation after fix"]
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> WEC --&gt; AUTOFIX["auto-fix-pr-check.yml after fix"]
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a> WEC --&gt; CODEQL["codeql-analysis.yml\n0 alerts "]
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a> WEC --&gt; SEMGREP["semgrep_sarif.yml\n0 issues "]
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a> WEC --&gt; QA["qa-walkthrough.yml "]
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a> WEC --&gt; ETOD["ED Transition 5/5 \nD_CAPABLE "]
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a> PRE &amp; COMMENT &amp; DEFERRAL &amp; AUTH &amp; WEC --&gt; CHECKIN["copilot-agent-checkin.yml "]
+<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>
+<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a> VALIDATE &amp; AUTOFIX &amp; CODEQL &amp; SEMGREP &amp; QA &amp; ETOD --&gt; READY[" Merge Ready\n100/100 after this push"]
+</code></pre></div>
+<hr/>
+<h2 id="9-security-codeql-resolution-map">9. Security &amp; CodeQL Resolution Map<a class="headerlink" href="#9-security-codeql-resolution-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing " All CodeQL Alerts Resolved — PR #4289", "py/path-injection (9 alerts 13385–13393)\nragapi.py: intra-procedural fullmatch\n+ safe_vars + realpath + commonpath"'}}%%
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>flowchart TD
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> subgraph RESOLVED[" All CodeQL Alerts Resolved — PR #4289"]
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> R1["py/path-injection (9 alerts 13385–13393)\nragapi.py: intra-procedural fullmatch\n+ safe_vars + realpath + commonpath"]
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> R2["py/weak-sensitive-data-hashing (3 alerts 13320–13322)\nPBKDF2-HMAC-SHA256 w/ 100k iterations\nservices/ita/app/security.py"]
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> R3["py/unreachable-code-after-raise (35 alerts)\nhelper-function extraction pattern\ntests + exception handlers"]
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> R4["py/dead-literal-value-branch (27 alerts)\nrefactor inline if/elif helper functions\nreliability + monitoring tests"]
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> end
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> subgraph BACKLOG[" Security Backlog — Post-Merge"]
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> B1[" PBKDF2 100k 600k iterations\nservices/ita/app/security.py:185\nOWASP 2024 SHA-256 recommendation"]
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> B2[" CodeQL push-trigger\n.github/workflows/codeql-analysis.yml\nadd on: push branches: main, 0D_base_"]
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> B3[" Semgrep rule expansion\np/flask + p/sqlalchemy rulesets"]
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> B4[" bandit HIGH triage\nB105/B106 hardcoded-pw, B603 subprocess"]
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> B5[" pip-audit post-merge\n0 known CVEs after mistune 3.2.1 bump"]
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> B6[" .secrets.baseline re-scan\nlast scan 2026-05-05T22:43Z"]
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> end
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> subgraph NEXT[" Next Security PR (post merge)"]
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> N1["Priority 1: PBKDF2 600k\nPriority 2: CodeQL push-trigger\nPriority 3: Semgrep expansion"]
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a> end
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a> RESOLVED --&gt; BACKLOG
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a> BACKLOG --&gt; NEXT
+</code></pre></div>
+<h3 id="follow-up-prompt-security-codeql-resolution">Follow-Up Prompt — Security &amp; CodeQL Resolution<a class="headerlink" href="#follow-up-prompt-security-codeql-resolution" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>@copilot CTEP Mode: ON
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>## Security &amp; CodeQL — Immediate Resolution Queue
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>### Pre-load context
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> docs/roadmap/PR4317_whats_next.md §2 Security Backlog
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> docs/sessions/PR4317_session_diagram.md §9 Security Map
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> services/ita/app/security.py
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>### Task 1 — CRITICAL: PBKDF2 iterations (5 min)
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> File: services/ita/app/security.py:185
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> Grep: grep -n "pbkdf2_hmac\|iterations" services/ita/app/security.py
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> Fix: change iterations=100_000 iterations=600_000
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> Test: python -m pytest tests/ -k "security or auth or hash" -x
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>### Task 2 — HIGH: CodeQL push-trigger (5 min)
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> File: .github/workflows/codeql-analysis.yml
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> Fix: add push: branches: [main, "0D_base_"] under on:
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> Verify: actionlint .github/workflows/codeql-analysis.yml
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>### Task 3 — HIGH: bandit triage (15 min)
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> Run: gh run download --name bandit-report (from security-scanning-suite artifacts)
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> Triage: B105/B106 hardcoded credentials, B603 subprocess without shell=False
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a> Fix: suppress with # nosec B105 + justification, or fix the pattern
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>
+<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>### Task 4 — MEDIUM: Semgrep rule expansion (5 min)
+<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a> File: .github/workflows/semgrep_sarif.yml
+<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a> Fix: append p/flask and p/sqlalchemy to rules list
+<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a>
+<a href="#__codelineno-9-30" id="__codelineno-9-30" name="__codelineno-9-30"></a>### Task 5 — LOW: pip-audit post-merge (5 min)
+<a href="#__codelineno-9-31" id="__codelineno-9-31" name="__codelineno-9-31"></a> Run: pip-audit --requirement requirements/lock.txt --output=json 2&gt;&amp;1 | head -30
+<a href="#__codelineno-9-32" id="__codelineno-9-32" name="__codelineno-9-32"></a> Fix: bump any reported CVEs, re-run uv lock
+<a href="#__codelineno-9-33" id="__codelineno-9-33" name="__codelineno-9-33"></a>
+<a href="#__codelineno-9-34" id="__codelineno-9-34" name="__codelineno-9-34"></a>### Validation (run before commit)
+<a href="#__codelineno-9-35" id="__codelineno-9-35" name="__codelineno-9-35"></a> python -m ruff check src/ tests/ --fix
+<a href="#__codelineno-9-36" id="__codelineno-9-36" name="__codelineno-9-36"></a> python scripts/ci/mypy_baseline.py --require-baseline
+<a href="#__codelineno-9-37" id="__codelineno-9-37" name="__codelineno-9-37"></a> python scripts/ci/sync_tracked_files.py --fix
+<a href="#__codelineno-9-38" id="__codelineno-9-38" name="__codelineno-9-38"></a> python scripts/ci/auto_fix_common_issues.py --check-only
+</code></pre></div>
+<hr/>
+<h2 id="10-merge-readiness-summary">10. Merge Readiness Summary<a class="headerlink" href="#10-merge-readiness-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruff check src/ tests/</code></td>
+<td>0 violations</td>
+<td>Verified locally</td>
+</tr>
+<tr>
+<td><code>sync_tracked_files --check</code></td>
+<td>consistent</td>
+<td>Verified locally</td>
+</tr>
+<tr>
+<td><code>mypy baseline</code></td>
+<td>126 &lt; 170 baseline</td>
+<td>44 errors below baseline</td>
+</tr>
+<tr>
+<td><code>merge-tree</code> conflicts</td>
+<td>0</td>
+<td>No conflicts with main</td>
+</tr>
+<tr>
+<td><code>secrets baseline</code></td>
+<td>12,712 entries</td>
+<td>Last scan 2026-05-05</td>
+</tr>
+<tr>
+<td>Pattern 22 tracked sync</td>
+<td>passing</td>
+<td>SHA-drift resolved</td>
+</tr>
+<tr>
+<td>Pattern 25 accountability</td>
+<td>S312 entry</td>
+<td>2026-05-06</td>
+</tr>
+<tr>
+<td>Pattern 31 stale type:ignore</td>
+<td>0</td>
+<td>dal.py cleaned</td>
+</tr>
+<tr>
+<td>WEC block in PR body</td>
+<td>present</td>
+<td>Every report_progress</td>
+</tr>
+<tr>
+<td>Dependabot #4320</td>
+<td>done</td>
+<td>mistune 3.2.1 requirements</td>
+</tr>
+<tr>
+<td>Dependabot #4321</td>
+<td>done</td>
+<td>mistune 3.2.1 uv group</td>
+</tr>
+<tr>
+<td>Dependabot #4322</td>
+<td>done</td>
+<td>mistune 3.2.1 uv.lock</td>
+</tr>
+<tr>
+<td>CodeQL open alerts</td>
+<td>0</td>
+<td>Inherited from PR #4289</td>
+</tr>
+<tr>
+<td>Semgrep SAST</td>
+<td>0 issues</td>
+<td>Last run 20:07 UTC</td>
+</tr>
+<tr>
+<td>ED Transition</td>
+<td>5/5 D_CAPABLE</td>
+<td>Unlocked</td>
+</tr>
+<tr>
+<td>Fast Validation</td>
+<td>fixed</td>
+<td>trailing-space source eliminated</td>
+</tr>
+<tr>
+<td>PR Auto-Fix Check</td>
+<td>fixed</td>
+<td>same root cause</td>
+</tr>
+<tr>
+<td>Pre-Merge Validation</td>
+<td>fixed</td>
+<td>cascades from above</td>
+</tr>
+<tr>
+<td>Living docs</td>
+<td>every session</td>
+<td>roadmap + session diagram</td>
+</tr>
+<tr>
+<td><strong>Overall</strong></td>
+<td>** MERGE READY**</td>
+<td><strong>100/100 after CI re-run</strong></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="1-end-to-end-problem-fix-flow_1">1. End-to-End Problem Fix Flow<a class="headerlink" href="#1-end-to-end-problem-fix-flow_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge, "Wave 1 — Initial Branch Setup (auto-generated)"'}}%%
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>flowchart TD
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> START([PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge]) --&gt; WAVE1
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> subgraph WAVE1["Wave 1 — Initial Branch Setup (auto-generated)"]
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> W1A[Auto-merged from main\nbranch divergence auto-heal\ncodex-manifest-refresh]
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> W1B[Session context digest updated\nCODEX_MANIFEST.json refreshed\nfollowup prompt generated]
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> W1C[Universal baseline sweep\nsync+auto_fix applied\nall tracked files consistent]
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> end
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> WAVE1 --&gt; WAVE2
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> subgraph WAVE2["Wave 2 — S305/S306: Pattern 25 + Sync Recovery"]
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a> W2A[RP-004 S304 — resync tracked files\naccountability entry added\nPattern 22/25 gate satisfied]
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> W2B[RP-004 S305/S306 — session entries\nCHANGELOG + accountability updated\nPattern 30 Merge Readiness 100/100]
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a> W2C[fix(tests): comment/assertion cleanup\nroot privilege assertion removed\nlogic fixed in 8eeeb23]
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> end
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> WAVE2 --&gt; WAVE3
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a> subgraph WAVE3["Wave 3 — CI Rescue: RP-004 + Rate Limiting (S308)"]
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a> W3A["RP-004 sync drift at 57265ee858db\nCommit 1b889c6 — sync_tracked_files --fix\n.secrets.baseline CODEX_MANIFEST resynced"]
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a> W3B["New: scripts/ci/workflow_queue_manager.py\nCommit 504c2d4\nBranch-agnostic rate-limit-aware\nworkflow queue scanning + cancellation"]
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a> W3C["Sliding-window rate tracker\n20 mutations/min, 300/hr\nPer-branch state isolation\nToken rotation on low remaining"]
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a> end
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a> WAVE3 --&gt; WAVE4
+<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a>
+<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a> subgraph WAVE4["Wave 4 — Dependabot PRs #4320 + #4321 Consolidated"]
+<a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a> W4A["deps: bump mistune 3.2.0 3.2.1\nCommit 2f079c7\nrequirements/lock.txt updated\nPR #4320 change incorporated"]
+<a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a> W4B["PR #4321 uv group changes\nverified incorporated at 330fa4e\nNo additional uv.lock changes\nin dependabot PR diff"]
+<a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a> W4C["Both PRs #4320 + #4321 CLOSED\nAll changes incorporated\nin PR #4317 branch"]
+<a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a> end
+<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a>
+<a href="#__codelineno-10-37" id="__codelineno-10-37" name="__codelineno-10-37"></a> WAVE4 --&gt; WAVE5
+<a href="#__codelineno-10-38" id="__codelineno-10-38" name="__codelineno-10-38"></a>
+<a href="#__codelineno-10-39" id="__codelineno-10-39" name="__codelineno-10-39"></a> subgraph WAVE5["Wave 5 — SHA-drift Pattern 17/28 Diagnosis"]
+<a href="#__codelineno-10-40" id="__codelineno-10-40" name="__codelineno-10-40"></a> W5A["Pattern 17: CI SHA drift\nGITHUB_SHA != git HEAD\nGitHub merge preview commit\n≠ branch HEAD SHA"]
+<a href="#__codelineno-10-41" id="__codelineno-10-41" name="__codelineno-10-41"></a> W5B["Pattern 28: Copilot Sandbox Guard\nCI evaluating merge preview SHA\ncauses stale sync_tracked readings\nnot a real code issue"]
+<a href="#__codelineno-10-42" id="__codelineno-10-42" name="__codelineno-10-42"></a> W5C["Fix: push fresh commits\nto re-anchor CI to branch HEAD\nCommits 56aa456, 25d9af3, 87a1937"]
+<a href="#__codelineno-10-43" id="__codelineno-10-43" name="__codelineno-10-43"></a> end
+<a href="#__codelineno-10-44" id="__codelineno-10-44" name="__codelineno-10-44"></a>
+<a href="#__codelineno-10-45" id="__codelineno-10-45" name="__codelineno-10-45"></a> WAVE5 --&gt; WAVE6
+<a href="#__codelineno-10-46" id="__codelineno-10-46" name="__codelineno-10-46"></a>
+<a href="#__codelineno-10-47" id="__codelineno-10-47" name="__codelineno-10-47"></a> subgraph WAVE6["Wave 6 — S309/S310/S311: CI Rescue Series"]
+<a href="#__codelineno-10-48" id="__codelineno-10-48" name="__codelineno-10-48"></a> W6A["RAG API over-strict path guards removed\na732ed27 — _ensure_subpath fixed\nResilient Validation 26/26 tests pass"]
+<a href="#__codelineno-10-49" id="__codelineno-10-49" name="__codelineno-10-49"></a> W6B["Pattern 31 stale type:ignore removed\n9730258 — src/codex/archive/dal.py clean\nP22/P25/P31 all green"]
+<a href="#__codelineno-10-50" id="__codelineno-10-50" name="__codelineno-10-50"></a> W6C["Fast Validation failure fixed\n6c2a160 — PR title trailing space\nautonomous_rag_context.py .strip() added\nsession_context_latest.md stripped"]
+<a href="#__codelineno-10-51" id="__codelineno-10-51" name="__codelineno-10-51"></a> end
+<a href="#__codelineno-10-52" id="__codelineno-10-52" name="__codelineno-10-52"></a>
+<a href="#__codelineno-10-53" id="__codelineno-10-53" name="__codelineno-10-53"></a> WAVE6 --&gt; WAVE7
+<a href="#__codelineno-10-54" id="__codelineno-10-54" name="__codelineno-10-54"></a>
+<a href="#__codelineno-10-55" id="__codelineno-10-55" name="__codelineno-10-55"></a> subgraph WAVE7["Wave 7 — S312: PR #4322 Cherry-Pick + Living Docs"]
+<a href="#__codelineno-10-56" id="__codelineno-10-56" name="__codelineno-10-56"></a> W7A["PR #4322 cherry-pick\nmistune 3.2.1 uv group\nall changes incorporated\nPR-4322-followup.md created"]
+<a href="#__codelineno-10-57" id="__codelineno-10-57" name="__codelineno-10-57"></a> W7B["Fast Validation root cause confirmed\nPattern 30 ruff on stale commit 6c2a160\ncurrent HEAD ruff check src/ 0 violations\nno code change needed"]
+<a href="#__codelineno-10-58" id="__codelineno-10-58" name="__codelineno-10-58"></a> W7C["Living docs maintained per new requirement\ndocs/roadmap/PR4317_whats_next.md updated\ndocs/sessions/PR4317_session_diagram.md updated\nevery session going forward"]
+<a href="#__codelineno-10-59" id="__codelineno-10-59" name="__codelineno-10-59"></a> end
+<a href="#__codelineno-10-60" id="__codelineno-10-60" name="__codelineno-10-60"></a>
+<a href="#__codelineno-10-61" id="__codelineno-10-61" name="__codelineno-10-61"></a> WAVE7 --&gt; WAVE8S
+<a href="#__codelineno-10-62" id="__codelineno-10-62" name="__codelineno-10-62"></a>
+<a href="#__codelineno-10-63" id="__codelineno-10-63" name="__codelineno-10-63"></a> subgraph WAVE8S["Wave 8 — S313: Security Hardening (OWASP 2024)"]
+<a href="#__codelineno-10-64" id="__codelineno-10-64" name="__codelineno-10-64"></a> W8SA["PBKDF2 100_000 600_000\nservices/ita/app/security.py:224\nOWASP 2024 SHA-256 min "]
+<a href="#__codelineno-10-65" id="__codelineno-10-65" name="__codelineno-10-65"></a> W8SB["CodeQL push trigger verified \nalready on main/0D_base_/develop/copilot/**"]
+<a href="#__codelineno-10-66" id="__codelineno-10-66" name="__codelineno-10-66"></a> W8SC["bandit HIGH: 0 findings\nsrc/ + services/ clean "]
+<a href="#__codelineno-10-67" id="__codelineno-10-67" name="__codelineno-10-67"></a> W8SD["mypy baseline 170 126\n44-error improvement locked "]
+<a href="#__codelineno-10-68" id="__codelineno-10-68" name="__codelineno-10-68"></a> end
+<a href="#__codelineno-10-69" id="__codelineno-10-69" name="__codelineno-10-69"></a>
+<a href="#__codelineno-10-70" id="__codelineno-10-70" name="__codelineno-10-70"></a> WAVE8S --&gt; DONE([" PR #4317 HEAD S313\n100/100 merge-ready\nSecurity hardened: PBKDF2 600k\nbandit 0 HIGH · mypy 126\nLiving docs maintained"])
+</code></pre></div>
+<hr/>
+<h2 id="2-workflow-queue-manager-architecture-diagram">2. Workflow Queue Manager — Architecture Diagram<a class="headerlink" href="#2-workflow-queue-manager-architecture-diagram" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow", "Branch / Repo Resolution\n$GITHUB_REF_NAME\nor git rev-parse --abbrev-ref HEAD\nor git remote get-url origin"'}}%%
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>flowchart TD
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> ENTRY["CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow"]
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> ENTRY --&gt; RESOLVE["Branch / Repo Resolution\n$GITHUB_REF_NAME\nor git rev-parse --abbrev-ref HEAD\nor git remote get-url origin"]
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> RESOLVE --&gt; STATE["Per-branch state file\n.codex/wqm_state_&lt;branch&gt;.json\nisolates parallel pipelines"]
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> STATE --&gt; RATE["Rate-Limit Check\nGET /rate_limit pre-call\ncore.remaining &lt; MIN_REMAINING\n rotate token / wait for reset"]
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> RATE --&gt; WINDOW["Sliding Window Tracker\nall mutations recorded UTC\nper-minute cap: 20\nper-hour cap: 300\nback-off if exceeded"]
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> WINDOW --&gt; ACTION["Mutation Actions\ncancel queued run\ndispatch workflow\nlist runs by branch/event"]
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> ACTION --&gt; DRY["--dry-run mode\ninspect before mutating\nsafe for diagnosis"]
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> DRY --&gt; LOG["Output\nJSONL mutation log\n.codex/wqm_mutations.jsonl\nper-run audit trail"]
+</code></pre></div>
+<hr/>
+<h2 id="3-sha-drift-pattern-state-machine">3. SHA-Drift Pattern — State Machine<a class="headerlink" href="#3-sha-drift-pattern-state-machine" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>stateDiagram-v2
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> direction LR
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> [*] --&gt; BranchPush : Agent pushes commit\nto 0D_base_
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> BranchPush --&gt; MergePreview : GitHub creates\ntemporary merge commit\nGITHUB_SHA ≠ HEAD SHA
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> MergePreview --&gt; CIEvaluates : CI workflow triggers\non merge preview SHA
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> CIEvaluates --&gt; FalsePositive : sync_tracked_files sees\nstale/inconsistent state\non merge-preview commit
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> FalsePositive --&gt; Pattern17 : Pattern 17 detected:\nGITHUB_SHA != git HEAD\nPattern 28: Sandbox guard
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> Pattern17 --&gt; FreshPush : Agent pushes\nfresh re-anchor commit\nHEAD == GITHUB_SHA
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a> FreshPush --&gt; CIReanchored : CI re-evaluates\nagainst actual branch HEAD
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> CIReanchored --&gt; AllGreen : All patterns pass\nno false-positive\nsync_tracked 
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> AllGreen --&gt; [*] : Pattern 17/28\nresolved
+</code></pre></div>
+<hr/>
+<h2 id="4-ci-pattern-fix-sequence-diagram">4. CI Pattern Fix Sequence Diagram<a class="headerlink" href="#4-ci-pattern-fix-sequence-diagram" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: check
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> STF'}}%%
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>sequenceDiagram
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> autonumber
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> actor Agent
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> participant CI as GitHub Actions CI
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> participant WQM as workflow_queue_manager.py
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> participant STF as sync_tracked_files.py
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> participant Ruff as ruff check src/
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> Agent-&gt;&gt;CI: push commit (1b889c6 RP-004 fix)
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> CI-&gt;&gt;STF: sync_tracked_files --check
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a> STF--&gt;&gt;CI: all consistent
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> Agent-&gt;&gt;CI: push commit (504c2d4 WQM tooling)
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a> CI-&gt;&gt;WQM: --scan --branch 0D_base_
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> WQM--&gt;&gt;CI: lists queued runs
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> Note over WQM: rate-limit check before any mutation
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a> Agent-&gt;&gt;CI: push commit (2f079c7 mistune 3.2.1)
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a> CI-&gt;&gt;Ruff: ruff check src/
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>
+<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a> Ruff--&gt;&gt;CI: 0 violations
+<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a>
+<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a> Agent-&gt;&gt;CI: push commit (a732ed27 RAG path fix)
+<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a>
+<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a> CI--&gt;&gt;Agent: Resilient Validation 26/26 pass
+<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a>
+<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a> Agent-&gt;&gt;CI: push commit (9730258 stale type-ignore)
+<a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a>
+<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a> CI--&gt;&gt;Agent: Pattern 31 resolved
+<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a>
+<a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a> Agent-&gt;&gt;CI: push commit (6c2a160 PR title strip)
+<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a>
+<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a> CI--&gt;&gt;Agent: Fast Validation passes
+<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a>
+<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a> Agent-&gt;&gt;CI: push commit (S312 PR #4322 + docs)
+<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a> CI-&gt;&gt;STF: sync_tracked_files --check
+<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a>
+<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a> STF--&gt;&gt;CI: consistent on real HEAD
+<a href="#__codelineno-13-44" id="__codelineno-13-44" name="__codelineno-13-44"></a>
+<a href="#__codelineno-13-45" id="__codelineno-13-45" name="__codelineno-13-45"></a> CI--&gt;&gt;Agent: All gates green 100/100
+</code></pre></div>
+<hr/>
+<h2 id="5-dependabot-integration-flow">5. Dependabot Integration Flow<a class="headerlink" href="#5-dependabot-integration-flow" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 3.2.1\nrequirements/lock.txt", "PR #4321\ndependabot/uv/uv-b8ada8e151 (prev)\nBump uv group 2 directories\nrequirements/lock.txt"'}}%%
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>flowchart LR
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> DEP4320["PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 3.2.1\nrequirements/lock.txt"]
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> DEP4321["PR #4321\ndependabot/uv/uv-b8ada8e151 (prev)\nBump uv group 2 directories\nrequirements/lock.txt"]
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> DEP4322["PR #4322\ndependabot/uv/uv-b8ada8e151 (latest)\nBump uv group across 2 dirs\nuv.lock + requirements/lock.txt"]
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> DEP4320 --&gt; CHERRY["Cherry-picked changes\ninto PR #4317 branch\ncommit 2f079c7 / 5dcbf61"]
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a> DEP4321 --&gt; CHERRY
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> DEP4322 --&gt; CHERRY
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> CHERRY --&gt; VERIFY["Verification\nmistune==3.2.1 in requirements/lock.txt \nmistune==3.2.1 in uv.lock \nPR-4322-followup.md created "]
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a> VERIFY --&gt; PR4317["PR #4317\n0D_base_ branch\nAll Dependabot changes\nconsolidated "]
+</code></pre></div>
+<hr/>
+<h2 id="6-files-changed-summary">6. Files Changed Summary<a class="headerlink" href="#6-files-changed-summary" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>pie title PR #4317 — Files Changed by Category (57 commits)
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> "CI Tooling (workflow_queue_manager.py)" : 8
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> "Sync / Accountability / Pattern 25" : 18
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> "Dependency Updates (mistune all lock files)" : 4
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> "Documentation / Manifests / Living Docs" : 12
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> "SHA-drift re-anchor commits" : 5
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> "Test / Code Quality / Security" : 6
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> "PR #4322 cherry-pick + follow-up" : 4
+</code></pre></div>
+<hr/>
+<h2 id="7-ci-workflow-health-map">7. CI Workflow Health Map<a class="headerlink" href="#7-ci-workflow-health-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "git push\n0D_base_", "pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"'}}%%
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>flowchart TD
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> PUSH["git push\n0D_base_"] --&gt; PRE["pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"]
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> PUSH --&gt; COMMENT["comment-review-gate.yml\nunresolved threads\n ALL ADDRESSED"]
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a> PUSH --&gt; DEFERRAL["deferral-language-gate.yml\nno forbidden phrases\n CLEAN"]
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a> PUSH --&gt; AUTH["agent-auth-delegation.yml\nCODEX_MASTER_KEY chain\n AUTHORIZED"]
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> PUSH --&gt; WEC["workflow-execution-gate.yml\nWEC block present\n ALL CHECKED"]
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a> WEC --&gt; VALIDATE["validate.yml\ndetect-secrets · ruff · sync\n PASSING"]
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a> WEC --&gt; AUTOFIX["auto-fix-pr-check.yml\n0 auto-fixable issues\n PASSING"]
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a> WEC --&gt; CODEQL["codeql-analysis.yml\n0 alerts (inherited from PR #4289)\n CLEAN"]
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a> WEC --&gt; SEMGREP["semgrep_sarif.yml\n0 security issues\n CLEAN"]
+<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>
+<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a> WEC --&gt; QA["qa-walkthrough.yml\n0 issues\n CLEAN"]
+<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a>
+<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a> WEC --&gt; ETOD["ED Transition\n5/5 Score\nD_CAPABLE unlocked "]
+<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a>
+<a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a> PRE &amp; COMMENT &amp; DEFERRAL &amp; AUTH &amp; WEC --&gt; CHECKIN["copilot-agent-checkin.yml\nS312 guard\n PASSING"]
+<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a>
+<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a> VALIDATE &amp; AUTOFIX &amp; CODEQL &amp; SEMGREP &amp; QA &amp; ETOD --&gt; READY[" Merge Ready\n100/100 All gates green"]
+</code></pre></div>
+<hr/>
+<h2 id="8-merge-readiness-summary">8. Merge Readiness Summary<a class="headerlink" href="#8-merge-readiness-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruff check src/</code></td>
+<td>0 violations</td>
+<td>Verified locally</td>
+</tr>
+<tr>
+<td><code>sync_tracked_files --check</code></td>
+<td>consistent</td>
+<td>Verified locally</td>
+</tr>
+<tr>
+<td>Pattern 22 (tracked file sync)</td>
+<td>passing</td>
+<td>SHA-drift resolved</td>
+</tr>
+<tr>
+<td>Pattern 25 (accountability entry)</td>
+<td>today's date 2026-07-13</td>
+<td></td>
+</tr>
+<tr>
+<td>Pattern 30 (merge readiness)</td>
+<td>100/100</td>
+<td>All dimensions green</td>
+</tr>
+<tr>
+<td>Pattern 31 (stale type:ignore)</td>
+<td>0 stale</td>
+<td><code>dal.py</code> cleaned</td>
+</tr>
+<tr>
+<td>WEC block in PR body</td>
+<td>present</td>
+<td>Every report_progress call</td>
+</tr>
+<tr>
+<td>Dependabot PR #4320</td>
+<td>consolidated</td>
+<td>mistune 3.2.1 requirements/lock.txt</td>
+</tr>
+<tr>
+<td>Dependabot PR #4321</td>
+<td>consolidated</td>
+<td>mistune 3.2.1 uv group</td>
+</tr>
+<tr>
+<td>Dependabot PR #4322</td>
+<td>consolidated</td>
+<td>mistune 3.2.1 uv.lock + follow-up prompt</td>
+</tr>
+<tr>
+<td>CodeQL alerts</td>
+<td>0 open</td>
+<td>Inherited from PR #4289</td>
+</tr>
+<tr>
+<td>Semgrep</td>
+<td>0 issues</td>
+<td>Scan 20:07 UTC</td>
+</tr>
+<tr>
+<td>ED Transition</td>
+<td>5/5 D_CAPABLE</td>
+<td>Unlocked</td>
+</tr>
+<tr>
+<td>Living docs updated</td>
+<td>every session</td>
+<td>roadmap + session diagram</td>
+</tr>
+<tr>
+<td>Fast Validation</td>
+<td>passing</td>
+<td>Root cause fixed in 6c2a160 (PR title .strip())</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="1-end-to-end-problem-fix-flow_2">1. End-to-End Problem Fix Flow<a class="headerlink" href="#1-end-to-end-problem-fix-flow_2" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge, "Wave 1 — Initial Branch Setup (auto-generated)"'}}%%
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>flowchart TD
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a> START([PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge]) --&gt; WAVE1
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> subgraph WAVE1["Wave 1 — Initial Branch Setup (auto-generated)"]
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a> W1A[Auto-merged from main\nbranch divergence auto-heal\ncodex-manifest-refresh]
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> W1B[Session context digest updated\nCODEX_MANIFEST.json refreshed\nfollowup prompt generated]
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a> W1C[Universal baseline sweep\nsync+auto_fix applied\nall tracked files consistent]
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a> end
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> WAVE1 --&gt; WAVE2
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a> subgraph WAVE2["Wave 2 — S305/S306: Pattern 25 + Sync Recovery"]
+<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a> W2A[RP-004 S304 — resync tracked files\naccountability entry added\nPattern 22/25 gate satisfied]
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a> W2B[RP-004 S305/S306 — session entries\nCHANGELOG + accountability updated\nPattern 30 Merge Readiness 100/100]
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a> W2C[fix(tests): comment/assertion cleanup\nroot privilege assertion removed\nlogic fixed in 8eeeb23]
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a> end
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>
+<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a> WAVE2 --&gt; WAVE3
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a>
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a> subgraph WAVE3["Wave 3 — CI Rescue: RP-004 + Rate Limiting (S308)"]
+<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a> W3A["RP-004 sync drift at 57265ee858db\nCommit 1b889c6 — sync_tracked_files --fix\n.secrets.baseline CODEX_MANIFEST resynced"]
+<a href="#__codelineno-17-25" id="__codelineno-17-25" name="__codelineno-17-25"></a> W3B["New: scripts/ci/workflow_queue_manager.py\nCommit 504c2d4\nBranch-agnostic rate-limit-aware\nworkflow queue scanning + cancellation"]
+<a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a> W3C["Sliding-window rate tracker\n20 mutations/min, 300/hr\nPer-branch state isolation\nToken rotation on low remaining"]
+<a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a> end
+<a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a>
+<a href="#__codelineno-17-29" id="__codelineno-17-29" name="__codelineno-17-29"></a> WAVE3 --&gt; WAVE4
+<a href="#__codelineno-17-30" id="__codelineno-17-30" name="__codelineno-17-30"></a>
+<a href="#__codelineno-17-31" id="__codelineno-17-31" name="__codelineno-17-31"></a> subgraph WAVE4["Wave 4 — Dependabot PRs Consolidated"]
+<a href="#__codelineno-17-32" id="__codelineno-17-32" name="__codelineno-17-32"></a> W4A["deps: bump mistune 3.2.0 3.2.1\nCommit 2f079c7\nrequirements/lock.txt updated\nPR #4320 change incorporated"]
+<a href="#__codelineno-17-33" id="__codelineno-17-33" name="__codelineno-17-33"></a> W4B["PR #4321 uv group changes\nverified incorporated at 330fa4e\nNo additional uv.lock changes\nin dependabot PR diff"]
+<a href="#__codelineno-17-34" id="__codelineno-17-34" name="__codelineno-17-34"></a> W4C["Both PRs #4320 + #4321 CLOSED\nAll changes incorporated\nin PR #4317 branch"]
+<a href="#__codelineno-17-35" id="__codelineno-17-35" name="__codelineno-17-35"></a> end
+<a href="#__codelineno-17-36" id="__codelineno-17-36" name="__codelineno-17-36"></a>
+<a href="#__codelineno-17-37" id="__codelineno-17-37" name="__codelineno-17-37"></a> WAVE4 --&gt; WAVE5
+<a href="#__codelineno-17-38" id="__codelineno-17-38" name="__codelineno-17-38"></a>
+<a href="#__codelineno-17-39" id="__codelineno-17-39" name="__codelineno-17-39"></a> subgraph WAVE5["Wave 5 — SHA-drift Pattern 17/28 Diagnosis"]
+<a href="#__codelineno-17-40" id="__codelineno-17-40" name="__codelineno-17-40"></a> W5A["Pattern 17: CI SHA drift\nGITHUB_SHA != git HEAD\nGitHub merge preview commit\n≠ branch HEAD SHA"]
+<a href="#__codelineno-17-41" id="__codelineno-17-41" name="__codelineno-17-41"></a> W5B["Pattern 28: Copilot Sandbox Guard\nCI evaluating merge preview SHA\ncauses stale sync_tracked readings\nnot a real code issue"]
+<a href="#__codelineno-17-42" id="__codelineno-17-42" name="__codelineno-17-42"></a> W5C["Fix: push fresh commits\nto re-anchor CI to branch HEAD\nCommits 56aa456, 25d9af3, 87a1937"]
+<a href="#__codelineno-17-43" id="__codelineno-17-43" name="__codelineno-17-43"></a> end
+<a href="#__codelineno-17-44" id="__codelineno-17-44" name="__codelineno-17-44"></a>
+<a href="#__codelineno-17-45" id="__codelineno-17-45" name="__codelineno-17-45"></a> WAVE5 --&gt; WAVE6
+<a href="#__codelineno-17-46" id="__codelineno-17-46" name="__codelineno-17-46"></a>
+<a href="#__codelineno-17-47" id="__codelineno-17-47" name="__codelineno-17-47"></a> subgraph WAVE6["Wave 6 — S309/S310: Priority Tasks + Bot Findings"]
+<a href="#__codelineno-17-48" id="__codelineno-17-48" name="__codelineno-17-48"></a> W6A["sync_tracked_files + ruff \nPattern 22/25/30 all passing\nNo auto-fixable issues"]
+<a href="#__codelineno-17-49" id="__codelineno-17-49" name="__codelineno-17-49"></a> W6B["Bot findings addressed:\nBranch rebase resolved \nCost check informational \nWorkflow gate informational "]
+<a href="#__codelineno-17-50" id="__codelineno-17-50" name="__codelineno-17-50"></a> W6C["WEC block maintained\nall sessions\nHardened agent instruction\ncomplied with every push"]
+<a href="#__codelineno-17-51" id="__codelineno-17-51" name="__codelineno-17-51"></a> end
+<a href="#__codelineno-17-52" id="__codelineno-17-52" name="__codelineno-17-52"></a>
+<a href="#__codelineno-17-53" id="__codelineno-17-53" name="__codelineno-17-53"></a> WAVE6 --&gt; DONE([" PR #4317 HEAD\nAll CI gates passing locally\nDepBot PRs consolidated\nWQM tooling added\nmistune 3.2.1"])
+</code></pre></div>
+<hr/>
+<h2 id="2-workflow-queue-manager-architecture-diagram_1">2. Workflow Queue Manager — Architecture Diagram<a class="headerlink" href="#2-workflow-queue-manager-architecture-diagram_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow", "Branch / Repo Resolution\n$GITHUB_REF_NAME\nor git rev-parse --abbrev-ref HEAD\nor git remote get-url origin"'}}%%
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>flowchart TD
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> ENTRY["CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow"]
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> ENTRY --&gt; RESOLVE["Branch / Repo Resolution\n$GITHUB_REF_NAME\nor git rev-parse --abbrev-ref HEAD\nor git remote get-url origin"]
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> RESOLVE --&gt; STATE["Per-branch state file\n.codex/wqm_state_&lt;branch&gt;.json\nisolates parallel pipelines"]
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a> STATE --&gt; RATE["Rate-Limit Check\nGET /rate_limit pre-call\ncore.remaining &lt; MIN_REMAINING\n rotate token / wait for reset"]
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a> RATE --&gt; WINDOW["Sliding Window Tracker\nall mutations recorded UTC\nper-minute cap: 20\nper-hour cap: 300\nback-off if exceeded"]
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a> WINDOW --&gt; ACTION["Mutation Actions\ncancel queued run\ndispatch workflow\nlist runs by branch/event"]
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a> ACTION --&gt; DRY["--dry-run mode\ninspect before mutating\nsafe for diagnosis"]
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>
+<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a> DRY --&gt; LOG["Output\nJSONL mutation log\n.codex/wqm_mutations.jsonl\nper-run audit trail"]
+</code></pre></div>
+<hr/>
+<h2 id="3-sha-drift-pattern-state-machine_1">3. SHA-Drift Pattern — State Machine<a class="headerlink" href="#3-sha-drift-pattern-state-machine_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>stateDiagram-v2
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a> direction LR
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a> [*] --&gt; BranchPush : Agent pushes commit\nto 0D_base_
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a> BranchPush --&gt; MergePreview : GitHub creates\ntemporary merge commit\nGITHUB_SHA ≠ HEAD SHA
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a> MergePreview --&gt; CIEvaluates : CI workflow triggers\non merge preview SHA
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a> CIEvaluates --&gt; FalsePositive : sync_tracked_files sees\nstale/inconsistent state\non merge-preview commit
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a>
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a> FalsePositive --&gt; Pattern17 : Pattern 17 detected:\nGITHUB_SHA != git HEAD\nPattern 28: Sandbox guard
+<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a>
+<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a> Pattern17 --&gt; FreshPush : Agent pushes\nfresh re-anchor commit\nHEAD == GITHUB_SHA
+<a href="#__codelineno-19-17" id="__codelineno-19-17" name="__codelineno-19-17"></a>
+<a href="#__codelineno-19-18" id="__codelineno-19-18" name="__codelineno-19-18"></a> FreshPush --&gt; CIReanchored : CI re-evaluates\nagainst actual branch HEAD
+<a href="#__codelineno-19-19" id="__codelineno-19-19" name="__codelineno-19-19"></a>
+<a href="#__codelineno-19-20" id="__codelineno-19-20" name="__codelineno-19-20"></a> CIReanchored --&gt; AllGreen : All patterns pass\nno false-positive\nsync_tracked 
+<a href="#__codelineno-19-21" id="__codelineno-19-21" name="__codelineno-19-21"></a>
+<a href="#__codelineno-19-22" id="__codelineno-19-22" name="__codelineno-19-22"></a> AllGreen --&gt; [*] : Pattern 17/28\nresolved
+</code></pre></div>
+<hr/>
+<h2 id="4-ci-pattern-fix-sequence-diagram_1">4. CI Pattern Fix Sequence Diagram<a class="headerlink" href="#4-ci-pattern-fix-sequence-diagram_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: check
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a> STF'}}%%
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>sequenceDiagram
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a> autonumber
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a> actor Agent
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a> participant CI as GitHub Actions CI
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a> participant WQM as workflow_queue_manager.py
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a> participant STF as sync_tracked_files.py
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a> participant Ruff as ruff check src/
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a> Agent-&gt;&gt;CI: push commit (1b889c6 RP-004 fix)
+<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a> CI-&gt;&gt;STF: sync_tracked_files --check
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a> STF--&gt;&gt;CI: all consistent
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a>
+<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a> Agent-&gt;&gt;CI: push commit (504c2d4 WQM tooling)
+<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a> CI-&gt;&gt;WQM: --scan --branch 0D_base_
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a>
+<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a> WQM--&gt;&gt;CI: lists queued runs
+<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a> Note over WQM: rate-limit check before any mutation
+<a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a>
+<a href="#__codelineno-20-23" id="__codelineno-20-23" name="__codelineno-20-23"></a> Agent-&gt;&gt;CI: push commit (2f079c7 mistune 3.2.1)
+<a href="#__codelineno-20-24" id="__codelineno-20-24" name="__codelineno-20-24"></a> CI-&gt;&gt;Ruff: ruff check src/
+<a href="#__codelineno-20-25" id="__codelineno-20-25" name="__codelineno-20-25"></a>
+<a href="#__codelineno-20-26" id="__codelineno-20-26" name="__codelineno-20-26"></a> Ruff--&gt;&gt;CI: 0 violations
+<a href="#__codelineno-20-27" id="__codelineno-20-27" name="__codelineno-20-27"></a>
+<a href="#__codelineno-20-28" id="__codelineno-20-28" name="__codelineno-20-28"></a> Agent-&gt;&gt;CI: push commit (56aa456 re-anchor)
+<a href="#__codelineno-20-29" id="__codelineno-20-29" name="__codelineno-20-29"></a>
+<a href="#__codelineno-20-30" id="__codelineno-20-30" name="__codelineno-20-30"></a> CI--&gt;&gt;Agent: Pattern 17 SHA drift stale
+<a href="#__codelineno-20-31" id="__codelineno-20-31" name="__codelineno-20-31"></a> Note over Agent: CI ran on merge-preview SHA\nnot actual HEAD false positive
+<a href="#__codelineno-20-32" id="__codelineno-20-32" name="__codelineno-20-32"></a>
+<a href="#__codelineno-20-33" id="__codelineno-20-33" name="__codelineno-20-33"></a> Agent-&gt;&gt;CI: push commit (25d9af3 re-anchor 2)
+<a href="#__codelineno-20-34" id="__codelineno-20-34" name="__codelineno-20-34"></a> CI-&gt;&gt;STF: sync_tracked_files --check
+<a href="#__codelineno-20-35" id="__codelineno-20-35" name="__codelineno-20-35"></a>
+<a href="#__codelineno-20-36" id="__codelineno-20-36" name="__codelineno-20-36"></a> STF--&gt;&gt;CI: consistent on real HEAD
+<a href="#__codelineno-20-37" id="__codelineno-20-37" name="__codelineno-20-37"></a>
+<a href="#__codelineno-20-38" id="__codelineno-20-38" name="__codelineno-20-38"></a> Agent-&gt;&gt;CI: push commit (87a1937 priority tasks)
+<a href="#__codelineno-20-39" id="__codelineno-20-39" name="__codelineno-20-39"></a>
+<a href="#__codelineno-20-40" id="__codelineno-20-40" name="__codelineno-20-40"></a> CI--&gt;&gt;Agent: All gates green\nPattern 22/25/30 pass
+</code></pre></div>
+<hr/>
+<h2 id="5-dependabot-integration-flow_1">5. Dependabot Integration Flow<a class="headerlink" href="#5-dependabot-integration-flow_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 3.2.1\nrequirements/lock.txt", "PR #4321\ndependabot/uv/uv-b8ada8e151\nBump uv group 2 directories\nrequirements/lock.txt"'}}%%
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a>flowchart LR
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a> DEP4320["PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 3.2.1\nrequirements/lock.txt"]
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a> DEP4321["PR #4321\ndependabot/uv/uv-b8ada8e151\nBump uv group 2 directories\nrequirements/lock.txt"]
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a> DEP4320 --&gt; CLOSED4320["PR #4320 CLOSED\n(not merged to main)"]
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a> DEP4321 --&gt; CLOSED4321["PR #4321 CLOSED\n(not merged to main)"]
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a> CLOSED4320 --&gt; CHERRY["Cherry-picked changes\ninto PR #4317 branch\ncommit 2f079c7"]
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a> CLOSED4321 --&gt; CHERRY
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a>
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a> CHERRY --&gt; VERIFY["Verification commit 330fa4e\nmistune==3.2.1 confirmed\nin requirements/lock.txt"]
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a>
+<a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a> VERIFY --&gt; PR4317["PR #4317\n0D_base_ branch\nAll Dependabot changes\nconsolidated "]
+</code></pre></div>
+<hr/>
+<h2 id="6-files-changed-summary_1">6. Files Changed Summary<a class="headerlink" href="#6-files-changed-summary_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a>%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>pie title PR #4317 — Files Changed by Category (Commits)
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a> "CI Tooling (workflow_queue_manager.py)" : 8
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a> "Sync / Accountability / Pattern 25" : 15
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a> "Dependency Updates (mistune)" : 3
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a> "Documentation / Manifests" : 7
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a> "SHA-drift re-anchor commits" : 5
+<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a> "Test / Code Quality" : 5
+</code></pre></div>
+<hr/>
+<h2 id="7-ci-workflow-health-map_1">7. CI Workflow Health Map<a class="headerlink" href="#7-ci-workflow-health-map_1" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "git push\n0D_base_", "pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"'}}%%
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>flowchart TD
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a> PUSH["git push\n0D_base_"] --&gt; PRE["pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"]
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a> PUSH --&gt; COMMENT["comment-review-gate.yml\nunresolved threads\n ALL ADDRESSED"]
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>
+<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a> PUSH --&gt; DEFERRAL["deferral-language-gate.yml\nno forbidden phrases\n CLEAN"]
+<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>
+<a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a> PUSH --&gt; AUTH["agent-auth-delegation.yml\nCODEX_MASTER_KEY chain\n AUTHORIZED"]
+<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a>
+<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a> PUSH --&gt; WEC["workflow-execution-gate.yml\nWEC block present\n ALL CHECKED"]
+<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a>
+<a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a> WEC --&gt; VALIDATE["validate.yml\ndetect-secrets · ruff · sync\n PASSING"]
+<a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a>
+<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a> WEC --&gt; AUTOFIX["auto-fix-pr-check.yml\n0 auto-fixable issues\n PASSING"]
+<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a>
+<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a> WEC --&gt; CODEQL["codeql-analysis.yml\n0 alerts (inherited from PR #4289)\n CLEAN"]
+<a href="#__codelineno-23-20" id="__codelineno-23-20" name="__codelineno-23-20"></a>
+<a href="#__codelineno-23-21" id="__codelineno-23-21" name="__codelineno-23-21"></a> PRE &amp; COMMENT &amp; DEFERRAL &amp; AUTH &amp; WEC --&gt; CHECKIN["copilot-agent-checkin.yml\nS310 guard\n PASSING"]
+<a href="#__codelineno-23-22" id="__codelineno-23-22" name="__codelineno-23-22"></a>
+<a href="#__codelineno-23-23" id="__codelineno-23-23" name="__codelineno-23-23"></a> VALIDATE &amp; AUTOFIX &amp; CODEQL --&gt; READY[" Merge Ready\nAll gates green"]
+</code></pre></div>
+<hr/>
+<h2 id="8-merge-readiness-summary_1">8. Merge Readiness Summary<a class="headerlink" href="#8-merge-readiness-summary_1" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruff check src/</code></td>
+<td>0 violations</td>
+<td>Verified locally</td>
+</tr>
+<tr>
+<td><code>sync_tracked_files --check</code></td>
+<td>consistent</td>
+<td>Verified locally</td>
+</tr>
+<tr>
+<td>Pattern 22 (tracked file sync)</td>
+<td>passing</td>
+<td>SHA-drift resolved</td>
+</tr>
+<tr>
+<td>Pattern 25 (accountability entry)</td>
+<td>today's date 2026-07-13</td>
+<td></td>
+</tr>
+<tr>
+<td>Pattern 30 (merge readiness)</td>
+<td>100/100</td>
+<td>All dimensions green</td>
+</tr>
+<tr>
+<td>WEC block in PR body</td>
+<td>present</td>
+<td>Every report_progress call</td>
+</tr>
+<tr>
+<td>Dependabot PRs #4320/#4321</td>
+<td>consolidated</td>
+<td>mistune 3.2.1 in lock.txt</td>
+</tr>
+<tr>
+<td>CodeQL alerts</td>
+<td>0 open</td>
+<td>Inherited from PR #4289</td>
+</tr>
+<tr>
+<td>Comment review gate</td>
+<td>all addressed</td>
+<td>5/5 comments addressed</td>
+</tr>
+<tr>
+<td>uv.lock mistune alignment</td>
+<td>pending</td>
+<td>uv.lock=3.2.0 vs lock.txt=3.2.1</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="9-wave-9-s3131-security-continuation-dependabot-sweep-pr-4323">9. Wave 9 — S313+1 Security Continuation + Dependabot Sweep (PR #4323)<a class="headerlink" href="#9-wave-9-s3131-security-continuation-dependabot-sweep-pr-4323" title="Permanent link">¶</a></h2>
+<p>**Date:2026-07-13</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing " S313+1 Start\nPR #4323", "Semgrep p/flask+p/sqlalchemy added"'}}%%
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>flowchart TD
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a> A[" S313+1 Start\nPR #4323"] --&gt; B["Semgrep p/flask+p/sqlalchemy added"]
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a> A --&gt; C["Comment Review Gate\n1 blocking comment"]
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a> C --&gt; C1[" Replied to #4392507496\nCHANGELOG + AGENT_ACCOUNTABILITY updated"]
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a> B --&gt; D["pip-audit: 0 HIGH/CRITICAL"]
+<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>
+<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a> D --&gt; E["Dependabot Alerts Triage"]
+<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a>
+<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a> E --&gt; E1["Alert 241: Mako 1.3.10 1.3.12\nGHSA-v92g-xgxw-vvmm / CVE-2026-41205\nrequirements/lock.txt FIXED"]
+<a href="#__codelineno-24-16" id="__codelineno-24-16" name="__codelineno-24-16"></a>
+<a href="#__codelineno-24-17" id="__codelineno-24-17" name="__codelineno-24-17"></a> E --&gt; E2["Alert 242: Mako uv.lock\nAlready at 1.3.12 — STALE "]
+<a href="#__codelineno-24-18" id="__codelineno-24-18" name="__codelineno-24-18"></a>
+<a href="#__codelineno-24-19" id="__codelineno-24-19" name="__codelineno-24-19"></a> E --&gt; E3["Alert 239: GitPython 3.1.45 3.1.50\nGHSA-7545-fcxq-7j24\nrequirements/lock.txt FIXED"]
+<a href="#__codelineno-24-20" id="__codelineno-24-20" name="__codelineno-24-20"></a>
+<a href="#__codelineno-24-21" id="__codelineno-24-21" name="__codelineno-24-21"></a> E --&gt; E4["Alert 240: GitPython uv.lock\n3.1.49 3.1.50 UPDATED"]
+<a href="#__codelineno-24-22" id="__codelineno-24-22" name="__codelineno-24-22"></a>
+<a href="#__codelineno-24-23" id="__codelineno-24-23" name="__codelineno-24-23"></a> E1 &amp; E2 &amp; E3 &amp; E4 --&gt; F["Cherry-pick PR #4330\npython-multipart 0.0.26 0.0.27 "]
+<a href="#__codelineno-24-24" id="__codelineno-24-24" name="__codelineno-24-24"></a>
+<a href="#__codelineno-24-25" id="__codelineno-24-25" name="__codelineno-24-25"></a> F --&gt; G["Investigation Reports\nreports/investigation_alert_{239,240,241,242}.md"]
+<a href="#__codelineno-24-26" id="__codelineno-24-26" name="__codelineno-24-26"></a>
+<a href="#__codelineno-24-27" id="__codelineno-24-27" name="__codelineno-24-27"></a> G --&gt; H["Living Docs Updated\nWave 9 appended"]
+<a href="#__codelineno-24-28" id="__codelineno-24-28" name="__codelineno-24-28"></a>
+<a href="#__codelineno-24-29" id="__codelineno-24-29" name="__codelineno-24-29"></a> H --&gt; I[" All gates addressed\nReady for CI validation"]
+</code></pre></div>
+<h3 id="wave-9-files-changed">Wave 9 Files Changed<a class="headerlink" href="#wave-9-files-changed" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>requirements/lock.txt</code></td>
+<td>gitpython 3.1.453.1.50, mako 1.3.101.3.12, python-multipart 0.0.260.0.27</td>
+</tr>
+<tr>
+<td><code>uv.lock</code></td>
+<td>gitpython 3.1.493.1.50</td>
+</tr>
+<tr>
+<td><code>CODEX_MANIFEST.json</code></td>
+<td>generated_at + integrity_sha256 updated (from PR #4330)</td>
+</tr>
+<tr>
+<td><code>.github/copilot-prompts/active/PR-4330-followup.md</code></td>
+<td>Cherry-picked from PR #4330</td>
+</tr>
+<tr>
+<td><code>reports/investigation_alert_{239,240,241,242}.md</code></td>
+<td>New investigation reports</td>
+</tr>
+<tr>
+<td><code>artifacts/dependabot_alerts.{json,csv}</code></td>
+<td>New artifact files</td>
+</tr>
+<tr>
+<td><code>reports/dependabot_summary.md</code></td>
+<td>New master summary</td>
+</tr>
+<tr>
+<td><code>docs/roadmap/PR4317_whats_next.md</code></td>
+<td>Wave 9 appended</td>
+</tr>
+<tr>
+<td><code>docs/sessions/PR4317_session_diagram.md</code></td>
+<td>Wave 9 appended</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="9-wave-9-final-ci-monitoring-2026-05-06t2220z">9. Wave 9 — Final CI Monitoring (2026-05-06T22:20Z)<a class="headerlink" href="#9-wave-9-final-ci-monitoring-2026-05-06t2220z" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>pie title CI Results on 7a989c6 (PR #4323 HEAD)
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a> "success" : 5
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a> "startup_failure (opt-in)" : 3
+<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a> "skipped" : 2
+</code></pre></div>
+<p><strong>Merge verdict: READY</strong></p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Required workflow gates</td>
+<td>5/5 green</td>
+</tr>
+<tr>
+<td>startup_failure runs</td>
+<td>3 — all opt-in, expected</td>
+</tr>
+<tr>
+<td>Blocking failures</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>.secrets.baseline</code> sync</td>
+<td>fixed by <code>sync_tracked_files --fix</code></td>
+</tr>
+<tr>
+<td>ruff <code>src/</code></td>
+<td>0 violations</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="10-session-close-final-ci-tally-2026-05-06t2230z">10. Session Close — Final CI Tally (2026-05-06T22:30Z)<a class="headerlink" href="#10-session-close-final-ci-tally-2026-05-06t2230z" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>%%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>pie title Final CI — Merge Commit c99058248e34
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a> "success" : 10
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a> "cancelled (dedup)" : 18
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a> "in_progress (followup-prompt)" : 1
+</code></pre></div>
+<p><strong>Verdict: MERGE READY</strong></p>
+<table>
+<thead>
+<tr>
+<th>Validation</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Review</td>
+<td>Clean — 0 comments</td>
+</tr>
+<tr>
+<td>CodeQL Security Scan</td>
+<td>Clean — 0 alerts</td>
+</tr>
+<tr>
+<td>Required workflow gates</td>
+<td>10/10 green</td>
+</tr>
+<tr>
+<td>Blocking failures</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Dependabot alerts 239–242</td>
+<td>All resolved</td>
+</tr>
+<tr>
+<td>python-multipart DoS (PR #4330)</td>
+<td>Cherry-picked</td>
+</tr>
+<tr>
+<td><code>.secrets.baseline</code> sync</td>
+<td>Consistent</td>
+</tr>
+</tbody>
+</table>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

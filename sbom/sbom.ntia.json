@@ -1,0 +1,309 @@
+{
+  "sbom-version": "1",
+  "data-license": "CC0-1.0",
+  "serialization-format": "json",
+  "serialization-version": "1.0",
+  "components": [
+    {
+      "component-id": "python/typer>=0.12",
+      "component-name": "typer>=0.12",
+      "component-version": "0.12",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/cryptography>=48.0.1,<50.0.0",
+      "component-name": "cryptography>=48.0.1,<50.0.0",
+      "component-version": "48.0.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/PyJWT>=2.13.0,<3.0.0",
+      "component-name": "PyJWT>=2.13.0,<3.0.0",
+      "component-version": "2.13.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/wheel>=0.46.2",
+      "component-name": "wheel>=0.46.2",
+      "component-version": "0.46.2",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/PyNaCl>=1.5.0,<2.0.0",
+      "component-name": "PyNaCl>=1.5.0,<2.0.0",
+      "component-version": "1.5.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pyOpenSSL>=26.0.0,<27.0.0",
+      "component-name": "pyOpenSSL>=26.0.0,<27.0.0",
+      "component-version": "26.0.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/jsonschema>=4.26.0",
+      "component-name": "jsonschema>=4.26.0",
+      "component-version": "4.26.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/psutil>=5.9;",
+      "component-name": "psutil>=5.9;",
+      "component-version": "5.9",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/tomli>=2.0;",
+      "component-name": "tomli>=2.0;",
+      "component-version": "2.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest>=9.0.3,<10.0.0",
+      "component-name": "pytest>=9.0.3,<10.0.0",
+      "component-version": "9.0.3",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest-cov==7.1.0",
+      "component-name": "pytest-cov==7.1.0",
+      "component-version": "7.1.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest-xdist>=3.5.0,<4.0.0",
+      "component-name": "pytest-xdist>=3.5.0,<4.0.0",
+      "component-version": "3.5.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/nox>=2026.4.10,<2027",
+      "component-name": "nox>=2026.4.10,<2027",
+      "component-version": "2026.4.10",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/numpy>=2.4.6,<3",
+      "component-name": "numpy>=2.4.6,<3",
+      "component-version": "2.4.6",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/torch>=2.6.1,<3.0.0;",
+      "component-name": "torch>=2.6.1,<3.0.0;",
+      "component-version": "2.6.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/transformers>=5.12.1,<6",
+      "component-name": "transformers>=5.12.1,<6",
+      "component-version": "5.12.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/defusedxml>=0.7.1,<1.0.0",
+      "component-name": "defusedxml>=0.7.1,<1.0.0",
+      "component-version": "0.7.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pyyaml>=6.0",
+      "component-name": "pyyaml>=6.0",
+      "component-version": "6.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/jinja2>=3.1.6",
+      "component-name": "jinja2>=3.1.6",
+      "component-version": "3.1.6",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/certifi>=2026.6.17",
+      "component-name": "certifi>=2026.6.17",
+      "component-version": "2026.6.17",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/filelock>=3.29.0",
+      "component-name": "filelock>=3.29.0",
+      "component-version": "3.29.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/idna>=3.18",
+      "component-name": "idna>=3.18",
+      "component-version": "3.18",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/urllib3>=2.7.0",
+      "component-name": "urllib3>=2.7.0",
+      "component-version": "2.7.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/requests>=2.33.0",
+      "component-name": "requests>=2.33.0",
+      "component-version": "2.33.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest==9.1.1",
+      "component-name": "pytest==9.1.1",
+      "component-version": "9.1.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest-xdist==3.8.0",
+      "component-name": "pytest-xdist==3.8.0",
+      "component-version": "3.8.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest-randomly==4.1.0",
+      "component-name": "pytest-randomly==4.1.0",
+      "component-version": "4.1.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest-rerunfailures==16.4",
+      "component-name": "pytest-rerunfailures==16.4",
+      "component-version": "16.4",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/pytest-timeout==2.4.0",
+      "component-name": "pytest-timeout==2.4.0",
+      "component-version": "2.4.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/coverage[toml]>=7.15.1,<8",
+      "component-name": "coverage[toml]>=7.15.1,<8",
+      "component-version": "7.15.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/hypothesis>=6.152.4",
+      "component-name": "hypothesis>=6.152.4",
+      "component-version": "6.152.4",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/responses==0.26.1",
+      "component-name": "responses==0.26.1",
+      "component-version": "0.26.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/slowapi==0.1.9",
+      "component-name": "slowapi==0.1.9",
+      "component-version": "0.1.9",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/hydra-core==1.3.2",
+      "component-name": "hydra-core==1.3.2",
+      "component-version": "1.3.2",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/prometheus-client>=0.19.0",
+      "component-name": "prometheus-client>=0.19.0",
+      "component-version": "0.19.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/cryptography>=48.0.0,<50.0.0",
+      "component-name": "cryptography>=48.0.0,<50.0.0",
+      "component-version": "48.0.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/sentence-transformers>=5.5.1",
+      "component-name": "sentence-transformers>=5.5.1",
+      "component-version": "5.5.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/faiss-cpu>=1.7.4",
+      "component-name": "faiss-cpu>=1.7.4",
+      "component-version": "1.7.4",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "python/openai>=2.40.0",
+      "component-name": "openai>=2.40.0",
+      "component-version": "2.40.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "rust/pyo3",
+      "component-name": "pyo3",
+      "component-version": "0.24.1",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "rust/tokio",
+      "component-name": "tokio",
+      "component-version": "1.36",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "rust/serde",
+      "component-name": "serde",
+      "component-version": "1.0.197",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    },
+    {
+      "component-id": "rust/zstd",
+      "component-name": "zstd",
+      "component-version": "0.13.0",
+      "component-type": "library",
+      "data-license": "CC0-1.0"
+    }
+  ]
+}

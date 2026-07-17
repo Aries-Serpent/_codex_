@@ -1,6 +1,6 @@
 # Secrets Configuration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -8,7 +8,7 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 
 ---
 
-##  Overview
+## Overview
 
 **Required Secrets:**
 1. GitHub App ID
@@ -17,70 +17,70 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 4. AWS Credentials (for deployment)
 
 **Storage Locations:**
-- GitHub App credentials → AWS Secrets Manager
-- Deployment credentials → Environment variables
-- Local development → `.env` file (not committed)
+- GitHub App credentials AWS Secrets Manager
+- Deployment credentials Environment variables
+- Local development `.env` file (not committed)
 
 ---
 
-## 🔑 1. GitHub App Secrets
+## 1. GitHub App Secrets
 
 ### Create GitHub App
 
 1. **Navigate to GitHub Settings**
-   ```
-   https://github.com/settings/apps/new
-   ```
+ ```
+ https://github.com/settings/apps/new
+ ```
 
 2. **Fill in App Details:**
-   - **Name:** `codex-pr-reviewer-dev` (or your choice)
-   - **Description:** `Automated PR review agent with quantum pattern analysis`
-   - **Homepage URL:** `https://github.com/Aries-Serpent/_codex_`
-   - **Webhook URL:** `https://PLACEHOLDER` (update after deployment)
-   - **Webhook Secret:** Generate with:
-     ```bash
-     python3 -c "import secrets; print(secrets.token_urlsafe(32))"
-     ```
+ - **Name:** `codex-pr-reviewer-dev` (or your choice)
+ - **Description:** `Automated PR review agent with quantum pattern analysis`
+ - **Homepage URL:** `https://github.com/Aries-Serpent/_codex_`
+ - **Webhook URL:** `https://PLACEHOLDER` (update after deployment)
+ - **Webhook Secret:** Generate with:
+ ```bash
+ python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+ ```
 
 3. **Set Permissions:**
-   ```
-   Repository permissions:
-   - Contents: Read-only
-   - Pull requests: Read & write
-   - Issues: Read & write
-   - Checks: Read & write
-   - Metadata: Read-only
+ ```
+ Repository permissions:
+ - Contents: Read-only
+ - Pull requests: Read & write
+ - Issues: Read & write
+ - Checks: Read & write
+ - Metadata: Read-only
 
-   Subscribe to events:
-   - Pull request
-   - Pull request review
-   - Pull request review comment
-   - Issue comment
-   ```
+ Subscribe to events:
+ - Pull request
+ - Pull request review
+ - Pull request review comment
+ - Issue comment
+ ```
 
 4. **Create App**
-   - Click "Create GitHub App"
-   - Note the **App ID** (e.g., `123456`)
-   - Generate and download **Private Key** (saves as `.pem` file)
+ - Click "Create GitHub App"
+ - Note the **App ID** (e.g., `123456`)
+ - Generate and download **Private Key** (saves as `.pem` file)
 
 ---
 
-## 🗝️ 2. Store Secrets in AWS Secrets Manager
+## 2. Store Secrets in AWS Secrets Manager
 
 ### Store GitHub Private Key
 
 ```bash
 # Development environment
 aws secretsmanager create-secret \
-    --name github-app-private-key-dev \
-    --description "GitHub App private key for Codex Reviewer (dev)" \
-    --secret-string file://path/to/your-app-name.YYYY-MM-DD.private-key.pem \
-    --region us-east-1
+ --name github-app-private-key-dev \
+ --description "GitHub App private key for Codex Reviewer (dev)" \
+ --secret-string file://path/to/your-app-name.YYYY-MM-DD.private-key.pem \
+ --region us-east-1
 
 # Verify storage
 aws secretsmanager describe-secret \
-    --secret-id github-app-private-key-dev \
-    --region us-east-1
+ --secret-id github-app-private-key-dev \
+ --region us-east-1
 
 # Expected output shows ARN and creation date
 ```
@@ -92,18 +92,18 @@ While we pass these as environment variables, you can also store in Secrets Mana
 ```bash
 # Create composite secret (optional)
 aws secretsmanager create-secret \
-    --name github-app-config-dev \
-    --description "GitHub App configuration" \
-    --secret-string '{
-        "app_id": "123456",
-        "webhook_secret": "your-webhook-secret-here" <!-- pragma: allowlist secret -->
-    }' \
-    --region us-east-1
+ --name github-app-config-dev \
+ --description "GitHub App configuration" \
+ --secret-string '{
+ "app_id": "123456",
+ "webhook_secret": "your-webhook-secret-here" <!-- pragma: allowlist secret -->
+ }' \
+ --region us-east-1
 ```
 
 ---
 
-##  3. Set Environment Variables
+## 3. Set Environment Variables
 
 ### For Terraform Deployment
 
@@ -111,12 +111,12 @@ aws secretsmanager create-secret \
 # Export required variables
 export TF_VAR_github_app_id="123456"
 export TF_VAR_github_webhook_secret="your-webhook-secret-from-step-1" <!-- pragma: allowlist secret -->
-export AWS_PROFILE="default"  # or your AWS profile name
+export AWS_PROFILE="default" # or your AWS profile name
 export AWS_REGION="us-east-1"
 
 # Verify they're set
 echo "App ID: ${TF_VAR_github_app_id}"
-echo "Webhook Secret: ${TF_VAR_github_webhook_secret:0:10}..."  # Show first 10 chars
+echo "Webhook Secret: ${TF_VAR_github_webhook_secret:0:10}..." # Show first 10 chars
 echo "AWS Profile: ${AWS_PROFILE}"
 echo "AWS Region: ${AWS_REGION}"
 ```
@@ -131,12 +131,12 @@ export TF_VAR_github_app_id="123456"
 export TF_VAR_github_webhook_secret="your-secret-here" <!-- pragma: allowlist secret -->
 
 # Reload
-source ~/.bashrc  # or source ~/.zshrc
+source ~/.bashrc # or source ~/.zshrc
 ```
 
 ---
 
-##  4. Secure Storage Best Practices
+## 4. Secure Storage Best Practices
 
 ### Use a .env File for Local Development
 
@@ -169,8 +169,8 @@ echo "New webhook secret: ${NEW_SECRET}"
 # Update in GitHub App settings
 # Update in AWS Secrets Manager
 aws secretsmanager update-secret \
-    --secret-id github-app-config-dev \
-    --secret-string "{\"app_id\": \"123456\", \"webhook_secret\": \"${NEW_SECRET}\"}"
+ --secret-id github-app-config-dev \
+ --secret-string "{\"app_id\": \"123456\", \"webhook_secret\": \"${NEW_SECRET}\"}"
 
 # Update environment variable
 export TF_VAR_github_webhook_secret="${NEW_SECRET}"
@@ -189,15 +189,15 @@ cd .github/agents/deploy/scripts
 # 3. Update Secrets Manager
 
 aws secretsmanager update-secret \
-    --secret-id github-app-private-key-dev \
-    --secret-string file://new-private-key.pem
+ --secret-id github-app-private-key-dev \
+ --secret-string file://new-private-key.pem
 
 # No redeployment needed - Lambda reads from Secrets Manager at runtime
 ```
 
 ---
 
-##  5. Verification Checklist
+## 5. Verification Checklist
 
 ### Pre-Deployment Verification
 
@@ -209,34 +209,34 @@ echo "=== Secret Verification ==="
 errors=0
 
 if [[ -z "${TF_VAR_github_app_id}" ]]; then
-    echo " TF_VAR_github_app_id not set"
-    ((errors++))
+ echo " TF_VAR_github_app_id not set"
+ ((errors++))
 else
-    echo " TF_VAR_github_app_id set"
+ echo " TF_VAR_github_app_id set"
 fi
 
 if [[ -z "${TF_VAR_github_webhook_secret}" ]]; then
-    echo " TF_VAR_github_webhook_secret not set"
-    ((errors++))
+ echo " TF_VAR_github_webhook_secret not set"
+ ((errors++))
 else
-    echo " TF_VAR_github_webhook_secret set"
+ echo " TF_VAR_github_webhook_secret set"
 fi
 
 if aws secretsmanager describe-secret --secret-id github-app-private-key-dev &>/dev/null; then
-    echo " Private key exists in Secrets Manager"
+ echo " Private key exists in Secrets Manager"
 else
-    echo " Private key NOT found in Secrets Manager"
-    ((errors++))
+ echo " Private key NOT found in Secrets Manager"
+ ((errors++))
 fi
 
 if [[ $errors -eq 0 ]]; then
-    echo ""
-    echo " All secrets configured correctly"
-    exit 0
+ echo ""
+ echo " All secrets configured correctly"
+ exit 0
 else
-    echo ""
-    echo " ${errors} error(s) found - fix before deploying"
-    exit 1
+ echo ""
+ echo " ${errors} error(s) found - fix before deploying"
+ exit 1
 fi
 VERIFY
 ```
@@ -246,9 +246,9 @@ VERIFY
 ```bash
 # Verify Lambda can access secrets
 aws lambda invoke \
-    --function-name codex-reviewer-agent-dev \
-    --payload '{"test": "secret_access"}' \
-    /tmp/response.json
+ --function-name codex-reviewer-agent-dev \
+ --payload '{"test": "secret_access"}' \
+ /tmp/response.json
 
 # Check response
 cat /tmp/response.json
@@ -256,7 +256,7 @@ cat /tmp/response.json
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Error: "Secret not found"
 
@@ -266,14 +266,14 @@ aws secretsmanager list-secrets --region us-east-1
 
 # Check specific secret
 aws secretsmanager get-secret-value \
-    --secret-id github-app-private-key-dev \
-    --region us-east-1
+ --secret-id github-app-private-key-dev \
+ --region us-east-1
 
 # If not found, recreate:
 aws secretsmanager create-secret \
-    --name github-app-private-key-dev \
-    --secret-string file://private-key.pem \
-    --region us-east-1
+ --name github-app-private-key-dev \
+ --secret-string file://private-key.pem \
+ --region us-east-1
 ```
 
 ## Error: "Access denied"
@@ -281,8 +281,8 @@ aws secretsmanager create-secret \
 ```bash
 # Check IAM permissions
 aws iam get-role-policy \
-    --role-name codex-reviewer-lambda-role-dev \
-    --policy-name codex-reviewer-lambda-policy
+ --role-name codex-reviewer-lambda-role-dev \
+ --policy-name codex-reviewer-lambda-policy
 
 # Verify policy includes:
 # - secretsmanager:GetSecretValue
@@ -296,13 +296,13 @@ aws iam get-role-policy \
 head -n 1 private-key.pem
 # Should show: -----BEGIN RSA PRIVATE KEY----- <!-- pragma: allowlist secret -->
 
-# Convert if needed (OpenSSH format → PEM)
+# Convert if needed (OpenSSH format PEM)
 ssh-keygen -p -m PEM -f private-key.pem
 ```
 
 ---
 
-##  Security Audit Checklist
+## Security Audit Checklist
 
 - [ ] Private key stored in Secrets Manager (not in code)
 - [ ] Webhook secret is strong (>= 32 characters)
@@ -315,7 +315,7 @@ ssh-keygen -p -m PEM -f private-key.pem
 
 ---
 
-##  Multi-Environment Setup
+## Multi-Environment Setup
 
 ### Development
 ```bash
@@ -340,44 +340,44 @@ aws secretsmanager create-secret --name github-app-private-key-prod --secret-str
 
 ---
 
-##  Quick Reference
+## Quick Reference
 
 **Environment Variables:**
 ```bash
-TF_VAR_github_app_id          # GitHub App ID
-TF_VAR_github_webhook_secret  # Webhook secret
-AWS_PROFILE                   # AWS profile name
-AWS_REGION                    # AWS region
+TF_VAR_github_app_id # GitHub App ID
+TF_VAR_github_webhook_secret # Webhook secret
+AWS_PROFILE # AWS profile name
+AWS_REGION # AWS region
 ```
 
 **AWS Secrets:**
 ```
-github-app-private-key-dev     # Dev private key
+github-app-private-key-dev # Dev private key
 github-app-private-key-staging # Staging private key
-github-app-private-key-prod    # Prod private key
+github-app-private-key-prod # Prod private key
 ```
 
 **Files (NEVER commit):**
 ```
-*.pem                          # Private keys
-.env                           # Environment variables
-terraform.tfstate              # Terraform state (use S3 backend)
+*.pem # Private keys
+.env # Environment variables
+terraform.tfstate # Terraform state (use S3 backend)
 ```
 
 ---
 
-**Status:** Ready for execution  
-**Estimated Time:** 10 minutes  
+**Status:** Ready for execution
+**Estimated Time:** 10 minutes
 **Next:** Run verification checklist, then proceed to deployment
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
-**Agent Name**: Secrets Configuration Guide  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
-**Operational Status**:  Active
+**Agent Name**: Secrets Configuration Guide
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
+**Operational Status**: Active
 
 ### Purpose
 This agent provides specialized functionality for secrets configuration guide operations within the Codex ecosystem.
@@ -395,7 +395,7 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## ️ Verification Checklist
+## Verification Checklist
 
 ### Prerequisites
 - [ ] Required tools and dependencies installed
@@ -410,23 +410,23 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 - [ ] Integration points functional
 
 ### Agent Capabilities
--  Autonomous operation
--  Error detection and recovery
--  Progress reporting
--  Result validation
+- Autonomous operation
+- Error detection and recovery
+- Progress reporting
+- Result validation
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
 
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status | Iteration |
 |--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% |  | Current |
-| Avg Execution Time | <5min | 3.2min |  | Current |
-| Error Rate | <5% | 2.1% |  | Current |
-| Coverage | ≥90% | 100% |  | Current |
+| Success Rate | ≥95% | 96% | | Current |
+| Avg Execution Time | <5min | 3.2min | | Current |
+| Error Rate | <5% | 2.1% | | Current |
+| Coverage | ≥90% | 100% | | Current |
 
 ### Performance Indicators
 - **Reliability**: 96% success rate across all invocations
@@ -438,32 +438,32 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Information Flow)
+### Path (Information Flow)
 ```
-Input → Validation → Processing → Output → Verification
+Input Validation Processing Output Verification
 ```
 
-### Fields  (State Management)
+### Fields (State Management)
 - **Input State**: Raw parameters and context
 - **Processing State**: Transformation and execution
 - **Output State**: Results and artifacts
 - **Feedback State**: Validation and reporting
 
-### Patterns ️ (Observable Behaviors)
+### Patterns (Observable Behaviors)
 - Consistent execution patterns
 - Predictable error handling
 - Standard output formats
 - Repeatable results
 
-### Redundancy  (Failure Recovery)
+### Redundancy (Failure Recovery)
 - Automatic retry on transient failures
 - Fallback strategies for degraded operation
 - State preservation across failures
 - Graceful degradation patterns
 
-### Balance ️ (Resource Optimization)
+### Balance (Resource Optimization)
 - CPU: Optimized processing algorithms
 - Memory: Efficient data structures
 - I/O: Batched operations where possible
@@ -473,7 +473,7 @@ Input → Validation → Processing → Output → Verification
 
 
 
-##  Energy Distribution
+## Energy Distribution
 
 ### Priority Breakdown
 
@@ -494,14 +494,14 @@ Input → Validation → Processing → Output → Verification
 
 ### Energy Flow
 ```
-Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporting [20%]
+Input Processing [20%] Core Execution [40%] Validation [20%] Reporting [20%]
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
 
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Fallback Strategies
 
@@ -544,9 +544,9 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🏷️ Agent Type Classification
+## Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -559,16 +559,16 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🛠️ Capabilities Matrix
+## Capabilities Matrix
 
 | Capability | Available | Permission Level | Notes |
 |------------|-----------|------------------|-------|
-| File System Access |  | Read/Write | Scoped to workspace |
-| Network Access |  | Restricted | Approved endpoints only |
-| Process Execution |  | Sandboxed | Monitored execution |
-| Database Access | ️ | Read-only | If configured |
-| API Integrations |  | Authenticated | Token-based |
-| Git Operations |  | Full | Within repository |
+| File System Access | | Read/Write | Scoped to workspace |
+| Network Access | | Restricted | Approved endpoints only |
+| Process Execution | | Sandboxed | Monitored execution |
+| Database Access | | Read-only | If configured |
+| API Integrations | | Authenticated | Token-based |
+| Git Operations | | Full | Within repository |
 
 ### Tool Access
 - **bash**: Command execution
@@ -581,16 +581,16 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-##  Usage Examples
+## Usage Examples
 
 ### Basic Invocation
 
 ```yaml
 agent_type: secrets-configuration-guide
 prompt: |
-  Execute standard operation with default parameters
-  Target: <target>
-  Mode: <mode>
+ Execute standard operation with default parameters
+ Target: <target>
+ Mode: <mode>
 ```
 
 ### Advanced Usage
@@ -598,14 +598,14 @@ prompt: |
 ```yaml
 agent_type: secrets-configuration-guide
 prompt: |
-  Execute with custom configuration:
-  - Parameter 1: value1
-  - Parameter 2: value2
-  - Options: [option_a, option_b]
+ Execute with custom configuration:
+ - Parameter 1: value1
+ - Parameter 2: value2
+ - Options: [option_a, option_b]
 
-  Validation requirements:
-  - Requirement 1
-  - Requirement 2
+ Validation requirements:
+ - Requirement 1
+ - Requirement 2
 ```
 
 ### Common Patterns
@@ -626,18 +626,24 @@ prompt: |
 
 
 
-##  Integration Patterns
+## Integration Patterns
 
 ### Workflow Integration
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Trigger, Agent Activation'}}%%
+
 graph LR
-    A[Trigger] --> B[Agent Activation]
-    B --> C[Execution]
-    C --> D[Validation]
-    D --> E[Reporting]
-    E --> F[Next Stage]
+
+ A[Trigger] --> B[Agent Activation]
+
+ B --> C[Execution]
+
+ C --> D[Validation]
+
+ D --> E[Reporting]
+
+ E --> F[Next Stage]
 ```
 
 ### Integration Points
@@ -663,7 +669,7 @@ graph LR
 
 
 
-##  Activation Commands
+## Activation Commands
 
 ### Manual Activation
 
@@ -676,12 +682,12 @@ task agent_type="secrets-configuration-guide" description="<description>" prompt
 
 ```yaml
 - name: Activate secrets-configuration-guide
-  uses: ./.github/actions/agent-runner
-  with:
-    agent: secrets-configuration-guide
-    parameters: |
-      target: ${{ github.workspace }}
-      mode: full
+ uses: ./.github/actions/agent-runner
+ with:
+ agent: secrets-configuration-guide
+ parameters: |
+ target: ${{ github.workspace }}
+ mode: full
 ```
 
 ### Programmatic Invocation
@@ -690,9 +696,9 @@ task agent_type="secrets-configuration-guide" description="<description>" prompt
 from agent_framework import invoke_agent
 
 result = invoke_agent(
-    agent_type="secrets-configuration-guide",
-    prompt="Execute operation",
-    context={"target": "path/to/target"}
+ agent_type="secrets-configuration-guide",
+ prompt="Execute operation",
+ context={"target": "path/to/target"}
 )
 ```
 
@@ -700,7 +706,7 @@ result = invoke_agent(
 
 
 
-## 📦 Tool Dependencies
+## Tool Dependencies
 
 ### Required Tools
 
@@ -729,27 +735,27 @@ requests>=2.31.0
 
 
 
-## 📤 Output Formats
+## Output Formats
 
 ### Standard Output Format
 
 ```json
 {
-  "status": "success|failure|partial",
-  "timestamp": "2026-01-23T19:45:00Z",
-  "agent": "agent-name",
-  "execution_time": "3.2s",
-  "results": {
-    "items_processed": 10,
-    "items_successful": 9,
-    "items_failed": 1
-  },
-  "artifacts": [
-    "path/to/output1.json",
-    "path/to/output2.txt"
-  ],
-  "errors": [],
-  "warnings": []
+ "status": "success|failure|partial",
+ "timestamp": "2026-01-23T19:45:00Z",
+ "agent": "agent-name",
+ "execution_time": "3.2s",
+ "results": {
+ "items_processed": 10,
+ "items_successful": 9,
+ "items_failed": 1
+ },
+ "artifacts": [
+ "path/to/output1.json",
+ "path/to/output2.txt"
+ ],
+ "errors": [],
+ "warnings": []
 }
 ```
 
@@ -758,8 +764,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**:  Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: Success 
+**Timestamp**: 2026-01-23T19:45:00Z 
 **Duration**: 3.2s
 
 ## Summary
@@ -786,12 +792,12 @@ requests>=2.31.0
 
 
 
-## ️ Error Handling
+## Error Handling
 
 ### Common Failure Modes
 
 #### 1. Input Validation Failure
-**Symptoms**: Agent rejects input parameters  
+**Symptoms**: Agent rejects input parameters
 **Recovery**:
 - Validate input format
 - Check required fields
@@ -799,7 +805,7 @@ requests>=2.31.0
 - Review examples
 
 #### 2. Resource Access Failure
-**Symptoms**: Cannot access required resources  
+**Symptoms**: Cannot access required resources
 **Recovery**:
 - Check permissions
 - Verify paths exist
@@ -807,7 +813,7 @@ requests>=2.31.0
 - Review authentication
 
 #### 3. Execution Timeout
-**Symptoms**: Operation exceeds time limit  
+**Symptoms**: Operation exceeds time limit
 **Recovery**:
 - Reduce scope of operation
 - Check for blocking operations
@@ -815,7 +821,7 @@ requests>=2.31.0
 - Consider batch processing
 
 #### 4. Dependency Failure
-**Symptoms**: Required tool or service unavailable  
+**Symptoms**: Required tool or service unavailable
 **Recovery**:
 - Verify tool installation
 - Check service status
@@ -826,29 +832,29 @@ requests>=2.31.0
 
 | Category | Severity | Auto-Retry | Escalation |
 |----------|----------|------------|------------|
-| Transient | Low |  Yes (3x) | After retries |
-| Configuration | Medium |  No | Immediate |
-| Permission | High |  No | Immediate |
-| System | Critical | ️ Once | Immediate |
+| Transient | Low | Yes (3x) | After retries |
+| Configuration | Medium | No | Immediate |
+| Permission | High | No | Immediate |
+| System | Critical | Once | Immediate |
 
 ### Recovery Patterns
 
 **Pattern 1: Graceful Degradation**
 ```python
 try:
-    full_operation()
+ full_operation()
 except NonCriticalError:
-    limited_operation()
-    log_warning()
+ limited_operation()
+ log_warning()
 ```
 
 **Pattern 2: Checkpoint Resume**
 ```python
 checkpoint = load_checkpoint()
 if checkpoint:
-    resume_from(checkpoint)
+ resume_from(checkpoint)
 else:
-    start_fresh()
+ start_fresh()
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z

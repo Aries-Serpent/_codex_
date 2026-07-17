@@ -3,7 +3,7 @@
 This module ensures src/services is found before root-level services/
 (which is a placeholder).  Without this, imports like::
 
-    from services.workflow import WorkflowInventory
+    from src.services.workflow import WorkflowInventory
 
 will resolve to the root-level placeholder instead of src/services/workflow/.
 

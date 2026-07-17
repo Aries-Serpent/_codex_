@@ -1,6 +1,6 @@
 # Operational Templates Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -19,7 +19,7 @@ The `docs/templates/` directory curates reusable runbooks that combine execution
 ## When to Use Each Template
 
 ### Iteration Plan Template
-Use for feature implementations, bug fixes, refactoring, security remediation, or infrastructure improvements that span multiple iterations. The template emphasizes iteration-based workflow (not week-based), physics principle alignment (️️️), pre-commit checkpoints, and flexible timelines. See `docs/TERMINOLOGY_MIGRATION.md` for terminology guidance.
+Use for feature implementations, bug fixes, refactoring, security remediation, or infrastructure improvements that span multiple iterations. The template emphasizes iteration-based workflow (not week-based), physics principle alignment (), pre-commit checkpoints, and flexible timelines. See `docs/TERMINOLOGY_MIGRATION.md` for terminology guidance.
 
 ### Migration — Python File Relocation
 Use when reorganizing modules, extracting packages, or introducing aliases that must remain compatible across integrations. The template includes compatibility shims, release checklist items, and rollback guidance.
@@ -60,6 +60,6 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 
 ## Maintenance Notes
 
-- Keep version numbers in sync across all templates (`v0.2.1` for initial release).
+- Keep version numbers in sync across all templates (`v0.2.0` for initial release).
 - Retain the role workflow messaging so contributors understand who drafts versus who executes.
 - Add new templates to this index to maintain discoverability and update the cross-reference table accordingly.

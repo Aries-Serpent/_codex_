@@ -1,8 +1,8 @@
 # Upgrade Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version:** 0.1.0  
+**Version:** 0.1.0
 **Last Updated: 2026-07-09
 **Audience:** DevOps, Platform Engineers, Developers
 
@@ -10,7 +10,7 @@
 
 ## Migration Paths
 
-### From beta1 → 0.1.0 (Final)
+### From beta1 0.1.0 (Final)
 
 #### Breaking Changes
 
@@ -30,9 +30,9 @@ results = pipeline(texts, batch_size=32)
 ```python
 # OLD: Dict-based config
 cfg = {
-    "model": "bert-base",
-    "batch_size": 32,
-    "device": "cuda"
+ "model": "bert-base",
+ "batch_size": 32,
+ "device": "cuda"
 }
 pipeline = Pipeline(cfg)
 
@@ -52,7 +52,7 @@ pipeline = Pipeline(cfg)
 
 ---
 
-### From beta2 → 0.1.0 (Final)
+### From beta2 0.1.0 (Final)
 
 #### Configuration Format
 
@@ -66,9 +66,9 @@ batch_size: 16
 model: bert-base
 batch_size: 32
 cache:
-  enabled: true
-  ttl_seconds: 3600
-  layers: [http, model, data, compute]
+ enabled: true
+ ttl_seconds: 3600
+ layers: [http, model, data, compute]
 ```
 
 #### New Features
@@ -87,7 +87,7 @@ cache:
 
 ---
 
-### From beta3 → 0.1.0 (Final)
+### From beta3 0.1.0 (Final)
 
 #### Minor API Changes
 
@@ -157,9 +157,9 @@ kubectl apply -f k8s/deployment-0.1.0.yaml -n codex
 kubectl get pods -n codex
 kubectl exec <green-pod> -- curl http://localhost:8000/health
 
-# Switch traffic (blue → green)
+# Switch traffic (blue green)
 kubectl patch service codex-api -n codex -p \
-  '{"spec":{"selector":{"version":"0.1.0"}}}'
+ '{"spec":{"selector":{"version":"0.1.0"}}}'
 
 # Verify traffic
 curl http://codex-api/health
@@ -175,18 +175,18 @@ kubectl delete deployment codex-api-beta3 -n codex
 ```bash
 # Deploy 10% traffic to new version
 kubectl patch deployment codex-api -n codex --type merge \
-  -p '{"spec":{"selector":{"version":"canary"}}}'
+ -p '{"spec":{"selector":{"version":"canary"}}}'
 
 # Monitor metrics for 30 minutes
 kubectl get pods -n codex
 
 # Increase to 50% if stable
 kubectl patch deployment codex-api -n codex --type merge \
-  -p '{"spec":{"selector":{"version":"canary-50"}}}'
+ -p '{"spec":{"selector":{"version":"canary-50"}}}'
 
 # Full rollout if metrics good
 kubectl patch deployment codex-api -n codex --type merge \
-  -p '{"spec":{"selector":{"version":"0.1.0"}}}'
+ -p '{"spec":{"selector":{"version":"0.1.0"}}}'
 ```
 
 ---
@@ -279,7 +279,7 @@ pg_dump codex_db > backup_$(date +%s).sql
 python -m codex.cli migrate --from-version=beta3 --to-version=0.1.0
 
 # Verify
-psql codex_db -c "\d"  # Check schema
+psql codex_db -c "\d" # Check schema
 ```
 
 ### Configuration Files
@@ -287,8 +287,8 @@ psql codex_db -c "\d"  # Check schema
 ```bash
 # Convert old format to new
 python scripts/convert_config.py \
-  --input configs/old/inference.yaml \
-  --output configs/new/inference.yaml
+ --input configs/old/inference.yaml \
+ --output configs/new/inference.yaml
 
 # Validate new config
 python -m codex.cli validate-config configs/new/inference.yaml
@@ -299,14 +299,14 @@ python -m codex.cli validate-config configs/new/inference.yaml
 ```bash
 # Build new images
 docker build -f docker/Dockerfile \
-  -t aries-serpent-api:0.1.0 .
+ -t aries-serpent-api:0.1.0 .
 
 # Push to registry
 docker push aries-serpent-api:0.1.0
 
 # Update K8s manifests
 kubectl set image deployment/codex-api \
-  api=aries-serpent-api:0.1.0 -n codex
+ api=aries-serpent-api:0.1.0 -n codex
 ```
 
 ---
@@ -358,13 +358,13 @@ pytest tests/compatibility/ -v
 
 Upgrade is successful when:
 
--  All tests passing
--  Zero downtime (for rolling upgrades)
--  Performance baseline met
--  No error spikes
--  All features working
--  Health checks passing
--  Monitoring stable
+- All tests passing
+- Zero downtime (for rolling upgrades)
+- Performance baseline met
+- No error spikes
+- All features working
+- Health checks passing
+- Monitoring stable
 
 ---
 

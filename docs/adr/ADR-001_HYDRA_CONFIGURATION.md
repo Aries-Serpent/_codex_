@@ -1,9 +1,9 @@
 # ADR-001: Hydra Configuration Consolidation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:2026-07-13
-**Status:** Accepted  
+**Status:** Accepted
 **Deciders:** mbaetiong, GitHub Copilot
 
 ## Context
@@ -21,17 +21,17 @@ Consolidate all configuration into Hydra-managed YAML structure in `conf/` direc
 ## Consequences
 
 ### Positive
--  Reduced maintenance burden
--  Better testability
--  Easier configuration debugging
--  6-month migration grace period
+- Reduced maintenance burden
+- Better testability
+- Easier configuration debugging
+- 6-month migration grace period
 
 ### Negative
-- ️ Learning curve for Hydra
-- ️ Initial migration effort (32 files)
+- Learning curve for Hydra
+- Initial migration effort (32 files)
 
 ### Neutral
--  Performance: <100ms config loading (acceptable)
+- Performance: <100ms config loading (acceptable)
 
 ## Alternatives Considered
 1. **Pydantic-only:** Less ecosystem support

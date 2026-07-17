@@ -1,8 +1,8 @@
 # Observability & Monitoring Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**_codex_ v0.2.1 | Enterprise Observability Strategy**
+**_codex_ v0.2.0 | Enterprise Observability Strategy**
 
 > **Version:** 1.0.0  
 > **Last Updated: 2026-07-11

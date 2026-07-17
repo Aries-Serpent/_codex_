@@ -1,11 +1,11 @@
 <!-- Use this as a writer's guide when constructing Codex survey prompts/output -->
 # Repo Survey — <branch> & PR <PR> — <YYYY-MM-DD> (UTC)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Ref:** branch `<branch>`  commit `<short-sha>`  •  **Artifacts:** `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/`
+**Ref:** branch `<branch>` commit `<short-sha>` • **Artifacts:** `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/`
 
 ---
 
@@ -59,7 +59,7 @@ with \( \alpha, \beta, \gamma \in [0,1], \alpha+\beta+\gamma=1 \).
 - T (Trace quality): `<0..1>`
 - D (Docs parity): `<0..1>`
 - Weights: α=`<0..1>`, β=`<0..1>`, γ=`<0..1>`
-- **R = <computed>** → **Recommendation:** `[Block | Proceed]`
+- **R = <computed>** **Recommendation:** `[Block | Proceed]`
 
 ## 7) Artifacts
 - `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/report.md`

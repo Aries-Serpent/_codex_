@@ -1,0 +1,3576 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/production/DEPLOYMENT_RUNBOOK/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Production Deployment Runbook - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#production-deployment-runbook">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Production Deployment Runbook
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#document-control">
+<span class="md-ellipsis">
+      
+        Document Control
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-summary">
+<span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pre-deployment-phase">
+<span class="md-ellipsis">
+      
+        Pre-Deployment Phase
+      
+    </span>
+</a>
+<nav aria-label="Pre-Deployment Phase" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-prerequisites-verification">
+<span class="md-ellipsis">
+      
+        1.1 Prerequisites Verification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-backup-and-rollback-preparation">
+<span class="md-ellipsis">
+      
+        1.2 Backup and Rollback Preparation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-pre-deployment-validation-15-minutes">
+<span class="md-ellipsis">
+      
+        Phase 1: Pre-Deployment Validation (15 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 1: Pre-Deployment Validation (15 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21-configuration-validation">
+<span class="md-ellipsis">
+      
+        2.1 Configuration Validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#22-service-health-check">
+<span class="md-ellipsis">
+      
+        2.2 Service Health Check
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-core-infrastructure-deployment-30-minutes">
+<span class="md-ellipsis">
+      
+        Phase 2: Core Infrastructure Deployment (30 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 2: Core Infrastructure Deployment (30 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-docker-image-build-and-registry-push">
+<span class="md-ellipsis">
+      
+        3.1 Docker Image Build and Registry Push
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-kubernetes-deployment-configuration">
+<span class="md-ellipsis">
+      
+        3.2 Kubernetes Deployment Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-database-migration">
+<span class="md-ellipsis">
+      
+        3.3 Database Migration
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-monitoring-and-observability-deployment-15-minutes">
+<span class="md-ellipsis">
+      
+        Phase 3: Monitoring and Observability Deployment (15 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 3: Monitoring and Observability Deployment (15 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-prometheus-configuration">
+<span class="md-ellipsis">
+      
+        4.1 Prometheus Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-grafana-dashboard-deployment">
+<span class="md-ellipsis">
+      
+        4.2 Grafana Dashboard Deployment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-logging-pipeline-validation">
+<span class="md-ellipsis">
+      
+        4.3 Logging Pipeline Validation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-4-security-hardening-and-compliance-20-minutes">
+<span class="md-ellipsis">
+      
+        Phase 4: Security Hardening and Compliance (20 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 4: Security Hardening and Compliance (20 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-network-security">
+<span class="md-ellipsis">
+      
+        5.1 Network Security
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-secret-management">
+<span class="md-ellipsis">
+      
+        5.2 Secret Management
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-rbac-and-access-control">
+<span class="md-ellipsis">
+      
+        5.3 RBAC and Access Control
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-5-integration-testing-25-minutes">
+<span class="md-ellipsis">
+      
+        Phase 5: Integration Testing (25 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 5: Integration Testing (25 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-api-endpoint-validation">
+<span class="md-ellipsis">
+      
+        6.1 API Endpoint Validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-database-integration-testing">
+<span class="md-ellipsis">
+      
+        6.2 Database Integration Testing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-cache-layer-validation">
+<span class="md-ellipsis">
+      
+        6.3 Cache Layer Validation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-6-load-and-performance-testing-20-minutes">
+<span class="md-ellipsis">
+      
+        Phase 6: Load and Performance Testing (20 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 6: Load and Performance Testing (20 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-baseline-performance-testing">
+<span class="md-ellipsis">
+      
+        7.1 Baseline Performance Testing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-stress-testing">
+<span class="md-ellipsis">
+      
+        7.2 Stress Testing
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-7-go-live-and-production-cutover-30-minutes">
+<span class="md-ellipsis">
+      
+        Phase 7: Go-Live and Production Cutover (30 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 7: Go-Live and Production Cutover (30 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#81-traffic-cutover-strategy">
+<span class="md-ellipsis">
+      
+        8.1 Traffic Cutover Strategy
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#82-canary-deployment">
+<span class="md-ellipsis">
+      
+        8.2 Canary Deployment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#83-progressive-traffic-rollout">
+<span class="md-ellipsis">
+      
+        8.3 Progressive Traffic Rollout
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#84-cutover-sign-off">
+<span class="md-ellipsis">
+      
+        8.4 Cutover Sign-Off
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-8-post-deployment-validation-15-minutes">
+<span class="md-ellipsis">
+      
+        Phase 8: Post-Deployment Validation (15 minutes)
+      
+    </span>
+</a>
+<nav aria-label="Phase 8: Post-Deployment Validation (15 minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#91-system-stability-verification">
+<span class="md-ellipsis">
+      
+        9.1 System Stability Verification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#92-application-monitoring">
+<span class="md-ellipsis">
+      
+        9.2 Application Monitoring
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#93-security-validation">
+<span class="md-ellipsis">
+      
+        9.3 Security Validation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rollback-procedure">
+<span class="md-ellipsis">
+      
+        Rollback Procedure
+      
+    </span>
+</a>
+<nav aria-label="Rollback Procedure" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#101-immediate-rollback-5-minutes">
+<span class="md-ellipsis">
+      
+        10.1 Immediate Rollback (&lt; 5 minutes)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#102-database-rollback">
+<span class="md-ellipsis">
+      
+        10.2 Database Rollback
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#103-rollback-sign-off">
+<span class="md-ellipsis">
+      
+        10.3 Rollback Sign-Off
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployment-completion-checklist">
+<span class="md-ellipsis">
+      
+        Deployment Completion Checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#contact-information-and-escalation">
+<span class="md-ellipsis">
+      
+        Contact Information and Escalation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#appendix-a-environment-variables-reference">
+<span class="md-ellipsis">
+      
+        Appendix A: Environment Variables Reference
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#appendix-b-troubleshooting-quick-reference">
+<span class="md-ellipsis">
+      
+        Appendix B: Troubleshooting Quick Reference
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="production-deployment-runbook">Production Deployment Runbook<a class="headerlink" href="#production-deployment-runbook" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p><strong>Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-06-22
+<strong>Maintainer</strong>: DevOps Lead
+<strong>Approver</strong>: Production Engineering Manager</p>
+<h2 id="document-control">Document Control<a class="headerlink" href="#document-control" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Author</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2024-01-15</td>
+<td>DevOps Lead</td>
+<td>Initial creation for Phase 6 production readiness</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<p>This runbook provides comprehensive step-by-step procedures for deploying Aries-Serpent/<em>codex</em> to production. It covers all deployment phases from pre-deployment validation through post-deployment verification, with explicit rollback procedures and approval gates.</p>
+<p><strong>Deployment Target</strong>: Production environment (us-east-1, Kubernetes cluster, managed PostgreSQL)
+<strong>Estimated Duration</strong>: 2-3 hours (normal flow), 30-45 minutes (expedited with pre-validated components)
+<strong>Recovery Target Objective (RTO)</strong>: &lt; 5 minutes via automated rollback
+<strong>Recovery Point Objective (RPO)</strong>: &lt; 1 minute (continuous backup)</p>
+<hr/>
+<h2 id="pre-deployment-phase">Pre-Deployment Phase<a class="headerlink" href="#pre-deployment-phase" title="Permanent link">¶</a></h2>
+<h3 id="11-prerequisites-verification">1.1 Prerequisites Verification<a class="headerlink" href="#11-prerequisites-verification" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Confirm all pre-requisites are met before initiating deployment.</p>
+<p><strong>Checklist</strong>:
+- [ ] Production deployment approval obtained from Production Engineering Manager
+- [ ] All required credentials (AWS API keys, DB passwords, SSL certificates) stored in AWS Secrets Manager
+- [ ] VPN access verified to production cluster
+- [ ] SSH key for bastion host accessible and functional
+- [ ] Kubernetes cluster is responsive: <code>kubectl cluster-info</code>
+- [ ] Database backup completed and verified: <code>pg_dump --version &amp;&amp; pg_dumpall --file=/backup/prod-$(date +%s).sql</code>
+- [ ] All microservices have been tested in staging environment
+- [ ] Load balancer health checks configured and responding
+- [ ] Monitoring dashboards prepared in Grafana
+- [ ] Incident response team on standby
+- [ ] Communication channels established (Slack #prod-deploy, PagerDuty bridge)</p>
+<p><strong>Pre-Deployment Approval Signature</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Approved by: _________________________ Date: _________
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>Name: _________________________ Title: _________
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>Contact: _________________________ Phone: _________
+</code></pre></div>
+<h3 id="12-backup-and-rollback-preparation">1.2 Backup and Rollback Preparation<a class="headerlink" href="#12-backup-and-rollback-preparation" title="Permanent link">¶</a></h3>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p>Execute full database backup:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nv">BACKUP_ID</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="nv">AWS_PROFILE</span><span class="o">=</span>production<span class="w"> </span>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>/backup/prod-full-<span class="si">${</span><span class="nv">BACKUP_ID</span><span class="si">}</span>.sql<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>s3://prod-backups/database/prod-full-<span class="si">${</span><span class="nv">BACKUP_ID</span><span class="si">}</span>.sql
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>aws<span class="w"> </span>s3api<span class="w"> </span>head-object<span class="w"> </span>--bucket<span class="w"> </span>prod-backups<span class="w"> </span>--key<span class="w"> </span>database/prod-full-<span class="si">${</span><span class="nv">BACKUP_ID</span><span class="si">}</span>.sql
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Backup ID for rollback: </span><span class="nv">$BACKUP_ID</span><span class="s2">"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>Verify backup integrity:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>pg_restore<span class="w"> </span>--list<span class="w"> </span>/backup/prod-full-<span class="si">${</span><span class="nv">BACKUP_ID</span><span class="si">}</span>.sql<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-20
+</code></pre></div></p>
+</li>
+<li>
+<p>Create Docker image snapshot for rollback:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nv">CURRENT_VERSION</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.template.spec.containers[0].image}'</span><span class="k">)</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Current production version: </span><span class="nv">$CURRENT_VERSION</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/rollback-version.txt
+</code></pre></div></p>
+</li>
+<li>
+<p>Document current state in deployment log:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Pre-deployment snapshot at </span><span class="k">$(</span>date<span class="k">)</span><span class="s2">: Version=</span><span class="nv">$CURRENT_VERSION</span><span class="s2">, Backup=</span><span class="nv">$BACKUP_ID</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/var/log/deployment.log
+</code></pre></div></p>
+</li>
+</ol>
+<p><strong>Sign-off</strong>:
+- [ ] Backup verified and accessible
+- [ ] Rollback version documented
+- [ ] Previous state snapshot created</p>
+<hr/>
+<h2 id="phase-1-pre-deployment-validation-15-minutes">Phase 1: Pre-Deployment Validation (15 minutes)<a class="headerlink" href="#phase-1-pre-deployment-validation-15-minutes" title="Permanent link">¶</a></h2>
+<h3 id="21-configuration-validation">2.1 Configuration Validation<a class="headerlink" href="#21-configuration-validation" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify all configurations are correct before deployment.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Validate deployment manifest</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/production/deployment.yaml<span class="w"> </span>--dry-run<span class="o">=</span>client<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span>&gt;<span class="w"> </span>/tmp/deployment-dry-run.yaml
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Deployment manifest validation passed"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check resource limits</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.items[] | {name: .metadata.name, cpu: .status.allocatable.cpu, memory: .status.allocatable.memory}'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify secrets exist</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>secrets<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"db-credentials|api-keys|ssl-cert"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test database connection string</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT version();"</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="22-service-health-check">2.2 Service Health Check<a class="headerlink" href="#22-service-health-check" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Ensure all dependent services are operational.</p>
+<p><strong>Checklist</strong>:
+- [ ] PostgreSQL database responsive and reachable
+- [ ] Redis cache cluster online: <code>redis-cli --cluster info $REDIS_ENDPOINT</code>
+- [ ] S3 storage accessible: <code>aws s3 ls s3://prod-app-storage/ --profile production</code>
+- [ ] External API endpoints (if applicable) responding within SLA
+- [ ] SSL/TLS certificates valid: <code>openssl x509 -in /etc/ssl/certs/prod.crt -noout -dates</code>
+- [ ] DNS records resolving correctly: <code>nslookup api.codex.prod</code></p>
+<p><strong>Health Check Verification</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Run comprehensive health check script</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>./scripts/prod-health-check.sh<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/health-check-<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>.log
+</code></pre></div></p>
+<hr/>
+<h2 id="phase-2-core-infrastructure-deployment-30-minutes">Phase 2: Core Infrastructure Deployment (30 minutes)<a class="headerlink" href="#phase-2-core-infrastructure-deployment-30-minutes" title="Permanent link">¶</a></h2>
+<h3 id="31-docker-image-build-and-registry-push">3.1 Docker Image Build and Registry Push<a class="headerlink" href="#31-docker-image-build-and-registry-push" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Build production-ready Docker image and verify in registry.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Build Docker image</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nv">VERSION</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>VERSION<span class="k">)</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.prod<span class="w"> </span>.
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>docker<span class="w"> </span>tag<span class="w"> </span>codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span><span class="w"> </span><span class="nv">$AWS_ACCOUNT_ID</span>.dkr.ecr.us-east-1.amazonaws.com/codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Scan image for vulnerabilities</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>trivy<span class="w"> </span>image<span class="w"> </span>--severity<span class="w"> </span>HIGH,CRITICAL<span class="w"> </span>codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Push to ECR</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>aws<span class="w"> </span>ecr<span class="w"> </span>get-login-password<span class="w"> </span>--region<span class="w"> </span>us-east-1<span class="w"> </span><span class="p">|</span><span class="w"> </span>docker<span class="w"> </span>login<span class="w"> </span>--username<span class="w"> </span>AWS<span class="w"> </span>--password-stdin<span class="w"> </span><span class="nv">$AWS_ACCOUNT_ID</span>.dkr.ecr.us-east-1.amazonaws.com
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>docker<span class="w"> </span>push<span class="w"> </span><span class="nv">$AWS_ACCOUNT_ID</span>.dkr.ecr.us-east-1.amazonaws.com/codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify image availability</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>aws<span class="w"> </span>ecr<span class="w"> </span>describe-images<span class="w"> </span>--repository-name<span class="w"> </span>codex-api<span class="w"> </span>--region<span class="w"> </span>us-east-1
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="32-kubernetes-deployment-configuration">3.2 Kubernetes Deployment Configuration<a class="headerlink" href="#32-kubernetes-deployment-configuration" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Update Kubernetes manifests with new image version.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Update deployment manifest</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>kubectl<span class="w"> </span><span class="nb">set</span><span class="w"> </span>image<span class="w"> </span>deployment/codex-api<span class="w"> </span>codex-api<span class="o">=</span><span class="nv">$AWS_ACCOUNT_ID</span>.dkr.ecr.us-east-1.amazonaws.com/codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>-n<span class="w"> </span>production<span class="w"> </span>--record
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Wait for rollout to complete</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>kubectl<span class="w"> </span>rollout<span class="w"> </span>status<span class="w"> </span>deployment/codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--timeout<span class="o">=</span>10m
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify pod readiness</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>codex-api<span class="w"> </span>-o<span class="w"> </span>wide
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>codex-api<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s2">"Readiness"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check endpoint status</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>endpoints<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="33-database-migration">3.3 Database Migration<a class="headerlink" href="#33-database-migration" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Apply all pending database migrations safely.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Pre-migration database backup</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="nv">MIGRATION_BACKUP_ID</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>pg_dumpall<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>&gt;<span class="w"> </span>/backup/pre-migration-<span class="si">${</span><span class="nv">MIGRATION_BACKUP_ID</span><span class="si">}</span>.sql
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Run migration scripts</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="nb">cd</span><span class="w"> </span>/app<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify migration success</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span>-c<span class="w"> </span><span class="s2">"\dt"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-20
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT version FROM alembic_version;"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Rollback contingency documentation</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Pre-migration backup: /backup/pre-migration-</span><span class="si">${</span><span class="nv">MIGRATION_BACKUP_ID</span><span class="si">}</span><span class="s2">.sql"</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/migration-rollback.log
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Database name: codex_prod"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/tmp/migration-rollback.log
+</code></pre></div></p>
+</li>
+</ol>
+<hr/>
+<h2 id="phase-3-monitoring-and-observability-deployment-15-minutes">Phase 3: Monitoring and Observability Deployment (15 minutes)<a class="headerlink" href="#phase-3-monitoring-and-observability-deployment-15-minutes" title="Permanent link">¶</a></h2>
+<h3 id="41-prometheus-configuration">4.1 Prometheus Configuration<a class="headerlink" href="#41-prometheus-configuration" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Deploy Prometheus scrape configurations for production monitoring.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Update Prometheus scrape config</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/prometheus/scrape-config-prod.yaml<span class="w"> </span>-n<span class="w"> </span>monitoring
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify target discovery</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a>kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class="w"> </span>monitoring<span class="w"> </span>svc/prometheus<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span><span class="p">&amp;</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>curl<span class="w"> </span>http://localhost:9090/api/v1/targets
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test metric collection</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=up{job="codex-api"}'</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="42-grafana-dashboard-deployment">4.2 Grafana Dashboard Deployment<a class="headerlink" href="#42-grafana-dashboard-deployment" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Deploy production dashboards for visualization and alerting.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Apply dashboard ConfigMaps</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/grafana/dashboards-prod/<span class="w"> </span>-n<span class="w"> </span>monitoring
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify dashboard availability</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>monitoring<span class="w"> </span>grafana-pod<span class="w"> </span>--<span class="w"> </span>grafana-cli<span class="w"> </span>admin<span class="w"> </span>list-dashboards
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test alerting rules</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/alertmanager/rules-prod.yaml<span class="w"> </span>-n<span class="w"> </span>monitoring
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>amtool<span class="w"> </span>alert
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="43-logging-pipeline-validation">4.3 Logging Pipeline Validation<a class="headerlink" href="#43-logging-pipeline-validation" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Ensure log aggregation is working for production.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Deploy Fluent Bit DaemonSet</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/logging/fluent-bit-prod.yaml<span class="w"> </span>-n<span class="w"> </span>logging
+<a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>daemonset<span class="w"> </span>-n<span class="w"> </span>logging
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify log ingestion</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>logging<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>fluent-bit<span class="w"> </span>--tail<span class="o">=</span><span class="m">50</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test log queries in Elasticsearch</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">"localhost:9200/_cat/indices?v"</span>
+<a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">"localhost:9200/logs-prod*/_search?size=1"</span>
+</code></pre></div></p>
+</li>
+</ol>
+<hr/>
+<h2 id="phase-4-security-hardening-and-compliance-20-minutes">Phase 4: Security Hardening and Compliance (20 minutes)<a class="headerlink" href="#phase-4-security-hardening-and-compliance-20-minutes" title="Permanent link">¶</a></h2>
+<h3 id="51-network-security">5.1 Network Security<a class="headerlink" href="#51-network-security" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify network policies and firewall rules are enforced.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Apply network policies</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/network-policies/prod-policies.yaml<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify network policy enforcement</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>networkpolicies<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test connectivity (allowed paths)</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="c1"># Test: App DB (should succeed)</span>
+<a href="#__codelineno-33-2" id="__codelineno-33-2" name="__codelineno-33-2"></a>kubectl<span class="w"> </span>run<span class="w"> </span>debug-pod<span class="w"> </span>--image<span class="o">=</span>busybox<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>--<span class="w"> </span>nc<span class="w"> </span>-zv<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span><span class="m">5432</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test isolation (denied paths)</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-34-1" id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="c1"># Test: Pod external network (should fail per policy)</span>
+<a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a>kubectl<span class="w"> </span>run<span class="w"> </span>debug-pod<span class="w"> </span>--image<span class="o">=</span>busybox<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>http://external.com<span class="w"> </span>--connect-timeout<span class="w"> </span><span class="m">5</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="52-secret-management">5.2 Secret Management<a class="headerlink" href="#52-secret-management" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify all secrets are properly injected and accessible.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Verify secret injection</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>secret<span class="w"> </span>db-credentials<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test secret access in pod</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a>kubectl<span class="w"> </span>run<span class="w"> </span>secret-test<span class="w"> </span>--image<span class="o">=</span><span class="nv">$AWS_ACCOUNT_ID</span>.dkr.ecr.us-east-1.amazonaws.com/codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a>--env<span class="o">=</span><span class="s2">"TEST_SECRET=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>db-credentials<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.data.password}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a>--rm<span class="w"> </span>-it<span class="w"> </span>--<span class="w"> </span>env<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>TEST_SECRET
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Rotate secrets if needed</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-37-1" id="__codelineno-37-1" name="__codelineno-37-1"></a><span class="c1"># Document secret rotation procedure</span>
+<a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Secrets rotated at </span><span class="k">$(</span>date<span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/tmp/security-log.txt
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="53-rbac-and-access-control">5.3 RBAC and Access Control<a class="headerlink" href="#53-rbac-and-access-control" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify role-based access controls are in place.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Apply RBAC manifests</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-38-1" id="__codelineno-38-1" name="__codelineno-38-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/rbac/prod-roles.yaml<span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-38-2" id="__codelineno-38-2" name="__codelineno-38-2"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/rbac/prod-rolebindings.yaml<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify service accounts</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-39-1" id="__codelineno-39-1" name="__codelineno-39-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>serviceaccounts<span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-39-2" id="__codelineno-39-2" name="__codelineno-39-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>rolebindings<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test permission enforcement</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a><span class="c1"># Test: Verify restricted access denied</span>
+<a href="#__codelineno-40-2" id="__codelineno-40-2" name="__codelineno-40-2"></a>kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>--as<span class="o">=</span>system:serviceaccount:production:app-user<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+</ol>
+<hr/>
+<h2 id="phase-5-integration-testing-25-minutes">Phase 5: Integration Testing (25 minutes)<a class="headerlink" href="#phase-5-integration-testing-25-minutes" title="Permanent link">¶</a></h2>
+<h3 id="61-api-endpoint-validation">6.1 API Endpoint Validation<a class="headerlink" href="#61-api-endpoint-validation" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify all API endpoints are responsive and functioning.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Get service endpoint</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-41-1" id="__codelineno-41-1" name="__codelineno-41-1"></a><span class="nv">API_ENDPOINT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.loadBalancer.ingress[0].hostname}'</span><span class="k">)</span>
+<a href="#__codelineno-41-2" id="__codelineno-41-2" name="__codelineno-41-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"API Endpoint: </span><span class="nv">$API_ENDPOINT</span><span class="s2">"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test health endpoint</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-42-1" id="__codelineno-42-1" name="__codelineno-42-1"></a>curl<span class="w"> </span>-v<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/health
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test critical business endpoints</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-43-1" id="__codelineno-43-1" name="__codelineno-43-1"></a><span class="c1"># Test endpoint 1: Authentication</span>
+<a href="#__codelineno-43-2" id="__codelineno-43-2" name="__codelineno-43-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/auth/login<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-43-4" id="__codelineno-43-4" name="__codelineno-43-4"></a>-d<span class="w"> </span><span class="s1">'{"username":"test","password":"test"}'</span><span class="w"> </span>&lt;!--<span class="w"> </span>pragma:<span class="w"> </span>allowlist<span class="w"> </span>secret<span class="w"> </span>--&gt;
+<a href="#__codelineno-43-5" id="__codelineno-43-5" name="__codelineno-43-5"></a>
+<a href="#__codelineno-43-6" id="__codelineno-43-6" name="__codelineno-43-6"></a><span class="c1"># Test endpoint 2: Core functionality</span>
+<a href="#__codelineno-43-7" id="__codelineno-43-7" name="__codelineno-43-7"></a>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/api/v1/resources
+<a href="#__codelineno-43-8" id="__codelineno-43-8" name="__codelineno-43-8"></a>
+<a href="#__codelineno-43-9" id="__codelineno-43-9" name="__codelineno-43-9"></a><span class="c1"># Test endpoint 3: Data retrieval</span>
+<a href="#__codelineno-43-10" id="__codelineno-43-10" name="__codelineno-43-10"></a>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/api/v1/status
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Run smoke test suite</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-44-1" id="__codelineno-44-1" name="__codelineno-44-1"></a>./tests/smoke-tests/prod-smoke-test.sh
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="62-database-integration-testing">6.2 Database Integration Testing<a class="headerlink" href="#62-database-integration-testing" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify database connections and queries work correctly.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Test database query performance</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-45-1" id="__codelineno-45-1" name="__codelineno-45-1"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-45-2" id="__codelineno-45-2" name="__codelineno-45-2"></a>-c<span class="w"> </span><span class="s2">"EXPLAIN ANALYZE SELECT * FROM users LIMIT 1000;"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-30
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify critical tables exist</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-46-1" id="__codelineno-46-1" name="__codelineno-46-1"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span>-c<span class="w"> </span><span class="s2">"\dt"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test transaction support</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-47-1" id="__codelineno-47-1" name="__codelineno-47-1"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<a href="#__codelineno-47-2" id="__codelineno-47-2" name="__codelineno-47-2"></a><span class="s">BEGIN;</span>
+<a href="#__codelineno-47-3" id="__codelineno-47-3" name="__codelineno-47-3"></a><span class="s">SELECT COUNT(*) FROM users;</span>
+<a href="#__codelineno-47-4" id="__codelineno-47-4" name="__codelineno-47-4"></a><span class="s">ROLLBACK;</span>
+<a href="#__codelineno-47-5" id="__codelineno-47-5" name="__codelineno-47-5"></a><span class="s">EOF</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="63-cache-layer-validation">6.3 Cache Layer Validation<a class="headerlink" href="#63-cache-layer-validation" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify Redis cache is functioning correctly.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Test cache connectivity</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-48-1" id="__codelineno-48-1" name="__codelineno-48-1"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>PING
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test cache operations</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-49-1" id="__codelineno-49-1" name="__codelineno-49-1"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>SET<span class="w"> </span>test-key<span class="w"> </span><span class="s2">"test-value"</span>
+<a href="#__codelineno-49-2" id="__codelineno-49-2" name="__codelineno-49-2"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>GET<span class="w"> </span>test-key
+<a href="#__codelineno-49-3" id="__codelineno-49-3" name="__codelineno-49-3"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>DEL<span class="w"> </span>test-key
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor cache metrics</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-50-1" id="__codelineno-50-1" name="__codelineno-50-1"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>INFO<span class="w"> </span>stats<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"total_commands_processed|used_memory"</span>
+</code></pre></div></p>
+</li>
+</ol>
+<hr/>
+<h2 id="phase-6-load-and-performance-testing-20-minutes">Phase 6: Load and Performance Testing (20 minutes)<a class="headerlink" href="#phase-6-load-and-performance-testing-20-minutes" title="Permanent link">¶</a></h2>
+<h3 id="71-baseline-performance-testing">7.1 Baseline Performance Testing<a class="headerlink" href="#71-baseline-performance-testing" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Establish performance baseline under production load.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Run load test with production-like traffic</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-51-1" id="__codelineno-51-1" name="__codelineno-51-1"></a>./tests/load-tests/artillery.yml<span class="w"> </span>--target<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor system metrics during load test</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-52-1" id="__codelineno-52-1" name="__codelineno-52-1"></a><span class="c1"># Monitor in separate terminal</span>
+<a href="#__codelineno-52-2" id="__codelineno-52-2" name="__codelineno-52-2"></a>kubectl<span class="w"> </span>top<span class="w"> </span>nodes
+<a href="#__codelineno-52-3" id="__codelineno-52-3" name="__codelineno-52-3"></a>kubectl<span class="w"> </span>top<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--containers
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Analyze performance results</strong>:</p>
+</li>
+<li>Response time: &lt; 200ms (p95)</li>
+<li>Error rate: &lt; 0.1%</li>
+<li>
+<p>Throughput: &gt; 100 req/sec</p>
+</li>
+<li>
+<p><strong>Document baseline metrics</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-53-1" id="__codelineno-53-1" name="__codelineno-53-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Performance baseline recorded at </span><span class="k">$(</span>date<span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/tmp/baseline-metrics.log
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="72-stress-testing">7.2 Stress Testing<a class="headerlink" href="#72-stress-testing" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify system behavior under stress conditions.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Run stress test</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-54-1" id="__codelineno-54-1" name="__codelineno-54-1"></a>./tests/stress-tests/run-stress-test.sh<span class="w"> </span>--duration<span class="o">=</span>5m<span class="w"> </span>--concurrent<span class="o">=</span><span class="m">500</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify graceful degradation</strong>:</p>
+</li>
+<li>System remains responsive</li>
+<li>Error rates controlled</li>
+<li>
+<p>No cascading failures</p>
+</li>
+<li>
+<p><strong>Verify recovery</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-55-1" id="__codelineno-55-1" name="__codelineno-55-1"></a><span class="c1"># After stress test, verify system returns to normal</span>
+<a href="#__codelineno-55-2" id="__codelineno-55-2" name="__codelineno-55-2"></a>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/health
+<a href="#__codelineno-55-3" id="__codelineno-55-3" name="__codelineno-55-3"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+</ol>
+<hr/>
+<h2 id="phase-7-go-live-and-production-cutover-30-minutes">Phase 7: Go-Live and Production Cutover (30 minutes)<a class="headerlink" href="#phase-7-go-live-and-production-cutover-30-minutes" title="Permanent link">¶</a></h2>
+<h3 id="81-traffic-cutover-strategy">8.1 Traffic Cutover Strategy<a class="headerlink" href="#81-traffic-cutover-strategy" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Safely switch production traffic to new deployment.</p>
+<p><strong>Decision Tree</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-56-1" id="__codelineno-56-1" name="__codelineno-56-1"></a>START: Execute Traffic Cutover
+<a href="#__codelineno-56-2" id="__codelineno-56-2" name="__codelineno-56-2"></a>
+<a href="#__codelineno-56-3" id="__codelineno-56-3" name="__codelineno-56-3"></a> Are all tests passing?
+<a href="#__codelineno-56-4" id="__codelineno-56-4" name="__codelineno-56-4"></a> NO ABORT, perform rollback
+<a href="#__codelineno-56-5" id="__codelineno-56-5" name="__codelineno-56-5"></a> YES Continue
+<a href="#__codelineno-56-6" id="__codelineno-56-6" name="__codelineno-56-6"></a>
+<a href="#__codelineno-56-7" id="__codelineno-56-7" name="__codelineno-56-7"></a> Is load balancer health green?
+<a href="#__codelineno-56-8" id="__codelineno-56-8" name="__codelineno-56-8"></a> NO ABORT, investigate infrastructure
+<a href="#__codelineno-56-9" id="__codelineno-56-9" name="__codelineno-56-9"></a> YES Continue
+<a href="#__codelineno-56-10" id="__codelineno-56-10" name="__codelineno-56-10"></a>
+<a href="#__codelineno-56-11" id="__codelineno-56-11" name="__codelineno-56-11"></a> Execute canary deployment (10% traffic)
+<a href="#__codelineno-56-12" id="__codelineno-56-12" name="__codelineno-56-12"></a> Monitor for 5 minutes
+<a href="#__codelineno-56-13" id="__codelineno-56-13" name="__codelineno-56-13"></a> Error rate &lt; 0.5%?
+<a href="#__codelineno-56-14" id="__codelineno-56-14" name="__codelineno-56-14"></a> NO ABORT, perform rollback
+<a href="#__codelineno-56-15" id="__codelineno-56-15" name="__codelineno-56-15"></a> YES Continue
+<a href="#__codelineno-56-16" id="__codelineno-56-16" name="__codelineno-56-16"></a>
+<a href="#__codelineno-56-17" id="__codelineno-56-17" name="__codelineno-56-17"></a> Response time p95 &lt; 250ms?
+<a href="#__codelineno-56-18" id="__codelineno-56-18" name="__codelineno-56-18"></a> NO ABORT, perform rollback
+<a href="#__codelineno-56-19" id="__codelineno-56-19" name="__codelineno-56-19"></a> YES Continue
+<a href="#__codelineno-56-20" id="__codelineno-56-20" name="__codelineno-56-20"></a>
+<a href="#__codelineno-56-21" id="__codelineno-56-21" name="__codelineno-56-21"></a> Increase to 50% traffic
+<a href="#__codelineno-56-22" id="__codelineno-56-22" name="__codelineno-56-22"></a> Monitor for 5 minutes
+<a href="#__codelineno-56-23" id="__codelineno-56-23" name="__codelineno-56-23"></a> All metrics healthy?
+<a href="#__codelineno-56-24" id="__codelineno-56-24" name="__codelineno-56-24"></a> NO ABORT, perform rollback
+<a href="#__codelineno-56-25" id="__codelineno-56-25" name="__codelineno-56-25"></a> YES Continue
+<a href="#__codelineno-56-26" id="__codelineno-56-26" name="__codelineno-56-26"></a>
+<a href="#__codelineno-56-27" id="__codelineno-56-27" name="__codelineno-56-27"></a> Full 100% traffic cutover
+<a href="#__codelineno-56-28" id="__codelineno-56-28" name="__codelineno-56-28"></a> Monitor continuously
+<a href="#__codelineno-56-29" id="__codelineno-56-29" name="__codelineno-56-29"></a> All metrics healthy?
+<a href="#__codelineno-56-30" id="__codelineno-56-30" name="__codelineno-56-30"></a> NO ABORT, perform rollback
+<a href="#__codelineno-56-31" id="__codelineno-56-31" name="__codelineno-56-31"></a> YES CUTOVER COMPLETE
+<a href="#__codelineno-56-32" id="__codelineno-56-32" name="__codelineno-56-32"></a>
+<a href="#__codelineno-56-33" id="__codelineno-56-33" name="__codelineno-56-33"></a> END: Production cutover successful
+</code></pre></div>
+<h3 id="82-canary-deployment">8.2 Canary Deployment<a class="headerlink" href="#82-canary-deployment" title="Permanent link">¶</a></h3>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Deploy canary replicas (10% traffic)</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-57-1" id="__codelineno-57-1" name="__codelineno-57-1"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-p<span class="w"> </span><span class="s1">'{"spec":{"replicas":10}}'</span>
+<a href="#__codelineno-57-2" id="__codelineno-57-2" name="__codelineno-57-2"></a>kubectl<span class="w"> </span><span class="nb">set</span><span class="w"> </span>image<span class="w"> </span>deployment/codex-api<span class="w"> </span>codex-api<span class="o">=</span><span class="nv">$AWS_ACCOUNT_ID</span>.dkr.ecr.us-east-1.amazonaws.com/codex-api:<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-57-3" id="__codelineno-57-3" name="__codelineno-57-3"></a>-n<span class="w"> </span>production<span class="w"> </span>--selector<span class="o">=</span><span class="nv">version</span><span class="o">=</span>canary
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Configure traffic split (10% to canary)</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-58-1" id="__codelineno-58-1" name="__codelineno-58-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/traffic-management/canary-10pct.yaml<span class="w"> </span>-n<span class="w"> </span>production
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor canary metrics for 5 minutes</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-59-1" id="__codelineno-59-1" name="__codelineno-59-1"></a><span class="c1"># Run continuous monitoring</span>
+<a href="#__codelineno-59-2" id="__codelineno-59-2" name="__codelineno-59-2"></a>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s1">'curl -s http://${API_ENDPOINT}/health | jq .'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Validate canary metrics</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-60-1" id="__codelineno-60-1" name="__codelineno-60-1"></a><span class="c1"># Check in Prometheus</span>
+<a href="#__codelineno-60-2" id="__codelineno-60-2" name="__codelineno-60-2"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=rate(http_requests_total{version="canary"}[5m])'</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="83-progressive-traffic-rollout">8.3 Progressive Traffic Rollout<a class="headerlink" href="#83-progressive-traffic-rollout" title="Permanent link">¶</a></h3>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Increase to 50% traffic</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-61-1" id="__codelineno-61-1" name="__codelineno-61-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/traffic-management/canary-50pct.yaml<span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-61-2" id="__codelineno-61-2" name="__codelineno-61-2"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-p<span class="w"> </span><span class="s1">'{"spec":{"replicas":20}}'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor for 5 minutes</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-62-1" id="__codelineno-62-1" name="__codelineno-62-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>codex-api<span class="w"> </span>--tail<span class="o">=</span><span class="m">100</span><span class="w"> </span>-f
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Increase to 100% traffic</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-63-1" id="__codelineno-63-1" name="__codelineno-63-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/traffic-management/stable-100pct.yaml<span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-63-2" id="__codelineno-63-2" name="__codelineno-63-2"></a>kubectl<span class="w"> </span>patch<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-p<span class="w"> </span><span class="s1">'{"spec":{"replicas":30}}'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor post-cutover (10 minutes)</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-64-1" id="__codelineno-64-1" name="__codelineno-64-1"></a><span class="c1"># Continuous health monitoring</span>
+<a href="#__codelineno-64-2" id="__codelineno-64-2" name="__codelineno-64-2"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..10<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a href="#__codelineno-64-3" id="__codelineno-64-3" name="__codelineno-64-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"=== Health check </span><span class="nv">$i</span><span class="s2"> ==="</span>
+<a href="#__codelineno-64-4" id="__codelineno-64-4" name="__codelineno-64-4"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/health
+<a href="#__codelineno-64-5" id="__codelineno-64-5" name="__codelineno-64-5"></a>sleep<span class="w"> </span><span class="m">60</span>
+<a href="#__codelineno-64-6" id="__codelineno-64-6" name="__codelineno-64-6"></a><span class="k">done</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="84-cutover-sign-off">8.4 Cutover Sign-Off<a class="headerlink" href="#84-cutover-sign-off" title="Permanent link">¶</a></h3>
+<p><strong>Sign-off Checklist</strong>:
+- [ ] All integration tests passing
+- [ ] Performance metrics within acceptable range
+- [ ] No critical errors in application logs
+- [ ] Database replication lag &lt; 100ms
+- [ ] Cache hit ratio &gt; 80%
+- [ ] All alerts configured and functional
+- [ ] Incident response team monitoring active
+- [ ] Rollback procedure documented and verified</p>
+<p><strong>Cutover Approval</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-65-1" id="__codelineno-65-1" name="__codelineno-65-1"></a>Production Cutover Approved By: _________________________ Date: _________
+<a href="#__codelineno-65-2" id="__codelineno-65-2" name="__codelineno-65-2"></a>Name: _________________________ Title: _________
+<a href="#__codelineno-65-3" id="__codelineno-65-3" name="__codelineno-65-3"></a>Witness: _________________________ Title: _________
+</code></pre></div>
+<hr/>
+<h2 id="phase-8-post-deployment-validation-15-minutes">Phase 8: Post-Deployment Validation (15 minutes)<a class="headerlink" href="#phase-8-post-deployment-validation-15-minutes" title="Permanent link">¶</a></h2>
+<h3 id="91-system-stability-verification">9.1 System Stability Verification<a class="headerlink" href="#91-system-stability-verification" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Confirm production system is stable after cutover.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Verify all pods are healthy</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-66-1" id="__codelineno-66-1" name="__codelineno-66-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-66-2" id="__codelineno-66-2" name="__codelineno-66-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--field-selector<span class="o">=</span>status.phase!<span class="o">=</span>Running
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check for pod restart cycles</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-67-1" id="__codelineno-67-1" name="__codelineno-67-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.items[] | select(.status.containerStatuses[].restartCount &gt; 3)'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify resource utilization</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-68-1" id="__codelineno-68-1" name="__codelineno-68-1"></a>kubectl<span class="w"> </span>top<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--containers
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check database replication lag</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-69-1" id="__codelineno-69-1" name="__codelineno-69-1"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-69-2" id="__codelineno-69-2" name="__codelineno-69-2"></a>-c<span class="w"> </span><span class="s2">"SELECT now() - pg_last_wal_receive_lsn() AS replication_lag;"</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="92-application-monitoring">9.2 Application Monitoring<a class="headerlink" href="#92-application-monitoring" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify application is functioning correctly.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Monitor error rates</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-70-1" id="__codelineno-70-1" name="__codelineno-70-1"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=rate(http_errors_total[5m])'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor response times</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-71-1" id="__codelineno-71-1" name="__codelineno-71-1"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=http_request_duration_seconds{quantile="0.95"}'</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check business logic correctness</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-72-1" id="__codelineno-72-1" name="__codelineno-72-1"></a><span class="c1"># Run business-critical endpoint test</span>
+<a href="#__codelineno-72-2" id="__codelineno-72-2" name="__codelineno-72-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/api/v1/validation/production-health
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Monitor external dependencies</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-73-1" id="__codelineno-73-1" name="__codelineno-73-1"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=up{job="external-service"}'</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="93-security-validation">9.3 Security Validation<a class="headerlink" href="#93-security-validation" title="Permanent link">¶</a></h3>
+<p><strong>Objective</strong>: Verify security controls are active in production.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Verify SSL/TLS enforcement</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-74-1" id="__codelineno-74-1" name="__codelineno-74-1"></a>curl<span class="w"> </span>-I<span class="w"> </span>https://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>
+<a href="#__codelineno-74-2" id="__codelineno-74-2" name="__codelineno-74-2"></a>openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span><span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>:443<span class="w"> </span>-showcerts<span class="w"> </span>&lt;<span class="w"> </span>/dev/null
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check security headers</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-75-1" id="__codelineno-75-1" name="__codelineno-75-1"></a>curl<span class="w"> </span>-I<span class="w"> </span>https://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"X-Content-Type-Options|X-Frame-Options|Strict-Transport-Security"</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify WAF rules active</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-76-1" id="__codelineno-76-1" name="__codelineno-76-1"></a>aws<span class="w"> </span>wafv2<span class="w"> </span>get-web-acl-for-resource<span class="w"> </span>--resource-arn<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.loadBalancer.ingress[0].hostname}'</span><span class="k">)</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test rate limiting</strong>:
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-77-1" id="__codelineno-77-1" name="__codelineno-77-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..100<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a href="#__codelineno-77-2" id="__codelineno-77-2" name="__codelineno-77-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/api/v1/test<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="p">&amp;</span>
+<a href="#__codelineno-77-3" id="__codelineno-77-3" name="__codelineno-77-3"></a><span class="k">done</span>
+<a href="#__codelineno-77-4" id="__codelineno-77-4" name="__codelineno-77-4"></a><span class="nb">wait</span>
+</code></pre></div></p>
+</li>
+</ol>
+<hr/>
+<h2 id="rollback-procedure">Rollback Procedure<a class="headerlink" href="#rollback-procedure" title="Permanent link">¶</a></h2>
+<h3 id="101-immediate-rollback-5-minutes">10.1 Immediate Rollback (&lt; 5 minutes)<a class="headerlink" href="#101-immediate-rollback-5-minutes" title="Permanent link">¶</a></h3>
+<p><strong>Trigger Criteria</strong>:
+- Error rate &gt; 5% for &gt; 2 minutes
+- Response time p95 &gt; 1 second
+- Database replication lag &gt; 5 seconds
+- Critical service down</p>
+<p><strong>Rollback Procedure</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-78-1" id="__codelineno-78-1" name="__codelineno-78-1"></a><span class="c1"># Step 1: Identify current and previous versions</span>
+<a href="#__codelineno-78-2" id="__codelineno-78-2" name="__codelineno-78-2"></a><span class="nv">CURRENT_VERSION</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.template.spec.containers[0].image}'</span><span class="k">)</span>
+<a href="#__codelineno-78-3" id="__codelineno-78-3" name="__codelineno-78-3"></a><span class="nv">PREVIOUS_VERSION</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>/tmp/rollback-version.txt<span class="k">)</span>
+<a href="#__codelineno-78-4" id="__codelineno-78-4" name="__codelineno-78-4"></a>
+<a href="#__codelineno-78-5" id="__codelineno-78-5" name="__codelineno-78-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Current version: </span><span class="nv">$CURRENT_VERSION</span><span class="s2">"</span>
+<a href="#__codelineno-78-6" id="__codelineno-78-6" name="__codelineno-78-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Rolling back to: </span><span class="nv">$PREVIOUS_VERSION</span><span class="s2">"</span>
+<a href="#__codelineno-78-7" id="__codelineno-78-7" name="__codelineno-78-7"></a>
+<a href="#__codelineno-78-8" id="__codelineno-78-8" name="__codelineno-78-8"></a><span class="c1"># Step 2: Immediate rollback to previous version</span>
+<a href="#__codelineno-78-9" id="__codelineno-78-9" name="__codelineno-78-9"></a>kubectl<span class="w"> </span><span class="nb">set</span><span class="w"> </span>image<span class="w"> </span>deployment/codex-api<span class="w"> </span>codex-api<span class="o">=</span><span class="si">${</span><span class="nv">PREVIOUS_VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-78-10" id="__codelineno-78-10" name="__codelineno-78-10"></a><span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--record
+<a href="#__codelineno-78-11" id="__codelineno-78-11" name="__codelineno-78-11"></a>
+<a href="#__codelineno-78-12" id="__codelineno-78-12" name="__codelineno-78-12"></a><span class="c1"># Step 3: Wait for rollout completion</span>
+<a href="#__codelineno-78-13" id="__codelineno-78-13" name="__codelineno-78-13"></a>kubectl<span class="w"> </span>rollout<span class="w"> </span>status<span class="w"> </span>deployment/codex-api<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--timeout<span class="o">=</span>5m
+<a href="#__codelineno-78-14" id="__codelineno-78-14" name="__codelineno-78-14"></a>
+<a href="#__codelineno-78-15" id="__codelineno-78-15" name="__codelineno-78-15"></a><span class="c1"># Step 4: Verify rollback success</span>
+<a href="#__codelineno-78-16" id="__codelineno-78-16" name="__codelineno-78-16"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>codex-api
+<a href="#__codelineno-78-17" id="__codelineno-78-17" name="__codelineno-78-17"></a>curl<span class="w"> </span>-v<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/health
+<a href="#__codelineno-78-18" id="__codelineno-78-18" name="__codelineno-78-18"></a>
+<a href="#__codelineno-78-19" id="__codelineno-78-19" name="__codelineno-78-19"></a><span class="c1"># Step 5: Monitor post-rollback metrics</span>
+<a href="#__codelineno-78-20" id="__codelineno-78-20" name="__codelineno-78-20"></a>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s1">'kubectl top pods -n production'</span>
+<a href="#__codelineno-78-21" id="__codelineno-78-21" name="__codelineno-78-21"></a>
+<a href="#__codelineno-78-22" id="__codelineno-78-22" name="__codelineno-78-22"></a><span class="c1"># Step 6: Rollback sign-off</span>
+<a href="#__codelineno-78-23" id="__codelineno-78-23" name="__codelineno-78-23"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Rollback completed at </span><span class="k">$(</span>date<span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/var/log/rollback.log
+</code></pre></div>
+<h2 id="102-database-rollback">10.2 Database Rollback<a class="headerlink" href="#102-database-rollback" title="Permanent link">¶</a></h2>
+<p><strong>Procedure</strong> (only if database migrations caused issues):</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-79-1" id="__codelineno-79-1" name="__codelineno-79-1"></a><span class="c1"># Step 1: Restore from pre-migration backup</span>
+<a href="#__codelineno-79-2" id="__codelineno-79-2" name="__codelineno-79-2"></a><span class="nv">BACKUP_ID</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>/tmp/migration-rollback.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">"Backup ID"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $NF}'</span><span class="k">)</span>
+<a href="#__codelineno-79-3" id="__codelineno-79-3" name="__codelineno-79-3"></a>
+<a href="#__codelineno-79-4" id="__codelineno-79-4" name="__codelineno-79-4"></a><span class="c1"># Step 2: Restore database</span>
+<a href="#__codelineno-79-5" id="__codelineno-79-5" name="__codelineno-79-5"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>pg_restore<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-79-6" id="__codelineno-79-6" name="__codelineno-79-6"></a><span class="w"> </span>/backup/pre-migration-<span class="si">${</span><span class="nv">BACKUP_ID</span><span class="si">}</span>.sql
+<a href="#__codelineno-79-7" id="__codelineno-79-7" name="__codelineno-79-7"></a>
+<a href="#__codelineno-79-8" id="__codelineno-79-8" name="__codelineno-79-8"></a><span class="c1"># Step 3: Verify restoration</span>
+<a href="#__codelineno-79-9" id="__codelineno-79-9" name="__codelineno-79-9"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT version FROM alembic_version;"</span>
+<a href="#__codelineno-79-10" id="__codelineno-79-10" name="__codelineno-79-10"></a>
+<a href="#__codelineno-79-11" id="__codelineno-79-11" name="__codelineno-79-11"></a><span class="c1"># Step 4: Verify application connectivity</span>
+<a href="#__codelineno-79-12" id="__codelineno-79-12" name="__codelineno-79-12"></a>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/health
+</code></pre></div>
+<h2 id="103-rollback-sign-off">10.3 Rollback Sign-Off<a class="headerlink" href="#103-rollback-sign-off" title="Permanent link">¶</a></h2>
+<p><strong>Rollback Approved By</strong>: <strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_ Date: </em></strong><strong><em>_</em>_
+<strong>Reason for Rollback</strong>: </strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>
+<strong>Witness</strong>: </em></strong><strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em></strong>_ Title: <strong><em>_</em></strong>__</p>
+<hr/>
+<h2 id="deployment-completion-checklist">Deployment Completion Checklist<a class="headerlink" href="#deployment-completion-checklist" title="Permanent link">¶</a></h2>
+<p><strong>Final Verification</strong>:
+- [ ] All pods running and healthy
+- [ ] Load balancer health checks passing
+- [ ] API endpoints responding normally
+- [ ] Database replication synced
+- [ ] All alerts green (no false positives)
+- [ ] Error logs reviewed (no critical errors)
+- [ ] Performance metrics within SLA
+- [ ] Security compliance verified
+- [ ] Incident response team briefed on changes
+- [ ] Deployment communication sent to stakeholders
+- [ ] Post-deployment documentation updated</p>
+<p><strong>Deployment Completion Sign-Off</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-80-1" id="__codelineno-80-1" name="__codelineno-80-1"></a>Deployment completed and verified by: _________________________ Date: _________
+<a href="#__codelineno-80-2" id="__codelineno-80-2" name="__codelineno-80-2"></a>Name: _________________________ Title: _________
+<a href="#__codelineno-80-3" id="__codelineno-80-3" name="__codelineno-80-3"></a>Witness: _________________________ Title: _________
+<a href="#__codelineno-80-4" id="__codelineno-80-4" name="__codelineno-80-4"></a>Time of Completion: _________________________
+<a href="#__codelineno-80-5" id="__codelineno-80-5" name="__codelineno-80-5"></a>Total Duration: _________________________
+<a href="#__codelineno-80-6" id="__codelineno-80-6" name="__codelineno-80-6"></a>Incidents During Deployment: [ ] None [ ] Minor [ ] Major
+</code></pre></div>
+<hr/>
+<h2 id="contact-information-and-escalation">Contact Information and Escalation<a class="headerlink" href="#contact-information-and-escalation" title="Permanent link">¶</a></h2>
+<p><strong>On-Call DevOps Engineer</strong>: [Phone: <strong><em>_</em></strong><strong><em>_</em></strong><strong>, Slack: @devops]
+<strong>Production Engineering Manager</strong>: [Phone: <strong><em>_</em></strong><strong><em>_</em></strong></strong>, Slack: @prod-manager]
+<strong>CTO/Technical Lead</strong>: [Phone: <strong><em>_</em></strong><strong><em>_</em></strong>__, Slack: @cto]</p>
+<p><strong>Emergency Escalation Path</strong>:
+1. Page on-call engineer via PagerDuty
+2. Alert #prod-deploy channel in Slack
+3. Create SEV1 incident if RTO exceeded
+4. Notify CTO if &gt; 5 minute outage</p>
+<hr/>
+<h2 id="appendix-a-environment-variables-reference">Appendix A: Environment Variables Reference<a class="headerlink" href="#appendix-a-environment-variables-reference" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-81-1" id="__codelineno-81-1" name="__codelineno-81-1"></a><span class="c1"># Required environment variables</span>
+<a href="#__codelineno-81-2" id="__codelineno-81-2" name="__codelineno-81-2"></a><span class="nv">DB_HOST</span><span class="o">=</span><span class="s2">"prod-rds.us-east-1.amazonaws.com"</span>
+<a href="#__codelineno-81-3" id="__codelineno-81-3" name="__codelineno-81-3"></a><span class="nv">DB_USER</span><span class="o">=</span><span class="s2">"codex_admin"</span>
+<a href="#__codelineno-81-4" id="__codelineno-81-4" name="__codelineno-81-4"></a><span class="nv">DB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>secretsmanager<span class="w"> </span>get-secret-value<span class="w"> </span>--secret-id<span class="w"> </span>prod/db/password<span class="w"> </span>--query<span class="w"> </span>SecretString<span class="w"> </span>--output<span class="w"> </span>text<span class="k">)</span>
+<a href="#__codelineno-81-5" id="__codelineno-81-5" name="__codelineno-81-5"></a><span class="nv">REDIS_ENDPOINT</span><span class="o">=</span><span class="s2">"prod-redis.us-east-1.cache.amazonaws.com:6379"</span>
+<a href="#__codelineno-81-6" id="__codelineno-81-6" name="__codelineno-81-6"></a><span class="nv">AWS_ACCOUNT_ID</span><span class="o">=</span><span class="s2">"123456789012"</span>
+<a href="#__codelineno-81-7" id="__codelineno-81-7" name="__codelineno-81-7"></a><span class="nv">AWS_PROFILE</span><span class="o">=</span><span class="s2">"production"</span>
+<a href="#__codelineno-81-8" id="__codelineno-81-8" name="__codelineno-81-8"></a><span class="nv">API_ENDPOINT</span><span class="o">=</span><span class="s2">"api.codex.prod"</span>
+<a href="#__codelineno-81-9" id="__codelineno-81-9" name="__codelineno-81-9"></a><span class="nv">VERSION</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>VERSION<span class="k">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="appendix-b-troubleshooting-quick-reference">Appendix B: Troubleshooting Quick Reference<a class="headerlink" href="#appendix-b-troubleshooting-quick-reference" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Symptom</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pod pending</td>
+<td><code>kubectl get pods</code> shows Pending</td>
+<td>Check resource availability: <code>kubectl top nodes</code></td>
+</tr>
+<tr>
+<td>DB connection error</td>
+<td>"psql: could not connect to server"</td>
+<td>Verify DB host/port: <code>nslookup $DB_HOST</code></td>
+</tr>
+<tr>
+<td>Image pull failed</td>
+<td>ImagePullBackOff</td>
+<td>Check ECR credentials: <code>aws ecr get-login-password</code></td>
+</tr>
+<tr>
+<td>Network policy blocking</td>
+<td>Connection timeout</td>
+<td>Review policies: <code>kubectl get networkpolicies</code></td>
+</tr>
+<tr>
+<td>Secret not found</td>
+<td>Key error in logs</td>
+<td>Verify secrets: <code>kubectl get secrets -n production</code></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Reviewed</strong>: 2024-01-15
+<strong>Next Review Date</strong>: 2024-02-15</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

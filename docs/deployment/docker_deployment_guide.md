@@ -1,10 +1,10 @@
 # [Guide]: Docker & Kubernetes Deployment
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5  
-Physics: Path️ Fields Patterns️ Redundancy Balance️
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
+Physics: Path Fields Patterns Redundancy Balance
 
 ## 1. Build & Run (CPU)
 ```bash

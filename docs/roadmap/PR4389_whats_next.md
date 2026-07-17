@@ -1,6 +1,6 @@
 # PR #4389 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **PR:** [#4389](https://github.com/Aries-Serpent/_codex_/pull/4389) — fix(security): resolve merge conflict, fix 6 CodeQL error alerts, patch 4 code-injection workflow vulns + rate-limit recovery system
 **Branch:** `copilot/add-full-path-to-init-tracing-docs`

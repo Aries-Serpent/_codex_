@@ -1,9 +1,9 @@
 # [Reference]: Secret Entropy Scan (P4/P5)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-> Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+> Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## 1. Purpose
 
@@ -13,7 +13,7 @@ Identify potential secret tokens missed by simple pattern lists using Shannon en
 
 | Element | Rule |
 |---------|------|
-| Window lengths | 16 → 48 (step 8) |
+| Window lengths | 16 48 (step 8) |
 | Entropy threshold | Default 3.5 (configurable) |
 | Allowlist prefixes | Skip windows with known benign prefixes |
 

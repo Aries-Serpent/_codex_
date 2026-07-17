@@ -1,8 +1,8 @@
 # Repo Survey — work & PR 1926 — 2025-10-29 (UTC)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Ref:** branch `work`  commit `c829fec7`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
+**Ref:** branch `work` commit `c829fec7` • **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
 
 ---
 
@@ -35,26 +35,26 @@
 #!/usr/bin/env bash
 # Branch-aware survey writer for Codex plaintext output.
 # Usage:
-#   scripts/survey.sh --pr 1926 --stdin <<<'plain text'
-#   scripts/survey.sh --pr 1926 --from-file /path/to/codex_plain.txt
+# scripts/survey.sh --pr 1926 --stdin <<<'plain text'
+# scripts/survey.sh --pr 1926 --from-file /path/to/codex_plain.txt
 set -euo pipefail
 
 usage() {
-  cat <<'USAGE' >&2
+ cat <<'USAGE' >&2
 Usage: scripts/survey.sh --pr <PR_NUMBER> [--stdin | --from-file <path>]
-  --pr <PR_NUMBER>     Pull request number the survey targets.
-  --stdin              Read Codex survey plaintext from STDIN.
-  --from-file <path>   Read Codex survey plaintext from the given file.
+ --pr <PR_NUMBER> Pull request number the survey targets.
+ --stdin Read Codex survey plaintext from STDIN.
+ --from-file <path> Read Codex survey plaintext from the given file.
 USAGE
 }
 
 sanitize_slug() {
-  local value="$1"
-  value="${value//\//_}"
-  value="${value// /_}"
-  value="${value//[^A-Za-z0-9._-]/_}"
-  value="$(echo "${value}" | sed -E 's/_+/_/g; s/^_+//; s/_+$//')"
-  printf '%s' "${value:-na}"
+ local value="$1"
+ value="${value//\//_}"
+ value="${value// /_}"
+ value="${value//[^A-Za-z0-9._-]/_}"
+ value="$(echo "${value}" | sed -E 's/_+/_/g; s/^_+//; s/_+$//')"
+ printf '%s' "${value:-na}"
 }
 ```text
 
@@ -71,32 +71,32 @@ END_MARKER = "[END CONTENT]"
 
 
 def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
-    """Replace marker pairs with ```text fenced blocks."""
-    output: List[str] = []
-    buffer: List[str] = []
-    inside = False
+ """Replace marker pairs with ```text fenced blocks."""
+ output: List[str] = []
+ buffer: List[str] = []
+ inside = False
 
-    for raw in lines:
-        stripped = raw.strip()
-        if stripped == BEGIN_MARKER:
-            if inside:
-                output.extend(_render_buffer(buffer))
-                buffer.clear()
-            inside = True
-            buffer.clear()
-            continue
-        if stripped == END_MARKER:
-            if inside:
-                output.extend(_render_buffer(buffer))
-                buffer.clear()
-                inside = False
-            continue
+ for raw in lines:
+ stripped = raw.strip()
+ if stripped == BEGIN_MARKER:
+ if inside:
+ output.extend(_render_buffer(buffer))
+ buffer.clear()
+ inside = True
+ buffer.clear()
+ continue
+ if stripped == END_MARKER:
+ if inside:
+ output.extend(_render_buffer(buffer))
+ buffer.clear()
+ inside = False
+ continue
 
-        clean = raw.rstrip("\r")
-        if inside:
-            buffer.append(clean)
-        else:
-            output.append(clean)
+ clean = raw.rstrip("\r")
+ if inside:
+ buffer.append(clean)
+ else:
+ output.append(clean)
 ```text
 
 **FILE:** docs/status_updates/README.md@HEAD
@@ -104,17 +104,17 @@ def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
 ## Quick Flow
 1) **Collect survey plaintext** from Codex (no nested fences; use the template in `templates/SURVEY_TEMPLATE.md`).
 2) **Write the report** with the branch-aware writer:
-   ```bash
-   # from repo root
-   scripts/survey.sh --pr 1926 --stdin <<'EOF'
-   <paste Codex plaintext survey here>
-   EOF
-   ```
-   - Use `--from-file <path>` if the plaintext is saved locally.
+ ```bash
+ # from repo root
+ scripts/survey.sh --pr 1926 --stdin <<'EOF'
+ <paste Codex plaintext survey here>
+ EOF
+ ```
+ - Use `--from-file <path>` if the plaintext is saved locally.
 3) **Resulting paths**:
-   - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
-   - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
-   - The artifact folder also mirrors the report at `report.md` for easy packaging.
+ - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
+ - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
+ - The artifact folder also mirrors the report at `report.md` for easy packaging.
 ```text
 
 ### 4.2 CLI/Docs Mismatches
@@ -132,7 +132,7 @@ Let readiness be \( R = \alpha \cdot E + \beta \cdot T + \gamma \cdot D \).
 - T (Trace quality): `0.0`
 - D (Docs parity): `0.9`
 - Weights: α=`0.2`, β=`0.2`, γ=`0.6`
-- **R = 0.54** → **Recommendation:** `Proceed`
+- **R = 0.54** **Recommendation:** `Proceed`
 
 ## 7) Artifacts
 - `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md`

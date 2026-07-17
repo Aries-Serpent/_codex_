@@ -1,6 +1,6 @@
-# How-to: Ingest training metrics (NDJSON → CSV/Parquet)
+# How-to: Ingest training metrics (NDJSON CSV/Parquet)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,12 +12,12 @@ This guide demonstrates converting newline-delimited JSON (**NDJSON**) metrics i
 
 ## Steps
 ```bash
-# Convert NDJSON → CSV (always)
+# Convert NDJSON CSV (always)
 python -m codex_ml.cli metrics ingest --input artifacts/metrics.ndjson --out-csv artifacts/metrics.csv
 
 # Optional: also emit Parquet (requires pandas + pyarrow/fastparquet)
 python -m codex_ml.cli metrics ingest --input artifacts/metrics.ndjson \
-  --out-csv artifacts/metrics.csv --out-parquet artifacts/metrics.parquet
+ --out-csv artifacts/metrics.csv --out-parquet artifacts/metrics.parquet
 
 # Print quick stats (last/min/max by key)
 python -m codex_ml.cli metrics summary --input artifacts/metrics.ndjson

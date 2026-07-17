@@ -1,8 +1,8 @@
 # Issue Reporting & Feature Request Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-08 
+**Last Updated**: 2026-07-08
 **Version**: 1.0.0
 
 This guide helps you report bugs effectively and request features thoughtfully.
@@ -23,11 +23,11 @@ This guide helps you report bugs effectively and request features thoughtfully.
 
 Check if your issue might be:
 
-1. **A usage question** → Use [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions) instead
-2. **Already reported** → Search issues (may be fixed in next release)
-3. **Expected behavior** → Check documentation or ask in discussions
-4. **A feature request** → Use feature request template instead
-5. **A security issue** → See SECURITY.md instead
+1. **A usage question** Use [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions) instead
+2. **Already reported** Search issues (may be fixed in next release)
+3. **Expected behavior** Check documentation or ask in discussions
+4. **A feature request** Use feature request template instead
+5. **A security issue** See SECURITY.md instead
 
 ### Quick Checklist
 
@@ -125,7 +125,7 @@ model = load_model('/tmp/my config/model.yaml')
 ## Additional Context
 This works fine when the path has no spaces:
 ```python
-model = load_model('/tmp/my_config/model.yaml') # Works 
+model = load_model('/tmp/my_config/model.yaml') # Works
 ```
 ```
 
@@ -142,7 +142,7 @@ model = load_model('/tmp/my_config/model.yaml') # Works
  - Bad: "Something is broken"
 
 - **Steps to reproduce**: Exact steps to see the bug
- - Good: 
+ - Good:
  1. Create `/tmp/my config/config.yaml`
  2. Run `load_model('/tmp/my config/config.yaml')`
  - Bad: "Just use spaces in the path"
@@ -398,7 +398,7 @@ If you find the solution yourself:
 | `blocked` | Waiting on something else | Can't fix yet |
 | `duplicate` | Already reported | See linked issue for details |
 | `wontfix` | Not something we'll fix | See comment for explanation |
-| `P0` / `P1` / `P2` | Priority (high → low) | How urgently we're addressing it |
+| `P0` / `P1` / `P2` | Priority (high low) | How urgently we're addressing it |
 
 ---
 
@@ -430,7 +430,7 @@ ValueError: invalid literal for int() with base 10: 'abc'
 
 **Wrong**: "It doesn't work when I load models"
 
-**Right**: 
+**Right**:
 1. Create config at `/tmp/test.yaml`
 2. Run `load_model('/tmp/test.yaml')`
 3. Observe ValueError
@@ -465,4 +465,4 @@ ValueError: invalid literal for int() with base 10: 'abc'
 - Read existing issues and PRs
 - Look at the [Roadmap](ROADMAP.md)
 
-Thank you for helping make Codex ML better! 
+Thank you for helping make Codex ML better!

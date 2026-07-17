@@ -1,87 +1,87 @@
 # agent Continuation Protocol
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Purpose**: Standardized protocol for AI agents to continue work across sessions using the cognitive brain for context and planning.
 
-**Last Updated**: 2026-06-22  
-**Version**: 2.0.0  
-**Status**:  Active
+**Last Updated**: 2026-06-22
+**Version**: 2.0.0
+**Status**: Active
 
 ---
 
-##  Overview
+## Overview
 
 This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 1. Maintain context continuity across sessions
-2. Discover and resume incomplete work  
+2. Discover and resume incomplete work
 3. Plan optimal next steps using duration-aware logic
 4. Update the cognitive brain with progress
 
 ---
 
-##  Session workflow
+## Session workflow
 
 ### Phase 1: Context Loading (First 2K tokens)
 
 ```
 1. Load Cognitive Brain
-   → Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
-   → Read docs/system/CODEBASE_DASHBOARD.md (current status)
-   → Read docs/ROADMAP.md (planned work)
+ Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
+ Read docs/system/CODEBASE_DASHBOARD.md (current status)
+ Read docs/ROADMAP.md (planned work)
 
 2. Identify Current Phase
-   → Check Dashboard for "Active Initiatives"
-   → Note completion percentages
-   → Identify blocking issues
+ Check Dashboard for "Active Initiatives"
+ Note completion percentages
+ Identify blocking issues
 
 3. Assess Session Capacity
-   → Estimate token budget (typical: 64K-128K)
-   → Calculate work capacity (tokens / complexity)
-   → Determine if quick wins or deep work
+ Estimate token budget (typical: 64K-128K)
+ Calculate work capacity (tokens / complexity)
+ Determine if quick wins or deep work
 ```
 
 ### Phase 2: Work Execution (Main session)
 
 ```
 4. Execute Highest Priority Work
-   → Follow roadmap priorities
-   → Complete atomic units of work
-   → Commit frequently with clear messages
+ Follow roadmap priorities
+ Complete atomic units of work
+ Commit frequently with clear messages
 
 5. Update Cognitive Brain
-   → Mark completed tasks in Dashboard
-   → Update completion percentages
-   → Document decisions and blockers
+ Mark completed tasks in Dashboard
+ Update completion percentages
+ Document decisions and blockers
 
 6. Validate Changes
-   → Run linters, tests, syntax checks
-   → Verify no regressions
-   → Check CI/CD status
+ Run linters, tests, syntax checks
+ Verify no regressions
+ Check CI/CD status
 ```
 
 ### Phase 3: Session Closure (Last 5K tokens)
 
 ```
 7. Self-Review Protocol
-   → Perform 5-pass review (see below)
-   → Address all concerns
-   → Iterate until 0 issues
+ Perform 5-pass review (see below)
+ Address all concerns
+ Iterate until 0 issues
 
 8. Prepare Continuation
-   → If work remains: Generate continuation prompt
-   → Update Dashboard with next steps
-   → Post continuation comment to PR
+ If work remains: Generate continuation prompt
+ Update Dashboard with next steps
+ Post continuation comment to PR
 
 9. Document Session
-   → Update Dashboard with session summary
-   → Commit final changes
-   → Mark phase complete if done
+ Update Dashboard with session summary
+ Commit final changes
+ Mark phase complete if done
 ```
 
 ---
 
-##  Self-Review Protocol (5 Passes)
+## Self-Review Protocol (5 Passes)
 
 **Critical**: Perform all 5 passes before ending session. **DO NOT SKIP**.
 
@@ -126,7 +126,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 ---
 
-##  Duration-Aware Planning
+## Duration-Aware Planning
 
 ### Token Budget Guidelines
 
@@ -144,7 +144,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 **Priority Order**:
 1. **Critical** - Blocking issues, security fixes
-2. **High** - Incomplete features, failing tests  
+2. **High** - Incomplete features, failing tests
 3. **Medium** - Documentation, refactoring
 4. **Low** - Nice-to-have improvements
 
@@ -158,14 +158,14 @@ Rationale: Maximize session value
 
 ---
 
-##  Continuation Prompt Format
+## Continuation Prompt Format
 
 When posting continuation prompts to PR comments:
 
 ```markdown
 @copilot Continue Phase [N]: [Phase Name]
 
-##  Session Summary
+## Session Summary
 
 **Completed Work**:
 - [x] task 1 (commit abc123)
@@ -177,7 +177,7 @@ When posting continuation prompts to PR comments:
 
 **Commits**: abc123, def456, ghi789
 
-##  Next Steps
+## Next Steps
 
 **Priority Tasks**:
 1. [ ] task A - [Brief description]
@@ -190,7 +190,7 @@ When posting continuation prompts to PR comments:
 
 **Duration Estimate**: [X] sessions (~[Y]K tokens)
 
-##  Context References
+## Context References
 
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)
 - [Dashboard](../system/CODEBASE_DASHBOARD.md)
@@ -204,7 +204,7 @@ When posting continuation prompts to PR comments:
 
 ---
 
-## 🧭 Cognitive Brain Integration
+## Cognitive Brain Integration
 
 ### Always Consult These Files First
 
@@ -233,12 +233,12 @@ When posting continuation prompts to PR comments:
 ```markdown
 | Capability | Status | Completion | Notes |
 |------------|--------|------------|-------|
-| [Name] |  Active | 75% | Session [date] progress |
+| [Name] | Active | 75% | Session [date] progress |
 ```
 
 ---
 
-## 🚦 Session Handoff Protocol
+## Session Handoff Protocol
 
 ### Between AI agent Sessions
 
@@ -247,10 +247,10 @@ When posting continuation prompts to PR comments:
 2. Update Dashboard with progress
 3. Commit all changes
 4. Post continuation prompt with:
-   - Work completed (commits)
-   - Work remaining (tasks)
-   - Cognitive brain status
-   - Known blockers
+ - Work completed (commits)
+ - Work remaining (tasks)
+ - Cognitive brain status
+ - Known blockers
 
 **Incoming agent** (start of session):
 1. Read continuation prompt
@@ -280,9 +280,9 @@ Context:
 
 ---
 
-## 🎓 Best Practices
+## Best Practices
 
-### Do's 
+### Do's
 - **Always** load cognitive brain first
 - **Always** perform 5-pass self-review
 - **Always** update Dashboard with progress
@@ -290,7 +290,7 @@ Context:
 - **Always** continue if capacity remains
 - **Always** post continuation prompt if incomplete
 
-### Don'ts 
+### Don'ts
 - **Never** stop prematurely when capacity remains
 - **Never** skip self-review passes
 - **Never** leave Dashboard outdated
@@ -300,7 +300,7 @@ Context:
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 ### Session Quality
 - Self-review: 5/5 passes complete, 0 concerns
@@ -317,7 +317,7 @@ Context:
 
 ---
 
-##  Protocol Updates
+## Protocol Updates
 
 **Version History**:
 - 2.0.0 (2025-12-30) - Added cognitive brain integration, duration-aware planning
@@ -331,7 +331,7 @@ Context:
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md) - Architecture
 - [Dashboard](../system/CODEBASE_DASHBOARD.md) - Status

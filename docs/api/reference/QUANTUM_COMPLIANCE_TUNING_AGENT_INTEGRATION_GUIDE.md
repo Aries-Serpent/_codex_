@@ -1,11 +1,11 @@
 # INTEGRATION GUIDE: quantum-compliance-tuning-agent (Phase 4.5)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Status**:  **CONFIRMED ACTIVE** as of 2026-07-01  
-**Version**: 1.0.0-phase4.5  
-**Maturity**: Beta → **Production** (upgraded)  
-**Integration Level**: Cognitive Brain Level 2 (Integration)  
+**Status**: **CONFIRMED ACTIVE** as of 2026-07-01
+**Version**: 1.0.0-phase4.5
+**Maturity**: Beta **Production** (upgraded)
+**Integration Level**: Cognitive Brain Level 2 (Integration)
 
 ---
 
@@ -36,28 +36,28 @@ This guide documents its active integration points and Phase 4.5 workflow.
 The agent orchestrates a 7-step **entangled workflow** for compliance pattern tuning:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│ QuantumPlansetEngine.generate(ImprovementArea.QI_TESTING)
-│ with context: {failing_patterns, k₁_metric}
-└──────────────────┬──────────────────────────────────┘
-                   │
-        ┌──────────▼──────────┐
-        │ generate() output:
-        │ superposition of 7
-        │ entangled steps
-        └──────────────────────┘
-                   │
-        ┌──────────▼──────────────────────────────┐
-        │ Collapse via Born Rule probabilities:
-        │  Impact × Confidence → Amplitude
-        └──────────────────────────────────────────┘
-                   │
-        ┌──────────▼──────────────────────────────┐
-        │ Execution Order (if QI-01 has highest
-        │ effective amplitude):
-        │ QI-01 → QI-02 → QI-03 → QI-04 →
-        │ QI-05 → QI-06 → QI-07
-        └──────────────────────────────────────────┘
+
+ QuantumPlansetEngine.generate(ImprovementArea.QI_TESTING)
+ with context: {failing_patterns, k₁_metric}
+
+ 
+ 
+ generate() output:
+ superposition of 7
+ entangled steps
+ 
+ 
+ 
+ Collapse via Born Rule probabilities:
+ Impact × Confidence Amplitude
+ 
+ 
+ 
+ Execution Order (if QI-01 has highest
+ effective amplitude):
+ QI-01 QI-02 QI-03 QI-04 
+ QI-05 QI-06 QI-07
+ 
 ```
 
 ### 7 Steps (Entangled Execution)
@@ -65,8 +65,8 @@ The agent orchestrates a 7-step **entangled workflow** for compliance pattern tu
 #### **QI-01: Baseline Scalability Run** (Impact=0.95, Conf=0.99)
 ```bash
 PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
-  --multi-seed --scenarios 200 --use-verified-labels \
-  --save-json audit_artifacts/results/phase4_scalability_raw.json
+ --multi-seed --scenarios 200 --use-verified-labels \
+ --save-json audit_artifacts/results/phase4_scalability_raw.json
 ```
 - **Purpose**: Establish per-seed accuracy baseline for patterns H/F/E/C
 - **Output**: `phase4_scalability_raw.json` with per-seed, per-pattern accuracy
@@ -75,8 +75,8 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 #### **QI-02: Per-Pattern Accuracy Report** (Impact=0.90, Conf=0.98)
 ```bash
 python tools/analysis/per_pattern_report.py \
-  audit_artifacts/results/phase4_scalability_raw.json \
-  --output audit_artifacts/poctune/iteration_N_per_pattern.json
+ audit_artifacts/results/phase4_scalability_raw.json \
+ --output audit_artifacts/poctune/iteration_N_per_pattern.json
 ```
 - **Purpose**: Identify patterns below 95% accuracy threshold (H, F, E, C)
 - **Output**: Per-pattern breakdown with failure counts, root causes
@@ -88,12 +88,12 @@ python tools/analysis/per_pattern_report.py \
 # Update audit_artifacts/poctune/target_patterns.json
 # Increase effect_factor for failing patterns
 {
-  "patterns": {
-    "H": {"effect_factor": 1.5},  # was 1.3
-    "F": {"effect_factor": 1.6},  # was 1.2
-    "E": {"effect_factor": 1.1},  # was 1.0
-    "C": {"effect_factor": 1.2}   # was 1.0
-  }
+ "patterns": {
+ "H": {"effect_factor": 1.5}, # was 1.3
+ "F": {"effect_factor": 1.6}, # was 1.2
+ "E": {"effect_factor": 1.1}, # was 1.0
+ "C": {"effect_factor": 1.2} # was 1.0
+ }
 }
 ```
 - **Purpose**: Adjust tuning parameters based on QI-02 report
@@ -104,13 +104,13 @@ python tools/analysis/per_pattern_report.py \
 ```bash
 CODEX_BAYESIAN_MODE=true CODEX_FUZZY_MODE=true \
 PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
-  --multi-seed --scenarios 200 --use-verified-labels \
-  --save-json audit_artifacts/poctune/iteration_N_tuned_results.json
+ --multi-seed --scenarios 200 --use-verified-labels \
+ --save-json audit_artifacts/poctune/iteration_N_tuned_results.json
 ```
 - **Purpose**: Re-run experiment with updated tuning rules activated
-- **Tuning Hooks**: 
-  - `BayesianAssessor.apply_tuning_rules()` picks up target_patterns.json
-  - `FuzzyEngine.apply_membership_tuning()` adjusts boundaries
+- **Tuning Hooks**:
+ - `BayesianAssessor.apply_tuning_rules()` picks up target_patterns.json
+ - `FuzzyEngine.apply_membership_tuning()` adjusts boundaries
 - **Output**: `iteration_N_tuned_results.json`
 - **Executor**: `quantum-compliance-tuning-agent`
 - **Entangled with**: QI-03 (depends on rule updates)
@@ -132,14 +132,14 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 ```bash
 # Single-seed benchmark: seed=42, 110 scenarios
 # Requirements:
-#   - accuracy must = 100% (no regression)
-#   - k₁ metric must ≤ 0.35 (no tuning overhead explosion)
-# If regression detected: FAIL → QI-07 reverts all changes
+# - accuracy must = 100% (no regression)
+# - k₁ metric must ≤ 0.35 (no tuning overhead explosion)
+# If regression detected: FAIL QI-07 reverts all changes
 ```
 - **Purpose**: Ensure tuning never degrades baseline single-seed accuracy
 - **Requirements**:
-  - Accuracy on seed=42 = 100% (zero regression tolerance)
-  - k₁ ≤ 0.35 (tuning overhead bounded)
+ - Accuracy on seed=42 = 100% (zero regression tolerance)
+ - k₁ ≤ 0.35 (tuning overhead bounded)
 - **Result**: PASS/FAIL
 - **Executor**: `quantum-compliance-tuning-agent`
 - **Entangled with**: QI-05 (comparison result used to decide if QI-06 is triggered)
@@ -147,14 +147,14 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 #### **QI-07: Accept or Revert** (Impact=0.75, Conf=0.88)
 ```python
 if (improvement_per_pattern >= 5pp) and (regression_guard == PASS):
-    # ACCEPT: commit target_patterns.json
-    git add audit_artifacts/poctune/target_patterns.json
-    # Mark iteration as COMPLETE
+ # ACCEPT: commit target_patterns.json
+ git add audit_artifacts/poctune/target_patterns.json
+ # Mark iteration as COMPLETE
 else:
-    # REVERT: discard target_patterns.json changes
-    git checkout audit_artifacts/poctune/target_patterns.json
-    # Loop back to QI-03 with conservative adjustments
-    # Maximum 5 iterations (diminishing returns expected after 3)
+ # REVERT: discard target_patterns.json changes
+ git checkout audit_artifacts/poctune/target_patterns.json
+ # Loop back to QI-03 with conservative adjustments
+ # Maximum 5 iterations (diminishing returns expected after 3)
 ```
 - **Purpose**: Final decision: accept tuning or revert and retry
 - **Accept Criteria**: Δ ≥ 5pp AND QI-06 PASS
@@ -165,28 +165,28 @@ else:
 
 ---
 
-## Context Signals → Amplitude Boosts
+## Context Signals Amplitude Boosts
 
 The `QuantumPlansetEngine.generate()` method uses context signals to boost amplitudes:
 
 ```python
 # Context signals from per-pattern report
 context = {
-    "failing_patterns": 2,  # H and F below 95%
-    "k1": 0.3406,           # near limit
+ "failing_patterns": 2, # H and F below 95%
+ "k1": 0.3406, # near limit
 }
 
 # Amplitude boost rules
 if context["failing_patterns"] >= 2:
-    QI-01 amplitude ×= 1.5
-    QI-06 amplitude ×= 1.6  # Regression guard priority elevated
+ QI-01 amplitude ×= 1.5
+ QI-06 amplitude ×= 1.6 # Regression guard priority elevated
 elif context["failing_patterns"] == 1:
-    QI-01 amplitude ×= 1.3
-    QI-06 amplitude ×= 1.4
-    
+ QI-01 amplitude ×= 1.3
+ QI-06 amplitude ×= 1.4
+ 
 if context["k1"] >= 0.33:
-    QI-06 amplitude ×= 1.7  # Very tight k₁ → boost regression guard
-    
+ QI-06 amplitude ×= 1.7 # Very tight k₁ boost regression guard
+ 
 # After boosting, recalculate amplitudes via Born Rule
 amplitudes = engine._calculate_born_rule_probabilities()
 
@@ -195,7 +195,7 @@ step = max(amplitudes, key=lambda s: s.effective_amplitude())
 ```
 
 **Example**: If 2 failing patterns AND k₁=0.3406:
-- QI-01 effective amplitude = 0.95 × 1.5 = 1.425 (highest → executed first)
+- QI-01 effective amplitude = 0.95 × 1.5 = 1.425 (highest executed first)
 - QI-06 effective amplitude = 0.92 × 1.6 × 1.7 = 2.50 (very high priority)
 
 ---
@@ -206,10 +206,10 @@ step = max(amplitudes, key=lambda s: s.effective_amplitude())
 
 ```python
 AGENT_IMPROVEMENT_AREAS = {
-    "quantum-compliance-tuning-agent": [ImprovementArea.QI_TESTING],
+ "quantum-compliance-tuning-agent": [ImprovementArea.QI_TESTING],
 }
 ```
-- **Mapping**: Agent → Exclusive executor of improvement area
+- **Mapping**: Agent Exclusive executor of improvement area
 - **Use**: When `QuantumPlansetEngine` needs to route QI_TESTING, it looks up this mapping
 - **Handoff Protocol**: Structured (7-step planset, entangled execution)
 
@@ -218,17 +218,17 @@ AGENT_IMPROVEMENT_AREAS = {
 ```python
 # In QI_TESTING improvement area definition
 {
-    "step_id": "QI-01",
-    "agent": "quantum-compliance-tuning-agent",
-    "action": "run raw scalability experiment",
-    ...
+ "step_id": "QI-01",
+ "agent": "quantum-compliance-tuning-agent",
+ "action": "run raw scalability experiment",
+ ...
 },
 {
-    "step_id": "QI-02",
-    "agent": "quantum-compliance-tuning-agent",
-    "action": "generate per-pattern accuracy report",
-    "entangled_with": ["QI-01"],
-    ...
+ "step_id": "QI-02",
+ "agent": "quantum-compliance-tuning-agent",
+ "action": "generate per-pattern accuracy report",
+ "entangled_with": ["QI-01"],
+ ...
 },
 # ... QI-03 through QI-07 follow
 ```
@@ -242,15 +242,15 @@ AGENT_IMPROVEMENT_AREAS = {
 # In QuantumComplianceAssessor._assess_with_superposition()
 # After evaluate_parallel(state), before collapse(state):
 if feature_flag("CODEX_BAYESIAN_MODE") or feature_flag("CODEX_FUZZY_MODE"):
-    tuned_probs = assessor._apply_poc_tuning(
-        probabilities, audit_result, decision_names
-    )
-    state.probabilities = tuned_probs
+ tuned_probs = assessor._apply_poc_tuning(
+ probabilities, audit_result, decision_names
+ )
+ state.probabilities = tuned_probs
 ```
 - **Purpose**: Apply tuning at decision-making time
 - **Tuning Tools**:
-  - `BayesianAssessor.apply_tuning_rules()` for Bayesian boost
-  - `FuzzyEngine.apply_membership_tuning()` for boundary shifts
+ - `BayesianAssessor.apply_tuning_rules()` for Bayesian boost
+ - `FuzzyEngine.apply_membership_tuning()` for boundary shifts
 - **Feature Flags**: Only active if tuning mode enabled
 
 ### 4. **Test Coverage** (`tests/cognitive_brain/quantum/test_phase4_tuning.py`)
@@ -280,16 +280,16 @@ export PYTHONPATH=src
 
 ```bash
 python src/cognitive_brain/experiments/exp1b_revalidation.py \
-  --multi-seed --scenarios 200 --use-verified-labels \
-  --save-json audit_artifacts/results/phase4_scalability_raw.json
+ --multi-seed --scenarios 200 --use-verified-labels \
+ --save-json audit_artifacts/results/phase4_scalability_raw.json
 ```
 
 ### Step 3: Analyze Patterns
 
 ```bash
 python tools/analysis/per_pattern_report.py \
-  audit_artifacts/results/phase4_scalability_raw.json \
-  --output audit_artifacts/poctune/iteration_1_per_pattern.json
+ audit_artifacts/results/phase4_scalability_raw.json \
+ --output audit_artifacts/poctune/iteration_1_per_pattern.json
 ```
 
 ### Step 4: Initialize Tuning Loop
@@ -300,17 +300,17 @@ from src.codex.cognitive.models import ImprovementArea
 
 engine = QuantumPlansetEngine()
 ps = engine.generate(
-    ImprovementArea.QI_TESTING,
-    context={
-        "failing_patterns": 2,
-        "k1": 0.3406,
-    },
+ ImprovementArea.QI_TESTING,
+ context={
+ "failing_patterns": 2,
+ "k1": 0.3406,
+ },
 )
 
 path = engine.collapse(ps)
 for step in path:
-    print(f"[{step.step_id}] {step.agent}: {step.action}")
-    # Execute step (handled by quantum-compliance-tuning-agent)
+ print(f"[{step.step_id}] {step.agent}: {step.action}")
+ # Execute step (handled by quantum-compliance-tuning-agent)
 ```
 
 ### Step 5: Monitor Progress
@@ -360,7 +360,7 @@ for step in path:
 
 ---
 
-**Integration Status**:  CONFIRMED  
-**Last Updated**: 2026-07-01  
-**Authority**: P1.4 Task Force  
+**Integration Status**: CONFIRMED
+**Last Updated**: 2026-07-01
+**Authority**: P1.4 Task Force
 **Next Review**: Post-Phase 4.5 tuning completion

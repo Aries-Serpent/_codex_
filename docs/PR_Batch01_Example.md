@@ -1,6 +1,6 @@
 # PR: Legacy Import Refactor — Batch 01 (example)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -52,10 +52,10 @@ Tests Summary
 (paste pytest output here)
 - validation: <PASS/FAIL>
 
-Legacy Import Counts (before → after)
+Legacy Import Counts (before after)
 -------------------------------------
 - Before (rows): <count_before>
-- After  (rows): <count_after>
+- After (rows): <count_after>
 - Reduction: <delta_pct %>
 
 Artifacts & SHAs

@@ -1,6 +1,6 @@
-# ADR-003: Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote
+# ADR-003: Event-Driven Continuous Learning via Drift Trigger EvalGate Promote
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -22,20 +22,20 @@ The _codex_ platform required an automated model lifecycle system with the
 following constraints:
 
 1. **Trigger on evidence, not on schedule** — retraining should fire when drift
-   signals exceed thresholds, not on a fixed calendar interval. This avoids both
-   premature retraining (wasted compute) and delayed retraining (prolonged
-   quality loss).
+ signals exceed thresholds, not on a fixed calendar interval. This avoids both
+ premature retraining (wasted compute) and delayed retraining (prolonged
+ quality loss).
 2. **Safety gate before promotion** — an automatically retrained model must meet
-   quality thresholds before it replaces the production model. Blind auto-promotion
-   is not acceptable.
+ quality thresholds before it replaces the production model. Blind auto-promotion
+ is not acceptable.
 3. **Loose coupling between stages** — each stage (drift monitoring, retraining,
-   evaluation, promotion) must be independently replaceable without refactoring
-   adjacent stages.
+ evaluation, promotion) must be independently replaceable without refactoring
+ adjacent stages.
 4. **Feedback from production** — production inference outcomes should flow back
-   into the learning loop, not be discarded after the prediction is served.
+ into the learning loop, not be discarded after the prediction is served.
 5. **CI/CD integration** — the system must be operable via GitHub Actions
-   `repository_dispatch` events so the full pipeline can be triggered, monitored,
-   and audited within the existing CI infrastructure.
+ `repository_dispatch` events so the full pipeline can be triggered, monitored,
+ and audited within the existing CI infrastructure.
 
 ---
 
@@ -57,12 +57,12 @@ window. When any metric crosses its threshold, it emits a structured drift event
 
 `RetrainingTrigger` subscribes to drift events and applies debounce logic:
 - Multiple drift events within a configurable cooldown window are collapsed into
-  a single retraining job, preventing repeated triggering during a transient
-  distribution shift.
+ a single retraining job, preventing repeated triggering during a transient
+ distribution shift.
 - Emits a `retrain_requested` event with the triggering evidence attached for
-  audit logging.
+ audit logging.
 - Can also be invoked programmatically (e.g., from a CI cron job or operator
-  command) to support scheduled and manual retraining alongside event-driven.
+ command) to support scheduled and manual retraining alongside event-driven.
 
 ### Stage 3: AutoRetrainPipeline + EvalGate (Decide)
 
@@ -107,25 +107,25 @@ just at the trigger level.
 
 **Positive:**
 - Decoupled stages: replacing the retraining framework (e.g., switching from
-  scikit-learn to PyTorch Lightning) requires changes only to `AutoRetrainPipeline`,
-  not to `DriftMonitor`, `EvalGate`, or `ModelPromoter`.
+ scikit-learn to PyTorch Lightning) requires changes only to `AutoRetrainPipeline`,
+ not to `DriftMonitor`, `EvalGate`, or `ModelPromoter`.
 - `EvalGate` prevents regressions from reaching production; no human approval
-  required for routine retraining, but automated safety is maintained.
+ required for routine retraining, but automated safety is maintained.
 - `repository_dispatch` provides a standards-compliant integration point that
-  works with any CI system supporting GitHub webhooks.
+ works with any CI system supporting GitHub webhooks.
 - Feedback loop closes the production-training gap without requiring a separate
-  online learning infrastructure.
+ online learning infrastructure.
 
 **Negative / Trade-offs:**
 - Event-driven systems are harder to trace than synchronous pipelines; distributed
-  tracing (ADR-0001) is recommended to correlate drift event → retrain job → gate
-  result → promotion.
+ tracing (ADR-0001) is recommended to correlate drift event retrain job gate
+ result promotion.
 - `EvalGate` thresholds must be calibrated per model family; a single global
-  threshold will be either too strict (blocking valid retrains) or too loose
-  (promoting degraded models) for heterogeneous model types.
+ threshold will be either too strict (blocking valid retrains) or too loose
+ (promoting degraded models) for heterogeneous model types.
 - Feedback loop introduces a data-flywheel dependency: if production labels are
-  noisy or delayed, the retrained model may regress. Label quality monitoring is
-  a prerequisite for reliable continuous learning.
+ noisy or delayed, the retrained model may regress. Label quality monitoring is
+ a prerequisite for reliable continuous learning.
 
 ---
 

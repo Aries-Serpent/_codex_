@@ -1,6 +1,6 @@
-#  Mermaid Diagrams Index
+# Mermaid Diagrams Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 
@@ -15,9 +15,9 @@ Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the
 | File | Purpose | Last Updated |
 |------|---------|-------------|
 | [`architecture.mmd`](architecture.mmd) | Full system architecture: ML core, tokenization, RAG, cognitive brain, logging, CI self-healing, GitHub Actions workflows | 2026-05-28 (S1292) |
-| [`ci_self_healing_flow.mmd`](ci_self_healing_flow.mmd) | Detailed CI self-healing pipeline: push → agent-auth-delegation → auto_fix_all_missing (REQ-4/5/6/PDA) → pre-merge-validation → Pattern 30 scorecard → merge gate | 2026-05-28 (S1292) |
+| [`ci_self_healing_flow.mmd`](ci_self_healing_flow.mmd) | Detailed CI self-healing pipeline: push agent-auth-delegation auto_fix_all_missing (REQ-4/5/6/PDA) pre-merge-validation Pattern 30 scorecard merge gate | 2026-05-28 (S1292) |
 | [`runtime_logic_map.mmd`](runtime_logic_map.mmd) | Detailed runtime flow map: all CLI entry points, package-main orchestration, training strategies, tokenizer pipeline, ingestion, quantum orchestrator, Rust/Python hybrid | 2026-02-xx (S178) |
-| [`audit_pipeline_v0.2.1.mmd`](audit_pipeline_v0.2.1.mmd) | 7-stage audit pipeline: context index → facet grouping → capability extraction → scoring → gap analysis → report rendering → manifest generation | 2025-xx (v0.2.1) |
+| [`audit_pipeline_v0.2.0.mmd`](audit_pipeline_v0.2.0.mmd) | 7-stage audit pipeline: context index facet grouping capability extraction scoring gap analysis report rendering manifest generation | 2025-xx (v0.2.0) |
 
 ---
 
@@ -32,7 +32,7 @@ High-level system map. Key additions since S1292:
 
 ### `ci_self_healing_flow.mmd`
 Shows the full self-healing loop from push to merge:
-- Every push triggers `agent-auth-delegation.yml` → `session_wrapup_autofix.py`
+- Every push triggers `agent-auth-delegation.yml` `session_wrapup_autofix.py`
 - `auto_fix_all_missing()` runs REQ-4, REQ-5, REQ-6, **REQ-PDA (🆕)**, PR-DESC, WEC
 - `pre-merge-validation.yml` runs the 32-pattern pipeline
 - Pattern 30 scorecard (10 dimensions, 100 pts) gates merge readiness

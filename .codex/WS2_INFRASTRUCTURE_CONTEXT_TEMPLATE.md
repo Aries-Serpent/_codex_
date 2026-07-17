@@ -330,7 +330,7 @@ This template collects the infrastructure context required for WS2 (Infrastructu
 [ ] TOTAL CURRENT MONTHLY COST: $ _______________
 ```
 
-### Post-Rollout Projections (v0.2.1)
+### Post-Rollout Projections (v0.2.0)
 
 ```
 [ ] Expected Changes:

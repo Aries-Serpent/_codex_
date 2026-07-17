@@ -1,6 +1,6 @@
 # ADR-20260305: Fourth D_CAPABLE Agent Evaluation — `workflow-health-monitor` Designated
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T01:30:00Z | Updated: 2026-06-22
 > Status: Accepted — fourth candidate designated; promotion PENDING C4 observation only (C8 gap resolved )
@@ -10,7 +10,7 @@
 ## 1. Context
 
 `rust-error-validator` was promoted to D_CAPABLE in PR #3495 and is now in a 30-day
-post-promotion observation window (2026-03-04 → 2026-04-03, tracked by
+post-promotion observation window (2026-03-04 2026-04-03, tracked by
 `rust-error-validator-observation.yml`). The current D_CAPABLE roster is:
 
 | Agent | Rank | Promoted | PR |
@@ -45,24 +45,24 @@ post-promotion observation window (2026-03-04 → 2026-04-03, tracked by
 
 | Criterion | Required | Actual | Evidence | Pass? |
 |-----------|----------|--------|---------|-------|
-| C1 enforcement_tier | GROUNDED | **GROUNDED** | AGENT_REGISTRY.yaml |  |
-| C2 handoff_protocol | structured | **structured** | AGENT_REGISTRY.yaml |  |
-| C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator, ci-health-alert-agent]` | AGENT_REGISTRY.yaml |  |
-| C4 violations_30d | 0 (set) | **NOT SET** | — |  |
-| C5 has_tests | true | **true** | `tests/agents/test_agent_orchestration.py` (8 references; primary agent in chain tests) |  |
-| C6 has_docs | true | **true** | `.github/agents/workflow-health-monitor.agent.md` |  |
-| C7 maturity | production | **production** | AGENT_REGISTRY.yaml |  |
-| C8 rank | ≤ 20 | **NOT SET → assigned 21** | Assigned in this ADR (see §4) | ️ |
+| C1 enforcement_tier | GROUNDED | **GROUNDED** | AGENT_REGISTRY.yaml | |
+| C2 handoff_protocol | structured | **structured** | AGENT_REGISTRY.yaml | |
+| C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator, ci-health-alert-agent]` | AGENT_REGISTRY.yaml | |
+| C4 violations_30d | 0 (set) | **NOT SET** | — | |
+| C5 has_tests | true | **true** | `tests/agents/test_agent_orchestration.py` (8 references; primary agent in chain tests) | |
+| C6 has_docs | true | **true** | `.github/agents/workflow-health-monitor.agent.md` | |
+| C7 maturity | production | **production** | AGENT_REGISTRY.yaml | |
+| C8 rank | ≤ 20 | **NOT SET assigned 21** | Assigned in this ADR (see §4) | |
 
 **C5 evidence:** `tests/agents/test_agent_orchestration.py` — `workflow-health-monitor`
 is used as primary agent in chain validation tests (lines 80, 88, 91–93, 100, 106, 116,
 120, 132). The agent is directly tested as the entry point for multi-agent orchestration
 sequences.
 
-**C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v0.2.1,
+**C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v0.2.0,
 2026-02-05, "Production Ready" status annotation).
 
-**Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved  (see §5); promotion PENDING C4 only.**
+**Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved (see §5); promotion PENDING C4 only.**
 
 ---
 
@@ -70,14 +70,14 @@ sequences.
 
 | Criterion | Required | Actual | Evidence | Pass? |
 |-----------|----------|--------|---------|-------|
-| C1 enforcement_tier | GROUNDED | **GROUNDED** | AGENT_REGISTRY.yaml |  |
-| C2 handoff_protocol | structured | **structured** | AGENT_REGISTRY.yaml |  |
-| C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator]` | AGENT_REGISTRY.yaml |  |
-| C4 violations_30d | 0 (set) | **NOT SET** | — |  |
-| C5 has_tests | true | **true** | `tests/integration/test_cicd_workflow_e2e.py:21` (dedicated test); `tests/agents/test_custom_agent_functional.py:75` |  |
-| C6 has_docs | true | **true** | `.github/agents/owner-approval-guard.agent.md` (v0.2.1-cognitive) |  |
-| C7 maturity | production | **production** | AGENT_REGISTRY.yaml |  |
-| C8 rank | ≤ 20 | **NOT SET** | — |  |
+| C1 enforcement_tier | GROUNDED | **GROUNDED** | AGENT_REGISTRY.yaml | |
+| C2 handoff_protocol | structured | **structured** | AGENT_REGISTRY.yaml | |
+| C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator]` | AGENT_REGISTRY.yaml | |
+| C4 violations_30d | 0 (set) | **NOT SET** | — | |
+| C5 has_tests | true | **true** | `tests/integration/test_cicd_workflow_e2e.py:21` (dedicated test); `tests/agents/test_custom_agent_functional.py:75` | |
+| C6 has_docs | true | **true** | `.github/agents/owner-approval-guard.agent.md` (v0.2.0-cognitive) | |
+| C7 maturity | production | **production** | AGENT_REGISTRY.yaml | |
+| C8 rank | ≤ 20 | **NOT SET** | — | |
 
 **Result: NOT DESIGNATED — 6/8 criteria met (same as A), but fewer handoff sources (2 vs 3)
 and no orchestration chain test evidence. Remains in candidate pool for fifth D_CAPABLE slot.**
@@ -90,18 +90,18 @@ and no orchestration chain test evidence. Remains in candidate pool for fifth D_
 over `owner-approval-guard` for the following reasons:
 
 1. **Broader handoff network (3 vs 2):** `ci-health-alert-agent` as a third handoff source
-   directly integrates with the existing D_CAPABLE CI pipeline (`ci-testing-agent` rank 1,
-   `workflow-ci-fixer` rank 13). This creates a coherent automated CI response chain.
+ directly integrates with the existing D_CAPABLE CI pipeline (`ci-testing-agent` rank 1,
+ `workflow-ci-fixer` rank 13). This creates a coherent automated CI response chain.
 
 2. **Orchestration chain test coverage:** The agent is used as a *primary* agent in chain
-   execution tests (`test_agent_orchestration.py`), demonstrating it has been tested in
-   orchestrated multi-agent scenarios — the exact context where D_CAPABLE autonomy matters.
+ execution tests (`test_agent_orchestration.py`), demonstrating it has been tested in
+ orchestrated multi-agent scenarios — the exact context where D_CAPABLE autonomy matters.
 
 3. **CI-adjacent role:** A monitoring agent running alongside `ci-testing-agent` and
-   `workflow-ci-fixer` at D_CAPABLE level creates a complete self-healing CI triad.
+ `workflow-ci-fixer` at D_CAPABLE level creates a complete self-healing CI triad.
 
 4. **`batch_scan_enabled: true`:** Signals the agent is designed for high-frequency batch
-   execution — consistent with top-20 activation frequency.
+ execution — consistent with top-20 activation frequency.
 
 ---
 
@@ -124,8 +124,8 @@ unblocked pending only the C4 observation window (ends 2026-04-04).
 
 | Gap | Owner | Action | Timeline | Status |
 |-----|-------|--------|----------|--------|
-| C4 `violations_30d` observation | copilot-swe-agent | Monitor 30-day observation window; confirm 0 | 2026-03-05 → 2026-04-04 |  ONGOING |
-| C8 rank threshold | @mbaetiong | Sign off on top-25 threshold relaxation | 2026-03-05 |  RESOLVED |
+| C4 `violations_30d` observation | copilot-swe-agent | Monitor 30-day observation window; confirm 0 | 2026-03-05 2026-04-04 | ONGOING |
+| C8 rank threshold | @mbaetiong | Sign off on top-25 threshold relaxation | 2026-03-05 | RESOLVED |
 
 ---
 
@@ -133,7 +133,7 @@ unblocked pending only the C4 observation window (ends 2026-04-04).
 
 | Agent | Status | Gaps |
 |-------|--------|------|
-| `workflow-health-monitor` | **DESIGNATED** (4th candidate) | C4 observation window only (→ 2026-04-04) |
+| `workflow-health-monitor` | **DESIGNATED** (4th candidate) | C4 observation window only ( 2026-04-04) |
 | `owner-approval-guard` | QUEUED (5th candidate) | C4, C8 |
 
 ---
@@ -142,7 +142,7 @@ unblocked pending only the C4 observation window (ends 2026-04-04).
 
 | Owner | Action | Timeline |
 |-------|--------|----------|
-| copilot-swe-agent | Monitor 30-day observation for `workflow-health-monitor` | Ongoing → 2026-04-04 |
+| copilot-swe-agent | Monitor 30-day observation for `workflow-health-monitor` | Ongoing 2026-04-04 |
 | copilot-swe-agent | Create promotion ADR when C4 resolved | ~2026-04-05 |
 | copilot-swe-agent | Designate 5th candidate (`owner-approval-guard`) after 4th promotion completes | Future |
 

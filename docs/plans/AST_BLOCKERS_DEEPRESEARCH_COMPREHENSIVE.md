@@ -3,20 +3,20 @@ Let me create the comprehensive deep research document directly in the workbench
 ```markdown name=AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md
 # DEEP RESEARCH: AST Standardization Blockers - Comprehensive Resolution Framework
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Research Lead], [Secondary: Architecture Lead] |  Energy: 5/5
+** Roles:** [Primary: Research Lead], [Secondary: Architecture Lead] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Research → Aggregate → Synthesize → Implementation → Validation] | Fields [Code/doc pools] | Patterns️ [Best-fit extraction, pattern reuse] | Redundancy [Contingency strategies, multi-source fallbacks] | Balance️ [Breadth vs depth, 46 blockers × 3000+ lines guidance]
+ **Physics:** Path [Research Aggregate Synthesize Implementation Validation] | Fields [Code/doc pools] | Patterns [Best-fit extraction, pattern reuse] | Redundancy [Contingency strategies, multi-source fallbacks] | Balance [Breadth vs depth, 46 blockers × 3000+ lines guidance]
 
 ---
 
-##  Executive Summary
+## Executive Summary
 
 **Context**: PR #2173 achieves **75% completion** across 12 maturity capabilities (98 tests, 100% passing). Phases 4-6 (AST standardization v1.6.x, pytest-cov integration v1.7.x, zero-component cleanup) deferred for dedicated engineering.
 
@@ -25,12 +25,12 @@ Let me create the comprehensive deep research document directly in the workbench
 **Scope**: Complete feasibility analysis + executable implementation guidance for Phase 0 AST implementation (11-13 phases, 6.4 person-months).
 
 **Deliverable**: Comprehensive blocker resolution matrix with 3,000+ lines of guidance covering:
--  All 46 blockers with ideal solutions
--  25+ OSS reference implementations
--  Annotated code snippets (all critical paths)
--  Implementation roadmap (Phases 4-6)
--  Risk mitigation strategies + contingency plans
--  Success metrics + Go/No-Go framework
+- All 46 blockers with ideal solutions
+- 25+ OSS reference implementations
+- Annotated code snippets (all critical paths)
+- Implementation roadmap (Phases 4-6)
+- Risk mitigation strategies + contingency plans
+- Success metrics + Go/No-Go framework
 
 ---
 
@@ -74,18 +74,18 @@ Let me create the comprehensive deep research document directly in the workbench
 # pyproject.toml enhancement
 [project]
 dependencies = [
-    # ... existing ...
-    "libcst>=1.0.0",     # Universal Python parser
-    "radon>=6.0.0",      # Complexity metrics
-    "parso>=0.8.0",      # Fallback parser
+ # ... existing ...
+ "libcst>=1.0.0", # Universal Python parser
+ "radon>=6.0.0", # Complexity metrics
+ "parso>=0.8.0", # Fallback parser
 ]
 
 [project.optional-dependencies]
 ast = [
-    "tree-sitter>=0.20.0",
-    "tree-sitter-python>=0.20.0",
-    "tree-sitter-yaml>=0.20.0",
-    "sqlparse>=0.4.0",
+ "tree-sitter>=0.20.0",
+ "tree-sitter-python>=0.20.0",
+ "tree-sitter-yaml>=0.20.0",
+ "sqlparse>=0.4.0",
 ]
 ```text
 
@@ -112,62 +112,62 @@ from pathlib import Path
 
 @dataclass
 class StandardizedASTNode:
-    """Language-agnostic AST node representation."""
-    node_id: str
-    type: str  # "module", "function", "class", etc.
-    name: str
-    source_location: 'SourceLocation'
-    children: List['StandardizedASTNode'] = field(default_factory=list)
-    parent: Optional['StandardizedASTNode'] = None
-    docstring: Optional[str] = None
-    decorators: List[str] = field(default_factory=list)
-    type_hints: Dict[str, str] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+ """Language-agnostic AST node representation."""
+ node_id: str
+ type: str # "module", "function", "class", etc.
+ name: str
+ source_location: 'SourceLocation'
+ children: List['StandardizedASTNode'] = field(default_factory=list)
+ parent: Optional['StandardizedASTNode'] = None
+ docstring: Optional[str] = None
+ decorators: List[str] = field(default_factory=list)
+ type_hints: Dict[str, str] = field(default_factory=dict)
+ metadata: Dict[str, Any] = field(default_factory=dict)
 
 # src/codex_ml/ast/graph.py - DependencyGraph with Tarjan's SCC
 class DependencyGraph:
-    """Directed graph with cycle detection."""
+ """Directed graph with cycle detection."""
 
-    def detect_cycles(self) -> List[List[str]]:
-        """Find strongly connected components using Tarjan's algorithm."""
-        index_counter = [0]
-        stack = []
-        lowlinks = {}
-        index = {}
-        on_stack = {}
-        sccs = []
+ def detect_cycles(self) -> List[List[str]]:
+ """Find strongly connected components using Tarjan's algorithm."""
+ index_counter = [0]
+ stack = []
+ lowlinks = {}
+ index = {}
+ on_stack = {}
+ sccs = []
 
-        def strongconnect(node_id):
-            index[node_id] = index_counter[0]
-            lowlinks[node_id] = index_counter[0]
-            index_counter[0] += 1
-            stack.append(node_id)
-            on_stack[node_id] = True
+ def strongconnect(node_id):
+ index[node_id] = index_counter[0]
+ lowlinks[node_id] = index_counter[0]
+ index_counter[0] += 1
+ stack.append(node_id)
+ on_stack[node_id] = True
 
-            for target_id in self.edges.get(node_id, set()):
-                if target_id not in index:
-                    strongconnect(target_id)
-                    lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
-                elif on_stack.get(target_id, False):
-                    lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
+ for target_id in self.edges.get(node_id, set()):
+ if target_id not in index:
+ strongconnect(target_id)
+ lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
+ elif on_stack.get(target_id, False):
+ lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
 
-            if lowlinks[node_id] == index[node_id]:
-                scc = []
-                while True:
-                    w = stack.pop()
-                    on_stack[w] = False
-                    scc.append(w)
-                    if w == node_id:
-                        break
+ if lowlinks[node_id] == index[node_id]:
+ scc = []
+ while True:
+ w = stack.pop()
+ on_stack[w] = False
+ scc.append(w)
+ if w == node_id:
+ break
 
-                if len(scc) > 1:  # Only record cycles
-                    sccs.append(scc)
+ if len(scc) > 1: # Only record cycles
+ sccs.append(scc)
 
-        for node_id in self.nodes:
-            if node_id not in index:
-                strongconnect(node_id)
+ for node_id in self.nodes:
+ if node_id not in index:
+ strongconnect(node_id)
 
-        return sccs
+ return sccs
 ```text
 
 ---
@@ -190,45 +190,45 @@ import time
 
 @pytest.mark.benchmark
 def test_parser_performance_small(benchmark):
-    """Parse small file: <1ms per 100 tokens."""
-    from codex_ml.ast import UniversalParser
-    parser = UniversalParser()
-    source = "def func(): pass\n" * 10
+ """Parse small file: <1ms per 100 tokens."""
+ from codex_ml.ast import UniversalParser
+ parser = UniversalParser()
+ source = "def func(): pass\n" * 10
 
-    result = benchmark(parser.parse, source, "test.py")
-    assert result is not None
+ result = benchmark(parser.parse, source, "test.py")
+ assert result is not None
 
 # src/codex_ml/ast/parallel.py - Parallel processing
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 class ParallelAnalyzer:
-    """Analyze multiple files in parallel."""
+ """Analyze multiple files in parallel."""
 
-    def analyze_codebase(self, files, max_workers=4):
-        """Analyze files concurrently."""
-        results = {}
+ def analyze_codebase(self, files, max_workers=4):
+ """Analyze files concurrently."""
+ results = {}
 
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            futures = {
-                executor.submit(self._analyze_file, f): f
-                for f in files
-            }
+ with ProcessPoolExecutor(max_workers=max_workers) as executor:
+ futures = {
+ executor.submit(self._analyze_file, f): f
+ for f in files
+ }
 
-            for future in as_completed(futures):
-                file = futures[future]
-                try:
-                    results[file] = future.result()
-                except Exception as e:
-                    results[file] = {"error": str(e)}
+ for future in as_completed(futures):
+ file = futures[future]
+ try:
+ results[file] = future.result()
+ except Exception as e:
+ results[file] = {"error": str(e)}
 
-        return results
+ return results
 
-    def _analyze_file(self, file_path):
-        """Analyze single file (runs in subprocess)."""
-        parser = UniversalParser()
-        with open(file_path) as f:
-            source = f.read()
-        return parser.parse(source, file_path)
+ def _analyze_file(self, file_path):
+ """Analyze single file (runs in subprocess)."""
+ parser = UniversalParser()
+ with open(file_path) as f:
+ source = f.read()
+ return parser.parse(source, file_path)
 ```text
 
 ---
@@ -273,45 +273,45 @@ class ParallelAnalyzer:
 ### Phase 4: Core AST Implementation (Pre-commit 1-4, 10 iterations)
 
 **Objectives**:
--  All 5 dependencies resolved (no conflicts)
--  StandardizedASTNode implemented
--  Basic Python parser working
--  Initial test suite (>80% coverage)
+- All 5 dependencies resolved (no conflicts)
+- StandardizedASTNode implemented
+- Basic Python parser working
+- Initial test suite (>80% coverage)
 
 **Blockers Addressed**: BLOCK-DEP-001 to 005, BLOCK-ARCH-001, BLOCK-PERF-001
 
 **Deliverables**:
 ```text
 src/codex_ml/ast/
-├── __init__.py
-├── nodes.py                    (StandardizedASTNode dataclass)
-├── parser.py                   (UniversalParser orchestrator)
-├── language_adapters/
-│   ├── __init__.py
-│   ├── base.py                (BaseLanguageAdapter ABC)
-│   ├── python_adapter.py       (PythonAdapter using libcst)
-│   ├── yaml_adapter.py         (YAMLAdapter)
-│   └── json_adapter.py         (JSONAdapter)
-├── errors.py                   (Custom exception hierarchy)
-└── storage/
-    ├── __init__.py
-    ├── schema.py              (SQLite schema + DDL)
-    └── manager.py             (StorageManager class)
+ __init__.py
+ nodes.py (StandardizedASTNode dataclass)
+ parser.py (UniversalParser orchestrator)
+ language_adapters/
+ __init__.py
+ base.py (BaseLanguageAdapter ABC)
+ python_adapter.py (PythonAdapter using libcst)
+ yaml_adapter.py (YAMLAdapter)
+ json_adapter.py (JSONAdapter)
+ errors.py (Custom exception hierarchy)
+ storage/
+ __init__.py
+ schema.py (SQLite schema + DDL)
+ manager.py (StorageManager class)
 
 tests/ast/
-├── conftest.py                (Shared fixtures)
-├── fixtures.py                (Sample code fixtures)
-├── test_parser.py             (Parser unit tests)
-├── test_nodes.py              (Node serialization tests)
-└── benchmarks.py              (Performance baselines)
+ conftest.py (Shared fixtures)
+ fixtures.py (Sample code fixtures)
+ test_parser.py (Parser unit tests)
+ test_nodes.py (Node serialization tests)
+ benchmarks.py (Performance baselines)
 ```text
 
 **Gate Criteria**:
--  `pip install -e ".[ast]"` succeeds (no conflicts)
--  All imports work
--  Sample Python code parses correctly
--  >80% test coverage
--  No critical security vulnerabilities
+- `pip install -e ".[ast]"` succeeds (no conflicts)
+- All imports work
+- Sample Python code parses correctly
+- >80% test coverage
+- No critical security vulnerabilities
 
 **Timeline**: 10 person-days (2 phases for 1-2 developers)
 
@@ -320,41 +320,41 @@ tests/ast/
 ### Phase 5: Analysis & Metrics (Pre-commit 5-8, 10 iterations)
 
 **Objectives**:
--  Dependency graph with cycle detection (Tarjan's SCC)
--  Metrics aggregation (complexity, coupling, quality tiers)
--  Performance baseline established
--  Incremental analysis framework
+- Dependency graph with cycle detection (Tarjan's SCC)
+- Metrics aggregation (complexity, coupling, quality tiers)
+- Performance baseline established
+- Incremental analysis framework
 
 **Blockers Addressed**: BLOCK-ARCH-002 to 004, BLOCK-PERF-002, ARCH-CHAL-005
 
 **Deliverables**:
 ```text
 src/codex_ml/ast/
-├── graph.py                   (DependencyGraph + cycle detection)
-├── metrics.py                 (CodeMetrics dataclass)
-├── metrics_aggregator.py      (MetricsAggregator)
-├── incremental.py             (BaselineManager + diff)
-├── analyzers/
-│   ├── __init__.py
-│   ├── complexity.py          (Cyclomatic complexity)
-│   ├── maintainability.py     (Maintainability index)
-│   └── smells.py              (Code smell detection)
-└── performance/
-    ├── __init__.py
-    └── optimizations.py       (Caching strategies)
+ graph.py (DependencyGraph + cycle detection)
+ metrics.py (CodeMetrics dataclass)
+ metrics_aggregator.py (MetricsAggregator)
+ incremental.py (BaselineManager + diff)
+ analyzers/
+ __init__.py
+ complexity.py (Cyclomatic complexity)
+ maintainability.py (Maintainability index)
+ smells.py (Code smell detection)
+ performance/
+ __init__.py
+ optimizations.py (Caching strategies)
 
 tests/ast/
-├── test_graph.py              (Graph tests + cycle detection)
-├── test_metrics.py            (Metrics computation)
-├── test_analyzers.py          (Analyzer tests)
-└── fixtures/                  (Synthetic test graphs)
+ test_graph.py (Graph tests + cycle detection)
+ test_metrics.py (Metrics computation)
+ test_analyzers.py (Analyzer tests)
+ fixtures/ (Synthetic test graphs)
 ```text
 
 **Gate Criteria**:
--  Cycle detection 100% accurate on synthetic graphs
--  Metrics compute within performance budget (<5s per 1000 LOC)
--  Incremental analysis working correctly
--  All tests passing
+- Cycle detection 100% accurate on synthetic graphs
+- Metrics compute within performance budget (<5s per 1000 LOC)
+- Incremental analysis working correctly
+- All tests passing
 
 **Timeline**: 10 person-days (Pre-commit 5-8)
 
@@ -363,62 +363,62 @@ tests/ast/
 ### Phase 6: Integration & Optimization (Pre-commit 9-12, 10 iterations)
 
 **Objectives**:
--  Plugin architecture (registry + loader)
--  Streaming parser for large files
--  Parallel processing framework
--  CLI tools (codex-analyze, codex-audit, codex-diff)
--  GitHub Actions integration
--  Complete documentation
+- Plugin architecture (registry + loader)
+- Streaming parser for large files
+- Parallel processing framework
+- CLI tools (codex-analyze, codex-audit, codex-diff)
+- GitHub Actions integration
+- Complete documentation
 
 **Blockers Addressed**: BLOCK-ARCH-005, BLOCK-PERF-003, All integration/documentation issues
 
 **Deliverables**:
 ```text
 src/codex_ml/ast/
-├── plugins.py                 (Plugin registry + loader)
-├── streaming.py               (Streaming parser)
-├── parallel.py                (ParallelAnalyzer)
-├── cli.py                     (Click CLI interface)
-├── exporters/
-│   ├── __init__.py
-│   ├── json_exporter.py
-│   ├── sqlite_exporter.py
-│   └── markdown_exporter.py
-└── integration/
-    ├── __init__.py
-    ├── github_actions.py      (GitHub integration)
-    └── pre_commit.py          (pre-commit hooks)
+ plugins.py (Plugin registry + loader)
+ streaming.py (Streaming parser)
+ parallel.py (ParallelAnalyzer)
+ cli.py (Click CLI interface)
+ exporters/
+ __init__.py
+ json_exporter.py
+ sqlite_exporter.py
+ markdown_exporter.py
+ integration/
+ __init__.py
+ github_actions.py (GitHub integration)
+ pre_commit.py (pre-commit hooks)
 
 scripts/
-├── codex-analyze              (CLI executable)
-├── codex-audit                (CLI executable)
-└── codex-diff                 (CLI executable)
+ codex-analyze (CLI executable)
+ codex-audit (CLI executable)
+ codex-diff (CLI executable)
 
 .github/workflows/
-└── ast_analysis.yml           (GitHub Actions workflow)
+ ast_analysis.yml (GitHub Actions workflow)
 
-.pre-commit-hooks.yaml         (pre-commit configuration)
+.pre-commit-hooks.yaml (pre-commit configuration)
 
 docs/ast/
-├── api_reference.md           (Complete API docs)
-├── usage_guide.md             (Usage examples)
-├── migration_guide.md         (From old to new AST)
-└── adr/                       (Architecture decision records)
+ api_reference.md (Complete API docs)
+ usage_guide.md (Usage examples)
+ migration_guide.md (From old to new AST)
+ adr/ (Architecture decision records)
 
 tests/ast/
-├── test_cli.py                (CLI tests)
-├── test_exporters.py          (Exporter tests)
-└── test_integration.py        (E2E integration tests)
+ test_cli.py (CLI tests)
+ test_exporters.py (Exporter tests)
+ test_integration.py (E2E integration tests)
 ```text
 
 **Gate Criteria**:
--  Plugin registration/loading working
--  CLI tools functional (all commands work)
--  Performance targets met (<5s per 1000 LOC)
--  >80% test coverage
--  Zero critical issues
--  Documentation complete
--  GitHub Actions workflow passing
+- Plugin registration/loading working
+- CLI tools functional (all commands work)
+- Performance targets met (<5s per 1000 LOC)
+- >80% test coverage
+- Zero critical issues
+- Documentation complete
+- GitHub Actions workflow passing
 
 **Timeline**: 10 person-days (Pre-commit 9-12)
 
@@ -441,18 +441,18 @@ tests/ast/
 
 | Domain | Research Focus | Ideal Reference | Status |
 |--------|----------------|-----------------|--------|
-| **libcst usage patterns** | OSS applications, best practices | [libcst examples](https://libcst.readthedocs.io/en/latest/tutorial.html), [projects using libcst](https://github.com/search?q=libcst&type=repositories) |  Ready |
-| **tree-sitter integration** | Multi-language parsing | [tree-sitter playground](https://tree-sitter.github.io/tree-sitter/playground), [language bindings](https://github.com/tree-sitter?q=tree-sitter-) |  Ready |
-| **Dependency graph algorithms** | Cycle detection, coupling metrics | [NetworkX](https://networkx.org/), [GraphQL implementations](https://github.com/topics/graph-algorithm) |  Ready |
-| **Code metrics computation** | Complexity, maintainability | [radon source code](https://github.com/rubik/radon/blob/master/radon/complexity.py), [metrics papers](https://en.wikipedia.org/wiki/Cyclomatic_complexity) |  Ready |
-| **Plugin architectures** | Extensibility patterns | [Flask Blueprints](https://flask.palletsprojects.com/en/latest/blueprints/), [Pytest plugins](https://docs.pytest.org/en/latest/how-to-write-and-share-plugins.html) |  Ready |
-| **Performance optimization** | Streaming, caching, parallelization | [Python performance tips](https://wiki.python.org/moin/PythonSpeed/), [async patterns](https://docs.python.org/3/library/asyncio.html) |  Ready |
-| **Testing strategies** | Golden files, regression, benchmarks | [pytest-golden](https://pypi.org/project/pytest-golden/), [pytest-benchmark](https://pytest-benchmark.readthedocs.io/) |  Ready |
-| **CI/CD integration** | pytest-cov, coverage reporting, GitHub Actions | [GitHub Actions pytest](https://github.com/marketplace/actions/pytest-coverage-comment), [Coverage.py docs](https://coverage.readthedocs.io/) |  Ready |
-| **Type inference** | AST-based type extraction | [pytype](https://github.com/google/pytype), [ast module](https://docs.python.org/3/library/ast.html#ast.get_source_segment) |  Partial |
-| **Code smell patterns** | Anti-patterns, detection heuristics | [Refactoring Guru code smells](https://refactoring.guru/refactoring/smells), [SonarQube rules](https://rules.sonarsource.com/python) |  Ready |
-| **Knowledge graphs** | Entity + relationship modeling | [RDFlib](https://rdflib.readthedocs.io/), [Property graphs](https://github.com/topics/property-graph) |  Partial |
-| **Version compatibility** | Python 3.8-3.12 AST differences | [Python AST changelog](https://docs.python.org/3/library/ast.html#changes), [What's New documentation](https://docs.python.org/3/whatsnew/) |  Ready |
+| **libcst usage patterns** | OSS applications, best practices | [libcst examples](https://libcst.readthedocs.io/en/latest/tutorial.html), [projects using libcst](https://github.com/search?q=libcst&type=repositories) | Ready |
+| **tree-sitter integration** | Multi-language parsing | [tree-sitter playground](https://tree-sitter.github.io/tree-sitter/playground), [language bindings](https://github.com/tree-sitter?q=tree-sitter-) | Ready |
+| **Dependency graph algorithms** | Cycle detection, coupling metrics | [NetworkX](https://networkx.org/), [GraphQL implementations](https://github.com/topics/graph-algorithm) | Ready |
+| **Code metrics computation** | Complexity, maintainability | [radon source code](https://github.com/rubik/radon/blob/master/radon/complexity.py), [metrics papers](https://en.wikipedia.org/wiki/Cyclomatic_complexity) | Ready |
+| **Plugin architectures** | Extensibility patterns | [Flask Blueprints](https://flask.palletsprojects.com/en/latest/blueprints/), [Pytest plugins](https://docs.pytest.org/en/latest/how-to-write-and-share-plugins.html) | Ready |
+| **Performance optimization** | Streaming, caching, parallelization | [Python performance tips](https://wiki.python.org/moin/PythonSpeed/), [async patterns](https://docs.python.org/3/library/asyncio.html) | Ready |
+| **Testing strategies** | Golden files, regression, benchmarks | [pytest-golden](https://pypi.org/project/pytest-golden/), [pytest-benchmark](https://pytest-benchmark.readthedocs.io/) | Ready |
+| **CI/CD integration** | pytest-cov, coverage reporting, GitHub Actions | [GitHub Actions pytest](https://github.com/marketplace/actions/pytest-coverage-comment), [Coverage.py docs](https://coverage.readthedocs.io/) | Ready |
+| **Type inference** | AST-based type extraction | [pytype](https://github.com/google/pytype), [ast module](https://docs.python.org/3/library/ast.html#ast.get_source_segment) | Partial |
+| **Code smell patterns** | Anti-patterns, detection heuristics | [Refactoring Guru code smells](https://refactoring.guru/refactoring/smells), [SonarQube rules](https://rules.sonarsource.com/python) | Ready |
+| **Knowledge graphs** | Entity + relationship modeling | [RDFlib](https://rdflib.readthedocs.io/), [Property graphs](https://github.com/topics/property-graph) | Partial |
+| **Version compatibility** | Python 3.8-3.12 AST differences | [Python AST changelog](https://docs.python.org/3/library/ast.html#changes), [What's New documentation](https://docs.python.org/3/whatsnew/) | Ready |
 
 ---
 
@@ -473,9 +473,9 @@ pip install libcst>=1.0.0 radon>=6.0.0 parso>=0.8.0
 
 # Install optional language parsers
 pip install tree-sitter>=0.20.0 \
-            tree-sitter-python>=0.20.0 \
-            tree-sitter-yaml>=0.20.0 \
-            sqlparse>=0.4.0
+ tree-sitter-python>=0.20.0 \
+ tree-sitter-yaml>=0.20.0 \
+ sqlparse>=0.4.0
 
 # Verify installation
 python -c "
@@ -503,47 +503,47 @@ from pathlib import Path
 from enum import Enum
 
 class NodeType(Enum):
-    MODULE = "module"
-    FUNCTION = "function"
-    CLASS = "class"
-    STATEMENT = "statement"
-    EXPRESSION = "expression"
+ MODULE = "module"
+ FUNCTION = "function"
+ CLASS = "class"
+ STATEMENT = "statement"
+ EXPRESSION = "expression"
 
 @dataclass
 class SourceLocation:
-    file_path: Path
-    line_start: int
-    line_end: int
-    column_start: int
-    column_end: int
+ file_path: Path
+ line_start: int
+ line_end: int
+ column_start: int
+ column_end: int
 
 @dataclass
 class StandardizedASTNode:
-    node_id: str
-    type: NodeType
-    name: str
-    source_location: SourceLocation
-    children: List['StandardizedASTNode'] = field(default_factory=list)
-    parent: Optional['StandardizedASTNode'] = None
-    docstring: Optional[str] = None
-    decorators: List[str] = field(default_factory=list)
-    type_hints: Dict[str, str] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+ node_id: str
+ type: NodeType
+ name: str
+ source_location: SourceLocation
+ children: List['StandardizedASTNode'] = field(default_factory=list)
+ parent: Optional['StandardizedASTNode'] = None
+ docstring: Optional[str] = None
+ decorators: List[str] = field(default_factory=list)
+ type_hints: Dict[str, str] = field(default_factory=dict)
+ metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            'node_id': self.node_id,
-            'type': self.type.value,
-            'name': self.name,
-            'source_location': {
-                'file': str(self.source_location.file_path),
-                'line_start': self.source_location.line_start,
-                'line_end': self.source_location.line_end,
-            },
-            'children': [c.node_id for c in self.children],
-            'docstring': self.docstring,
-            'decorators': self.decorators,
-        }
+ def to_dict(self) -> Dict[str, Any]:
+ return {
+ 'node_id': self.node_id,
+ 'type': self.type.value,
+ 'name': self.name,
+ 'source_location': {
+ 'file': str(self.source_location.file_path),
+ 'line_start': self.source_location.line_start,
+ 'line_end': self.source_location.line_end,
+ },
+ 'children': [c.node_id for c in self.children],
+ 'docstring': self.docstring,
+ 'decorators': self.decorators,
+ }
 ```text
 
 ## 3. Tarjan's Cycle Detection Algorithm
@@ -552,50 +552,50 @@ class StandardizedASTNode:
 # src/codex_ml/ast/graph.py
 
 class DependencyGraph:
-    def __init__(self):
-        self.nodes = {}
-        self.edges = {}
+ def __init__(self):
+ self.nodes = {}
+ self.edges = {}
 
-    def detect_cycles(self) -> List[List[str]]:
-        """Tarjan's strongly connected components algorithm."""
-        index_counter = [0]
-        stack = []
-        lowlinks = {}
-        index = {}
-        on_stack = {}
-        sccs = []
+ def detect_cycles(self) -> List[List[str]]:
+ """Tarjan's strongly connected components algorithm."""
+ index_counter = [0]
+ stack = []
+ lowlinks = {}
+ index = {}
+ on_stack = {}
+ sccs = []
 
-        def strongconnect(node_id):
-            index[node_id] = index_counter[0]
-            lowlinks[node_id] = index_counter[0]
-            index_counter[0] += 1
-            stack.append(node_id)
-            on_stack[node_id] = True
+ def strongconnect(node_id):
+ index[node_id] = index_counter[0]
+ lowlinks[node_id] = index_counter[0]
+ index_counter[0] += 1
+ stack.append(node_id)
+ on_stack[node_id] = True
 
-            for target_id in self.edges.get(node_id, set()):
-                if target_id not in index:
-                    strongconnect(target_id)
-                    lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
-                elif on_stack.get(target_id, False):
-                    lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
+ for target_id in self.edges.get(node_id, set()):
+ if target_id not in index:
+ strongconnect(target_id)
+ lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
+ elif on_stack.get(target_id, False):
+ lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
 
-            if lowlinks[node_id] == index[node_id]:
-                scc = []
-                while True:
-                    w = stack.pop()
-                    on_stack[w] = False
-                    scc.append(w)
-                    if w == node_id:
-                        break
+ if lowlinks[node_id] == index[node_id]:
+ scc = []
+ while True:
+ w = stack.pop()
+ on_stack[w] = False
+ scc.append(w)
+ if w == node_id:
+ break
 
-                if len(scc) > 1:
-                    sccs.append(scc)
+ if len(scc) > 1:
+ sccs.append(scc)
 
-        for node_id in self.nodes:
-            if node_id not in index:
-                strongconnect(node_id)
+ for node_id in self.nodes:
+ if node_id not in index:
+ strongconnect(node_id)
 
-        return sccs
+ return sccs
 ```text
 
 ## 4. GitHub Actions Workflow
@@ -606,38 +606,38 @@ class DependencyGraph:
 name: AST Codebase Analysis
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
+ push:
+ branches: [main, develop]
+ pull_request:
 
 jobs:
-  analyze:
-    runs-on: ubuntu-latest
+ analyze:
+ runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
+ steps:
+ - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
+ - uses: actions/setup-python@v4
+ with:
+ python-version: "3.9"
 
-      - name: Install dependencies
-        run: pip install -e ".[ast]"
+ - name: Install dependencies
+ run: pip install -e ".[ast]"
 
-      - name: Run AST analysis
-        run: |
-          python scripts/codex-audit src/
+ - name: Run AST analysis
+ run: |
+ python scripts/codex-audit src/
 
-      - name: Compare with baseline
-        if: github.event_name == 'pull_request'
-        run: |
-          python scripts/codex-diff origin/main HEAD
+ - name: Compare with baseline
+ if: github.event_name == 'pull_request'
+ run: |
+ python scripts/codex-diff origin/main HEAD
 
-      - name: Upload report
-        uses: actions/upload-artifact@v3
-        with:
-          name: ast-analysis-report
-          path: audit_report.html
+ - name: Upload report
+ uses: actions/upload-artifact@v3
+ with:
+ name: ast-analysis-report
+ path: audit_report.html
 ```text
 
 ## 5. CLI Interface
@@ -651,39 +651,39 @@ from codex_ml.ast import UniversalAnalyzer
 
 @click.group()
 def cli():
-    """Codex AST Analysis CLI"""
-    pass
+ """Codex AST Analysis CLI"""
+ pass
 
 @cli.command()
 @click.argument('path', type=click.Path(exists=True))
 @click.option('--output', type=click.Path(), help='Output file')
 def analyze(path, output):
-    """Analyze single file or directory"""
-    analyzer = UniversalAnalyzer()
-    results = analyzer.analyze_path(Path(path))
+ """Analyze single file or directory"""
+ analyzer = UniversalAnalyzer()
+ results = analyzer.analyze_path(Path(path))
 
-    if output:
-        analyzer.export_to_json(results, Path(output))
-    else:
-        click.echo(analyzer.format_report(results))
+ if output:
+ analyzer.export_to_json(results, Path(output))
+ else:
+ click.echo(analyzer.format_report(results))
 
 @cli.command()
 @click.argument('path', type=click.Path(exists=True))
 @click.option('--output', type=click.Path(), help='Report file')
 def audit(path, output):
-    """Full codebase audit"""
-    analyzer = UniversalAnalyzer()
-    results = analyzer.analyze_all(Path(path))
+ """Full codebase audit"""
+ analyzer = UniversalAnalyzer()
+ results = analyzer.analyze_all(Path(path))
 
-    # Generate HTML report
-    report_html = analyzer.generate_html_report(results)
+ # Generate HTML report
+ report_html = analyzer.generate_html_report(results)
 
-    output_file = Path(output or 'audit_report.html')
-    output_file.write_text(report_html)
-    click.echo(f"Report saved: {output_file}")
+ output_file = Path(output or 'audit_report.html')
+ output_file.write_text(report_html)
+ click.echo(f"Report saved: {output_file}")
 
 if __name__ == '__main__':
-    cli()
+ cli()
 ```text
 
 ---
@@ -720,21 +720,21 @@ if __name__ == '__main__':
 ### Go/No-Go Decision Matrix
 
 **GO if ALL of these are TRUE**:
--  All 46 blockers documented + have viable solutions
--  Reference implementations validated (no dead links)
--  Feasibility confirmed (PoC code working)
--  Team resources committed + available
--  Timeline approved (<11 phases)
--  Success criteria achievable
--  Risk level acceptable (<30%)
+- All 46 blockers documented + have viable solutions
+- Reference implementations validated (no dead links)
+- Feasibility confirmed (PoC code working)
+- Team resources committed + available
+- Timeline approved (<11 phases)
+- Success criteria achievable
+- Risk level acceptable (<30%)
 
 **NO-GO if ANY of these are TRUE**:
--  Any critical blocker lacks viable solution
--  Timeline > 13 phases
--  Implementation risk > 30%
--  Required resources unavailable
--  Critical dependencies have conflicts
--  Performance targets infeasible
+- Any critical blocker lacks viable solution
+- Timeline > 13 phases
+- Implementation risk > 30%
+- Required resources unavailable
+- Critical dependencies have conflicts
+- Performance targets infeasible
 
 ---
 
@@ -745,22 +745,22 @@ if __name__ == '__main__':
 **Primary Deliverable**: `AST_BLOCKERS_DEEPRESEARCH_RESULTS.md` (3,000+ lines)
 
 **Sections**:
-1.  Executive summary + key findings
-2.  Blocker resolution matrix (all 46 + solutions)
-3.  Code reference library (annotated snippets)
-4.  Implementation roadmap (Phases 4-6 with timelines)
-5.  Risk mitigation strategies + contingencies
-6.  Success metrics dashboard
-7.  Team resource allocation
-8.  Go/No-Go decision framework
-9.  Appendix: Full code templates + references
+1. Executive summary + key findings
+2. Blocker resolution matrix (all 46 + solutions)
+3. Code reference library (annotated snippets)
+4. Implementation roadmap (Phases 4-6 with timelines)
+5. Risk mitigation strategies + contingencies
+6. Success metrics dashboard
+7. Team resource allocation
+8. Go/No-Go decision framework
+9. Appendix: Full code templates + references
 
 ---
 
 ## Timeline & Resources
 
-**Research + Planning Phase**: 2-3 phases  
-**Implementation Phase**: 6-8 phases (Phases 4-6)  
+**Research + Planning Phase**: 2-3 phases 
+**Implementation Phase**: 6-8 phases (Phases 4-6) 
 **Total Project**: 8-11 phases (improvement over original 11-13 phase estimate)
 
 **Resource Allocation**:
@@ -774,9 +774,9 @@ if __name__ == '__main__':
 
 ---
 
-**Status**:  READY TO START  
-**Generated**: 2026-06-22 01:20:51 UTC  
-**Author**: mbaetiong  
+**Status**: READY TO START 
+**Generated**: 2026-06-22 01:20:51 UTC 
+**Author**: mbaetiong 
 **Repository**: Aries-Serpent/_codex_
 
 This comprehensive 3,000+ line deep research document provides **complete implementation guidance** for all 46 AST blockers with executable code, ideal OSS references, and a structured roadmap for immediate engineering team action.

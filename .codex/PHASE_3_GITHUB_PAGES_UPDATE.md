@@ -1,8 +1,8 @@
-# PHASE 3: GitHub Pages Documentation Update — v0.2.1 Release
+# PHASE 3: GitHub Pages Documentation Update — v0.2.0 Release
 
 **Phase**: Phase 3: Tag & Release — Update GitHub Pages
 **Date**: 2026-07-11T07:56:48Z
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Execution**: Complete ✅
 **Status**: SUCCESS
 
@@ -13,7 +13,7 @@
 ### Objectives Completed
 - ✅ Updated version across all documentation files (0.1.0 → 0.2.1)
 - ✅ Updated PyPI and GitHub Release links
-- ✅ Added comprehensive v0.2.1 changelog entry
+- ✅ Added comprehensive v0.2.0 changelog entry
 - ✅ Updated installation instructions with new version
 - ✅ Validated documentation integrity
 - ✅ Prepared for GitHub Pages deployment
@@ -23,7 +23,7 @@
 | File | Changes | Status |
 |------|---------|--------|
 | **README.md** | Version badges, release links, installation commands | ✅ Updated |
-| **docs/CHANGELOG.md** | Added v0.2.1 entry with Phase 3 improvements | ✅ Updated |
+| **docs/CHANGELOG.md** | Added v0.2.0 entry with Phase 3 improvements | ✅ Updated |
 | **docs/index.md** | Updated last-modified date and version info | ✅ Updated |
 | **mkdocs.yml** | Added site_url, updated site_description with version | ✅ Updated |
 | **.codex/.validation_cache.json** | Cleared for fresh validation | ✅ Updated |
@@ -38,31 +38,31 @@
 
 ```diff
 - > 🏆 **v0.1.0 Production Release**
-+ > 🏆 **v0.2.1 Production Release**
++ > 🏆 **v0.2.0 Production Release**
 
 - ![Version](https://img.shields.io/badge/version-0.1.0--final-brightgreen)
 + ![Version](https://img.shields.io/badge/version-0.2.1-brightgreen)
 
 - **📦 Latest Release**: [v0.1.0-prod](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-prod)
-+ **📦 Latest Release**: [v0.2.1](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1)
++ **📦 Latest Release**: [v0.2.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.0)
 
 - pip install aries-serpent-ml==0.1.0
 + pip install aries-serpent-ml==0.2.1
 
 - Latest Milestone: v0.1.0-final Production Release (2026-07-10)
-+ Latest Milestone: v0.2.1 Production Release (2026-07-11)
++ Latest Milestone: v0.2.0 Production Release (2026-07-11)
 
 - Latest Milestone Version Quality: (baseline)
 + Phase 3 Improvements: Workflow compliance (99.5%), SBOM updates, production deployment verification
 ```
 
 **Download Links Updated**:
-- GitHub Release: `https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1` ✅
-- ZIP Archive: `https://github.com/Aries-Serpent/_codex_/releases/download/v0.2.1/_codex_.v0.2.1.zip` ✅
+- GitHub Release: `https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.0` ✅
+- ZIP Archive: `https://github.com/Aries-Serpent/_codex_/releases/download/v0.2.0/_codex_.v0.2.0.zip` ✅
 
 ### 2. docs/CHANGELOG.md Updates
 **Location**: `docs/CHANGELOG.md`
-**Content**: New v0.2.1 entry (lines 5-33)
+**Content**: New v0.2.0 entry (lines 5-33)
 
 **Added Entry Structure**:
 ```markdown
@@ -108,10 +108,10 @@
 ```diff
 - site_name: Codex Docs
 - site_description: Project documentation (MkDocs Material)
-+ site_name: Codex Docs v0.2.1
++ site_name: Codex Docs v0.2.0
 - site_url: (not set)
 + site_url: https://aries-serpent.github.io/_codex_/
-+ site_description: "Project documentation - v0.2.1 (MkDocs Material)"
++ site_description: "Project documentation - v0.2.0 (MkDocs Material)"
 ```
 
 **Benefits**:
@@ -189,20 +189,20 @@ These are acceptable known issues with mitigation strategies:
 
 ### Documentation Updates
 - [x] README.md version badges updated (0.1.0 → 0.2.1)
-- [x] Installation commands updated with v0.2.1
+- [x] Installation commands updated with v0.2.0
 - [x] Download links point to correct GitHub Release
 - [x] PyPI URL reflects new version
 - [x] Release notes describe Phase 3 improvements
 
 ### Changelog Entry
-- [x] v0.2.1 entry added to docs/CHANGELOG.md
+- [x] v0.2.0 entry added to docs/CHANGELOG.md
 - [x] Phase 3 improvements documented
 - [x] Release date: 2026-07-11
 - [x] Authority and verification status noted
 
 ### Site Configuration
 - [x] mkdocs.yml site_url configured
-- [x] site_name includes version (v0.2.1)
+- [x] site_name includes version (v0.2.0)
 - [x] site_description reflects current version
 - [x] Mermaid plugin properly configured
 
@@ -215,7 +215,7 @@ These are acceptable known issues with mitigation strategies:
 ### Version Consistency
 - [x] Code version matches documentation: 0.2.1 ✅
 - [x] PyPI package version: 0.2.1 ✅
-- [x] Release tag: v0.2.1 ✅
+- [x] Release tag: v0.2.0 ✅
 - [x] Documentation headers: 0.2.1 ✅
 
 ---
@@ -313,7 +313,7 @@ mkdocs serve
 
 # 4. Commit changes
 git add README.md docs/CHANGELOG.md docs/index.md mkdocs.yml
-git commit -m "chore(docs): update GitHub Pages for v0.2.1 release"
+git commit -m "chore(docs): update GitHub Pages for v0.2.0 release"
 
 # 5. Push to trigger GitHub Actions
 git push origin main
@@ -340,10 +340,10 @@ After GitHub Pages deployment (wait 4-7 minutes):
 
 - [ ] Visit https://aries-serpent.github.io/_codex_/
 - [ ] Verify version 0.2.1 displays on homepage
-- [ ] Check "Latest Release" link points to v0.2.1
+- [ ] Check "Latest Release" link points to v0.2.0
 - [ ] Verify PyPI link is correct
-- [ ] Test installation instructions with v0.2.1
-- [ ] Check changelog displays v0.2.1 entry
+- [ ] Test installation instructions with v0.2.0
+- [ ] Check changelog displays v0.2.0 entry
 - [ ] Verify responsive layout on mobile
 - [ ] Test navigation to key pages
 - [ ] Confirm no 404 errors in console
@@ -356,7 +356,7 @@ After GitHub Pages deployment (wait 4-7 minutes):
 ### Version Consistency
 - ✅ Code version: 0.2.1
 - ✅ Documentation version: 0.2.1
-- ✅ GitHub Release tag: v0.2.1
+- ✅ GitHub Release tag: v0.2.0
 - ✅ PyPI package: 0.2.1
 - ✅ Consistency score: 100%
 

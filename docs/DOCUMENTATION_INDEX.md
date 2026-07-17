@@ -1,6 +1,6 @@
 # Documentation Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-06-22
 **Total Files**: 693+ markdown files
@@ -25,12 +25,12 @@
 
 | Document | Purpose | Last Updated | Status |
 |----------|---------|--------------|--------|
-| [README.md](README.md) | Project overview | 2026-02-10 |  Active |
-| [.codex/archive/deprecated/AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 |  Active |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | 2026-02-10 |  Active |
-| [SECURITY.md](./SECURITY.md) | Security policy | 2026-02-10 |  Active |
-| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community standards | 2026-02-10 |  Active |
-| GOVERNANCE.md | Governance model | 2026-02-10 |  Active |
+| [README.md](README.md) | Project overview | 2026-02-10 | Active |
+| [.codex/archive/deprecated/AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 | Active |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | 2026-02-10 | Active |
+| [SECURITY.md](./SECURITY.md) | Security policy | 2026-02-10 | Active |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community standards | 2026-02-10 | Active |
+| GOVERNANCE.md | Governance model | 2026-02-10 | Active |
 
 ### Recent Additions (2025-12-11)
 
@@ -237,9 +237,9 @@
 
 | Status | Count | Notes |
 |--------|-------|-------|
-|  Active | ~600 | Current and maintained |
-| 📦 Archived | ~50 | Preserved for reference |
-|  Removed | ~10 | Obsolete, in archive/removed/ |
+| Active | ~600 | Current and maintained |
+| Archived | ~50 | Preserved for reference |
+| Removed | ~10 | Obsolete, in archive/removed/ |
 | 🆕 Recent (< 1 phase) | ~10 | Added in recent PRs |
 
 ### By Size

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/accountability/chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_09/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Agent Accountability Report — Session Group 09 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2408,10 +2408,10 @@
 <h1 id="agent-accountability-report-session-group-09">Agent Accountability Report — Session Group 09<a class="headerlink" href="#agent-accountability-report-session-group-09" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Group:</strong> 9 of 32<br/>
-<strong>Sessions:</strong> S183-PR4193-merge-conflict to S294-PR4204-access-probe-rag-context-autonomization<br/>
+<p><strong>Group:</strong> 9 of 32
+<strong>Sessions:</strong> S183-PR4193-merge-conflict to S294-PR4204-access-probe-rag-context-autonomization
 <strong>Date 2026-07-13
-</strong>Total Sessions in Group:** 10  </p>
+</strong>Total Sessions in Group:** 10</p>
 <hr/>
 <h2 id="navigation">Navigation<a class="headerlink" href="#navigation" title="Permanent link">¶</a></h2>
 <table>
@@ -2527,7 +2527,7 @@
 <td>4204</td>
 <td>success</td>
 <td>2026-05-03T19:38:00Z</td>
-<td>['session_access_probe.py must run before ANY GitHub API call so the agent knows which methods are available and their rate limits — prevents 403/429 cascades.', 'Trickle-down chain: REST(≥100) → GraphQL(≥100) → gh CLI → codeql_local → local_fs. Never hard-code a single method.', 'Missing repo variables (GH_TRICKLE_<em>, CODEX_RAG_</em>) must be queued in pending_var_updates.json AND added to agent-var-writer ALLOWED_VAR_NAMES before they can be set autonomously.', 'Webhook endpoints are PENDING until WEBHOOK_RECEIVER_URL is set — the cognitive brain API server must be deployed first.', 'RAG index incremental updates (only re-embed changed files) prevent full rebuild cost on every session while keeping the index fresh.', 'CODEX_ADMIN_KEY (fine-grained PAT with Webhooks:write) is the correct token for webhook CRUD — CODEX_MASTER_KEY (admin:repo_hook) is the fallback.', 'All new scripts use continue-on-error in the workflow so a probe failure never blocks agent startup — degraded capability is better than no capability.']</td>
+<td>['session_access_probe.py must run before ANY GitHub API call so the agent knows which methods are available and their rate limits — prevents 403/429 cascades.', 'Trickle-down chain: REST(≥100) GraphQL(≥100) gh CLI codeql_local local_fs. Never hard-code a single method.', 'Missing repo variables (GH_TRICKLE_<em>, CODEX_RAG_</em>) must be queued in pending_var_updates.json AND added to agent-var-writer ALLOWED_VAR_NAMES before they can be set autonomously.', 'Webhook endpoints are PENDING until WEBHOOK_RECEIVER_URL is set — the cognitive brain API server must be deployed first.', 'RAG index incremental updates (only re-embed changed files) prevent full rebuild cost on every session while keeping the index fresh.', 'CODEX_ADMIN_KEY (fine-grained PAT with Webhooks:write) is the correct token for webhook CRUD — CODEX_MASTER_KEY (admin:repo_hook) is the fallback.', 'All new scripts use continue-on-error in the workflow so a probe failure never blocks agent startup — degraded capability is better than no capability.']</td>
 <td></td>
 </tr>
 </tbody>
@@ -2535,144 +2535,144 @@
 <hr/>
 <h2 id="session-details">Session Details<a class="headerlink" href="#session-details" title="Permanent link">¶</a></h2>
 <h3 id="s183-pr4193-merge-conflict-pr-4193">S183-PR4193-merge-conflict — PR #4193<a class="headerlink" href="#s183-pr4193-merge-conflict-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T02:07:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T02:07:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>['Manifest-only merge conflicts should preserve the latest generated_at/integrity pair and then run sync_tracked_files.py --fix so .secrets.baseline matches the resolved manifest.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_81  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_81</p>
 <hr/>
 <h3 id="s183-pr4193-comment-upsert-pr-4193">S183-PR4193-comment-upsert — PR #4193<a class="headerlink" href="#s183-pr4193-comment-upsert-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T02:19:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T02:19:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>['Pull_request workflow_run head_sha may be an ephemeral merge-preview SHA; PR head SHA is the stable marker for same-session feedback comment upserts.', 'Concurrent workflow failures can race before a rescue marker exists; post-create duplicate consolidation is needed in addition to pre-post upsert lookup.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_82  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_82</p>
 <hr/>
 <h3 id="s183-pr4193-comment-upsert-final-pr-4193">S183-PR4193-comment-upsert-final — PR #4193<a class="headerlink" href="#s183-pr4193-comment-upsert-final-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T02:32:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T02:32:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>['After review-polish commits, include accountability in the final HEAD commit to satisfy Pattern 25.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_83  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_83</p>
 <hr/>
 <h3 id="s183-pr4193-comment-upsert-followup-pr-4193">S183-PR4193-comment-upsert-followup — PR #4193<a class="headerlink" href="#s183-pr4193-comment-upsert-followup-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T02:44:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T02:44:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>['PR-head SHA markers still create duplicates after automated [skip ci] follow-up commits; PR-scoped markers are safer for same-session compiled bot-feedback threads.', 'Any workflow that posts rescue comments directly should upsert with a stable marker instead of unconditionally calling createComment.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_84  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_84</p>
 <hr/>
 <h3 id="s183-pr4193-comment-upsert-review-polish-pr-4193">S183-PR4193-comment-upsert-review-polish — PR #4193<a class="headerlink" href="#s183-pr4193-comment-upsert-review-polish-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T02:52:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T02:52:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>['Keep workflow JavaScript constants named when they represent platform limits.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_85  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_85</p>
 <hr/>
 <h3 id="s183-pr4193-comment-upsert-final-polish-pr-4193">S183-PR4193-comment-upsert-final-polish — PR #4193<a class="headerlink" href="#s183-pr4193-comment-upsert-final-polish-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T02:58:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T02:58:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>['When migrating legacy PR comments, normalize markers at the top before appending new sections.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_86  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_86</p>
 <hr/>
 <h3 id="s183-pr4193-rebase-gate-sync-pr-4193">S183-PR4193-rebase-gate-sync — PR #4193<a class="headerlink" href="#s183-pr4193-rebase-gate-sync-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T03:17:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T03:17:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>['Agent Token Delegation REQ-10 failures can be caused by a single new main metadata commit; merge origin/main after unshallow/fetch to clear the gate.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_87  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_87</p>
 <hr/>
 <h3 id="s183-pr4193-bot-findings-validation-pr-4193">S183-PR4193-bot-findings-validation — PR #4193<a class="headerlink" href="#s183-pr4193-bot-findings-validation-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T03:32:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T03:32:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>['After any progress-only commit, immediately add accountability/PDA records so Pattern 25 remains green on the final head.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_88  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_88</p>
 <hr/>
 <h3 id="s183-pr4193-fast-validation-fix-and-p25-refresh-pr-4193">S183-PR4193-fast-validation-fix-and-p25-refresh — PR #4193<a class="headerlink" href="#s183-pr4193-fast-validation-fix-and-p25-refresh-pr-4193" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T03:56:00Z<br/>
-<strong>Branch:</strong> copilot/reorganize-observability-section<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T03:56:00Z
+<strong>Branch:</strong> copilot/reorganize-observability-section
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>["Pre-commit hooks that update date fields in files (e.g. ROADMAP.md) will make the CI working tree dirty if the date hasn't been committed; always commit the date-updated files before pushing."]
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_89  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_89</p>
 <hr/>
 <h3 id="s294-pr4204-access-probe-rag-context-autonomization-pr-4204">S294-PR4204-access-probe-rag-context-autonomization — PR #4204<a class="headerlink" href="#s294-pr4204-access-probe-rag-context-autonomization-pr-4204" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong> success<br/>
-<strong>Timestamp:</strong> 2026-05-03T19:38:00Z<br/>
-<strong>Branch:</strong> copilot/add-validation-for-batch-size<br/>
-<strong>Duration:</strong> 0 min  </p>
+<p><strong>Status:</strong> success
+<strong>Timestamp:</strong> 2026-05-03T19:38:00Z
+<strong>Branch:</strong> copilot/add-validation-for-batch-size
+<strong>Duration:</strong> 0 min</p>
 <p><strong>Summary:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>['session_access_probe.py must run before ANY GitHub API call so the agent knows which methods are available and their rate limits — prevents 403/429 cascades.', 'Trickle-down chain: REST(≥100) → GraphQL(≥100) → gh CLI → codeql_local → local_fs. Never hard-code a single method.', 'Missing repo variables (GH_TRICKLE_*, CODEX_RAG_*) must be queued in pending_var_updates.json AND added to agent-var-writer ALLOWED_VAR_NAMES before they can be set autonomously.', 'Webhook endpoints are PENDING until WEBHOOK_RECEIVER_URL is set — the cognitive brain API server must be deployed first.', 'RAG index incremental updates (only re-embed changed files) prevent full rebuild cost on every session while keeping the index fresh.', 'CODEX_ADMIN_KEY (fine-grained PAT with Webhooks:write) is the correct token for webhook CRUD — CODEX_MASTER_KEY (admin:repo_hook) is the fallback.', 'All new scripts use continue-on-error in the workflow so a probe failure never blocks agent startup — degraded capability is better than no capability.']
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>['session_access_probe.py must run before ANY GitHub API call so the agent knows which methods are available and their rate limits — prevents 403/429 cascades.', 'Trickle-down chain: REST(≥100) GraphQL(≥100) gh CLI codeql_local local_fs. Never hard-code a single method.', 'Missing repo variables (GH_TRICKLE_*, CODEX_RAG_*) must be queued in pending_var_updates.json AND added to agent-var-writer ALLOWED_VAR_NAMES before they can be set autonomously.', 'Webhook endpoints are PENDING until WEBHOOK_RECEIVER_URL is set — the cognitive brain API server must be deployed first.', 'RAG index incremental updates (only re-embed changed files) prevent full rebuild cost on every session while keeping the index fresh.', 'CODEX_ADMIN_KEY (fine-grained PAT with Webhooks:write) is the correct token for webhook CRUD — CODEX_MASTER_KEY (admin:repo_hook) is the fallback.', 'All new scripts use continue-on-error in the workflow so a probe failure never blocks agent startup — degraded capability is better than no capability.']
 </code></pre></div></p>
-<p><strong>Tags:</strong> None<br/>
-<strong>Patterns Fixed:</strong> None<br/>
-<strong>CI Checks:</strong> 0  / 0   </p>
-<p><strong>Source:</strong> None<br/>
-<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_90  </p>
+<p><strong>Tags:</strong> None
+<strong>Patterns Fixed:</strong> None
+<strong>CI Checks:</strong> 0 / 0</p>
+<p><strong>Source:</strong> None
+<strong>Index Location:</strong> .codex/aftermath/pda_iterations.jsonl:line_90</p>
 <hr/>
 <hr/>
 <h2 id="navigation_1">Navigation<a class="headerlink" href="#navigation_1" title="Permanent link">¶</a></h2>
@@ -2699,9 +2699,9 @@
 </tbody>
 </table>
 <hr/>
-<p><strong>Group:</strong> 9 of 32<br/>
-<strong>Generated by:</strong> <code>generate_accountability_chunks.py</code><br/>
-<strong>Generated at:</strong> 2026-06-23T02:36:22.006304Z<br/>
+<p><strong>Group:</strong> 9 of 32
+<strong>Generated by:</strong> <code>generate_accountability_chunks.py</code>
+<strong>Generated at:</strong> 2026-06-23T02:36:22.006304Z
 <strong>Data Source:</strong> <code>.codex/sessions_index.json</code></p>
 </article>
 </div>
@@ -2732,6 +2732,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

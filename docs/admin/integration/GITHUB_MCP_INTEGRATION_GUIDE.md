@@ -1,18 +1,18 @@
 # [Guide]: GitHub MCP Integration for `_codex_`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [ Table of Contents](#-table-of-contents)
 - [Overview](#overview)
-  - [What is MCP in the Context of _codex_?](#what-is-mcp-in-the-context-of-_codex_)
-  - [Why MCP Enhances Copilot Agent](#why-mcp-enhances-copilot-agent)
+ - [What is MCP in the Context of _codex_?](#what-is-mcp-in-the-context-of-_codex_)
+ - [Why MCP Enhances Copilot Agent](#why-mcp-enhances-copilot-agent)
 - [MCP Architecture in _codex_](#mcp-architecture-in-_codex_)
-  - [Current Directory Structure](#current-directory-structure)
-  - [MCP Service Components](#mcp-service-components)
+ - [Current Directory Structure](#current-directory-structure)
+ - [MCP Service Components](#mcp-service-components)
 - [Copilot Agent Integration Patterns](#copilot-agent-integration-patterns)
-  - [Pattern 1: Direct HTTP Integration (Recommended for _codex_)](#pattern-1-direct-http-integration-recommended-for-_codex_)
+ - [Pattern 1: Direct HTTP Integration (Recommended for _codex_)](#pattern-1-direct-http-integration-recommended-for-_codex_)
 - [Copilot Agent script example](#copilot-agent-script-example)
 - [Authenticate with MCP service](#authenticate-with-mcp-service)
 - [Request focused context](#request-focused-context)
@@ -21,32 +21,32 @@
 - [.github/workflows/copilot-task.yml](#githubworkflowscopilot-taskyml)
 - [Pattern 3: VS Code Extension Integration (Local Development)](#pattern-3-vs-code-extension-integration-local-development)
 - [Current _codex_ MCP Implementation](#current-_codex_-mcp-implementation)
-  - [MCP Service Endpoints (as of 2025-12-29)](#mcp-service-endpoints-as-of-2025-12-29)
-  - [Implemented Capabilities](#implemented-capabilities)
+ - [MCP Service Endpoints (as of 2025-12-29)](#mcp-service-endpoints-as-of-2025-12-29)
+ - [Implemented Capabilities](#implemented-capabilities)
 - [Authoritative Documentation](#authoritative-documentation)
-  - [GitHub Resources](#github-resources)
-  - [Third-Party Tools](#third-party-tools)
-  - [_codex_-Specific Documentation](#_codex_-specific-documentation)
+ - [GitHub Resources](#github-resources)
+ - [Third-Party Tools](#third-party-tools)
+ - [_codex_-Specific Documentation](#_codex_-specific-documentation)
 - [Advanced Configuration for Maximum Copilot Capability](#advanced-configuration-for-maximum-copilot-capability)
 - [Recommended Permissions & Security](#recommended-permissions--security)
-  - [GitHub Environment Variables Required](#github-environment-variables-required)
-  - [Required GitHub Token Scopes](#required-github-token-scopes)
-  - [Security Best Practices](#security-best-practices)
+ - [GitHub Environment Variables Required](#github-environment-variables-required)
+ - [Required GitHub Token Scopes](#required-github-token-scopes)
+ - [Security Best Practices](#security-best-practices)
 - [Known Limitations & Workarounds](#known-limitations--workarounds)
-  - [Limitation 1: LLM Context Window Constraints](#limitation-1-llm-context-window-constraints)
-  - [Limitation 2: Secrets & Privacy Risks](#limitation-2-secrets--privacy-risks)
-  - [Limitation 3: API Rate Limits](#limitation-3-api-rate-limits)
-  - [Limitation 4: GitHub Actions Cache/Storage Limits](#limitation-4-github-actions-cachestorage-limits)
-  - [Limitation 5: Playwright Binary Size & Environment](#limitation-5-playwright-binary-size--environment)
-  - [Limitation 6: Copilot Product API Boundaries](#limitation-6-copilot-product-api-boundaries)
+ - [Limitation 1: LLM Context Window Constraints](#limitation-1-llm-context-window-constraints)
+ - [Limitation 2: Secrets & Privacy Risks](#limitation-2-secrets--privacy-risks)
+ - [Limitation 3: API Rate Limits](#limitation-3-api-rate-limits)
+ - [Limitation 4: GitHub Actions Cache/Storage Limits](#limitation-4-github-actions-cachestorage-limits)
+ - [Limitation 5: Playwright Binary Size & Environment](#limitation-5-playwright-binary-size--environment)
+ - [Limitation 6: Copilot Product API Boundaries](#limitation-6-copilot-product-api-boundaries)
 - [Practical Implementation Checklist](#practical-implementation-checklist)
-  - [Phase 1: Setup & Authentication](#phase-1-setup--authentication)
-  - [Phase 2: MCP Service Deployment](#phase-2-mcp-service-deployment)
-  - [Phase 3: Cache Warming Automation](#phase-3-cache-warming-automation)
-  - [Phase 4: Copilot Integration](#phase-4-copilot-integration)
-  - [Phase 5: Monitoring & Optimization](#phase-5-monitoring--optimization)
+ - [Phase 1: Setup & Authentication](#phase-1-setup--authentication)
+ - [Phase 2: MCP Service Deployment](#phase-2-mcp-service-deployment)
+ - [Phase 3: Cache Warming Automation](#phase-3-cache-warming-automation)
+ - [Phase 4: Copilot Integration](#phase-4-copilot-integration)
+ - [Phase 5: Monitoring & Optimization](#phase-5-monitoring--optimization)
 - [_codex_-Specific Integration Examples](#_codex_-specific-integration-examples)
-  - [Example 1: Dependency-Aware Code Generation](#example-1-dependency-aware-code-generation)
+ - [Example 1: Dependency-Aware Code Generation](#example-1-dependency-aware-code-generation)
 - [Copilot Agent queries MCP for dependency context](#copilot-agent-queries-mcp-for-dependency-context)
 - [Returns: ">=2.2.2"](#returns-222)
 - [Generate version-aware code](#generate-version-aware-code)
@@ -59,22 +59,22 @@
 - [Propose updates](#propose-updates)
 - [Warm cache for new versions](#warm-cache-for-new-versions)
 - [Troubleshooting & Monitoring](#troubleshooting--monitoring)
-  - [Common Issues & Solutions](#common-issues--solutions)
-  - [Monitoring Metrics](#monitoring-metrics)
+ - [Common Issues & Solutions](#common-issues--solutions)
+ - [Monitoring Metrics](#monitoring-metrics)
 - [References](#references)
-  - [External Documentation](#external-documentation)
-  - [Internal Documentation](#internal-documentation)
-  - [Support Channels](#support-channels)
+ - [External Documentation](#external-documentation)
+ - [Internal Documentation](#internal-documentation)
+ - [Support Channels](#support-channels)
 - [Appendix: Human Admin Actions Required](#appendix-human-admin-actions-required)
 - [ Mission Overview](#-mission-overview)
-- [️ Verification Checklist](#-verification-checklist)
+- [ Verification Checklist](#-verification-checklist)
 - [ Success Metrics](#-success-metrics)
-- [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path ️ (Context Delivery Optimization)](#path--context-delivery-optimization)
-  - [Fields  (Information Flow Architecture)](#fields--information-flow-architecture)
-  - [Patterns ️ (Integration Recognition)](#patterns--integration-recognition)
-  - [Redundancy  (Fault Tolerance)](#redundancy--fault-tolerance)
-  - [Balance ️ (Context vs Token Limits)](#balance--context-vs-token-limits)
+- [ Physics Alignment](#-physics-alignment)
+ - [Path (Context Delivery Optimization)](#path--context-delivery-optimization)
+ - [Fields (Information Flow Architecture)](#fields--information-flow-architecture)
+ - [Patterns (Integration Recognition)](#patterns--integration-recognition)
+ - [Redundancy (Fault Tolerance)](#redundancy--fault-tolerance)
+ - [Balance (Context vs Token Limits)](#balance--context-vs-token-limits)
 - [ Energy Distribution](#-energy-distribution)
 - [ Redundancy Patterns](#-redundancy-patterns)
 
@@ -85,7 +85,7 @@
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. <!-- BROKEN ANCHOR: [MCP Architecture in _codex_](#mcp-architecture-in-_codex_) -->
@@ -125,14 +125,22 @@ GitHub Copilot (the product) provides AI-powered code suggestions using:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Copilot Agent, MCP Service'}}%%
+
 graph LR
-    A[Copilot Agent] -->|Request Context| B[MCP Service]
-    B -->|Index Dependencies| C[Python/Node Packages]
-    B -->|Warm Caches| D[PyPI/npm/GHCR]
-    B -->|Browser Sessions| E[Playwright Pool]
-    B -->|Filtered Manifest| F[Cache Keys + Metadata]
-    B -->|Return Compact Context| A
-    A -->|Generate Code| G[_codex_ Repository]
+
+ A[Copilot Agent] -->|Request Context| B[MCP Service]
+
+ B -->|Index Dependencies| C[Python/Node Packages]
+
+ B -->|Warm Caches| D[PyPI/npm/GHCR]
+
+ B -->|Browser Sessions| E[Playwright Pool]
+
+ B -->|Filtered Manifest| F[Cache Keys + Metadata]
+
+ B -->|Return Compact Context| A
+
+ A -->|Generate Code| G[_codex_ Repository]
 ```
 
 ---
@@ -143,46 +151,46 @@ graph LR
 
 ```
 _codex_/
-├── .codex/
-│   ├── mcp-config.yml              # MCP service configuration
-│   ├── cache-manifest.yml          # Cache key registry
-│   ├── scripts/
-│   │   ├── mcp-enhancer.py         # Core MCP HTTP service
-│   │   └── cache-warmer.py         # Cache warming automation
-│   └── docker/
-│       └── Dockerfile.playwright   # Pre-warmed browser image
-├── src/
-│   ├── mcp/                        # MCP Python modules
-│   │   ├── __init__.py
-│   │   ├── adapters/               # Backend adapters (Pinecone, etc.)
-│   │   ├── metrics/                # MCP-specific metrics
-│   │   └── server.py               # MCP HTTP server
-│   └── ...
-├── scripts/
-│   ├── space_traversal/detectors/  # MCP capability detectors
-│   │   ├── mcp_tooling_registry.py
-│   │   ├── mcp_protocol_surface.py
-│   │   ├── mcp_configuration.py
-│   │   ├── mcp_security_safeguards.py
-│   │   ├── mcp_authz_authn.py
-│   │   ├── mcp_rate_limiting.py
-│   │   ├── mcp_error_handling.py
-│   │   ├── mcp_observability.py
-│   │   ├── mcp_lifecycle_management.py
-│   │   ├── mcp_versioning_compat.py
-│   │   ├── mcp_schema_validation.py
-│   │   ├── mcp_multi_tenant.py
-│   │   └── mcp_tools_integration.py
-│   ├── security/                   # Token encryption/verification  # pragma: allowlist secret
-│   │   ├── token_encryption_tool.py  # pragma: allowlist secret
-│   │   └── verify_token_scope.py  # pragma: allowlist secret
-│   └── validate_mcp.py
-└── .github/
-    ├── workflows/
-    │   ├── mcp-cache-warm.yml      # Scheduled cache warming
-    │   └── mcp-ci.yml              # MCP-aware CI pipeline
-    └── security-tools/
-        └── bootstrap_extractor.py  # Tool deployment from env vars
+ .codex/
+ mcp-config.yml # MCP service configuration
+ cache-manifest.yml # Cache key registry
+ scripts/
+ mcp-enhancer.py # Core MCP HTTP service
+ cache-warmer.py # Cache warming automation
+ docker/
+ Dockerfile.playwright # Pre-warmed browser image
+ src/
+ mcp/ # MCP Python modules
+ __init__.py
+ adapters/ # Backend adapters (Pinecone, etc.)
+ metrics/ # MCP-specific metrics
+ server.py # MCP HTTP server
+ ...
+ scripts/
+ space_traversal/detectors/ # MCP capability detectors
+ mcp_tooling_registry.py
+ mcp_protocol_surface.py
+ mcp_configuration.py
+ mcp_security_safeguards.py
+ mcp_authz_authn.py
+ mcp_rate_limiting.py
+ mcp_error_handling.py
+ mcp_observability.py
+ mcp_lifecycle_management.py
+ mcp_versioning_compat.py
+ mcp_schema_validation.py
+ mcp_multi_tenant.py
+ mcp_tools_integration.py
+ security/ # Token encryption/verification # pragma: allowlist secret
+ token_encryption_tool.py # pragma: allowlist secret
+ verify_token_scope.py # pragma: allowlist secret
+ validate_mcp.py
+ .github/
+ workflows/
+ mcp-cache-warm.yml # Scheduled cache warming
+ mcp-ci.yml # MCP-aware CI pipeline
+ security-tools/
+ bootstrap_extractor.py # Tool deployment from env vars
 ```
 
 ### MCP Service Components
@@ -204,16 +212,16 @@ _codex_/
 ```python
 # Copilot Agent script example
 import requests
-from scripts.security.token_encryption_tool import copilot_get_github_token_safe  # pragma: allowlist secret
+from scripts.security.token_encryption_tool import copilot_get_github_token_safe # pragma: allowlist secret
 
 # Authenticate with MCP service
-token = copilot_get_github_token_safe()  # pragma: allowlist secret
-headers = {"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
+token = copilot_get_github_token_safe() # pragma: allowlist secret
+headers = {"Authorization": f"Bearer {token}"} # pragma: allowlist secret
 
 # Request focused context
 response = requests.get(
-    headers=headers,
-    params={"scope": "python", "depth": 2}
+ headers=headers,
+ params={"scope": "python", "depth": 2}
 )
 
 dependencies = response.json()
@@ -227,27 +235,27 @@ dependencies = response.json()
 name: Copilot Agent Task with MCP
 
 on:
-  workflow_dispatch:
+ workflow_dispatch:
 
 jobs:
-  copilot-with-mcp:
-    runs-on: ubuntu-latest
-    services:
-      mcp:
-        image: ghcr.io/aries-serpent/_codex_/mcp:latest
-        ports:
-          - 8080:8080
-        env:
-          CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
+ copilot-with-mcp:
+ runs-on: ubuntu-latest
+ services:
+ mcp:
+ image: ghcr.io/aries-serpent/_codex_/mcp:latest
+ ports:
+ - 8080:8080
+ env:
+ CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
 
-    steps:
-      - uses: actions/checkout@v4
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Wait for MCP service
-        run: |
+ - name: Wait for MCP service
+ run: |
 
-      - name: Execute Copilot task with MCP context
-        run: |
+ - name: Execute Copilot task with MCP context
+ run: |
 ```
 
 ## Pattern 3: VS Code Extension Integration (Local Development)
@@ -255,15 +263,15 @@ jobs:
 ```json
 // .vscode/settings.json
 {
-  "copilot.advanced": {
-    "contextProviders": [
-      {
-        "type": "http",
-        "authentication": "bearer",
-        "tokenSource": "environment:CODEX_MCP_TOKEN"
-      }
-    ]
-  }
+ "copilot.advanced": {
+ "contextProviders": [
+ {
+ "type": "http",
+ "authentication": "bearer",
+ "tokenSource": "environment:CODEX_MCP_TOKEN"
+ }
+ ]
+ }
 }
 ```
 
@@ -287,19 +295,19 @@ jobs:
 
 | Capability | Status | Location | Notes |
 |------------|--------|----------|-------|
-| `mcp-tooling-registry` |  Implemented | `scripts/space_traversal/detectors/mcp_tooling_registry.py` | Tool registration and discovery |
-| `mcp-protocol-surface` |  Implemented | `scripts/space_traversal/detectors/mcp_protocol_surface.py` | JSON-RPC protocol handling |
-| `mcp-configuration` |  Implemented | `scripts/space_traversal/detectors/mcp_configuration.py` | Server config management |
-| `mcp-security-safeguards` |  Implemented | `scripts/space_traversal/detectors/mcp_security_safeguards.py` | Authentication and authorization |
-| `mcp-authz-authn` |  Implemented | `scripts/space_traversal/detectors/mcp_authz_authn.py` | OAuth2/token validation | <!-- pragma: allowlist secret -->
-| `mcp-rate-limiting` |  Implemented | `scripts/space_traversal/detectors/mcp_rate_limiting.py` | Request throttling |
-| `mcp-error-handling` |  Implemented | `scripts/space_traversal/detectors/mcp_error_handling.py` | Graceful error recovery |
-| `mcp-observability` |  Implemented | `scripts/space_traversal/detectors/mcp_observability.py` | Metrics and logging |
-| `mcp-lifecycle-management` |  Implemented | `scripts/space_traversal/detectors/mcp_lifecycle_management.py` | Server startup/shutdown |
-| `mcp-versioning-compat` |  Implemented | `scripts/space_traversal/detectors/mcp_versioning_compat.py` | Protocol version negotiation |
-| `mcp-schema-validation` |  Implemented | `scripts/space_traversal/detectors/mcp_schema_validation.py` | Request/response validation |
-| `mcp-multi-tenant` |  Implemented | `scripts/space_traversal/detectors/mcp_multi_tenant.py` | Multi-user support |
-| `mcp-tools-integration` |  Implemented | `scripts/space_traversal/detectors/mcp_tools_integration.py` | External tool orchestration |
+| `mcp-tooling-registry` | Implemented | `scripts/space_traversal/detectors/mcp_tooling_registry.py` | Tool registration and discovery |
+| `mcp-protocol-surface` | Implemented | `scripts/space_traversal/detectors/mcp_protocol_surface.py` | JSON-RPC protocol handling |
+| `mcp-configuration` | Implemented | `scripts/space_traversal/detectors/mcp_configuration.py` | Server config management |
+| `mcp-security-safeguards` | Implemented | `scripts/space_traversal/detectors/mcp_security_safeguards.py` | Authentication and authorization |
+| `mcp-authz-authn` | Implemented | `scripts/space_traversal/detectors/mcp_authz_authn.py` | OAuth2/token validation | <!-- pragma: allowlist secret -->
+| `mcp-rate-limiting` | Implemented | `scripts/space_traversal/detectors/mcp_rate_limiting.py` | Request throttling |
+| `mcp-error-handling` | Implemented | `scripts/space_traversal/detectors/mcp_error_handling.py` | Graceful error recovery |
+| `mcp-observability` | Implemented | `scripts/space_traversal/detectors/mcp_observability.py` | Metrics and logging |
+| `mcp-lifecycle-management` | Implemented | `scripts/space_traversal/detectors/mcp_lifecycle_management.py` | Server startup/shutdown |
+| `mcp-versioning-compat` | Implemented | `scripts/space_traversal/detectors/mcp_versioning_compat.py` | Protocol version negotiation |
+| `mcp-schema-validation` | Implemented | `scripts/space_traversal/detectors/mcp_schema_validation.py` | Request/response validation |
+| `mcp-multi-tenant` | Implemented | `scripts/space_traversal/detectors/mcp_multi_tenant.py` | Multi-user support |
+| `mcp-tools-integration` | Implemented | `scripts/space_traversal/detectors/mcp_tools_integration.py` | External tool orchestration |
 
 ---
 
@@ -366,30 +374,30 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for the complet
 
 For full MCP functionality, the GitHub Personal Access Token needs:
 
--  `repo` - Full repository access
--  `workflow` - Workflow management
--  `read:org` - Organization read access
--  `write:discussion` - Discussion participation
-- ️ `admin:repo_hook` - Webhook management (optional)
-- ️ `delete:packages` - Package cleanup (optional)
+- `repo` - Full repository access
+- `workflow` - Workflow management
+- `read:org` - Organization read access
+- `write:discussion` - Discussion participation
+- `admin:repo_hook` - Webhook management (optional)
+- `delete:packages` - Package cleanup (optional)
 
 ### Security Best Practices
 
--  Use GitHub App with minimal permissions (not PAT)
--  Rotate tokens every 90 iterations (automate with workflow)
--  Enable audit logging for MCP access
--  Implement rate limiting on MCP endpoints (10 req/min per client)
--  Use HTTPS only (no HTTP in production)
--  Validate all request signatures (JWT from GitHub App)
--  Sanitize all user inputs (file paths, query params)
--  Never log full tokens or secrets
--  Use network policies (allowlist GitHub Actions IPs)
--  Enable Dependabot for MCP dependencies
--  Run MCP service with non-root user
--  Implement request timeout (30s max)
--  Add CORS policy (restrict to _codex_ domain)
--  Enable Prometheus metrics with authentication
--  Set up alerting for failed auth attempts (>5/min)
+- Use GitHub App with minimal permissions (not PAT)
+- Rotate tokens every 90 iterations (automate with workflow)
+- Enable audit logging for MCP access
+- Implement rate limiting on MCP endpoints (10 req/min per client)
+- Use HTTPS only (no HTTP in production)
+- Validate all request signatures (JWT from GitHub App)
+- Sanitize all user inputs (file paths, query params)
+- Never log full tokens or secrets
+- Use network policies (allowlist GitHub Actions IPs)
+- Enable Dependabot for MCP dependencies
+- Run MCP service with non-root user
+- Implement request timeout (30s max)
+- Add CORS policy (restrict to _codex_ domain)
+- Enable Prometheus metrics with authentication
+- Set up alerting for failed auth attempts (>5/min)
 
 ---
 
@@ -506,16 +514,16 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 import requests
 
 manifest = requests.get(
-    headers={"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
+ headers={"Authorization": f"Bearer {token}"} # pragma: allowlist secret
 ).json()
 
 torch_version = manifest['dependencies']['torch']['version']
 # Returns: ">=2.2.2"
 
 # Generate version-aware code
-import torch  # >= 2.2.2
+import torch # >= 2.2.2
 model = torch.nn.Linear(10, 5, device='cuda')
-model = torch.compile(model)  # New in 2.0+
+model = torch.compile(model) # New in 2.0+
 ```
 
 ## Example 2: Test Generation with Playwright
@@ -523,11 +531,11 @@ model = torch.compile(model)  # New in 2.0+
 ```python
 # Create Playwright session via MCP
 session_response = requests.post(
-    headers={"Authorization": f"Bearer {token}"},  # pragma: allowlist secret
-    json={
-        "browser": "chromium",
-        "headless": True
-    }
+ headers={"Authorization": f"Bearer {token}"}, # pragma: allowlist secret
+ json={
+ "browser": "chromium",
+ "headless": True
+ }
 ).json()
 
 # Generate test code with session context
@@ -539,19 +547,19 @@ session_response = requests.post(
 ```python
 # Get current cache manifest
 manifest = requests.get(
-    headers={"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
+ headers={"Authorization": f"Bearer {token}"} # pragma: allowlist secret
 ).json()
 
 # Propose updates
 updates = {
-    "torch": "2.3.0",
-    "transformers": "4.35.0"
+ "torch": "2.3.0",
+ "transformers": "4.35.0"
 }
 
 # Warm cache for new versions
 warm_response = requests.post(
-    headers={"Authorization": f"Bearer {token}"},  # pragma: allowlist secret
-    json={"targets": ["python"], "packages": updates, "force": True}
+ headers={"Authorization": f"Bearer {token}"}, # pragma: allowlist secret
+ json={"targets": ["python"], "packages": updates, "force": True}
 ).json()
 ```
 
@@ -615,25 +623,25 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 **Last Updated**: 2026-06-22T00:00:00Z
 **Maintainer**: @mbaetiong
-**Status**: Production Ready 
+**Status**: Production Ready
 **Version**: 2.0.0
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Provide comprehensive guidance for integrating MCP (Model Context Protocol) with the _codex_ repository, enabling GitHub Copilot Agent to access curated codebase context, dependency manifests, and browser automation capabilities for enhanced code generation.
 
-**Energy Level**:  (4/5) - Setup Critical
+**Energy Level**: (4/5) - Setup Critical
 - High impact: Transforms Copilot Agent capabilities
 - High complexity: Multi-service integration (MCP + GitHub + Playwright + Pinecone)
 - Long-term value: Foundation for AI-driven development
 
-**Status**:  Documentation Complete |  Implementation Ready
+**Status**: Documentation Complete | Implementation Ready
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **MCP Architecture Understanding**:
 - [ ] MCP service endpoints documented (7 endpoints)
@@ -661,7 +669,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -680,41 +688,41 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Context Delivery Optimization)
-- **Shortest Path**: Copilot Agent → MCP `/manifest` → Filtered context → Code generation
+### Path (Context Delivery Optimization)
+- **Shortest Path**: Copilot Agent MCP `/manifest` Filtered context Code generation
 - **Parallel Execution**: Cache warming + dependency indexing + browser pool warming (simultaneous)
 - **Lazy Loading**: Browser sessions created on-demand, not pre-allocated
 - **Compression**: Tree-sitter reduces context size by ~60%
 
-### Fields  (Information Flow Architecture)
-- **Request Flow**: GitHub Action → MCP HTTP → libcst Parser → Filtered Manifest → Copilot
-- **Cache Flow**: PyPI/npm → GitHub Actions Cache → MCP Service → Copilot Context
-- **Browser Flow**: Playwright Pool → Session Management → Screenshot/HAR → Test Generation
-- **Feedback Loop**: Context quality metrics → Filtering adjustments → Improved relevance
+### Fields (Information Flow Architecture)
+- **Request Flow**: GitHub Action MCP HTTP libcst Parser Filtered Manifest Copilot
+- **Cache Flow**: PyPI/npm GitHub Actions Cache MCP Service Copilot Context
+- **Browser Flow**: Playwright Pool Session Management Screenshot/HAR Test Generation
+- **Feedback Loop**: Context quality metrics Filtering adjustments Improved relevance
 
-### Patterns ️ (Integration Recognition)
-- **Service Container Pattern**: Docker Compose → GitHub Actions Service → Ephemeral MCP
-- **Fallback Chain**: libcst (primary) → stdlib ast (fallback) → graceful degradation
-- **Token Management**: Encrypted master key → Base64 PAT → Decryption → Authentication
-- **Rate Limiting**: Token bucket → 60 req/min → Exponential backoff on 429
+### Patterns (Integration Recognition)
+- **Service Container Pattern**: Docker Compose GitHub Actions Service Ephemeral MCP
+- **Fallback Chain**: libcst (primary) stdlib ast (fallback) graceful degradation
+- **Token Management**: Encrypted master key Base64 PAT Decryption Authentication
+- **Rate Limiting**: Token bucket 60 req/min Exponential backoff on 429
 
-### Redundancy  (Fault Tolerance)
-- **Authentication Redundancy**: GitHub App (preferred) ↔ Personal Access Token (backup)
-- **Parser Redundancy**: libcst → ast → basic text extraction
-- **Cache Redundancy**: GitHub Actions Cache → GHCR images → Re-download fallback
-- **Endpoint Redundancy**: Direct HTTP → Service container → Localhost proxy
+### Redundancy (Fault Tolerance)
+- **Authentication Redundancy**: GitHub App (preferred) Personal Access Token (backup)
+- **Parser Redundancy**: libcst ast basic text extraction
+- **Cache Redundancy**: GitHub Actions Cache GHCR images Re-download fallback
+- **Endpoint Redundancy**: Direct HTTP Service container Localhost proxy
 
-### Balance ️ (Context vs Token Limits)
+### Balance (Context vs Token Limits)
 - **Completeness**: Full codebase indexing (comprehensive)
 - **Efficiency**: Smart filtering (relevant only)
-- **Trade-off**: 100K token budget ↔ LLM context window
+- **Trade-off**: 100K token budget LLM context window
 - **Optimization**: Summarization (function signatures only) + RAG (Pinecone embeddings)
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 **P0 - Critical Setup (50%)**:
 - Environment variables configuration (13 variables)
@@ -741,49 +749,49 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **MCP Integration Rollback Strategy**:
 
 1. **Pre-Integration State**: Standard Copilot without MCP
-   - Copilot uses editor context only
-   - No custom context providers
-   - GitHub API for repository metadata
+ - Copilot uses editor context only
+ - No custom context providers
+ - GitHub API for repository metadata
 
 2. **Integration Checkpoints**:
-   - Checkpoint 1: MCP service deployed, health check passing
-   - Checkpoint 2: Token authentication working, manifest retrievable
-   - Checkpoint 3: Cache warming operational, artifacts generated
-   - Checkpoint 4: Copilot workflows consuming MCP context
+ - Checkpoint 1: MCP service deployed, health check passing
+ - Checkpoint 2: Token authentication working, manifest retrievable
+ - Checkpoint 3: Cache warming operational, artifacts generated
+ - Checkpoint 4: Copilot workflows consuming MCP context
 
 3. **Rollback Triggers**:
-   - MCP service repeatedly failing health checks (>5 failures/hour)
-   - Token authentication failures (permission issues)
-   - Context delivery exceeding token limits (>120K tokens)
-   - Performance degradation (p99 latency >10 seconds)
-   - Security incident (unauthorized access attempts)
+ - MCP service repeatedly failing health checks (>5 failures/hour)
+ - Token authentication failures (permission issues)
+ - Context delivery exceeding token limits (>120K tokens)
+ - Performance degradation (p99 latency >10 seconds)
+ - Security incident (unauthorized access attempts)
 
 4. **Recovery Procedure**:
-   ```bash
-   # Disable MCP service container in workflow
-   # Edit .github/workflows/copilot-with-mcp.yml
-   # Comment out services: section
+ ```bash
+ # Disable MCP service container in workflow
+ # Edit .github/workflows/copilot-with-mcp.yml
+ # Comment out services: section
 
-   # Or environment variable override
-   echo "CODEX_MCP_ENABLED=false" >> $GITHUB_ENV
+ # Or environment variable override
+ echo "CODEX_MCP_ENABLED=false" >> $GITHUB_ENV
 
-   # Revert to baseline Copilot
-   # Remove MCP endpoint from .vscode/settings.json
+ # Revert to baseline Copilot
+ # Remove MCP endpoint from .vscode/settings.json
 
-   # Verify rollback
-   gh workflow run copilot-baseline-test.yml
-   ```
+ # Verify rollback
+ gh workflow run copilot-baseline-test.yml
+ ```
 
 5. **Validation Points**:
-   - After service deployment: `/health` returns 200 OK
-   - After token configuration: `copilot_get_github_token_safe()` returns valid token
-   - After cache warming: Artifacts present in Actions cache
-   - After full integration: Copilot generates code with enhanced context
+ - After service deployment: `/health` returns 200 OK
+ - After token configuration: `copilot_get_github_token_safe()` returns valid token
+ - After cache warming: Artifacts present in Actions cache
+ - After full integration: Copilot generates code with enhanced context
 
 **Failure Mode Protection**:
 - **Service Unavailable**: Copilot falls back to standard context (no MCP)

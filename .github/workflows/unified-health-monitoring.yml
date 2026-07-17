@@ -1,96 +1,114 @@
 name: Health Monitoring Suite
-
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-    - cron: '0 0 * * 1'    # Weekly on Monday
+  - cron: 0 */6 * * *
+  - cron: 0 0 * * 1
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Operation to run'
+        description: Operation to run
         required: false
         type: choice
         options:
-          - ci-health
-          - dashboard-update
-          - repository-health
-          - workflow-health
-          - all
-        default: 'all'
+        - ci-health
+        - dashboard-update
+        - repository-health
+        - workflow-health
+        - all
+        default: all
   push:
     branches:
-      - main
-      - develop
+    - main
+    - develop
   pull_request:
-    types: [opened, synchronize, reopened]
-
+    types:
+    - opened
+    - synchronize
+    - reopened
 jobs:
-  # CI Health Monitoring (from ci-health-monitor.yml)
   ci-health-check:
-    if: github.event.inputs.operation == 'ci-health' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    if: github.event.inputs.operation == 'ci-health' || github.event.inputs.operation
+      == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     name: CI Health Check
     steps:
-      - uses: actions/checkout@v5
-      - name: Check workflow health
-        run: |
-          echo "Monitoring CI pipeline health..."
-          # Original ci-health-monitor.yml logic would go here
+    - uses: actions/checkout@v5
+    - name: Check workflow health
+      run: 'echo "Monitoring CI pipeline health..."
 
-  # Dashboard Update (from health-dashboard-update.yml)
+        # Original ci-health-monitor.yml logic would go here
+
+        '
+    timeout-minutes: 60
   dashboard-update:
-    if: github.event.inputs.operation == 'dashboard-update' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'dashboard-update' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     name: Dashboard Update
-    needs: [ci-health-check]
+    needs:
+    - ci-health-check
     steps:
-      - uses: actions/checkout@v5
-      - name: Update health dashboard
-        run: |
-          echo "Updating health dashboard..."
-          # Original health-dashboard-update.yml logic would go here
+    - uses: actions/checkout@v5
+    - name: Update health dashboard
+      run: 'echo "Updating health dashboard..."
 
-  # Repository Health (from repository-health-monitoring.yml)
+        # Original health-dashboard-update.yml logic would go here
+
+        '
+    timeout-minutes: 60
   repository-health:
-    if: github.event.inputs.operation == 'repository-health' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    if: github.event.inputs.operation == 'repository-health' || github.event.inputs.operation
+      == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     name: Repository Health
     steps:
-      - uses: actions/checkout@v5
-      - name: Monitor repository health
-        run: |
-          echo "Checking repository health metrics..."
-          # Original repository-health-monitoring.yml logic would go here
+    - uses: actions/checkout@v5
+    - name: Monitor repository health
+      run: 'echo "Checking repository health metrics..."
 
-  # Workflow Health (from workflow-health-update.yml)
+        # Original repository-health-monitoring.yml logic would go here
+
+        '
+    timeout-minutes: 60
   workflow-health:
-    if: github.event.inputs.operation == 'workflow-health' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'workflow-health' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     name: Workflow Health
-    needs: [repository-health]
+    needs:
+    - repository-health
     steps:
-      - uses: actions/checkout@v5
-      - name: Update workflow health metrics
-        run: |
-          echo "Updating workflow health status..."
-          # Original workflow-health-update.yml logic would go here
+    - uses: actions/checkout@v5
+    - name: Update workflow health metrics
+      run: 'echo "Updating workflow health status..."
 
-  # Summary
+        # Original workflow-health-update.yml logic would go here
+
+        '
+    timeout-minutes: 60
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
     name: Health Monitoring Summary
-    needs: [ci-health-check, dashboard-update, repository-health, workflow-health]
+    needs:
+    - ci-health-check
+    - dashboard-update
+    - repository-health
+    - workflow-health
     steps:
-      - name: Report health status
-        run: echo "Health monitoring suite completed"
+    - name: Report health status
+      run: echo "Health monitoring suite completed"
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

@@ -1,6 +1,6 @@
 # Checklist: Status Report v1.2 — Author DoD
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
  Roles: [Primary: Report QA Lead], [Secondary: Reviewer]  Energy: 5  

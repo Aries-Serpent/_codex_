@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/GITHUB_APP_PATTERN_GAPS/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>GitHub App Design-Pattern Gap Analysis - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2309,7 +2309,7 @@
 <a class="md-nav__link" href="#what-is-missing">
 <span class="md-ellipsis">
       
-        ️ What is missing
+        What is missing
       
     </span>
 </a>
@@ -2358,7 +2358,7 @@
 <a class="md-nav__link" href="#what-is-missing_1">
 <span class="md-ellipsis">
       
-        ️ What is missing
+        What is missing
       
     </span>
 </a>
@@ -2398,7 +2398,7 @@
 <a class="md-nav__link" href="#what-is-missing_2">
 <span class="md-ellipsis">
       
-        ️ What is missing
+        What is missing
       
     </span>
 </a>
@@ -2447,7 +2447,7 @@
 <a class="md-nav__link" href="#what-is-missing_3">
 <span class="md-ellipsis">
       
-        ️ What is missing
+        What is missing
       
     </span>
 </a>
@@ -2518,26 +2518,26 @@ identifies what is complete vs. what remains to be done.</p>
 <tr>
 <td>1. Act on behalf of a user (user-to-server)</td>
 <td>Complete</td>
-<td>️ App not registered</td>
-<td>️ Partial</td>
+<td>App not registered</td>
+<td>Partial</td>
 </tr>
 <tr>
 <td>2. Act on its own behalf (server-to-server)</td>
 <td>Complete</td>
-<td>️ App not registered</td>
-<td>️ Partial</td>
+<td>App not registered</td>
+<td>Partial</td>
 </tr>
 <tr>
 <td>3. Respond to webhooks</td>
 <td>Complete</td>
-<td>️ No live receiver URL</td>
-<td>️ Partial</td>
+<td>No live receiver URL</td>
+<td>Partial</td>
 </tr>
 <tr>
 <td>4. Take certain actions (permissions)</td>
 <td>Complete</td>
-<td>️ App not registered</td>
-<td>️ Partial</td>
+<td>App not registered</td>
+<td>Partial</td>
 </tr>
 </tbody>
 </table>
@@ -2585,22 +2585,22 @@ the authorizing user's permissions.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="what-is-missing">️ What is missing<a class="headerlink" href="#what-is-missing" title="Permanent link">¶</a></h3>
+<h3 id="what-is-missing">What is missing<a class="headerlink" href="#what-is-missing" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>GitHub App not registered</strong> — <code>GITHUB_APP_ID</code>, <code>GITHUB_CLIENT_ID</code>,
-  <code>GITHUB_CLIENT_SECRET</code> are still placeholder env vars; the App must be
-  registered via <code>scripts/ci/github_app_bootstrap.py --generate-manifest-url</code>
-  before the OAuth callback URL is functional.</li>
+ <code>GITHUB_CLIENT_SECRET</code> are still placeholder env vars; the App must be
+ registered via <code>scripts/ci/github_app_bootstrap.py --generate-manifest-url</code>
+ before the OAuth callback URL is functional.</li>
 <li><code>src/integrations/github_app_auth.py</code> does not expose a
-  <code>get_user_info_with_user_token()</code> helper — callers must use <code>OAuthManager</code>
-  directly.</li>
+ <code>get_user_info_with_user_token()</code> helper — callers must use <code>OAuthManager</code>
+ directly.</li>
 </ul>
 <h3 id="action-required">Action required<a class="headerlink" href="#action-required" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Step 1: Admin generates App manifest URL (browser action)</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>python<span class="w"> </span>scripts/ci/github_app_bootstrap.py<span class="w"> </span>--generate-manifest-url
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Step 2: Admin completes registration in browser, receives one-time code</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># Step 3: Convert code → credentials</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># Step 3: Convert code credentials</span>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>python<span class="w"> </span>scripts/ci/github_app_bootstrap.py<span class="w"> </span>--convert-code<span class="w"> </span>&lt;ONE_TIME_CODE&gt;
 </code></pre></div>
 <hr/>
@@ -2644,14 +2644,14 @@ permissions, not by any user's permissions.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="what-is-missing_1">️ What is missing<a class="headerlink" href="#what-is-missing_1" title="Permanent link">¶</a></h3>
+<h3 id="what-is-missing_1">What is missing<a class="headerlink" href="#what-is-missing_1" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>GitHub App not registered</strong> — <code>GITHUB_APP_ID</code>, <code>GITHUB_APP_INSTALLATION_ID</code>
-  are unset. All helper functions will <code>raise AuthError</code> / <code>raise SystemExit</code>
-  until the App is registered and credentials stored in <code>.codex/github_app/</code>.</li>
+ are unset. All helper functions will <code>raise AuthError</code> / <code>raise SystemExit</code>
+ until the App is registered and credentials stored in <code>.codex/github_app/</code>.</li>
 <li><code>GITHUB_APP_INSTALLATION_ID</code> is not documented in
-  <code>docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md</code> — should be added
-  alongside <code>GITHUB_APP_ID</code>.</li>
+ <code>docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md</code> — should be added
+ alongside <code>GITHUB_APP_ID</code>.</li>
 </ul>
 <hr/>
 <h2 id="pattern-3-responds-to-webhooks">Pattern 3 — Responds to webhooks<a class="headerlink" href="#pattern-3-responds-to-webhooks" title="Permanent link">¶</a></h2>
@@ -2686,13 +2686,13 @@ with <code>X-Hub-Signature-256</code> (HMAC-SHA256).</p>
 </tr>
 </tbody>
 </table>
-<h3 id="what-is-missing_2">️ What is missing<a class="headerlink" href="#what-is-missing_2" title="Permanent link">¶</a></h3>
+<h3 id="what-is-missing_2">What is missing<a class="headerlink" href="#what-is-missing_2" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>No live webhook receiver deployed</strong> — <code>hook_attributes.url</code> in
-  <code>APP_MANIFEST</code> (see <code>scripts/ci/github_app_bootstrap.py</code>) defaults to
-  <code>https://placeholder.example.com/github-hook</code>. A real server (e.g., a Cloud
-  Run instance running <code>CodexReviewerApp</code>) must be deployed and the URL updated
-  via <code>github_app_bootstrap.py --update-webhook &lt;URL&gt;</code>.</li>
+ <code>APP_MANIFEST</code> (see <code>scripts/ci/github_app_bootstrap.py</code>) defaults to
+ <code>https://placeholder.example.com/github-hook</code>. A real server (e.g., a Cloud
+ Run instance running <code>CodexReviewerApp</code>) must be deployed and the URL updated
+ via <code>github_app_bootstrap.py --update-webhook &lt;URL&gt;</code>.</li>
 <li><strong><code>CODEX_WEBHOOK_SECRET</code></strong> must be set after App registration.</li>
 </ul>
 <h3 id="action-required_1">Action required<a class="headerlink" href="#action-required_1" title="Permanent link">¶</a></h3>
@@ -2736,17 +2736,17 @@ do via the GitHub API and what webhook events it can receive.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="what-is-missing_3">️ What is missing<a class="headerlink" href="#what-is-missing_3" title="Permanent link">¶</a></h3>
+<h3 id="what-is-missing_3">What is missing<a class="headerlink" href="#what-is-missing_3" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>App permissions take effect only after registration.</strong> The manifest is
-  defined but not applied.</li>
+ defined but not applied.</li>
 <li><code>administration: read</code> in <code>APP_MANIFEST</code> may exceed the principle of least
-  privilege. This permission allows the App to read repository settings,
-  deploy keys, and repository metadata — it does <strong>not</strong> grant write/admin
-  access, but it should still be removed if the App only needs to read
-  code and post comments. <strong>Audit before registration</strong>: if runner
-  registration tokens (<code>create_runner_registration_token()</code>) are not
-  needed at app level, remove this permission from the manifest.</li>
+ privilege. This permission allows the App to read repository settings,
+ deploy keys, and repository metadata — it does <strong>not</strong> grant write/admin
+ access, but it should still be removed if the App only needs to read
+ code and post comments. <strong>Audit before registration</strong>: if runner
+ registration tokens (<code>create_runner_registration_token()</code>) are not
+ needed at app level, remove this permission from the manifest.</li>
 </ul>
 <hr/>
 <h2 id="overall-gap-github-app-registration">Overall Gap: GitHub App Registration<a class="headerlink" href="#overall-gap-github-app-registration" title="Permanent link">¶</a></h2>
@@ -2756,7 +2756,7 @@ been registered.</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Admin runs <code>python scripts/ci/github_app_bootstrap.py --generate-manifest-url</code></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Admin opens generated URL in browser while signed in as org owner</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Admin authorizes → receives one-time code</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Admin authorizes receives one-time code</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Admin runs <code>python scripts/ci/github_app_bootstrap.py --convert-code &lt;CODE&gt;</code></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>.codex/github_app/app_credentials.json</code> created (app_id, client_id)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>.codex/github_app/private_key.pem</code> created (keep secret, never commit)</li>
@@ -2783,7 +2783,7 @@ been registered.</p>
 <tr>
 <td><code>GITHUB_APP_INSTALLATION_ID</code></td>
 <td>2</td>
-<td>GitHub App → Installations</td>
+<td>GitHub App Installations</td>
 </tr>
 <tr>
 <td><code>GITHUB_APP_PRIVATE_KEY_PEM</code></td>
@@ -2838,6 +2838,6 @@ been registered.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 # OmegaConf Configuration - MOVED
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-️ **This directory has been consolidated**
+ **This directory has been consolidated**
 
 All configuration files have been moved to **[`docs/configuration/`](../configuration/)**
 
@@ -15,7 +15,7 @@ All configuration files have been moved to **[`docs/configuration/`](../configur
 ## New Home
 
 All configuration documentation is now centralized at:
-👉 **[`docs/configuration/`](../configuration/)**
+ **[`docs/configuration/`](../configuration/)**
 
 ## Quickstart
 
@@ -25,5 +25,5 @@ All configuration documentation is now centralized at:
 
 ---
 
-**Last Updated**: 2026-06-22  
+**Last Updated**: 2026-06-22
 **Consolidated By**: Phase 5 Structure Improvement

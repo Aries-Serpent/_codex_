@@ -1,12 +1,12 @@
 # Top 5 GitHub Public Projects Aligned with `_codex_` (codex-ml)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
 > **Research Date:2026-07-13
-> **Session:** S170  
-> **Method:** Deep web search + live GitHub API data + APA citation compilation  
+> **Session:** S170
+> **Method:** Deep web search + live GitHub API data + APA citation compilation
 > **Scope:** Projects sharing ≥3 core dimensions with `_codex_`: (1) ML training & evaluation, (2) autonomous agents / cognitive architecture, (3) MLOps lifecycle automation, (4) distributed compute, (5) self-healing or agentic CI/CD
 
 ---
@@ -21,23 +21,23 @@
 
 | Dimension | `_codex_` | MLflow | Ray | Metaflow | ZenML | PromptFlow |
 |-----------|-----------|--------|-----|----------|-------|------------|
-| ML Training & Evaluation |  PyTorch + LoRA/QLoRA |  Tracking + Eval |  Distributed |  Prototype→Prod |  Pipelines |  LLM eval |
-| Autonomous Agents / Cognitive |  153 agents + Cognitive Brain |  AgentOps |  RLlib + Actors | ️ Partial |  Agent Pipelines |  Prompt agents |
-| MLOps Lifecycle Automation |  Level 4 certified |  Model Registry |  Ray Serve |  Deploy/Orchestrate |  Full lifecycle |  Prototype→Prod |
-| Distributed Compute |  Ray + distributed |  Via integrations |  Native core |  Cloud burst |  Via backends | ️ Limited |
-| Self-Healing / Agentic CI/CD |  75-87% auto-fix | ️ Monitoring only | ️ Retry logic | ️ Retry/fallback | ️ Partial |  Not primary |
-| Config Management (Hydra) |  Native Hydra | ️ YAML/OmegaConf | ️ YAML | ️ Decorators |  Stack configs | ️ YAML |
-| Experiment Tracking |  MLflow native |  Core feature |  Via MLflow |  Client API |  MLflow integr. |  Traces |
-| Security / CVE Compliance |  26 CVEs fixed |  Active patches |  Active patches |  Active patches |  Active patches |  Active patches |
-| Test Coverage ≥80% |  80% / 20K+ tests |  High |  High |  High |  High |  High |
-| MCP Integration |  Native MCP core |  |  |  |  |  |
+| ML Training & Evaluation | PyTorch + LoRA/QLoRA | Tracking + Eval | Distributed | PrototypeProd | Pipelines | LLM eval |
+| Autonomous Agents / Cognitive | 153 agents + Cognitive Brain | AgentOps | RLlib + Actors | Partial | Agent Pipelines | Prompt agents |
+| MLOps Lifecycle Automation | Level 4 certified | Model Registry | Ray Serve | Deploy/Orchestrate | Full lifecycle | PrototypeProd |
+| Distributed Compute | Ray + distributed | Via integrations | Native core | Cloud burst | Via backends | Limited |
+| Self-Healing / Agentic CI/CD | 75-87% auto-fix | Monitoring only | Retry logic | Retry/fallback | Partial | Not primary |
+| Config Management (Hydra) | Native Hydra | YAML/OmegaConf | YAML | Decorators | Stack configs | YAML |
+| Experiment Tracking | MLflow native | Core feature | Via MLflow | Client API | MLflow integr. | Traces |
+| Security / CVE Compliance | 26 CVEs fixed | Active patches | Active patches | Active patches | Active patches | Active patches |
+| Test Coverage ≥80% | 80% / 20K+ tests | High | High | High | High | High |
+| MCP Integration | Native MCP core | | | | | |
 
 ---
 
 ## 1. MLflow — `mlflow/mlflow`
 
-**⭐ 24,871 stars · 🍴 5,452 forks · Language: Python · License: Apache-2.0**  
-**URL:** https://github.com/mlflow/mlflow  
+**⭐ 24,871 stars · 5,452 forks · Language: Python · License: Apache-2.0**
+**URL:** https://github.com/mlflow/mlflow
 
 ### Description
 MLflow is the open-source AI engineering platform for agents, LLMs, and ML models. It enables teams to debug, evaluate, monitor, and optimize production-quality AI applications while managing costs and model/data access. It is the most directly referenced external integration within `_codex_`, powering experiment tracking, model registry, and artifact logging across every training and evaluation run.
@@ -59,8 +59,8 @@ MLflow is the open-source AI engineering platform for agents, LLMs, and ML model
 
 ## 2. Ray — `ray-project/ray`
 
-**⭐ 41,813 stars · 🍴 7,371 forks · Language: Python · License: Apache-2.0**  
-**URL:** https://github.com/ray-project/ray  
+**⭐ 41,813 stars · 7,371 forks · Language: Python · License: Apache-2.0**
+**URL:** https://github.com/ray-project/ray
 
 ### Description
 Ray is an AI compute engine consisting of a core distributed runtime and a set of AI libraries (Ray Data, Ray Train, Ray Tune, Ray Serve, RLlib) for accelerating ML workloads. It is the distributed computing backbone referenced in `_codex_`'s architecture for model serving (`Ray Serve + FastAPI`) and distributed training (`Ray`).
@@ -82,18 +82,18 @@ Ray is a **compute primitive** — it does not provide MLOps governance, agent c
 
 ## 3. Metaflow — `Netflix/metaflow`
 
-**⭐ 9,962 stars · 🍴 1,189 forks · Language: Python · License: Apache-2.0**  
-**URL:** https://github.com/Netflix/metaflow  
+**⭐ 9,962 stars · 1,189 forks · Language: Python · License: Apache-2.0**
+**URL:** https://github.com/Netflix/metaflow
 
 ### Description
 Metaflow is a human-centric framework designed to help scientists and engineers build and manage real-life AI and ML systems — from rapid prototyping in notebooks to reliable, maintainable production deployments. Originally developed at Netflix (supporting 3,000+ ML projects) and now maintained by Outerbounds, Metaflow powers ML at Amazon, DoorDash, Goldman Sachs, and many others.
 
 ### Alignment with `_codex_`
-- **Prototype-to-production lifecycle** parallels `_codex_`'s training → evaluation → serving pipeline
+- **Prototype-to-production lifecycle** parallels `_codex_`'s training evaluation serving pipeline
 - **Experiment tracking + versioning** (`Client API`) aligns with `_codex_`'s MLflow-backed artifact management
 - **Distributed compute** (horizontal + vertical cloud scaling) matches `_codex_`'s Ray-based distributed training
 - **Reactive orchestration** (event-triggered flows) mirrors `_codex_`'s `cognitive-analysis-feed.yml` and session-chaining workflows
-- **Dependency management + one-click deploy** to production orchestrators parallels `_codex_`'s CI/CD promotion gates (0D_base_ → main)
+- **Dependency management + one-click deploy** to production orchestrators parallels `_codex_`'s CI/CD promotion gates (0D_base_ main)
 - **Gang-scheduled compute workloads** aligns with `_codex_`'s multi-agent execution model
 
 ### Key Differences
@@ -106,8 +106,8 @@ Metaflow does not have an **autonomous agent layer**, **cognitive brain**, or **
 
 ## 4. ZenML — `zenml-io/zenml`
 
-**⭐ 5,281 stars · 🍴 592 forks · Language: Python · License: Apache-2.0**  
-**URL:** https://github.com/zenml-io/zenml  
+**⭐ 5,281 stars · 592 forks · Language: Python · License: Apache-2.0**
+**URL:** https://github.com/zenml-io/zenml
 
 ### Description
 ZenML is "One AI Platform from Pipelines to Agents" — an open-source MLOps framework for building portable, production-ready ML pipelines that run on any infrastructure. ZenML abstracts the complexity of cloud providers, orchestrators, and experiment trackers behind a unified interface, supporting both classical ML and LLM/agent workflows.
@@ -118,7 +118,7 @@ ZenML is "One AI Platform from Pipelines to Agents" — an open-source MLOps fra
 - **LLMOps + AgentOps** topics (`agentops`, `agents`, `genai`, `llm`, `llmops`) shared with `_codex_`
 - **Model repositories + experiment tracking + artifact management** aligns with `_codex_`'s MLflow-backed model lifecycle
 - **Dashboard visualizations** mirrors `_codex_`'s `CODEBASE_DASHBOARD.md` and PR Status Dashboard
-- **Rapid dev→production iteration** matches `_codex_`'s session-chaining and sub-PR promotion model
+- **Rapid devproduction iteration** matches `_codex_`'s session-chaining and sub-PR promotion model
 - **Shared topics:** `agentops`, `agents`, `ai`, `mlops`, `pipelines`, `production-ready`, `pytorch`
 
 ### Key Differences
@@ -131,14 +131,14 @@ ZenML lacks `_codex_`'s **cognitive brain architecture** (quantum decision engin
 
 ## 5. Microsoft PromptFlow — `microsoft/promptflow`
 
-**⭐ 11,073 stars · 🍴 1,081 forks · Language: Python · License: MIT**  
-**URL:** https://github.com/microsoft/promptflow  
+**⭐ 11,073 stars · 1,081 forks · Language: Python · License: MIT**
+**URL:** https://github.com/microsoft/promptflow
 
 ### Description
 PromptFlow is a suite of development tools for building high-quality LLM-based applications — from prototyping and testing to production deployment and monitoring. It provides visual DAG-based flow authoring, batch evaluation across test datasets, CI/CD integration for LLM apps, and tracing/observability for production monitoring.
 
 ### Alignment with `_codex_`
-- **End-to-end LLM app lifecycle** (prototype → evaluate → deploy → monitor) directly parallels `_codex_`'s Python ingestion pipeline (Ingest → Analyze → Transform → Verify)
+- **End-to-end LLM app lifecycle** (prototype evaluate deploy monitor) directly parallels `_codex_`'s Python ingestion pipeline (Ingest Analyze Transform Verify)
 - **Batch evaluation + test datasets** aligns with `_codex_`'s `src/codex_ml/evaluation/` and 20K+ test suite
 - **CI/CD integration** for LLM apps mirrors `_codex_`'s 49 GitHub Actions workflows and cognitive pre-flight gates
 - **Tracing + observability** (`Promptflow Tracing`) aligns with `_codex_`'s OTEL metrics and session telemetry
@@ -175,7 +175,7 @@ None of the top-5 projects combine **all** of:
 4. Self-healing CI/CD achieving 75-87% automatic fix coverage across 49 workflows
 5. Model Context Protocol (MCP) integration as a first-class interface
 6. Level 4 Azure MLOps Maturity with 47/47 gap items complete
-7. Branch-scoped integration model (0D_base_ staging gate → main promotion)
+7. Branch-scoped integration model (0D_base_ staging gate main promotion)
 
 `_codex_` occupies a unique position as a **vertically integrated agentic ML platform** — combining the MLOps lifecycle management of MLflow/ZenML, the distributed compute of Ray, the prototype-to-production philosophy of Metaflow, and the LLM evaluation patterns of PromptFlow, while adding a unique autonomous governance and cognitive brain layer found in none of the above.
 
@@ -203,6 +203,6 @@ ZenML GmbH. (2026). *ZenML documentation*. https://docs.zenml.io
 
 ---
 
-*Generated by: `_codex_` S170 session, 2026-03-21*  
-*Data sources: GitHub API (live), web search, official project documentation*  
+*Generated by: `_codex_` S170 session, 2026-03-21*
+*Data sources: GitHub API (live), web search, official project documentation*
 *File path: `docs/research/SIMILAR_GITHUB_PROJECTS.md`*

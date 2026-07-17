@@ -1,12 +1,12 @@
 # Workflow Execution Checklist Wiring Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
-**Status:**  Drafted (S228)  
-**Author:** Copilot Coding Agent (S228)  
+**Version:** 1.0.0
+**Status:** Drafted (S228)
+**Author:** Copilot Coding Agent (S228)
 **Scope:** PR lifecycle workflow gate, Copilot Agent wrap-up hardening
 
 ---
@@ -15,11 +15,11 @@
 
 This plan defines an **explicit checklist-based workflow execution gate** that:
 - Lets Copilot Coding Agent **check off only the workflows it needs** during wrap-up
-- Posts an **execution-plan comment** listing which workflows are allowed () vs skipped (⏭️)
+- Posts an **execution-plan comment** listing which workflows are allowed () vs skipped ()
 - Target workflows must **opt in** (via a `gate-check` step) to actually skip execution
 - Is approved by the **owner approval gate** before execution proceeds
 - Prevents unintended workflow runs from generating artefacts, comments, or commits
-  that conflict with ongoing objectives
+ that conflict with ongoing objectives
 
 > **Current implementation (M1/M2):** `workflow-execution-gate.yml` parses the PR body
 > and posts an execution-plan comment. Actual workflow skipping requires target workflows
@@ -31,70 +31,81 @@ This plan defines an **explicit checklist-based workflow execution gate** that:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Copilot Agent Wraps Up, Workflow Execution Checklist'}}%%
+
 flowchart TD
-    A[Copilot Agent Wraps Up] -->|updates PR body| B[Workflow Execution Checklist]
-    B -->|owner reviews| C{Owner Approval Gate}
-    C -->|approved| D[workflow-execution-gate.yml\nM1  DONE]
-    D -->|reads checklist| E{Parse PR body}
-    E -->|checked item| F[Post: WILL RUN notice]
-    E -->|unchecked item| G[Post: SKIPPED notice]
-    F & G --> H[Execution Plan Comment\nposted to PR]
 
-    subgraph "Opt-in by target workflow — M3-M6"
-        I[gate-check step\nin target workflow]
-        J{steps.gate-check\n.outputs.skip?}
-        K[Run main steps]
-        L[Skip main steps\nexit 0]
-    end
+ A[Copilot Agent Wraps Up] -->|updates PR body| B[Workflow Execution Checklist]
 
-    H -.->|signal| I
-    I --> J
-    J -->|false| K
-    J -->|true| L
+ B -->|owner reviews| C{Owner Approval Gate}
 
-    style F fill:#2d6a4f,color:#fff
-    style G fill:#b23a48,color:#fff
-    style K fill:#2d6a4f,color:#fff
-    style L fill:#666,color:#fff
+ C -->|approved| D[workflow-execution-gate.yml\nM1 DONE]
+
+ D -->|reads checklist| E{Parse PR body}
+
+ E -->|checked item| F[Post: WILL RUN notice]
+
+ E -->|unchecked item| G[Post: SKIPPED notice]
+
+ F & G --> H[Execution Plan Comment\nposted to PR]
+
+ subgraph "Opt-in by target workflow — M3-M6"
+ I[gate-check step\nin target workflow]
+ J{steps.gate-check\n.outputs.skip?}
+ K[Run main steps]
+ L[Skip main steps\nexit 0]
+ end
+
+ H -.->|signal| I
+
+ I --> J
+
+ J -->|false| K
+
+ J -->|true| L
+
+ style F fill:#2d6a4f,color:#fff
+ style G fill:#b23a48,color:#fff
+ style K fill:#2d6a4f,color:#fff
+ style L fill:#666,color:#fff
 ```
 
 ---
 
 ## 3. PR Body Checklist Section Format
 
-Each PR managed by Copilot MUST include a `##  Workflow Execution Checklist` section
+Each PR managed by Copilot MUST include a `## Workflow Execution Checklist` section
 in the PR body. This section is managed automatically by `agent-auth-delegation.yml` during
 the Copilot wrap-up phase.
 
 ```markdown
-##  Workflow Execution Checklist (S228)
+## Workflow Execution Checklist (S228)
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
-###  Always Required — fire automatically on every push (cannot be skipped)
+### Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
 - [x] agent-auth-delegation.yml — Agent token delegation (always required)
 - [x] workflow-execution-gate.yml — WEC gate (always required)
 
-###  Always Active — fire via push/workflow_run
+### Always Active — fire via push/workflow_run
 - [x] copilot-agent-checkin.yml — Agent check-in (fires on push)
 - [x] copilot-agent-session-done.yml — Session done (fires on workflow_run)
 - [x] copilot-iterative-self-healing.yml — Self-healing loop (fires on workflow_run)
 - [x] cost-gate.yml — Cost governance gate
 
-###  Auto-Approve
+### Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve pending workflow runs
 
-### 🧪 Opt-In: Testing & Validation
+### Opt-In: Testing & Validation
 - [x] resilient_validation.yml — Resilient validation (required for 0D_base_ PRs)
 - [ ] nox_gates.yml — Nox test gates (opt-in: heavy ML tests)
 
-### 📄 Opt-In: Documentation
+### Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker (opt-in: docs changes)
 
-###  Infrastructure (Admin Only)
+### Infrastructure (Admin Only)
 - [ ] genesis-bootstrap.yml — Genesis protocol (ADMIN ONLY — never check)
 - [ ] branch-divergence-monitor.yml — Branch divergence (auto, not Copilot-triggered)
 ```
@@ -119,118 +130,118 @@ the Copilot wrap-up phase.
 name: Workflow Execution Gate
 
 on:
-  # Triggered by Copilot wrap-up step in agent-auth-delegation.yml
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'PR number to parse checklist from'
-        required: true
-      triggered_by:
-        description: 'Who triggered this gate (copilot/owner/manual)'
-        default: 'manual'
+ # Triggered by Copilot wrap-up step in agent-auth-delegation.yml
+ workflow_dispatch:
+ inputs:
+ pr_number:
+ description: 'PR number to parse checklist from'
+ required: true
+ triggered_by:
+ description: 'Who triggered this gate (copilot/owner/manual)'
+ default: 'manual'
 
-  # Also triggered when owner approves (pull_request_review event)
-  pull_request_review:
-    types: [submitted]
+ # Also triggered when owner approves (pull_request_review event)
+ pull_request_review:
+ types: [submitted]
 
 concurrency:
-  group: workflow-execution-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number }}
-  cancel-in-progress: true
+ group: workflow-execution-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number }}
+ cancel-in-progress: true
 
 permissions:
-  contents: read
-  pull-requests: write
-  actions: write  # needed to cancel workflow runs
+ contents: read
+ pull-requests: write
+ actions: write # needed to cancel workflow runs
 
 jobs:
-  parse-checklist:
-    name: Parse Workflow Checklist
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      workflows_to_run: ${{ steps.parse.outputs.workflows_to_run }}
-      workflows_to_skip: ${{ steps.parse.outputs.workflows_to_skip }}
-      pr_number: ${{ steps.resolve-pr.outputs.pr_number }}
-    steps:
-      - name: Resolve PR number
-        id: resolve-pr
-        run: |
-          PR="${{ github.event.pull_request.number || github.event.inputs.pr_number }}"
-          echo "pr_number=${PR}" >> "$GITHUB_OUTPUT"
+ parse-checklist:
+ name: Parse Workflow Checklist
+ runs-on: ubuntu-latest
+ timeout-minutes: 10
+ outputs:
+ workflows_to_run: ${{ steps.parse.outputs.workflows_to_run }}
+ workflows_to_skip: ${{ steps.parse.outputs.workflows_to_skip }}
+ pr_number: ${{ steps.resolve-pr.outputs.pr_number }}
+ steps:
+ - name: Resolve PR number
+ id: resolve-pr
+ run: |
+ PR="${{ github.event.pull_request.number || github.event.inputs.pr_number }}"
+ echo "pr_number=${PR}" >> "$GITHUB_OUTPUT"
 
-      - name: Parse workflow checklist from PR body
-        id: parse
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PR="${{ steps.resolve-pr.outputs.pr_number }}"
-          BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+ - name: Parse workflow checklist from PR body
+ id: parse
+ env:
+ GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ run: |
+ PR="${{ steps.resolve-pr.outputs.pr_number }}"
+ BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
-          # Extract the Workflow Execution Checklist section
-          SECTION=$(echo "$BODY" | awk '/^##  Workflow Execution Checklist/,/^## /' | head -n -1)
+ # Extract the Workflow Execution Checklist section
+ SECTION=$(echo "$BODY" | awk '/^## Workflow Execution Checklist/,/^## /' | head -n -1)
 
-          if [ -z "$SECTION" ]; then
-            echo "️ No Workflow Execution Checklist section found in PR body — running defaults only"
-            echo "workflows_to_run=" >> "$GITHUB_OUTPUT"
-            echo "workflows_to_skip=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+ if [ -z "$SECTION" ]; then
+ echo " No Workflow Execution Checklist section found in PR body — running defaults only"
+ echo "workflows_to_run=" >> "$GITHUB_OUTPUT"
+ echo "workflows_to_skip=" >> "$GITHUB_OUTPUT"
+ exit 0
+ fi
 
-          # Parse checked items: lines matching "- [x] filename.yml"
-          CHECKED=$(echo "$SECTION" | grep -oP '(?<=\- \[x\] )\S+\.yml' | tr '\n' ',')
-          UNCHECKED=$(echo "$SECTION" | grep -oP '(?<=\- \[ \] )\S+\.yml' | tr '\n' ',')
+ # Parse checked items: lines matching "- [x] filename.yml"
+ CHECKED=$(echo "$SECTION" | grep -oP '(?<=\- \[x\] )\S+\.yml' | tr '\n' ',')
+ UNCHECKED=$(echo "$SECTION" | grep -oP '(?<=\- \[ \] )\S+\.yml' | tr '\n' ',')
 
-          echo "workflows_to_run=${CHECKED%,}" >> "$GITHUB_OUTPUT"
-          echo "workflows_to_skip=${UNCHECKED%,}" >> "$GITHUB_OUTPUT"
-          echo " Workflows to run: ${CHECKED}"
-          echo "⏭️ Workflows to skip: ${UNCHECKED}"
+ echo "workflows_to_run=${CHECKED%,}" >> "$GITHUB_OUTPUT"
+ echo "workflows_to_skip=${UNCHECKED%,}" >> "$GITHUB_OUTPUT"
+ echo " Workflows to run: ${CHECKED}"
+ echo " Workflows to skip: ${UNCHECKED}"
 
-  post-gate-summary:
-    name: Post Gate Summary
-    needs: parse-checklist
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Post execution plan comment
-        run: |
-          PR="${{ needs.parse-checklist.outputs.pr_number }}"
-          TO_RUN="${{ needs.parse-checklist.outputs.workflows_to_run }}"
-          TO_SKIP="${{ needs.parse-checklist.outputs.workflows_to_skip }}"
+ post-gate-summary:
+ name: Post Gate Summary
+ needs: parse-checklist
+ runs-on: ubuntu-latest
+ timeout-minutes: 5
+ env:
+ GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ steps:
+ - name: Post execution plan comment
+ run: |
+ PR="${{ needs.parse-checklist.outputs.pr_number }}"
+ TO_RUN="${{ needs.parse-checklist.outputs.workflows_to_run }}"
+ TO_SKIP="${{ needs.parse-checklist.outputs.workflows_to_skip }}"
 
-          BODY="<!-- workflow-execution-gate:${PR} -->
-          ##  Workflow Execution Gate — Execution Plan
+ BODY="<!-- workflow-execution-gate:${PR} -->
+ ## Workflow Execution Gate — Execution Plan
 
-          | Status | Workflow |
-          |--------|---------|"
+ | Status | Workflow |
+ |--------|---------|"
 
-          IFS=',' read -ra RUN_LIST <<< "$TO_RUN"
-          for wf in "${RUN_LIST[@]}"; do
-            BODY="${BODY}
-          |  WILL RUN | \`${wf}\` |"
-          done
+ IFS=',' read -ra RUN_LIST <<< "$TO_RUN"
+ for wf in "${RUN_LIST[@]}"; do
+ BODY="${BODY}
+ | WILL RUN | \`${wf}\` |"
+ done
 
-          IFS=',' read -ra SKIP_LIST <<< "$TO_SKIP"
-          for wf in "${SKIP_LIST[@]}"; do
-            BODY="${BODY}
-          | ⏭️ SKIPPED | \`${wf}\` |"
-          done
+ IFS=',' read -ra SKIP_LIST <<< "$TO_SKIP"
+ for wf in "${SKIP_LIST[@]}"; do
+ BODY="${BODY}
+ | SKIPPED | \`${wf}\` |"
+ done
 
-          BODY="${BODY}
+ BODY="${BODY}
 
-          _Gate run: ${{ github.run_id }} — triggered by: ${{ github.event_name }}_
-          _[ Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})_"
+ _Gate run: ${{ github.run_id }} — triggered by: ${{ github.event_name }}_
+ _[ Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})_"
 
-          # Upsert comment (dedup by marker)
-          EXISTING=$(gh pr view "$PR" --repo "${{ github.repository }}" \
-            --json comments --jq '[.comments[] | select(.body | startswith("<!-- workflow-execution-gate:"))] | last | .id // empty')
-          if [ -n "$EXISTING" ]; then
-            gh api "repos/${{ github.repository }}/issues/comments/${EXISTING}" \
-              -X PATCH -f body="$BODY"
-          else
-            gh pr comment "$PR" --repo "${{ github.repository }}" --body "$BODY"
-          fi
+ # Upsert comment (dedup by marker)
+ EXISTING=$(gh pr view "$PR" --repo "${{ github.repository }}" \
+ --json comments --jq '[.comments[] | select(.body | startswith("<!-- workflow-execution-gate:"))] | last | .id // empty')
+ if [ -n "$EXISTING" ]; then
+ gh api "repos/${{ github.repository }}/issues/comments/${EXISTING}" \
+ -X PATCH -f body="$BODY"
+ else
+ gh pr comment "$PR" --repo "${{ github.repository }}" --body "$BODY"
+ fi
 ```
 
 ### 4.2 Copilot Wrap-Up Step — `agent-auth-delegation.yml` Integration
@@ -240,38 +251,38 @@ the final session wrap-up step:
 
 ```yaml
 - name: Ensure Workflow Execution Checklist in PR body
-  env:
-    GH_TOKEN: ${{ secrets.COPILOT_AGENT_TOKEN || secrets.GITHUB_TOKEN }}
-  run: |
-    PR="${{ github.event.pull_request.number }}"
-    BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+ env:
+ GH_TOKEN: ${{ secrets.COPILOT_AGENT_TOKEN || secrets.GITHUB_TOKEN }}
+ run: |
+ PR="${{ github.event.pull_request.number }}"
+ BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
-    # Only inject if section doesn't exist yet
-    if echo "$BODY" | grep -q "##  Workflow Execution Checklist"; then
-      echo " Workflow Execution Checklist already present — skipping injection"
-      exit 0
-    fi
+ # Only inject if section doesn't exist yet
+ if echo "$BODY" | grep -q "## Workflow Execution Checklist"; then
+ echo " Workflow Execution Checklist already present — skipping injection"
+ exit 0
+ fi
 
-    CHECKLIST="
+ CHECKLIST="
 
-##  Workflow Execution Checklist
+## Workflow Execution Checklist
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
-###  Always Required / Always Active
+### Always Required / Always Active
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 - [x] resilient_validation.yml — Resilient validation
 - [ ] nox_gates.yml — Nox test gates
 
-###  Opt-In: Security & Quality
+### Opt-In: Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [ ] security-scanning-suite.yml — Full security audit
 - [x] deferral-language-gate.yml — Deferral language guard
 
-### 📄 Opt-In: Documentation
+### Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker
 
-###  Always Active Automation
+### Always Active Automation
 - [x] agent-auth-delegation.yml — Agent auth delegation (always required)
 - [x] copilot-agent-checkin.yml — Agent check-in (always required)
 - [x] cost-gate.yml — Cost governance gate
@@ -279,9 +290,9 @@ the final session wrap-up step:
 > **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for
 > this session. Unchecked workflows will be SKIPPED by the gate."
 
-    UPDATED_BODY="${BODY}${CHECKLIST}"
-    gh pr edit "$PR" --repo "${{ github.repository }}" --body "$UPDATED_BODY"
-    echo " Workflow Execution Checklist injected into PR #${PR}"
+ UPDATED_BODY="${BODY}${CHECKLIST}"
+ gh pr edit "$PR" --repo "${{ github.repository }}" --body "$UPDATED_BODY"
+ echo " Workflow Execution Checklist injected into PR #${PR}"
 ```
 
 ---
@@ -293,52 +304,52 @@ For workflows that should respect the gate (opt-in, not always-required), add th
 
 ```yaml
 - name: Check workflow execution gate
-  id: gate-check
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  run: |
-    PR="${{ github.event.pull_request.number }}"
-    WORKFLOW_FILE="${{ github.workflow_ref }}"
-    WORKFLOW_NAME=$(basename "${WORKFLOW_FILE%%@*}")
+ id: gate-check
+ env:
+ GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ run: |
+ PR="${{ github.event.pull_request.number }}"
+ WORKFLOW_FILE="${{ github.workflow_ref }}"
+ WORKFLOW_NAME=$(basename "${WORKFLOW_FILE%%@*}")
 
-    # Skip check if no PR context (push to main, schedule, etc.)
-    if [ -z "$PR" ]; then
-      echo "skip=false" >> "$GITHUB_OUTPUT"
-      exit 0
-    fi
+ # Skip check if no PR context (push to main, schedule, etc.)
+ if [ -z "$PR" ]; then
+ echo "skip=false" >> "$GITHUB_OUTPUT"
+ exit 0
+ fi
 
-    BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+ BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
-    # Check if this workflow appears in an unchecked item
-    if echo "$BODY" | grep -qF "- [ ] ${WORKFLOW_NAME}"; then
-      echo "skip=true" >> "$GITHUB_OUTPUT"
-      echo "⏭️ ${WORKFLOW_NAME} is unchecked in Workflow Execution Checklist — skipping"
-    else
-      echo "skip=false" >> "$GITHUB_OUTPUT"
-      echo " ${WORKFLOW_NAME} is checked (or not in checklist) — proceeding"
-    fi
+ # Check if this workflow appears in an unchecked item
+ if echo "$BODY" | grep -qF "- [ ] ${WORKFLOW_NAME}"; then
+ echo "skip=true" >> "$GITHUB_OUTPUT"
+ echo " ${WORKFLOW_NAME} is unchecked in Workflow Execution Checklist — skipping"
+ else
+ echo "skip=false" >> "$GITHUB_OUTPUT"
+ echo " ${WORKFLOW_NAME} is checked (or not in checklist) — proceeding"
+ fi
 
 - name: Skip guard
-  if: steps.gate-check.outputs.skip == 'true'
-  run: |
-    echo "::notice::Workflow skipped by Workflow Execution Gate — unchecked in PR body checklist"
-    exit 0
+ if: steps.gate-check.outputs.skip == 'true'
+ run: |
+ echo "::notice::Workflow skipped by Workflow Execution Gate — unchecked in PR body checklist"
+ exit 0
 ```
 
 Then gate the primary job's main work step(s) with the `gate-check` output:
 ```yaml
 jobs:
-  my-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check workflow execution gate
-        id: gate-check
-        # (gate-check implementation as shown above)
+ my-job:
+ runs-on: ubuntu-latest
+ steps:
+ - name: Check workflow execution gate
+ id: gate-check
+ # (gate-check implementation as shown above)
 
-      - name: Run main job logic
-        if: steps.gate-check.outputs.skip != 'true'
-        run: |
-          echo "Running main job tasks..."
+ - name: Run main job logic
+ if: steps.gate-check.outputs.skip != 'true'
+ run: |
+ echo "Running main job tasks..."
 ```
 
 ---
@@ -371,9 +382,9 @@ During every Copilot session wrap-up, the agent MUST:
 ```bash
 # Step 5 — Manual trigger for testing
 gh workflow run workflow-execution-gate.yml \
-  --repo Aries-Serpent/_codex_ \
-  -f pr_number=3790 \
-  -f triggered_by=copilot
+ --repo Aries-Serpent/_codex_ \
+ -f pr_number=3790 \
+ -f triggered_by=copilot
 ```
 
 ## Wrap-Up Checklist (Hard-Coded)
@@ -401,8 +412,8 @@ ongoing objectives:
 All self-healing and auto-fix workflows MUST use a concurrency group keyed on PR number:
 ```yaml
 concurrency:
-  group: ${{ github.workflow }}-pr-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
+ group: ${{ github.workflow }}-pr-${{ github.event.pull_request.number || github.run_id }}
+ cancel-in-progress: true
 ```
 
 ### 8.2 Skip-CI on Agent Commits
@@ -418,7 +429,7 @@ MARKER="<!-- workflow-name:${PR_NUMBER} -->"
 # Check if marker exists before posting
 EXISTING=$(gh pr view "$PR" --json comments --jq "[.comments[] | select(.body | contains(\"${MARKER}\"))] | length")
 if [ "$EXISTING" -eq 0 ]; then
-  gh pr comment "$PR" --body "${MARKER}${COMMENT_BODY}"
+ gh pr comment "$PR" --body "${MARKER}${COMMENT_BODY}"
 fi
 ```
 
@@ -428,16 +439,16 @@ Self-healing iterations MUST enforce a minimum 5-minute cooldown between success
 escalation comments to prevent cascade flooding:
 ```yaml
 - name: Cooldown check
-  run: |
-    LAST=$(gh pr view "$PR" --json comments \
-      --jq '[.comments[] | select(.body | contains("<!-- self-healing:"))] | last | .createdAt // empty')
-    if [ -n "$LAST" ]; then
-      ELAPSED=$(( $(date +%s) - $(date -d "$LAST" +%s 2>/dev/null || echo 0) ))
-      if [ "$ELAPSED" -lt 300 ]; then
-        echo "::notice::Self-healing cooldown active (${ELAPSED}s < 300s) — skipping"
-        exit 0
-      fi
-    fi
+ run: |
+ LAST=$(gh pr view "$PR" --json comments \
+ --jq '[.comments[] | select(.body | contains("<!-- self-healing:"))] | last | .createdAt // empty')
+ if [ -n "$LAST" ]; then
+ ELAPSED=$(( $(date +%s) - $(date -d "$LAST" +%s 2>/dev/null || echo 0) ))
+ if [ "$ELAPSED" -lt 300 ]; then
+ echo "::notice::Self-healing cooldown active (${ELAPSED}s < 300s) — skipping"
+ exit 0
+ fi
+ fi
 ```
 
 ---
@@ -446,8 +457,8 @@ escalation comments to prevent cascade flooding:
 
 | Milestone | Task | Owner | Status |
 |-----------|------|-------|--------|
-| M1 | Create `workflow-execution-gate.yml` | Copilot |  Done (S228) |
-| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot |  Done (S228) |
+| M1 | Create `workflow-execution-gate.yml` | Copilot | Done (S228) |
+| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot | Done (S228) |
 | M3 | Add opt-in gate check to `security-scanning-suite.yml` | Copilot | ⬜ Pending |
 | M4 | Add opt-in gate check to `documentation-link-checker.yml` | Copilot | ⬜ Pending |
 | M5 | Add opt-in gate check to `nox_gates.yml` | Copilot | ⬜ Pending |
@@ -458,28 +469,35 @@ escalation comments to prevent cascade flooding:
 
 ## 11. PDA Loop + Aftermath Tracking
 
-> **PDA = Plan → Do → Act (Deming cycle adapted for agentic CI workflows)**  
+> **PDA = Plan Do Act (Deming cycle adapted for agentic CI workflows)**
 > Each iteration through the gate produces a measurable outcome. Tracked here.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Plan\nDefine checklist\nchoices for session, Do\nAgent checks boxes\n+ triggers gate'}}%%
+
 flowchart LR
-    subgraph "PDA Iteration Loop"
-        P[Plan\nDefine checklist\nchoices for session] --> D[Do\nAgent checks boxes\n+ triggers gate]
-        D --> A[Act\nGate runs workflows\nskips unchecked]
-        A --> AF[Aftermath\nRecord outcome\nupdate pattern DB]
-        AF -->|next session| P
-    end
+ subgraph "PDA Iteration Loop"
 
-    subgraph "Aftermath DB (.codex/aftermath/)"
-        DB1[pda_iterations.jsonl]
-        DB2[workflow_skip_log.jsonl]
-        DB3[gate_outcomes.md]
-    end
+ P[Plan\nDefine checklist\nchoices for session] --> D[Do\nAgent checks boxes\n+ triggers gate]
 
-    AF --> DB1
-    AF --> DB2
-    AF --> DB3
+ D --> A[Act\nGate runs workflows\nskips unchecked]
+
+ A --> AF[Aftermath\nRecord outcome\nupdate pattern DB]
+
+ AF -->|next session| P
+ end
+
+ subgraph "Aftermath DB (.codex/aftermath/)"
+ DB1[pda_iterations.jsonl]
+ DB2[workflow_skip_log.jsonl]
+ DB3[gate_outcomes.md]
+ end
+
+ AF --> DB1
+
+ AF --> DB2
+
+ AF --> DB3
 ```
 
 ### 11.1 PDA Iteration Schema
@@ -488,31 +506,31 @@ Each PDA iteration is recorded as a JSONL entry in `.codex/aftermath/pda_iterati
 
 ```json
 {
-  "iteration": 1,
-  "session": "S228",
-  "pr_number": 3790,
-  "timestamp": "2026-03-29T22:19Z",
-  "plan": {
-    "workflows_checked": ["pre-merge-validation.yml", "comment-review-gate.yml", "agent-auth-delegation.yml", "copilot-agent-checkin.yml"],
-    "workflows_unchecked": ["security-scanning-suite.yml", "documentation-link-checker.yml", "nox_gates.yml", "cost-gate.yml"]
-  },
-  "do": {
-    "gate_run_id": null,
-    "dispatched": [],
-    "skipped": [],
-    "gate_status": "not_yet_triggered"
-  },
-  "act": {
-    "workflows_ran": [],
-    "workflows_skipped": [],
-    "gate_outcome": "pending",
-    "cascades_prevented": 0
-  },
-  "aftermath": {
-    "lessons": ["Checklist injection added to agent-auth-delegation.yml wrap-up"],
-    "pattern_updates": ["P-WEC-001: checklist injection on first wrap-up"],
-    "open_items": ["M3-M6 opt-in gate checks pending"]
-  }
+ "iteration": 1,
+ "session": "S228",
+ "pr_number": 3790,
+ "timestamp": "2026-03-29T22:19Z",
+ "plan": {
+ "workflows_checked": ["pre-merge-validation.yml", "comment-review-gate.yml", "agent-auth-delegation.yml", "copilot-agent-checkin.yml"],
+ "workflows_unchecked": ["security-scanning-suite.yml", "documentation-link-checker.yml", "nox_gates.yml", "cost-gate.yml"]
+ },
+ "do": {
+ "gate_run_id": null,
+ "dispatched": [],
+ "skipped": [],
+ "gate_status": "not_yet_triggered"
+ },
+ "act": {
+ "workflows_ran": [],
+ "workflows_skipped": [],
+ "gate_outcome": "pending",
+ "cascades_prevented": 0
+ },
+ "aftermath": {
+ "lessons": ["Checklist injection added to agent-auth-delegation.yml wrap-up"],
+ "pattern_updates": ["P-WEC-001: checklist injection on first wrap-up"],
+ "open_items": ["M3-M6 opt-in gate checks pending"]
+ }
 }
 ```
 
@@ -520,11 +538,11 @@ Each PDA iteration is recorded as a JSONL entry in `.codex/aftermath/pda_iterati
 
 | Pattern ID | Pattern | Outcome | Iteration |
 |-----------|---------|---------|-----------|
-| P-WEC-001 | Checklist injected by agent-auth-delegation on first session |  Works | 1 |
-| P-WEC-002 | Gate triggers on workflow_dispatch (Copilot wrap-up) | 🔮 Untested | — |
-| P-WEC-003 | Gate triggers on pull_request_review (owner approval) | 🔮 Untested | — |
-| P-WEC-004 | Unchecked workflow correctly skipped via gate | 🔮 Untested | — |
-| P-WEC-005 | Always-required workflow (comment-review-gate) NOT skipped | 🔮 Untested | — |
+| P-WEC-001 | Checklist injected by agent-auth-delegation on first session | Works | 1 |
+| P-WEC-002 | Gate triggers on workflow_dispatch (Copilot wrap-up) | Untested | — |
+| P-WEC-003 | Gate triggers on pull_request_review (owner approval) | Untested | — |
+| P-WEC-004 | Unchecked workflow correctly skipped via gate | Untested | — |
+| P-WEC-005 | Always-required workflow (comment-review-gate) NOT skipped | Untested | — |
 
 ### 11.3 Self-Review at Each PDA Act Phase
 
@@ -532,13 +550,13 @@ Before recording an Aftermath entry, the Copilot Agent MUST complete the followi
 5-pass self-review:
 
 ```markdown
-## 🔁 PDA Self-Review (5 passes)
+## PDA Self-Review (5 passes)
 
 **Pass 1 — YAML Validity**
 - [ ] `workflow-execution-gate.yml` passes actionlint
 
 **Pass 2 — Checklist Syntax**
-- [ ] PR body contains `##  Workflow Execution Checklist` section
+- [ ] PR body contains `## Workflow Execution Checklist` section
 - [ ] Gate marker `<!-- gate-managed-by: workflow-execution-gate.yml -->` present
 
 **Pass 3 — Gate Logic**
@@ -550,7 +568,7 @@ Before recording an Aftermath entry, the Copilot Agent MUST complete the followi
 - [ ] Gate run does NOT trigger further workflow cascades
 
 **Pass 5 — Policy Compliance**
-- [ ] `sync_tracked_files.py --check` → all 4 consistent
+- [ ] `sync_tracked_files.py --check` all 4 consistent
 - [ ] Always-required workflows (REQ-13, deferral-gate, auth-delegation) are CHECKED
 - [ ] Per `.codex/CODEBASE_AGENCY_POLICY.md §0` — all PR comments addressed
 ```

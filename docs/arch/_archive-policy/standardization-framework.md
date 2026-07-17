@@ -1,6 +1,6 @@
 # Archive Standardization Framework
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,7 +12,7 @@ The standardization framework elevates the _codex_ archive system from baseline 
 
 ## Standardization Pillars
 
-### 1. Schema Versioning (v1 → v2)
+### 1. Schema Versioning (v1 v2)
 
 **Objective**: Enable schema evolution without breaking existing deployments
 
@@ -28,17 +28,17 @@ The standardization framework elevates the _codex_ archive system from baseline 
 **Example v2 Record**:
 ```json
 {
-  "ts": "2025-11-02T19:44:00Z",
-  "action": "ARCHIVE",
-  "actor": "marc",
-  "tombstone": "d3e8729-...",
-  "sha256": "e3b0c442...",
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "slsa_level": "L3",
-    "signature": "MEUCIQDx...",
-    "issuer": "https://token.actions.githubusercontent.com"
-  }
+ "ts": "2025-11-02T19:44:00Z",
+ "action": "ARCHIVE",
+ "actor": "marc",
+ "tombstone": "d3e8729-...",
+ "sha256": "e3b0c442...",
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "slsa_level": "L3",
+ "signature": "MEUCIQDx...",
+ "issuer": "https://token.actions.githubusercontent.com"
+ }
 }
 ```text
 
@@ -58,15 +58,15 @@ The standardization framework elevates the _codex_ archive system from baseline 
 **Identity Flow**:
 ```text
 GitHub Actions Job
-  ↓ (id-token permission)
+ (id-token permission)
 GitHub OIDC Provider
-  ↓ (SIGSTORE_ID_TOKEN)
+ (SIGSTORE_ID_TOKEN)
 _codex_ archive store()
-  ↓ (calls Fulcio)
+ (calls Fulcio)
 Ephemeral Certificate
-  ↓ (signs evidence record)
+ (signs evidence record)
 Signature + Certificate
-  ↓ (uploaded to Rekor)
+ (uploaded to Rekor)
 Transparency Log Entry
 ```text
 ### 3. Schema Validation
@@ -77,7 +77,7 @@ Transparency Log Entry
 
 1. **On Write**: Record validated against target schema before appending to JSONL
 2. **On Read**: Record validated before use (cached validators for performance)
-3. **On Migrate**: Both source and target schemas validated during v1→v2 migration
+3. **On Migrate**: Both source and target schemas validated during v1v2 migration
 
 **Tool**: `EvidenceSchemaValidator` class
 
@@ -89,14 +89,14 @@ Transparency Log Entry
 
 ```text
 StandardizationMetadata(
-    schema_version: str = "2.0",                      # v2 identifier
-    slsa_level: str = "L3",                           # SLSA compliance
-    signature: Optional[str] = None,                  # Sigstore signature
-    certificate_chain: Optional[list[str]] = None,    # Fulcio certs
-    issuer: Optional[str] = None,                     # OIDC issuer
-    signed_at: Optional[str] = None,                  # Signature timestamp
-    in_toto_attestation_id: Optional[str] = None,     # Link metadata (Phase 2+)
-    merkle_proof: Optional[Dict[str, Any]] = None     # Tree proof (Phase 3+)
+ schema_version: str = "2.0", # v2 identifier
+ slsa_level: str = "L3", # SLSA compliance
+ signature: Optional[str] = None, # Sigstore signature
+ certificate_chain: Optional[list[str]] = None, # Fulcio certs
+ issuer: Optional[str] = None, # OIDC issuer
+ signed_at: Optional[str] = None, # Signature timestamp
+ in_toto_attestation_id: Optional[str] = None, # Link metadata (Phase 2+)
+ merkle_proof: Optional[Dict[str, Any]] = None # Tree proof (Phase 3+)
 )
 ```text
 
@@ -132,15 +132,15 @@ export CODEX_SCHEMA_DIR=/path/to/schemas
 
 ```yaml
 permissions:
-  id-token: write  # ← REQUIRED for OIDC token
-  contents: read
+ id-token: write # REQUIRED for OIDC token
+ contents: read
 
 steps:
-  - name: Archive with standardization
-    env:
-      CODEX_STANDARDIZATION_ENABLED: "true"
-      CODEX_ENABLE_SIGNING: "true"
-    run: python -m codex.cli archive store _codex_ file.py --reason "test" --by "${{ github.actor }}"
+ - name: Archive with standardization
+ env:
+ CODEX_STANDARDIZATION_ENABLED: "true"
+ CODEX_ENABLE_SIGNING: "true"
+ run: python -m codex.cli archive store _codex_ file.py --reason "test" --by "${{ github.actor }}"
 ```text
 
 ## Compliance Mapping
@@ -149,20 +149,20 @@ steps:
 
 | SLSA Requirement | _codex_ Implementation | Evidence |
 |---|---|---|
-| **Provenance exists** |  Evidence records created | `.codex/evidence/archive_ops.jsonl` |
-| **Provenance signed** |  Sigstore keyless signature | `standardizationMetadata.signature` |
-| **Signed by service account** |  GitHub OIDC identity | `standardizationMetadata.issuer` |
-| **Ephemeral credentials** |  Short-lived Fulcio cert | Certificate chain in Rekor |
-| **Tamper protection** |  Append-only + immutable | JSONL format + git history |
+| **Provenance exists** | Evidence records created | `.codex/evidence/archive_ops.jsonl` |
+| **Provenance signed** | Sigstore keyless signature | `standardizationMetadata.signature` |
+| **Signed by service account** | GitHub OIDC identity | `standardizationMetadata.issuer` |
+| **Ephemeral credentials** | Short-lived Fulcio cert | Certificate chain in Rekor |
+| **Tamper protection** | Append-only + immutable | JSONL format + git history |
 
 ### in-toto Framework Readiness
 
 | in-toto Component | _codex_ Support | Status |
 |---|---|---|
-| **Layout** | Canonically defined in policy doc |  Phase 2 |
-| **Link Metadata** | Structure compatible |  Phase 2 (optional field) |
-| **Step Authorization** | Via OIDC claims + CODEOWNERS |  Phase 2 |
-| **Verification** | Automated checklist |  Phase 2 |
+| **Layout** | Canonically defined in policy doc | Phase 2 |
+| **Link Metadata** | Structure compatible | Phase 2 (optional field) |
+| **Step Authorization** | Via OIDC claims + CODEOWNERS | Phase 2 |
+| **Verification** | Automated checklist | Phase 2 |
 
 ## Migration & Deployment
 
@@ -189,20 +189,20 @@ steps:
 If issues arise:
 
 1. **Disable standardization**:
-   ```bash
-   export CODEX_STANDARDIZATION_ENABLED=false
-   ```
+ ```bash
+ export CODEX_STANDARDIZATION_ENABLED=false
+ ```
 
 2. **Revert database migrations** (if applied):
-   ```bash
-   # SQLite: No explicit rollback needed (columns optional)
-   # Postgres/MariaDB: Use `ALTER TABLE DROP COLUMN` if necessary
-   ```
+ ```bash
+ # SQLite: No explicit rollback needed (columns optional)
+ # Postgres/MariaDB: Use `ALTER TABLE DROP COLUMN` if necessary
+ ```
 
 3. **Restore from backup**:
-   ```bash
-   cp .codex/evidence/archive_ops.jsonl.backup .codex/evidence/archive_ops.jsonl
-   ```
+ ```bash
+ cp .codex/evidence/archive_ops.jsonl.backup .codex/evidence/archive_ops.jsonl
+ ```
 
 ## Validation & Testing
 
@@ -217,8 +217,8 @@ pytest tests/archive/test_standardization.py -v
 
 # Validate evidence log
 python -m codex.cli archive validate-standardization \
-  --check-schema-version \
-  --check-signatures
+ --check-schema-version \
+ --check-signatures
 ```text
 
 ## Post-Deployment Verification
@@ -242,17 +242,17 @@ python -m codex.cli archive show-standardization-status
 
 # Output:
 # ============================================================
-#  Archive Standardization Status
+# Archive Standardization Status
 # ============================================================
 # Standard Version: 2.0
 # SLSA Level: L3
-# Signing Enabled:  Yes
+# Signing Enabled: Yes
 # Schema Versions Supported: 1.0, 2.0
 #
 # Compliance:
-#  SLSA_L3
-#  IN_TOTO_READY
-#  SAA_COMPLIANT
+# SLSA_L3
+# IN_TOTO_READY
+# SAA_COMPLIANT
 ```text
 
 ## Validate Evidence Records
@@ -264,7 +264,7 @@ python -m codex.cli archive validate-standardization --check-schema-version
 # Validate signatures
 python -m codex.cli archive validate-standardization --check-signatures
 
-# Attempt repair (migrate v1→v2)
+# Attempt repair (migrate v1v2)
 python -m codex.cli archive validate-standardization --check-schema-version --repair
 ```text
 
@@ -275,32 +275,32 @@ python -m codex.cli archive validate-standardization --check-schema-version --re
 python -m codex.cli archive migrate-evidence-to-v2
 
 # Output:
-# ️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
-#  Starting migration v1 → v2...
-# 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
-#  Migration complete: 1234 records converted
+# This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
+# Starting migration v1 v2...
+# Backed up original to: .codex/evidence/archive_ops.jsonl.backup
+# Migration complete: 1234 records converted
 # v1 records: 0
 # v2 records: 1234
 ```text
 
 ## FAQ
 
-**Q: Will v1 records break?**  
+**Q: Will v1 records break?**
 A: No. v1 records remain fully supported and valid.
 
-**Q: Can I disable signing?**  
+**Q: Can I disable signing?**
 A: Yes, via `CODEX_ENABLE_SIGNING=false`, but SLSA L3 requires signing.
 
-**Q: What if Sigstore is unavailable?**  
+**Q: What if Sigstore is unavailable?**
 A: Archives will fail if signing enabled but Sigstore unreachable. Fallback to `CODEX_ENABLE_SIGNING=false` for continuity.
 
-**Q: Can I verify signatures offline?**  
+**Q: Can I verify signatures offline?**
 A: No—signature verification requires Rekor transparency log access.
 
-**Q: Will standardization impact performance?**  
+**Q: Will standardization impact performance?**
 A: Minor overhead (~5-10%) for signing operations, negligible for reads.
 
-**Q: How do I verify backward compatibility?**  
+**Q: How do I verify backward compatibility?**
 A: Run the test suite: `pytest tests/archive/test_standardization.py::TestBackwardCompatibility`
 
 ## References

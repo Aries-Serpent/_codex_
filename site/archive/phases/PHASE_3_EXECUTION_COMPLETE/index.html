@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_3_EXECUTION_COMPLETE/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 3 Execution Complete - Python 3.12 Standardization - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2392,11 +2392,11 @@
 <a class="md-nav__link" href="#key-achievements">
 <span class="md-ellipsis">
       
-        🎓 Key Achievements
+        Key Achievements
       
     </span>
 </a>
-<nav aria-label="🎓 Key Achievements" class="md-nav">
+<nav aria-label="Key Achievements" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#technical">
@@ -2530,7 +2530,7 @@
 <a class="md-nav__link" href="#support-resources">
 <span class="md-ellipsis">
       
-        📞 Support &amp; Resources
+        Support &amp; Resources
       
     </span>
 </a>
@@ -2547,7 +2547,7 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <p><strong>Date:2026-07-13
-</strong>Branch:<strong> copilot/sub-pr-2968<br/>
+</strong>Branch:<strong> copilot/sub-pr-2968
 </strong>Status:** Phase 3 Complete, Ready for Phase 4</p>
 <hr/>
 <h2 id="phase-3-summary">Phase 3 Summary<a class="headerlink" href="#phase-3-summary" title="Permanent link">¶</a></h2>
@@ -2577,10 +2577,10 @@
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div></p>
 <p><strong>Impact:</strong>
--  Removed matrix strategy (no parallel jobs for multiple versions)
--  Single Python 3.12 verification only
--  Simpler workflow, faster execution
--  Reduced GitHub Actions minutes usage</p>
+- Removed matrix strategy (no parallel jobs for multiple versions)
+- Single Python 3.12 verification only
+- Simpler workflow, faster execution
+- Reduced GitHub Actions minutes usage</p>
 <hr/>
 <h3 id="2-configuration-file-updates">2. Configuration File Updates<a class="headerlink" href="#2-configuration-file-updates" title="Permanent link">¶</a></h3>
 <p><strong>File:</strong> <code>pyproject.toml</code></p>
@@ -2591,17 +2591,17 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12,&lt;3.13"</span><span class="w">  </span><span class="c1"># Python 3.12 only - Breaking change from 3.11</span>
 </code></pre></div></p>
 <p><strong>Changes:</strong>
--  Added explicit upper bound (<code>&lt;3.13</code>) to prevent accidental 3.13 usage
--  Clear comment indicating Python 3.12-only requirement
--  Prevents future compatibility issues</p>
+- Added explicit upper bound (<code>&lt;3.13</code>) to prevent accidental 3.13 usage
+- Clear comment indicating Python 3.12-only requirement
+- Prevents future compatibility issues</p>
 <p><strong>File:</strong> <code>.python-version</code> (NEW)</p>
 <p><strong>Created:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>3.12.10
 </code></pre></div></p>
 <p><strong>Purpose:</strong>
--  Explicit version specification for pyenv users
--  Ensures local development uses Python 3.12.10
--  Consistency across development environments</p>
+- Explicit version specification for pyenv users
+- Ensures local development uses Python 3.12.10
+- Consistency across development environments</p>
 <hr/>
 <h3 id="3-test-code-cleanup">3. Test Code Cleanup<a class="headerlink" href="#3-test-code-cleanup" title="Permanent link">¶</a></h3>
 <p><strong>File:</strong> <code>tests/exceptions/test_exception_groups.py</code></p>
@@ -2661,10 +2661,10 @@
 </li>
 </ol>
 <p><strong>Impact:</strong>
--  4 skipif decorators removed
--  Cleaner test code (no version conditionals)
--  All tests now run unconditionally on Python 3.12
--  Updated docstrings to reflect Python 3.12 as baseline</p>
+- 4 skipif decorators removed
+- Cleaner test code (no version conditionals)
+- All tests now run unconditionally on Python 3.12
+- Updated docstrings to reflect Python 3.12 as baseline</p>
 <hr/>
 <h2 id="verification-status">Verification Status<a class="headerlink" href="#verification-status" title="Permanent link">¶</a></h2>
 <h3 id="files-modified">Files Modified<a class="headerlink" href="#files-modified" title="Permanent link">¶</a></h3>
@@ -2700,7 +2700,7 @@
 <li>Clear, explicit version requirements</li>
 </ul>
 <hr/>
-<h2 id="key-achievements">🎓 Key Achievements<a class="headerlink" href="#key-achievements" title="Permanent link">¶</a></h2>
+<h2 id="key-achievements">Key Achievements<a class="headerlink" href="#key-achievements" title="Permanent link">¶</a></h2>
 <h3 id="technical">Technical<a class="headerlink" href="#technical" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Single Source of Truth:</strong> Python 3.12.10 across all configuration</li>
@@ -2749,10 +2749,10 @@
 </ul>
 <hr/>
 <h2 id="overall-progress">Overall Progress<a class="headerlink" href="#overall-progress" title="Permanent link">¶</a></h2>
-<p><strong>Phases Completed:</strong> 3 of 6 (50%)<br/>
-<strong>Issues Resolved:</strong> 148+ (Phases 1-2) + Python 3.12 standardization (Phase 3)<br/>
-<strong>Test Improvements:</strong> Core suites passing, version checks removed<br/>
-<strong>Configuration:</strong> Fully standardized to Python 3.12  </p>
+<p><strong>Phases Completed:</strong> 3 of 6 (50%)
+<strong>Issues Resolved:</strong> 148+ (Phases 1-2) + Python 3.12 standardization (Phase 3)
+<strong>Test Improvements:</strong> Core suites passing, version checks removed
+<strong>Configuration:</strong> Fully standardized to Python 3.12</p>
 <p><strong>Timeline:</strong>
 - Phase 1: ~1 hour (117+ fixes)
 - Phase 2: ~2 hours (31+ fixes)
@@ -2795,7 +2795,7 @@
 <li>Documentation alongside code changes</li>
 </ol>
 <hr/>
-<h2 id="support-resources">📞 Support &amp; Resources<a class="headerlink" href="#support-resources" title="Permanent link">¶</a></h2>
+<h2 id="support-resources">Support &amp; Resources<a class="headerlink" href="#support-resources" title="Permanent link">¶</a></h2>
 <p><strong>Documentation:</strong>
 - Plan files: <code>.github/plans/plan0-plan6.md</code>
 - Analysis: <code>../validation/CI_CD_ANALYSIS_FINAL_REPORT.md</code>
@@ -2807,8 +2807,8 @@
 - PR: #2968
 - Branch: copilot/sub-pr-2968</p>
 <hr/>
-<p><strong>Status:</strong>  Phase 3 Complete |  Phase 4 Ready |  Phases 5-6 Queued<br/>
-<strong>Overall Progress:</strong> 50% Complete (3 of 6 phases done)<br/>
+<p><strong>Status:</strong> Phase 3 Complete | Phase 4 Ready | Phases 5-6 Queued
+<strong>Overall Progress:</strong> 50% Complete (3 of 6 phases done)
 <strong>Next Milestone:</strong> CI/CD validation and comprehensive testing</p>
 </article>
 </div>
@@ -2839,6 +2839,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

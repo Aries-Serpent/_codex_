@@ -89,7 +89,7 @@
     "pypi_environment": "pypi",
     "oidc_trusted_publisher": true,
     "requires_manual_upload": false,
-    "workflow_trigger": "tag v0.2.1 push"
+    "workflow_trigger": "tag v0.2.0 push"
   },
   "checksums": {
     "total_distributions": 2,

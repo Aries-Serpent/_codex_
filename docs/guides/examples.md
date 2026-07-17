@@ -1,6 +1,6 @@
 # Examples
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -22,16 +22,16 @@ Comprehensive examples for all Cognitive Brain components.
 
 ```python
 from github.agents.core.universal_intelligence import (
-    UniversalTaskInterface,
-    TaskSpec,
+ UniversalTaskInterface,
+ TaskSpec,
 )
 
 spec = TaskSpec(
-    environment="gridworld",
-    initial_state={"x": 0, "y": 0, "goal": {"x": 5, "y": 5}},
-    reward_spec={"id": "reward:v1"},
-    termination={"max_steps": 50},
-    seed=12345
+ environment="gridworld",
+ initial_state={"x": 0, "y": 0, "goal": {"x": 5, "y": 5}},
+ reward_spec={"id": "reward:v1"},
+ termination={"max_steps": 50},
+ seed=12345
 )
 
 uti = UniversalTaskInterface(seed=12345)
@@ -50,10 +50,10 @@ from github.agents.core.universal_intelligence import MetaPolicyRouter
 router = MetaPolicyRouter(seed=12345)
 
 # Prepare task data
-task_data = [(x, x**2) for x in range(10)]  # pragma: allowlist secret
+task_data = [(x, x**2) for x in range(10)] # pragma: allowlist secret
 
 # Adapt with MAML
-adapted = router.adapt_with_maml("regression_task", task_data)  # pragma: allowlist secret
+adapted = router.adapt_with_maml("regression_task", task_data) # pragma: allowlist secret
 
 # Use adapted parameters
 print(f"Adapted params: {adapted}")
@@ -63,7 +63,7 @@ print(f"Adapted params: {adapted}")
 
 ```python
 # Adapt with Reptile (simpler, more stable)
-adapted = router.adapt_with_reptile("regression_task", task_data)  # pragma: allowlist secret
+adapted = router.adapt_with_reptile("regression_task", task_data) # pragma: allowlist secret
 ```
 
 ## Strategy Selection
@@ -87,26 +87,26 @@ hyperparams = router.get_hyperparams(selected)
 
 ```python
 from github.agents.core.universal_intelligence import (
-    UniversalPatternStore,
-    Pattern,
+ UniversalPatternStore,
+ Pattern,
 )
 
 store = UniversalPatternStore()
 
 # Store pattern
 pattern = Pattern(
-    id="nav_pattern_1",
-    domain="gridworld",
-    payload={"strategy": "shortest_path", "cost": "manhattan"},
-    version="1.0.0",
+ id="nav_pattern_1",
+ domain="gridworld",
+ payload={"strategy": "shortest_path", "cost": "manhattan"},
+ version="1.0.0",
 )
 pattern_id = store.store_pattern(pattern)
 
 # Retrieve by similarity
 query_pattern = Pattern(
-    id="query",
-    domain="gridworld",
-    payload={"strategy": "path_finding"},
+ id="query",
+ domain="gridworld",
+ payload={"strategy": "path_finding"},
 )
 similar = store.retrieve_by_similarity(query_pattern, threshold=0.7)
 
@@ -119,10 +119,10 @@ cross_domain = store.retrieve_cross_domain("gridworld", limit=5)
 ```python
 # Update pattern version
 pattern_v2 = Pattern(
-    id="nav_pattern_1",
-    domain="gridworld",
-    payload={"strategy": "a_star", "heuristic": "euclidean"},
-    version="2.0.0",
+ id="nav_pattern_1",
+ domain="gridworld",
+ payload={"strategy": "a_star", "heuristic": "euclidean"},
+ version="2.0.0",
 )
 store.store_pattern(pattern_v2)
 
@@ -141,8 +141,8 @@ old_pattern.deprecated = True
 from github.agents.core.universal_intelligence import SafetyMonitor
 
 monitor = SafetyMonitor(
-    neg_transfer_threshold=0.05,
-    forgetting_threshold=0.20
+ neg_transfer_threshold=0.05,
+ forgetting_threshold=0.20
 )
 
 # Set baseline for domain
@@ -152,14 +152,14 @@ monitor.set_baseline("navigation", 0.85)
 current_performance = 0.75
 
 if monitor.detect_negative_transfer("navigation", current_performance):
-    print("️ Negative transfer detected!")
-    if monitor.trigger_rollback("navigation"):
-        print(" Rolled back to baseline")
+ print(" Negative transfer detected!")
+ if monitor.trigger_rollback("navigation"):
+ print(" Rolled back to baseline")
 
 if monitor.detect_forgetting("navigation", current_performance):
-    print("️ Forgetting detected!")
-    monitor.isolate_domain("navigation")
-    print(" Domain isolated")
+ print(" Forgetting detected!")
+ monitor.isolate_domain("navigation")
+ print(" Domain isolated")
 ```
 
 ## Safety Constraints
@@ -167,7 +167,7 @@ if monitor.detect_forgetting("navigation", current_performance):
 ```python
 # Check if domain is isolated
 if monitor.is_domain_isolated("navigation"):
-    print("Domain is in quarantine")
+ print("Domain is in quarantine")
 
 # Get safety report
 report = monitor.get_safety_report()
@@ -183,8 +183,8 @@ print(f"Rollback count: {report['rollback_count']}")
 
 ```python
 from github.agents.core.universal_intelligence import (
-    EXP10BenchmarkHarness,
-    UniversalTaskInterface,
+ EXP10BenchmarkHarness,
+ UniversalTaskInterface,
 )
 
 # Create harness
@@ -224,4 +224,4 @@ See Jupyter notebooks in `examples/notebooks/`:
 
 ---
 
-**Next**: [Architecture →](../../architecture/ARCHITECTURE_CONSOLIDATED.md)
+**Next**: [Architecture ](../../architecture/ARCHITECTURE_CONSOLIDATED.md)

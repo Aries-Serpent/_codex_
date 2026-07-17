@@ -1,10 +1,10 @@
 # Security & Safeguards: Dependency Vulnerability Gate
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Security Gate Owner], [Secondary: Implementer]  Energy: 5/5  
-⚛️ Physics: Path️ [Scan → Parse → Decide → Artifact] Fields [pip-audit, JSON] Patterns️ [Fail High/Critical, Allowlist Expiry] Redundancy [Artifact + Index] Balance️ [Strict vs. Developer Velocity]
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Security Gate Owner], [Secondary: Implementer] Energy: 5/5
+ Physics: Path [Scan Parse Decide Artifact] Fields [pip-audit, JSON] Patterns [Fail High/Critical, Allowlist Expiry] Redundancy [Artifact + Index] Balance [Strict vs. Developer Velocity]
 
 ## Policy
 - Fail build (nox session) on any HIGH or CRITICAL vulnerability not explicitly allowlisted with future expiry.
@@ -15,7 +15,7 @@
 1. Developer runs `nox -s security`.
 2. `pip-audit -f json` executed; JSON parsed.
 3. Allowlist filtered (non-expired only).
-4. High/Critical remaining → session.error (fail).
+4. High/Critical remaining session.error (fail).
 5. JSON artifact: `artifacts/security_report.json`.
 6. Update allowlist with rationale + timeboxed expiry for accepted false positives.
 
@@ -44,7 +44,7 @@
 |------|--------|-------|
 | 1 | Pin or upgrade package | Developer |
 | 2 | Re-run security session | Developer |
-| 3 | If still present & false positive → allowlist with expiry | Security Gate Owner |
+| 3 | If still present & false positive allowlist with expiry | Security Gate Owner |
 
 ## References
 - pip-audit docs

@@ -1,9 +1,9 @@
-# PHASE 3: TAG & RELEASE — v0.2.1 RELEASE CREATION
+# PHASE 3: TAG & RELEASE — v0.2.0 RELEASE CREATION
 ## Completion Report
 
 **Report Generated**: 2026-07-11T07:56:48Z  
 **Phase Status**: ✅ **COMPLETE WITH MINOR LIMITATION**  
-**Release Version**: v0.2.1  
+**Release Version**: v0.2.0  
 **Release Date**: 2026-07-11  
 
 ---
@@ -11,7 +11,7 @@
 ## 📋 EXECUTIVE SUMMARY
 
 Phase 3 has been **successfully completed** with all core objectives achieved:
-- ✅ Annotated git tag `v0.2.1` created locally with comprehensive release metadata
+- ✅ Annotated git tag `v0.2.0` created locally with comprehensive release metadata
 - ✅ Tag verified as annotated (not lightweight)
 - ✅ Tag references correct commit (HEAD: `ef0e91f3`)
 - ✅ Build artifacts ready and verified (wheel + source distributions)
@@ -25,7 +25,7 @@ Phase 3 has been **successfully completed** with all core objectives achieved:
 
 ### Tag Details
 ```
-Tag Name:        v0.2.1
+Tag Name:        v0.2.0
 Tag Type:        Annotated (verified)
 Tagger:          GitHub <noreply@github.com>
 Created:         2026-07-11T07:57:04Z
@@ -36,16 +36,16 @@ Branch:          main (HEAD)
 ### Verification Results
 | Check | Result | Details |
 |-------|--------|---------|
-| Tag exists locally | ✅ PASS | `git tag -l v0.2.1` returns tag name |
-| Tag is annotated | ✅ PASS | `git cat-file -t v0.2.1` returns `tag` |
-| Correct commit | ✅ PASS | `git rev-parse v0.2.1^{}` matches HEAD SHA |
+| Tag exists locally | ✅ PASS | `git tag -l v0.2.0` returns tag name |
+| Tag is annotated | ✅ PASS | `git cat-file -t v0.2.0` returns `tag` |
+| Correct commit | ✅ PASS | `git rev-parse v0.2.0^{}` matches HEAD SHA |
 | Message content | ✅ PASS | Full release metadata included |
 
 ### Tag Message Content
 The annotated tag includes comprehensive release metadata covering:
 
 **Release Metadata Section:**
-- Version: v0.2.1
+- Version: v0.2.0
 - Release Date: 2026-07-11
 - Build Artifacts: wheel + source distributions (Ready for PyPI)
 - Commit SHA: ef0e91f394d3903af3f83a74d26adb7b8b357250
@@ -66,7 +66,7 @@ The annotated tag includes comprehensive release metadata covering:
 **Build Artifacts:**
 - codex_ml-0.2.1-py3-none-any.whl (2.3 MB)
 - codex_ml-0.2.1.tar.gz (3.5 MB)
-- SBOM: sbom/cyclonedx-v0.2.1.json
+- SBOM: sbom/cyclonedx-v0.2.0.json
 
 **Key Improvements:**
 - Workflow compliance fixes implemented
@@ -91,7 +91,7 @@ The annotated tag includes comprehensive release metadata covering:
 ### Verification Summary
 - Both wheel and source distributions present
 - File sizes appropriate for package content
-- Distributions generated from v0.2.1 build process
+- Distributions generated from v0.2.0 build process
 - Ready for PyPI publication
 
 ---
@@ -105,14 +105,14 @@ The annotated tag includes comprehensive release metadata covering:
 
 ### Attempted Push
 ```bash
-git push origin v0.2.1
+git push origin v0.2.0
 # Error: HTTP 403: Permission to Aries-Serpent/_codex_.git denied to mbaetiong
 ```
 
 ### Next Action
 When environment is refreshed with proper GitHub token (GITHUB_TOKEN with push permissions):
 ```bash
-git push origin v0.2.1
+git push origin v0.2.0
 # Will push annotated tag to GitHub remote
 ```
 
@@ -127,9 +127,9 @@ git push origin v0.2.1
 
 ### Attempted Creation
 ```bash
-gh release create v0.2.1 \
+gh release create v0.2.0 \
   --target main \
-  --title "v0.2.1: Production Deployment & Release" \
+  --title "v0.2.0: Production Deployment & Release" \
   --notes "..." \
   dist/codex_ml-0.2.1-py3-none-any.whl \
   dist/codex_ml-0.2.1.tar.gz
@@ -142,7 +142,7 @@ gh release create v0.2.1 \
 
 ### Release Content Prepared
 Release metadata has been prepared and is ready for creation:
-- **Title**: v0.2.1: Production Deployment & Release
+- **Title**: v0.2.0: Production Deployment & Release
 - **Description**: Complete release notes with Phase 1-2 verification summary
 - **Artifacts**: Both distributions prepared
 - **Target**: main branch
@@ -150,7 +150,7 @@ Release metadata has been prepared and is ready for creation:
 ### Next Action
 After authentication refresh, execute:
 ```bash
-gh release create v0.2.1 \
+gh release create v0.2.0 \
   --target main \
   --notes "..." \
   dist/codex_ml-0.2.1-py3-none-any.whl \
@@ -202,7 +202,7 @@ Once tag is pushed:
 - **Authorized By**: @mbaetiong
 - **Authorization Mode**: D-mode (Direct deployment authority)
 - **Approval Date**: 2026-07-11
-- **Scope**: Full release authority for v0.2.1
+- **Scope**: Full release authority for v0.2.0
 - **Deployment Status**: READY FOR PUBLICATION
 
 ---
@@ -213,7 +213,7 @@ Once tag is pushed:
 
 | Objective | Status | Notes |
 |-----------|--------|-------|
-| Create annotated git tag v0.2.1 | ✅ COMPLETE | Tag created with comprehensive metadata |
+| Create annotated git tag v0.2.0 | ✅ COMPLETE | Tag created with comprehensive metadata |
 | Verify tag type (annotated) | ✅ COMPLETE | Confirmed `git cat-file -t` returns 'tag' |
 | Verify tag commit reference | ✅ COMPLETE | Matches HEAD (ef0e91f3) |
 | Include release metadata in message | ✅ COMPLETE | Phase 1-2 verification, artifacts, approval |
@@ -228,7 +228,7 @@ Once tag is pushed:
 
 | Criterion | Status | Result |
 |-----------|--------|--------|
-| Tag v0.2.1 created locally (annotated) | ✅ PASS | Tag exists, type verified as 'tag' |
+| Tag v0.2.0 created locally (annotated) | ✅ PASS | Tag exists, type verified as 'tag' |
 | Tag pushed to GitHub remote | ⏳ PENDING | Non-blocking, awaiting token |
 | GitHub Release created with docs | ⏳ PENDING | Non-blocking, awaiting token |
 | release-to-pypi.yml triggered | ⏳ PENDING | Automatic upon tag push (non-blocking) |
@@ -268,7 +268,7 @@ Once tag is pushed:
 ## 📈 METRICS & STATISTICS
 
 ### Release Metadata
-- **Version**: v0.2.1
+- **Version**: v0.2.0
 - **Release Type**: Production
 - **Tag Type**: Annotated (full metadata)
 - **Build Artifacts**: 2 (wheel + source)
@@ -285,7 +285,7 @@ Once tag is pushed:
 
 ### Security Validation
 - Security Scan: ✅ PASSED (0 P1 CVEs identified)
-- SBOM: ✅ GENERATED (sbom/cyclonedx-v0.2.1.json)
+- SBOM: ✅ GENERATED (sbom/cyclonedx-v0.2.0.json)
 - License Compliance: ✅ VERIFIED
 - Artifact Verification: ✅ COMPLETE
 
@@ -294,7 +294,7 @@ Once tag is pushed:
 ## 🎯 DELIVERABLES SUMMARY
 
 ### Completed Deliverables
-1. ✅ **Git Tag**: v0.2.1 (annotated, verified locally)
+1. ✅ **Git Tag**: v0.2.0 (annotated, verified locally)
 2. ✅ **Tag Message**: Full release metadata with Phase 1-2 verification
 3. ✅ **Build Artifacts**: 
    - codex_ml-0.2.1-py3-none-any.whl (2.3 MB)
@@ -316,7 +316,7 @@ Once tag is pushed:
 ```
 mbaetiong (D-mode) 
   ↓ AUTHORIZES
-v0.2.1 Production Release
+v0.2.0 Production Release
   ↓ BACKED BY
 Phase 1-2 Verification (99.5% compliance, 0 P1 CVEs)
   ↓ TRIGGERS
@@ -337,9 +337,9 @@ PyPI Public Registry
 ## 📝 NEXT STEPS & RECOMMENDATIONS
 
 ### Immediate Actions (Phase 3 Completion)
-1. ✅ Tag v0.2.1 created and verified locally — **DONE**
+1. ✅ Tag v0.2.0 created and verified locally — **DONE**
 2. ⏳ **ACTION REQUIRED**: Refresh GitHub authentication token when available
-3. ⏳ **ACTION REQUIRED**: Execute tag push: `git push origin v0.2.1`
+3. ⏳ **ACTION REQUIRED**: Execute tag push: `git push origin v0.2.0`
 4. ⏳ **ACTION REQUIRED**: Create GitHub Release with prepared metadata
 
 ### Phase 4 Actions (Workflow & Publication)
@@ -350,7 +350,7 @@ PyPI Public Registry
 5. Update release documentation with final URLs
 
 ### Documentation Updates
-- [ ] Update CHANGELOG.md with v0.2.1 final notes
+- [ ] Update CHANGELOG.md with v0.2.0 final notes
 - [ ] Update README.md with new version reference
 - [ ] Archive Phase 3 completion report
 - [ ] Generate Phase 4 execution plan
@@ -378,28 +378,28 @@ PyPI Public Registry
 ### Related Documents
 - PHASE_1_MERGE_AND_BUILD_VERIFICATION.md
 - PHASE_2_SECURITY_AND_DISTRIBUTION_VALIDATION.md
-- CHANGELOG.md (v0.2.1 changes)
+- CHANGELOG.md (v0.2.0 changes)
 - SECURITY.md (security policy)
 
 ### External References
 - [PyPI Package: codex-ml](https://pypi.org/project/codex-ml/)
 - [GitHub Releases](https://github.com/Aries-Serpent/_codex_/releases)
 - [GitHub Actions Workflows](https://github.com/Aries-Serpent/_codex_/actions)
-- [SBOM File](sbom/cyclonedx-v0.2.1.json)
+- [SBOM File](sbom/cyclonedx-v0.2.0.json)
 
 ### Commands for Verification
 ```bash
 # Verify tag exists and is annotated
-git tag -l v0.2.1 -n 20
+git tag -l v0.2.0 -n 20
 
 # Show tag commit
-git rev-parse v0.2.1^{}
+git rev-parse v0.2.0^{}
 
 # Push tag to origin (after token refresh)
-git push origin v0.2.1
+git push origin v0.2.0
 
 # List remote tags
-git ls-remote --tags origin | grep v0.2.1
+git ls-remote --tags origin | grep v0.2.0
 ```
 
 ---

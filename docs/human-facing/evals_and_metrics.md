@@ -1,6 +1,6 @@
 # Evals & Metrics
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Last updated: 2026-06-22
 
@@ -70,11 +70,17 @@ This document describes the evaluation framework and metrics for the _codex_ sys
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Test Cases, Run Agent'}}%%
+
 graph LR
+
     A[Test Cases] --> B[Run Agent]
+
     B --> C[Collect Outputs]
+
     C --> D[Score Responses]
+
     D --> E[Generate Report]
+
     E --> F[Update Dashboard]
 ```
 

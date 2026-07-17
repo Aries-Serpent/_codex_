@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3422/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3422 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2274,9 +2274,9 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <h1 id="phase-4-memory-layer-xtermjs-auth-forwarding-telemetry-classifiers">Phase 4: Memory Layer + xterm.js + Auth Forwarding + Telemetry Classifiers<a class="headerlink" href="#phase-4-memory-layer-xtermjs-auth-forwarding-telemetry-classifiers" title="Permanent link">¶</a></h1>
-<p><strong>Status:</strong>  COMPLETE<br/>
-<strong>PR:</strong> #3422<br/>
-<strong>Branch:</strong> <code>copilot/add-sqlite-memory-integration</code><br/>
+<p><strong>Status:</strong> COMPLETE
+<strong>PR:</strong> #3422
+<strong>Branch:</strong> <code>copilot/add-sqlite-memory-integration</code>
 <strong>Date:2026-07-13
 </strong>Agent:** copilot-swe-agent (Phase 4 session)</p>
 <hr/>
@@ -2292,7 +2292,7 @@
 <tbody>
 <tr>
 <td>P4.1</td>
-<td>Frontend hooks <code>→ VITE_CLI_API_URL</code> (3 files)</td>
+<td>Frontend hooks <code>VITE_CLI_API_URL</code> (3 files)</td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2317,7 +2317,7 @@
 </tr>
 <tr>
 <td>P4.3</td>
-<td>Auth header forwarding (<code>CODEX_MASTER_KEY → Bearer</code>)</td>
+<td>Auth header forwarding (<code>CODEX_MASTER_KEY Bearer</code>)</td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2327,7 +2327,7 @@
 </tr>
 <tr>
 <td>P4.4</td>
-<td><code>App.tsx</code> CLI tab → <code>&lt;XtermTerminal /&gt;</code></td>
+<td><code>App.tsx</code> CLI tab <code>&lt;XtermTerminal /&gt;</code></td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2347,7 +2347,7 @@
 </tr>
 <tr>
 <td>P4.7</td>
-<td><code>AGENT_REGISTRY.yaml</code> v0.2.1 (126→128)</td>
+<td><code>AGENT_REGISTRY.yaml</code> v0.2.1 (126128)</td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2390,48 +2390,48 @@
 <hr/>
 <h2 id="architecture-state-post-phase-4">Architecture State (Post Phase 4)<a class="headerlink" href="#architecture-state-post-phase-4" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>COGNITIVE BRAIN — PHASE 4 PRODUCTION STATE
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>═══════════════════════════════════════════
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>React Frontend (cognitive_app/src/)
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── App.tsx [8 tabs, CLI → XtermTerminal]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>├── hooks/
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   ├── use-memory-system.ts      → VITE_CLI_API_URL :8765   P4.1
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│   ├── use-quantum-state.ts      → VITE_CLI_API_URL :8765   P4.1
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   └── use-agent-orchestration.ts→ VITE_CLI_API_URL :8765   P4.1
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└── components/cli/
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    ├── XtermTerminal.tsx          [real PTY via /ws/cli]     P4.4
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    ├── CliTerminal.tsx            [legacy textarea]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    └── ApiClient.tsx
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> App.tsx [8 tabs, CLI XtermTerminal]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> hooks/
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> use-memory-system.ts VITE_CLI_API_URL :8765 P4.1
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> use-quantum-state.ts VITE_CLI_API_URL :8765 P4.1
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> use-agent-orchestration.ts VITE_CLI_API_URL :8765 P4.1
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> components/cli/
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> XtermTerminal.tsx [real PTY via /ws/cli] P4.4
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> CliTerminal.tsx [legacy textarea]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> ApiClient.tsx
 <a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
 <a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>FastAPI Server (cli_api_server.py :8765)
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>├── /ws/cli              PTY WebSocket               PR #3421
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>├── /api/cli/run         One-shot execution          PR #3421
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>├── /api/cli/history     SQLite-backed history       PR #3421
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>├── /api/ooda/process    CognitiveAppMain.process()  PR #3421 → SQLiteMemory P4.2
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>├── /api/ooda/metrics    K1 factor                   PR #3421
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>├── /api/memory/state    STM/LTM counts              P4.2 NEW
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>├── /api/memory/search   Full-text STM+LTM           P4.2 NEW
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>└── /api/request         HTTP proxy + GitHub auth    P4.3 NEW
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> /ws/cli PTY WebSocket PR #3421
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> /api/cli/run One-shot execution PR #3421
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> /api/cli/history SQLite-backed history PR #3421
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> /api/ooda/process CognitiveAppMain.process() PR #3421 SQLiteMemory P4.2
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> /api/ooda/metrics K1 factor PR #3421
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> /api/memory/state STM/LTM counts P4.2 NEW
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> /api/memory/search Full-text STM+LTM P4.2 NEW
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> /api/request HTTP proxy + GitHub auth P4.3 NEW
 <a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
 <a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>SQLite (CODEX_DB_PATH)
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>├── cli_history    [command runs]       PR #3421
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>├── stm_entries    [short-term memory]  P4.2 NEW
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>└── ltm_entries    [long-term memory]   P4.2 NEW
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> cli_history [command runs] PR #3421
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> stm_entries [short-term memory] P4.2 NEW
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> ltm_entries [long-term memory] P4.2 NEW
 <a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
 <a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>Python Cognitive Layer
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>├── SQLiteMemory(MemoryInterface)  P4.2 NEW
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>├── OODAOrchestrator.execute()    auto-init with SQLiteMemory
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>└── CognitiveAppMain.process()    unchanged
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> SQLiteMemory(MemoryInterface) P4.2 NEW
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> OODAOrchestrator.execute() auto-init with SQLiteMemory
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> CognitiveAppMain.process() unchanged
 <a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
 <a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>CI / Telemetry
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>├── collect_telemetry.py  [+3 classifiers: datetime-error, build-config, packaging]  P4.5
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>├── ci-health-monitor.yml [CODEX_CI_FAILURE_RATE]  PR #3421
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>└── agent-auth-delegation.yml [REQ-8 memory health gate]  P4.8
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> collect_telemetry.py [+3 classifiers: datetime-error, build-config, packaging] P4.5
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> ci-health-monitor.yml [CODEX_CI_FAILURE_RATE] PR #3421
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> agent-auth-delegation.yml [REQ-8 memory health gate] P4.8
 <a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>
 <a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>Agents (128 total)
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>├── memory-sync-agent.md           v2.0 with diagram  P4.6
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>├── telemetry-classifier-agent.md  v2.0 with diagram  P4.6
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>└── cognitive-ooda-loop-agent.md   v2.0 Phase 4 wiring  P4.8 (updated)
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> memory-sync-agent.md v2.0 with diagram P4.6
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a> telemetry-classifier-agent.md v2.0 with diagram P4.6
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> cognitive-ooda-loop-agent.md v2.0 Phase 4 wiring P4.8 (updated)
 </code></pre></div>
 <hr/>
 <h2 id="phase-4-metrics">Phase 4 Metrics<a class="headerlink" href="#phase-4-metrics" title="Permanent link">¶</a></h2>
@@ -2446,7 +2446,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Frontend hooks → real API</td>
+<td>Frontend hooks real API</td>
 <td>0/3</td>
 <td><strong>3/3</strong></td>
 <td>3/3</td>
@@ -2528,7 +2528,7 @@
 </ul>
 <h3 id="sprint-15-phase-5-governance">Sprint 15 — Phase 5 Governance<a class="headerlink" href="#sprint-15-phase-5-governance" title="Permanent link">¶</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> AGENT_REGISTRY.yaml v0.2.1 (128→130)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> AGENT_REGISTRY.yaml v0.2.1 (128130)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> CHANGELOG Phase 5 entry</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> SESSION_RESTORE_PR3423.md chain prompt</li>
 </ul>
@@ -2573,7 +2573,7 @@
 </ul>
 <hr/>
 <p><strong>Report generated:2026-07-13
-</strong>Next review:<strong> After PR #3422 merge + 7-day telemetry cycle<br/>
+</strong>Next review:<strong> After PR #3422 merge + 7-day telemetry cycle
 </strong>Maintainer:** copilot-swe-agent (Phase 4 session)</p>
 </article>
 </div>
@@ -2604,6 +2604,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

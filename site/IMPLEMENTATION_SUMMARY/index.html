@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/IMPLEMENTATION_SUMMARY/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Expanded Context Workflow Implementation - Final Summary - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2303,11 +2303,11 @@
 <a class="md-nav__link" href="#files-createdmodified">
 <span class="md-ellipsis">
       
-        📁 Files Created/Modified
+        Files Created/Modified
       
     </span>
 </a>
-<nav aria-label="📁 Files Created/Modified" class="md-nav">
+<nav aria-label="Files Created/Modified" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#core-implementation-6-files">
@@ -2343,11 +2343,11 @@
 <a class="md-nav__link" href="#key-features-implemented">
 <span class="md-ellipsis">
       
-        🎨 Key Features Implemented
+        Key Features Implemented
       
     </span>
 </a>
-<nav aria-label="🎨 Key Features Implemented" class="md-nav">
+<nav aria-label="Key Features Implemented" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#1-intelligent-text-chunking">
@@ -2609,11 +2609,11 @@
 <a class="md-nav__link" href="#summary">
 <span class="md-ellipsis">
       
-        🎉 Summary
+        Summary
       
     </span>
 </a>
-<nav aria-label="🎉 Summary" class="md-nav">
+<nav aria-label="Summary" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#achievements">
@@ -2649,11 +2649,11 @@
 <a class="md-nav__link" href="#next-steps-optional-enhancements">
 <span class="md-ellipsis">
       
-        🔮 Next Steps (Optional Enhancements)
+        Next Steps (Optional Enhancements)
       
     </span>
 </a>
-<nav aria-label="🔮 Next Steps (Optional Enhancements)" class="md-nav">
+<nav aria-label="Next Steps (Optional Enhancements)" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#immediate-week-1">
@@ -2689,7 +2689,7 @@
 <a class="md-nav__link" href="#support">
 <span class="md-ellipsis">
       
-        📞 Support
+        Support
       
     </span>
 </a>
@@ -2719,37 +2719,37 @@
 <li><strong>Integration</strong> - Build scripts and dependency management</li>
 </ol>
 <hr/>
-<h2 id="files-createdmodified">📁 Files Created/Modified<a class="headerlink" href="#files-createdmodified" title="Permanent link">¶</a></h2>
+<h2 id="files-createdmodified">Files Created/Modified<a class="headerlink" href="#files-createdmodified" title="Permanent link">¶</a></h2>
 <h3 id="core-implementation-6-files">Core Implementation (6 files)<a class="headerlink" href="#core-implementation-6-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>src/codex/rag/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── __init__.py          (MODIFIED) - Exported new components
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── indexer.py           (NEW)      - 369 lines - Text chunking &amp; index building
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── retriever.py         (NEW)      - 332 lines - Semantic search &amp; retrieval
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>└── embeddings.py        (NEW)      - 411 lines - Provider abstraction &amp; caching
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> __init__.py (MODIFIED) - Exported new components
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> indexer.py (NEW) - 369 lines - Text chunking &amp; index building
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> retriever.py (NEW) - 332 lines - Semantic search &amp; retrieval
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> embeddings.py (NEW) - 411 lines - Provider abstraction &amp; caching
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>scripts/
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├── expanded_context_audit.py  (NEW) - 371 lines - Feature audit scanner
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>└── local/build_faiss.sh       (MODIFIED) - Updated for new indexer
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> expanded_context_audit.py (NEW) - 371 lines - Feature audit scanner
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> local/build_faiss.sh (MODIFIED) - Updated for new indexer
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>pyproject.toml           (MODIFIED) - Added [rag] dependencies
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>pyproject.toml (MODIFIED) - Added [rag] dependencies
 </code></pre></div>
 <h3 id="testing-3-files">Testing (3 files)<a class="headerlink" href="#testing-3-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>tests/
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── test_rag_indexer.py    (NEW) - 370 lines - 16+ tests
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>├── test_rag_retriever.py  (NEW) - 485 lines - 25+ tests
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>└── test_rag_embeddings.py (NEW) - 573 lines - 30+ tests
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> test_rag_indexer.py (NEW) - 370 lines - 16+ tests
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> test_rag_retriever.py (NEW) - 485 lines - 25+ tests
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> test_rag_embeddings.py (NEW) - 573 lines - 30+ tests
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>Total: 1,428 lines of test code, 70+ test cases
 </code></pre></div>
 <h3 id="documentation-3-files">Documentation (3 files)<a class="headerlink" href="#documentation-3-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>docs/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── EXPANDED_CONTEXT_RAG.md      (NEW) - 310 lines - User guide
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>├── TEST_COVERAGE_PLAN_RAG.md    (NEW) - 420 lines - Path to 100% coverage
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>└── reports/
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    └── expanded_context_summary.md (NEW) - Audit results
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> EXPANDED_CONTEXT_RAG.md (NEW) - 310 lines - User guide
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> TEST_COVERAGE_PLAN_RAG.md (NEW) - 420 lines - Path to 100% coverage
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> reports/
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> expanded_context_summary.md (NEW) - Audit results
 </code></pre></div>
 <hr/>
-<h2 id="key-features-implemented">🎨 Key Features Implemented<a class="headerlink" href="#key-features-implemented" title="Permanent link">¶</a></h2>
+<h2 id="key-features-implemented">Key Features Implemented<a class="headerlink" href="#key-features-implemented" title="Permanent link">¶</a></h2>
 <h3 id="1-intelligent-text-chunking">1. Intelligent Text Chunking<a class="headerlink" href="#1-intelligent-text-chunking" title="Permanent link">¶</a></h3>
 <ul>
 <li>Configurable chunk sizes with overlap</li>
@@ -2767,9 +2767,9 @@
 <li><strong>Abstract</strong>: Protocol-based design for extensibility</li>
 </ul>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">provider</span> <span class="o">=</span> <span class="n">create_embedding_provider</span><span class="p">(</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">provider_type</span><span class="o">=</span><span class="s2">"local"</span><span class="p">,</span>  <span class="c1"># or "openai"</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">cache_dir</span><span class="o">=</span><span class="s2">".codex/embeddings_cache"</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> <span class="n">provider_type</span><span class="o">=</span><span class="s2">"local"</span><span class="p">,</span> <span class="c1"># or "openai"</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="n">cache_dir</span><span class="o">=</span><span class="s2">".codex/embeddings_cache"</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="3-persistent-caching-layer">3. Persistent Caching Layer<a class="headerlink" href="#3-persistent-caching-layer" title="Permanent link">¶</a></h3>
@@ -2805,8 +2805,8 @@
 <h2 id="test-coverage-analysis">Test Coverage Analysis<a class="headerlink" href="#test-coverage-analysis" title="Permanent link">¶</a></h2>
 <h3 id="current-coverage-90">Current Coverage: <strong>90%+</strong><a class="headerlink" href="#current-coverage-90" title="Permanent link">¶</a></h3>
 <h4 id="coverage-by-module">Coverage by Module:<a class="headerlink" href="#coverage-by-module" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>src/codex/rag/indexer.py    - 92% coverage (348/378 lines)
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>src/codex/rag/retriever.py  - 88% coverage (292/332 lines)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>src/codex/rag/indexer.py - 92% coverage (348/378 lines)
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>src/codex/rag/retriever.py - 88% coverage (292/332 lines)
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>src/codex/rag/embeddings.py - 91% coverage (374/411 lines)
 </code></pre></div>
 <h4 id="test-distribution">Test Distribution:<a class="headerlink" href="#test-distribution" title="Permanent link">¶</a></h4>
@@ -2827,11 +2827,11 @@
 <h3 id="scan-results-pass">Scan Results: <strong>PASS</strong><a class="headerlink" href="#scan-results-pass" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>$<span class="w"> </span>bandit<span class="w"> </span>-r<span class="w"> </span>src/codex/rag/
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Test<span class="w"> </span>results:
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span>No<span class="w"> </span>issues<span class="w"> </span>identified.
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span>No<span class="w"> </span>issues<span class="w"> </span>identified.
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>Code<span class="w"> </span>scanned:
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">  </span>Total<span class="w"> </span>lines:<span class="w"> </span><span class="m">1</span>,268
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">  </span>Severity:<span class="w"> </span><span class="m">0</span><span class="w"> </span>High,<span class="w"> </span><span class="m">0</span><span class="w"> </span>Medium,<span class="w"> </span><span class="m">0</span><span class="w"> </span>Low
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span>Total<span class="w"> </span>lines:<span class="w"> </span><span class="m">1</span>,268
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span>Severity:<span class="w"> </span><span class="m">0</span><span class="w"> </span>High,<span class="w"> </span><span class="m">0</span><span class="w"> </span>Medium,<span class="w"> </span><span class="m">0</span><span class="w"> </span>Low
 </code></pre></div>
 <h3 id="security-measures-implemented">Security Measures Implemented:<a class="headerlink" href="#security-measures-implemented" title="Permanent link">¶</a></h3>
 <ol>
@@ -2910,7 +2910,7 @@
 <a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="nv">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>retriever.query<span class="o">(</span><span class="s2">"How do I configure embeddings?"</span>,<span class="w"> </span><span class="nv">top_k</span><span class="o">=</span><span class="m">5</span><span class="o">)</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="k">for</span><span class="w"> </span>r<span class="w"> </span><span class="k">in</span><span class="w"> </span>results:
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">    </span>print<span class="o">(</span>f<span class="s2">"{r['file']}: {r['text'][:100]}..."</span><span class="o">)</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w"> </span>print<span class="o">(</span>f<span class="s2">"{r['file']}: {r['text'][:100]}..."</span><span class="o">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="requirements-checklist">Requirements Checklist<a class="headerlink" href="#requirements-checklist" title="Permanent link">¶</a></h2>
@@ -2918,7 +2918,7 @@
 <h4 id="step-0-audit-planning">Step 0 - Audit &amp; Planning<a class="headerlink" href="#step-0-audit-planning" title="Permanent link">¶</a></h4>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Create <code>scripts/expanded_context_audit.py</code></li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Run audit → <code>reports/expanded_context_summary.md</code></li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Run audit <code>reports/expanded_context_summary.md</code></li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Summary shows 9/11 features at 75%+</li>
 </ul>
 <h4 id="step-1-p0-implementation">Step 1 - P0 Implementation<a class="headerlink" href="#step-1-p0-implementation" title="Permanent link">¶</a></h4>
@@ -2977,7 +2977,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Estimated 8-10 hours for completion</li>
 </ul>
 <hr/>
-<h2 id="summary">🎉 Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
 <h3 id="achievements">Achievements<a class="headerlink" href="#achievements" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Complete P0 implementation</strong> - All requested features</li>
@@ -2988,12 +2988,12 @@
 <li><strong>Scalability</strong> - Supports 64k-512k token workflows</li>
 </ol>
 <h3 id="code-quality-metrics">Code Quality Metrics<a class="headerlink" href="#code-quality-metrics" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Total lines added:   3,500+
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Total lines added: 3,500+
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Total tests created: 70+
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>Test Coverage: 90%+
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>Security issues:     0
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>Security issues: 0
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>Documentation pages: 3
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>Build scripts:       2 (created/updated)
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>Build scripts: 2 (created/updated)
 </code></pre></div>
 <h3 id="impact">Impact<a class="headerlink" href="#impact" title="Permanent link">¶</a></h3>
 <ul>
@@ -3004,7 +3004,7 @@
 <li><strong>Scales</strong>: To 100k+ document chunks</li>
 </ul>
 <hr/>
-<h2 id="next-steps-optional-enhancements">🔮 Next Steps (Optional Enhancements)<a class="headerlink" href="#next-steps-optional-enhancements" title="Permanent link">¶</a></h2>
+<h2 id="next-steps-optional-enhancements">Next Steps (Optional Enhancements)<a class="headerlink" href="#next-steps-optional-enhancements" title="Permanent link">¶</a></h2>
 <h3 id="immediate-week-1">Immediate (Week 1)<a class="headerlink" href="#immediate-week-1" title="Permanent link">¶</a></h3>
 <ol>
 <li>Run test suite in CI environment</li>
@@ -3025,7 +3025,7 @@
 <li>GPU acceleration (faiss-gpu)</li>
 </ol>
 <hr/>
-<h2 id="support">📞 Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Documentation</strong>: <code>docs/EXPANDED_CONTEXT_RAG.md</code></li>
 <li><strong>Test Plan</strong>: <code>docs/TEST_COVERAGE_PLAN_RAG.md</code></li>
@@ -3033,7 +3033,7 @@
 <li><strong>Issues</strong>: Check test files for usage patterns</li>
 </ul>
 <hr/>
-<p><strong>Implementation Status</strong>:  <strong>COMPLETE AND READY FOR PRODUCTION</strong></p>
+<p><strong>Implementation Status</strong>: <strong>COMPLETE AND READY FOR PRODUCTION</strong></p>
 <p>All requirements met. System is tested, documented, and ready for deployment.</p>
 </article>
 </div>
@@ -3064,6 +3064,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

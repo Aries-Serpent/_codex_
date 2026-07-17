@@ -1,10 +1,10 @@
-# Deployment Guide - codex-ml v0.2.1
+# Deployment Guide - codex-ml v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Last Updated**: 2026-07-11  
-**Version**: 2.0  
-**Package**: codex-ml  
+**Last Updated**: 2026-07-11
+**Version**: 2.0
+**Package**: codex-ml
 **Audience**: Maintainers, DevOps engineers, production operators, users deploying the Cognitive Brain package
 
 ---
@@ -34,97 +34,97 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 ### Key Guarantees
 
--  **Reproducible**: All dependencies locked in `uv.lock`
--  **Offline-Capable**: Core profile works without network
--  **Verified**: Hash-checked manifests and SBOMs included
--  **Secure**: CVE governance and network policy enforcement
--  **Tested**: Smoke tests for all profile combinations
+- **Reproducible**: All dependencies locked in `uv.lock`
+- **Offline-Capable**: Core profile works without network
+- **Verified**: Hash-checked manifests and SBOMs included
+- **Secure**: CVE governance and network policy enforcement
+- **Tested**: Smoke tests for all profile combinations
 
 ---
 
 ## Pre-Release Checklist
 
-**Timeline**: 1-2 days before release  
+**Timeline**: 1-2 days before release
 **Owner**: Release manager or maintainer with PyPI credentials
 
-###  Governance Gates (Auto-verified)
+### Governance Gates (Auto-verified)
 
 - [ ] **P0 Gate**: Lock/profile alignment verified
-  - Confirm `.codex/PROFILE_DRIFT_AUDIT.json` exists
-  - Confirm `.codex/PROFILE_DEPENDENCY_MANIFEST.md` exists
-  - Command: `python scripts/ci/check_profile_drift.py`
+ - Confirm `.codex/PROFILE_DRIFT_AUDIT.json` exists
+ - Confirm `.codex/PROFILE_DEPENDENCY_MANIFEST.md` exists
+ - Command: `python scripts/ci/check_profile_drift.py`
 
 - [ ] **P1 Gate**: Meta-tensor safety and SBOM verified
-  - Confirm `sbom.json` or `.codex/sbom.json` exists
-  - Confirm no meta-tensor initialization errors in tests
-  - Command: `pytest tests/test_meta_tensor_safety.py`
+ - Confirm `sbom.json` or `.codex/sbom.json` exists
+ - Confirm no meta-tensor initialization errors in tests
+ - Command: `pytest tests/test_meta_tensor_safety.py`
 
 - [ ] **P2 Gate**: Deployment automation ready
-  - Confirm `.github/workflows/release-to-pypi.yml` exists
-  - Confirm `.github/workflows/smoke-tests-deployment.yml` exists
-  - Confirm `.github/workflows/pre-release-validation.yml` exists
+ - Confirm `.github/workflows/release-to-pypi.yml` exists
+ - Confirm `.github/workflows/smoke-tests-deployment.yml` exists
+ - Confirm `.github/workflows/pre-release-validation.yml` exists
 
-###  Code Quality Gates
+### Code Quality Gates
 
 - [ ] **All tests passing**: `pytest tests/ -x`
 - [ ] **No type errors**: `mypy src/`
 - [ ] **No security alerts**: `bandit -r src/`
 - [ ] **No new CVEs**: `pip-audit`
 
-###  Release Preparation
+### Release Preparation
 
 - [ ] **Version bumped** in `pyproject.toml`
-  ```toml
-  [project]
-  version = "0.1.0"  # Bump from previous
-  ```
+ ```toml
+ [project]
+ version = "0.1.0" # Bump from previous
+ ```
 
 - [ ] **CHANGELOG.md updated** with release notes
-  ```markdown
-  ## [0.1.0] - 2026-07-07
-  
-  ### Added
-  - Initial release of Cognitive Brain ecosystem
-  - Three-profile packaging (core/runtime/full)
-  - OODA loop framework
-  
-  ### Security
-  - Fixed CVE-XXXX: [description]
-  - Added network policy enforcement
-  ```
+ ```markdown
+ ## [0.1.0] - 2026-07-07
+ 
+ ### Added
+ - Initial release of Cognitive Brain ecosystem
+ - Three-profile packaging (core/runtime/full)
+ - OODA loop framework
+ 
+ ### Security
+ - Fixed CVE-XXXX: [description]
+ - Added network policy enforcement
+ ```
 
 - [ ] **Release notes prepared** (for GitHub release)
-  - Create file: `release-notes-0.1.0.md`
-  - Include: Features, security fixes, installation instructions, known issues
+ - Create file: `release-notes-0.1.0.md`
+ - Include: Features, security fixes, installation instructions, known issues
 
 - [ ] **git tag prepared** (not yet pushed)
-  ```bash
-  # Draft the tag locally (don't push yet)
-  git tag -a v0.2.1 -m "Release v0.2.1 - Cognitive Brain"
-  # Don't push yet - pre-release validation will trigger this
-  ```
+ ```bash
+ # Draft the tag locally (don't push yet)
+ git tag -a v0.2.0 -m "Release v0.2.0 - Cognitive Brain"
+ # Don't push yet - pre-release validation will trigger this
+ ```
 
-###  Infrastructure Ready
+### Infrastructure Ready
 
 - [ ] **PyPI credentials configured** in GitHub Secrets
-  - Secret: `PYPI_API_TOKEN`
-  - Test: `twine check` on a test build
-  
+ - Secret: `PYPI_API_TOKEN`
+ - Test: `twine check` on a test build
+
 - [ ] **Build environment validated**
-  ```bash
-  python -m pip install build
-  python -m build --wheel
-  # Should produce 3 wheels (core, runtime, full compatible)
-  ```
+ ```bash
+ python -m pip install build
+ python -m build --wheel
+ # Should produce 3 wheels (core, runtime, full compatible)
+ ```
 
 - [ ] **Offline install tested** (on all three profiles)
-  ```bash
-  # Simulate offline environment
-  scripts/prepare_offline_env.sh core
-  scripts/deploy/bootstrap_offline.py wheelhouse_core/
-  ```
+ ```bash
+ # Simulate offline environment
+ scripts/prepare_offline_env.sh core
+ scripts/deploy/bootstrap_offline.py wheelhouse_core/
+ ```
 
-###  Documentation Ready
+### Documentation Ready
 
 - [ ] **Deployment guide reviewed** (this document)
 - [ ] **Rollback procedures documented** (see below)
@@ -135,33 +135,33 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 ## Release Process
 
-**Timeline**: ~15-20 minutes  
-**Owner**: Release manager  
+**Timeline**: ~15-20 minutes
+**Owner**: Release manager
 **Prerequisites**: All pre-release checklist items complete
 
 ### Step 1: Create Pre-Release Validation PR (5 min)
 
-1. Create branch: `release/v0.2.1-prepare`
+1. Create branch: `release/v0.2.0-prepare`
 2. Commit changes:
-   ```bash
-   git checkout -b release/v0.2.1-prepare
-   
-   # Bump version
-   sed -i 's/version = "[^"]*"/version = "0.1.0"/' pyproject.toml
-   
-   # Update changelog (already done, but verify)
-   # Edit CHANGELOG.md
-   
-   git add pyproject.toml CHANGELOG.md
-   git commit -m "chore: Prepare v0.2.1 release"
-   git push origin release/v0.2.1-prepare
-   ```
+ ```bash
+ git checkout -b release/v0.2.0-prepare
+ 
+ # Bump version
+ sed -i 's/version = "[^"]*"/version = "0.1.0"/' pyproject.toml
+ 
+ # Update changelog (already done, but verify)
+ # Edit CHANGELOG.md
+ 
+ git add pyproject.toml CHANGELOG.md
+ git commit -m "chore: Prepare v0.2.0 release"
+ git push origin release/v0.2.0-prepare
+ ```
 
-3. Open PR: `release/v0.2.1-prepare` → `main`
+3. Open PR: `release/v0.2.0-prepare` `main`
 4. Wait for **pre-release-validation.yml** to verify:
-   - Version bumped 
-   - CHANGELOG updated 
-   - All gates passing 
+ - Version bumped
+ - CHANGELOG updated
+ - All gates passing
 
 5. Get code review and merge
 
@@ -175,10 +175,10 @@ git fetch origin
 git checkout origin/main
 
 # Create annotated tag
-git tag -a v0.2.1 -m "Release v0.2.1 - Cognitive Brain v0.2.1-final"
+git tag -a v0.2.0 -m "Release v0.2.0 - Cognitive Brain v0.2.0-final"
 
 # Push tag - this triggers release-to-pypi.yml
-git push origin v0.2.1
+git push origin v0.2.0
 ```
 
 ### Step 3: Monitor Release Workflow (10 min)
@@ -188,54 +188,54 @@ In GitHub Actions, monitor: **Release to PyPI** workflow
 Watch for these steps:
 
 1. **Pre-release checks** (1-2 min)
-   - Gate verification: P0, P1, P2
-   - Version validation
-   - Expected output:  All gates verified
+ - Gate verification: P0, P1, P2
+ - Version validation
+ - Expected output: All gates verified
 
 2. **Build wheels** (3-5 min)
-   - Multi-platform build
-   - Expected output: 3 wheels × 3 platforms = 9 artifacts
+ - Multi-platform build
+ - Expected output: 3 wheels × 3 platforms = 9 artifacts
 
 3. **Generate manifest** (1-2 min)
-   - Hash calculation
-   - Expected output: `RELEASE_MANIFEST.json` with SHA256 hashes
+ - Hash calculation
+ - Expected output: `RELEASE_MANIFEST.json` with SHA256 hashes
 
 4. **Generate SBOM** (1-2 min)
-   - Software bill of materials
-   - Expected output: SBOM files for each profile
+ - Software bill of materials
+ - Expected output: SBOM files for each profile
 
 5. **Verify manifest** (1 min)
-   - Hash verification
-   - Expected output:  Manifest verified
+ - Hash verification
+ - Expected output: Manifest verified
 
 6. **Publish to PyPI** (2-3 min)
-   - Upload wheels
-   - Expected output: "Successfully uploaded codex-ml-0.2.1-py3-none-any.whl"
+ - Upload wheels
+ - Expected output: "Successfully uploaded codex-ml-0.2.1-py3-none-any.whl"
 
 7. **Create GitHub release** (1 min)
-   - Release notes
-   - Asset upload
-   - Expected output: GitHub release created with wheels, manifest, SBOM
+ - Release notes
+ - Asset upload
+ - Expected output: GitHub release created with wheels, manifest, SBOM
 
 **Failure scenarios**:
 
--  **Pre-release checks fail**: Gates not met
-  - Action: Resolve missing gates, update version, push new tag
-  
--  **Build fails**: Platform-specific issue
-  - Action: Review build logs, fix issue, delete tag, push new tag
-  
--  **PyPI upload fails**: Credentials or network issue
-  - Action: Verify `PYPI_API_TOKEN` secret, retry release workflow
-  
--  **Smoke tests fail**: Package doesn't install correctly
-  - Action: See [Rollback Procedures](#rollback-procedures)
+- **Pre-release checks fail**: Gates not met
+ - Action: Resolve missing gates, update version, push new tag
+
+- **Build fails**: Platform-specific issue
+ - Action: Review build logs, fix issue, delete tag, push new tag
+
+- **PyPI upload fails**: Credentials or network issue
+ - Action: Verify `PYPI_API_TOKEN` secret, retry release workflow
+
+- **Smoke tests fail**: Package doesn't install correctly
+ - Action: See [Rollback Procedures](#rollback-procedures)
 
 ---
 
 ## Post-Release Verification
 
-**Timeline**: 5-10 minutes after release  
+**Timeline**: 5-10 minutes after release
 **Owner**: Release manager
 
 ### Immediate Verification (< 1 min)
@@ -276,32 +276,32 @@ python -c "import pytest; print(' Full profile works')"
 Check GitHub Actions: **Smoke Tests - Deployment Verification** workflow
 
 All 12 test combinations should pass:
--  Python 3.12, core, with-ml
--  Python 3.12, core, without-ml
--  Python 3.12, runtime, with-ml
--  Python 3.12, runtime, without-ml
--  Python 3.12, full, with-ml
--  Python 3.12, full, without-ml
--  Python 3.13, [same 6 combinations]
+- Python 3.12, core, with-ml
+- Python 3.12, core, without-ml
+- Python 3.12, runtime, with-ml
+- Python 3.12, runtime, without-ml
+- Python 3.12, full, with-ml
+- Python 3.12, full, without-ml
+- Python 3.13, [same 6 combinations]
 
 ### Monitoring Setup (5-10 min)
 
 1. **Enable download statistics**:
-   - Visit: https://pypi.org/project/codex-ml/#history
-   - Monitor daily downloads over next 7 days
+ - Visit: https://pypi.org/project/codex-ml/#history
+ - Monitor daily downloads over next 7 days
 
 2. **Setup alerts**:
-   ```bash
-   # Log to monitoring dashboard
-   scripts/deploy/log_release_metrics.py \
-     --version 0.1.0 \
-     --deployment-time 15m \
-     --smoke-test-status all-passed
-   ```
+ ```bash
+ # Log to monitoring dashboard
+ scripts/deploy/log_release_metrics.py \
+ --version 0.1.0 \
+ --deployment-time 15m \
+ --smoke-test-status all-passed
+ ```
 
 3. **Create monitoring dashboard**:
-   - Location: `.codex/RELEASE_METRICS_v0.2.1.json`
-   - Contents: Build duration, sizes, test results, download stats
+ - Location: `.codex/RELEASE_METRICS_v0.2.0.json`
+ - Contents: Build duration, sizes, test results, download stats
 
 ---
 
@@ -310,11 +310,11 @@ All 12 test combinations should pass:
 ### Profile: Core
 
 **When to use**:
--  Lightweight deployments (< 50 MB total)
--  Offline environments or air-gapped networks
--  Edge devices with limited resources
--  CI/CD pipelines that only need OODA loop
--  Containers where size matters
+- Lightweight deployments (< 50 MB total)
+- Offline environments or air-gapped networks
+- Edge devices with limited resources
+- CI/CD pipelines that only need OODA loop
+- Containers where size matters
 
 **Installation**:
 ```bash
@@ -350,11 +350,11 @@ python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print('
 ### Profile: Runtime
 
 **When to use**:
--  Production ML inference services
--  API deployments (FastAPI, Flask)
--  Pattern recognition in production
--  Ray serve workers
--  AWS Lambda / GCP Cloud Functions
+- Production ML inference services
+- API deployments (FastAPI, Flask)
+- Pattern recognition in production
+- Ray serve workers
+- AWS Lambda / GCP Cloud Functions
 
 **Installation**:
 ```bash
@@ -391,11 +391,11 @@ python -c "import torch; from cognitive_brain.runtime import MLInference; print(
 ### Profile: Full
 
 **When to use**:
--  Local development
--  Testing and QA
--  Building custom extensions
--  Contributing to the project
--  Research and experimentation
+- Local development
+- Testing and QA
+- Building custom extensions
+- Contributing to the project
+- Research and experimentation
 
 **Installation**:
 ```bash
@@ -435,7 +435,7 @@ python -c "import pytest; from cognitive_brain.full import DevEnvironment; print
 
 **Phase Objects** are planned execution tracks included in the `codex-ml` package. They define multi-track deployment plans for complex operations:
 
-- **Track A-G**: Sequential execution phases (A → B → C → D → E → F → G)
+- **Track A-G**: Sequential execution phases (A B C D E F G)
 - **Tasks PR**: Comprehensive task roadmap (99.6 KB, 3,193 lines)
 - **Batch Segments**: Segmented data batches for parallel processing
 
@@ -449,19 +449,19 @@ from codex_plans import list_plan_documents
 
 plans = list_plan_documents()
 for plan in plans:
-    print(f"  📄 {plan.name} ({plan.stat().st_size} bytes)")
+ print(f" {plan.name} ({plan.stat().st_size} bytes)")
 ```
 
 Expected output:
 ```
-📄 Tasks_PR_2459.md (99647 bytes)
-📄 track_A.md (1587 bytes)
-📄 track_B.md (1462 bytes)
-📄 track_C.md (1979 bytes)
-📄 track_D.md (1695 bytes)
-📄 track_E.md (2494 bytes)
-📄 track_F.md (2902 bytes)
-📄 track_G.md (3673 bytes)
+ Tasks_PR_2459.md (99647 bytes)
+ track_A.md (1587 bytes)
+ track_B.md (1462 bytes)
+ track_C.md (1979 bytes)
+ track_D.md (1695 bytes)
+ track_E.md (2494 bytes)
+ track_F.md (2902 bytes)
+ track_G.md (3673 bytes)
 ```
 
 ### Reading a Phase Plan
@@ -472,10 +472,10 @@ from codex_plans import list_plan_documents
 
 plans = list_plan_documents()
 with open(plans[0]) as f:
-    content = f.read()
-    print(f"Plan: {plans[0].name}")
-    print(f"Lines: {len(content.splitlines())}")
-    print("\n" + content[:500] + "...")
+ content = f.read()
+ print(f"Plan: {plans[0].name}")
+ print(f"Lines: {len(content.splitlines())}")
+ print("\n" + content[:500] + "...")
 ```
 
 ### Use Cases
@@ -501,32 +501,32 @@ with open(plans[0]) as f:
 
 ### Release Metrics Collection
 
-After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.2.1.json`:
+After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.2.0.json`:
 
 ```json
 {
-  "version": "0.1.0",
-  "released_at": "2026-07-07T15:30:00Z",
-  "metrics": {
-    "build_duration_seconds": 420,
-    "wheel_sizes": {
-      "core": 8500000,
-      "runtime": 25000000,
-      "full": 105000000
-    },
-    "smoke_tests": {
-      "total": 12,
-      "passed": 12,
-      "failed": 0,
-      "duration_seconds": 180
-    },
-    "pypi_upload_duration": 45
-  },
-  "artifacts": {
-    "wheels": 9,
-    "manifest": 1,
-    "sbom": 3
-  }
+ "version": "0.1.0",
+ "released_at": "2026-07-07T15:30:00Z",
+ "metrics": {
+ "build_duration_seconds": 420,
+ "wheel_sizes": {
+ "core": 8500000,
+ "runtime": 25000000,
+ "full": 105000000
+ },
+ "smoke_tests": {
+ "total": 12,
+ "passed": 12,
+ "failed": 0,
+ "duration_seconds": 180
+ },
+ "pypi_upload_duration": 45
+ },
+ "artifacts": {
+ "wheels": 9,
+ "manifest": 1,
+ "sbom": 3
+ }
 }
 ```
 
@@ -581,27 +581,27 @@ If critical issues found in first 2 hours:
 ```bash
 # Quick rollback script
 python scripts/deploy/rollback_release.py \
-  --version v0.2.1 \
-  --reason "Critical bug in runtime profile" \
-  --restore-version v0.2.1
+ --version v0.2.0 \
+ --reason "Critical bug in runtime profile" \
+ --restore-version v0.2.0
 
 # This:
-# 1. Marks v0.2.1 as yanked on PyPI
+# 1. Marks v0.2.0 as yanked on PyPI
 # 2. Deletes the git tag locally and remotely
-# 3. Restores v0.2.1 as latest on PyPI
+# 3. Restores v0.2.0 as latest on PyPI
 # 4. Creates GitHub release noting rollback
 # 5. Sends notifications to maintainers
 ```
 
 ### When to Rollback
 
--  Core profile doesn't import (immediate)
--  OODA loop crashes on initialization (immediate)
--  Network policy violated in core (immediate)
--  Smoke tests fail for > 1 profile (within 30 min)
--  Critical security vulnerability found (within 24 hours)
-- ️ Performance regression > 50% (discuss first)
-- ️ Optional dependency issues (non-blocking)
+- Core profile doesn't import (immediate)
+- OODA loop crashes on initialization (immediate)
+- Network policy violated in core (immediate)
+- Smoke tests fail for > 1 profile (within 30 min)
+- Critical security vulnerability found (within 24 hours)
+- Performance regression > 50% (discuss first)
+- Optional dependency issues (non-blocking)
 
 ---
 
@@ -644,16 +644,16 @@ python -c "import sys; print('\n'.join(sys.path))"
 
 ### Issue: CLI commands (`codex-ml`, `codex-ml-cli`, `codex-cli`) fail with `ModuleNotFoundError`
 
-**Symptom**: 
+**Symptom**:
 ```
 ModuleNotFoundError: No module named 'aries_serpent_core'
 ```
 
-**Cause**: The CLI module requires `aries_serpent_core` which wasn't included in older package builds. This was fixed in v0.2.1+.
+**Cause**: The CLI module requires `aries_serpent_core` which wasn't included in older package builds. This was fixed in v0.2.0+.
 
 **Solution**:
 ```bash
-# Upgrade to v0.2.1 or later
+# Upgrade to v0.2.0 or later
 pip install --upgrade codex-ml>=0.2.1
 
 # Verify CLI works
@@ -697,9 +697,9 @@ pip install codex-ml[core]==0.2.1
 ```bash
 # Use the provided offline bootstrap script
 scripts/deploy/bootstrap_offline.py \
-  --wheelhouse wheelhouse_core/ \
-  --profile core \
-  --python-version 3.12
+ --wheelhouse wheelhouse_core/ \
+ --profile core \
+ --python-version 3.12
 ```
 
 ### Issue: Network calls detected in core profile
@@ -745,9 +745,9 @@ A: Yes, downgrade is safe:
 pip install --force-reinstall codex-ml[core]==0.2.1
 ```
 
-**Q: How long is v0.2.1 supported?**
+**Q: How long is v0.2.0 supported?**
 
-A: Until v0.2.1 is released (typically 6-12 months). See [Support Policy](../../SECURITY.md).
+A: Until v0.2.0 is released (typically 6-12 months). See [Support Policy](../../SECURITY.md).
 
 ---
 
@@ -760,7 +760,7 @@ This section covers deployment of the documentation site to local development en
 ```bash
 # Step 1: Install MkDocs and plugins
 pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin \
-            mkdocstrings[python] mkdocs-git-revision-date-localized-plugin
+ mkdocstrings[python] mkdocs-git-revision-date-localized-plugin
 
 # Step 2: Start local server
 cd /home/runner/work/_codex_/_codex_
@@ -835,9 +835,9 @@ mkdocs serve
 **Build Time Benchmarks**:
 
 ```
-Initial build:        15-30 seconds (full)
-Subsequent builds:      2-5 seconds (incremental)
-Single file change:    < 1 second (hot-reload)
+Initial build: 15-30 seconds (full)
+Subsequent builds: 2-5 seconds (incremental)
+Single file change: < 1 second (hot-reload)
 ```
 
 ### Troubleshooting Local Deployment
@@ -870,8 +870,8 @@ pip install mkdocs-material mkdocs-mermaid2-plugin
 ```bash
 # Check Mermaid plugin is enabled in mkdocs.yml
 # Verify fence is correct:
-#  Correct: ```mermaid
-#  Wrong:   ```diagram
+# Correct: ```mermaid
+# Wrong: ```diagram
 
 # Check markdown file has correct syntax:
 mkdocs build --verbose
@@ -916,11 +916,11 @@ git commit -m "docs: update documentation"
 git push origin main
 
 # 3. GitHub Actions automatically:
-#    - Builds the site
-#    - Validates links
-#    - Deploys to GitHub Pages
-#    - Runs health checks
-#    - Reports status
+# - Builds the site
+# - Validates links
+# - Deploys to GitHub Pages
+# - Runs health checks
+# - Reports status
 
 # 4. Verify deployment succeeded
 # Check Actions tab on GitHub for workflow status
@@ -974,15 +974,15 @@ mkdocs build
 
 ```
 127.0.0.1:8000/
-├─ /                      # Home page
-├─ /evolution/           # Evolution Center
-├─ /tokens/              # Token Management
-├─ /architecture/        # Architecture docs
-├─ /deployment/          # Deployment guides
-├─ /guides/              # How-to guides
-├─ /search/              # Full-text search
-├─ /assets/              # CSS, JS, images
-└─ /health               # Health check endpoint
+ / # Home page
+ /evolution/ # Evolution Center
+ /tokens/ # Token Management
+ /architecture/ # Architecture docs
+ /deployment/ # Deployment guides
+ /guides/ # How-to guides
+ /search/ # Full-text search
+ /assets/ # CSS, JS, images
+ /health # Health check endpoint
 
 All pages accessible via sidebar navigation
 Search available in top navigation bar
@@ -1007,6 +1007,6 @@ Dark/light mode toggle in top right
 
 ---
 
-**Document Version**: 2.0  
-**Last Updated**: 2026-07-11  
+**Document Version**: 2.0
+**Last Updated**: 2026-07-11
 **Next Review**: 2026-08-11

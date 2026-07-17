@@ -10,9 +10,9 @@
 <link href="../../reporting/copilot_workflow_report_console.html" rel="prev"/>
 <link href="../INDEX/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI Rescue Pipeline - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -212,7 +212,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -896,7 +896,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1428,7 +1428,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2685,8 +2685,8 @@
 <tbody>
 <tr>
 <td>WEC checkbox <code>Fast-Forward Approved</code></td>
-<td><strong><code>workflow-execution-gate.yml</code></strong> → <code>fast-forward-safe-files.yml</code></td>
-<td>Maintainer ticks checkbox in PR body → WEC gate parses it → FF workflow auto-fires</td>
+<td><strong><code>workflow-execution-gate.yml</code></strong> <code>fast-forward-safe-files.yml</code></td>
+<td>Maintainer ticks checkbox in PR body WEC gate parses it FF workflow auto-fires</td>
 </tr>
 <tr>
 <td>Manual</td>
@@ -2704,89 +2704,137 @@
 <hr/>
 <h2 id="2-complete-pipeline-flowchart">2. Complete Pipeline Flowchart<a class="headerlink" href="#2-complete-pipeline-flowchart" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Push to PR branch, GitHub Actions triggers\nmonitored workflow'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    A([Push to PR branch]) --&gt; B[GitHub Actions triggers\nmonitored workflow]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    B --&gt; C{Workflow\nresult?}
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    C --&gt;|success| Z([CI green — no rescue needed])
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    C --&gt;|failure| D
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    D[Inline rescue job inside\nfailing workflow fires] --&gt; E[POST or PATCH\nChannel A comment\ngeneric fix instructions]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    D --&gt; F[workflow_run: completed\ntriggers ci-rescue.yml]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    F --&gt; G[ci-rescue.yml\nRescue — analyse and post RCA]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    G --&gt; H[Download ci_rescue.py\nfrom PR head SHA]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    H --&gt; I[Fetch failed job logs\nvia GitHub API]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    I --&gt; J[Match against\nci_failure_patterns.yaml]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    J --&gt; K{Pattern\nmatched?}
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    K --&gt;|known pattern| L[Build structured RCA comment\nwith fix command + log snippet]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    K --&gt;|unknown| M[Build generic escalation\nwith raw log excerpt]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    L --&gt; N[Upsert SHA-scoped comment\nChannel B RCA\nat-copilot+claude-sonnet-4.6]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    M --&gt; N
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    D --&gt; SH[copilot-iterative-self-healing.yml\ncancel-in-progress=false\nevery failure gets own run]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    SH --&gt; SH2{Auto-fix\npatterns\nexhausted?}
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    SH2 --&gt;|no| SH3[Apply auto-fix pattern\npush fix commit]
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    SH2 --&gt;|yes| SH4[Escalation comment\nto @copilot]
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> A([Push to PR branch]) --&gt; B[GitHub Actions triggers\nmonitored workflow]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> B --&gt; C{Workflow\nresult?}
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> C --&gt;|success| Z([CI green — no rescue needed])
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> C --&gt;|failure| D
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> D[Inline rescue job inside\nfailing workflow fires] --&gt; E[POST or PATCH\nChannel A comment\ngeneric fix instructions]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> D --&gt; F[workflow_run: completed\ntriggers ci-rescue.yml]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> F --&gt; G[ci-rescue.yml\nRescue — analyse and post RCA]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> G --&gt; H[Download ci_rescue.py\nfrom PR head SHA]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> H --&gt; I[Fetch failed job logs\nvia GitHub API]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> I --&gt; J[Match against\nci_failure_patterns.yaml]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> J --&gt; K{Pattern\nmatched?}
 <a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    SCHED([⏱️ Scheduled every 30 min\nproactive-ci-monitor.yml\nS280 NEW]) --&gt; PM[Poll ALL open PRs\nfor unaddressed failures]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    PM --&gt; PM2{Failure found\nwith no rescue\ncomment yet?}
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>    PM2 --&gt;|no| PM3([Nothing to do])
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    PM2 --&gt;|transient infra| PM4([Skip — auto-retry])
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    PM2 --&gt;|real failure| PM5[Classify with\npattern catalogue\nconfidence score]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    PM5 --&gt; PM6{confidence ≥\nthreshold?}
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    PM6 --&gt;|no| PM7([Below threshold\nskip])
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    PM6 --&gt;|yes| PM8[POST @copilot rescue\ncomment to PR]
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    N --&gt; O{Copilot session\nstarted within\n45 min?}
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    PM8 --&gt; O
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    SH4 --&gt; O
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    O --&gt;|yes| P[Copilot Coding Agent\nreads RCA and applies fix]
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    O --&gt;|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires]
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    Q --&gt; T[POST retrigger comment\nsession-done-retrigger]
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    T --&gt; P
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    P --&gt; U[Apply fix locally\nrun ruff + pytest]
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    U --&gt; V[commit + report_progress\npush to branch]
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    V --&gt; W[Reply to RCA comment:\nFixed in commit SHA]
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>    W --&gt; X[New CI run\non fixed commit]
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    X --&gt; C
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    subgraph FF [" Fast-Forward Safe Files (S280 NEW)"]
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>        FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --&gt; FF2[workflow-execution-gate.yml\nparses FF section]
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>        FF2 --&gt; FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>        FF3 --&gt; FF4{Merge\nmode?}
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>        FF4 --&gt;|create-pr| FF5[Open fast-forward PR\nstaging → main]
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>        FF4 --&gt;|direct-push| FF6[Push files directly\nto main]
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>        FF5 --&gt; FF7([Files take effect on main\nimmediately])
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>        FF6 --&gt; FF7
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>    end
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> K --&gt;|known pattern| L[Build structured RCA comment\nwith fix command + log snippet]
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> K --&gt;|unknown| M[Build generic escalation\nwith raw log excerpt]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> L --&gt; N[Upsert SHA-scoped comment\nChannel B RCA\nat-copilot+claude-sonnet-4.6]
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> M --&gt; N
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> D --&gt; SH[copilot-iterative-self-healing.yml\ncancel-in-progress=false\nevery failure gets own run]
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> SH --&gt; SH2{Auto-fix\npatterns\nexhausted?}
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> SH2 --&gt;|no| SH3[Apply auto-fix pattern\npush fix commit]
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> SH2 --&gt;|yes| SH4[Escalation comment\nto @copilot]
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> SCHED([ Scheduled every 30 min\nproactive-ci-monitor.yml\nS280 NEW]) --&gt; PM[Poll ALL open PRs\nfor unaddressed failures]
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> PM --&gt; PM2{Failure found\nwith no rescue\ncomment yet?}
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> PM2 --&gt;|no| PM3([Nothing to do])
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> PM2 --&gt;|transient infra| PM4([Skip — auto-retry])
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> PM2 --&gt;|real failure| PM5[Classify with\npattern catalogue\nconfidence score]
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a> PM5 --&gt; PM6{confidence ≥\nthreshold?}
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a> PM6 --&gt;|no| PM7([Below threshold\nskip])
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a> PM6 --&gt;|yes| PM8[POST @copilot rescue\ncomment to PR]
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a> N --&gt; O{Copilot session\nstarted within\n45 min?}
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a> PM8 --&gt; O
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a> SH4 --&gt; O
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a> O --&gt;|yes| P[Copilot Coding Agent\nreads RCA and applies fix]
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a> O --&gt;|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires]
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a> Q --&gt; T[POST retrigger comment\nsession-done-retrigger]
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a> T --&gt; P
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a> P --&gt; U[Apply fix locally\nrun ruff + pytest]
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a> U --&gt; V[commit + report_progress\npush to branch]
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a> V --&gt; W[Reply to RCA comment:\nFixed in commit SHA]
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a>
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a> W --&gt; X[New CI run\non fixed commit]
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a>
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a> X --&gt; C
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a>
+<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a> subgraph FF [" Fast-Forward Safe Files (S280 NEW)"]
+<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a>
+<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a> FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --&gt; FF2[workflow-execution-gate.yml\nparses FF section]
+<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a>
+<a href="#__codelineno-0-87" id="__codelineno-0-87" name="__codelineno-0-87"></a> FF2 --&gt; FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
+<a href="#__codelineno-0-88" id="__codelineno-0-88" name="__codelineno-0-88"></a>
+<a href="#__codelineno-0-89" id="__codelineno-0-89" name="__codelineno-0-89"></a> FF3 --&gt; FF4{Merge\nmode?}
+<a href="#__codelineno-0-90" id="__codelineno-0-90" name="__codelineno-0-90"></a>
+<a href="#__codelineno-0-91" id="__codelineno-0-91" name="__codelineno-0-91"></a> FF4 --&gt;|create-pr| FF5[Open fast-forward PR\nstaging main]
+<a href="#__codelineno-0-92" id="__codelineno-0-92" name="__codelineno-0-92"></a>
+<a href="#__codelineno-0-93" id="__codelineno-0-93" name="__codelineno-0-93"></a> FF4 --&gt;|direct-push| FF6[Push files directly\nto main]
+<a href="#__codelineno-0-94" id="__codelineno-0-94" name="__codelineno-0-94"></a>
+<a href="#__codelineno-0-95" id="__codelineno-0-95" name="__codelineno-0-95"></a> FF5 --&gt; FF7([Files take effect on main\nimmediately])
+<a href="#__codelineno-0-96" id="__codelineno-0-96" name="__codelineno-0-96"></a>
+<a href="#__codelineno-0-97" id="__codelineno-0-97" name="__codelineno-0-97"></a> FF6 --&gt; FF7
+<a href="#__codelineno-0-98" id="__codelineno-0-98" name="__codelineno-0-98"></a> end
 </code></pre></div>
 <hr/>
 <h2 id="3-comment-channel-architecture">3. Comment Channel Architecture<a class="headerlink" href="#3-comment-channel-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing auto-fix-pr-check.yml\nrescue-comment job, PATCH or POST\nci-rescue:NNN'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>graph LR
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    subgraph "Channel A — Generic Fix Notice"
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>        A1[auto-fix-pr-check.yml\nrescue-comment job] --&gt; A2[PATCH or POST\nci-rescue:NNN]
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        A3[pre-merge-validation.yml\nrescue-comment job] --&gt; A2
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    end
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>graph LR
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> subgraph "Channel A — Generic Fix Notice"
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> A1[auto-fix-pr-check.yml\nrescue-comment job] --&gt; A2[PATCH or POST\nci-rescue:NNN]
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    subgraph "Channel B — RCA Golden Path"
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>        B1[ci-rescue.yml\nworkflow_run trigger] --&gt; B2[ci_rescue.py\npattern analysis engine]
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>        B2 --&gt; B3[POST or PATCH\nci-rescue:NNN:sha12\nat-copilot+claude-sonnet-4.6]
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    end
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> A3[pre-merge-validation.yml\nrescue-comment job] --&gt; A2
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> end
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> subgraph "Channel B — RCA Golden Path"
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    subgraph "Missed-Trigger Guard"
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>        C1[copilot-agent-checkin.yml\npush trigger every commit] --&gt; C2{Latest rescue comment\nhas at-copilot + age under 45 min?}
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>        C2 --&gt;|yes| C3[Skip — RCA is live]
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>        C2 --&gt;|no| C4[POST retrigger\nsession-done-retrigger]
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    end
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    A2 -.-&gt;|both markers detected by| C1
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    B3 -.-&gt;|both markers detected by| C1
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> B1[ci-rescue.yml\nworkflow_run trigger] --&gt; B2[ci_rescue.py\npattern analysis engine]
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> B2 --&gt; B3[POST or PATCH\nci-rescue:NNN:sha12\nat-copilot+claude-sonnet-4.6]
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> end
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> subgraph "Missed-Trigger Guard"
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> C1[copilot-agent-checkin.yml\npush trigger every commit] --&gt; C2{Latest rescue comment\nhas at-copilot + age under 45 min?}
 <a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    style B3 fill:#d4edda,stroke:#28a745
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    style C3 fill:#d4edda,stroke:#28a745
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> C2 --&gt;|yes| C3[Skip — RCA is live]
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> C2 --&gt;|no| C4[POST retrigger\nsession-done-retrigger]
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> end
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> A2 -.-&gt;|both markers detected by| C1
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> B3 -.-&gt;|both markers detected by| C1
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> style B3 fill:#d4edda,stroke:#28a745
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> style C3 fill:#d4edda,stroke:#28a745
 </code></pre></div>
 <p><strong>Key insight:</strong> Channel B (SHA-scoped RCA from <code>ci_rescue.py</code>) is the <strong>golden path</strong> because it:
 - Contains a <strong>pattern-matched root cause</strong> with exact fix command
@@ -2796,218 +2844,250 @@
 <hr/>
 <h2 id="4-deduplication-state-machine">4. Deduplication State Machine<a class="headerlink" href="#4-deduplication-state-machine" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>stateDiagram-v2
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    [*] --&gt; NoRescue : branch has no open rescue comment
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>stateDiagram-v2
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    NoRescue --&gt; ChannelA_Open : Workflow fails\ninline rescue job posts Channel A
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> [*] --&gt; NoRescue : branch has no open rescue comment
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    NoRescue --&gt; ChannelB_Open : Workflow fails\nci-rescue.yml fires\nci_rescue.py posts Channel B
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> NoRescue --&gt; ChannelA_Open : Workflow fails\ninline rescue job posts Channel A
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    ChannelA_Open --&gt; ChannelA_Appended : Same PR fails again\nPATCH to existing comment
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> NoRescue --&gt; ChannelB_Open : Workflow fails\nci-rescue.yml fires\nci_rescue.py posts Channel B
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    ChannelB_Open --&gt; ChannelB_Appended : Same SHA fails again\ndifferent workflow\nPATCH to existing RCA
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> ChannelA_Open --&gt; ChannelA_Appended : Same PR fails again\nPATCH to existing comment
 <a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    ChannelB_Open --&gt; SessionActive : at-copilot mention\nstarts Copilot session
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> ChannelB_Open --&gt; ChannelB_Appended : Same SHA fails again\ndifferent workflow\nPATCH to existing RCA
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    ChannelB_Appended --&gt; SessionActive : at-copilot mention\nstarts Copilot session
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> ChannelB_Open --&gt; SessionActive : at-copilot mention\nstarts Copilot session
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    ChannelA_Open --&gt; Retriggered : over 45 min, no Copilot reply\nmissed-trigger guard fires
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> ChannelB_Appended --&gt; SessionActive : at-copilot mention\nstarts Copilot session
 <a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    ChannelB_Open --&gt; GracePeriod : Copilot not seen yet\nbut RCA under 45 min old\nmissed-trigger guard skips
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> ChannelA_Open --&gt; Retriggered : over 45 min, no Copilot reply\nmissed-trigger guard fires
 <a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    GracePeriod --&gt; SessionActive : Copilot session starts\nwithin grace period
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> ChannelB_Open --&gt; GracePeriod : Copilot not seen yet\nbut RCA under 45 min old\nmissed-trigger guard skips
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>    GracePeriod --&gt; Retriggered : over 45 min elapsed\nno Copilot action
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> GracePeriod --&gt; SessionActive : Copilot session starts\nwithin grace period
 <a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    Retriggered --&gt; SessionActive : Retrigger at-copilot\nstarts session
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> GracePeriod --&gt; Retriggered : over 45 min elapsed\nno Copilot action
 <a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>    SessionActive --&gt; Resolved : Copilot replies\nFixed in SHA
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> Retriggered --&gt; SessionActive : Retrigger at-copilot\nstarts session
 <a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>    Resolved --&gt; [*] : CI green on new commit
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> SessionActive --&gt; Resolved : Copilot replies\nFixed in SHA
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> Resolved --&gt; [*] : CI green on new commit
 </code></pre></div>
 <hr/>
 <h2 id="5-sequence-diagram-golden-path-2026-03-30">5. Sequence Diagram — Golden Path (2026-03-30)<a class="headerlink" href="#5-sequence-diagram-golden-path-2026-03-30" title="Permanent link">¶</a></h2>
 <p>This documents the <strong>exact sequence</strong> that produced the ideal rescue scenario — commit <code>1a9fcaab</code>, run <a href="https://github.com/Aries-Serpent/_codex_/actions/runs/23772216208">23772216208</a>, comment <a href="https://github.com/Aries-Serpent/_codex_/pull/3818#issuecomment-4158728043">#4158728043</a>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram showing skip ci, skip ci'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>sequenceDiagram
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    autonumber
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    actor Dev as Copilot Agent S243
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    participant GH as GitHub Actions
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    participant AutoFix as auto-fix-pr-check.yml
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    participant Rescue as ci-rescue.yml
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    participant Engine as ci_rescue.py
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    participant PR as PR 3818 Comments
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    participant Guard as copilot-agent-checkin.yml
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    participant Agent as Copilot Coding Agent S244
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    Dev-&gt;&gt;GH: push f8718be9 S243 fixes P2A/P2B/P2C
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    Note over GH: CI bot auto-commits follow:&lt;br/&gt;chore(auth) [skip ci]&lt;br/&gt;chore(d00) [skip ci]&lt;br/&gt;1a9fcaab (non-skip-ci fix)
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    GH-&gt;&gt;AutoFix: push 1a9fcaab triggers PR Auto-Fix Check run 23772216208
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    AutoFix-&gt;&gt;AutoFix: auto_fix_common_issues.py --check-only&lt;br/&gt;Pattern 22 detected&lt;br/&gt;CODEX_MANIFEST stale after bot commits
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    AutoFix-&gt;&gt;PR: PATCH Channel A comment&lt;br/&gt;ci-rescue:3818&lt;br/&gt;Append Failure Update
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    AutoFix--&gt;&gt;AutoFix: exit 1 auto_fixable over 0
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    GH-&gt;&gt;Rescue: workflow_run completed failure&lt;br/&gt;PR Auto-Fix Check
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>    Rescue-&gt;&gt;Rescue: Download ci_rescue.py from branch head SHA
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>    Rescue-&gt;&gt;Engine: python3 ci_rescue.py --run-id 23772216208
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    Engine-&gt;&gt;GH: GET actions/runs/23772216208/jobs
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>    GH--&gt;&gt;Engine: Job logs failed job
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>sequenceDiagram
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> autonumber
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> actor Dev as Copilot Agent S243
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> participant GH as GitHub Actions
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> participant AutoFix as auto-fix-pr-check.yml
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> participant Rescue as ci-rescue.yml
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> participant Engine as ci_rescue.py
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> participant PR as PR 3818 Comments
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> participant Guard as copilot-agent-checkin.yml
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> participant Agent as Copilot Coding Agent S244
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> Dev-&gt;&gt;GH: push f8718be9 S243 fixes P2A/P2B/P2C
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> Note over GH: CI bot auto-commits follow:&lt;br/&gt;chore(auth) [skip ci]&lt;br/&gt;chore(d00) [skip ci]&lt;br/&gt;1a9fcaab (non-skip-ci fix)
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> GH-&gt;&gt;AutoFix: push 1a9fcaab triggers PR Auto-Fix Check run 23772216208
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> AutoFix-&gt;&gt;AutoFix: auto_fix_common_issues.py --check-only&lt;br/&gt;Pattern 22 detected&lt;br/&gt;CODEX_MANIFEST stale after bot commits
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> AutoFix-&gt;&gt;PR: PATCH Channel A comment&lt;br/&gt;ci-rescue:3818&lt;br/&gt;Append Failure Update
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> AutoFix--&gt;&gt;AutoFix: exit 1 auto_fixable over 0
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> GH-&gt;&gt;Rescue: workflow_run completed failure&lt;br/&gt;PR Auto-Fix Check
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> Rescue-&gt;&gt;Rescue: Download ci_rescue.py from branch head SHA
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> Rescue-&gt;&gt;Engine: python3 ci_rescue.py --run-id 23772216208
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> Engine-&gt;&gt;GH: GET actions/runs/23772216208/jobs
 <a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>    Engine-&gt;&gt;Engine: Match logs against ci_failure_patterns.yaml&lt;br/&gt;RP-004 Pattern 22 matched&lt;br/&gt;CODEX_MANIFEST drift
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a> GH--&gt;&gt;Engine: Job logs failed job
 <a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>
-<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>    Engine-&gt;&gt;PR: POST Channel B RCA comment 4158728043&lt;br/&gt;ci-rescue:3818:1a9fcaab5380&lt;br/&gt;at-copilot+claude-sonnet-4.6 please investigate
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a> Engine-&gt;&gt;Engine: Match logs against ci_failure_patterns.yaml&lt;br/&gt;RP-004 Pattern 22 matched&lt;br/&gt;CODEX_MANIFEST drift
 <a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>
-<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>    Note over PR: Comment 4158728043 created&lt;br/&gt;THE GOLDEN PATH COMMENT
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a> Engine-&gt;&gt;PR: POST Channel B RCA comment 4158728043&lt;br/&gt;ci-rescue:3818:1a9fcaab5380&lt;br/&gt;at-copilot+claude-sonnet-4.6 please investigate
 <a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>
-<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>    PR-&gt;&gt;Agent: at-copilot+claude-sonnet-4.6 mention&lt;br/&gt;triggers Copilot Coding Agent session
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a> Note over PR: Comment 4158728043 created&lt;br/&gt;THE GOLDEN PATH COMMENT
 <a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a>
-<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a>    Agent-&gt;&gt;Agent: Load CODEBASE_AGENCY_POLICY.md&lt;br/&gt;Run sync_tracked_files.py --check
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a> PR-&gt;&gt;Agent: at-copilot+claude-sonnet-4.6 mention&lt;br/&gt;triggers Copilot Coding Agent session
 <a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a>
-<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a>    Agent-&gt;&gt;Agent: Fix RP-004 loop root cause&lt;br/&gt;Pattern 22 to soft_warning_patterns&lt;br/&gt;no longer blocks CI exit code
+<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a> Agent-&gt;&gt;Agent: Load CODEBASE_AGENCY_POLICY.md&lt;br/&gt;Run sync_tracked_files.py --check
 <a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a>
-<a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a>    Agent-&gt;&gt;Agent: Harden missed-trigger guard&lt;br/&gt;rescueMarkerRe matches both channels&lt;br/&gt;45-min grace period for at-copilot RCA
+<a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a> Agent-&gt;&gt;Agent: Fix RP-004 loop root cause&lt;br/&gt;Pattern 22 to soft_warning_patterns&lt;br/&gt;no longer blocks CI exit code
 <a href="#__codelineno-3-46" id="__codelineno-3-46" name="__codelineno-3-46"></a>
-<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a>    Agent-&gt;&gt;Agent: Create docs/ci/CI_RESCUE_PIPELINE.md&lt;br/&gt;Create tests/ci/test_generate_coverage_map.py
+<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a> Agent-&gt;&gt;Agent: Harden missed-trigger guard&lt;br/&gt;rescueMarkerRe matches both channels&lt;br/&gt;45-min grace period for at-copilot RCA
 <a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a>
-<a href="#__codelineno-3-49" id="__codelineno-3-49" name="__codelineno-3-49"></a>    Agent-&gt;&gt;Agent: sync_tracked_files.py --fix&lt;br/&gt;all 5 checks pass
+<a href="#__codelineno-3-49" id="__codelineno-3-49" name="__codelineno-3-49"></a> Agent-&gt;&gt;Agent: Create docs/ci/CI_RESCUE_PIPELINE.md&lt;br/&gt;Create tests/ci/test_generate_coverage_map.py
 <a href="#__codelineno-3-50" id="__codelineno-3-50" name="__codelineno-3-50"></a>
-<a href="#__codelineno-3-51" id="__codelineno-3-51" name="__codelineno-3-51"></a>    Agent-&gt;&gt;GH: report_progress push S244 commit
+<a href="#__codelineno-3-51" id="__codelineno-3-51" name="__codelineno-3-51"></a> Agent-&gt;&gt;Agent: sync_tracked_files.py --fix&lt;br/&gt;all 5 checks pass
 <a href="#__codelineno-3-52" id="__codelineno-3-52" name="__codelineno-3-52"></a>
-<a href="#__codelineno-3-53" id="__codelineno-3-53" name="__codelineno-3-53"></a>    Agent-&gt;&gt;PR: Reply to comment 4158728043&lt;br/&gt;Fixed in commit SHA
+<a href="#__codelineno-3-53" id="__codelineno-3-53" name="__codelineno-3-53"></a> Agent-&gt;&gt;GH: report_progress push S244 commit
 <a href="#__codelineno-3-54" id="__codelineno-3-54" name="__codelineno-3-54"></a>
-<a href="#__codelineno-3-55" id="__codelineno-3-55" name="__codelineno-3-55"></a>    GH-&gt;&gt;AutoFix: New CI run on S244 commit&lt;br/&gt;Pattern 22 is warning only no exit 1
+<a href="#__codelineno-3-55" id="__codelineno-3-55" name="__codelineno-3-55"></a> Agent-&gt;&gt;PR: Reply to comment 4158728043&lt;br/&gt;Fixed in commit SHA
 <a href="#__codelineno-3-56" id="__codelineno-3-56" name="__codelineno-3-56"></a>
-<a href="#__codelineno-3-57" id="__codelineno-3-57" name="__codelineno-3-57"></a>    Note over AutoFix: CI green no rescue needed
+<a href="#__codelineno-3-57" id="__codelineno-3-57" name="__codelineno-3-57"></a> GH-&gt;&gt;AutoFix: New CI run on S244 commit&lt;br/&gt;Pattern 22 is warning only no exit 1
+<a href="#__codelineno-3-58" id="__codelineno-3-58" name="__codelineno-3-58"></a>
+<a href="#__codelineno-3-59" id="__codelineno-3-59" name="__codelineno-3-59"></a> Note over AutoFix: CI green no rescue needed
 </code></pre></div>
 <hr/>
 <h2 id="6-rescue-comment-lifecycle">6. Rescue Comment Lifecycle<a class="headerlink" href="#6-rescue-comment-lifecycle" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Timeline'}}%%
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>timeline
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    title Single PR Rescue Comment Timeline PR 3818 commit 1a9fcaab
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    section Before Rescue
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        2026-03-30T22-52Z : S243 Copilot push f8718be9
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>                          : CI bot auto-commits skip ci
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>                          : 1a9fcaab pushed non-skip-ci
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    section Auto-Fix Check Run 23772216208
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        2026-03-30T23-11Z : auto-fix-pr-check.yml starts
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>        2026-03-30T23-14Z : Pattern 22 detected exit 1
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>                          : Channel A comment appended
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    section CI Rescue
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        2026-03-30T23-14Z : ci-rescue.yml triggered
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>        2026-03-30T23-15Z : ci_rescue.py RP-004 matched
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>                          : Channel B RCA posted comment 4158728043
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>                          : at-copilot+claude-sonnet-4.6 invoked
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    section Copilot Session S244
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>        2026-03-30T23-22Z : S244 session starts
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>                          : RP-004 loop-break implemented
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>                          : Missed-trigger guard hardened
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>                          : Docs and tests created
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>                          : Fix pushed
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>timeline
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> title Single PR Rescue Comment Timeline PR 3818 commit 1a9fcaab
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> section Before Rescue
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> 2026-03-30T22-52Z : S243 Copilot push f8718be9
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> : CI bot auto-commits skip ci
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> : 1a9fcaab pushed non-skip-ci
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> section Auto-Fix Check Run 23772216208
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> 2026-03-30T23-11Z : auto-fix-pr-check.yml starts
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> 2026-03-30T23-14Z : Pattern 22 detected exit 1
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> : Channel A comment appended
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> section CI Rescue
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> 2026-03-30T23-14Z : ci-rescue.yml triggered
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> 2026-03-30T23-15Z : ci_rescue.py RP-004 matched
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> : Channel B RCA posted comment 4158728043
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> : at-copilot+claude-sonnet-4.6 invoked
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> section Copilot Session S244
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> 2026-03-30T23-22Z : S244 session starts
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a> : RP-004 loop-break implemented
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> : Missed-trigger guard hardened
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a> : Docs and tests created
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> : Fix pushed
 </code></pre></div>
 <hr/>
 <h2 id="7-workflow-dependency-graph">7. Workflow Dependency Graph<a class="headerlink" href="#7-workflow-dependency-graph" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing PR Auto-Fix Check, Pre-Merge Validation'}}%%
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>graph TD
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    subgraph "Monitored Workflows — trigger ci-rescue.yml"
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>        W1[PR Auto-Fix Check]
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>        W2[Pre-Merge Validation]
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        W3[Validation Pipeline]
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>        W4[mypy Baseline]
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>        W5[Workflow Compliance Audit]
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>        W6[Iterative Self-Healing CI]
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>        W7[Test RAG Pipeline]
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>        W8[Resilient Validation Suite]
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>        W9[Security Scan]
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>        W10[Auto-Fix Common CI Issues]
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    end
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    subgraph "Rescue Infrastructure"
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>        R1[ci-rescue.yml\nworkflow_run trigger]
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>        R2[ci_rescue.py\npattern analysis engine]
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>        R3[ci_failure_patterns.yaml\npattern library]
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>    end
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>    subgraph "Comment System"
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>        C1[Channel A\nci-rescue:NNN\ngeneric fix notice]
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>        C2[Channel B RCA\nci-rescue:NNN:sha\nat-copilot mention GOLDEN PATH]
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>    end
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>    subgraph "Session Management"
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>        S1[copilot-agent-checkin.yml\nmissed-trigger guard]
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>        S2[Copilot Coding Agent\nsession]
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a>    end
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a>
-<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>    W1 &amp; W2 &amp; W3 &amp; W4 &amp; W5 &amp; W6 &amp; W7 &amp; W8 &amp; W9 &amp; W10 --&gt;|failure| R1
-<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>    W1 &amp; W2 &amp; W3 &amp; W4 &amp; W5 &amp; W6 &amp; W7 &amp; W8 --&gt;|inline rescue job| C1
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>    R1 --&gt; R2
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>    R2 --&gt; R3
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a>    R2 --&gt; C2
-<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a>    C1 -.-&gt;|detected by| S1
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>    C2 -.-&gt;|detected by| S1
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>    C2 --&gt;|at-copilot mention| S2
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>    S1 --&gt;|retrigger if dropped| S2
-<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a>    S2 --&gt;|push fix| W1
-<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a>
-<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a>    style C2 fill:#d4edda,stroke:#28a745
-<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a>    style S2 fill:#cce5ff,stroke:#004085
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>graph TD
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> subgraph "Monitored Workflows — trigger ci-rescue.yml"
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> W1[PR Auto-Fix Check]
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> W2[Pre-Merge Validation]
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> W3[Validation Pipeline]
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> W4[mypy Baseline]
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> W5[Workflow Compliance Audit]
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> W6[Iterative Self-Healing CI]
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> W7[Test RAG Pipeline]
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> W8[Resilient Validation Suite]
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> W9[Security Scan]
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> W10[Auto-Fix Common CI Issues]
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> end
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> subgraph "Rescue Infrastructure"
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> R1[ci-rescue.yml\nworkflow_run trigger]
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> R2[ci_rescue.py\npattern analysis engine]
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> R3[ci_failure_patterns.yaml\npattern library]
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> end
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> subgraph "Comment System"
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> C1[Channel A\nci-rescue:NNN\ngeneric fix notice]
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> C2[Channel B RCA\nci-rescue:NNN:sha\nat-copilot mention GOLDEN PATH]
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> end
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a> subgraph "Session Management"
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a> S1[copilot-agent-checkin.yml\nmissed-trigger guard]
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a> S2[Copilot Coding Agent\nsession]
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a> end
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a> W1 &amp; W2 &amp; W3 &amp; W4 &amp; W5 &amp; W6 &amp; W7 &amp; W8 &amp; W9 &amp; W10 --&gt;|failure| R1
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a> W1 &amp; W2 &amp; W3 &amp; W4 &amp; W5 &amp; W6 &amp; W7 &amp; W8 --&gt;|inline rescue job| C1
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a>
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a> R1 --&gt; R2
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a> R2 --&gt; R3
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>
+<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a> R2 --&gt; C2
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a> C1 -.-&gt;|detected by| S1
+<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a> C2 -.-&gt;|detected by| S1
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a>
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a> C2 --&gt;|at-copilot mention| S2
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a>
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a> S1 --&gt;|retrigger if dropped| S2
+<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a>
+<a href="#__codelineno-5-49" id="__codelineno-5-49" name="__codelineno-5-49"></a> S2 --&gt;|push fix| W1
+<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a>
+<a href="#__codelineno-5-51" id="__codelineno-5-51" name="__codelineno-5-51"></a> style C2 fill:#d4edda,stroke:#28a745
+<a href="#__codelineno-5-52" id="__codelineno-5-52" name="__codelineno-5-52"></a> style S2 fill:#cce5ff,stroke:#004085
 </code></pre></div>
 <hr/>
 <h2 id="8-anti-pattern-map">8. Anti-Pattern Map<a class="headerlink" href="#8-anti-pattern-map" title="Permanent link">¶</a></h2>
 <h3 id="anti-pattern-1-rp-004-infinite-loop-fixed-in-s244">Anti-Pattern 1: RP-004 Infinite Loop (Fixed in S244)<a class="headerlink" href="#anti-pattern-1-rp-004-infinite-loop-fixed-in-s244" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Bot auto-commit\nchore auth / chore d00, CODEX_MANIFEST\nhash drifts'}}%%
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>graph LR
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    subgraph "BEFORE fix — infinite loop"
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>        AP1[Bot auto-commit\nchore auth / chore d00] --&gt; AP2[CODEX_MANIFEST\nhash drifts]
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>        AP2 --&gt; AP3[Pattern 22 = hard ERROR\nin auto_fixable_patterns]
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        AP3 --&gt; AP4[CI fails exit 1]
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>        AP4 --&gt; AP5[ci-rescue.yml fires\nRCA posted]
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>        AP5 --&gt; AP6[Copilot session\nruns sync --fix]
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>        AP6 --&gt; AP7[Fix commit pushed]
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>        AP7 --&gt; AP1
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>    end
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>    subgraph "AFTER fix — loop broken"
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>        FX1[Bot auto-commit] --&gt; FX2[CODEX_MANIFEST drifts]
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>        FX2 --&gt; FX3[Pattern 22 = soft WARNING\nin soft_warning_patterns]
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>        FX3 --&gt; FX4[CI reports warning\nno exit 1]
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>        FX4 --&gt; FX5[No rescue comment\nno loop]
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>    end
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    style AP1 fill:#ffcccc,stroke:#cc0000
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>    style AP4 fill:#ffcccc,stroke:#cc0000
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>    style AP5 fill:#ffcccc,stroke:#cc0000
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>    style AP7 fill:#ffcccc,stroke:#cc0000
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>    style FX4 fill:#d4edda,stroke:#28a745
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>    style FX5 fill:#d4edda,stroke:#28a745
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>graph LR
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> subgraph "BEFORE fix — infinite loop"
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> AP1[Bot auto-commit\nchore auth / chore d00] --&gt; AP2[CODEX_MANIFEST\nhash drifts]
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> AP2 --&gt; AP3[Pattern 22 = hard ERROR\nin auto_fixable_patterns]
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> AP3 --&gt; AP4[CI fails exit 1]
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> AP4 --&gt; AP5[ci-rescue.yml fires\nRCA posted]
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a> AP5 --&gt; AP6[Copilot session\nruns sync --fix]
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> AP6 --&gt; AP7[Fix commit pushed]
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a> AP7 --&gt; AP1
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a> end
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a> subgraph "AFTER fix — loop broken"
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a> FX1[Bot auto-commit] --&gt; FX2[CODEX_MANIFEST drifts]
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a> FX2 --&gt; FX3[Pattern 22 = soft WARNING\nin soft_warning_patterns]
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> FX3 --&gt; FX4[CI reports warning\nno exit 1]
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a> FX4 --&gt; FX5[No rescue comment\nno loop]
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a> end
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a> style AP1 fill:#ffcccc,stroke:#cc0000
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a> style AP4 fill:#ffcccc,stroke:#cc0000
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a> style AP5 fill:#ffcccc,stroke:#cc0000
+<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a> style AP7 fill:#ffcccc,stroke:#cc0000
+<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a> style FX4 fill:#d4edda,stroke:#28a745
+<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a> style FX5 fill:#d4edda,stroke:#28a745
 </code></pre></div>
 <h3 id="anti-pattern-2-duplicate-retriggers-fixed-in-s244">Anti-Pattern 2: Duplicate Retriggers (Fixed in S244)<a class="headerlink" href="#anti-pattern-2-duplicate-retriggers-fixed-in-s244" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing RCA Channel B posted\nat-copilot+claude-sonnet, Bot commit pushes\ntriggers checkin.yml'}}%%
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>graph LR
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    subgraph "BEFORE fix — competing sessions"
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>        D1[RCA Channel B posted\nat-copilot+claude-sonnet] --&gt; D2[Bot commit pushes\ntriggers checkin.yml]
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>        D2 --&gt; D3[Guard sees open\nChannel A rescue\nno at-copilot check]
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>        D3 --&gt; D4[Guard posts retrigger\nduplicate at-copilot\ncompeting sessions]
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    end
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    subgraph "AFTER fix — 45-min grace"
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>        G1[RCA Channel B posted\nat-copilot+claude-sonnet] --&gt; G2[Bot commit pushes\ntriggers checkin.yml]
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>        G2 --&gt; G3[Guard detects\nrcaHasCopilotCall\nage under 45 min]
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>        G3 --&gt; G4[Guard skips\nRCA is still live\nno duplicate]
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    end
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>graph LR
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> subgraph "BEFORE fix — competing sessions"
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> D1[RCA Channel B posted\nat-copilot+claude-sonnet] --&gt; D2[Bot commit pushes\ntriggers checkin.yml]
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> D2 --&gt; D3[Guard sees open\nChannel A rescue\nno at-copilot check]
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> D3 --&gt; D4[Guard posts retrigger\nduplicate at-copilot\ncompeting sessions]
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> end
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> subgraph "AFTER fix — 45-min grace"
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    style D4 fill:#ffcccc,stroke:#cc0000
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>    style G4 fill:#d4edda,stroke:#28a745
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> G1[RCA Channel B posted\nat-copilot+claude-sonnet] --&gt; G2[Bot commit pushes\ntriggers checkin.yml]
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> G2 --&gt; G3[Guard detects\nrcaHasCopilotCall\nage under 45 min]
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a> G3 --&gt; G4[Guard skips\nRCA is still live\nno duplicate]
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a> end
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a> style D4 fill:#ffcccc,stroke:#cc0000
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a> style G4 fill:#d4edda,stroke:#28a745
 </code></pre></div>
 <hr/>
 <h2 id="9-component-responsibility-matrix">9. Component Responsibility Matrix<a class="headerlink" href="#9-component-responsibility-matrix" title="Permanent link">¶</a></h2>
@@ -3117,27 +3197,37 @@
 <hr/>
 <h2 id="10-rules-for-adding-new-rescue-channels">10. Rules for Adding New Rescue Channels<a class="headerlink" href="#10-rules-for-adding-new-rescue-channels" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing New rescue channel needed, Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes'}}%%
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>flowchart LR
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    A([New rescue channel needed]) --&gt; B{Can ci_rescue.py\nhandle this pattern?}
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    B --&gt;|yes| C[Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes]
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    B --&gt;|no| D[Create inline rescue job\nin the failing workflow]
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    C --&gt; E[ci-rescue.yml picks it up\nautomatically]
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    D --&gt; F[Use PR-scoped marker or\nSHA-scoped if per-commit context needed]
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    E --&gt; G[Update SKIP_BODY_MARKERS\nin check_pr_comments.py]
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    F --&gt; G
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    G --&gt; H[Add to monitoring list\nin ci-rescue.yml workflows:]
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    H --&gt; I([Done])
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>flowchart LR
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> A([New rescue channel needed]) --&gt; B{Can ci_rescue.py\nhandle this pattern?}
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> B --&gt;|yes| C[Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes]
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> B --&gt;|no| D[Create inline rescue job\nin the failing workflow]
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> C --&gt; E[ci-rescue.yml picks it up\nautomatically]
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> D --&gt; F[Use PR-scoped marker or\nSHA-scoped if per-commit context needed]
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> E --&gt; G[Update SKIP_BODY_MARKERS\nin check_pr_comments.py]
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> F --&gt; G
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> G --&gt; H[Add to monitoring list\nin ci-rescue.yml workflows:]
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> H --&gt; I([Done])
 </code></pre></div>
 <p><strong>Mandatory checklist for new rescue channels:</strong></p>
 <ol>
-<li>☐ <strong>Unique parseable HTML marker</strong> — use <code>&lt;!-- ci-rescue-{source}:{pr}:{sha} --&gt;</code> for new sources</li>
-<li>☐ <strong><code>@copilot+claude-sonnet-4.6</code></strong> in body — triggers session without human intervention</li>
-<li>☐ <strong>Paginate comment search</strong> (up to 50 pages) before creating to find existing marker</li>
-<li>☐ <strong>Upsert semantics</strong> — <code>PATCH</code> existing comment, <code>POST</code> only if not found</li>
-<li>☐ <strong>Register pattern</strong> in <code>.codex/patterns/ci_failure_patterns.yaml</code></li>
-<li>☐ <strong>Update <code>SKIP_BODY_MARKERS</code></strong> in <code>check_pr_comments.py</code> — prevent circular gate failure</li>
-<li>☐ <strong>Update <code>rescueMarkerRe</code></strong> in <code>copilot-agent-checkin.yml</code> if marker format differs</li>
-<li>☐ <strong>Add workflow</strong> to monitored list in <code>ci-rescue.yml</code> <code>on.workflow_run.workflows:</code></li>
+<li><strong>Unique parseable HTML marker</strong> — use <code>&lt;!-- ci-rescue-{source}:{pr}:{sha} --&gt;</code> for new sources</li>
+<li><strong><code>@copilot+claude-sonnet-4.6</code></strong> in body — triggers session without human intervention</li>
+<li><strong>Paginate comment search</strong> (up to 50 pages) before creating to find existing marker</li>
+<li><strong>Upsert semantics</strong> — <code>PATCH</code> existing comment, <code>POST</code> only if not found</li>
+<li><strong>Register pattern</strong> in <code>.codex/patterns/ci_failure_patterns.yaml</code></li>
+<li><strong>Update <code>SKIP_BODY_MARKERS</code></strong> in <code>check_pr_comments.py</code> — prevent circular gate failure</li>
+<li><strong>Update <code>rescueMarkerRe</code></strong> in <code>copilot-agent-checkin.yml</code> if marker format differs</li>
+<li><strong>Add workflow</strong> to monitored list in <code>ci-rescue.yml</code> <code>on.workflow_run.workflows:</code></li>
 </ol>
 <hr/>
 <h2 id="related-files">Related Files<a class="headerlink" href="#related-files" title="Permanent link">¶</a></h2>
@@ -3222,6 +3312,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Plugin Registry Guide (D2)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -10,12 +10,12 @@ This guide documents the entry-point based plugin system for Codex ML. The syste
 
 ## Features
 
- **Entry-point based discovery** - Automatic plugin detection via setuptools entry points  
- **Plugin validation** - Version compatibility and dependency checking  
- **Multiple plugin types** - Support for tokenizers, models, datasets, metrics, trainers, and more  
- **Lifecycle management** - Initialize, execute, and cleanup hooks  
- **CLI management tool** - Discover, list, validate, and inspect plugins  
- **Graceful error handling** - Failed plugins don't break the system  
+ **Entry-point based discovery** - Automatic plugin detection via setuptools entry points
+ **Plugin validation** - Version compatibility and dependency checking
+ **Multiple plugin types** - Support for tokenizers, models, datasets, metrics, trainers, and more
+ **Lifecycle management** - Initialize, execute, and cleanup hooks
+ **CLI management tool** - Discover, list, validate, and inspect plugins
+ **Graceful error handling** - Failed plugins don't break the system
 
 ## Quickstart
 
@@ -65,31 +65,31 @@ info = registry.get_plugin_info("codex_ml.tokenizers", "my_tokenizer")
 from codex_ml.plugins.plugin_registry import Plugin, PluginMetadata
 
 class MyTokenizer(Plugin):
-    """Custom tokenizer plugin."""
+ """Custom tokenizer plugin."""
 
-    def initialize(self):
-        """Initialize the tokenizer."""
-        print("Tokenizer initialized")
+ def initialize(self):
+ """Initialize the tokenizer."""
+ print("Tokenizer initialized")
 
-    def execute(self, text: str) -> list[str]:
-        """Tokenize text."""
-        return text.split()
+ def execute(self, text: str) -> list[str]:
+ """Tokenize text."""
+ return text.split()
 
-    def cleanup(self):
-        """Cleanup resources."""
-        pass
+ def cleanup(self):
+ """Cleanup resources."""
+ pass
 
-    @classmethod
-    def get_metadata(cls) -> PluginMetadata:
-        """Return plugin metadata."""
-        return PluginMetadata(
-            name="my_tokenizer",
-            version="1.0.0",
-            author="Your Name",
-            description="Simple word tokenizer",
-            dependencies=["numpy>=1.20.0"],
-            min_codex_version="0.1.0",
-        )
+ @classmethod
+ def get_metadata(cls) -> PluginMetadata:
+ """Return plugin metadata."""
+ return PluginMetadata(
+ name="my_tokenizer",
+ version="1.0.0",
+ author="Your Name",
+ description="Simple word tokenizer",
+ dependencies=["numpy>=1.20.0"],
+ min_codex_version="0.1.0",
+ )
 ```
 
 ### 2. Register Entry Point
@@ -102,14 +102,14 @@ In your package's `setup.py` or `pyproject.toml`:
 from setuptools import setup
 
 setup(
-    name="my-codex-plugin",
-    version="1.0.0",
-    py_modules=["my_plugin"],
-    entry_points={
-        "codex_ml.tokenizers": [
-            "my_tokenizer = my_plugin:MyTokenizer",
-        ],
-    },
+ name="my-codex-plugin",
+ version="1.0.0",
+ py_modules=["my_plugin"],
+ entry_points={
+ "codex_ml.tokenizers": [
+ "my_tokenizer = my_plugin:MyTokenizer",
+ ],
+ },
 )
 ```
 
@@ -201,11 +201,11 @@ from codex_ml.plugins.entry_points import PluginValidator, PluginInfo
 validator = PluginValidator(codex_version="1.0.0")
 
 plugin_info = PluginInfo(
-    name="my_plugin",
-    entry_point_group="codex_ml.plugins",
-    entry_point_name="my_plugin",
-    module_name="my_plugin",
-    required_codex_version="0.9.0",  # Compatible
+ name="my_plugin",
+ entry_point_group="codex_ml.plugins",
+ entry_point_name="my_plugin",
+ module_name="my_plugin",
+ required_codex_version="0.9.0", # Compatible
 )
 
 is_valid, error = validator.validate_plugin(plugin_info)
@@ -216,11 +216,11 @@ is_valid, error = validator.validate_plugin(plugin_info)
 
 ```python
 plugin_info = PluginInfo(
-    name="my_plugin",
-    entry_point_group="codex_ml.plugins",
-    entry_point_name="my_plugin",
-    module_name="my_plugin",
-    dependencies=["numpy>=1.20.0", "torch>=2.0.0"],
+ name="my_plugin",
+ entry_point_group="codex_ml.plugins",
+ entry_point_name="my_plugin",
+ module_name="my_plugin",
+ dependencies=["numpy>=1.20.0", "torch>=2.0.0"],
 )
 
 is_valid, error = validator.validate_plugin(plugin_info)
@@ -233,13 +233,13 @@ is_valid, error = validator.validate_plugin(plugin_info)
 
 ```
 my-codex-plugin/
-├── my_plugin/
-│   ├── __init__.py
-│   └── tokenizer.py
-├── tests/
-│   └── test_tokenizer.py
-├── pyproject.toml
-└── README.md
+ my_plugin/
+ __init__.py
+ tokenizer.py
+ tests/
+ test_tokenizer.py
+ pyproject.toml
+ README.md
 ```
 
 ### my_plugin/tokenizer.py
@@ -248,36 +248,36 @@ my-codex-plugin/
 from codex_ml.plugins.plugin_registry import Plugin, PluginMetadata
 
 class WordPieceTokenizer(Plugin):
-    """WordPiece tokenizer plugin."""
+ """WordPiece tokenizer plugin."""
 
-    def __init__(self, vocab_file: str):
-        self.vocab_file = vocab_file
-        self.vocab = {}
+ def __init__(self, vocab_file: str):
+ self.vocab_file = vocab_file
+ self.vocab = {}
 
-    def initialize(self):
-        """Load vocabulary."""
-        with open(self.vocab_file) as f:
-            self.vocab = {line.strip(): i for i, line in enumerate(f)}
+ def initialize(self):
+ """Load vocabulary."""
+ with open(self.vocab_file) as f:
+ self.vocab = {line.strip(): i for i, line in enumerate(f)}
 
-    def execute(self, text: str) -> list[int]:
-        """Tokenize and encode text."""
-        tokens = text.split()
-        return [self.vocab.get(token, 0) for token in tokens]
+ def execute(self, text: str) -> list[int]:
+ """Tokenize and encode text."""
+ tokens = text.split()
+ return [self.vocab.get(token, 0) for token in tokens]
 
-    def cleanup(self):
-        """Cleanup resources."""
-        self.vocab.clear()
+ def cleanup(self):
+ """Cleanup resources."""
+ self.vocab.clear()
 
-    @classmethod
-    def get_metadata(cls) -> PluginMetadata:
-        return PluginMetadata(
-            name="wordpiece_tokenizer",
-            version="1.0.0",
-            author="Your Name",
-            description="WordPiece tokenizer implementation",
-            dependencies=[],
-            min_codex_version="0.1.0",
-        )
+ @classmethod
+ def get_metadata(cls) -> PluginMetadata:
+ return PluginMetadata(
+ name="wordpiece_tokenizer",
+ version="1.0.0",
+ author="Your Name",
+ description="WordPiece tokenizer implementation",
+ dependencies=[],
+ min_codex_version="0.1.0",
+ )
 ```
 
 ### my_plugin/__init__.py
@@ -301,7 +301,7 @@ version = "1.0.0"
 description = "Custom tokenizer plugin for Codex ML"
 requires-python = ">=3.10"
 dependencies = [
-    "codex-ml>=0.1.0",
+ "codex-ml>=0.1.0",
 ]
 
 [project.entry-points."codex_ml.tokenizers"]
@@ -319,9 +319,9 @@ registry.discover_plugins()
 
 # Load the tokenizer
 tokenizer = registry.load_plugin(
-    "codex_ml.tokenizers",
-    "wordpiece",
-    vocab_file="vocab.txt"
+ "codex_ml.tokenizers",
+ "wordpiece",
+ vocab_file="vocab.txt"
 )
 
 # Use the tokenizer
@@ -336,38 +336,38 @@ print(tokens)
 ```python
 @classmethod
 def get_metadata(cls) -> PluginMetadata:
-    return PluginMetadata(
-        name="my_plugin",
-        version="1.0.0",
-        author="Your Name <your.email@example.com>",
-        description="Detailed description of what the plugin does",
-        dependencies=["numpy>=1.20.0", "torch>=2.0.0"],
-        min_codex_version="0.1.0",
-    )
+ return PluginMetadata(
+ name="my_plugin",
+ version="1.0.0",
+ author="Your Name <your.email@example.com>",
+ description="Detailed description of what the plugin does",
+ dependencies=["numpy>=1.20.0", "torch>=2.0.0"],
+ min_codex_version="0.1.0",
+ )
 ```
 
 ### 2. Handle Initialization Errors
 
 ```python
 def initialize(self):
-    """Initialize plugin with error handling."""
-    try:
-        # Initialize resources
-        self.load_resources()
-    except Exception as e:
-        logger.error(f"Failed to initialize plugin: {e}")
-        raise
+ """Initialize plugin with error handling."""
+ try:
+ # Initialize resources
+ self.load_resources()
+ except Exception as e:
+ logger.error(f"Failed to initialize plugin: {e}")
+ raise
 ```
 
 ### 3. Cleanup Resources
 
 ```python
 def cleanup(self):
-    """Always cleanup resources."""
-    if hasattr(self, 'model'):
-        del self.model
-    if hasattr(self, 'cache'):
-        self.cache.clear()
+ """Always cleanup resources."""
+ if hasattr(self, 'model'):
+ del self.model
+ if hasattr(self, 'cache'):
+ self.cache.clear()
 ```
 
 ### 4. Version Your Plugins
@@ -384,15 +384,15 @@ import pytest
 from my_plugin import WordPieceTokenizer
 
 def test_tokenizer_initialization():
-    tokenizer = WordPieceTokenizer("vocab.txt")
-    tokenizer.initialize()
-    assert len(tokenizer.vocab) > 0
+ tokenizer = WordPieceTokenizer("vocab.txt")
+ tokenizer.initialize()
+ assert len(tokenizer.vocab) > 0
 
 def test_tokenizer_execution():
-    tokenizer = WordPieceTokenizer("vocab.txt")
-    tokenizer.initialize()
-    tokens = tokenizer.execute("hello world")
-    assert isinstance(tokens, list)
+ tokenizer = WordPieceTokenizer("vocab.txt")
+ tokenizer.initialize()
+ tokens = tokenizer.execute("hello world")
+ assert isinstance(tokens, list)
 ```
 
 ## Troubleshooting
@@ -453,27 +453,27 @@ plugin.initialize()
 2026-07-13
 
 ### Deliverables Completed
- Entry-point plugin system (`src/codex_ml/plugins/entry_points.py`)  
- Plugin discovery and validation  
- CLI management tool (`scripts/manage_plugins.py`)  
- Comprehensive tests (`tests/plugins/test_entry_points.py`)  
- Documentation (this file)  
- Example plugin implementations  
+ Entry-point plugin system (`src/codex_ml/plugins/entry_points.py`)
+ Plugin discovery and validation
+ CLI management tool (`scripts/manage_plugins.py`)
+ Comprehensive tests (`tests/plugins/test_entry_points.py`)
+ Documentation (this file)
+ Example plugin implementations
 
 ### Features Implemented
- Automatic plugin discovery via entry points  
- Version compatibility checking  
- Dependency validation  
- Multiple plugin types (8 groups)  
- Lifecycle management (initialize, execute, cleanup)  
- Error handling and graceful degradation  
- CLI tools for management  
+ Automatic plugin discovery via entry points
+ Version compatibility checking
+ Dependency validation
+ Multiple plugin types (8 groups)
+ Lifecycle management (initialize, execute, cleanup)
+ Error handling and graceful degradation
+ CLI tools for management
 
 ### Integration Points
- Works with existing plugin infrastructure  
- Compatible with programmatic plugin registry  
- Supports multiple entry point groups  
- Extensible for future plugin types  
+ Works with existing plugin infrastructure
+ Compatible with programmatic plugin registry
+ Supports multiple entry point groups
+ Extensible for future plugin types
 
 ### Next Steps
 All 4 deferred items complete! (D4, D3, D1, D2)

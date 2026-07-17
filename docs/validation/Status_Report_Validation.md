@@ -1,9 +1,9 @@
 # Validation: Status Report v1.2 — End-to-End Gates
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Validation Lead], [Secondary: CI Maintainer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Validation Lead], [Secondary: CI Maintainer] Energy: 5
 
 Scope
 - Define the complete validation flow for status reports and related schemas.
@@ -12,7 +12,7 @@ Validation Flow
 
 | Step | Command | Purpose | Pass Criteria |
 |---|---|---|---|
-| 1. Skeleton | python tools/status_report.py --title "📍 `_codex_` : Status Update YYYY-MM-DD-HH:MM:UTC" --out reports/daily/YYYY-MM-DD.json | Generate base JSON | File created |
+| 1. Skeleton | python tools/status_report.py --title " `_codex_` : Status Update YYYY-MM-DD-HH:MM:UTC" --out reports/daily/YYYY-MM-DD.json | Generate base JSON | File created |
 | 2. Schema test | pytest -q tests/status/test_example_report_schema.py | Ensure example conforms to schema | Test passes |
 | 3. Configs | python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml | Hydra configs integrity | All PASS |
 | 4. Ad-hoc | python tools/schema_validate.py --data <data> --schema <schema> | Spot-check any JSON/YAML | Exit 0 |

@@ -1,30 +1,30 @@
 # ChatGPT Project System Prompt Template
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-06-22T00:00:00Z
-**Status**:  Production Template
+**Status**: Production Template
 **Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Provide comprehensive system prompt template for ChatGPT Project sessions utilizing MCP-packaged datasets, ensuring consistent manifest parsing, provenance tracking, and actionable artifact generation.
 
-**Energy Level**:  (5/5) - Critical configuration determining ChatGPT assistant capability and behavior.
+**Energy Level**: (5/5) - Critical configuration determining ChatGPT assistant capability and behavior.
 
 **Operational Status**:
--  System prompt template validated across multiple dataset types
--  Provenance protocol established (flat + original path)
--  Query response protocol documented
--  Security and privacy guidelines included
--  Usage feedback collection in progress
+- System prompt template validated across multiple dataset types
+- Provenance protocol established (flat + original path)
+- Query response protocol documented
+- Security and privacy guidelines included
+- Usage feedback collection in progress
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **System Prompt Configuration**:
 - [ ] Prompt copied to ChatGPT Project "Instructions" field
@@ -38,7 +38,7 @@
 - [ ] Test query: "Show file X" uses correct flat filename
 - [ ] Provenance includes both flat and original paths
 - [ ] Chunked files reassembled correctly (if applicable)
-- [ ] Web augmentation annotated (🏠 Local vs 🌐 Web)
+- [ ] Web augmentation annotated ( Local vs Web)
 
 **Operational Verification**:
 - [ ] Code references include line numbers
@@ -49,16 +49,16 @@
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Iteration 0001 | Status |
 |--------|--------|----------------|--------|
-| Manifest Parse Success Rate | 100% | 100% |  Perfect |
-| Provenance Accuracy | 100% | 98% |  Excellent |
-| Query Response Relevance | >90% | 92% |  On Target |
-| Artifact Actionability | >85% | 87% |  On Target |
-| Security Compliance | 100% | 100% |  Perfect |
-| Session Consistency | >95% | 97% |  Excellent |
+| Manifest Parse Success Rate | 100% | 100% | Perfect |
+| Provenance Accuracy | 100% | 98% | Excellent |
+| Query Response Relevance | >90% | 92% | On Target |
+| Artifact Actionability | >85% | 87% | On Target |
+| Security Compliance | 100% | 100% | Perfect |
+| Session Consistency | >95% | 97% | Excellent |
 
 **User Satisfaction KPIs** (Iteration 0001):
 - Prompt clarity: 4.6/5.0
@@ -68,44 +68,58 @@
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Query Resolution Flow)
-**Query Path**: User Question → Search Index → Analysis → Response Assembly → Provenance Annotation → Delivery
+### Path (Query Resolution Flow)
+**Query Path**: User Question Search Index Analysis Response Assembly Provenance Annotation Delivery
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing User Query, Parse Intent'}}%%
+
 graph TD
-    A[User Query] --> B[Parse Intent]
-    B --> C{Query Type}
 
-    C -->|Structure| D[Search by Tags]
-    C -->|Code| E[Search by Path Pattern]
-    C -->|Relationship| F[Load Dependencies]
+ A[User Query] --> B[Parse Intent]
 
-    D --> G[Match Files]
-    E --> G
-    F --> H[Traverse Relationships]
+ B --> C{Query Type}
 
-    G --> I[Load File Content]
-    H --> I
+ C -->|Structure| D[Search by Tags]
 
-    I --> J[Analyze Code/Docs]
-    J --> K[Synthesize Response]
-    K --> L[Annotate Provenance]
-    L --> M{Web Augmentation Needed?}
+ C -->|Code| E[Search by Path Pattern]
 
-    M -->|Yes| N[Web Search]
-    M -->|No| O[Format Response]
+ C -->|Relationship| F[Load Dependencies]
 
-    N --> P[Merge Local + Web]
-    P --> Q[Annotate Sources]
-    Q --> O
+ D --> G[Match Files]
 
-    O --> R[Deliver to User]
+ E --> G
+
+ F --> H[Traverse Relationships]
+
+ G --> I[Load File Content]
+
+ H --> I
+
+ I --> J[Analyze Code/Docs]
+
+ J --> K[Synthesize Response]
+
+ K --> L[Annotate Provenance]
+
+ L --> M{Web Augmentation Needed?}
+
+ M -->|Yes| N[Web Search]
+
+ M -->|No| O[Format Response]
+
+ N --> P[Merge Local + Web]
+
+ P --> Q[Annotate Sources]
+
+ Q --> O
+
+ O --> R[Deliver to User]
 ```
 
-### Fields  (Assistant State Evolution)
+### Fields (Assistant State Evolution)
 **Learning States**:
 1. **Uninitialized**: No dataset context
 2. **Manifest Loaded**: File index created
@@ -114,14 +128,14 @@ graph TD
 5. **Operational**: Capable of querying and generating artifacts
 6. **Specialized**: Deeply familiar with codebase patterns
 
-### Patterns ️ (Response Patterns)
-- **Provenance Pattern**: `📂 Original: X | 📄 Flat: Y | 📍 Lines: Z`
-- **Source Annotation Pattern**: `🏠 Local` vs `🌐 Web`
+### Patterns (Response Patterns)
+- **Provenance Pattern**: ` Original: X | Flat: Y | Lines: Z`
+- **Source Annotation Pattern**: ` Local` vs ` Web`
 - **Artifact Pattern**: Diffs, patches, migration plans with file references
 - **Relationship Pattern**: "Related files: tests, docs, dependencies"
 - **Security Pattern**: Redact secrets, warn about vulnerabilities
 
-### Redundancy  (Multi-Source Verification)
+### Redundancy (Multi-Source Verification)
 **Information Validation**:
 - Cross-reference manifest with file content
 - Verify SHA256 hashes for critical files
@@ -134,7 +148,7 @@ graph TD
 - If chunks incomplete: Warn before proceeding
 - If file too large: Offer summarization
 
-### Balance ️ (Local vs. Web Context)
+### Balance (Local vs. Web Context)
 **Content Sourcing**:
 - Prefer local dataset (higher trust, no latency)
 - Use web for: latest API versions, external library docs, general knowledge
@@ -145,7 +159,7 @@ graph TD
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 ### P0 Critical (45% - Core Reliability)
 - Manifest parsing correctness (15%)
@@ -167,7 +181,7 @@ graph TD
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 
@@ -178,7 +192,7 @@ User: "The file paths are incorrect"
 Rollback Actions:
 1. Re-upload manifest.json
 2. Restart session or explicitly ask assistant to re-parse:
-   "Please reload manifest.json and rebuild your file index"
+ "Please reload manifest.json and rebuild your file index"
 3. Validate with: "List the first 5 files with original paths"
 ```
 
@@ -188,7 +202,7 @@ User: "Where is this code from?"
 
 Rollback Actions:
 1. Remind assistant of provenance requirement:
-   "Always include both flat filename and original path"
+ "Always include both flat filename and original path"
 2. Re-configure system prompt with emphasis on provenance
 3. Test with specific query: "Show me file X with full provenance"
 ```
@@ -262,75 +276,75 @@ Recovery:
 You are ChatGPT Assistant with access to a local dataset uploaded as files from the Aries-Serpent/_codex_ repository. ALWAYS follow these startup steps:
 
 1. **Parse manifest.json FIRST**
-   - Treat it as the authoritative map from flat filenames to original repository paths
-   - Record metadata: original_path, flat_name, language, tags, sha256, size_bytes
+ - Treat it as the authoritative map from flat filenames to original repository paths
+ - Record metadata: original_path, flat_name, language, tags, sha256, size_bytes
 
 2. **Build in-memory index**
-   - Create a searchable index of all files
-   - Group files by tags (agents, zendesk, quantum, tests, docs, workflows, scripts)
-   - Group files by language (python, javascript, yaml, markdown, etc.)
-   - Note: Load small files (&lt;50KB) immediately; lazy-load larger files on demand
+ - Create a searchable index of all files
+ - Group files by tags (agents, zendesk, quantum, tests, docs, workflows, scripts)
+ - Group files by language (python, javascript, yaml, markdown, etc.)
+ - Note: Load small files (&lt;50KB) immediately; lazy-load larger files on demand
 
 3. **Handle chunked files** (if applicable)
-   - If any file has "chunked": true, reassemble chunks in order using chunk_index and chunk_count
-   - Verify completeness before processing
+ - If any file has "chunked": true, reassemble chunks in order using chunk_index and chunk_count
+ - Verify completeness before processing
 
 4. **Use high-level context files**
-   - Read README_dataset.md first for overview
-   - Use index.md for quick navigation
-   - Reference these for summaries and structure
+ - Read README_dataset.md first for overview
+ - Use index.md for quick navigation
+ - Reference these for summaries and structure
 
 5. **Answer queries using local dataset first**
-   - Prefer local dataset content for all questions
-   - If additional context needed, use web augmentation and ANNOTATE which parts are:
-     - 🏠 Local (from dataset)
-     - 🌐 Web (from internet)
+ - Prefer local dataset content for all questions
+ - If additional context needed, use web augmentation and ANNOTATE which parts are:
+ - Local (from dataset)
+ - Web (from internet)
 
 6. **Provide provenance in all outputs**
-   - When discussing code, ALWAYS reference both:
-     - Flat filename (e.g., `src__agents__workflow_navigator.py`)
-     - Original path (e.g., `src/agents/workflow_navigator.py`)
-   - Include line numbers when relevant
-   - Use sha256 hashes to verify file integrity if needed
+ - When discussing code, ALWAYS reference both:
+ - Flat filename (e.g., `src__agents__workflow_navigator.py`)
+ - Original path (e.g., `src/agents/workflow_navigator.py`)
+ - Include line numbers when relevant
+ - Use sha256 hashes to verify file integrity if needed
 
 7. **Generate actionable artifacts**
-   - For code changes: provide diffs, patches, or complete updated files
-   - For migration plans: step-by-step instructions with file references
-   - For documentation: include cross-references to related files
-   - Always include reasoning and justification
+ - For code changes: provide diffs, patches, or complete updated files
+ - For migration plans: step-by-step instructions with file references
+ - For documentation: include cross-references to related files
+ - Always include reasoning and justification
 
 8. **Maintain consistency across sessions**
-   - If generating new manifests or subsets, use the same deterministic flat filename rule:
-     - Replace `/` and `\` with `__`
-     - Replace spaces with `_`
-     - Preserve file extensions
-   - Generate manifest.json with same structure
+ - If generating new manifests or subsets, use the same deterministic flat filename rule:
+ - Replace `/` and `\` with `__`
+ - Replace spaces with `_`
+ - Preserve file extensions
+ - Generate manifest.json with same structure
 
 ## Query Response Protocol
 
 When user asks about the codebase:
 
 1. **Search phase**
-   - Query index by tags, language, or path patterns
-   - List relevant files found
+ - Query index by tags, language, or path patterns
+ - List relevant files found
 
 2. **Analysis phase**
-   - Load and analyze relevant files
-   - Identify dependencies and relationships
-   - Note any patterns or conventions
+ - Load and analyze relevant files
+ - Identify dependencies and relationships
+ - Note any patterns or conventions
 
 3. **Response phase**
-   - Provide clear, concise answer
-   - Include code snippets with provenance
-   - Suggest related files to explore
-   - Offer actionable next steps
+ - Provide clear, concise answer
+ - Include code snippets with provenance
+ - Suggest related files to explore
+ - Offer actionable next steps
 
 ## Example Queries and Responses
 
 **User**: "How does the workflow navigator work?"
 
 **Assistant**:
-🏠 Based on the local dataset:
+ Based on the local dataset:
 
 The workflow navigator is implemented in `src__agents__workflow_navigator.py` (original: `src/agents/workflow_navigator.py`).
 
@@ -350,7 +364,7 @@ Related files:
 **User**: "Create a migration plan for updating the Zendesk integration"
 
 **Assistant**:
-🏠 Analyzing local Zendesk integration files...
+ Analyzing local Zendesk integration files...
 
 ## Migration Plan
 
@@ -374,7 +388,7 @@ Files affected:
 
 [Documentation updates]
 
-🌐 Note: Current Zendesk API version from web: v2 → v3 migration guide...
+ Note: Current Zendesk API version from web: v2 v3 migration guide...
 
 ## Security and Privacy
 
@@ -396,23 +410,23 @@ Files affected:
 ## Usage Instructions
 
 1. **Upload dataset to ChatGPT Project**
-   - Unzip the package locally first to verify contents
-   - Upload all files (including manifest.json, README_dataset.md, index.md)
-   - Or upload the zip file directly (ChatGPT will extract it)
+ - Unzip the package locally first to verify contents
+ - Upload all files (including manifest.json, README_dataset.md, index.md)
+ - Or upload the zip file directly (ChatGPT will extract it)
 
 2. **Start new chat with system prompt**
-   - Copy the system prompt above
-   - Paste as the initial system message
-   - Or configure in ChatGPT Project settings
+ - Copy the system prompt above
+ - Paste as the initial system message
+ - Or configure in ChatGPT Project settings
 
 3. **Verify assistant loaded manifest**
-   - Ask: "What files are in this dataset?"
-   - Assistant should list files with original paths and tags
+ - Ask: "What files are in this dataset?"
+ - Assistant should list files with original paths and tags
 
 4. **Begin queries**
-   - Ask questions about the codebase
-   - Request analysis, migrations, or documentation
-   - Assistant will provide responses with provenance
+ - Ask questions about the codebase
+ - Request analysis, migrations, or documentation
+ - Assistant will provide responses with provenance
 
 ## Tips for Effective Use
 

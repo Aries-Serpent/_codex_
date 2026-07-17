@@ -1,15 +1,15 @@
 # MCP System - Comprehensive Master Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version**: 2.0.0  
-> **Last Updated**: 2026-06-20  
-> **Scope**: Complete Model Context Protocol (MCP) system documentation  
+> **Version**: 2.0.0
+> **Last Updated**: 2026-06-20
+> **Scope**: Complete Model Context Protocol (MCP) system documentation
 > **Audience**: Developers, operators, system administrators
 
 ---
 
-##  Quick Navigation
+## Quick Navigation
 
 | Topic | Purpose | Time |
 |-------|---------|------|
@@ -69,12 +69,12 @@ server = MCPServer(backend=MockBackend())
 
 # Store embeddings
 async def demo():
-    await server.store("doc_1", [0.1, 0.2, 0.3, 0.4])
-    await server.store("doc_2", [0.2, 0.3, 0.4, 0.5])
+ await server.store("doc_1", [0.1, 0.2, 0.3, 0.4])
+ await server.store("doc_2", [0.2, 0.3, 0.4, 0.5])
 
-    # Retrieve embeddings
-    result = await server.retrieve("doc_1")
-    print(f"Retrieved: {result}")
+ # Retrieve embeddings
+ result = await server.retrieve("doc_1")
+ print(f"Retrieved: {result}")
 
 # Run demo
 asyncio.run(demo())
@@ -91,7 +91,7 @@ Retrieved: {"doc_id": "doc_1", "embedding": [0.1, 0.2, 0.3, 0.4]}
 - **For Production Vector Search**: Use `PineconeBackend`
 - **For Custom Data**: Use `CustomBackend` or build your own
 
-→ Continue to [Backend Configuration](#backend-configuration)
+ Continue to [Backend Configuration](#backend-configuration)
 
 ---
 
@@ -100,60 +100,60 @@ Retrieved: {"doc_id": "doc_1", "embedding": [0.1, 0.2, 0.3, 0.4]}
 ### System Components
 
 ```
-┌─────────────────────────────────────────────────┐
-│           Application Code                      │
-└────────────────┬────────────────────────────────┘
-                 │ Uses MCPServer API
-                 ▼
-┌─────────────────────────────────────────────────┐
-│         MCP Server (MCPServer)                   │
-│  ┌─────────────────────────────────────────┐   │
-│  │  Request Handler / Router               │   │
-│  │  - store(doc_id, embedding)            │   │
-│  │  - retrieve(doc_id)                    │   │
-│  │  - search(query_embedding)             │   │
-│  └─────────────────────────────────────────┘   │
-│  ┌─────────────────────────────────────────┐   │
-│  │  Backend Abstraction Layer              │   │
-│  │  - Standardizes all backend interfaces │   │
-│  │  - Handles async/await patterns        │   │
-│  └─────────────────────────────────────────┘   │
-└────────────────┬────────────────────────────────┘
-                 │ Backend Interface
-                 ▼
-        ┌────────────────────────┐
-        │   Backend Plugins      │
-        ├────────────────────────┤
-        │ ┌──────────────────┐   │
-        │ │ PineconeBackend  │   │  Production vector DB
-        │ └──────────────────┘   │
-        │ ┌──────────────────┐   │
-        │ │ RedisBackend     │   │  Cache / session store
-        │ └──────────────────┘   │
-        │ ┌──────────────────┐   │
-        │ │ S3Backend        │   │  Document storage
-        │ └──────────────────┘   │
-        │ ┌──────────────────┐   │
-        │ │ CustomBackend    │   │  Your implementation
-        │ └──────────────────┘   │
-        └────────────────────────┘
+
+ Application Code 
+
+ Uses MCPServer API
+ 
+
+ MCP Server (MCPServer) 
+ 
+ Request Handler / Router 
+ - store(doc_id, embedding) 
+ - retrieve(doc_id) 
+ - search(query_embedding) 
+ 
+ 
+ Backend Abstraction Layer 
+ - Standardizes all backend interfaces 
+ - Handles async/await patterns 
+ 
+
+ Backend Interface
+ 
+ 
+ Backend Plugins 
+ 
+ 
+ PineconeBackend Production vector DB
+ 
+ 
+ RedisBackend Cache / session store
+ 
+ 
+ S3Backend Document storage
+ 
+ 
+ CustomBackend Your implementation
+ 
+ 
 ```
 
 ### Data Flow
 
 ```
 1. Application calls: server.store("doc", embedding)
-                           │
-                           ▼
+ 
+ 
 2. MCPServer validates and normalizes
-                           │
-                           ▼
+ 
+ 
 3. Backend plugin receives call
-                           │
-                           ▼
+ 
+ 
 4. Backend stores data (Pinecone API, Redis SET, S3 PUT, etc.)
-                           │
-                           ▼
+ 
+ 
 5. Response returned to application
 ```
 
@@ -196,17 +196,17 @@ from src.mcp.backends import PineconeBackend
 
 # Initialize Pinecone backend
 backend = PineconeBackend(
-    api_key="YOUR_PINECONE_API_KEY",  # pragma: allowlist secret
-    environment="us-west4-gcp",
-    index_name="codex-prod",
-    dimension=1536  # OpenAI embedding dimension
+ api_key="YOUR_PINECONE_API_KEY", # pragma: allowlist secret
+ environment="us-west4-gcp",
+ index_name="codex-prod",
+ dimension=1536 # OpenAI embedding dimension
 )
 
 # Create server
 server = MCPServer(
-    backend=backend,
-    workers=4,  # Async workers
-    timeout=30  # Request timeout
+ backend=backend,
+ workers=4, # Async workers
+ timeout=30 # Request timeout
 )
 ```
 
@@ -216,9 +216,9 @@ server = MCPServer(
 from src.mcp.backends import RedisBackend
 
 backend = RedisBackend(
-    host="localhost",
-    port=6379,
-    db=0
+ host="localhost",
+ port=6379,
+ db=0
 )
 
 server = MCPServer(backend=backend)
@@ -229,7 +229,7 @@ server = MCPServer(backend=backend)
 ```python
 from src.mcp.backends import MockBackend
 
-server = MCPServer(backend=MockBackend())  # Uses in-memory dict
+server = MCPServer(backend=MockBackend()) # Uses in-memory dict
 ```
 
 ### Step 3: Configure Observability
@@ -262,11 +262,11 @@ pip install pinecone-client
 from src.mcp.backends import PineconeBackend
 
 backend = PineconeBackend(
-    api_key="pc_...",  # From Pinecone console  # pragma: allowlist secret
-    environment="us-west4-gcp",
-    index_name="my-index",
-    dimension=1536,
-    metric="cosine"  # or "euclidean"
+ api_key="pc_...", # From Pinecone console # pragma: allowlist secret
+ environment="us-west4-gcp",
+ index_name="my-index",
+ dimension=1536,
+ metric="cosine" # or "euclidean"
 )
 ```
 
@@ -276,17 +276,17 @@ backend = PineconeBackend(
 import asyncio
 
 async def example():
-    # Store embedding
-    await backend.store("doc_1", [0.1, 0.2, ..., 0.9])
+ # Store embedding
+ await backend.store("doc_1", [0.1, 0.2, ..., 0.9])
 
-    # Retrieve by ID
-    result = await backend.retrieve("doc_1")
-    print(f"Got: {result}")
+ # Retrieve by ID
+ result = await backend.retrieve("doc_1")
+ print(f"Got: {result}")
 
-    # Search similar vectors
-    query = [0.15, 0.25, ..., 0.95]
-    results = await backend.search(query, top_k=5)
-    print(f"Top 5 matches: {results}")
+ # Search similar vectors
+ query = [0.15, 0.25, ..., 0.95]
+ results = await backend.search(query, top_k=5)
+ print(f"Top 5 matches: {results}")
 
 asyncio.run(example())
 ```
@@ -313,10 +313,10 @@ pip install redis
 from src.mcp.backends import RedisBackend
 
 backend = RedisBackend(
-    host="localhost",
-    port=6379,
-    db=0,
-    ttl=3600  # 1 hour TTL
+ host="localhost",
+ port=6379,
+ db=0,
+ ttl=3600 # 1 hour TTL
 )
 ```
 
@@ -333,22 +333,22 @@ from src.mcp.backends import BaseBackend
 from typing import Any, List
 
 class MyCustomBackend(BaseBackend):
-    """Your custom storage implementation."""
+ """Your custom storage implementation."""
 
-    async def store(self, doc_id: str, embedding: List[float]) -> None:
-        """Store embedding in your system."""
-        # Your implementation here
-        pass
+ async def store(self, doc_id: str, embedding: List[float]) -> None:
+ """Store embedding in your system."""
+ # Your implementation here
+ pass
 
-    async def retrieve(self, doc_id: str) -> Any:
-        """Retrieve embedding by ID."""
-        # Your implementation here
-        pass
+ async def retrieve(self, doc_id: str) -> Any:
+ """Retrieve embedding by ID."""
+ # Your implementation here
+ pass
 
-    async def search(self, query: List[float], top_k: int = 5) -> List[dict]:
-        """Search for similar embeddings."""
-        # Your implementation here
-        pass
+ async def search(self, query: List[float], top_k: int = 5) -> List[dict]:
+ """Search for similar embeddings."""
+ # Your implementation here
+ pass
 
 # Use your backend
 server = MCPServer(backend=MyCustomBackend())
@@ -362,31 +362,31 @@ server = MCPServer(backend=MyCustomBackend())
 
 ```python
 class MCPServer:
-    def __init__(
-        self,
-        backend: BaseBackend,
-        workers: int = 4,
-        timeout: int = 30
-    ) -> None: ...
+ def __init__(
+ self,
+ backend: BaseBackend,
+ workers: int = 4,
+ timeout: int = 30
+ ) -> None: ...
 
-    async def store(self, doc_id: str, embedding: List[float]) -> None:
-        """Store embedding with automatic deduplication."""
+ async def store(self, doc_id: str, embedding: List[float]) -> None:
+ """Store embedding with automatic deduplication."""
 
-    async def retrieve(self, doc_id: str) -> Optional[dict]:
-        """Retrieve stored embedding by ID."""
+ async def retrieve(self, doc_id: str) -> Optional[dict]:
+ """Retrieve stored embedding by ID."""
 
-    async def search(
-        self,
-        query: List[float],
-        top_k: int = 5
-    ) -> List[dict]:
-        """Find most similar embeddings."""
+ async def search(
+ self,
+ query: List[float],
+ top_k: int = 5
+ ) -> List[dict]:
+ """Find most similar embeddings."""
 
-    async def delete(self, doc_id: str) -> None:
-        """Delete embedding by ID."""
+ async def delete(self, doc_id: str) -> None:
+ """Delete embedding by ID."""
 
-    async def health_check(self) -> bool:
-        """Check backend connectivity."""
+ async def health_check(self) -> bool:
+ """Check backend connectivity."""
 ```
 
 ### Backend Interface
@@ -395,20 +395,20 @@ All backends implement:
 
 ```python
 class BaseBackend(ABC):
-    @abstractmethod
-    async def store(self, doc_id: str, embedding: List[float]) -> None: ...
+ @abstractmethod
+ async def store(self, doc_id: str, embedding: List[float]) -> None: ...
 
-    @abstractmethod
-    async def retrieve(self, doc_id: str) -> Optional[dict]: ...
+ @abstractmethod
+ async def retrieve(self, doc_id: str) -> Optional[dict]: ...
 
-    @abstractmethod
-    async def search(self, query: List[float], top_k: int) -> List[dict]: ...
+ @abstractmethod
+ async def search(self, query: List[float], top_k: int) -> List[dict]: ...
 
-    @abstractmethod
-    async def delete(self, doc_id: str) -> None: ...
+ @abstractmethod
+ async def delete(self, doc_id: str) -> None: ...
 
-    @abstractmethod
-    async def health_check(self) -> bool: ...
+ @abstractmethod
+ async def health_check(self) -> bool: ...
 ```
 
 ---
@@ -448,34 +448,34 @@ class BaseBackend(ABC):
 ```python
 from src.mcp import MCPServer
 from src.mcp.backends import MockBackend
-from transformers import AutoTokenizer, AutoModel  # pragma: allowlist secret
+from transformers import AutoTokenizer, AutoModel # pragma: allowlist secret
 import torch
 import asyncio
 
 async def store_documents():
-    # Load model
-    tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")  # pragma: allowlist secret
-    model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+ # Load model
+ tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2") # pragma: allowlist secret
+ model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
-    # Create server
-    server = MCPServer(backend=MockBackend())
+ # Create server
+ server = MCPServer(backend=MockBackend())
 
-    # Sample documents
-    docs = [
-        ("doc_1", "Python is a programming language"),
-        ("doc_2", "JavaScript runs in browsers"),
-        ("doc_3", "Rust provides memory safety"),
-    ]
+ # Sample documents
+ docs = [
+ ("doc_1", "Python is a programming language"),
+ ("doc_2", "JavaScript runs in browsers"),
+ ("doc_3", "Rust provides memory safety"),
+ ]
 
-    # Embed and store
-    for doc_id, text in docs:
-        inputs = tokenizer(text, return_tensors="pt")  # pragma: allowlist secret
-        with torch.no_grad():
-            outputs = model(**inputs)
-        embedding = outputs.last_hidden_state[0][0].tolist()
+ # Embed and store
+ for doc_id, text in docs:
+ inputs = tokenizer(text, return_tensors="pt") # pragma: allowlist secret
+ with torch.no_grad():
+ outputs = model(**inputs)
+ embedding = outputs.last_hidden_state[0][0].tolist()
 
-        await server.store(doc_id, embedding)
-        print(f" Stored {doc_id}")
+ await server.store(doc_id, embedding)
+ print(f" Stored {doc_id}")
 
 asyncio.run(store_documents())
 ```
@@ -484,17 +484,17 @@ asyncio.run(store_documents())
 
 ```python
 async def semantic_search():
-    server = MCPServer(backend=MockBackend())
+ server = MCPServer(backend=MockBackend())
 
-    # Store embeddings (see Example 1)
-    # ...
+ # Store embeddings (see Example 1)
+ # ...
 
-    # Search for similar documents
-    query_text = "What languages are there?"
-    query_embedding = [0.5, 0.3, 0.2]  # Your embedding
+ # Search for similar documents
+ query_text = "What languages are there?"
+ query_embedding = [0.5, 0.3, 0.2] # Your embedding
 
-    results = await server.search(query_embedding, top_k=2)
-    print(f"Top matches: {results}")
+ results = await server.search(query_embedding, top_k=2)
+ print(f"Top matches: {results}")
 
 asyncio.run(semantic_search())
 ```
@@ -514,13 +514,13 @@ mcp_server = MCPServer(backend=backend)
 
 @app.post("/embeddings/store")
 async def store_embedding(doc_id: str, embedding: list):
-    await mcp_server.store(doc_id, embedding)
-    return {"status": "stored"}
+ await mcp_server.store(doc_id, embedding)
+ return {"status": "stored"}
 
 @app.post("/embeddings/search")
 async def search(query: list):
-    results = await mcp_server.search(query, top_k=5)
-    return {"results": results}
+ results = await mcp_server.search(query, top_k=5)
+ return {"results": results}
 ```
 
 ---

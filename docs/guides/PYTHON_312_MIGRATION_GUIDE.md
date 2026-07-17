@@ -1,14 +1,14 @@
 # Python 3.12 Migration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Last Updated: 2026-07-11
 **Target Audience:** Users and Contributors
 
 ---
 
-##  Overview
+## Overview
 
 This repository now **requires Python 3.12.10 or later** (but < 3.13). Python 3.11 and earlier versions are no longer supported.
 
@@ -20,22 +20,22 @@ This repository now **requires Python 3.12.10 or later** (but < 3.13). Python 3.
 
 ---
 
-##  Breaking Changes
+## Breaking Changes
 
 ### What Changed
-- **Minimum Python Version:** 3.11 → 3.12.10
-- **Maximum Python Version:** None → <3.13
+- **Minimum Python Version:** 3.11 3.12.10
+- **Maximum Python Version:** None <3.13
 - **Configuration:** `requires-python = ">=3.12,<3.13"` in pyproject.toml
 - **Workflows:** All CI/CD now runs on Python 3.12 only
 
 ### Impact
--  Python 3.11 and earlier will **NOT work**
--  Python 3.12.10+ will work
-- ️ Python 3.13+ will **NOT work** (not yet supported)
+- Python 3.11 and earlier will **NOT work**
+- Python 3.12.10+ will work
+- Python 3.13+ will **NOT work** (not yet supported)
 
 ---
 
-##  Prerequisites
+## Prerequisites
 
 Before migrating, ensure you have:
 - [ ] Backup of your current environment
@@ -45,7 +45,7 @@ Before migrating, ensure you have:
 
 ---
 
-##  Migration Steps
+## Migration Steps
 
 ### For End Users
 
@@ -88,12 +88,12 @@ python3.12 --version  # Should show Python 3.12.x
 **Windows:**
 1. Download Python 3.12.10 from [python.org](https://www.python.org/downloads/)
 2. Run the installer
-3.  **IMPORTANT:** Check "Add Python 3.12 to PATH"
+3. **IMPORTANT:** Check "Add Python 3.12 to PATH"
 4. Click "Install Now"
 5. Verify in Command Prompt:
    ```cmd
    python --version
-   ```
+ ```
 
 **Using pyenv (Recommended for Developers):**
 ```bash
@@ -211,7 +211,7 @@ python --version  # Must be 3.12.x
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: "python: command not found" or "python3.12: command not found"
 
@@ -289,7 +289,7 @@ pip list | grep codex
 
 ---
 
-##  FAQ
+## FAQ
 
 ### Q: Why Python 3.12 specifically?
 
@@ -357,14 +357,14 @@ def process(data: str | int) -> list[dict[str, str]] | None:
 1. Check this guide's troubleshooting section
 2. Search existing GitHub issues
 3. Create a new issue with:
-   - Python version (`python --version`)
-   - Operating system
-   - Error message
-   - Steps to reproduce
+ - Python version (`python --version`)
+ - Operating system
+ - Error message
+ - Steps to reproduce
 
 ---
 
-##  Additional Resources
+## Additional Resources
 
 ### Official Python Documentation
 - [What's New in Python 3.12](https://docs.python.org/3/whatsnew/3.12.html)
@@ -383,7 +383,7 @@ def process(data: str | int) -> list[dict[str, str]] | None:
 
 ---
 
-##  Verification Checklist
+## Verification Checklist
 
 After migration, verify:
 
@@ -399,9 +399,9 @@ After migration, verify:
 
 ---
 
-## 🎉 Success!
+## Success!
 
-If you've completed all steps and verification passes, you're all set! Welcome to Python 3.12! 
+If you've completed all steps and verification passes, you're all set! Welcome to Python 3.12!
 
 **Need Help?**
 - Create an issue on GitHub
@@ -410,6 +410,6 @@ If you've completed all steps and verification passes, you're all set! Welcome t
 
 ---
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-11
 **Maintained by:** Aries-Serpent/_codex_ Team

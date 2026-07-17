@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-07-17T19:11:20Z",
+  "total_packages": 43,
+  "by_ecosystem": {
+    "python": 39,
+    "rust": 4
+  },
+  "sbom_formats_generated": [
+    "SPDX-2.3",
+    "CycloneDX-1.5",
+    "NTIA"
+  ],
+  "scan_status": "COMPLETE"
+}

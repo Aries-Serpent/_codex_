@@ -1,6 +1,6 @@
 # MCP Configuration Management
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -24,22 +24,22 @@ Manages MCP service configuration through:
 ### Configuration Hierarchy
 
 ```
-┌─────────────────────────────────────┐
-│   Environment Variables (.env)      │
-│   (highest priority)                │
-└─────────────┬───────────────────────┘
-              │ overrides
-              ▼
-┌─────────────────────────────────────┐
-│   mcp.json Configuration            │
-│   (MCP-specific settings)           │
-└─────────────┬───────────────────────┘
-              │ overrides
-              ▼
-┌─────────────────────────────────────┐
-│   config.yaml / settings.py         │
-│   (application defaults)            │
-└─────────────────────────────────────┘
+
+ Environment Variables (.env) 
+ (highest priority) 
+
+ overrides
+ 
+
+ mcp.json Configuration 
+ (MCP-specific settings) 
+
+ overrides
+ 
+
+ config.yaml / settings.py 
+ (application defaults) 
+
 ```
 
 ### Configuration Loading Flow
@@ -47,20 +47,20 @@ Manages MCP service configuration through:
 ```python
 # Pseudocode for configuration loading
 def load_config():
-    # 1. Load default configuration
-    config = load_defaults()
+ # 1. Load default configuration
+ config = load_defaults()
 
-    # 2. Load config files
-    config.update(load_yaml("config.yaml"))
-    config.update(load_json("mcp.json"))
+ # 2. Load config files
+ config.update(load_yaml("config.yaml"))
+ config.update(load_json("mcp.json"))
 
-    # 3. Apply environment overrides
-    config.update(load_env_vars())
+ # 3. Apply environment overrides
+ config.update(load_env_vars())
 
-    # 4. Validate configuration
-    validate_config_schema(config)
+ # 4. Validate configuration
+ validate_config_schema(config)
 
-    return config
+ return config
 ```
 
 ## Configuration Files
@@ -69,44 +69,44 @@ def load_config():
 
 ```json
 {
-  "$schema": "https://json-schema.org/draft-07/schema#",
-  "title": "MCP Service Configuration",
-  "type": "object",
-  "properties": {
-    "server": {
-      "type": "object",
-      "properties": {
-        "host": {"type": "string", "default": "0.0.0.0"},
-        "port": {"type": "integer", "minimum": 1024, "maximum": 65535},
-        "workers": {"type": "integer", "minimum": 1},
-        "timeout_seconds": {"type": "integer", "minimum": 1}
-      },
-      "required": ["port"]
-    },
-    "capabilities": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {"type": "string"},
-          "enabled": {"type": "boolean", "default": true},
-          "version": {"type": "string"}
-        },
-        "required": ["name", "version"]
-      }
-    },
-    "logging": {
-      "type": "object",
-      "properties": {
-        "level": {
-          "type": "string",
-          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-        },
-        "format": {"type": "string"}
-      }
-    }
-  },
-  "required": ["server", "capabilities"]
+ "$schema": "https://json-schema.org/draft-07/schema#",
+ "title": "MCP Service Configuration",
+ "type": "object",
+ "properties": {
+ "server": {
+ "type": "object",
+ "properties": {
+ "host": {"type": "string", "default": "0.0.0.0"},
+ "port": {"type": "integer", "minimum": 1024, "maximum": 65535},
+ "workers": {"type": "integer", "minimum": 1},
+ "timeout_seconds": {"type": "integer", "minimum": 1}
+ },
+ "required": ["port"]
+ },
+ "capabilities": {
+ "type": "array",
+ "items": {
+ "type": "object",
+ "properties": {
+ "name": {"type": "string"},
+ "enabled": {"type": "boolean", "default": true},
+ "version": {"type": "string"}
+ },
+ "required": ["name", "version"]
+ }
+ },
+ "logging": {
+ "type": "object",
+ "properties": {
+ "level": {
+ "type": "string",
+ "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+ },
+ "format": {"type": "string"}
+ }
+ }
+ },
+ "required": ["server", "capabilities"]
 }
 ```
 
@@ -114,32 +114,32 @@ def load_config():
 
 ```json
 {
-  "server": {
-    "host": "0.0.0.0",
-    "port": 8080,
-    "workers": 4,
-    "timeout_seconds": 30
-  },
-  "capabilities": [
-    {
-      "name": "code_analysis",
-      "version": "1.0.0",
-      "enabled": true
-    },
-    {
-      "name": "documentation",
-      "version": "2.1.0",
-      "enabled": false
-    }
-  ],
-  "logging": {
-    "level": "INFO",
-    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  },
-  "auth": {
-    "enabled": true,
-    "api_key_header": "X-API-Key" <!-- pragma: allowlist secret -->
-  }
+ "server": {
+ "host": "0.0.0.0",
+ "port": 8080,
+ "workers": 4,
+ "timeout_seconds": 30
+ },
+ "capabilities": [
+ {
+ "name": "code_analysis",
+ "version": "1.0.0",
+ "enabled": true
+ },
+ {
+ "name": "documentation",
+ "version": "2.1.0",
+ "enabled": false
+ }
+ ],
+ "logging": {
+ "level": "INFO",
+ "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+ },
+ "auth": {
+ "enabled": true,
+ "api_key_header": "X-API-Key" <!-- pragma: allowlist secret -->
+ }
 }
 ```
 
@@ -173,30 +173,30 @@ MCP_ENABLE_METRICS=true
 from pydantic import BaseSettings, Field
 
 class MCPSettings(BaseSettings):
-    """MCP Service Configuration."""
+ """MCP Service Configuration."""
 
-    # Server settings
-    server_host: str = Field("0.0.0.0", env="MCP_SERVER_HOST")
-    server_port: int = Field(8080, env="MCP_SERVER_PORT", gt=1024, le=65535)
-    workers: int = Field(4, env="MCP_WORKERS", gt=0)
+ # Server settings
+ server_host: str = Field("0.0.0.0", env="MCP_SERVER_HOST")
+ server_port: int = Field(8080, env="MCP_SERVER_PORT", gt=1024, le=65535)
+ workers: int = Field(4, env="MCP_WORKERS", gt=0)
 
-    # Database settings
-    db_host: str = Field("localhost", env="MCP_DB_HOST")
-    db_port: int = Field(5432, env="MCP_DB_PORT")
-    db_name: str = Field("mcp_db", env="MCP_DB_NAME")
+ # Database settings
+ db_host: str = Field("localhost", env="MCP_DB_HOST")
+ db_port: int = Field(5432, env="MCP_DB_PORT")
+ db_name: str = Field("mcp_db", env="MCP_DB_NAME")
 
-    # Authentication
-    api_key: str = Field(..., env="MCP_API_KEY")
-    jwt_secret: str = Field(..., env="MCP_JWT_SECRET")
+ # Authentication
+ api_key: str = Field(..., env="MCP_API_KEY")
+ jwt_secret: str = Field(..., env="MCP_JWT_SECRET")
 
-    # Feature flags
-    enable_caching: bool = Field(True, env="MCP_ENABLE_CACHING")
-    enable_metrics: bool = Field(True, env="MCP_ENABLE_METRICS")
+ # Feature flags
+ enable_caching: bool = Field(True, env="MCP_ENABLE_CACHING")
+ enable_metrics: bool = Field(True, env="MCP_ENABLE_METRICS")
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+ class Config:
+ env_file = ".env"
+ env_file_encoding = "utf-8"
+ case_sensitive = False
 
 # Usage
 settings = MCPSettings()
@@ -211,15 +211,15 @@ import json
 from pathlib import Path
 
 def load_mcp_config(config_path: str = "mcp.json"):
-    """Load MCP configuration with validation."""
-    with open(config_path) as f:
-        config = json.load(f)
+ """Load MCP configuration with validation."""
+ with open(config_path) as f:
+ config = json.load(f)
 
-    # Validate required fields
-    assert "server" in config, "Missing 'server' section"
-    assert "port" in config["server"], "Missing 'server.port'"
+ # Validate required fields
+ assert "server" in config, "Missing 'server' section"
+ assert "port" in config["server"], "Missing 'server.port'"
 
-    return config
+ return config
 
 # Usage
 config = load_mcp_config()
@@ -233,20 +233,20 @@ import os
 from typing import Any, Dict
 
 def apply_env_overrides(config: Dict[str, Any]) -> Dict[str, Any]:
-    """Apply environment variable overrides to config."""
+ """Apply environment variable overrides to config."""
 
-    # Server overrides
-    if "MCP_SERVER_PORT" in os.environ:
-        config["server"]["port"] = int(os.environ["MCP_SERVER_PORT"])
+ # Server overrides
+ if "MCP_SERVER_PORT" in os.environ:
+ config["server"]["port"] = int(os.environ["MCP_SERVER_PORT"])
 
-    if "MCP_SERVER_HOST" in os.environ:
-        config["server"]["host"] = os.environ["MCP_SERVER_HOST"]
+ if "MCP_SERVER_HOST" in os.environ:
+ config["server"]["host"] = os.environ["MCP_SERVER_HOST"]
 
-    # Logging overrides
-    if "MCP_LOG_LEVEL" in os.environ:
-        config.setdefault("logging", {})["level"] = os.environ["MCP_LOG_LEVEL"]
+ # Logging overrides
+ if "MCP_LOG_LEVEL" in os.environ:
+ config.setdefault("logging", {})["level"] = os.environ["MCP_LOG_LEVEL"]
 
-    return config
+ return config
 
 # Usage
 config = load_mcp_config()
@@ -261,27 +261,27 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 class ConfigReloadHandler(FileSystemEventHandler):
-    def __init__(self, config_path: str, on_reload_callback):
-        self.config_path = config_path
-        self.callback = on_reload_callback
+ def __init__(self, config_path: str, on_reload_callback):
+ self.config_path = config_path
+ self.callback = on_reload_callback
 
-    def on_modified(self, event):
-        if event.src_path.endswith(self.config_path):
-            print(f"Configuration changed, reloading...")
-            new_config = load_mcp_config(self.config_path)
-            self.callback(new_config)
+ def on_modified(self, event):
+ if event.src_path.endswith(self.config_path):
+ print(f"Configuration changed, reloading...")
+ new_config = load_mcp_config(self.config_path)
+ self.callback(new_config)
 
 def setup_config_watch(config_path: str, callback):
-    """Watch configuration file for changes."""
-    event_handler = ConfigReloadHandler(config_path, callback)
-    observer = Observer()
-    observer.schedule(event_handler, path=".", recursive=False)
-    observer.start()
-    return observer
+ """Watch configuration file for changes."""
+ event_handler = ConfigReloadHandler(config_path, callback)
+ observer = Observer()
+ observer.schedule(event_handler, path=".", recursive=False)
+ observer.start()
+ return observer
 
 # Usage
 def on_config_reload(new_config):
-    print(f"Updated configuration: {new_config}")
+ print(f"Updated configuration: {new_config}")
 
 observer = setup_config_watch("mcp.json", on_config_reload)
 ```
@@ -292,31 +292,31 @@ observer = setup_config_watch("mcp.json", on_config_reload)
 import os
 
 class ConfigManager:
-    """Manages multi-environment configurations."""
+ """Manages multi-environment configurations."""
 
-    def __init__(self):
-        self.env = os.getenv("MCP_ENV", "development")
-        self.config = self._load_config()
+ def __init__(self):
+ self.env = os.getenv("MCP_ENV", "development")
+ self.config = self._load_config()
 
-    def _load_config(self):
-        """Load environment-specific configuration."""
-        base_config = self._load_json("config.base.json")
-        env_config = self._load_json(f"config.{self.env}.json")
+ def _load_config(self):
+ """Load environment-specific configuration."""
+ base_config = self._load_json("config.base.json")
+ env_config = self._load_json(f"config.{self.env}.json")
 
-        # Merge configurations (env overrides base)
-        return {**base_config, **env_config}
+ # Merge configurations (env overrides base)
+ return {**base_config, **env_config}
 
-    def _load_json(self, path: str):
-        """Load JSON config file."""
-        try:
-            with open(path) as f:
-                return json.load(f)
-        except FileNotFoundError:
-            return {}
+ def _load_json(self, path: str):
+ """Load JSON config file."""
+ try:
+ with open(path) as f:
+ return json.load(f)
+ except FileNotFoundError:
+ return {}
 
-    def get(self, key: str, default=None):
-        """Get configuration value."""
-        return self.config.get(key, default)
+ def get(self, key: str, default=None):
+ """Get configuration value."""
+ return self.config.get(key, default)
 
 # Usage
 config_mgr = ConfigManager()
@@ -342,12 +342,12 @@ from scripts.space_traversal.detectors import mcp_configuration
 
 # Run detector
 file_index = {
-    "files": [
-        {"path": "mcp.json"},
-        {"path": ".env"},
-        {"path": "config.yaml"},
-        {"path": "src/services/settings.py"}
-    ]
+ "files": [
+ {"path": "mcp.json"},
+ {"path": ".env"},
+ {"path": "config.yaml"},
+ {"path": "src/services/settings.py"}
+ ]
 }
 
 result = mcp_configuration.detect(file_index)
@@ -360,31 +360,31 @@ print(f"Config types: {result['meta']['config_types']}")
 ### Configuration Security
 
 1. **Never Commit Secrets**
-   ```bash
-   # .gitignore
-   .env
-   .env.local
-   .env.*.local
-   *secret*
-   *key*
-   ```
+ ```bash
+ # .gitignore
+ .env
+ .env.local
+ .env.*.local
+ *secret*
+ *key*
+ ```
 
 2. **Use Environment Variables for Secrets**
-   ```text
-   # Good
-   api_key = os.getenv("MCP_API_KEY")
+ ```text
+ # Good
+ api_key = os.getenv("MCP_API_KEY")
 
-   # Avoid
-   api_key = "hardcoded-secret-key" <!-- pragma: allowlist secret -->
-   ```
+ # Avoid
+ api_key = "hardcoded-secret-key" <!-- pragma: allowlist secret -->
+ ```
 
 3. **Encrypt Sensitive Configuration**
 ```python
 from cryptography.fernet import Fernet
 
 def encrypt_config(config: dict, key: bytes) -> bytes:
-    f = Fernet(key)
-    return f.encrypt(json.dumps(config).encode())
+ f = Fernet(key)
+ return f.encrypt(json.dumps(config).encode())
 ```
 
 ### Configuration Validation
@@ -393,7 +393,7 @@ def encrypt_config(config: dict, key: bytes) -> bytes:
 ```python
 from jsonschema import validate
 
-schema = {...}  # JSON schema
+schema = {...} # JSON schema
 validate(instance=config, schema=schema)
 ```
 
@@ -402,13 +402,13 @@ validate(instance=config, schema=schema)
 from pydantic import BaseModel, ValidationError
 
 class Config(BaseModel):
-    port: int
-    host: str
+ port: int
+ host: str
 
 try:
-    Config(**config)
+ Config(**config)
 except ValidationError as e:
-    print(f"Invalid config: {e}")
+ print(f"Invalid config: {e}")
 ```
 
 3. **Range Validation**
@@ -432,8 +432,8 @@ from pathlib import Path
 
 config_path = Path("mcp.json")
 if not config_path.exists():
-    print(f"Config not found at {config_path.absolute()}")
-    config_path = Path("/etc/mcp/mcp.json")  # Fallback
+ print(f"Config not found at {config_path.absolute()}")
+ config_path = Path("/etc/mcp/mcp.json") # Fallback
 ```
 
 ### Issue: Invalid JSON
@@ -443,9 +443,9 @@ if not config_path.exists():
 import json
 
 try:
-    config = json.load(f)
+ config = json.load(f)
 except json.JSONDecodeError as e:
-    print(f"Invalid JSON at line {e.lineno}: {e.msg}")
+ print(f"Invalid JSON at line {e.lineno}: {e.msg}")
 ```
 
 ### Issue: Missing Environment Variables
@@ -455,7 +455,7 @@ except json.JSONDecodeError as e:
 required_vars = ["MCP_API_KEY", "MCP_DB_HOST"]
 missing = [var for var in required_vars if var not in os.environ]
 if missing:
-    raise ValueError(f"Missing required environment variables: {missing}")
+ raise ValueError(f"Missing required environment variables: {missing}")
 ```
 
 ## Performance Considerations
@@ -474,7 +474,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def log_config_change(key: str, old_value, new_value):
-    logger.info(f"Config changed: {key} = {old_value} → {new_value}")
+ logger.info(f"Config changed: {key} = {old_value} {new_value}")
 ```
 
 ### Configuration Drift Detection
@@ -500,5 +500,5 @@ diff config.production.json config.baseline.json
 
 ---
 
-**Last Updated**: 2025-12-09  
+**Last Updated**: 2025-12-09
 **Capability ID**: mcp-configuration

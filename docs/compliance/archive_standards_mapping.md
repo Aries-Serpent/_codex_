@@ -1,6 +1,6 @@
 # Archive Standards Mapping
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated**: 2026-06-22 | **Author**: Archive Standardization Team | **Version**: 1.0
 
@@ -16,14 +16,14 @@ This document maps the _codex_ archive standardization implementation to industr
 
 | SLSA L3 Requirement | _codex_ Implementation | Evidence Location |
 |---------------------|------------------------|-------------------|
-| **Provenance exists** |  Evidence records created for all operations | `.codex/evidence/archive_ops.jsonl` |
-| **Provenance is authentic** |  Cryptographic signatures via Sigstore | `standardizationMetadata.signature` |
-| **Provenance completeness** |  All required fields captured | `schemaVersion: "2.0"` records |
-| **Hermetic builds** |  Archive operations isolated, deterministic | Archive DAL + blob storage |
-| **Ephemeral credentials** |  GitHub OIDC tokens (short-lived) | Fulcio certificates |
-| **Signed provenance** |  Keyless signing via Sigstore | Certificate chain in metadata |
-| **Non-falsifiable provenance** |  Append-only JSONL + signatures | Immutable evidence log |
-| **Dependency completeness** |  Phase 3 (SBOM) | Future: SBOM generation |
+| **Provenance exists** | Evidence records created for all operations | `.codex/evidence/archive_ops.jsonl` |
+| **Provenance is authentic** | Cryptographic signatures via Sigstore | `standardizationMetadata.signature` |
+| **Provenance completeness** | All required fields captured | `schemaVersion: "2.0"` records |
+| **Hermetic builds** | Archive operations isolated, deterministic | Archive DAL + blob storage |
+| **Ephemeral credentials** | GitHub OIDC tokens (short-lived) | Fulcio certificates |
+| **Signed provenance** | Keyless signing via Sigstore | Certificate chain in metadata |
+| **Non-falsifiable provenance** | Append-only JSONL + signatures | Immutable evidence log |
+| **Dependency completeness** | Phase 3 (SBOM) | Future: SBOM generation |
 
 ### Implementation Details
 
@@ -34,11 +34,11 @@ from codex.archive.standardization import StandardizationManager
 
 manager = StandardizationManager(enable_signing=True)
 evidence_record = {
-    "ts": "2025-11-03T00:00:00Z",
-    "action": "ARCHIVE",
-    "actor": "user@example.com",
-    "tombstone": "uuid",
-    "sha256": "content_hash"
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "user@example.com",
+ "tombstone": "uuid",
+ "sha256": "content_hash"
 }
 
 # Enhance with SLSA L3 metadata
@@ -60,40 +60,40 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
 
 | in-toto Component | _codex_ Implementation | Status |
 |-------------------|------------------------|--------|
-| **Layout** | Defined in canonical policy |  Complete |
-| **Link Metadata** | Evidence records structure |  Compatible |
-| **Step Definition** | Archive operations (store/restore/purge) |  Defined |
-| **Functionary Keys** | GitHub OIDC identity |  Implemented |
-| **Inspection** | Validation commands |  Available |
-| **Verification** | Automated PR checklist |  Active |
+| **Layout** | Defined in canonical policy | Complete |
+| **Link Metadata** | Evidence records structure | Compatible |
+| **Step Definition** | Archive operations (store/restore/purge) | Defined |
+| **Functionary Keys** | GitHub OIDC identity | Implemented |
+| **Inspection** | Validation commands | Available |
+| **Verification** | Automated PR checklist | Active |
 
 ### Step Mapping
 
 **Archive Step (store)**:
 ```json
 {
-  "name": "archive",
-  "expected_materials": [
-    ["MATCH", "src/**/*.py", "WITH", "PRODUCTS", "FROM", "checkout"]
-  ],
-  "expected_products": [
-    ["CREATE", ".codex/evidence/archive_ops.jsonl"]
-  ],
-  "pubkeys": ["<GitHub OIDC>"]
+ "name": "archive",
+ "expected_materials": [
+ ["MATCH", "src/**/*.py", "WITH", "PRODUCTS", "FROM", "checkout"]
+ ],
+ "expected_products": [
+ ["CREATE", ".codex/evidence/archive_ops.jsonl"]
+ ],
+ "pubkeys": ["<GitHub OIDC>"]
 }
 ```text
 
 **Restore Step**:
 ```json
 {
-  "name": "restore",
-  "expected_materials": [
-    ["MATCH", ".codex/evidence/archive_ops.jsonl", "IN", "archive"]
-  ],
-  "expected_products": [
-    ["CREATE", "restored/**/*"]
-  ],
-  "pubkeys": ["<GitHub OIDC>"]
+ "name": "restore",
+ "expected_materials": [
+ ["MATCH", ".codex/evidence/archive_ops.jsonl", "IN", "archive"]
+ ],
+ "expected_products": [
+ ["CREATE", "restored/**/*"]
+ ],
+ "pubkeys": ["<GitHub OIDC>"]
 }
 ```text
 
@@ -104,11 +104,11 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
 from codex.archive.in_toto_integration import generate_link_metadata
 
 link = generate_link_metadata(
-    step_name="archive",
-    materials={"src/file.py": "sha256:..."},
-    products={".codex/evidence/archive_ops.jsonl": "sha256:..."},
-    command=["codex", "archive", "store"],
-    return_value=0
+ step_name="archive",
+ materials={"src/file.py": "sha256:..."},
+ products={".codex/evidence/archive_ops.jsonl": "sha256:..."},
+ command=["codex", "archive", "store"],
+ return_value=0
 )
 # Store link metadata reference in standardizationMetadata.in_toto_attestation_id
 ```text
@@ -121,38 +121,38 @@ link = generate_link_metadata(
 
 | SAA Requirement | _codex_ Implementation | Compliance |
 |-----------------|------------------------|------------|
-| **Artifact Identity** | SHA256 hash + UUID tombstone |  Yes |
-| **Actor Identity** | GitHub OIDC claims |  Yes |
-| **Timestamp** | UTC ISO8601 |  Yes |
-| **Operation Type** | ARCHIVE/RESTORE/REFERENCE/PURGE |  Yes |
-| **Provenance** | Evidence record + signature |  Yes |
-| **Retention Policy** | Documented in policy |  Yes |
-| **Access Control** | CODEOWNERS + dual-control |  Yes |
-| **Audit Trail** | Immutable JSONL log |  Yes |
+| **Artifact Identity** | SHA256 hash + UUID tombstone | Yes |
+| **Actor Identity** | GitHub OIDC claims | Yes |
+| **Timestamp** | UTC ISO8601 | Yes |
+| **Operation Type** | ARCHIVE/RESTORE/REFERENCE/PURGE | Yes |
+| **Provenance** | Evidence record + signature | Yes |
+| **Retention Policy** | Documented in policy | Yes |
+| **Access Control** | CODEOWNERS + dual-control | Yes |
+| **Audit Trail** | Immutable JSONL log | Yes |
 
 ### Attestation Format
 
 **v2 Evidence Record** (SAA-compliant):
 ```json
 {
-  "ts": "2025-11-03T00:00:00Z",
-  "action": "ARCHIVE",
-  "actor": "user@example.com",
-  "repo": "_codex_",
-  "path": "src/module.py",
-  "tombstone": "d3e8729-1234-5678-abcd-ef0123456789",
-  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", <!-- pragma: allowlist secret -->
-  "size": 4096,
-  "commit": "abc123def456", <!-- pragma: allowlist secret -->
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "schema_version": "2.0",
-    "slsa_level": "L3",
-    "signature": "MOCK_SIG_abc123...",
-    "certificate_chain": ["-----BEGIN CERTIFICATE-----..."],
-    "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "2025-11-03T00:00:01Z"
-  }
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "user@example.com",
+ "repo": "_codex_",
+ "path": "src/module.py",
+ "tombstone": "d3e8729-1234-5678-abcd-ef0123456789",
+ "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", <!-- pragma: allowlist secret -->
+ "size": 4096,
+ "commit": "abc123def456", <!-- pragma: allowlist secret -->
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "schema_version": "2.0",
+ "slsa_level": "L3",
+ "signature": "MOCK_SIG_abc123...",
+ "certificate_chain": ["-----BEGIN CERTIFICATE-----..."],
+ "issuer": "https://token.actions.githubusercontent.com",
+ "signed_at": "2025-11-03T00:00:01Z"
+ }
 }
 ```text
 
@@ -172,7 +172,7 @@ print(f"Signing: {'Enabled' if report['signing_enabled'] else 'Disabled'}")
 print(f"Schema Versions: {report['schema_versions_supported']}")
 print("\nCompliance Status:")
 for standard, status in report['compliance'].items():
-    print(f"  {standard}: {'' if status else ''}")
+ print(f" {standard}: {'' if status else ''}")
 EOF
 ```text
 
@@ -184,16 +184,16 @@ EOF
 
 | Standard | Requirement | Implementation | Evidence | Status |
 |----------|-------------|----------------|----------|--------|
-| **SLSA L3** | Signed provenance | Sigstore keyless | `standardizationMetadata.signature` |  |
-| **SLSA L3** | Hermetic process | Isolated archive ops | DAL + blob storage |  |
-| **SLSA L3** | Non-falsifiable | Append-only log | JSONL format |  |
-| **in-toto** | Link metadata | Compatible structure | Evidence records |  |
-| **in-toto** | Layout definition | Policy document | `canonical-archiving-policy.md` |  |
-| **in-toto** | Functionary auth | GitHub OIDC | OIDC token → Fulcio cert |  |
-| **SAA** | Artifact identity | SHA256 + tombstone | `sha256` + `tombstone` fields |  |
-| **SAA** | Actor identity | OIDC claims | `actor` + `issuer` fields |  |
-| **SAA** | Audit trail | Immutable log | `.codex/evidence/archive_ops.jsonl` |  |
-| **SAA** | Retention policy | Documented | `docs/ops/retention.md` |  |
+| **SLSA L3** | Signed provenance | Sigstore keyless | `standardizationMetadata.signature` | |
+| **SLSA L3** | Hermetic process | Isolated archive ops | DAL + blob storage | |
+| **SLSA L3** | Non-falsifiable | Append-only log | JSONL format | |
+| **in-toto** | Link metadata | Compatible structure | Evidence records | |
+| **in-toto** | Layout definition | Policy document | `canonical-archiving-policy.md` | |
+| **in-toto** | Functionary auth | GitHub OIDC | OIDC token Fulcio cert | |
+| **SAA** | Artifact identity | SHA256 + tombstone | `sha256` + `tombstone` fields | |
+| **SAA** | Actor identity | OIDC claims | `actor` + `issuer` fields | |
+| **SAA** | Audit trail | Immutable log | `.codex/evidence/archive_ops.jsonl` | |
+| **SAA** | Retention policy | Documented | `docs/ops/retention.md` | |
 
 ---
 
@@ -239,9 +239,9 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 **Clean Run**:
 ```text
  Validation Results: 1234 records scanned
-    Valid: 1234
-   ️  Warnings: 0
-    Errors: 0
+ Valid: 1234
+ Warnings: 0
+ Errors: 0
 
  All checks passed!
 ```text
@@ -252,13 +252,13 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ============================================================
 Standard Version: 2.0
 SLSA Level: L3
-Signing Enabled:  Yes
+Signing Enabled: Yes
 Schema Versions Supported: 1.0, 2.0
 
 Compliance:
-   SLSA_L3
-   IN_TOTO_READY
-   SAA_COMPLIANT
+ SLSA_L3
+ IN_TOTO_READY
+ SAA_COMPLIANT
 ```text
 ---
 

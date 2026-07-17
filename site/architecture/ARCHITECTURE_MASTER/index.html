@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/architecture/ARCHITECTURE_MASTER/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Architecture Master Reference - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2576,10 +2576,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Consolidated Master Document</strong> for Codex Architecture<br/>
-<strong>Created</strong>: 2026-07-08<br/>
-<strong>Consolidation Campaign</strong>: Phase 12 WS3<br/>
-<strong>Status</strong>:  Active Master Document</p>
+<p><strong>Consolidated Master Document</strong> for Codex Architecture
+<strong>Created</strong>: 2026-07-08
+<strong>Consolidation Campaign</strong>: Phase 12 WS3
+<strong>Status</strong>: Active Master Document</p>
 </blockquote>
 <p><strong>Source Files Consolidated</strong>:
 - agents/prompts/ARCHITECTURE.md
@@ -2704,61 +2704,64 @@
 <hr/>
 <h2 id="core-components">Core Components<a class="headerlink" href="#core-components" title="Permanent link">¶</a></h2>
 <h3 id="5-layer-architecture">5-Layer Architecture<a class="headerlink" href="#5-layer-architecture" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│  CLI / Apps Layer                       │ ← User Interface (CLI, Web, Desktop)
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│  (cli/, apps/)                          │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│  Services Layer                         │ ← APIs, Backend Services
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│  (src/services/)                        │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│  ML Core Layer                          │ ← Models, ML Infrastructure
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│  (src/codex_ml/)                        │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│  Training Layer                         │ ← Training Pipelines
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│  (training/, src/training/)             │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│  Domain Layer                           │ ← Core Business Logic
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│  (src/codex/)                           │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└─────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> CLI / Apps Layer User Interface (CLI, Web, Desktop)
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> (cli/, apps/) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Services Layer APIs, Backend Services
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> (src/services/) 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> ML Core Layer Models, ML Infrastructure
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> (src/codex_ml/) 
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> Training Layer Training Pipelines
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> (training/, src/training/) 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Domain Layer Core Business Logic
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> (src/codex/) 
 </code></pre></div>
 <h3 id="component-relationships">Component Relationships<a class="headerlink" href="#component-relationships" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>flowchart TB
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    subgraph Users["👥 Users"]
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>        Dev[Developers]
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>        Agent[AI Agents]
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        CI[CI/CD Systems]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    end
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    subgraph Core["🔷 Codex Core"]
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>        CLI[CLI Interface]
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>        Logging[Session Logger]
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>        Config[Configuration]
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>        State[State Management]
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    end
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    subgraph Services[" Services Layer"]
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>        API[REST APIs]
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>        Auth[Authentication]
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>        Validation[Input Validation]
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    end
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    subgraph ML[" ML Core"]
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>        Models[Pre-trained Models]
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>        Inference[Inference Engine]
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>        Embeddings[Embeddings]
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    end
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    subgraph Training[" Training"]
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>        DataLoader[Data Loading]
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>        Pipeline[Training Pipeline]
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>        Eval[Evaluation]
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>    end
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    Users --&gt;|interact| Core
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>    Core --&gt;|call| Services
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>    Services --&gt;|use| ML
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>    ML --&gt;|train| Training
-<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>    Training --&gt;|validate| Eval
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> subgraph Users[" Users"]
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> Dev[Developers]
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> Agent[AI Agents]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> CI[CI/CD Systems]
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> end
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> subgraph Core[" Codex Core"]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> CLI[CLI Interface]
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> Logging[Session Logger]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> Config[Configuration]
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> State[State Management]
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> end
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> subgraph Services[" Services Layer"]
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> API[REST APIs]
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> Auth[Authentication]
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> Validation[Input Validation]
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> end
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> subgraph ML[" ML Core"]
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> Models[Pre-trained Models]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> Inference[Inference Engine]
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> Embeddings[Embeddings]
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> end
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> subgraph Training[" Training"]
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> DataLoader[Data Loading]
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> Pipeline[Training Pipeline]
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> Eval[Evaluation]
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> end
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a> Users --&gt;|interact| Core
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a> Core --&gt;|call| Services
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a> Services --&gt;|use| ML
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a> ML --&gt;|train| Training
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a> Training --&gt;|validate| Eval
 </code></pre></div>
 <hr/>
 <h2 id="data-flow-architecture">Data Flow Architecture<a class="headerlink" href="#data-flow-architecture" title="Permanent link">¶</a></h2>
@@ -2773,52 +2776,52 @@
 </ol>
 <h3 id="configuration-flow">Configuration Flow<a class="headerlink" href="#configuration-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Repository Root
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── pyproject.toml (Project metadata)
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>├── .codex/ (Codex-specific configuration)
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>│   ├── agent_context.json
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>│   ├── DOMAIN_OWNERSHIP.md
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>│   └── CODEBASE_AGENCY_POLICY.md
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>├── .github/agents/ (Agent definitions)
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>│   ├── AGENT_REGISTRY.yaml
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>│   └── agent-configs/
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>└── config/ (App configuration)
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    ├── hydra/
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    └── app_config.yaml
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> pyproject.toml (Project metadata)
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> .codex/ (Codex-specific configuration)
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> agent_context.json
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> DOMAIN_OWNERSHIP.md
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> CODEBASE_AGENCY_POLICY.md
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> .github/agents/ (Agent definitions)
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> AGENT_REGISTRY.yaml
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> agent-configs/
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> config/ (App configuration)
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> hydra/
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> app_config.yaml
 </code></pre></div>
 <hr/>
 <h2 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">¶</a></h2>
 <h3 id="deployment-targets">Deployment Targets<a class="headerlink" href="#deployment-targets" title="Permanent link">¶</a></h3>
 <h4 id="local-development">Local Development<a class="headerlink" href="#local-development" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Developer Machine
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>├── Python 3.11+ Virtual Environment
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>├── Source Code (git clone)
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>├── Local Database (SQLite)
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>└── Model Cache (disk storage)
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> Python 3.11+ Virtual Environment
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> Source Code (git clone)
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> Local Database (SQLite)
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> Model Cache (disk storage)
 </code></pre></div>
 <h4 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Docker Image
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>├── Python 3.11+ Base Image
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>├── Source Code (COPY)
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>├── Dependencies (pip install)
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>├── Model Cache (volume mount)
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>└── Entrypoint (CLI/App)
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> Python 3.11+ Base Image
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> Source Code (COPY)
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> Dependencies (pip install)
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> Model Cache (volume mount)
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> Entrypoint (CLI/App)
 </code></pre></div>
 <h4 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>K8s Cluster
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>├── Deployment (App Pods)
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>├── Service (Load Balancing)
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>├── ConfigMap (Configuration)
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>├── Secret (Credentials)
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>├── PVC (Model Storage)
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>└── HPA (Auto-scaling)
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> Deployment (App Pods)
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> Service (Load Balancing)
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> ConfigMap (Configuration)
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> Secret (Credentials)
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> PVC (Model Storage)
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> HPA (Auto-scaling)
 </code></pre></div>
 <h4 id="cloud-deployment">Cloud Deployment<a class="headerlink" href="#cloud-deployment" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Cloud Platform (AWS/GCP/Azure)
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>├── Managed Container Service
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>├── Database Service (RDS/Cloud SQL)
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>├── Object Storage (S3/GCS/Blob)
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>├── Secrets Manager
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>└── Monitoring Service
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> Managed Container Service
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> Database Service (RDS/Cloud SQL)
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> Object Storage (S3/GCS/Blob)
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> Secrets Manager
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> Monitoring Service
 </code></pre></div>
 <hr/>
 <h2 id="security-architecture">Security Architecture<a class="headerlink" href="#security-architecture" title="Permanent link">¶</a></h2>
@@ -2847,18 +2850,18 @@
 <h2 id="monitoring-architecture">Monitoring Architecture<a class="headerlink" href="#monitoring-architecture" title="Permanent link">¶</a></h2>
 <h3 id="metrics-collection">Metrics Collection<a class="headerlink" href="#metrics-collection" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Application
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>├── Business Metrics
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>│   ├── User signups
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>│   ├── Model accuracy
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>│   └── API response times
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>├── System Metrics
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>│   ├── CPU usage
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>│   ├── Memory usage
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>│   └── Disk I/O
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>└── Application Metrics
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    ├── Error rates
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>    ├── Latency distribution
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    └── Cache hit rates
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> Business Metrics
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> User signups
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> Model accuracy
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> API response times
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> System Metrics
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> CPU usage
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> Memory usage
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> Disk I/O
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> Application Metrics
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> Error rates
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> Latency distribution
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> Cache hit rates
 </code></pre></div>
 <h3 id="observability-stack">Observability Stack<a class="headerlink" href="#observability-stack" title="Permanent link">¶</a></h3>
 <ul>
@@ -2878,16 +2881,16 @@
 <h2 id="import-constraints">Import Constraints<a class="headerlink" href="#import-constraints" title="Permanent link">¶</a></h2>
 <h3 id="prohibited-cross-layer-imports">Prohibited Cross-Layer Imports<a class="headerlink" href="#prohibited-cross-layer-imports" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a> FORBIDDEN:
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>  - src/codex/ → src/codex_ml/ or training/
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>  - src/codex_ml/ → training/
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>  - src/services/ → cli/ or apps/
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>  - tests/ → src/codex/ (circular imports)
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> - src/codex/ src/codex_ml/ or training/
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> - src/codex_ml/ training/
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> - src/services/ cli/ or apps/
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> - tests/ src/codex/ (circular imports)
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> ALLOWED:
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>  - CLI/Apps → All layers (top-level access)
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>  - Services → ML Core, Domain, stdlib
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>  - ML Core → Domain, stdlib, third-party
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>  - Domain → stdlib, third-party only
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> - CLI/Apps All layers (top-level access)
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> - Services ML Core, Domain, stdlib
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> - ML Core Domain, stdlib, third-party
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> - Domain stdlib, third-party only
 </code></pre></div>
 <h3 id="enforcement-mechanism">Enforcement Mechanism<a class="headerlink" href="#enforcement-mechanism" title="Permanent link">¶</a></h3>
 <ul>
@@ -2901,24 +2904,24 @@
 <h3 id="domain-ownership">Domain Ownership<a class="headerlink" href="#domain-ownership" title="Permanent link">¶</a></h3>
 <p>Ownership map tracked in <code>.codex/DOMAIN_OWNERSHIP.md</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Domain 1 (D1): Architecture &amp; Layer Boundaries
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>  ├── Owner: code-analysis-agent
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>  ├── Reference: docs/architecture/ARCHITECTURE_LAYERS.md
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  └── Enforcement: import-linter.yml
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> Owner: code-analysis-agent
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> Reference: docs/architecture/ARCHITECTURE_LAYERS.md
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> Enforcement: import-linter.yml
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>Domain 2 (D2): Security &amp; Compliance
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>  ├── Owner: security-review-agent
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>  ├── Reference: docs/security/SECURITY_ARCHITECTURE.md
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>  └── Enforcement: GitHub Advanced Security
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> Owner: security-review-agent
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> Reference: docs/security/SECURITY_ARCHITECTURE.md
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> Enforcement: GitHub Advanced Security
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>Domain 3 (D3): Testing &amp; Quality
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>  ├── Owner: ci-testing-agent
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>  ├── Reference: docs/testing/
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>  └── Enforcement: pytest + coverage gates
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> Owner: ci-testing-agent
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> Reference: docs/testing/
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> Enforcement: pytest + coverage gates
 <a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
 <a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>Domain 4 (D4): Agent &amp; Orchestration
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>  ├── Owner: orchestrator-agent
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>  ├── Reference: agents/AGENT_CONSOLIDATION_MATRIX.md
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>  └── Enforcement: agent registry validation
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> Owner: orchestrator-agent
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> Reference: agents/AGENT_CONSOLIDATION_MATRIX.md
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> Enforcement: agent registry validation
 </code></pre></div>
 <h3 id="policy-framework">Policy Framework<a class="headerlink" href="#policy-framework" title="Permanent link">¶</a></h3>
 <ul>
@@ -2979,10 +2982,10 @@
 - <a href="../../agents/AGENT_CONSOLIDATION_MATRIX.md">Agent Guide</a>
 - <a href="../../security/SECURITY_ARCHITECTURE/">Security Policy</a></p>
 <hr/>
-<p><strong>This document is the authoritative architecture reference for Codex.</strong><br/>
+<p><strong>This document is the authoritative architecture reference for Codex.</strong>
 Keep in sync with import linters, governance policies, and domain ownership maps.</p>
 <p><em>Last Updated: 2026-07-08
-</em>Consolidation Status:  Complete (12 files merged)*</p>
+</em>Consolidation Status: Complete (12 files merged)*</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3012,6 +3015,6 @@ Keep in sync with import linters, governance policies, and domain ownership maps
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

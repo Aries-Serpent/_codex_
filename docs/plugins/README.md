@@ -1,6 +1,6 @@
 # Plugins Documentation
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -32,12 +32,12 @@ This directory contains documentation for the plugin system and available plugin
 
 ```
 my-plugin/
-  ├── plugin.yaml          # Plugin manifest
-  ├── __init__.py          # Python module
-  ├── handlers/            # Event handlers
-  ├── models/              # Data models
-  ├── tests/               # Tests
-  └── README.md            # Documentation
+ plugin.yaml # Plugin manifest
+ __init__.py # Python module
+ handlers/ # Event handlers
+ models/ # Data models
+ tests/ # Tests
+ README.md # Documentation
 ```
 
 ### Plugin Lifecycle
@@ -56,15 +56,15 @@ my-plugin/
 from codex.plugins import BasePlugin
 
 class MyPlugin(BasePlugin):
-    name = "my-plugin"
-    version = "1.0.0"
+ name = "my-plugin"
+ version = "1.0.0"
 
-    def setup(self):
-        self.register_handler("event.name", self.handle_event)
+ def setup(self):
+ self.register_handler("event.name", self.handle_event)
 
-    def handle_event(self, event):
-        # Process event
-        pass
+ def handle_event(self, event):
+ # Process event
+ pass
 ```
 
 ## Plugin Types
@@ -96,11 +96,11 @@ class MyPlugin(BasePlugin):
 ```yaml
 # config/plugins.yaml
 plugins:
-  my-plugin:
-    enabled: true
-    config:
-      option1: value1
-      option2: value2
+ my-plugin:
+ enabled: true
+ config:
+ option1: value1
+ option2: value2
 ```
 
 ## Environment Variables
@@ -135,9 +135,9 @@ import pytest
 from my_plugin import MyPlugin
 
 def test_plugin_setup():
-    plugin = MyPlugin()
-    plugin.setup()
-    assert plugin.name == "my-plugin"
+ plugin = MyPlugin()
+ plugin.setup()
+ assert plugin.name == "my-plugin"
 ```
 
 ### Integration Tests
@@ -192,15 +192,15 @@ pytest tests/integration/test_plugin.py
 
 ```python
 class BasePlugin:
-    name: str
-    version: str
-    description: str
+ name: str
+ version: str
+ description: str
 
-    def setup(self) -> None:
-        """Initialize plugin"""
+ def setup(self) -> None:
+ """Initialize plugin"""
 
-    def teardown(self) -> None:
-        """Clean up plugin"""
+ def teardown(self) -> None:
+ """Clean up plugin"""
 ```
 
 ### Event System
@@ -214,7 +214,7 @@ emit_event("event.name", data={"key": "value"})
 # Listen to event
 @register_handler("event.name")
 def handle_event(event):
-    pass
+ pass
 ```
 
 ## Related Documentation

@@ -1,6 +1,6 @@
 # RAG Quickstart Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -351,7 +351,7 @@ manage_tenant_indices(
 - **Advanced Guide**: See `docs/RAG_ADVANCED.md` for multi-index, provenance, and advanced caching
 - **Custom Agents**: Learn about `@rag-index-manager` and `@semantic-search` agents
 - **Monitoring**: Set up Prometheus and Grafana dashboards
-- 🧪 **Examples**: Check `examples/rag_workflow.py` for complete workflows
+- **Examples**: Check `examples/rag_workflow.py` for complete workflows
 
 ---
 
@@ -388,4 +388,4 @@ metrics.export_cloudwatch()
 - Discussions: GitHub Discussions
 - Email: rag-team@example.com
 
-Happy searching! 
+Happy searching!

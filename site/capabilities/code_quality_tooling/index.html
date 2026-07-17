@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/capabilities/code_quality_tooling/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Code Quality Tooling - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2476,10 +2476,10 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Navigation</strong>: <a href="../README.md#-capabilities-documentation"> Main README</a> | <a href="../checkpointing/">💾 Checkpointing</a> | <a href="../train_loop/"> Training Loops</a> | <a href="../peft_hooks/"> PEFT Techniques</a> | <a href="../.github/docs/GH_CLI_Resolution_Copilot.md"> GitHub CLI Guide</a></p>
+<p><strong>Navigation</strong>: <a href="../README.md#-capabilities-documentation"> Main README</a> | <a href="../checkpointing/"> Checkpointing</a> | <a href="../train_loop/"> Training Loops</a> | <a href="../peft_hooks/"> PEFT Techniques</a> | <a href="../.github/docs/GH_CLI_Resolution_Copilot.md"> GitHub CLI Guide</a></p>
 </blockquote>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p><strong>Status</strong>:  Complete - Comprehensive code quality tooling guide with configurations and examples</p>
+<p><strong>Status</strong>: Complete - Comprehensive code quality tooling guide with configurations and examples</p>
 <p>This capability covers comprehensive code quality tooling for the <em>codex</em> repository, including linting, formatting, type checking, and static analysis tools.</p>
 <h2 id="planned-content">Planned Content<a class="headerlink" href="#planned-content" title="Permanent link">¶</a></h2>
 <p>This document will cover:
@@ -2532,19 +2532,19 @@
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">target-version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"py311"</span>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="n">select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="s2">"E"</span><span class="p">,</span><span class="w">   </span><span class="c1"># pycodestyle errors</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">    </span><span class="s2">"W"</span><span class="p">,</span><span class="w">   </span><span class="c1"># pycodestyle warnings</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="s2">"F"</span><span class="p">,</span><span class="w">   </span><span class="c1"># pyflakes</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="s2">"I"</span><span class="p">,</span><span class="w">   </span><span class="c1"># isort</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">    </span><span class="s2">"N"</span><span class="p">,</span><span class="w">   </span><span class="c1"># pep8-naming</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="s2">"UP"</span><span class="p">,</span><span class="w">  </span><span class="c1"># pyupgrade</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="s2">"B"</span><span class="p">,</span><span class="w">   </span><span class="c1"># flake8-bugbear</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="s2">"C4"</span><span class="p">,</span><span class="w">  </span><span class="c1"># flake8-comprehensions</span>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="s2">"S"</span><span class="p">,</span><span class="w">   </span><span class="c1"># flake8-bandit (security)</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w"> </span><span class="s2">"E"</span><span class="p">,</span><span class="w"> </span><span class="c1"># pycodestyle errors</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w"> </span><span class="s2">"W"</span><span class="p">,</span><span class="w"> </span><span class="c1"># pycodestyle warnings</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w"> </span><span class="s2">"F"</span><span class="p">,</span><span class="w"> </span><span class="c1"># pyflakes</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w"> </span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="c1"># isort</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w"> </span><span class="s2">"N"</span><span class="p">,</span><span class="w"> </span><span class="c1"># pep8-naming</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w"> </span><span class="s2">"UP"</span><span class="p">,</span><span class="w"> </span><span class="c1"># pyupgrade</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w"> </span><span class="s2">"B"</span><span class="p">,</span><span class="w"> </span><span class="c1"># flake8-bugbear</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w"> </span><span class="s2">"C4"</span><span class="p">,</span><span class="w"> </span><span class="c1"># flake8-comprehensions</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w"> </span><span class="s2">"S"</span><span class="p">,</span><span class="w"> </span><span class="c1"># flake8-bandit (security)</span>
 <a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="p">]</span>
 <a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="n">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="s2">"E501"</span><span class="p">,</span><span class="w">  </span><span class="c1"># Line too long (handled by Black)</span>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="s2">"S101"</span><span class="p">,</span><span class="w">  </span><span class="c1"># Use of assert (acceptable in tests)</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w"> </span><span class="s2">"E501"</span><span class="p">,</span><span class="w"> </span><span class="c1"># Line too long (handled by Black)</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w"> </span><span class="s2">"S101"</span><span class="p">,</span><span class="w"> </span><span class="c1"># Use of assert (acceptable in tests)</span>
 <a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="p">]</span>
 <a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
 <a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="k">[tool.ruff.per-file-ignores]</span>
@@ -2559,9 +2559,9 @@
 <a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'\.pyi?$'</span>
 <a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="n">extend-exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'''</span>
 <a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="s1">/(</span>
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="s1">  | archive</span>
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="s1">  | .hypothesis</span>
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="s1">  | .nox</span>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="s1"> | archive</span>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="s1"> | .hypothesis</span>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="s1"> | .nox</span>
 <a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="s1">)/</span>
 <a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="s1">'''</span>
 <a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
@@ -2580,7 +2580,7 @@
 <a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
 <a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="k">[[tool.mypy.overrides]]</span>
 <a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="n">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"tests.*"</span>
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="n">disallow_untyped_defs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w">  </span><span class="c1"># Less strict for tests</span>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="n">disallow_untyped_defs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1"># Less strict for tests</span>
 <a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
 <a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="k">[tool.pytest.ini_options]</span>
 <a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="n">minversion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"7.0"</span>
@@ -2593,9 +2593,9 @@
 <a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="k">[tool.coverage.run]</span>
 <a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"agents"</span><span class="p">]</span>
 <a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="n">omit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="w">    </span><span class="s2">"*/tests/*"</span><span class="p">,</span>
-<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="w">    </span><span class="s2">"*/test_*.py"</span><span class="p">,</span>
-<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">    </span><span class="s2">"*/__pycache__/*"</span><span class="p">,</span>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="w"> </span><span class="s2">"*/tests/*"</span><span class="p">,</span>
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="w"> </span><span class="s2">"*/test_*.py"</span><span class="p">,</span>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w"> </span><span class="s2">"*/__pycache__/*"</span><span class="p">,</span>
 <a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="p">]</span>
 <a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
 <a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="k">[tool.coverage.report]</span>
@@ -2603,14 +2603,14 @@
 <a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="n">show_missing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 <a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="n">skip_covered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
 <a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="n">exclude_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="w">    </span><span class="s2">"pragma: no cover"</span><span class="p">,</span>
-<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">    </span><span class="s2">"def __repr__"</span><span class="p">,</span>
-<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">    </span><span class="s2">"raise AssertionError"</span><span class="p">,</span>
-<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="w">    </span><span class="s2">"raise NotImplementedError"</span><span class="p">,</span>
-<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="w">    </span><span class="s2">"if __name__ == </span><span class="se">\"</span><span class="s2">__main__</span><span class="se">\"</span><span class="s2">:"</span><span class="p">,</span>
-<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w">    </span><span class="s2">"if TYPE_CHECKING:"</span><span class="p">,</span>
-<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">    </span><span class="s2">"class .*</span><span class="se">\\</span><span class="s2">bProtocol</span><span class="se">\\</span><span class="s2">):"</span><span class="p">,</span>
-<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="w">    </span><span class="s2">"@(abc</span><span class="se">\\</span><span class="s2">.)?abstractmethod"</span><span class="p">,</span>
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="w"> </span><span class="s2">"pragma: no cover"</span><span class="p">,</span>
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w"> </span><span class="s2">"def __repr__"</span><span class="p">,</span>
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w"> </span><span class="s2">"raise AssertionError"</span><span class="p">,</span>
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="w"> </span><span class="s2">"raise NotImplementedError"</span><span class="p">,</span>
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="w"> </span><span class="s2">"if __name__ == </span><span class="se">\"</span><span class="s2">__main__</span><span class="se">\"</span><span class="s2">:"</span><span class="p">,</span>
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w"> </span><span class="s2">"if TYPE_CHECKING:"</span><span class="p">,</span>
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w"> </span><span class="s2">"class .*</span><span class="se">\\</span><span class="s2">bProtocol</span><span class="se">\\</span><span class="s2">):"</span><span class="p">,</span>
+<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="w"> </span><span class="s2">"@(abc</span><span class="se">\\</span><span class="s2">.)?abstractmethod"</span><span class="p">,</span>
 <a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="p">]</span>
 </code></pre></div>
 <h2 id="running-quality-checks-locally">Running Quality Checks Locally<a class="headerlink" href="#running-quality-checks-locally" title="Permanent link">¶</a></h2>
@@ -2621,10 +2621,10 @@
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>nox
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="c1"># Run individual checks</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>nox<span class="w"> </span>-s<span class="w"> </span>lint<span class="w">      </span><span class="c1"># Ruff linting</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>nox<span class="w"> </span>-s<span class="w"> </span>format<span class="w">    </span><span class="c1"># Black formatting</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>nox<span class="w"> </span>-s<span class="w"> </span>lint<span class="w"> </span><span class="c1"># Ruff linting</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>nox<span class="w"> </span>-s<span class="w"> </span>format<span class="w"> </span><span class="c1"># Black formatting</span>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>nox<span class="w"> </span>-s<span class="w"> </span>typecheck<span class="w"> </span><span class="c1"># mypy type checking</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>nox<span class="w"> </span>-s<span class="w"> </span>tests<span class="w">     </span><span class="c1"># pytest with coverage</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>nox<span class="w"> </span>-s<span class="w"> </span>tests<span class="w"> </span><span class="c1"># pytest with coverage</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="c1"># Quick checks before commit</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
@@ -2638,61 +2638,61 @@
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nd">@nox</span><span class="o">.</span><span class="n">session</span><span class="p">(</span><span class="n">python</span><span class="o">=</span><span class="p">[</span><span class="s2">"3.11"</span><span class="p">,</span> <span class="s2">"3.12"</span><span class="p">])</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="sd">"""Run the test suite with pytest."""</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"-e"</span><span class="p">,</span> <span class="s2">".[dev]"</span><span class="p">)</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"pytest"</span><span class="p">,</span> <span class="s2">"-v"</span><span class="p">,</span> <span class="s2">"--cov=agents"</span><span class="p">,</span> <span class="s2">"--cov-report=term-missing"</span><span class="p">)</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="sd">"""Run the test suite with pytest."""</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"-e"</span><span class="p">,</span> <span class="s2">".[dev]"</span><span class="p">)</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"pytest"</span><span class="p">,</span> <span class="s2">"-v"</span><span class="p">,</span> <span class="s2">"--cov=agents"</span><span class="p">,</span> <span class="s2">"--cov-report=term-missing"</span><span class="p">)</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="nd">@nox</span><span class="o">.</span><span class="n">session</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="k">def</span> <span class="nf">lint</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="sd">"""Run linting with ruff."""</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"ruff"</span><span class="p">)</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"ruff"</span><span class="p">,</span> <span class="s2">"check"</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="sd">"""Run linting with ruff."""</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"ruff"</span><span class="p">)</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"ruff"</span><span class="p">,</span> <span class="s2">"check"</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="nd">@nox</span><span class="o">.</span><span class="n">session</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">    </span><span class="sd">"""Check code formatting with black."""</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"black"</span><span class="p">)</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"black"</span><span class="p">,</span> <span class="s2">"--check"</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="sd">"""Check code formatting with black."""</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"black"</span><span class="p">)</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"black"</span><span class="p">,</span> <span class="s2">"--check"</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
 <a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
 <a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="nd">@nox</span><span class="o">.</span><span class="n">session</span>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="k">def</span> <span class="nf">typecheck</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">    </span><span class="sd">"""Run type checking with mypy."""</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>    <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"mypy"</span><span class="p">,</span> <span class="s2">"-e"</span><span class="p">,</span> <span class="s2">".[dev]"</span><span class="p">)</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"mypy"</span><span class="p">,</span> <span class="s2">"agents"</span><span class="p">)</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w"> </span><span class="sd">"""Run type checking with mypy."""</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"mypy"</span><span class="p">,</span> <span class="s2">"-e"</span><span class="p">,</span> <span class="s2">".[dev]"</span><span class="p">)</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"mypy"</span><span class="p">,</span> <span class="s2">"agents"</span><span class="p">)</span>
 <a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
 <a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="nd">@nox</span><span class="o">.</span><span class="n">session</span>
 <a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="k">def</span> <span class="nf">security</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">    </span><span class="sd">"""Run security scanning with bandit."""</span>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>    <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"bandit[toml]"</span><span class="p">)</span>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>    <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"bandit"</span><span class="p">,</span> <span class="s2">"-r"</span><span class="p">,</span> <span class="s2">"agents"</span><span class="p">,</span> <span class="s2">"-c"</span><span class="p">,</span> <span class="s2">"pyproject.toml"</span><span class="p">)</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w"> </span><span class="sd">"""Run security scanning with bandit."""</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> <span class="n">session</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="s2">"bandit[toml]"</span><span class="p">)</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"bandit"</span><span class="p">,</span> <span class="s2">"-r"</span><span class="p">,</span> <span class="s2">"agents"</span><span class="p">,</span> <span class="s2">"-c"</span><span class="p">,</span> <span class="s2">"pyproject.toml"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="pre-commit-configuration">Pre-commit Configuration<a class="headerlink" href="#pre-commit-configuration" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>repos:
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>  - repo: https://github.com/pre-commit/pre-commit-hooks
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    rev: v0.2.1
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    hooks:
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>      - id: trailing-whitespace
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>      - id: end-of-file-fixer
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>      - id: check-yaml
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>      - id: check-added-large-files
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>      - id: check-merge-conflict
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> - repo: https://github.com/pre-commit/pre-commit-hooks
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> rev: v0.2.1
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> hooks:
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> - id: trailing-whitespace
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> - id: end-of-file-fixer
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> - id: check-yaml
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> - id: check-added-large-files
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> - id: check-merge-conflict
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>  - repo: https://github.com/astral-sh/ruff-pre-commit
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    rev: v0.2.1
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    hooks:
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>      - id: ruff
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>        args: [--fix, --exit-non-zero-on-fix]
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> - repo: https://github.com/astral-sh/ruff-pre-commit
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> rev: v0.2.1
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> hooks:
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> - id: ruff
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> args: [--fix, --exit-non-zero-on-fix]
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>  - repo: https://github.com/psf/black
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    rev: 23.12.1
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    hooks:
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>      - id: black
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> - repo: https://github.com/psf/black
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> rev: 23.12.1
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> hooks:
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> - id: black
 <a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>  - repo: https://github.com/pre-commit/mirrors-mypy
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    rev: v0.2.1
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    hooks:
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>      - id: mypy
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>        additional_dependencies: [types-all]
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> - repo: https://github.com/pre-commit/mirrors-mypy
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> rev: v0.2.1
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> hooks:
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> - id: mypy
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> additional_dependencies: [types-all]
 </code></pre></div>
 <h3 id="ci-integration">CI Integration<a class="headerlink" href="#ci-integration" title="Permanent link">¶</a></h3>
 <p>The <code>.github/workflows/code-quality.yml</code> workflow runs all quality checks on every push and PR:</p>
@@ -2701,34 +2701,34 @@
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">  </span><span class="nt">quality-checks</span><span class="p">:</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w"> </span><span class="nt">quality-checks</span><span class="p">:</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w"> </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">          </span><span class="no">pip install -e ".[dev]"</span>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">          </span><span class="no">pip install nox</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e ".[dev]"</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install nox</span>
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run linting</span>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s lint</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run linting</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s lint</span>
 <a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check formatting</span>
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s format</span>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check formatting</span>
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s format</span>
 <a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Type checking</span>
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s typecheck</span>
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Type checking</span>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s typecheck</span>
 <a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests</span>
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s tests</span>
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests</span>
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s tests</span>
 <a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Security scan</span>
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s security</span>
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Security scan</span>
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nox -s security</span>
 </code></pre></div>
 <h2 id="related-capabilities">Related Capabilities<a class="headerlink" href="#related-capabilities" title="Permanent link">¶</a></h2>
 <ul>
@@ -2763,17 +2763,17 @@
 <li>
 <p><strong>Ignore Specific Issues Sparingly</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Inline ignore (use only when necessary)</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="n">result</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">user_input</span><span class="p">)</span>  <span class="c1"># noqa: S307</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="n">result</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">user_input</span><span class="p">)</span> <span class="c1"># noqa: S307</span>
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1"># Type ignore (document why)</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="n">value</span> <span class="o">=</span> <span class="n">some_untyped_library</span><span class="p">()</span>  <span class="c1"># type: ignore[no-untyped-call]</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="n">value</span> <span class="o">=</span> <span class="n">some_untyped_library</span><span class="p">()</span> <span class="c1"># type: ignore[no-untyped-call]</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Configure Per-File Rules</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">[tool.ruff.per-file-ignores]</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="s2">"tests/*.py"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"S101"</span><span class="p">]</span><span class="w">  </span><span class="c1"># Allow asserts in tests</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="s2">"scripts/*.py"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"T201"</span><span class="p">]</span><span class="w">  </span><span class="c1"># Allow prints in scripts</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="s2">"tests/*.py"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"S101"</span><span class="p">]</span><span class="w"> </span><span class="c1"># Allow asserts in tests</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="s2">"scripts/*.py"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"T201"</span><span class="p">]</span><span class="w"> </span><span class="c1"># Allow prints in scripts</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2806,41 +2806,40 @@
 <a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat: add new feature"</span>
 </code></pre></div>
 <h2 id="cicd-pipeline-integration">CI/CD Pipeline Integration<a class="headerlink" href="#cicd-pipeline-integration" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>┌─────────────┐
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>│ Push/PR     │
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>└──────┬──────┘
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>       │
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>       v
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>┌─────────────┐
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>│ Lint (Ruff) │ ← Fast feedback (seconds)
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>└──────┬──────┘
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>       │
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>       v
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>┌─────────────┐
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>│ Format      │ ← Code style check
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>│ (Black)     │
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>└──────┬──────┘
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>       │
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>       v
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>┌─────────────┐
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>│ Type Check  │ ← Static analysis
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>│ (mypy)      │
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>└──────┬──────┘
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>       │
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>       v
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>┌─────────────┐
-<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>│ Tests       │ ← Unit + integration
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>│ (pytest)    │
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>└──────┬──────┘
-<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>       │
-<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>       v
-<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>┌─────────────┐
-<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>│ Security    │ ← Vulnerability scan
-<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>│ (bandit)    │
-<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>└──────┬──────┘
-<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a>       │
-<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>       v
-<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a>    Success!
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a> Push/PR 
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> v
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> Lint (Ruff) Fast feedback (seconds)
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> v
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> Format Code style check
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> (Black) 
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> v
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> Type Check Static analysis
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> (mypy) 
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a> v
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> Tests Unit + integration
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a> (pytest) 
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a> v
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a> Security Vulnerability scan
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a> (bandit) 
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>
+<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a> v
+<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a> Success!
 </code></pre></div>
 <h2 id="tool-comparison">Tool Comparison<a class="headerlink" href="#tool-comparison" title="Permanent link">¶</a></h2>
 <table>
@@ -2871,7 +2870,7 @@
 <tr>
 <td>Customizable</td>
 <td>High</td>
-<td>️ Limited</td>
+<td>Limited</td>
 <td>High</td>
 <td>High</td>
 </tr>
@@ -2879,7 +2878,7 @@
 <td>Error Messages</td>
 <td>Clear</td>
 <td>N/A</td>
-<td>️ Can be cryptic</td>
+<td>Can be cryptic</td>
 <td>Clear</td>
 </tr>
 </tbody>
@@ -2978,6 +2977,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

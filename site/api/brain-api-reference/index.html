@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/api/brain-api-reference/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Brain Module API Reference - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2474,8 +2474,8 @@
 <h1 id="brain-module-api-reference">Brain Module API Reference<a class="headerlink" href="#brain-module-api-reference" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Module Path</strong>: <code>src/codex/brain/</code><br/>
-<strong>Version</strong>: Phase 10+<br/>
+<p><strong>Module Path</strong>: <code>src/codex/brain/</code>
+<strong>Version</strong>: Phase 10+
 <strong>Purpose</strong>: Cognitive brain orchestration, session management, checkpoints, memory consolidation</p>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2493,11 +2493,11 @@
 <h3 id="checkpointmanager">CheckpointManager<a class="headerlink" href="#checkpointmanager" title="Permanent link">¶</a></h3>
 <p>Manages the lifecycle of session checkpoints, enabling recovery and state restoration.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">class</span> <span class="nc">CheckpointManager</span><span class="p">:</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">    </span><span class="sd">"""Manage session checkpoints and recovery.</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w"> </span><span class="sd">"""Manage session checkpoints and recovery.</span>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="sd">    Handles checkpoint creation, listing, retrieval, and conditional checkpointing</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd">    based on task progress thresholds.</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="sd"> Handles checkpoint creation, listing, retrieval, and conditional checkpointing</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd"> based on task progress thresholds.</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="create_checkpointsession_id-agent_state-context-title-metadatanone"><code>create_checkpoint(session_id, agent_state, context, title, metadata=None)</code><a class="headerlink" href="#create_checkpointsession_id-agent_state-context-title-metadatanone" title="Permanent link">¶</a></h4>
@@ -2511,11 +2511,11 @@
 <p><strong>Returns</strong>: <code>Checkpoint</code> object with id, timestamp, and state</p>
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">create_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">session_id</span><span class="o">=</span><span class="s2">"sess-001"</span><span class="p">,</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">agent_state</span><span class="o">=</span><span class="p">{</span><span class="s2">"progress"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"completed_tasks"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]},</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"repo"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"main"</span><span class="p">},</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">"Data processing phase 1 complete"</span><span class="p">,</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"phase"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"records_processed"</span><span class="p">:</span> <span class="mi">50000</span><span class="p">}</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="n">session_id</span><span class="o">=</span><span class="s2">"sess-001"</span><span class="p">,</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="n">agent_state</span><span class="o">=</span><span class="p">{</span><span class="s2">"progress"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"completed_tasks"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]},</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"repo"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"main"</span><span class="p">},</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="n">title</span><span class="o">=</span><span class="s2">"Data processing phase 1 complete"</span><span class="p">,</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"phase"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"records_processed"</span><span class="p">:</span> <span class="mi">50000</span><span class="p">}</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="list_checkpointssession_id-limit50"><code>list_checkpoints(session_id, limit=50)</code><a class="headerlink" href="#list_checkpointssession_id-limit50" title="Permanent link">¶</a></h4>
@@ -2527,7 +2527,7 @@
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">checkpoints</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_checkpoints</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="s2">"sess-001"</span><span class="p">)</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">for</span> <span class="n">cp</span> <span class="ow">in</span> <span class="n">checkpoints</span><span class="p">:</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">cp</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> - Created: </span><span class="si">{</span><span class="n">cp</span><span class="o">.</span><span class="n">created_at</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">cp</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> - Created: </span><span class="si">{</span><span class="n">cp</span><span class="o">.</span><span class="n">created_at</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="get_checkpointcheckpoint_id"><code>get_checkpoint(checkpoint_id)</code><a class="headerlink" href="#get_checkpointcheckpoint_id" title="Permanent link">¶</a></h4>
 <p>Retrieve a specific checkpoint by ID.</p>
@@ -2537,8 +2537,8 @@
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_checkpoint</span><span class="p">(</span><span class="n">checkpoint_id</span><span class="o">=</span><span class="s2">"cp-12345"</span><span class="p">)</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">if</span> <span class="n">checkpoint</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint: </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"State: </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">agent_state</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint: </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"State: </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">agent_state</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="maybe_checkpointsession_id-threshold05"><code>maybe_checkpoint(session_id, threshold=0.5)</code><a class="headerlink" href="#maybe_checkpointsession_id-threshold05" title="Permanent link">¶</a></h4>
 <p>Conditionally create a checkpoint based on progress.</p>
@@ -2550,17 +2550,17 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Create checkpoint if 80% through task</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">maybe_checkpoint</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="s2">"sess-001"</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="k">if</span> <span class="n">checkpoint</span><span class="p">:</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint created at </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">created_at</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint created at </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">created_at</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="sessionresume">SessionResume<a class="headerlink" href="#sessionresume" title="Permanent link">¶</a></h3>
 <p>Handles session recovery from checkpoints.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">class</span> <span class="nc">SessionResume</span><span class="p">:</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">    </span><span class="sd">"""Resume sessions from checkpoint state.</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="sd">"""Resume sessions from checkpoint state.</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="sd">    Restores agent state, context, and execution state from checkpoints,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="sd">    enabling stateful recovery and continuation.</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="sd"> Restores agent state, context, and execution state from checkpoints,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="sd"> enabling stateful recovery and continuation.</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="resume_from_checkpointcheckpoint_id"><code>resume_from_checkpoint(checkpoint_id)</code><a class="headerlink" href="#resume_from_checkpointcheckpoint_id" title="Permanent link">¶</a></h4>
@@ -2573,11 +2573,11 @@
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">checkpoint_id</span><span class="o">=</span><span class="s2">"cp-12345"</span><span class="p">)</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">restored_state</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">agent_state</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">restored_context</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">context</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resumed at: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">restored_state</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">agent_state</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">restored_context</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">context</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resumed at: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resume failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resume failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="get_resume_result"><code>get_resume_result()</code><a class="headerlink" href="#get_resume_result" title="Permanent link">¶</a></h4>
 <p>Get the last resume result.</p>
@@ -2586,11 +2586,11 @@
 <h3 id="memorysyncengine">MemorySyncEngine<a class="headerlink" href="#memorysyncengine" title="Permanent link">¶</a></h3>
 <p>Consolidates short-term memory (STM) to long-term memory (LTM) with pattern discovery.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">class</span> <span class="nc">MemorySyncEngine</span><span class="p">:</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">    </span><span class="sd">"""STM→LTM consolidation and pattern discovery.</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="sd">"""STMLTM consolidation and pattern discovery.</span>
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="sd">    Automatically consolidates memory, discovers patterns, and tags</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="sd">    improvement areas for continuous learning.</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="sd"> Automatically consolidates memory, discovers patterns, and tags</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="sd"> improvement areas for continuous learning.</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="consolidate_memories"><code>consolidate_memories()</code><a class="headerlink" href="#consolidate_memories" title="Permanent link">¶</a></h4>
@@ -2610,9 +2610,9 @@
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">patterns</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">discover_patterns</span><span class="p">()</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Type: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">pattern_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Frequency: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">frequency</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Type: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">pattern_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Frequency: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">frequency</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="tag_improvement_areas"><code>tag_improvement_areas()</code><a class="headerlink" href="#tag_improvement_areas" title="Permanent link">¶</a></h4>
 <p>Auto-tag patterns with improvement areas.</p>
@@ -2620,17 +2620,17 @@
 <p><strong>Example</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">improvement_tags</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">tag_improvement_areas</span><span class="p">()</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="k">for</span> <span class="n">pattern_id</span><span class="p">,</span> <span class="n">areas</span> <span class="ow">in</span> <span class="n">improvement_tags</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">pattern_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">areas</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">pattern_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">areas</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="oodaorchestrator">OODAOrchestrator<a class="headerlink" href="#oodaorchestrator" title="Permanent link">¶</a></h3>
 <p>Coordinates OODA (Observe, Orient, Decide, Act) loop execution.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">class</span> <span class="nc">OODAOrchestrator</span><span class="p">:</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">    </span><span class="sd">"""Orchestrate OODA loop execution.</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w"> </span><span class="sd">"""Orchestrate OODA loop execution.</span>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="sd">    Manages the observe → orient → decide → act cycle with</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="sd">    decision caching and optimization.</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="sd">    """</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="sd"> Manages the observe orient decide act cycle with</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="sd"> decision caching and optimization.</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="sd"> """</span>
 </code></pre></div>
 <p><strong>Key Methods</strong>:</p>
 <h4 id="execute_cycleobservation-context"><code>execute_cycle(observation, context)</code><a class="headerlink" href="#execute_cycleobservation-context" title="Permanent link">¶</a></h4>
@@ -2643,47 +2643,47 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">orchestrator</span> <span class="o">=</span> <span class="n">OODAOrchestrator</span><span class="p">()</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">execute_cycle</span><span class="p">(</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="n">observation</span><span class="o">=</span><span class="p">{</span><span class="s2">"task_status"</span><span class="p">:</span> <span class="s2">"in_progress"</span><span class="p">,</span> <span class="s2">"progress"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"sess-001"</span><span class="p">}</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="n">observation</span><span class="o">=</span><span class="p">{</span><span class="s2">"task_status"</span><span class="p">:</span> <span class="s2">"in_progress"</span><span class="p">,</span> <span class="s2">"progress"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"sess-001"</span><span class="p">}</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="p">)</span>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Decision: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">decision</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Actions: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">actions</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Decision: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">decision</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Actions: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">actions</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="function-signatures">Function Signatures<a class="headerlink" href="#function-signatures" title="Permanent link">¶</a></h2>
 <p>Complete API signatures for all public functions:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Session &amp; Checkpoint Management</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="k">def</span> <span class="nf">create_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="n">agent_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="n">agent_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Checkpoint</span><span class="p">:</span> <span class="o">...</span>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
 <a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="k">def</span> <span class="nf">list_checkpoints</span><span class="p">(</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>    <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Checkpoint</span><span class="p">]:</span> <span class="o">...</span>
 <a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>
 <a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="k">def</span> <span class="nf">get_checkpoint</span><span class="p">(</span><span class="n">checkpoint_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Checkpoint</span><span class="p">]:</span> <span class="o">...</span>
 <a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>
 <a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="k">def</span> <span class="nf">maybe_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>    <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
 <a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Checkpoint</span><span class="p">]:</span> <span class="o">...</span>
 <a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>
 <a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="k">def</span> <span class="nf">delete_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a>    <span class="n">checkpoint_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>    <span class="n">audit_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a> <span class="n">checkpoint_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a> <span class="n">audit_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span> <span class="o">...</span>
 <a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a>
 <a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a><span class="c1"># Session Resume</span>
 <a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a><span class="k">def</span> <span class="nf">resume_from_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a>    <span class="n">checkpoint_id</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a> <span class="n">checkpoint_id</span><span class="p">:</span> <span class="nb">str</span>
 <a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResumeResult</span><span class="p">:</span> <span class="o">...</span>
 <a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a>
 <a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a><span class="c1"># Memory Management</span>
@@ -2695,8 +2695,8 @@
 <a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a>
 <a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a><span class="c1"># OODA Orchestration</span>
 <a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a><span class="k">def</span> <span class="nf">execute_ooda_cycle</span><span class="p">(</span>
-<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a>    <span class="n">observation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a> <span class="n">observation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <a href="#__codelineno-13-44" id="__codelineno-13-44" name="__codelineno-13-44"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OODAResult</span><span class="p">:</span> <span class="o">...</span>
 </code></pre></div>
 <hr/>
@@ -2706,22 +2706,22 @@
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="c1"># Initialize checkpoint manager</span>
 <a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="n">manager</span> <span class="o">=</span> <span class="n">CheckpointManager</span><span class="p">(</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="n">storage_path</span><span class="o">=</span><span class="s2">"/data/checkpoints"</span><span class="p">,</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    <span class="n">retention_policy</span><span class="o">=</span><span class="n">RetentionPolicy</span><span class="p">(</span><span class="n">max_age_days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="n">storage_path</span><span class="o">=</span><span class="s2">"/data/checkpoints"</span><span class="p">,</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> <span class="n">retention_policy</span><span class="o">=</span><span class="n">RetentionPolicy</span><span class="p">(</span><span class="n">max_age_days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="p">)</span>
 <a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>
 <a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="c1"># Create checkpoint at milestone</span>
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>    <span class="s2">"progress"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>    <span class="s2">"completed_items"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"task1"</span><span class="p">,</span> <span class="s2">"task2"</span><span class="p">],</span>
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>    <span class="s2">"current_task"</span><span class="p">:</span> <span class="s2">"task3"</span>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> <span class="s2">"progress"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> <span class="s2">"completed_items"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"task1"</span><span class="p">,</span> <span class="s2">"task2"</span><span class="p">],</span>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> <span class="s2">"current_task"</span><span class="p">:</span> <span class="s2">"task3"</span>
 <a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="p">}</span>
 <a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>
 <a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a><span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">create_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>    <span class="n">session_id</span><span class="o">=</span><span class="s2">"my-session"</span><span class="p">,</span>
-<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>    <span class="n">agent_state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
-<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"repo"</span><span class="p">:</span> <span class="s2">"my-repo"</span><span class="p">,</span> <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"main"</span><span class="p">},</span>
-<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">"Milestone: 50</span><span class="si">% c</span><span class="s2">omplete"</span>
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a> <span class="n">session_id</span><span class="o">=</span><span class="s2">"my-session"</span><span class="p">,</span>
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a> <span class="n">agent_state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"repo"</span><span class="p">:</span> <span class="s2">"my-repo"</span><span class="p">,</span> <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"main"</span><span class="p">},</span>
+<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a> <span class="n">title</span><span class="o">=</span><span class="s2">"Milestone: 50</span><span class="si">% c</span><span class="s2">omplete"</span>
 <a href="#__codelineno-14-21" id="__codelineno-14-21" name="__codelineno-14-21"></a><span class="p">)</span>
 <a href="#__codelineno-14-22" id="__codelineno-14-22" name="__codelineno-14-22"></a>
 <a href="#__codelineno-14-23" id="__codelineno-14-23" name="__codelineno-14-23"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Created checkpoint: </span><span class="si">{</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -2731,8 +2731,8 @@
 <a href="#__codelineno-14-27" id="__codelineno-14-27" name="__codelineno-14-27"></a><span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">checkpoint_id</span><span class="o">=</span><span class="n">checkpoint</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 <a href="#__codelineno-14-28" id="__codelineno-14-28" name="__codelineno-14-28"></a>
 <a href="#__codelineno-14-29" id="__codelineno-14-29" name="__codelineno-14-29"></a><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-14-30" id="__codelineno-14-30" name="__codelineno-14-30"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Session restored successfully"</span><span class="p">)</span>
-<a href="#__codelineno-14-31" id="__codelineno-14-31" name="__codelineno-14-31"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Progress: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">agent_state</span><span class="p">[</span><span class="s1">'progress'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-14-30" id="__codelineno-14-30" name="__codelineno-14-30"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Session restored successfully"</span><span class="p">)</span>
+<a href="#__codelineno-14-31" id="__codelineno-14-31" name="__codelineno-14-31"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Progress: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">agent_state</span><span class="p">[</span><span class="s1">'progress'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="example-2-conditional-checkpointing">Example 2: Conditional Checkpointing<a class="headerlink" href="#example-2-conditional-checkpointing" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">codex.brain</span> <span class="kn">import</span> <span class="n">CheckpointManager</span>
@@ -2741,17 +2741,17 @@
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="c1"># Check every N iterations</span>
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>    <span class="c1"># Do work...</span>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>    <span class="n">current_progress</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">1000</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> <span class="c1"># Do work...</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> <span class="n">current_progress</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="mi">1000</span>
 <a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>    <span class="c1"># Create checkpoint at 25%, 50%, 75% milestones</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">maybe_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>        <span class="n">session_id</span><span class="o">=</span><span class="s2">"long-task"</span><span class="p">,</span>
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>        <span class="n">threshold</span><span class="o">=</span><span class="n">current_progress</span>
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>    <span class="p">)</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> <span class="c1"># Create checkpoint at 25%, 50%, 75% milestones</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a> <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">maybe_checkpoint</span><span class="p">(</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a> <span class="n">session_id</span><span class="o">=</span><span class="s2">"long-task"</span><span class="p">,</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a> <span class="n">threshold</span><span class="o">=</span><span class="n">current_progress</span>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a> <span class="p">)</span>
 <a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>    <span class="k">if</span> <span class="n">checkpoint</span><span class="p">:</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint created at </span><span class="si">{</span><span class="n">current_progress</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a> <span class="k">if</span> <span class="n">checkpoint</span><span class="p">:</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint created at </span><span class="si">{</span><span class="n">current_progress</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="example-3-memory-consolidation">Example 3: Memory Consolidation<a class="headerlink" href="#example-3-memory-consolidation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kn">from</span> <span class="nn">codex.brain</span> <span class="kn">import</span> <span class="n">MemorySyncEngine</span><span class="p">,</span> <span class="n">ImprovementArea</span>
@@ -2760,19 +2760,19 @@
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="c1"># Consolidate STM to LTM</span>
 <a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"STM→LTM: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">stm_entries_moved</span><span class="si">}</span><span class="s2"> entries"</span><span class="p">)</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"STMLTM: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">stm_entries_moved</span><span class="si">}</span><span class="s2"> entries"</span><span class="p">)</span>
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Duplicates: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">duplicates_detected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>
 <a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="c1"># Discover patterns</span>
 <a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="n">patterns</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">discover_patterns</span><span class="p">()</span>
 <a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (frequency: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">frequency</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (frequency: </span><span class="si">{</span><span class="n">pattern</span><span class="o">.</span><span class="n">frequency</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 <a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>
 <a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="c1"># Tag with improvement areas</span>
 <a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="n">tags</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">tag_improvement_areas</span><span class="p">()</span>
 <a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="k">for</span> <span class="n">pattern_id</span><span class="p">,</span> <span class="n">areas</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>    <span class="k">if</span> <span class="n">ImprovementArea</span><span class="o">.</span><span class="n">PERFORMANCE</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Performance improvement opportunity: </span><span class="si">{</span><span class="n">pattern_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a> <span class="k">if</span> <span class="n">ImprovementArea</span><span class="o">.</span><span class="n">PERFORMANCE</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Performance improvement opportunity: </span><span class="si">{</span><span class="n">pattern_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="example-4-ooda-loop">Example 4: OODA Loop<a class="headerlink" href="#example-4-ooda-loop" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="kn">from</span> <span class="nn">codex.brain</span> <span class="kn">import</span> <span class="n">OODAOrchestrator</span>
@@ -2781,118 +2781,118 @@
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="c1"># Execute OODA cycle</span>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="n">observation</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>    <span class="s2">"current_task"</span><span class="p">:</span> <span class="s2">"code-review"</span><span class="p">,</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>    <span class="s2">"queue_length"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>    <span class="s2">"recent_errors"</span><span class="p">:</span> <span class="p">[]</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> <span class="s2">"current_task"</span><span class="p">:</span> <span class="s2">"code-review"</span><span class="p">,</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a> <span class="s2">"queue_length"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> <span class="s2">"recent_errors"</span><span class="p">:</span> <span class="p">[]</span>
 <a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="p">}</span>
 <a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>
 <a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">execute_cycle</span><span class="p">(</span>
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>    <span class="n">observation</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span>
-<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"sess-001"</span><span class="p">}</span>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> <span class="n">observation</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span>
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"sess-001"</span><span class="p">}</span>
 <a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="p">)</span>
 <a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>
 <a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Decision: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">decision</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a>    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
-<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">action</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">action</span><span class="o">.</span><span class="n">details</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Decision: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">decision</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a> <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" - </span><span class="si">{</span><span class="n">action</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">action</span><span class="o">.</span><span class="n">details</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a>
-<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a>    <span class="c1"># Execute recommended actions</span>
-<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a>    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
-<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a>        <span class="n">execute_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a> <span class="c1"># Execute recommended actions</span>
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a> <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a> <span class="n">execute_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
 <h3 id="1-checkpoint-strategy">1. Checkpoint Strategy<a class="headerlink" href="#1-checkpoint-strategy" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1">#  GOOD: Regular checkpoints with meaningful titles</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># GOOD: Regular checkpoints with meaningful titles</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="k">def</span> <span class="nf">checkpoint_at_milestones</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">session_id</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>    <span class="n">manager</span><span class="o">.</span><span class="n">create_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>        <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>        <span class="n">agent_state</span><span class="o">=</span><span class="n">get_current_state</span><span class="p">(),</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>        <span class="n">context</span><span class="o">=</span><span class="n">get_context</span><span class="p">(),</span>
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Phase </span><span class="si">{</span><span class="n">phase</span><span class="si">}</span><span class="s2"> complete - Data validated"</span><span class="p">,</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"phase"</span><span class="p">:</span> <span class="n">phase</span><span class="p">,</span> <span class="s2">"checkpoint_type"</span><span class="p">:</span> <span class="s2">"milestone"</span><span class="p">}</span>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>    <span class="p">)</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> <span class="n">manager</span><span class="o">.</span><span class="n">create_checkpoint</span><span class="p">(</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> <span class="n">agent_state</span><span class="o">=</span><span class="n">get_current_state</span><span class="p">(),</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> <span class="n">context</span><span class="o">=</span><span class="n">get_context</span><span class="p">(),</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Phase </span><span class="si">{</span><span class="n">phase</span><span class="si">}</span><span class="s2"> complete - Data validated"</span><span class="p">,</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"phase"</span><span class="p">:</span> <span class="n">phase</span><span class="p">,</span> <span class="s2">"checkpoint_type"</span><span class="p">:</span> <span class="s2">"milestone"</span><span class="p">}</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a> <span class="p">)</span>
 <a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="c1">#  POOR: Vague, infrequent checkpoints</span>
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="c1"># POOR: Vague, infrequent checkpoints</span>
 <a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a><span class="k">def</span> <span class="nf">poor_checkpointing</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>    <span class="n">manager</span><span class="o">.</span><span class="n">create_checkpoint</span><span class="p">(</span>
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>        <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
-<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>        <span class="n">agent_state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
-<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>        <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>        <span class="n">title</span><span class="o">=</span><span class="s2">"Checkpoint"</span>
-<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a>    <span class="p">)</span>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a> <span class="n">manager</span><span class="o">.</span><span class="n">create_checkpoint</span><span class="p">(</span>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a> <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a> <span class="n">agent_state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a> <span class="n">title</span><span class="o">=</span><span class="s2">"Checkpoint"</span>
+<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a> <span class="p">)</span>
 </code></pre></div>
 <h3 id="2-memory-management">2. Memory Management<a class="headerlink" href="#2-memory-management" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1">#  GOOD: Regular consolidation with analysis</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># GOOD: Regular consolidation with analysis</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="k">def</span> <span class="nf">manage_memory</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">consolidation_interval</span><span class="o">=</span><span class="mi">3600</span><span class="p">):</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>    <span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a> <span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
 <a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>    <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">duplicates_detected</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High duplication: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">duplicates_detected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a> <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">duplicates_detected</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High duplication: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">duplicates_detected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>    <span class="n">patterns</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">discover_patterns</span><span class="p">()</span>
-<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">tag_improvement_areas</span><span class="p">()</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a> <span class="n">patterns</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">discover_patterns</span><span class="p">()</span>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a> <span class="n">tags</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">tag_improvement_areas</span><span class="p">()</span>
 <a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>
-<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"metrics"</span><span class="p">:</span> <span class="n">metrics</span><span class="p">,</span> <span class="s2">"patterns"</span><span class="p">:</span> <span class="n">patterns</span><span class="p">,</span> <span class="s2">"tags"</span><span class="p">:</span> <span class="n">tags</span><span class="p">}</span>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"metrics"</span><span class="p">:</span> <span class="n">metrics</span><span class="p">,</span> <span class="s2">"patterns"</span><span class="p">:</span> <span class="n">patterns</span><span class="p">,</span> <span class="s2">"tags"</span><span class="p">:</span> <span class="n">tags</span><span class="p">}</span>
 <a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>
-<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a><span class="c1">#  POOR: No consolidation or analysis</span>
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a><span class="c1"># POOR: No consolidation or analysis</span>
 <a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a><span class="k">def</span> <span class="nf">poor_memory_mgmt</span><span class="p">():</span>
-<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a>    <span class="c1"># Memory grows unbounded without consolidation</span>
-<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a>    <span class="k">pass</span>
+<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a> <span class="c1"># Memory grows unbounded without consolidation</span>
+<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a> <span class="k">pass</span>
 </code></pre></div>
 <h3 id="3-error-recovery">3. Error Recovery<a class="headerlink" href="#3-error-recovery" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1">#  GOOD: Graceful recovery with fallback</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># GOOD: Graceful recovery with fallback</span>
 <a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="k">def</span> <span class="nf">safe_resume</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">fallback_checkpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>    <span class="n">resume</span> <span class="o">=</span> <span class="n">SessionResume</span><span class="p">()</span>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a> <span class="n">resume</span> <span class="o">=</span> <span class="n">SessionResume</span><span class="p">()</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resume failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resume failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>        <span class="k">if</span> <span class="n">fallback_checkpoint</span><span class="p">:</span>
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>            <span class="k">return</span> <span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">fallback_checkpoint</span><span class="p">)</span>
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>        <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>            <span class="k">return</span> <span class="kc">None</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a> <span class="k">if</span> <span class="n">fallback_checkpoint</span><span class="p">:</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a> <span class="k">return</span> <span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">fallback_checkpoint</span><span class="p">)</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a> <span class="k">return</span> <span class="kc">None</span>
 <a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a>
-<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a>    <span class="k">return</span> <span class="n">result</span>
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a> <span class="k">return</span> <span class="n">result</span>
 <a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a>
-<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="c1">#  POOR: Crash on resume failure</span>
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="c1"># POOR: Crash on resume failure</span>
 <a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a><span class="k">def</span> <span class="nf">unsafe_resume</span><span class="p">(</span><span class="n">session_id</span><span class="p">):</span>
-<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a>    <span class="n">resume</span> <span class="o">=</span> <span class="n">SessionResume</span><span class="p">()</span>
-<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
-<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a>    <span class="c1"># Assumes result.success is always true</span>
-<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a>    <span class="k">return</span> <span class="n">result</span>
+<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a> <span class="n">resume</span> <span class="o">=</span> <span class="n">SessionResume</span><span class="p">()</span>
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a> <span class="c1"># Assumes result.success is always true</span>
+<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a> <span class="k">return</span> <span class="n">result</span>
 </code></pre></div>
 <hr/>
 <h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h2>
 <h3 id="common-errors-and-solutions">Common Errors and Solutions<a class="headerlink" href="#common-errors-and-solutions" title="Permanent link">¶</a></h3>
 <p><strong>CheckpointNotFound</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_checkpoint</span><span class="p">(</span><span class="n">cp_id</span><span class="p">)</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a> <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_checkpoint</span><span class="p">(</span><span class="n">cp_id</span><span class="p">)</span>
 <a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="k">except</span> <span class="n">CheckpointNotFound</span><span class="p">:</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint </span><span class="si">{</span><span class="n">cp_id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>    <span class="c1"># Fall back to latest checkpoint</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="n">checkpoints</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_checkpoints</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">checkpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">checkpoints</span> <span class="k">else</span> <span class="kc">None</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Checkpoint </span><span class="si">{</span><span class="n">cp_id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a> <span class="c1"># Fall back to latest checkpoint</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a> <span class="n">checkpoints</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_checkpoints</span><span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a> <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">checkpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">checkpoints</span> <span class="k">else</span> <span class="kc">None</span>
 </code></pre></div></p>
 <p><strong>ResumeFailed</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">cp_id</span><span class="p">)</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>        <span class="k">raise</span> <span class="n">ResumeFailed</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">resume</span><span class="o">.</span><span class="n">resume_from_checkpoint</span><span class="p">(</span><span class="n">cp_id</span><span class="p">)</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a> <span class="k">raise</span> <span class="n">ResumeFailed</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
 <a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="k">except</span> <span class="n">ResumeFailed</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not resume: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>    <span class="c1"># Create fresh session</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>    <span class="n">initialize_new_session</span><span class="p">()</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not resume: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a> <span class="c1"># Create fresh session</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a> <span class="n">initialize_new_session</span><span class="p">()</span>
 </code></pre></div></p>
 <p><strong>ConsolidationFailed</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>    <span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a> <span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
 <a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="k">except</span> <span class="n">ConsolidationFailed</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Memory consolidation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>    <span class="c1"># Retry with cleanup</span>
-<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>    <span class="n">engine</span><span class="o">.</span><span class="n">cleanup_corrupted_entries</span><span class="p">()</span>
-<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>    <span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Memory consolidation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a> <span class="c1"># Retry with cleanup</span>
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a> <span class="n">engine</span><span class="o">.</span><span class="n">cleanup_corrupted_entries</span><span class="p">()</span>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a> <span class="n">metrics</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">consolidate_memories</span><span class="p">()</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="related-apis">Related APIs<a class="headerlink" href="#related-apis" title="Permanent link">¶</a></h2>
@@ -2902,8 +2902,8 @@
 <li><a href="../observability-api-reference/">Observability API</a></li>
 </ul>
 <hr/>
-<p><strong>Last Updated</strong>: 2026-07-08<br/>
-<strong>Status</strong>: Phase 10+ (Active)<br/>
+<p><strong>Last Updated</strong>: 2026-07-08
+<strong>Status</strong>: Phase 10+ (Active)
 <strong>Author</strong>: Codex Brain Team</p>
 </article>
 </div>
@@ -2934,6 +2934,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

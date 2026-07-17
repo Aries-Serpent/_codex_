@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ISSUE_REPORTING_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Issue Reporting &amp; Feature Request Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2536,7 +2536,7 @@
 <h1 id="issue-reporting-feature-request-guide">Issue Reporting &amp; Feature Request Guide<a class="headerlink" href="#issue-reporting-feature-request-guide" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-07-08<br/>
+<p><strong>Last Updated</strong>: 2026-07-08
 <strong>Version</strong>: 1.0.0</p>
 <p>This guide helps you report bugs effectively and request features thoughtfully.</p>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2552,11 +2552,11 @@
 <h3 id="is-this-really-a-bug">Is This Really a Bug?<a class="headerlink" href="#is-this-really-a-bug" title="Permanent link">¶</a></h3>
 <p>Check if your issue might be:</p>
 <ol>
-<li><strong>A usage question</strong> → Use <a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a> instead</li>
-<li><strong>Already reported</strong> → Search issues (may be fixed in next release)</li>
-<li><strong>Expected behavior</strong> → Check documentation or ask in discussions</li>
-<li><strong>A feature request</strong> → Use feature request template instead</li>
-<li><strong>A security issue</strong> → See SECURITY.md instead</li>
+<li><strong>A usage question</strong> Use <a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a> instead</li>
+<li><strong>Already reported</strong> Search issues (may be fixed in next release)</li>
+<li><strong>Expected behavior</strong> Check documentation or ask in discussions</li>
+<li><strong>A feature request</strong> Use feature request template instead</li>
+<li><strong>A security issue</strong> See SECURITY.md instead</li>
 </ol>
 <h3 id="quick-checklist">Quick Checklist<a class="headerlink" href="#quick-checklist" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -2613,10 +2613,10 @@
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="gu">## Steps to Reproduce</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="k">1.</span> Create a config file at <span class="sb">`/tmp/my config/model.yaml`</span>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="k">2.</span> Run:
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="sb">   ```python</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>   <span class="kn">from</span> <span class="nn">codex_ml</span> <span class="kn">import</span> <span class="n">load_model</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>   <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">'/tmp/my config/model.yaml'</span><span class="p">)</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="sb">   ```</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="sb"> ```python</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="kn">from</span> <span class="nn">codex_ml</span> <span class="kn">import</span> <span class="n">load_model</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">'/tmp/my config/model.yaml'</span><span class="p">)</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="sb"> ```</span>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="k">3.</span> Observe error
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
 <a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="gu">## Environment</span>
@@ -2628,12 +2628,12 @@
 <a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="gu">## Error Message</span>
 </code></pre></div>
 Traceback (most recent call last):
-  File "test.py", line 2, in <module>
-    model = load_model('/tmp/my config/model.yaml')
-  File "src/codex_ml/loader.py", line 45, in load_model
-    validate_path(path)
-  File "src/codex_ml/loader.py", line 78, in validate_path
-    raise ValueError(f"Invalid path: {path}")
+ File "test.py", line 2, in <module>
+ model = load_model('/tmp/my config/model.yaml')
+ File "src/codex_ml/loader.py", line 45, in load_model
+ validate_path(path)
+ File "src/codex_ml/loader.py", line 78, in validate_path
+ raise ValueError(f"Invalid path: {path}")
 ValueError: Invalid path: /tmp/my config/model.yaml
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>## Minimal Reproducible Example
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>```python
@@ -2642,43 +2642,43 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 </code></pre></div></module></p>
 <h2 id="additional-context">Additional Context<a class="headerlink" href="#additional-context" title="Permanent link">¶</a></h2>
 <p>This works fine when the path has no spaces:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">'/tmp/my_config/model.yaml'</span><span class="p">)</span>  <span class="c1"># Works </span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">'/tmp/my_config/model.yaml'</span><span class="p">)</span> <span class="c1"># Works</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>### Bug Report Quality Tips
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>####  Good Bug Reports Include
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>#### Good Bug Reports Include
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>- **Title**: Specific and descriptive
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>  - Good: "Model loading fails with spaces in path"
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>  - Bad: "Bug in loader"
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> - Good: "Model loading fails with spaces in path"
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> - Bad: "Bug in loader"
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>- **Clear description**: What's broken?
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>  - Good: "When loading a model from a path with spaces, ValueError is raised"
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>  - Bad: "Something is broken"
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> - Good: "When loading a model from a path with spaces, ValueError is raised"
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> - Bad: "Something is broken"
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>- **Steps to reproduce**: Exact steps to see the bug
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>  - Good: 
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    1. Create `/tmp/my config/config.yaml`
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    2. Run `load_model('/tmp/my config/config.yaml')`
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>  - Bad: "Just use spaces in the path"
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> - Good:
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> 1. Create `/tmp/my config/config.yaml`
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> 2. Run `load_model('/tmp/my config/config.yaml')`
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> - Bad: "Just use spaces in the path"
 <a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>- **Expected vs actual**: What should happen vs. what happens
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>  - Good: "Should load the model; instead raises ValueError"
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>  - Bad: "It doesn't work"
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> - Good: "Should load the model; instead raises ValueError"
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> - Bad: "It doesn't work"
 <a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
 <a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>- **Full error message**: The complete traceback
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>  - Good: Full traceback from Python
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>  - Bad: "Got an error"
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a> - Good: Full traceback from Python
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> - Bad: "Got an error"
 <a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
 <a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>- **Minimal example**: Standalone code to reproduce
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>  - Good: 5-10 lines of code
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>  - Bad: "Just load a model with spaces"
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> - Good: 5-10 lines of code
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> - Bad: "Just load a model with spaces"
 <a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>
 <a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>- **Environment details**: Python version, OS, etc.
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>  - Good: "Python 3.12.1, Ubuntu 22.04, codex-ml 0.1.0"
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>  - Bad: "Latest version"
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a> - Good: "Python 3.12.1, Ubuntu 22.04, codex-ml 0.1.0"
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a> - Bad: "Latest version"
 <a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>
-<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>####  Avoid
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>#### Avoid
 <a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>
 <a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>- Vague descriptions
 <a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>- Multi-issue reports (one issue per report)
@@ -2775,7 +2775,7 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 - #456: Reproducibility concerns
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>### Feature Request Quality Tips
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>####  Good Feature Requests
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>#### Good Feature Requests
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>- **Clear title**: What feature is being requested?
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>- **Motivation**: Why is it needed? (not just "would be cool")
@@ -2785,7 +2785,7 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>- **Alternatives**: Other ways to solve the problem
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>- **Impact assessment**: How big is this change?
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>####  Avoid
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>#### Avoid
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
 <a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>- "I think this would be cool"
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>- Vague descriptions without motivation
@@ -2837,13 +2837,13 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <p>** Minimal** (shows only the issue):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># This reproduces the issue without external dependencies</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="s1">'not a number'</span><span class="p">},</span>  <span class="c1"># This causes the issue</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="s1">'not a number'</span><span class="p">},</span> <span class="c1"># This causes the issue</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="p">]</span>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Fails on second item</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="nb">print</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># Fails on second item</span>
 </code></pre></div></p>
 <h3 id="mre-checklist">MRE Checklist<a class="headerlink" href="#mre-checklist" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -2945,7 +2945,7 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 </tr>
 <tr>
 <td><code>P0</code> / <code>P1</code> / <code>P2</code></td>
-<td>Priority (high → low)</td>
+<td>Priority (high low)</td>
 <td>How urgently we're addressing it</td>
 </tr>
 </tbody>
@@ -2959,8 +2959,8 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <p><strong>Right</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>ValueError: invalid literal for int() with base 10: 'abc'
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Traceback (most recent call last):
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>  File "test.py", line 5, in &lt;module&gt;
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    x = int(my_string)
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> File "test.py", line 5, in &lt;module&gt;
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> x = int(my_string)
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>ValueError: invalid literal for int() with base 10: 'abc'
 </code></pre></div></p>
 <h3 id="asking-in-wrong-place">Asking in Wrong Place<a class="headerlink" href="#asking-in-wrong-place" title="Permanent link">¶</a></h3>
@@ -2968,7 +2968,7 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <p><strong>Right</strong>: Use GitHub Discussions for questions, Issues for bugs/features</p>
 <h3 id="missing-reproduction-steps">Missing Reproduction Steps<a class="headerlink" href="#missing-reproduction-steps" title="Permanent link">¶</a></h3>
 <p><strong>Wrong</strong>: "It doesn't work when I load models"</p>
-<p><strong>Right</strong>: 
+<p><strong>Right</strong>:
 1. Create config at <code>/tmp/test.yaml</code>
 2. Run <code>load_model('/tmp/test.yaml')</code>
 3. Observe ValueError</p>
@@ -2994,7 +2994,7 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <li>Read existing issues and PRs</li>
 <li>Look at the <a href="../ROADMAP/">Roadmap</a></li>
 </ul>
-<p>Thank you for helping make Codex ML better! 🎉</p>
+<p>Thank you for helping make Codex ML better!</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3024,6 +3024,6 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>
