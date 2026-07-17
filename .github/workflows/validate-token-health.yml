@@ -51,7 +51,7 @@ jobs:
       continue-on-error: true
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: "echo \"Testing CODEX_MASTER_KEY...\"\n\n# Test 1: Check token format\n\
+      run: "echo \"Testing CODEX_MASTER_KEY...\"\n\n# Test 1: Check token format\n\
         if [[ -z \"$GH_TOKEN\" ]]; then\n  echo \"\u274C CODEX_MASTER_KEY not found\
         \ in secrets\"\n  exit 1\nfi\n\nif [[ ! \"$GH_TOKEN\" =~ ^github_pat_ ]];\
         \ then\n  echo \"\u274C CODEX_MASTER_KEY has invalid format (should start\
@@ -76,7 +76,7 @@ jobs:
       continue-on-error: true
       env:
         GH_TOKEN: ${{ secrets.CODEX_BACKUP_KEY }}
-        run: "echo \"Testing CODEX_BACKUP_KEY...\"\n\n# Test 1: Check token format\n\
+      run: "echo \"Testing CODEX_BACKUP_KEY...\"\n\n# Test 1: Check token format\n\
         if [[ -z \"$GH_TOKEN\" ]]; then\n  echo \"\u26A0\uFE0F CODEX_BACKUP_KEY not\
         \ found (optional, but recommended)\"\n  echo \"backup_key_valid=unknown\"\
         \ >> $GITHUB_OUTPUT\n  exit 0\nfi\n\nif [[ ! \"$GH_TOKEN\" =~ ^github_pat_\
@@ -100,7 +100,7 @@ jobs:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "echo \"Running comprehensive validation script...\"\npython scripts/ci/validate_token_setup.py\
+      run: "echo \"Running comprehensive validation script...\"\npython scripts/ci/validate_token_setup.py\
         \ \\\n  --json-output .codex/token_validation_report.json \\\n  --verbose\
         \ || {\n  echo \"script_validation_failed=true\" >> $GITHUB_OUTPUT\n  exit\
         \ 0  # Continue to next steps even if validation fails\n}\n\nif [[ -f .codex/token_validation_report.json\
@@ -143,7 +143,7 @@ jobs:
         MASTER_VALID: ${{ steps.master-validation.outputs.master_key_valid }}
         BACKUP_VALID: ${{ steps.backup-validation.outputs.backup_key_valid }}
         OVERALL_STATUS: ${{ steps.status-check.outputs.overall_status }}
-        run: "# Create audit log entry\nmkdir -p .codex/audit\n\ncat >> .codex/audit/token_health_check.jsonl\
+      run: "# Create audit log entry\nmkdir -p .codex/audit\n\ncat >> .codex/audit/token_health_check.jsonl\
         \ << EOF\n{\"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\", \"workflow_run_id\"\
         : \"${{ github.run_id }}\", \"master_key_valid\": \"$MASTER_VALID\", \"backup_key_valid\"\
         : \"$BACKUP_VALID\", \"overall_status\": \"$OVERALL_STATUS\", \"actor\": \"\
