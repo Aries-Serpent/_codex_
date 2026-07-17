@@ -1,5 +1,5 @@
 name: Phase 12 Post-Release Monitoring - Hourly Checkpoint
-on:
+true:
   schedule:
   - cron: 5 * * * *
   workflow_dispatch: null
@@ -30,8 +30,10 @@ jobs:
     - name: Execute Phase 12 Hourly Checkpoint
       env:
         PHASE_12_CHECKPOINT_ENABLED: 'true'
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
         CHECKPOINT_HOUR: ${{ github.run_number }}
+        RUN_NUMBER: ${{ github.run_number }}
       run: "python scripts/monitoring/phase_12_checkpoint.py \\\n  --hour=\"${{ github.run_number\
         \ }}\" \\\n  --output=\".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md\"\
         \ \\\n  --dashboard=\".codex/PHASE_12_EXECUTION_DASHBOARD_LIVE.md\" \\\n \
@@ -50,6 +52,8 @@ jobs:
         git push || echo "Nothing to push"
 
         '
+      env:
+        RUN_NUMBER: ${{ github.run_number }}
     - name: Check for critical alerts
       run: "python scripts/monitoring/check_alert_thresholds.py \\\n  --log=\".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md\"\
         \ \\\n  --escalate-on-critical\n  \n"

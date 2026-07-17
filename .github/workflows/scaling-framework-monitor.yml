@@ -1,5 +1,5 @@
 name: Scaling Framework Monitor
-on:
+true:
   schedule:
   - cron: 0 * * * *
   - cron: 0 9 * * 0
@@ -362,6 +362,13 @@ jobs:
         \necho \"\"\necho \"### Summary\"\necho \"All scaling framework components\
         \ are operational.\"\necho \"\"\necho \"**Phase 4E Planset 010**: \u2705 ACTIVE\"\
         \n"
+      env:
+        HEALTH_RESULT: ${{ needs.multi_tenant_health.result }}
+        FAILOVER_RESULT: ${{ needs.failover_health.result }}
+        LB_RESULT: ${{ needs.load_balancer_health.result }}
+        AS_RESULT: ${{ needs.auto_scaling_health.result }}
+        SLA_RESULT: ${{ needs.sla_compliance.result }}
+        COVERAGE_RESULT: ${{ needs.test_coverage.result }}
     - name: Check all tests passed
       if: failure()
       run: "echo \"\u274C Some tests failed. Review logs above.\"\nexit 1\n"
@@ -377,6 +384,8 @@ jobs:
       run: "if [ \"${{ needs.summary.result }}\" == \"success\" ]; then\n  echo \"\
         \u2705 All scaling framework health checks passed\"\n  exit 0\nelse\n  echo\
         \ \"\u26A0\uFE0F  Some health checks failed\"\n  exit 1\nfi\n"
+      env:
+        SUMMARY_RESULT: ${{ needs.summary.result }}
     timeout-minutes: 60
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
