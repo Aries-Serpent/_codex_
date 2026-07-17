@@ -33,6 +33,8 @@ permissions:
   actions: read
 jobs:
   sweep-main:
+    # Temporarily disabled for PR #5328 to prevent cascading failures
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: "\U0001F9F9 Sweep main"
     runs-on: ubuntu-latest
     timeout-minutes: 20

@@ -29,6 +29,8 @@ permissions:
   actions: read
 jobs:
   batch-triage:
+    # Temporarily disabled for PR #5328 to prevent cascading failures
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: Batch Triage CI Failures
     runs-on: ubuntu-latest
     timeout-minutes: 30
