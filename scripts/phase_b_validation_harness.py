@@ -7,7 +7,7 @@ Authority: D-tier autonomous
 import json
 import subprocess
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 import sys
 
@@ -111,7 +111,7 @@ class ValidationHarness:
         cycle_start = datetime.utcnow()
         
         # Trigger workflow
-        run_id = self.trigger_workflow(workflow_name, cycle_num)
+        self.trigger_workflow(workflow_name, cycle_num)
         time.sleep(5)  # Brief wait before checking
         
         # Wait for completion
@@ -153,7 +153,7 @@ class ValidationHarness:
                 timeout=5
             )
             return result.stdout.strip()
-        except:
+        except Exception:
             return "unknown"
     
     def run_validation(self, workflows: list, cycles_per_workflow: int = 10):
