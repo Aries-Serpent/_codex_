@@ -58,7 +58,7 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
         wandb_dir = os.environ.get("WANDB_DIR")
         if wandb_dir:
             init_kwargs["dir"] = wandb_dir
-        run = wandb.init(**init_kwargs)
+        run = wandb.init(**init_kwargs)  # type: ignore[attr-defined]
         yield wandb
     except ImportError as exc:  # pragma: no cover - missing optional dependency
         raise build_optional_dependency_error("wandb", "Weights & Biases logging") from exc

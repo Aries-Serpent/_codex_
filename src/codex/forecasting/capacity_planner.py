@@ -5,6 +5,8 @@ Provides multi-horizon forecasting (7-day, 30-day, 90-day) with trend analysis
 and anomaly-resistant fitting.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
@@ -12,7 +14,10 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 import numpy as np
 import pandas as pd
 
-# Optional imports
+if TYPE_CHECKING:
+    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
+
+# Optional imports - runtime fallbacks
 try:
     from sklearn.linear_model import HuberRegressor, LinearRegression
     from sklearn.preprocessing import PolynomialFeatures
@@ -28,7 +33,7 @@ except ImportError:
     HAS_STATSMODELS = False
 
 try:
-    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
+    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel  # type: ignore[assignment]
 except ImportError:
     ARIMAModel = None  # type: ignore[assignment]
     ProphetModel = None  # type: ignore[assignment]

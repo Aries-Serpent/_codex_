@@ -247,7 +247,7 @@ class RollbackControlSystem:
                 raise RollbackError("No rollback steps provided")
 
             # Parse steps
-            steps = []
+            steps: list[RollbackStep] = []
             for step_data in steps_data:
                 step = RollbackStep(
                     step_id=step_data.get("step_id", f"step_{len(steps)}"),

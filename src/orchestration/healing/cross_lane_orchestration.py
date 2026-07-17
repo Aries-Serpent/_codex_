@@ -324,7 +324,7 @@ class CrossLaneOrchestrator:
     @classmethod
     def _count_incidents_by_type(cls) -> Dict[str, int]:
         """Count incidents by type."""
-        type_counts = {}
+        type_counts: Dict[str, int] = {}
         for incident in cls._incidents_by_lane["C"]:
             if incident.lane_c_report:
                 failure_type = incident.lane_c_report.failure_type.value
@@ -335,7 +335,7 @@ class CrossLaneOrchestrator:
     @classmethod
     def _count_incidents_by_severity(cls) -> Dict[str, int]:
         """Count incidents by severity."""
-        severity_counts = {}
+        severity_counts: Dict[str, int] = {}
         for incident in cls._incidents_by_lane["C"]:
             if incident.lane_c_report:
                 severity = incident.lane_c_report.severity.value

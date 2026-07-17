@@ -46,6 +46,6 @@ def init_wandb_offline(project: str = "offline", **kwargs: Any) -> Optional[Any]
     try:
         import wandb
 
-        return wandb.init(project=project, **kwargs)
+        return wandb.init(project=project, **kwargs)  # type: ignore[attr-defined]
     except (ImportError, AttributeError):  # pragma: no cover - best effort in minimal env
         return None

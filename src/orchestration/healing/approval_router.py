@@ -239,7 +239,7 @@ class ApprovalRouter:
         from datetime import datetime, timezone
 
         now = datetime.now(timezone.utc)
-        stats = {
+        stats: dict[str, Any] = {
             "total_pending": len(cls._pending_requests),
             "within_sla": 0,
             "sla_exceeded": 0,

@@ -11,7 +11,7 @@ This module implements:
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -246,7 +246,7 @@ This is a critical reliability issue that must be addressed.
 
     def get_issue_summary(self) -> dict:
         """Get summary of generated issues."""
-        by_priority = {}
+        by_priority: dict[Any, int] = {}
         for issue in self.generated_issues:
             by_priority.setdefault(issue.priority, 0)
             by_priority[issue.priority] += 1
