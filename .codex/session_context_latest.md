@@ -1,10 +1,10 @@
-# Session Context — 2026-07-17T02:35:53Z
+# Session Context — 2026-07-17T03:42:57Z
 **Branch:** `0D_base_`  **PR:** #5328  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4955` (✅)
-- GraphQL remaining: `4997` (✅)
+- REST remaining: `4991` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **CODEX Manifest Auto-Refresh** — `failure` on `main` (2026-07-17)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/progressive-validation.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/codebase-health-sweep.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/trigger-on-approval.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/code-quality-coverage-suite.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/issue-resolution-gate.yml** — `failure` on `0D_base_` (2026-07-17)
 - **.github/workflows/rust_swarm_ci.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/agent-auth-delegation.yml** — `failure` on `0D_base_` (2026-07-17)
 
 ## 📝 Recent Commits
+- `d1d8876d` fix: Add missing configuration to workflow files — copilot-swe-agent[bot] (2026-07-17)
+- `03ddf2e0` Plan: Fix 2 workflow configuration failures (workflow-execution-gate.yml and val — copilot-swe-agent[bot] (2026-07-17)
+- `335d10fa` Merge branch 'main' into 0D_base_ — Statix (2026-07-17)
+- `8c1ab409` 0 d base   (#5330) — Statix (2026-07-17)
+- `7a9ec4bf` docs: Add workflow health monitoring report for PR #5328 post-merge (CRITICAL AL — copilot-swe-agent[bot] (2026-07-17)
 - `71297d63` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `b8cd6a61` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `3f74404f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
-- `83e6f898` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
-- `0d8fce6a` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
-- `b2df09bc` fix: resolve +168 mypy regressions to match baseline (172 errors) — copilot-swe-agent[bot] (2026-07-17)
-- `90f272a6` 🔪 refactor(ci): Prune TIER 2 workflows for PR #5328 to eliminate cascading failu — copilot-swe-agent[bot] (2026-07-17)
-- `30093f55` docs: incident report for d3d1b6fb revert — emergency cascade unblock — copilot-swe-agent[bot] (2026-07-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
