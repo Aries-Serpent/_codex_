@@ -10,7 +10,7 @@ Success metric: Family recall >95%, precision >90%
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from .ingest import FindingSeverity, NormalizedFinding
 
@@ -156,7 +156,7 @@ class FindingClusterer:
         )
         return families[:count]
 
-    def compute_metrics(self) -> Dict[str, any]:
+    def compute_metrics(self) -> Dict[str, Any]:
         """Compute clustering metrics."""
         total_families = len(self.families)
         total_findings = sum(len(f.findings) for f in self.families.values())

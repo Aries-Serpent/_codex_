@@ -93,7 +93,7 @@ def nested_get(
         return default
 
     keys = path.split(separator)
-    current = data
+    current: Any = data
 
     for key in keys:
         if isinstance(current, dict):

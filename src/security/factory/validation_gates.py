@@ -12,7 +12,7 @@ Success metric: >99% pass rate on gates
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 
 class GateStatus(str, Enum):
@@ -78,7 +78,7 @@ class ValidationGateEngine:
         """Set integration testing function."""
         self.integration_validator = validator
 
-    def run_gates(self, finding_id: str, context: Dict = None) -> ValidationGateReport:
+    def run_gates(self, finding_id: str, context: Optional[Dict] = None) -> ValidationGateReport:
         """Run all validation gates."""
         report = ValidationGateReport(finding_id=finding_id)
 
@@ -86,7 +86,7 @@ class ValidationGateEngine:
             context = {}
 
         # Gate 1: Security Validation
-        if self.security_validator:
+        if self.security_validator is not None:
             try:
                 result = self.security_validator(finding_id, context)
                 report.add_result(result)
@@ -99,7 +99,7 @@ class ValidationGateEngine:
                 report.add_result(result)
 
         # Gate 2: Regression Testing
-        if self.regression_validator:
+        if self.regression_validator is not None:
             try:
                 result = self.regression_validator(finding_id, context)
                 report.add_result(result)
@@ -112,7 +112,7 @@ class ValidationGateEngine:
                 report.add_result(result)
 
         # Gate 3: Integration Testing
-        if self.integration_validator:
+        if self.integration_validator is not None:
             try:
                 result = self.integration_validator(finding_id, context)
                 report.add_result(result)
@@ -127,7 +127,7 @@ class ValidationGateEngine:
         self.reports.append(report)
         return report
 
-    def get_gate_summary(self) -> Dict[str, any]:
+    def get_gate_summary(self) -> Dict[str, Any]:
         """Get summary of all gate results."""
         if not self.reports:
             return {
@@ -167,19 +167,19 @@ class ValidationGateEngine:
 
 def run_validation_gates(
     finding_id: str,
-    security_validator: Callable = None,
-    regression_validator: Callable = None,
-    integration_validator: Callable = None,
-    context: Dict = None,
+    security_validator: Optional[Callable] = None,
+    regression_validator: Optional[Callable] = None,
+    integration_validator: Optional[Callable] = None,
+    context: Optional[Dict] = None,
 ) -> ValidationGateReport:
     """Run validation gates for a finding."""
     engine = ValidationGateEngine()
 
-    if security_validator:
+    if security_validator is not None:
         engine.set_security_validator(security_validator)
-    if regression_validator:
+    if regression_validator is not None:
         engine.set_regression_validator(regression_validator)
-    if integration_validator:
+    if integration_validator is not None:
         engine.set_integration_validator(integration_validator)
 
     return engine.run_gates(finding_id, context)

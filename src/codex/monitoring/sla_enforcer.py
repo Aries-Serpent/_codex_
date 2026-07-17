@@ -100,7 +100,7 @@ class GitHubSLAEnforcer:
         Returns:
             Dictionary with enforcement results
         """
-        results = {
+        results: dict[str, Any] = {
             "passed": True,
             "violations": [],
             "warnings": [],

@@ -13,7 +13,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from .scoring import ScoredFamily, WavePlan
 
@@ -162,7 +162,7 @@ class WaveExecutor:
 
         return reports
 
-    def get_summary(self) -> Dict[str, any]:
+    def get_summary(self) -> Dict[str, Any]:
         """Get execution summary."""
         if not self.reports:
             return {

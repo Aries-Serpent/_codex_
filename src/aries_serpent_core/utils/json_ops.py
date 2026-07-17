@@ -105,8 +105,10 @@ def dump_json(
         >>> dump_json({'a': 1}, pretty=True)
         '{\\n  "a": 1\\n}'
     """
-    kwargs = {"indent": 2 if pretty else None}
-    json_str = json.dumps(data, **kwargs)
+    if pretty:
+        json_str = json.dumps(data, indent=2)
+    else:
+        json_str = json.dumps(data)
 
     if file_path:
         path = Path(file_path)
@@ -134,8 +136,8 @@ def json_to_obj(data: Dict[str, Any], obj_class: Type[T]) -> T:
         <User object>
     """
     if hasattr(obj_class, "from_dict"):
-        return obj_class.from_dict(data)
-    return obj_class(**data)
+        return obj_class.from_dict(data)  # type: ignore[return-value]
+    return obj_class(**data)  # type: ignore[return-value]
 
 
 def obj_to_json(obj: Any) -> Dict[str, Any]:

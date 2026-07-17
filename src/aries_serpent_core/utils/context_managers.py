@@ -61,7 +61,7 @@ class MultiContext:
 
     def __init__(self, *contexts: Any):
         self.contexts = contexts
-        self.entered = []
+        self.entered: list[Any] = []
 
     def __enter__(self) -> List[Any]:
         """Enter all contexts."""

@@ -41,7 +41,7 @@ def safe_get_nested(
         >>> safe_get_nested(d, "a", "x", "c", default=None)
         None
     """
-    current = obj
+    current: Any = obj
     for key in keys:
         if isinstance(current, dict):
             current = current.get(key)
