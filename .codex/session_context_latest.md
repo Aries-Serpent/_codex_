@@ -1,10 +1,10 @@
-# Session Context — 2026-07-17T02:29:48Z
+# Session Context — 2026-07-17T02:35:53Z
 **Branch:** `0D_base_`  **PR:** #5328  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4956` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4955` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/pr-size-analyzer.yml** — `failure` on `0D_base_` (2026-07-17)
+- **CODEX Manifest Auto-Refresh** — `failure` on `main` (2026-07-17)
+- **.github/workflows/admin-action-t03.yml** — `failure` on `0D_base_` (2026-07-17)
 - **.github/workflows/progressive-validation.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/security-scanning-suite.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/agent-auth-delegation.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/codebase-health-sweep.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `0D_base_` (2026-07-17)
 
 ## 📝 Recent Commits
+- `71297d63` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `b8cd6a61` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `3f74404f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `83e6f898` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `b2df09bc` fix: resolve +168 mypy regressions to match baseline (172 errors) — copilot-swe-agent[bot] (2026-07-17)
 - `90f272a6` 🔪 refactor(ci): Prune TIER 2 workflows for PR #5328 to eliminate cascading failu — copilot-swe-agent[bot] (2026-07-17)
 - `30093f55` docs: incident report for d3d1b6fb revert — emergency cascade unblock — copilot-swe-agent[bot] (2026-07-17)
-- `9479d175` fix: reduce mypy regressions from +168 to +42 (126 errors fixed) — copilot-swe-agent[bot] (2026-07-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
