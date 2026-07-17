@@ -1,4 +1,3 @@
----
 name: Workflow Execution Gate
 on:
   workflow_dispatch:
@@ -35,6 +34,30 @@ jobs:
       - name: Mask secrets
         run: |
           echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - name: Log token fallback tier selection
+        run: |
+          set -euo pipefail
+          TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
+          # Determine which token tier is active
+          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+            TOKEN_TIER="TIER_1_MASTER_KEY"
+          elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+            TOKEN_TIER="TIER_2_BACKUP_KEY"
+          else
+            TOKEN_TIER="TIER_3_GITHUB_TOKEN"
+          fi
+
+          # Emit telemetry event (non-sensitive, just the tier name)
+          TELEMETRY_MSG="[TELEMETRY] ${TIMESTAMP} | workflow=workflow-execution-gate"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | job=gate-check | event=token-selection"
+          TELEMETRY_MSG="${TELEMETRY_MSG} | tier=${TOKEN_TIER} | run_id=${{ github.run_id }}"
+          echo "$TELEMETRY_MSG"
+
+          # Store in workflow run summary
+          echo "## 🔑 Token Fallback Tier" >> $GITHUB_STEP_SUMMARY
+          echo "Selected tier: \`${TOKEN_TIER}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Timestamp: \`${TIMESTAMP}\`" >> $GITHUB_STEP_SUMMARY
       - name: Checkout code
         uses: actions/checkout@v5
         with:
