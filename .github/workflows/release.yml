@@ -1,6 +1,5 @@
----
 name: Release
-on:
+true:
   workflow_dispatch:
     inputs:
       tag:
@@ -29,7 +28,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
-        cache: 'pip'
+        cache: pip
     - name: Validate version tag
       run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\necho \"Release\
         \ tag: $TAG\"\nif [[ ! \"$TAG\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+ ]]; then\n \
@@ -48,7 +47,9 @@ jobs:
     needs: validate
     uses: ./.github/workflows/sbom.yml
     secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    timeout-minutes: 60
   release:
     name: Create GitHub Release
     needs:
@@ -69,7 +70,7 @@ jobs:
 
         '
     - name: Create Release
-      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b  # v3
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
       with:
         tag_name: ${{ steps.tag.outputs.tag }}
         name: Release ${{ steps.tag.outputs.tag }}
@@ -82,11 +83,11 @@ jobs:
 
           ### Verification
 
-        - CHANGELOG entry: see CHANGELOG.md
+          - CHANGELOG entry: see CHANGELOG.md
 
-        - SBOM: attached as workflow artifact
+          - SBOM: attached as workflow artifact
 
-        - Completion score: run `python scripts/ci/score_completion.py --scores
+          - Completion score: run `python scripts/ci/score_completion.py --scores
           .codex/completion_scores.yaml`
 
           '

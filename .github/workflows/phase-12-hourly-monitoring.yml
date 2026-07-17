@@ -1,77 +1,68 @@
 name: Phase 12 Post-Release Monitoring - Hourly Checkpoint
-
-on:
+true:
   schedule:
-    # Run every hour at :05 past the hour (2026-07-16T20:05Z onwards)
-    - cron: '5 * * * *'
-  workflow_dispatch:  # Allow manual trigger for testing
-
+  - cron: 5 * * * *
+  workflow_dispatch: null
 permissions:
   contents: write
   checks: write
   pull-requests: write
-
 jobs:
   hourly-checkpoint:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
-          
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyyaml requests prometheus-client
-          
-      - name: Execute Phase 12 Hourly Checkpoint
-        env:
-          PHASE_12_CHECKPOINT_ENABLED: "true"
-          GITHUB_TOKEN: ${{ github.token }}
-          CHECKPOINT_HOUR: ${{ github.run_number }}
-        run: |
-          python scripts/monitoring/phase_12_checkpoint.py \
-            --hour="${{ github.run_number }}" \
-            --output=".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md" \
-            --dashboard=".codex/PHASE_12_EXECUTION_DASHBOARD_LIVE.md" \
-            --incident-log=".codex/PHASE_12_INCIDENT_LOG_2026_07_17.md"
-          
-      - name: Commit checkpoint results
-        if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .codex/PHASE_12_*.md
-          git commit -m "docs(phase-12): Hourly checkpoint ${{ github.run_number }} - $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes to commit"
-          git push || echo "Nothing to push"
-          
-      - name: Check for critical alerts
-        run: |
-          python scripts/monitoring/check_alert_thresholds.py \
-            --log=".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md" \
-            --escalate-on-critical
-            
-      - name: Post checkpoint status to PR comment
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const checkpointLog = fs.readFileSync('.codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md', 'utf8');
-            const lastCheckpoint = checkpointLog.split('---').pop().trim();
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number || 1,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## 📊 Phase 12 Checkpoint Update\n\n${lastCheckpoint}\n\n*Last updated: ${new Date().toISOString()}*`
-            });
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install pyyaml requests prometheus-client
+
+        '
+    - name: Execute Phase 12 Hourly Checkpoint
+      env:
+        PHASE_12_CHECKPOINT_ENABLED: 'true'
+        GITHUB_TOKEN: ${{ github.token }}
+        CHECKPOINT_HOUR: ${{ github.run_number }}
+      run: "python scripts/monitoring/phase_12_checkpoint.py \\\n  --hour=\"${{ github.run_number\
+        \ }}\" \\\n  --output=\".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md\"\
+        \ \\\n  --dashboard=\".codex/PHASE_12_EXECUTION_DASHBOARD_LIVE.md\" \\\n \
+        \ --incident-log=\".codex/PHASE_12_INCIDENT_LOG_2026_07_17.md\"\n"
+    - name: Commit checkpoint results
+      if: always()
+      run: 'git config user.name "github-actions[bot]"
+
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        git add .codex/PHASE_12_*.md
+
+        git commit -m "docs(phase-12): Hourly checkpoint ${{ github.run_number }}
+        - $(date -u +''%Y-%m-%dT%H:%M:%SZ'')" || echo "No changes to commit"
+
+        git push || echo "Nothing to push"
+
+        '
+    - name: Check for critical alerts
+      run: "python scripts/monitoring/check_alert_thresholds.py \\\n  --log=\".codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md\"\
+        \ \\\n  --escalate-on-critical\n  \n"
+    - name: Post checkpoint status to PR comment
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst checkpointLog = fs.readFileSync('.codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md',\
+          \ 'utf8');\nconst lastCheckpoint = checkpointLog.split('---').pop().trim();\n\
+          \ngithub.rest.issues.createComment({\n  issue_number: context.issue.number\
+          \ || 1,\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body:\
+          \ `## \U0001F4CA Phase 12 Checkpoint Update\\n\\n${lastCheckpoint}\\n\\\
+          n*Last updated: ${new Date().toISOString()}*`\n});\n"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
