@@ -50,7 +50,8 @@ jobs:
     if: |
       github.event_name == 'pull_request' ||
       github.event_name == 'pull_request_review' ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'fast') ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'fast' || inputs.mode == '')) ||
       github.event_name == 'push'
     timeout-minutes: 15
     steps:
@@ -83,8 +84,12 @@ jobs:
             $(git diff --name-only --diff-filter=d ${BASE_SHA}...${HEAD_SHA} | grep -E '\.ya?ml$' | grep -v node_modules || true)
       - name: Run fast validation
         run: |
+          set -e
           chmod +x scripts/run_validation.sh
-          python tools/validate.py --mode fast
+          python tools/validate.py --mode fast || {
+            echo "⚠️ Validation script failed, but continuing to upload artifacts"
+            exit 1
+          }
       - name: Emit pre-commit failure details to step summary
         if: failure()
         shell: bash
@@ -171,8 +176,12 @@ jobs:
           extras: dev
       - name: Run full validation
         run: |
+          set -e
           chmod +x scripts/run_validation.sh
-          python tools/validate.py --mode full ${{ inputs.pytest_opts || '' }}
+          python tools/validate.py --mode full ${{ inputs.pytest_opts || '' }} || {
+            echo "⚠️ Full validation script failed, but continuing to upload artifacts"
+            exit 1
+          }
       - name: Emit pre-commit failure details to step summary
         if: failure()
         shell: bash
