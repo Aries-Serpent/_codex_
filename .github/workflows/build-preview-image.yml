@@ -1,6 +1,5 @@
----
 name: Build & Push Preview Image
-on:
+true:
   push:
     branches:
     - main
@@ -35,7 +34,7 @@ permissions:
   packages: write
 jobs:
   cost-gate:
-    name: 💰 Cost Gate
+    name: "\U0001F4B0 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Build & Push Preview Image
@@ -47,31 +46,34 @@ jobs:
       contents: read
       pull-requests: write
     secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    timeout-minutes: 60
   lint-dockerfile:
     name: Lint Dockerfile.preview
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: cost-gate
     steps:
+    - name: Cache Python dependencies (Layer 1)
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
+          }}
+        restore-keys: '${{ runner.os }}-pip-
 
-      - name: Cache Python dependencies (Layer 1)
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - uses: actions/checkout@v5
-      - name: Hadolint — Dockerfile linter
-        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
-        with:
-          dockerfile: .config/Dockerfile.preview
-          failure-threshold: error
-          ignore: DL3008,DL3013
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          '
+    - uses: actions/checkout@v5
+    - name: "Hadolint \u2014 Dockerfile linter"
+      uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
+      with:
+        dockerfile: .config/Dockerfile.preview
+        failure-threshold: error
+        ignore: DL3008,DL3013
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
   build:
     name: Build preview image (${{ matrix.target }})
     runs-on: ubuntu-latest-m
@@ -81,31 +83,30 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - preview
-          - preview-dev
+        - preview
+        - preview-dev
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-pytest-
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
-        with:
-          platforms: arm64
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
-        with:
-          driver-opts: image=moby/buildkit:latest
-      - name: Compute image tags
-        id: tags
-        run: "REPO=\"ghcr.io/$(echo \"${{ github.repository_owner }}\" | tr '[:upper:]'\
+          '
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3
+      with:
+        platforms: arm64
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb
+      with:
+        driver-opts: image=moby/buildkit:latest
+    - name: Compute image tags
+      id: tags
+      run: "REPO=\"ghcr.io/$(echo \"${{ github.repository_owner }}\" | tr '[:upper:]'\
         \ '[:lower:]')/codex\"\nSHORT_SHA=\"${{ github.sha }}\"\nSHORT_SHA=\"${SHORT_SHA:0:7}\"\
         \nINPUT_TAG=\"${{ github.event.inputs.image_tag }}\"\nTAG=\"${INPUT_TAG:-$SHORT_SHA}\"\
         \nTARGET=\"${{ matrix.target }}\"\n\nif [[ \"${{ github.ref }}\" == \"refs/heads/main\"\
@@ -119,48 +120,52 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\nelif [[ \"${{ github.event_name }}\" == \"workflow_dispatch\"\
         \ && \"${{ github.event.inputs.push_image }}\" != \"true\" ]]; then\n  # workflow_dispatch\
         \ with push_image=false (or unset): local smoke-test only.\n  # github.event.number\
-        \ is EMPTY for workflow_dispatch — use run_id instead to\n  # guarantee a\
-        \ unique, non-empty tag (fixes Copilot review r2920097250).\n  echo \"tags=${REPO}/${TARGET}:manual-${{\
+        \ is EMPTY for workflow_dispatch \u2014 use run_id instead to\n  # guarantee\
+        \ a unique, non-empty tag (fixes Copilot review r2920097250).\n  echo \"tags=${REPO}/${TARGET}:manual-${{\
         \ github.run_id }}-${TAG}\" >> \"$GITHUB_OUTPUT\"\n  echo \"should_push=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  # load=true is incompatible with multi-platform;\
         \ amd64 only for local runs\n  echo \"platforms=linux/amd64\" >> \"$GITHUB_OUTPUT\"\
         \nelse\n  # Pull request\n  echo \"tags=${REPO}/${TARGET}:pr-${{ github.event.number\
         \ }}-${TAG}\" >> \"$GITHUB_OUTPUT\"\n  echo \"should_push=false\" >> \"$GITHUB_OUTPUT\"\
-        \n  # PR builds: amd64 only — load=true is incompatible with multi-platform\
+        \n  # PR builds: amd64 only \u2014 load=true is incompatible with multi-platform\
         \ builds\n  echo \"platforms=linux/amd64\" >> \"$GITHUB_OUTPUT\"\nfi\necho\
         \ \"cache_key=${TARGET}-${{ hashFiles('.config/Dockerfile.preview','pyproject.toml')\
         \ }}\" >> \"$GITHUB_OUTPUT\"\n"
-      - name: Log in to GHCR
-        if: steps.tags.outputs.should_push == 'true'
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ github.token }}
-      - name: Build (and push on main)
-        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318 # v6.0.0
-        with:
-          context: .
-          file: .config/Dockerfile.preview
-          target: ${{ matrix.target }}
-          push: ${{ steps.tags.outputs.should_push == 'true' }}
-          load: ${{ steps.tags.outputs.should_push != 'true' }}
-          platforms: ${{ steps.tags.outputs.platforms }}
-          tags: ${{ steps.tags.outputs.tags }}
-          cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
-          cache-to: type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
-          labels: |
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-      - name: Smoke-test — run health check
-        if: matrix.target == 'preview'
-        run: "docker run --rm -d --name codex-preview-smoke -p 18765:8765 \\\n  -e CODEX_DB_PATH=/tmp/codex.db\
+    - name: Log in to GHCR
+      if: steps.tags.outputs.should_push == 'true'
+      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ github.token }}
+    - name: Build (and push on main)
+      uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+      with:
+        context: .
+        file: .config/Dockerfile.preview
+        target: ${{ matrix.target }}
+        push: ${{ steps.tags.outputs.should_push == 'true' }}
+        load: ${{ steps.tags.outputs.should_push != 'true' }}
+        platforms: ${{ steps.tags.outputs.platforms }}
+        tags: ${{ steps.tags.outputs.tags }}
+        cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
+        cache-to: type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
+        labels: 'org.opencontainers.image.revision=${{ github.sha }}
+
+          org.opencontainers.image.created=${{ github.event.head_commit.timestamp
+          }}
+
+          '
+    - name: "Smoke-test \u2014 run health check"
+      if: matrix.target == 'preview'
+      run: "docker run --rm -d --name codex-preview-smoke -p 18765:8765 \\\n  -e CODEX_DB_PATH=/tmp/codex.db\
         \ \\\n  $(echo \"${{ steps.tags.outputs.tags }}\" | cut -d, -f1)\n\necho \"\
-        Waiting for server to start…\"\nfor i in $(seq 1 12); do\n  sleep 5\n  if\
-        \ curl -sf http://localhost:18765/api/health; then\n    echo \"✅ Health check\
-        \ passed\"\n    docker stop codex-preview-smoke\n    exit 0\n  fi\n  echo\
-        \ \"Attempt $i/12 — not ready yet\"\ndone\ndocker logs codex-preview-smoke\n\
-        docker stop codex-preview-smoke\necho \"❌ Health check timed out\"\nexit 1\n"
+        Waiting for server to start\u2026\"\nfor i in $(seq 1 12); do\n  sleep 5\n\
+        \  if curl -sf http://localhost:18765/api/health; then\n    echo \"\u2705\
+        \ Health check passed\"\n    docker stop codex-preview-smoke\n    exit 0\n\
+        \  fi\n  echo \"Attempt $i/12 \u2014 not ready yet\"\ndone\ndocker logs codex-preview-smoke\n\
+        docker stop codex-preview-smoke\necho \"\u274C Health check timed out\"\n\
+        exit 1\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -171,28 +176,17 @@ jobs:
     needs: build
     if: always()
     steps:
-      - name: Write summary
-        run: 'echo "## 🐳 Preview Image Build Summary" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Target | Result |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| \`preview\` | ${{ needs.build.result == ''success'' && ''✅ passed''
-        || ''❌ failed'' }} |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| \`preview-dev\` | ${{ needs.build.result == ''success'' && ''✅ passed''
-        || ''❌ failed'' }} |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "Images pushed to: \`ghcr.io/aries-serpent/codex/preview\`" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "Devcontainer spec: \`.devcontainer/devcontainer.json\`" >> "$GITHUB_STEP_SUMMARY"
-
-        '
+    - name: Write summary
+      run: "echo \"## \U0001F433 Preview Image Build Summary\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Target | Result |\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"|--------|--------|\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| \\`preview\\` | ${{ needs.build.result == 'success' && '\u2705\
+        \ passed' || '\u274C failed' }} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|\
+        \ \\`preview-dev\\` | ${{ needs.build.result == 'success' && '\u2705 passed'\
+        \ || '\u274C failed' }} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"Images pushed to: \\`ghcr.io/aries-serpent/codex/preview\\`\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\necho \"Devcontainer spec: \\`.devcontainer/devcontainer.json\\\
+        `\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -212,19 +206,22 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          fetch-depth: 1
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: Build Preview Image
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Build Preview Image
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
