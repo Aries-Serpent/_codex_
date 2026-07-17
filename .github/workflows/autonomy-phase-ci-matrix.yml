@@ -69,12 +69,12 @@ jobs:
     steps:
 
       - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
+        uses: actions/cache@v4
         with:
           path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          key: ${{ runner.os }}-${{ github.workflow }}-pytest-${{ hashFiles('tests/autonomy/**/*.py', 'pyproject.toml') }}
           restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-pytest-
             ${{ runner.os }}-pytest-
 
       - name: Checkout
