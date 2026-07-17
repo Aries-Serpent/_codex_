@@ -101,7 +101,7 @@ class DecisionTraceWriter:
             DecisionTraceError: If append fails or validation fails
         """
         try:
-            entry = {
+            entry: Dict[str, Any] = {
                 "timestamp": self._utc_timestamp_ms(),
                 "lane_id": lane_id,
                 "decision_type": decision_type,

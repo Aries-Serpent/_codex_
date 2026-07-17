@@ -12,8 +12,9 @@ fully featured trainer.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
-from tokenization import train_tokenizer as _legacy_train_tokenizer
+from tokenization import train_tokenizer as _legacy_train_tokenizer_module
 from tokenization.train_tokenizer import (
     TrainTokenizerConfig,  # explicit re-export for type checkers
 )
@@ -21,41 +22,18 @@ from tokenization.train_tokenizer import (
 
 def train(cfg: TrainTokenizerConfig) -> Path:
     """Train a tokenizer and return the output directory."""
-
-    return _legacy_train_tokenizer.train(cfg)
+    return _legacy_train_tokenizer_module.train(cfg)  # type: ignore[attr-defined]
 
 
 def run(cfg: TrainTokenizerConfig) -> Path:
     """Backward compatible alias for :func:`train`."""
-
     return train(cfg)
 
 
 # ``main`` is provided for ``python -m codex_ml.tokenization.train_tokenizer``
 # entry points and Hydra integration.  The legacy module handles both cases,
 # so we simply re-export the callable.
-main = _legacy_train_tokenizer.main
-
-
-__all__ = ["TrainTokenizerConfig", "main", "run", "train"]
-
-
-def train(cfg: TrainTokenizerConfig) -> Path:  # type: ignore[no-redef]
-    """Train a tokenizer and return the output directory."""
-
-    return _legacy_train_tokenizer.train(cfg)
-
-
-def run(cfg: TrainTokenizerConfig) -> Path:  # type: ignore[no-redef]
-    """Backward compatible alias for :func:`train`."""
-
-    return train(cfg)
-
-
-# ``main`` is provided for ``python -m codex_ml.tokenization.train_tokenizer``
-# entry points and Hydra integration.  The legacy module handles both cases,
-# so we simply re-export the callable.
-main = _legacy_train_tokenizer.main
+main: Any = _legacy_train_tokenizer_module.main  # type: ignore[attr-defined]
 
 
 __all__ = ["TrainTokenizerConfig", "main", "run", "train"]

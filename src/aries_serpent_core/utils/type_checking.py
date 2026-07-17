@@ -153,8 +153,7 @@ def safe_cast(
     try:
         if isinstance(value, target_type):
             return value
-        # type: ignore[call-arg] - target_type may not accept arguments in some cases
-        return target_type(value)  # type: ignore[return-value]
+        return target_type(value)  # type: ignore[call-arg]
     except (ValueError, TypeError) as e:
         if error_on_fail:
             raise TypeCheckError(f"Could not cast '{value}' to {get_type_name(target_type)}") from e

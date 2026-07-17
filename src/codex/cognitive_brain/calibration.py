@@ -30,7 +30,7 @@ class ConfidenceCalibrator:
         self.storage_path = storage_path or Path(".codex/reasoning/calibration.json")
 
         # Per-category calibration tracking
-        self.confidence_bins: Dict[str, Dict[str, List[float]]] = defaultdict(
+        self.confidence_bins: Dict[str, Dict[float, List[float]]] = defaultdict(
             lambda: defaultdict(list)
         )
         self.outcomes_by_category: Dict[str, List[bool]] = defaultdict(list)

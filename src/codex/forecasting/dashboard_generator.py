@@ -7,7 +7,7 @@ with <5s load time.
 
 import json
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import numpy as np
 
@@ -22,7 +22,7 @@ class DashboardGenerator:
     
     def __init__(self, cache_enabled: bool = True):
         self.cache_enabled = cache_enabled
-        self._cache = {}
+        self._cache: Dict[str, Any] = {}
     
     def _generate_historical_chart_data(
         self,
@@ -157,7 +157,7 @@ class DashboardGenerator:
         
         Optimized for <5s load time.
         """
-        dashboard = {
+        dashboard: Dict[str, Any] = {
             'generated_at': datetime.now().isoformat(),
             'version': '1.0',
             'panels': [],
