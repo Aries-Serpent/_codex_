@@ -30,10 +30,10 @@ except ImportError:
 try:
     from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
 except ImportError:
-    ARIMAModel = None  # type: ignore[assignment]
-    ProphetModel = None  # type: ignore[assignment]
-    EnsembleForecaster = None  # type: ignore[assignment]
-    EnsembleConfig = None  # type: ignore[assignment]
+    ARIMAModel = None  # type: ignore[misc]
+    ProphetModel = None  # type: ignore[misc]
+    EnsembleForecaster = None  # type: ignore[misc]
+    EnsembleConfig = None  # type: ignore[misc]
 
 
 @dataclass
