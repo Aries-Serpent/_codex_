@@ -29,7 +29,7 @@ jobs:
     name: Workflow Execution Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number != 5328) }}
     # Temporarily disabled for PR #5328 to prevent cascading failures
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -56,8 +56,8 @@ jobs:
         run: |
           gh workflow run auto-approve-workflows.yml \
             --repo Aries-Serpent/_codex_ \
-            -f pr_number=${{ inputs.pr_number }} \
-            -f triggered_by=workflow-execution-gate \
+            -f approval_source=workflow-execution-gate \
+            -f target_pr=${{ inputs.pr_number }} \
             || echo "Auto-approve workflow trigger skipped (may already be running)"
       - name: Summary
         run: echo "Workflow gate check complete"
