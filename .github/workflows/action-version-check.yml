@@ -21,7 +21,7 @@ jobs:
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@f677139bbe7f9c59b41e7e0d6abc2d16a56436bc
+      uses: actions/setup-python@v6
       with:
         python-version: "3.11"
     - name: Check action versions
@@ -33,7 +33,7 @@ jobs:
         echo "check_status=success" >> $GITHUB_OUTPUT
     - name: Comment on PR with results
       if: github.event_name == "pull_request" && failure()
-      uses: actions/github-script@6c3040512d6973cc7f06f5b60e02d16cbf276051
+      uses: actions/github-script@v7
       with:
         script: |
           github.rest.issues.createComment({

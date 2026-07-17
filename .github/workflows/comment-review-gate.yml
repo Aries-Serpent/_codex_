@@ -87,7 +87,7 @@ jobs:
     if: github.event_name != 'issue_comment'
     steps:
       - name: Check blocking comments
-        if: fromJSON(needs.scan-and-post.outputs.blocking_count) > 0
+        if: ${{ needs.scan-and-post.outputs.blocking_count != '0' && needs.scan-and-post.outputs.blocking_count != '' }}
         run: |
           echo "::error::Blocking comments unaddressed"
           exit 1

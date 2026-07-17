@@ -42,7 +42,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: 3.12.13
-          cache: false  # Disable cache for sparse checkout (requirements.txt not available)
       - name: 🔍 Check rebase status
         id: check
         env:

@@ -1335,7 +1335,7 @@ jobs:
         uses: actions/github-script@v8
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
-          with:
+        with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: "const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number\ \ }}', 10);\nif (!prNumber || prNumber <= 0) {\n  core.setFailed('Invalid\
           \ PR number \u2014 cannot post comment');\n  return;\n}\nconst actors  \
