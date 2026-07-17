@@ -25,7 +25,7 @@ import time
 import pytest
 from codex.auth.token_manager import TokenManager
 
-# codeql[py/hardcoded-string,py/clear-text-logging-sensitive-data] - False positive: Test secrets only
+# codeql[py/hardcoded-credentials,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
 # nosemgrep: python.jwt.security.jwt-hardcode - Intentional: Test-only hardcoded secrets
 
 

@@ -84,14 +84,14 @@ Code coverage: CWE-327 (Weak Cryptography), CWE-522 (Hardcoded Secrets)
 **Remediation Applied:**
 ```python
 # Module-level suppression
-# codeql[py/hardcoded-sql-string,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
+# codeql[py/hardcoded-credentials,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
 # nosemgrep: python.jwt.security.jwt-hardcode - Intentional: Test-only hardcoded secrets
 
 # Fixture-level suppression
 @pytest.fixture
 def token_manager(self):
     """Create token manager with test secret."""
-    # lgtm[py/hardcoded-sql-string] - False positive: Test secret only
+    # lgtm[py/hardcoded-credentials] - False positive: Test secret only
     # nosemgrep: python.jwt.security.jwt-hardcode
     return TokenManager(secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'))
 ```
