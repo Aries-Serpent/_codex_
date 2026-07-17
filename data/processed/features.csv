@@ -1,0 +1,11 @@
+id,value,value_is_even
+0,0,True
+1,1,False
+2,2,True
+3,0,True
+4,1,False
+5,2,True
+6,0,True
+7,1,False
+8,2,True
+9,0,True
