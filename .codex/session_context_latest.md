@@ -1,10 +1,10 @@
-# Session Context — 2026-07-17T02:13:35Z
+# Session Context — 2026-07-17T02:25:31Z
 **Branch:** `0D_base_`  **PR:** #5328  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4959` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4957` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/pages-pre-merge-validation.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/progressive-validation.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/action-version-check.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/comment-review-gate.yml** — `failure` on `0D_base_` (2026-07-17)
-- **.github/workflows/pages-scheduled-validation.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/trigger-on-approval.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/issue-resolution-gate.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/agent-health-check.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/ml-tests.yml** — `failure` on `0D_base_` (2026-07-17)
 
 ## 📝 Recent Commits
+- `3f74404f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
+- `83e6f898` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
+- `0d8fce6a` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
 - `b2df09bc` fix: resolve +168 mypy regressions to match baseline (172 errors) — copilot-swe-agent[bot] (2026-07-17)
 - `90f272a6` 🔪 refactor(ci): Prune TIER 2 workflows for PR #5328 to eliminate cascading failu — copilot-swe-agent[bot] (2026-07-17)
 - `30093f55` docs: incident report for d3d1b6fb revert — emergency cascade unblock — copilot-swe-agent[bot] (2026-07-17)
 - `9479d175` fix: reduce mypy regressions from +168 to +42 (126 errors fixed) — copilot-swe-agent[bot] (2026-07-17)
 - `485c27ca` Revert "security: remediate all 45 CodeQL alerts (3 HIGH, 42 MEDIUM)" — copilot-swe-agent[bot] (2026-07-17)
-- `4b8a230c` CASCADING FAILURES ANALYZED: 6 new failures cascading from d3d1b6fb security reg — copilot-swe-agent[bot] (2026-07-17)
-- `d39c7c5c` BLOCKER CONFIRMED: CodeQL FAILING (d3d1b6fb security regression) prevents 66 wor — copilot-swe-agent[bot] (2026-07-17)
-- `25fa928c` MONITORING: CodeQL FAILING - security regression (d3d1b6fb) blocking PR merge — copilot-swe-agent[bot] (2026-07-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -38,8 +38,8 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🔁 PDA Loop — Last 5 Iterations
 - [] `RP-PYTEST-SKILL-TEST`: ?
-- [] `RP-PYTEST-SKILL-TEST`: ?
 - [2026-07-16] `PDA-AUTO-20260716`: ?
+- [2026-07-17] `PDA-AUTO-20260717`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
