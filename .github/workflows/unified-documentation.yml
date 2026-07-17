@@ -33,6 +33,8 @@ jobs:
   freshness-check:
     if: github.event.inputs.operation == 'freshness-check' || github.event.inputs.operation == 'all' || contains(github.event_name, 'pull_request')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Check documentation freshness
@@ -42,6 +44,8 @@ jobs:
   refresh-gate:
     if: github.event.inputs.operation == 'refresh-gate' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [freshness-check]
     steps:
       - uses: actions/checkout@v5
@@ -52,6 +56,8 @@ jobs:
   code-alignment:
     if: github.event.inputs.operation == 'code-alignment' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Verify code-documentation alignment
@@ -61,6 +67,8 @@ jobs:
   health-check:
     if: github.event.inputs.operation == 'health-check' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Check documentation health
@@ -70,6 +78,8 @@ jobs:
   link-checker:
     if: github.event.inputs.operation == 'link-checker' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Validate documentation links
@@ -79,6 +89,8 @@ jobs:
   quality-check:
     if: github.event.inputs.operation == 'quality-check' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [freshness-check, code-alignment, health-check, link-checker]
     steps:
       - uses: actions/checkout@v5
@@ -88,6 +100,8 @@ jobs:
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [freshness-check, refresh-gate, code-alignment, health-check, link-checker, quality-check]
     steps:
       - name: Documentation suite completed

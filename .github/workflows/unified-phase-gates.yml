@@ -25,6 +25,8 @@ jobs:
   phase-8-1-health:
     if: github.event.inputs.operation == 'phase-8-1-health' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Phase 8.1 Health Monitoring
@@ -34,6 +36,8 @@ jobs:
   phase-8-2-triage:
     if: github.event.inputs.operation == 'phase-8-2-triage' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [phase-8-1-health]
     steps:
       - uses: actions/checkout@v5
@@ -44,6 +48,8 @@ jobs:
   phase-8-3-performance:
     if: github.event.inputs.operation == 'phase-8-3-performance' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Phase 8.3 Performance Monitoring
@@ -53,6 +59,8 @@ jobs:
   phase-9-2-cascade:
     if: github.event.inputs.operation == 'phase-9-2-cascade' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [phase-8-1-health, phase-8-2-triage, phase-8-3-performance]
     steps:
       - uses: actions/checkout@v5
@@ -63,6 +71,8 @@ jobs:
   phase-9-3-router:
     if: github.event.inputs.operation == 'phase-9-3-router' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [phase-9-2-cascade]
     steps:
       - uses: actions/checkout@v5
@@ -72,6 +82,8 @@ jobs:
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [phase-8-1-health, phase-8-2-triage, phase-8-3-performance, phase-9-2-cascade, phase-9-3-router]
     steps:
       - name: Phase gates suite completed

@@ -31,6 +31,8 @@ jobs:
   agent-checkin:
     if: github.event.inputs.operation == 'agent-checkin' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Agent check-in
@@ -40,6 +42,8 @@ jobs:
   session-done:
     if: github.event.inputs.operation == 'session-done' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Mark session complete
@@ -49,6 +53,8 @@ jobs:
   vars-bootstrap:
     if: github.event.inputs.operation == 'vars-bootstrap' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Bootstrap variables
@@ -58,6 +64,8 @@ jobs:
   automation:
     if: github.event.inputs.operation == 'automation' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [vars-bootstrap]
     steps:
       - uses: actions/checkout@v5
@@ -68,6 +76,8 @@ jobs:
   issue-triage:
     if: github.event.inputs.operation == 'issue-triage' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Triage issues
@@ -77,6 +87,8 @@ jobs:
   self-healing:
     if: github.event.inputs.operation == 'self-healing' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Self-healing checks
@@ -86,6 +98,8 @@ jobs:
   session-injector:
     if: github.event.inputs.operation == 'session-injector' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Inject PR session context
@@ -95,6 +109,8 @@ jobs:
   review-responder:
     if: github.event.inputs.operation == 'review-responder' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Respond to reviews
@@ -104,6 +120,8 @@ jobs:
   session-chain:
     if: github.event.inputs.operation == 'session-chain' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [session-injector, review-responder]
     steps:
       - uses: actions/checkout@v5
@@ -113,6 +131,8 @@ jobs:
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [agent-checkin, session-done, vars-bootstrap, automation, issue-triage, self-healing, session-injector, review-responder, session-chain]
     steps:
       - name: Copilot management complete

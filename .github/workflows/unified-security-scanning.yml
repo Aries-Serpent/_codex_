@@ -49,6 +49,8 @@ jobs:
   codeql-triage:
     if: github.event.inputs.operation == 'codeql-triage' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [codeql-fetch]
     steps:
       - uses: actions/checkout@v5
@@ -59,6 +61,8 @@ jobs:
   codeql-fix-verify:
     if: github.event.inputs.operation == 'codeql-fix-verify' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [codeql-analysis, codeql-triage]
     steps:
       - uses: actions/checkout@v5
@@ -68,6 +72,8 @@ jobs:
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [codeql-fetch, codeql-analysis, codeql-triage, codeql-fix-verify]
     steps:
       - name: Security scanning complete

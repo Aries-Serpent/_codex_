@@ -27,6 +27,8 @@ jobs:
   context-capture:
     if: github.event.inputs.operation == 'capture-context' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Capture session context
@@ -36,6 +38,8 @@ jobs:
   incremental-summary:
     if: github.event.inputs.operation == 'increment-summary' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Generate incremental summary
@@ -45,6 +49,8 @@ jobs:
   recovery-monitor:
     if: github.event.inputs.operation == 'recovery-monitor' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Monitor session recovery
@@ -54,6 +60,8 @@ jobs:
   recovery-handler:
     if: github.event.inputs.operation == 'recovery-handler' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [recovery-monitor]
     steps:
       - uses: actions/checkout@v5
@@ -64,6 +72,8 @@ jobs:
   watchdog:
     if: github.event.inputs.operation == 'watchdog' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Session watchdog
@@ -72,6 +82,8 @@ jobs:
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [context-capture, incremental-summary, recovery-monitor, recovery-handler, watchdog]
     steps:
       - name: Report session status
