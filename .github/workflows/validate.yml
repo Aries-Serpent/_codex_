@@ -72,13 +72,19 @@ jobs:
         HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       run: |
         set -euo pipefail
-        if [ -z \"${BASE_SHA}\" ]; then
-        BASE_SHA=\"$(git\
+        if [ -z "${BASE_SHA}" ]; then
+          BASE_SHA="$(git merge-base origin/main HEAD)"
+        fi
+        if [ -z "${HEAD_SHA}" ]; then
+          HEAD_SHA="$(git rev-parse HEAD)"
+        fi
+        echo "Validating YAML changes from ${BASE_SHA} to ${HEAD_SHA}"
+        yamllint -c .yamllint --strict -f parsable \
+          $(git diff --name-only --diff-filter=d ${BASE_SHA}...${HEAD_SHA} | grep -E '\.ya?ml$' | grep -v node_modules || true)
     - name: Run fast validation
       run: |
         chmod +x scripts/run_validation.sh
-        python tools/validate.py \\
-        --mode\
+        python tools/validate.py --mode fast
     - name: Emit pre-commit failure details to step summary
       if: failure()
       shell: bash
@@ -172,8 +178,7 @@ jobs:
     - name: Run full validation
       run: |
         chmod +x scripts/run_validation.sh
-        python tools/validate.py \\
-        --mode\
+        python tools/validate.py --mode full ${{ inputs.pytest_opts || '' }}
     - name: Emit pre-commit failure details to step summary
       if: failure()
       shell: bash
@@ -217,7 +222,8 @@ jobs:
       run: |
         set -euo pipefail
         mkdir -p .codex/coverage
-        # Generate head coverage\
+        # Generate head coverage report for delta tracking
+        python -m coverage html --directory .codex/coverage/html || echo "Coverage HTML generation skipped"
     - name: Upload JSON summary
       uses: actions/upload-artifact@v5
       if: always()
