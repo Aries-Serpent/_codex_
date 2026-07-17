@@ -1,2 +1,0 @@
-[2026-07-17T01:33:10Z] Workflow Monitor Started
-[2026-07-17T01:33:10Z] Poll #1 | IN_PROGRESS: 2 | QUEUED: 0 | COMPLETED: 28
