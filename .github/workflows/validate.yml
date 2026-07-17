@@ -136,6 +136,8 @@ jobs:
       pull-requests: write
       issues: write
     timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

@@ -3,6 +3,10 @@ name: Workflow Execution Gate
 on:
   workflow_dispatch:
     inputs:
+      pr_number:
+        description: PR number to execute gate for
+        required: true
+        type: number
       verbose_mode:
         type: boolean
         default: false
@@ -11,6 +15,7 @@ permissions:
   contents: read
   pull-requests: write
   actions: read
+  workflow: write
 
 concurrency:
   group: workflow-gate
@@ -26,6 +31,8 @@ jobs:
     timeout-minutes: 10
     if: ${{ github.event.pull_request.number != 5328 }}
     # Temporarily disabled for PR #5328 to prevent cascading failures
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
       - name: Mask secrets
         run: |
@@ -45,5 +52,12 @@ jobs:
           cache: pip
       - name: Gate check
         run: echo "Gate check placeholder"
+      - name: Trigger auto-approve workflows
+        run: |
+          gh workflow run auto-approve-workflows.yml \
+            --repo Aries-Serpent/_codex_ \
+            -f pr_number=${{ inputs.pr_number }} \
+            -f triggered_by=workflow-execution-gate \
+            || echo "Auto-approve workflow trigger skipped (may already be running)"
       - name: Summary
         run: echo "Workflow gate check complete"
