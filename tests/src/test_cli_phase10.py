@@ -9,6 +9,7 @@ NOTE: This test module may be skipped if required dependencies are unavailable.
 
 from __future__ import annotations
 
+import os
 import tempfile
 
 import pytest
