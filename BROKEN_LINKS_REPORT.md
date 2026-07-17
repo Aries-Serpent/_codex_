@@ -1,9 +1,9 @@
 # Broken Links Report
 
-**Total Links:** 11569  
-**Internal Links:** 10459  
-**Broken Links:** 419  
-**Link Health Score:** 96.0%  
+**Total Links:** 11565  
+**Internal Links:** 10455  
+**Broken Links:** 399  
+**Link Health Score:** 96.2%  
 
 ## Broken Links by File
 
@@ -14,15 +14,8 @@
 
 ### ARCHITECTURE_PHASE_15_16.md
 
-- Line 690: `[Cognitive Brain Integration](./cognitive_brain/COGNITIVE_APP_CONNECTION_GUIDE.md)`
+- Line 724: `[Cognitive Brain Integration](./cognitive_brain/COGNITIVE_APP_CONNECTION_GUIDE.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/cognitive_brain/COGNITIVE_APP_CONNECTION_GUIDE.md
-
-### CONSISTENCY_CHECKS_SETUP.md
-
-- Line 182: `[text](./file.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/file.md
-- Line 188: `[text](./file.md#anchor)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/file.md
 
 ### COPILOT_SESSION_LOG_RETRIEVER.md
 
@@ -38,8 +31,6 @@
 
 ### DOCUMENTATION_INDEX.md
 
-- Line 32: `[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/CODE_OF_CONDUCT.md
 - Line 48: `[agents/prompts/debugging/test-failure-debugging.md](agents/prompts/debugging/test-failure-debugging.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/agents/prompts/debugging/test-failure-debugging.md
 - Line 49: `[agents/prompts/debugging/resolve-merge-conflicts.md](agents/prompts/debugging/resolve-merge-conflicts.md)`
@@ -62,8 +53,6 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/agents/prompts/self-healing/feedback-loop.md
 - Line 77: `[workbench/INDEX.md](workbench/INDEX.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/workbench/INDEX.md
-- Line 98: `[agents/ORCHESTRATION.md](agents/ORCHESTRATION.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/agents/ORCHESTRATION.md
 - Line 104: `[agents/prompts/API_MODEL.md](agents/prompts/API_MODEL.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/agents/prompts/API_MODEL.md
 - Line 105: `[agents/codex_client/README.md](agents/codex_client/README.md)`
@@ -87,20 +76,8 @@
 
 ### DOC_CROSSREFERENCE_MAP.md
 
-- Line 88: `[integration/webhook_guide.md](integration/webhook_guide.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/integration/webhook_guide.md
-- Line 90: `[authentication/auth_guide.md](authentication/auth_guide.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/authentication/auth_guide.md
 - Line 121: `[CUSTOM_COPILOT_CODING_AGENT.md](CUSTOM_COPILOT_CODING_AGENT.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/CUSTOM_COPILOT_CODING_AGENT.md
-- Line 125: `[rag/RAG_QUICKSTART.md](rag/RAG_QUICKSTART.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/rag/RAG_QUICKSTART.md
-- Line 127: `[rag/RAG_API_REFERENCE.md](rag/RAG_API_REFERENCE.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/rag/RAG_API_REFERENCE.md
-- Line 142: `[architecture.md](architecture.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/architecture.md
-- Line 155: `[architecture.md](architecture.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/architecture.md
 - Line 163: `[dataops/data_pipeline.md](dataops/data_pipeline.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/dataops/data_pipeline.md
 - Line 166: `[architecture/components.md](architecture/components.md)`
@@ -115,36 +92,15 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/ci/CI_FIX_SUMMARY.md
 - Line 231: `[observability/INDEX.md](observability/INDEX.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/observability/INDEX.md
-- Line 261: `[architecture.md](architecture.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/architecture.md
 - Line 274: `[mutation_testing.md](mutation_testing.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/mutation_testing.md
 - Line 275: `[integration_test_runner.md](integration_test_runner.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/integration_test_runner.md
 - Line 285: `[profiling_baseline.py](profiling_baseline.py)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/profiling_baseline.py
-- Line 300: `[cognitive_brain/index.md](cognitive_brain/index.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/cognitive_brain/index.md
-- Line 301: `[architecture.md](architecture.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/architecture.md
-
-### DOC_KNOWLEDGE_GRAPH_INDEX.md
-
-- Line 94: `[Cognitive Brain](cognitive_brain/index.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/cognitive_brain/index.md
-- Line 112: `[Architecture Overview](architecture.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/architecture.md
-- Line 521: `[API Index](api/INDEX.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/api/INDEX.md
-- Line 559: `[Model Evaluation](evaluation/index.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/evaluation/index.md
-- Line 613: `[Architecture Overview](architecture.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/architecture.md
 
 ### DOC_OPERATIONAL_RUNBOOK.md
 
-- Line 241: `[new location](../new/path.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/new/path.md
 - Line 496: `[Getting Started](../getting-started.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/getting-started.md
 
@@ -400,11 +356,6 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/.github/workflows/session-recovery-handler.yml
 - Line 11216: `[.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/.github/workflows/session-recovery-handler.yml
-
-### admin/INDEX.md
-
-- Line 26: `[Code of Conduct](../CODE_OF_CONDUCT.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/CODE_OF_CONDUCT.md
 
 ### admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md
 
@@ -737,12 +688,12 @@
 
 ### evolution/COGNITIVE_CODEBASE_MAP.md
 
-- Line 228: `[Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md)`
+- Line 234: `[Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md
 
 ### evolution/COGNITIVE_EVOLUTION_TREE.md
 
-- Line 306: `[Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md)`
+- Line 348: `[Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md
 
 ### evolution/INDEX.md
@@ -801,7 +752,7 @@
 
 ### guides/examples.md
 
-- Line 227: `[Architecture →](../../architecture/ARCHITECTURE_CONSOLIDATED.md)`
+- Line 227: `[Architecture ](../../architecture/ARCHITECTURE_CONSOLIDATED.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/architecture/ARCHITECTURE_CONSOLIDATED.md
 
 ### guides/feature_engineering.md
@@ -841,7 +792,7 @@
 
 ### mcp/PACKAGEABLE_CAPABILITIES.md
 
-- Line 858: `[MCP Package System README](../scripts/mcp/README.md)`
+- Line 871: `[MCP Package System README](../scripts/mcp/README.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/scripts/mcp/README.md
 
 ### mcp/QUICK_START.md
@@ -881,7 +832,7 @@
 
 ### plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md
 
-- Line 365: `[`agent-auth-delegation`](../.github/workflows/agent-auth-delegation.yml)`
+- Line 423: `[`agent-auth-delegation`](../.github/workflows/agent-auth-delegation.yml)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/.github/workflows/agent-auth-delegation.yml
 
 ### plans/Coverage_Physics_Toolkit_UserGuide.md
@@ -1031,11 +982,11 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/GITHUB_API_COPILOT_AGENT_REFERENCE.md
 - Line 423: `[.github/workflows/workflow-link-validation.yml](../.github/workflows/workflow-link-validation.yml)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/.github/workflows/workflow-link-validation.yml
-- Line 817: `[docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md)`
+- Line 842: `[docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/GITHUB_API_COPILOT_AGENT_REFERENCE.md
-- Line 1237: `[docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md)`
+- Line 1289: `[docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/GITHUB_API_COPILOT_AGENT_REFERENCE.md
-- Line 1242: `[scripts/ci/post_rotation_verify.sh](../scripts/ci/post_rotation_verify.sh)`
+- Line 1294: `[scripts/ci/post_rotation_verify.sh](../scripts/ci/post_rotation_verify.sh)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/scripts/ci/post_rotation_verify.sh
 
 ### reference/feature_store.md
@@ -1089,7 +1040,7 @@
 
 - Line 109: `[ Workflow Configuration](../.github/workflows/pages-mkdocs.yml)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/.github/workflows/pages-mkdocs.yml
-- Line 111: `[🎨 Theme Config](../mkdocs.yml)`
+- Line 111: `[ Theme Config](../mkdocs.yml)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/mkdocs.yml
 - Line 113: `[ GitHub Pages Manager Agent](../.github/agents/github-pages-manager.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/.github/agents/github-pages-manager.md
