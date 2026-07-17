@@ -50,59 +50,99 @@ jobs:
         import os
         import re
         import sys
+        from datetime import datetime, timezone
 
-                comment = os.environ[\"COMMENT_BODY\"]
-        pr_number = os.environ[\"PR_NUMBER
-        ]\n# P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.\n\
-        try:\n    _timeout_val = os.environ.get(\"AGENT_HANDOFF_TIMEOUT_SECONDS\"\
-        , \"120\")\n    HANDOFF_TIMEOUT = int(float(_timeout_val))\nexcept (ValueError,\
-        \ TypeError):\n    print(f\"::warning::AGENT_HANDOFF_TIMEOUT_SECONDS={_timeout_val!r}\
-        \ is not a valid number; defaulting to 120s\")\n    HANDOFF_TIMEOUT = 120\n\
-        \n# Apply hard deadline to the entire validation block.\nimport signal\ndef\
-        \ _timeout_handler(signum, frame):\n    raise TimeoutError(f\"agent-handoff\
-        \ validation exceeded {HANDOFF_TIMEOUT}s (AGENT_HANDOFF_TIMEOUT_SECONDS)\"\
-        )\nsignal.signal(signal.SIGALRM, _timeout_handler)\nsignal.alarm(HANDOFF_TIMEOUT)\n\
-        \n# Extract JSON block after \"AGENT_HANDOFF:\"\nmatch = re.search(r\"AGENT_HANDOFF:\\\
-        s*```(?:json)?\\s*(\\{.*?\\})\\s*```\", comment, re.DOTALL)\nif not match:\n\
-        \  # Try without code fence\n    match = re.search(r\"AGENT_HANDOFF:\\s*(\\\
-        {.*?\\})\", comment, re.DOTALL)\n\nif not match:\n    print(\"::warning::agent-handoff-gate:\
-        \ No JSON payload found after AGENT_HANDOFF: — skipping validation\")\n  \
-        \  with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n\
-        \        f.write(\"validation_status=skipped\\n\")\n    sys.exit(0)\n\nraw_json\
-        \ = match.group(1).strip()\n\n# Guard against oversized payloads before parsing\n\
-        if len(raw_json) > 10000:\n    print(\"::warning::agent-handoff-gate: AGENT_HANDOFF\
-        \ payload too large (>10KB) — skipping\")\n    with open(os.environ.get(\"\
-        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"validation_status=skipped\\\
-        n\")\n    sys.exit(0)\n\ntry:\n    payload = json.loads(raw_json)\nexcept\
-        \ json.JSONDecodeError as e:\n    print(f\"::warning::agent-handoff-gate:\
-        \ Invalid JSON in AGENT_HANDOFF payload: {e}\")\n    with open(os.environ.get(\"\
-        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"validation_status=invalid_json\\\
-        n\")\n        f.write(f\"error={str(e)}\\n\")\n    sys.exit(0)\n\n# Validate\
-        \ against AgentHandoffManifest v1.1 schema\nimport jsonschema\nschema_path\
-        \ = \".codex/schemas/AgentHandoffManifest_v1.1.json\"\nwith open(schema_path)\
-        \ as sf:\n    schema = json.load(sf)\n\nerrors = []\ntry:\n    jsonschema.validate(payload,\
-        \ schema)\nexcept jsonschema.ValidationError as e:\n    errors.append(str(e.message))\n\
-        \ndelegating = payload.get(\"delegating_agent\", \"unknown\")\nreceiving =\
-        \ payload.get(\"receiving_agent\", \"unknown\")\ntask_id = payload.get(\"\
-        task_id\", \"unknown\")\noperating_model = payload.get(\"operating_model\"\
-        , \"E\")\ntrace_depth = len(payload.get(\"delegation_trace\", []))\nchecklist\
-        \ = payload.get(\"checklist_items\", [])\ntier1_gates = payload.get(\"policy_compliance\"\
-        , {}).get(\"tier1_gates_passed\", [])\nviolations = payload.get(\"policy_compliance\"\
-        , {}).get(\"violation_count\", 0)\nsnapshot_tier = payload.get(\"context_snapshot\"\
-        , {}).get(\"current_enforcement_tier\", \"SOFT\")\n\noutput_file = os.environ.get(\"\
-        GITHUB_OUTPUT\", \"/dev/null\")\nwith open(output_file, \"a\") as f:\n   \
-        \ f.write(f\"delegating_agent={delegating}\\n\")\n    f.write(f\"receiving_agent={receiving}\\\
-        n\")\n    f.write(f\"task_id={task_id}\\n\")\n    f.write(f\"operating_model={operating_model}\\\
-        n\")\n    f.write(f\"trace_depth={trace_depth}\\n\")\n    f.write(f\"violation_count={violations}\\\
-        n\")\n    f.write(f\"enforcement_tier={snapshot_tier}\\n\")\n    f.write(f\"\
-        tier1_gates_count={len(tier1_gates)}\\n\")\n    if errors:\n        f.write(\"\
-        validation_status=invalid\\n\")\n        f.write(f\"schema_errors={json.dumps(errors)}\\\
-        n\")\n  # TIER-1: exit 1 — blocks merge on schema violations\n     \
-        \   print(f\"::error::agent-handoff-gate: Schema validation failed for {delegating}→{receiving}:\
-        \ {errors[0]}\")\n        sys.exit(1)\n    else:\n        f.write(\"validation_status=valid\\\
-        n\")\n        print(f\"✅ agent-handoff-gate: Valid handoff {delegating}→{receiving}\
-        \ (model={operating_model})\")\nsignal.alarm(0)  # cancel deadline — validation\
-        \ completed within timeout\nPYEOF\n"
+        comment = os.environ["COMMENT_BODY"]
+        pr_number = os.environ["PR_NUMBER"]
+
+        # P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.
+        try:
+            _timeout_val = os.environ.get("AGENT_HANDOFF_TIMEOUT_SECONDS", "120")
+            HANDOFF_TIMEOUT = int(float(_timeout_val))
+        except (ValueError, TypeError):
+            print(f"::warning::AGENT_HANDOFF_TIMEOUT_SECONDS={_timeout_val!r} is not a valid number; defaulting to 120s")
+            HANDOFF_TIMEOUT = 120
+
+        # Apply hard deadline to the entire validation block.
+        import signal
+        def _timeout_handler(signum, frame):
+            raise TimeoutError(f"agent-handoff validation exceeded {HANDOFF_TIMEOUT}s (AGENT_HANDOFF_TIMEOUT_SECONDS)")
+        signal.signal(signal.SIGALRM, _timeout_handler)
+        signal.alarm(HANDOFF_TIMEOUT)
+
+        # Extract JSON block after "AGENT_HANDOFF:"
+        match = re.search(r"AGENT_HANDOFF:\s*```(?:json)?\s*(\{.*?\})\s*```", comment, re.DOTALL)
+        if not match:
+            # Try without code fence
+            match = re.search(r"AGENT_HANDOFF:\s*(\{.*?\})", comment, re.DOTALL)
+
+        if not match:
+            print("::warning::agent-handoff-gate: No JSON payload found after AGENT_HANDOFF: — skipping validation")
+            with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                f.write("validation_status=skipped\n")
+            sys.exit(0)
+
+        raw_json = match.group(1).strip()
+
+        # Guard against oversized payloads before parsing
+        if len(raw_json) > 10000:
+            print("::warning::agent-handoff-gate: AGENT_HANDOFF payload too large (>10KB) — skipping")
+            with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                f.write("validation_status=skipped\n")
+            sys.exit(0)
+
+        try:
+            payload = json.loads(raw_json)
+        except json.JSONDecodeError as e:
+            print(f"::warning::agent-handoff-gate: Invalid JSON in AGENT_HANDOFF payload: {e}")
+            with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                f.write("validation_status=invalid_json\n")
+                f.write(f"error={str(e)}\n")
+            sys.exit(0)
+
+        # Validate against AgentHandoffManifest v1.1 schema
+        import jsonschema
+        schema_path = ".codex/schemas/AgentHandoffManifest_v1.1.json"
+        with open(schema_path) as sf:
+            schema = json.load(sf)
+
+        errors = []
+        try:
+            jsonschema.validate(payload, schema)
+        except jsonschema.ValidationError as e:
+            errors.append(str(e.message))
+
+        delegating = payload.get("delegating_agent", "unknown")
+        receiving = payload.get("receiving_agent", "unknown")
+        task_id = payload.get("task_id", "unknown")
+        operating_model = payload.get("operating_model", "E")
+        trace_depth = len(payload.get("delegation_trace", []))
+        checklist = payload.get("checklist_items", [])
+        tier1_gates = payload.get("policy_compliance", {}).get("tier1_gates_passed", [])
+        violations = payload.get("policy_compliance", {}).get("violation_count", 0)
+        snapshot_tier = payload.get("context_snapshot", {}).get("current_enforcement_tier", "SOFT")
+
+        output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
+        with open(output_file, "a") as f:
+            f.write(f"delegating_agent={delegating}\n")
+            f.write(f"receiving_agent={receiving}\n")
+            f.write(f"task_id={task_id}\n")
+            f.write(f"operating_model={operating_model}\n")
+            f.write(f"trace_depth={trace_depth}\n")
+            f.write(f"violation_count={violations}\n")
+            f.write(f"enforcement_tier={snapshot_tier}\n")
+            f.write(f"tier1_gates_count={len(tier1_gates)}\n")
+            if errors:
+                f.write("validation_status=invalid\n")
+                f.write(f"schema_errors={json.dumps(errors)}\n")
+                # TIER-1: exit 1 — blocks merge on schema violations
+                print(f"::error::agent-handoff-gate: Schema validation failed for {delegating}→{receiving}: {errors[0]}")
+                sys.exit(1)
+            else:
+                f.write("validation_status=valid\n")
+                print(f"✅ agent-handoff-gate: Valid handoff {delegating}→{receiving} (model={operating_model})")
+        signal.alarm(0)  # cancel deadline — validation completed within timeout
+        PYEOF
     - name: Post handoff summary comment
       if: steps.validate.outputs.validation_status != 'skipped'
       uses: actions/github-script@v8

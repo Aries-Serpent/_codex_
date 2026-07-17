@@ -82,14 +82,9 @@ jobs:
         report_exists=false\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Generate Copilot Agent comment
       id: gen_comment
-      if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.report_exists
-        == 'true'
+      if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.report_exists == 'true'
       uses: actions/github-script@v8
-      env:
-        AUTO_FIXABLE: ${{ steps.read_report.outputs.auto_fixable }}
-        TOTAL_ISSUES: ${{ steps.read_report.outputs.total_issues }}
-        MANUAL_REVIEW: ${{ steps.read_report.outputs.manual_review }}
-        with:
+      with:
         script: "const fs = require('fs');\nconst prNumber = context.issue.number;\n\
           const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;\n\
           \n// Read diagnostic report\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/diagnostic-report.json',\

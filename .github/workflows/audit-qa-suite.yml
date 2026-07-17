@@ -107,16 +107,10 @@ permissions:
 jobs:
   audit_gap_analysis:
     # Temporarily disabled for PR #5328 to prevent cascading failures
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: github.event.pull_request.number != 5328 && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'audit-only' || inputs.mode == 'full-suite')))
     name: Run Audit Gap Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: 'github.event_name == ''schedule'' ||
-
-      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''audit-only''
-      || inputs.mode == ''full-suite''))
-
-      '
     outputs:
       gap_count: ${{ steps.analyze.outputs.gap_count }}
       improvement_areas: ${{ steps.analyze.outputs.improvement_areas }}
