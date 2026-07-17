@@ -15,10 +15,11 @@ import logging
 import statistics
 import time
 import unittest
-from typing import Any, List, Tuple
+from typing import List, Tuple
 
 from rag.hardened_embedding import HardenedEmbeddingPipeline
-from rag.monitoring import RAGMonitor, set_rag_monitor as set_monitor
+from rag.monitoring import RAGMonitor
+from rag.monitoring import set_rag_monitor as set_monitor
 from rag.pipelines.embedding import EmbeddingConfig
 from rag.resilience import RetryConfig
 from rag.timeout_manager import TimeoutConfig, TimeoutManager
@@ -179,7 +180,7 @@ class StressTestResult:
         print(f"Successes: {self.successes} ({self.success_rate:.1%})")
         print(f"Failures: {self.failures} ({self.error_rate:.1%})")
         print(f"Timeouts: {self.timeouts} ({self.timeout_rate:.1%})")
-        print(f"\nLatency Metrics:")
+        print("\nLatency Metrics:")
         print(f"  Average: {self.avg_latency_ms:.1f}ms")
         print(f"  P50: {self.p50_latency_ms:.1f}ms")
         print(f"  P95: {self.p95_latency_ms:.1f}ms")
@@ -188,9 +189,9 @@ class StressTestResult:
 
         passes, issues = self.meets_targets()
         if passes:
-            print(f"✅ PASSED - All targets met")
+            print("✅ PASSED - All targets met")
         else:
-            print(f"❌ FAILED - Target violations:")
+            print("❌ FAILED - Target violations:")
             for issue in issues:
                 print(f"   - {issue}")
         print(f"{'=' * 70}\n")

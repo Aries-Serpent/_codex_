@@ -9,27 +9,22 @@ Target Metrics:
 - All 8 gate criteria verified
 """
 
-import asyncio
-import json
 import time
-from pathlib import Path
 
 import pytest
 
+from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
+from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
 from src.codex.cognitive_brain.reasoning_engine import (
-    ReasoningEngine,
-    PerceptionLayer,
-    ReasoningLayer,
     ActionLayer,
+    AgentContext,
+    ConfidenceLevel,
+    DecisionStrategy,
     FeedbackLayer,
     ImprovementLayer,
-    DecisionStrategy,
-    ConfidenceLevel,
-    AgentContext,
+    PerceptionLayer,
+    ReasoningLayer,
 )
-from src.codex.cognitive_brain.knowledge_base import KnowledgeBase, Pattern
-from src.codex.cognitive_brain.calibration import ConfidenceCalibrator
-
 
 # ============================================================================
 # LAYER 1: PERCEPTION LAYER TESTS
@@ -947,7 +942,6 @@ class TestActionLayerAdvanced:
 
     def test_action_layer_confidence_levels_all(self, knowledge_base, calibrator):
         """Test all confidence levels are properly classified."""
-        from src.codex.cognitive_brain.reasoning_engine import CandidateDecision
 
         action = ActionLayer()
         context = AgentContext(

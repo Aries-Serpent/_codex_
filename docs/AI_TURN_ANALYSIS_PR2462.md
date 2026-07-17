@@ -321,7 +321,7 @@ bare except -> specific exceptions + logging -> remove redundant pass
 # scripts/patterns/improve_exception_handling.py
 def improve_exception_handling(file_path, line_number):
  """
- Tokenized pattern for improving exception handling.
+ Tokenized pattern for improving exception handling.  # pragma: allowlist secret
 
  Steps:
  1. Parse AST to find bare except

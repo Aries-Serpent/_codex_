@@ -11,10 +11,8 @@ Tests cover:
 
 from __future__ import annotations
 
-import importlib
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -51,7 +49,6 @@ class TestCodexMLPackageImports:
 
     def test_codex_ml_shim_redirects(self):
         """Test that shim modules properly redirect."""
-        import codex_ml
         
         # Check that sys.path is modified to include src
         src_path = str(Path(__file__).resolve().parents[2] / "src")
@@ -312,7 +309,6 @@ class TestCodexMLShimMechanism:
 
     def test_codex_ml_is_redirected_module(self):
         """Test that codex_ml is properly redirected."""
-        import codex_ml
         
         # Check that the module was loaded
         assert "codex_ml" in sys.modules
@@ -331,7 +327,6 @@ class TestCodexMLShimMechanism:
     def test_codex_ml_src_sys_path_modification(self):
         """Test that src is added to sys.path."""
         # After importing codex_ml, the src directory should be accessible
-        import codex_ml
         
         # This test passes if codex_ml imported successfully
         # (otherwise sys.path wouldn't have been modified correctly)
@@ -343,7 +338,6 @@ class TestCodexMLEdgeCases:
 
     def test_codex_ml_reimport_safe(self):
         """Test that reimporting codex_ml is safe."""
-        import codex_ml as ml1
         import importlib
         importlib.reload(sys.modules.get("codex_ml", __import__("codex_ml")))
         import codex_ml as ml2

@@ -231,7 +231,7 @@ Each pattern routes to a primary agent + fallback chain for escalation:
 | yaml-syntax | workflow-ci-fixer | ci-testing-agent, ci-failure-resolution-agent | 0.90 | Workflow YAML validation + auto-fix |
 | env-variable-missing | ci-failure-resolution-agent | repo-var-sync-agent, ci-testing-agent | 0.82 | Env var sync or workflow fix |
 | docker-compose-error | ci-docker-build-healer | ci-testing-agent, ci-failure-resolution-agent | 0.86 | Docker Compose service/network expertise |
-| credentials-config | unified-security-scanner | secret-detection-agent, ci-failure-resolution-agent | 0.78 | Credential store + security audit |
+| credentials-config | unified-security-scanner | secret-detection-agent, ci-failure-resolution-agent | 0.78 | Credential store + security audit | <!-- pragma: allowlist secret -->
 | http-config | ci-failure-resolution-agent | ci-resilience-emergency-response-agent, ci-testing-agent | 0.84 | HTTP/TLS proxy configuration |
 | dependency-version-conflict | dependency-conflict-agent | packaging-validation-agent, ci-failure-resolution-agent | 0.88 | Semantic versioning conflict resolution |
 | import-not-found | ci-importerror-agent | autonomous-test-healer-agent, ci-testing-agent | 0.86 | Module import + sys.path diagnosis |
@@ -240,10 +240,10 @@ Each pattern routes to a primary agent + fallback chain for escalation:
 | network-timeout | ci-resilience-emergency-response-agent | ci-optimization-agent, ci-failure-resolution-agent | 0.72 | Network resilience + backoff/retry |
 | rate-limit | ci-resilience-emergency-response-agent | workflow-compliance-guardian, ci-optimization-agent | 0.90 | API rate limiting + concurrency tuning |
 | dns-resolution | ci-resilience-emergency-response-agent | ci-failure-resolution-agent | 0.81 | DNS failure resilience + retries |
-| permission-denied | unified-security-scanner | ci-failure-resolution-agent, secret-detection-agent | 0.86 | File permissions + security audit |
-| token-invalid | unified-security-scanner | secret-detection-agent, repo-var-sync-agent | 0.92 | Token validation/rotation |
+| permission-denied | unified-security-scanner | ci-failure-resolution-agent, secret-detection-agent | 0.86 | File permissions + security audit | <!-- pragma: allowlist secret -->
+| token-invalid | unified-security-scanner | secret-detection-agent, repo-var-sync-agent | 0.92 | Token validation/rotation | <!-- pragma: allowlist secret -->
 | out-of-memory | ci-resilience-emergency-response-agent | ci-optimization-agent, cache-management-agent | 0.90 | OOM recovery + runner upgrade |
-| disk-full | ci-resilience-emergency-response-agent | cache-management-agent, ci-optimization-agent | 0.93 | Disk cleanup + runner upgrade |
+| disk-full | ci-resilience-emergency-response-agent | cache-management-agent, ci-optimization-agent | 0.93 | Disk cleanup + runner upgrade | <!-- pragma: allowlist secret -->
 | python-syntax | autonomous-test-healer-agent | test-failure-analyzer-agent, ci-testing-agent | 0.93 | Python AST validation + auto-fix |
 | assertion-failure | test-failure-analyzer-agent | autonomous-test-healer-agent, test-enhancement-agent | 0.86 | Assertion analysis + test alignment |
 

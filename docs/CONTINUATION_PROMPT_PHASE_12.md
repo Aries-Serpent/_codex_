@@ -475,7 +475,7 @@ Recommended: Start with Option 1, migrate to Option 2 if needed
 |--------|----------|--------|---------|--------|
 | CI Success Rate | 67% | 90% | TBD | |
 | MTTR (Common Failures) | 30 min | <5 min | TBD | |
-| Secret Rotation Compliance | 75% | 100% | TBD | |
+| Secret Rotation Compliance | 75% | 100% | TBD | | <!-- pragma: allowlist secret -->
 | Agent Uptime | N/A | 99% | TBD | |
 | False Positive Rate | N/A | <10% | TBD | |
 | Documentation Coverage | 95% | 98% | 95% | |

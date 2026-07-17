@@ -182,7 +182,7 @@ organization_settings:
 | Dependency Graph | Settings → Security → Code security | Enabled |
 | Dependabot Alerts | Settings → Security → Code security | Enabled |
 | Dependabot Security Updates | Settings → Security → Code security | Enabled |
-| Secret Scanning | Settings → Security → Code security | Enabled |
+| Secret Scanning | Settings → Security → Code security | Enabled | <!-- pragma: allowlist secret -->
 | Push Protection | Settings → Security → Code security | Enabled |
 | GitHub Pages | Settings → Pages | Enabled (Deploy from Actions) |
 
@@ -223,7 +223,7 @@ Copy these values exactly:
 | Setting | Value |
 |---------|-------|
 | Callback URL | Leave empty |
-| Expire user authorization tokens | Enabled |
+| Expire user authorization tokens | Enabled | <!-- pragma: allowlist secret -->
 | Request user authorization (OAuth) during installation | Disabled |
 | Enable Device Flow | Disabled |
 
@@ -240,7 +240,7 @@ Copy these values exactly:
 |---------|-------|
 | Active | Enabled |
 | Webhook URL | `https://github.com/Aries-Serpent/_codex_/dispatches` (or leave empty initially) |
-| Webhook secret | Generate using command below |
+| Webhook secret | Generate using command below | <!-- pragma: allowlist secret -->
 
 **Generate Webhook Secret:**
 
@@ -350,21 +350,21 @@ app_installation:
 
 Create these secrets **exactly as named**:
 
-| Secret Name | How to Obtain | Required For | Priority |
+| Secret Name | How to Obtain | Required For | Priority | <!-- pragma: allowlist secret -->
 |------------|---------------|--------------|----------|
 | `CODEX_APP_ID` | From GitHub App creation (Section 2.2) | PR Reviewer | **CRITICAL** |
 | `CODEX_PRIVATE_KEY` | Contents of downloaded `.pem` file | PR Reviewer | **CRITICAL** |
-| `CODEX_WEBHOOK_SECRET` | Generated in Section 2.1 Step 4 | Webhook verification | **CRITICAL** |
+| `CODEX_WEBHOOK_SECRET` | Generated in Section 2.1 Step 4 | Webhook verification | **CRITICAL** | <!-- pragma: allowlist secret -->
 | `CODEX_INSTALLATION_ID` | From Section 2.3 | App authentication | **CRITICAL** |
 
 ### 3.3 Optional Secrets (Enhanced Features)
 
-| Secret Name | How to Obtain | Required For |
+| Secret Name | How to Obtain | Required For | <!-- pragma: allowlist secret -->
 |------------|---------------|--------------|
-| `OPENAI_API_KEY` | https://platform.openai.com/api-keys | AI-powered features |
-| `PINECONE_API_KEY` | https://app.pinecone.io/ | Vector search features |
+| `OPENAI_API_KEY` | https://platform.openai.com/api-keys | AI-powered features | <!-- pragma: allowlist secret -->
+| `PINECONE_API_KEY` | https://app.pinecone.io/ | Vector search features | <!-- pragma: allowlist secret -->
 | `AWS_ACCESS_KEY_ID` | AWS Console → IAM | Cloud deployment |
-| `AWS_SECRET_ACCESS_KEY` | AWS Console → IAM | Cloud deployment |
+| `AWS_SECRET_ACCESS_KEY` | AWS Console → IAM | Cloud deployment | <!-- pragma: allowlist secret -->
 | `AZURE_CREDENTIALS` | Azure Portal | Azure deployment |
 | `ENABLE_LIVE_TESTS` | Set to `true` | Integration testing |
 
@@ -553,7 +553,7 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 | Dependency graph | Enabled | Settings → Security → Enable |
 | Dependabot alerts | Enabled | Settings → Security → Enable |
 | Dependabot security updates | Enabled | Settings → Security → Enable |
-| Secret scanning | Enabled | Settings → Security → Enable |
+| Secret scanning | Enabled | Settings → Security → Enable | <!-- pragma: allowlist secret -->
 | Push protection | Enabled | Settings → Security → Enable |
 | Code scanning | ️ Optional | Configure in workflow |
 
@@ -848,7 +848,7 @@ notes: |
 | `CONTRIBUTING.md` | Contribution guidelines |
 | `SECURITY.md` | Security policies |
 | `docs/QUICKSTART.md` | Quick start guide |
-| `docs/SECRETS_RUNBOOK.md` | Secrets management details |
+| `docs/SECRETS_RUNBOOK.md` | Secrets management details | <!-- pragma: allowlist secret -->
 
 ---
 

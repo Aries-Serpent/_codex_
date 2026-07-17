@@ -8,24 +8,20 @@ Tests for:
 """
 
 import pytest
+
 from orchestration.gates.contract_gate import (
     ContractGateSystem,
-    GateResult,
-    ComplianceResult,
 )
 from orchestration.healing.policy_tier_engine import (
-    PolicyTierEngine,
-    TierClassification,  # pragma: allowlist secret
+    PolicyTierEngine,  # pragma: allowlist secret
 )
 from orchestration.safety.rollback_controls import (
     RollbackControlSystem,
-    RollbackStep,
 )
 from orchestration.scheduling.lane_scheduler_v1 import (
-    LaneSchedulerV1,
     Lane,
+    LaneSchedulerV1,
     LaneState,
-    ExecutionMode,
 )
 
 

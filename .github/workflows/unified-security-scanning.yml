@@ -30,7 +30,7 @@ jobs:
     permissions:
       security-events: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Fetch CodeQL alerts
         run: echo "Fetching CodeQL alerts from GitHub..."
 
@@ -41,7 +41,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run CodeQL analysis
         run: echo "Running CodeQL security analysis..."
 
@@ -49,9 +49,11 @@ jobs:
   codeql-triage:
     if: github.event.inputs.operation == 'codeql-triage' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [codeql-fetch]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Triage CodeQL alerts
         run: echo "Triaging CodeQL security findings..."
 
@@ -59,15 +61,19 @@ jobs:
   codeql-fix-verify:
     if: github.event.inputs.operation == 'codeql-fix-verify' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [codeql-analysis, codeql-triage]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Verify CodeQL fixes
         run: echo "Verifying CodeQL fix implementations..."
 
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [codeql-fetch, codeql-analysis, codeql-triage, codeql-fix-verify]
     steps:
       - name: Security scanning complete

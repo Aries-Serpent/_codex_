@@ -324,12 +324,12 @@ class TestCascadeOrchestratorEdgeCases:
         router = FixRouter()
         
         # Below threshold should escalate
-        assert router.should_escalate_immediately(0.4) == True
-        assert router.should_escalate_immediately(0.49) == True
+        assert router.should_escalate_immediately(0.4)
+        assert router.should_escalate_immediately(0.49)
         
         # Above threshold should not escalate
-        assert router.should_escalate_immediately(0.50) == False
-        assert router.should_escalate_immediately(0.95) == False
+        assert not router.should_escalate_immediately(0.50)
+        assert not router.should_escalate_immediately(0.95)
 
     def test_pattern_detector_with_secondary_indicators(self):
         """Test pattern detection with secondary indicators"""

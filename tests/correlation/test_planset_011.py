@@ -14,45 +14,39 @@ GATE CRITERIA:
 8. Documentation complete
 """
 
-import pytest
-import json
-import time
 import logging
-import numpy as np
+import time
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import List, Dict, Any, Tuple
+from typing import Dict, List, Tuple
+
+import pytest
 
 logger = logging.getLogger(__name__)
 
+from src.codex.correlation.anomaly_correlator import (
+    AlertAggregator,
+    AlertSeverity,
+    Anomaly,
+    AnomalySystem,
+    CorrelatedAnomaly,
+    MagnitudeCorrelator,
+    SpatialCorrelator,
+    TemporalCorrelator,
+)
 from src.codex.correlation.planset_011 import (
-    Planset011Orchestrator,
+    AnomalyCorrelationEngine,
     AnomalyDetectionAPI,
     AnomalyDetectionRequest,
     EnsembleAnomalyDetector,
-    Planset012IntegrationAdapter,
     GateCriterionValidator,
+    Planset011Orchestrator,
+    Planset012IntegrationAdapter,
     RootCauseChain,
-    AnomalyCorrelationEngine,
-)
-from src.codex.correlation.anomaly_correlator import (
-    Anomaly,
-    AnomalySystem,
-    AlertSeverity,
-    CorrelatedAnomaly,
-    AnomalyCollector,
-    TemporalCorrelator,
-    SpatialCorrelator,
-    MagnitudeCorrelator,
-    AlertAggregator,
 )
 from src.codex.correlation.root_cause_engine import (
-    CausalGraph,
     BackwardChainer,
-    CausalLink,
-    CausalPath,
+    CausalGraph,
 )
-
 
 # ============================================================================
 # VALIDATION DATASETS
@@ -541,9 +535,9 @@ class TestGate8Documentation:
     def test_docstrings_present(self):
         """Test main components have docstrings"""
         from src.codex.correlation.planset_011 import (
-            Planset011Orchestrator,
             AnomalyDetectionAPI,
             EnsembleAnomalyDetector,
+            Planset011Orchestrator,
         )
         
         assert Planset011Orchestrator.__doc__ is not None

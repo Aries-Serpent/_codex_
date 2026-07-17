@@ -7,10 +7,10 @@ Phase 9 implements:
 4. Replay Verification: Monthly determinism verification (50+ runs per lane)
 """
 
-from .monthly_review import MonthlyReviewCycle, ReviewReport
 from .drift_detection import DriftDetector, DriftReport
-from .issue_generator import IssueGenerator, GeneratedIssue
-from .replay_verification import ReplayVerifier, ReplayReport
+from .issue_generator import GeneratedIssue, IssueGenerator
+from .monthly_review import MonthlyReviewCycle, ReviewReport
+from .replay_verification import ReplayReport, ReplayVerifier
 
 __all__ = [
     "MonthlyReviewCycle",

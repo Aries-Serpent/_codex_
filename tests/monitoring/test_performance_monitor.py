@@ -14,20 +14,18 @@ Tests verify:
 from __future__ import annotations
 
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
+from datetime import datetime
 
 import numpy as np
 import pytest
 
 from codex.monitoring.performance_monitor import (
-    AnomalyDetectionResult,
     AnomalyDetector,
     PerformanceMonitor,
+    PerformanceSLA,
     RegressionDetector,
     SeverityLevel,
     detect_ci_regression,
-    PerformanceSLA,
 )
 
 
@@ -331,9 +329,7 @@ class TestMetricsStorage:
 
     def test_add_and_retrieve_metrics(self, tmp_path):
         """Test adding and retrieving metrics"""
-        from codex.monitoring.performance_monitor import (
-            MetricsStore, PerformanceMetric
-        )
+        from codex.monitoring.performance_monitor import MetricsStore, PerformanceMetric
         
         store = MetricsStore(storage_path=tmp_path / "metrics.json")
         

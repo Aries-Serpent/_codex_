@@ -13,6 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from math import exp  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # optional dependency for a real classifier
     from transformers import pipeline  # type: ignore
@@ -33,7 +34,7 @@ WEIGHTS: dict[str, float] = {
 }
 
 
-def _load_classifier() -> object:
+def _load_classifier() -> Any:
     global _classifier
     if pipeline is None:
         return None

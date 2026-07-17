@@ -36,8 +36,8 @@ import logging
 import pathlib
 import time
 from collections import defaultdict
-from dataclasses import dataclass, field
-from datetime import datetime, timezone, timedelta
+from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
@@ -210,7 +210,7 @@ class LoadBalancer:
     """Multi-agent load balancer."""
     
     def __init__(self, max_queue_depth: int = 1000):
-        self._queues: dict[str, list[QueueEntry]] = defaultdict(list)
+        self._queues: dict[str, list[tuple[int, QueueEntry]]] = defaultdict(list)
         self._capacity: dict[str, AgentCapacity] = {}
         self._circuit_breakers: dict[str, CircuitBreaker] = {}
         self._max_queue_depth = max_queue_depth
@@ -286,9 +286,10 @@ class LoadBalancer:
         _, entry = heapq.heappop(self._queues[agent_id])
         entry.started_at = datetime.now(timezone.utc).isoformat()
         
-        capacity.queue_depth -= 1
-        capacity.current_active += 1
-        capacity.last_activity = datetime.now(timezone.utc).isoformat()
+        if capacity:
+            capacity.queue_depth -= 1
+            capacity.current_active += 1
+            capacity.last_activity = datetime.now(timezone.utc).isoformat()
         
         return entry
     

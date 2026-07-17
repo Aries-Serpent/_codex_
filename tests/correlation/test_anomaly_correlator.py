@@ -13,38 +13,34 @@ Tests cover:
 Target: ≥85% code coverage, 100% test pass rate
 """
 
-import pytest
 from datetime import datetime, timedelta
-from typing import List
+
+import pytest
 
 from src.codex.correlation.anomaly_correlator import (
-    Anomaly,
-    AnomalySystem,
-    AlertSeverity,
-    CorrelationType,
-    CorrelatedAnomaly,
-    AnomalyCollector,
-    TemporalCorrelator,
-    SpatialCorrelator,
-    MagnitudeCorrelator,
     AlertAggregator,
-)
-from src.codex.correlation.root_cause_engine import (
-    CausalLink,
-    CausalPath,
-    CausalGraph,
-    BackwardChainer,
-    RootCauseEngine,
-    RootCauseInference,
+    AlertSeverity,
+    Anomaly,
+    AnomalyCollector,
+    AnomalySystem,
+    CorrelatedAnomaly,
+    CorrelationType,
+    MagnitudeCorrelator,
+    SpatialCorrelator,
+    TemporalCorrelator,
 )
 from src.codex.correlation.fp_suppressor import (
     AlertFeatures,
     AlertHistoryRecord,
-    HistoricalTracker,
     FalsePositiveClassifier,
+    HistoricalTracker,
     SuppressionPolicy,
 )
-
+from src.codex.correlation.root_cause_engine import (
+    BackwardChainer,
+    CausalGraph,
+    RootCauseEngine,
+)
 
 # ============================================================================
 # FIXTURES

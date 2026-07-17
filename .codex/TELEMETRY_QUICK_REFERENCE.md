@@ -55,13 +55,13 @@
 | Pattern | Keywords | Confidence | Agent |
 |---------|----------|------------|-------|
 | permission-denied | permission denied, access denied, chmod, 403, ... | 0.80-0.92 | unified-security-scanner |
-| token-invalid | invalid token, token expired, bad credentials, 401, ... | 0.82-0.95 | unified-security-scanner |
+| token-invalid | invalid token, token expired, bad credentials, 401, ... | 0.82-0.95 | unified-security-scanner | <!-- pragma: allowlist secret -->
 
 ### Performance/Resources (2)
 | Pattern | Keywords | Confidence | Agent |
 |---------|----------|------------|-------|
 | out-of-memory | out of memory, oom, memoryerror, cannot allocate, ... | 0.85-0.95 | ci-resilience-emergency-response-agent |
-| disk-full | disk full, no space, enospc, write failed, quota, ... | 0.88-0.98 | ci-resilience-emergency-response-agent |
+| disk-full | disk full, no space, enospc, write failed, quota, ... | 0.88-0.98 | ci-resilience-emergency-response-agent | <!-- pragma: allowlist secret -->
 
 ### Python/Tests (2)
 | Pattern | Keywords | Confidence | Agent |

@@ -243,8 +243,9 @@ def _build_loader_kwargs(
     
     Reduces complexity by extracting argument building logic (5+ branches).
     """
-    from typing import Any, Optional
-    from codex_ml.hf_loader import _required_revision, _map_amp_dtype
+    from typing import Any
+
+    from codex_ml.hf_loader import _map_amp_dtype, _required_revision
     
     rev = _required_revision(repo_id, revision)
     torch_dtype = _map_amp_dtype(dtype)
@@ -266,8 +267,9 @@ def _load_model_with_fallback(
     
     Reduces complexity by extracting fallback logic (2 branches).
     """
-    from transformers import AutoModelForCausalLM
     import logging
+
+    from transformers import AutoModelForCausalLM
     
     logger = logging.getLogger(__name__)
     
@@ -276,7 +278,7 @@ def _load_model_with_fallback(
             repo_id,
             **loader_kwargs,
         )
-    except TypeError as e:
+    except TypeError:
         logger.debug("TypeError during model load with torch_dtype, retrying without it")
         logger.warning("TypeError: retrying", exc_info=True)
         # Older versions of transformers do not support the ``torch_dtype`` kwarg.

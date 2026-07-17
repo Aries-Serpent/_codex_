@@ -137,13 +137,13 @@ class TestShortCircuitEvaluation:
         # First operand False: second should not evaluate
         calls.clear()
         result = record_false() and record_true()
-        assert result == False
+        assert not result
         assert len(calls) == 1  # Second not evaluated
         
         # First operand True: second should evaluate
         calls.clear()
         result = record_true() and record_true()
-        assert result == True
+        assert result
         assert len(calls) == 2  # Both evaluated
     
     def test_or_short_circuit_evaluation(self):
@@ -161,13 +161,13 @@ class TestShortCircuitEvaluation:
         # First operand True: second should not evaluate
         calls.clear()
         result = record_true() or record_false()
-        assert result == True
+        assert result
         assert len(calls) == 1  # Second not evaluated
         
         # First operand False: second should evaluate
         calls.clear()
         result = record_false() or record_false()
-        assert result == False
+        assert not result
         assert len(calls) == 2  # Both evaluated
 
 
@@ -183,14 +183,14 @@ class TestConditionalMutations:
             result_pos = True
         else:
             result_pos = False
-        assert result_pos == True
+        assert result_pos
         
         # Negated test
         if not (value > 5):
             result_neg = True
         else:
             result_neg = False
-        assert result_neg == False
+        assert not result_neg
         
         # Mutation detection: opposite results
         assert result_pos != result_neg
@@ -269,7 +269,7 @@ class TestComplexBooleanLogic:
                 if a:
                     assert implication == b
                 else:
-                    assert implication == True
+                    assert implication
     
     def test_exclusive_or_mutation(self):
         """Test XOR behavior: (a and not b) or (not a and b)"""

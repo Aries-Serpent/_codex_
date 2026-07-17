@@ -9,13 +9,16 @@ Tests all role-permission combinations across:
 - 1000+ permission test cases
 """
 
-import pytest
 import time
-from typing import Set, Tuple
+
+import pytest
 
 from src.codex.scaling.infrastructure.rbac_engine import (
-    RBACEngine, RoleType, ResourceType, Permission, AccessLevel,
-    RoleDefinition, UserRole, PERMISSION_MATRIX_TEST_CASES
+    AccessLevel,
+    Permission,
+    RBACEngine,
+    ResourceType,
+    RoleType,
 )
 
 

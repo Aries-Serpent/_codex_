@@ -110,7 +110,7 @@ All phases tracked in: .codex/PHASE_*_EXECUTION_REPORT_2026_07_17.md
 Gate decisions logged in: .codex/PHASE_*_GATE_DECISION_*.md
 
 Authority: @mbaetiong D-tier autonomous
-Token: CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token
+Token: CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token  # pragma: allowlist secret
 ```
 
 ---

@@ -217,7 +217,7 @@ class ValidationLoop:
             Dict with cascade detection info
         """
         # Analyze for cascade patterns
-        cascade_info = {
+        cascade_info: Dict[str, Any] = {
             "detected": True,
             "patterns": [],
             "affected_tests": [],
@@ -277,7 +277,6 @@ class ValidationLoop:
         if not validation_report.cascade_detected:
             return None
 
-        import uuid
 
         # Create new incident for cascade
         cascade_incident_id = f"cascade_{validation_report.incident_id}"

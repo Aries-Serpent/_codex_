@@ -12,7 +12,6 @@ Usage:
 import importlib
 import subprocess
 import sys
-from typing import List, Tuple
 
 import pytest
 

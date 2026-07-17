@@ -180,15 +180,15 @@ class TestTypeConversionAndValidation:
     def test_bool_conversion(self):
         """Test boolean conversion"""
         # Truthy values
-        assert bool(1) == True
-        assert bool("hello") == True
-        assert bool([1]) == True
+        assert bool(1)
+        assert bool("hello")
+        assert bool([1])
         
         # Falsy values
-        assert bool(0) == False
-        assert bool("") == False
-        assert bool([]) == False
-        assert bool(None) == False
+        assert not bool(0)
+        assert not bool("")
+        assert not bool([])
+        assert not bool(None)
     
     def test_list_conversion(self):
         """Test list conversion"""

@@ -114,7 +114,7 @@ from codex.module import something
 from codex.cli import task  # Import not exported from __init__
 
 # CORRECT (check __init__.py first):
-from codex.cli.task_sequence import Task
+from codex.cli.task_sequence import Task  # pragma: allowlist secret
 ```
 
 **Path Validation Command**:

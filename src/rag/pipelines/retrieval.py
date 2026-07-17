@@ -20,14 +20,15 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
-from .embedding import EmbeddingPipeline
 from rag.security import (
     sanitize_query,
+    validate_document_id,
     validate_filters,
     validate_metadata,
-    validate_document_id,
     validate_top_k,
 )
+
+from .embedding import EmbeddingPipeline
 
 # Configure logging
 logger = logging.getLogger(__name__)

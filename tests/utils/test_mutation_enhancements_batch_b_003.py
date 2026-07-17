@@ -179,12 +179,12 @@ class TestReturnValueMutations:
             return x < 0
         
         # Test True return
-        assert is_positive(5) == True
-        assert is_positive(5) != False
+        assert is_positive(5)
+        assert is_positive(5)
         
         # Test False return
-        assert is_positive(-5) == False
-        assert is_positive(-5) != True
+        assert not is_positive(-5)
+        assert not is_positive(-5)
         
         # Test return value consistency
         assert is_positive(5) == (not is_negative(5))

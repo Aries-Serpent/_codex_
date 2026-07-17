@@ -11,11 +11,9 @@ Implements 8-gate compliance validation for proposals:
 - Gate 8: Rollback Instruction Completeness
 """
 
-import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import jsonschema

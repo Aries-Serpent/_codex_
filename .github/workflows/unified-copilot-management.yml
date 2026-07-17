@@ -31,8 +31,10 @@ jobs:
   agent-checkin:
     if: github.event.inputs.operation == 'agent-checkin' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Agent check-in
         run: echo "Copilot agent checking in..."
 
@@ -40,8 +42,10 @@ jobs:
   session-done:
     if: github.event.inputs.operation == 'session-done' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Mark session complete
         run: echo "Marking Copilot session as done..."
 
@@ -49,8 +53,10 @@ jobs:
   vars-bootstrap:
     if: github.event.inputs.operation == 'vars-bootstrap' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Bootstrap variables
         run: echo "Bootstrapping agent variables..."
 
@@ -58,9 +64,11 @@ jobs:
   automation:
     if: github.event.inputs.operation == 'automation' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [vars-bootstrap]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run Copilot automations
         run: echo "Executing Copilot automations..."
 
@@ -68,8 +76,10 @@ jobs:
   issue-triage:
     if: github.event.inputs.operation == 'issue-triage' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Triage issues
         run: echo "Running issue triage automation..."
 
@@ -77,8 +87,10 @@ jobs:
   self-healing:
     if: github.event.inputs.operation == 'self-healing' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Self-healing checks
         run: echo "Running iterative self-healing checks..."
 
@@ -86,8 +98,10 @@ jobs:
   session-injector:
     if: github.event.inputs.operation == 'session-injector' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Inject PR session context
         run: echo "Injecting session context into PR..."
 
@@ -95,8 +109,10 @@ jobs:
   review-responder:
     if: github.event.inputs.operation == 'review-responder' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Respond to reviews
         run: echo "Processing review responses..."
 
@@ -104,15 +120,19 @@ jobs:
   session-chain:
     if: github.event.inputs.operation == 'session-chain' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [session-injector, review-responder]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Chain sessions
         run: echo "Chaining Copilot sessions..."
 
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [agent-checkin, session-done, vars-bootstrap, automation, issue-triage, self-healing, session-injector, review-responder, session-chain]
     steps:
       - name: Copilot management complete

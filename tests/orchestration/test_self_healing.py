@@ -9,28 +9,27 @@ Test coverage:
   ✅ Cross-Lane Orchestration (4+ tests)
 """
 
-import pytest
 import sys
+from datetime import datetime
 from pathlib import Path
-from datetime import datetime, timezone
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from orchestration.healing import (
-    IncidentDetector,
-    StrategyGenerator,
     ActionExecutor,
     ApprovalRouter,
-    ValidationLoop,
+    ApprovalStatus,
     CrossLaneOrchestrator,
     FailureType,
+    IncidentDetector,
     Severity,
-    ExecutionStatus,
-    ApprovalStatus,
+    StrategyGenerator,
+    ValidationLoop,
     ValidationStatus,
 )
-
 
 # ==================== INCIDENT DETECTION TESTS (12 tests) ====================
 

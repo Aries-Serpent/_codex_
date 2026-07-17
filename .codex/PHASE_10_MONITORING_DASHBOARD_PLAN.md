@@ -630,7 +630,7 @@ def check_monitoring():
     # Check Datadog API
     response = requests.get(
         'https://api.datadoghq.com/api/v1/validate',
-        headers={'DD-API-KEY': os.getenv('DATADOG_API_KEY')}
+        headers={'DD-API-KEY': os.getenv('DATADOG_API_KEY')}  # pragma: allowlist secret
     )
     return response.json().get('valid', False)
 ```

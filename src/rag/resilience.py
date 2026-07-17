@@ -91,7 +91,7 @@ class RetryStrategy:
             FailureType indicating error category
         """
         error_msg = str(error).lower()
-        error_type = type(error).__name__.lower()
+        type(error).__name__.lower()
 
         # Timeout errors
         if isinstance(error, TimeoutError) or "timeout" in error_msg:

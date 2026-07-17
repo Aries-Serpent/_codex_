@@ -11,10 +11,6 @@ Tests that validate all development tools work correctly:
 
 import subprocess
 import sys
-from pathlib import Path
-from typing import Tuple
-
-import pytest
 
 
 class TestPytestTool:

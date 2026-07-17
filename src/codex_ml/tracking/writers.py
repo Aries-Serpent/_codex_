@@ -686,7 +686,7 @@ class WandbWriter(BaseWriter):
         try:  # optional dependency
             import wandb
 
-            self._run = wandb.init(
+            self._run = wandb.init(  # type: ignore[attr-defined]
                 project=project,
                 name=run_name,
                 tags=list(tags.values()),

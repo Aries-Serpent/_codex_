@@ -7,13 +7,14 @@ Manages A/B testing between baseline and quantized models with statistical analy
 import json
 import logging
 import random
-from dataclasses import dataclass, field, asdict
+from collections import defaultdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Callable
+from typing import Any, Dict, List, Optional
+
 import numpy as np
-from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 

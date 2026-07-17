@@ -9,7 +9,7 @@ This module:
 """
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -239,7 +239,7 @@ class ApprovalRouter:
         from datetime import datetime, timezone
 
         now = datetime.now(timezone.utc)
-        stats = {
+        stats: dict[str, Any] = {
             "total_pending": len(cls._pending_requests),
             "within_sla": 0,
             "sla_exceeded": 0,
@@ -315,7 +315,7 @@ class ApprovalRouter:
         from datetime import datetime, timezone
 
         history = cls._approval_history
-        now = datetime.now(timezone.utc)
+        datetime.now(timezone.utc)
 
         # Calculate approval times
         approval_times = []

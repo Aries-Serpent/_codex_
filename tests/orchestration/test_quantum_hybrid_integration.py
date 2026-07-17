@@ -4,21 +4,20 @@ Integration Tests for Phase 5-6 Quantum-Hybrid Orchestration
 Tests for cross-module interactions and end-to-end workflows.
 """
 
-import pytest
+from orchestration.hybrid.canary_promotion import CanaryPromoter, CanaryStage
+from orchestration.hybrid.cohort_routing import CohortRisk, CohortRouter
 from orchestration.hybrid.decision_domains import (
     DecisionDomain,
     DecisionDomainMapper,
     RiskLevel,
 )
+from orchestration.hybrid.promotion_gates import PromotionGates
 from orchestration.hybrid.shadow_mode import (
+    ExecutionStatus,
     ShadowExecutor,
     SolverResult,
-    ExecutionStatus,
 )
-from orchestration.hybrid.promotion_gates import PromotionGates, GateStatus
-from orchestration.hybrid.cohort_routing import CohortRouter, CohortRisk
-from orchestration.hybrid.sla_monitor import SLAMonitor, SLAMetric, ComplianceStatus
-from orchestration.hybrid.canary_promotion import CanaryPromoter, CanaryStage
+from orchestration.hybrid.sla_monitor import ComplianceStatus, SLAMetric, SLAMonitor
 
 
 class TestPhase5Phase6Integration:

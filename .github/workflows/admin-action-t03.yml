@@ -28,8 +28,8 @@ jobs:
   check-t03:
     name: Check T-03 — security_events scope
     secrets: inherit
-    timeout-minutes: 30
     uses: ./.github/workflows/admin-action-notifier.yml
+    timeout-minutes: 30
     with:
       assignee: mbaetiong
       expected_ok_status: '200'

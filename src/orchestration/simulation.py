@@ -29,11 +29,9 @@ from __future__ import annotations
 import json
 import logging
 import random
-import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -165,7 +163,6 @@ class WorkloadGenerator:
     
     def generate(self) -> list[SimulationTask]:
         """Generate tasks according to profile."""
-        tasks = []
         
         if self.profile == WorkloadProfile.STEADY_STATE:
             return self._generate_steady_state()

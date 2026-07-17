@@ -32,7 +32,7 @@ Install extras selectively or expect the listed suites to skip.
 
 | Area | Command | Required Extras | Skip Signal |
 | --- | --- | --- | --- |
-| Tokeniser CLI | `pytest tests/cli/test_tokenizer_cli.py -q` | `.[test,tokenizers]` | `Skipped: could not import 'transformers'` |
+| Tokeniser CLI | `pytest tests/cli/test_tokenizer_cli.py -q` | `.[test,tokenizers]` | `Skipped: could not import 'transformers'` | <!-- pragma: allowlist secret -->
 | Functional trainer | `pytest tests/training/test_functional_training_main.py -q` | `.[test,ml]` | `Skipped: torch not installed` |
 | Experiment tracking | `pytest tests/tracking/test_mlflow_offline_guard.py -q` | `.[test,tracking]` | `Skipped: could not import 'mlflow'` |
 | Monitoring dashboards | `pytest tests/monitoring/test_codex_logging_bootstrap.py -q` | `.[test,tracking]` | `Skipped: could not import 'wandb'` |

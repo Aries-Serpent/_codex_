@@ -118,7 +118,7 @@ def test_device_handling_cpu_only():
 |-----------|-------|-------|---|
 | `TestAPIEndpoints` | 7 | GET/POST/PUT/DELETE, status codes, response formats | 700 |
 | `TestErrorHandling` | 4 | 404/500 errors, validation failures, timeouts | 400 |
-| `TestAuthN_AuthZ` | 4 | Token validation, role-based access, JWT refresh | 500 |
+| `TestAuthN_AuthZ` | 4 | Token validation, role-based access, JWT refresh | 500 | <!-- pragma: allowlist secret -->
 | `TestDatabaseQueries` | 3 | Query composition, filtering, pagination | 400 |
 | `TestServiceIntegration` | 2 | End-to-end workflows, dependency injection | 400 |
 
@@ -144,7 +144,7 @@ def test_invalid_request_returns_400():
     assert response.status_code == 400
 
 # Pattern 3: Auth guard
-def test_endpoint_requires_token():
+def test_endpoint_requires_token():  # pragma: allowlist secret
     client = TestClient(app)
     response = client.get("/api/admin/users")
     assert response.status_code == 401

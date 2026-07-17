@@ -400,10 +400,10 @@ cat .codex/secrets/backups/*.log
 
 Automated rotations run via GitHub Actions:
 
-| Workflow | Schedule | Secrets Rotated |
+| Workflow | Schedule | Secrets Rotated | <!-- pragma: allowlist secret -->
 |----------|----------|-----------------|
-| `auth-token-rotation.yml` | 1st of month, midnight UTC | TOKEN_SECRET_KEY |
-| `auth-secret-rotation.yml` | 1st of month, 2 AM UTC | All auth secrets |
+| `auth-token-rotation.yml` | 1st of month, midnight UTC | TOKEN_SECRET_KEY | <!-- pragma: allowlist secret -->
+| `auth-secret-rotation.yml` | 1st of month, 2 AM UTC | All auth secrets | <!-- pragma: allowlist secret -->
 
 ### Manual Trigger
 
@@ -449,18 +449,18 @@ python3 scripts/phase10/automated_secrets_manager.py --action verify --name SECR
 
 ```
 .codex/
-├── secrets/
-│   └── backups/          # Encrypted secret backups
-│       ├── jwt_secret_<timestamp>.enc
-│       └── secrets_backup_<timestamp>.json.enc
+├── secrets/  # pragma: allowlist secret
+│   └── backups/          # Encrypted secret backups  # pragma: allowlist secret
+│       ├── jwt_secret_<timestamp>.enc  # pragma: allowlist secret
+│       └── secrets_backup_<timestamp>.json.enc  # pragma: allowlist secret
 └── audit/
     └── phase10/          # Audit logs
-        └── secrets-rotation-<timestamp>.log
+        └── secrets-rotation-<timestamp>.log  # pragma: allowlist secret
 
 .github/workflows/
-├── auth-token-rotation.yml      # JWT rotation workflow
-├── auth-secret-rotation.yml     # Multi-secret rotation
-└── phase10-automated-secrets-setup.yml  # Initial setup
+├── auth-token-rotation.yml      # JWT rotation workflow  # pragma: allowlist secret
+├── auth-secret-rotation.yml     # Multi-secret rotation  # pragma: allowlist secret
+└── phase10-automated-secrets-setup.yml  # Initial setup  # pragma: allowlist secret
 ```
 
 ---

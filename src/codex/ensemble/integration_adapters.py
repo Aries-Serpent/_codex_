@@ -1,9 +1,7 @@
 """Integration adapters for ensemble predictions to downstream consumers."""
 
 import logging
-from typing import Any, Dict, List, Optional
-from datetime import datetime
-import json
+from typing import Any, Dict, List
 
 from src.codex.ensemble.types import EnsemblePrediction, ModelPrediction
 

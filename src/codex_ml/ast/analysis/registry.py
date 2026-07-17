@@ -7,7 +7,6 @@ import logging
 from typing import Any, Optional
 
 from codex.logging.adapter import get_default_logger
-
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,
     ComplexityAnalyzer,

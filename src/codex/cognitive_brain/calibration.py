@@ -8,7 +8,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -30,7 +30,7 @@ class ConfidenceCalibrator:
         self.storage_path = storage_path or Path(".codex/reasoning/calibration.json")
 
         # Per-category calibration tracking
-        self.confidence_bins: Dict[str, Dict[str, List[float]]] = defaultdict(
+        self.confidence_bins: Dict[str, Dict[float, List[float]]] = defaultdict(
             lambda: defaultdict(list)
         )
         self.outcomes_by_category: Dict[str, List[bool]] = defaultdict(list)

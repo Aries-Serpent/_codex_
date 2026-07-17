@@ -9,17 +9,12 @@ Test Coverage:
 
 from __future__ import annotations
 
-import json
 import os
-import sqlite3
 import tempfile
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Generator
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
-
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Fixtures
@@ -53,8 +48,9 @@ def client(temp_db_path):
         del sys.modules["cognitive_app.src.server.cli_api_server"]
     
     try:
-        from cognitive_app.src.server.cli_api_server import app as fastapi_app
         from fastapi.testclient import TestClient
+
+        from cognitive_app.src.server.cli_api_server import app as fastapi_app
     except ImportError as e:
         pytest.skip(f"cognitive_app not installed: {e}")
     

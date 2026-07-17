@@ -15,17 +15,12 @@ Comprehensive test suite for configuration management automation including:
 Target: 20+ tests, ≥90% coverage
 """
 
-import pytest  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
-import json
-import yaml
-import tempfile
-import os
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from unittest.mock import Mock, patch, MagicMock
-from dataclasses import dataclass, asdict
 import hashlib
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
+import bcrypt
+import pytest  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 
 # ============================================================================
 # CONFIGURATION MODELS
@@ -203,9 +198,10 @@ class SecretManager:
         self.encryption_key = "default-test-key"
     
     def store_secret(self, name: str, value: str) -> None:
-        """Store a secret value."""
-        # Simulate encryption with simple obfuscation
-        encrypted = hashlib.sha256(value.encode()).hexdigest()
+        """Store a secret value using bcrypt for secure hashing."""
+        # Use bcrypt for secure password hashing (resistant to brute-force attacks)
+        salt = bcrypt.gensalt(rounds=12)
+        encrypted = bcrypt.hashpw(value.encode('utf-8'), salt).decode('utf-8')
         self.secrets[name] = {"encrypted": encrypted, "original": value}
     
     def retrieve_secret(self, name: str) -> Optional[str]:

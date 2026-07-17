@@ -8,7 +8,7 @@ This module implements:
 """
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Dict, List, Optional
@@ -169,7 +169,7 @@ class SREMonitor:
             self.alerts.append(alert)
             logger.warning(f"Latency anomaly detected: {alert.message}")
 
-    def get_slo_compliance(self, target_name: str, compliance_rate: float) -> MonitoringAlert:
+    def get_slo_compliance(self, target_name: str, compliance_rate: float) -> Optional[MonitoringAlert]:
         """Generate alert for SLO non-compliance."""
         target = self.slo_targets.get(target_name)
         if not target:

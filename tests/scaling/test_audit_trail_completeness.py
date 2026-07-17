@@ -3,15 +3,16 @@ Audit Trail Completeness Test Suite for Gate Criterion 7
 Tests immutability, tamper detection, and compliance logging.
 """
 
-import pytest
-import time
 import json
 import sqlite3
-from pathlib import Path
-from datetime import datetime, timedelta
+import time
+
+import pytest
 
 from src.codex.scaling.infrastructure.audit_trail import (
-    AuditTrail, AuditEvent, AuditEventType, AuditSeverity
+    AuditEventType,
+    AuditSeverity,
+    AuditTrail,
 )
 
 

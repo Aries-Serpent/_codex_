@@ -2,13 +2,13 @@
 Shared fixtures for self-healing infrastructure tests.
 """
 
-import pytest
 import asyncio
-from typing import Dict, Any, Optional, List, Callable
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-import json
+from datetime import datetime
 from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
+
+import pytest
 
 
 class ServiceState(Enum):

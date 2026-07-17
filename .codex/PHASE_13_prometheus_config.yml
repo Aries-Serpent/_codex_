@@ -1,0 +1,204 @@
+# PHASE 13 PERMANENT MONITORING - PROMETHEUS CONFIGURATION
+# Production-Ready Prometheus for 24/7 Ops Infrastructure
+# Status: Live (must be deployed by 2026-07-17T20:00Z)
+# Version: 1.0.0
+# Last Updated: 2026-07-16T20:51Z
+
+---
+# Global settings
+global:
+  scrape_interval: 60s            # 60s metrics collection interval
+  evaluation_interval: 30s        # 30s rule evaluation interval
+  external_labels:
+    cluster: 'production'
+    environment: 'prod'
+    monitored_by: 'prometheus-phase13'
+  scrape_timeout: 10s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+      api_version: 'v1'
+
+# Load rules from external files
+rule_files:
+  - '/etc/prometheus/rules/*.yml'
+  - '/etc/prometheus/rules/sla_rules.yml'
+  - '/etc/prometheus/rules/alert_rules.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 15s
+
+  # Node exporter (system metrics)
+  - job_name: 'node'
+    static_configs:
+      - targets: 
+          - 'node-exporter-1:9100'
+          - 'node-exporter-2:9100'
+          - 'node-exporter-3:9100'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # Kubernetes metrics (if applicable)
+  - job_name: 'kubernetes-apiservers'
+    kubernetes_sd_configs:
+      - role: endpoints
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: default;kubernetes;https
+
+  # Kubelet metrics
+  - job_name: 'kubernetes-nodes'
+    kubernetes_sd_configs:
+      - role: node
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+
+  # Pod metrics
+  - job_name: 'kubernetes-pods'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: 'true'
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+
+  # Docker daemon metrics (if using Docker)
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['docker-exporter:9100']
+
+  # Application metrics (codex-ml services)
+  - job_name: 'codex-ml-services'
+    static_configs:
+      - targets:
+          - 'codex-ml-api:9090'
+          - 'codex-ml-worker:9090'
+          - 'codex-ml-serving:9090'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # Database metrics (PostgreSQL)
+  - job_name: 'postgresql'
+    static_configs:
+      - targets:
+          - 'postgres-exporter-primary:9187'
+          - 'postgres-exporter-replica:9187'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # Cache layer metrics (Redis)
+  - job_name: 'redis'
+    static_configs:
+      - targets:
+          - 'redis-exporter-primary:9121'
+          - 'redis-exporter-replica:9121'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # Load balancer metrics
+  - job_name: 'loadbalancer'
+    static_configs:
+      - targets: ['lb-exporter:9100']
+
+  # Custom application metrics (if available)
+  - job_name: 'application-metrics'
+    static_configs:
+      - targets: ['app-metrics:8080']
+    metrics_path: '/metrics'
+
+---
+# Remote Storage Configuration (optional, for long-term retention)
+# Uncomment if using remote storage backend (e.g., Thanos, Cortex)
+# remote_write:
+#   - url: 'http://remote-storage:9009/api/v1/push'
+#     write_relabel_configs:
+#       - source_labels: [__name__]
+#         regex: 'prometheus_.*'
+#         action: drop
+
+# remote_read:
+#   - url: 'http://remote-storage:9009/api/v1/read'
+
+---
+# DEPLOYMENT NOTES
+
+# 1. Deployment Steps:
+#    - Copy this file to /etc/prometheus/prometheus.yml
+#    - Create alert rules files in /etc/prometheus/rules/
+#    - Start Prometheus: systemctl restart prometheus
+#    - Verify: curl http://localhost:9090/api/v1/targets
+
+# 2. Required Exporters (must be running):
+#    - node-exporter (system metrics)
+#    - kube-state-metrics (Kubernetes objects)
+#    - postgres_exporter (PostgreSQL)
+#    - redis_exporter (Redis)
+#    - docker-exporter (if Docker-based)
+
+# 3. Storage Configuration:
+#    - Default: /var/lib/prometheus/ (15 days retention)
+#    - Modify startup flags for different retention:
+#      --storage.tsdb.retention.time=30d (30 days)
+#      --storage.tsdb.retention.size=50GB
+
+# 4. Verification:
+#    - http://localhost:9090/status (Prometheus web UI)
+#    - http://localhost:9090/api/v1/status/runtimeinfo (Runtime info)
+#    - Check targets: http://localhost:9090/api/v1/targets
+
+# 5. Performance Tuning:
+#    - scrape_interval: 60s (default), adjust based on load
+#    - max_samples_per_send: 500
+#    - capacity: adjust based on available memory
+
+# 6. High Availability (optional):
+#    - Run 2+ Prometheus instances with identical configs
+#    - Use Thanos or similar for deduplication
+#    - Point AlertManager to both instances
+
+# SUCCESS CRITERIA (Post-Deployment):
+# ✓ Prometheus collecting metrics every 60 seconds
+# ✓ All targets reporting UP status
+# ✓ Metrics retention configured correctly
+# ✓ Remote storage (if applicable) receiving data
+# ✓ Alert rules loading without errors

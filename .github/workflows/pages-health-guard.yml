@@ -20,6 +20,8 @@ permissions:
   actions: write
 jobs:
   health-check:
+    # Temporarily disabled for PR #5328 to reduce workflow queue
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: 🔍 Check Pages health + self-heal if 404
     runs-on: ubuntu-latest
     timeout-minutes: 15

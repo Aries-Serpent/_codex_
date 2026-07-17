@@ -9,7 +9,7 @@ Implements automatic classification of actions into policy tiers:
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -233,8 +233,8 @@ class PolicyTierEngine:
                 action_description=action_description,
                 tier=final_tier,
                 justification=justification,
-                required_gates=tier_config["required_gates"],
-                required_approvers=tier_config["required_approvers"],
+                required_gates=list(tier_config["required_gates"]),  # type: ignore[arg-type]
+                required_approvers=list(tier_config["required_approvers"]),  # type: ignore[arg-type]
                 risk_score=risk_score,
                 confidence=confidence,
                 escalation_reason=escalation_reason,

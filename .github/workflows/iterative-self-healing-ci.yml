@@ -1,11 +1,13 @@
 ---
 name: Iterative Self-Healing CI
 on:
-  workflow_run:
-    workflows:
-    - '*'
-    types:
-    - completed
+  # DISABLED: workflow_run triggers on ANY workflow completion, causing infinite cascade
+  # Re-enable when cascade mitigation is in place (via explicit workflow list or event filter)
+  # workflow_run:
+  #   workflows:
+  #   - '*'
+  #   types:
+  #   - completed
   workflow_dispatch:
     inputs:
       target_run_id:

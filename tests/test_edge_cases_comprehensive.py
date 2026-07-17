@@ -9,17 +9,8 @@ import pytest
 # Import semantic assertions
 sys.path.insert(0, str(Path(__file__).parent))
 from conftest_semantic_assertions import (
-    assert_zero_boundary,
-    assert_numeric_in_range,
-    assert_positive,
-    assert_non_negative,
-    assert_floats_approximately_equal,
     assert_instance_of,
-    assert_nan_detection,
-    assert_infinity_detection,
-    assert_collection_not_empty,
-    assert_collection_length,
-    assert_string_not_empty,
+    assert_zero_boundary,
 )
 
 # ============================================================================

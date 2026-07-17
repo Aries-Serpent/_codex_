@@ -12,17 +12,17 @@ Features:
 Gate Criterion 7: Audit trail complete for compliance (all tenant operations logged)
 """
 
-import logging
-import time
-import json
 import hashlib
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Set, Tuple
-from enum import Enum
-from datetime import datetime, timedelta
-import threading
+import json
+import logging
 import sqlite3
+import threading
+import time
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -403,7 +403,6 @@ class AuditTrail:
                     """)
                 
                 prev_hash = None
-                tamper_detected = False
                 
                 for row in cursor.fetchall():
                     event_id = row[0]

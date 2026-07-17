@@ -61,7 +61,7 @@
 |------|---------------|--------|
 | `test_hf_loader_basic_import` | line 202 | ✅ PASSED |
 | `test_symbolic_pipeline_import` | line 208 | ✅ PASSED |
-| `test_pipeline_module_import` | line 214 | ⏭️ SKIPPED (tokenizers dependency) |
+| `test_pipeline_module_import` | line 214 | ⏭️ SKIPPED (tokenizers dependency) | <!-- pragma: allowlist secret -->
 | `test_inference_mock_forward_pass` | line 222 | ⏭️ SKIPPED (torch not available) |
 | `test_model_registry_import` | line 241 | ⏭️ SKIPPED (torch dependencies) |
 | `test_deployment_module_import` | line 249 | ✅ PASSED |

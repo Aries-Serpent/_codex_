@@ -9,14 +9,13 @@ This module provides common fixtures for:
 - Deployment pipelines
 """
 
-import pytest
-import json
-from typing import Dict, List, Any, Optional, Callable
-from dataclasses import dataclass, field
-from enum import Enum
-from datetime import datetime, timedelta
 import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
+import pytest
 
 # ============================================================================
 # ENUMS

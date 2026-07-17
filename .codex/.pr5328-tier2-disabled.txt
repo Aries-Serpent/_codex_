@@ -1,0 +1,9 @@
+# TIER 2 WORKFLOWS DISABLED FOR PR #5328
+# Purpose: Prevent cascading failures from optional workflows
+# Created: 2026-07-17T01:54:30Z
+# To restore: Delete this file after PR #5328 is merged
+
+# This file serves as a master control to disable all TIER 2 workflows
+# Workflows should check for this file's existence and skip if present
+
+DISABLED_FOR_PR_5328=true

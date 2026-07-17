@@ -12,11 +12,11 @@ Sources:
 Output: Normalized findings list + ingest metrics
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Set
-from enum import Enum
 import hashlib
+from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Set
 
 
 class FindingSeverity(str, Enum):

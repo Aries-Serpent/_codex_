@@ -8,9 +8,8 @@ Tests performance and scalability covering:
 - Horizontal scaling capability
 """
 
+
 import pytest
-from unittest.mock import Mock, patch
-import time
 
 
 @pytest.mark.integration

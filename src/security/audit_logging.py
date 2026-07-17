@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import json
 import logging
-import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -165,7 +164,7 @@ class SecurityAuditLogger:
                 status=event.status,
                 resource=event.resource,
             )
-        except Exception as exc:
+        except Exception:
             # Fallback to standard logging
             fallback_logger.info(f"Security event: {event.to_json()}", exc_info=False)
 
@@ -296,6 +295,9 @@ class SecurityAuditLogger:
         event : SecurityEvent
             Event to write
         """
+        if not self.audit_log_path:
+            return
+        
         try:
             with open(self.audit_log_path, "a", encoding="utf-8") as f:
                 f.write(event.to_json() + "\n")

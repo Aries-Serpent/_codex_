@@ -11,7 +11,6 @@ This module:
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from orchestration.healing.strategy_generator import (
@@ -191,7 +190,7 @@ class ActionExecutor:
                             )
                         )
             else:
-                logger.warning(f"No approval callback for T2 strategy")
+                logger.warning("No approval callback for T2 strategy")
 
         elif plan.tier == "T3":
             # Escalate to governance
@@ -314,11 +313,11 @@ class ActionExecutor:
 
         elif action.action_type == StrategyType.FIX_CONFTEST:
             # Fix conftest
-            return f"conftest.py fixed"
+            return "conftest.py fixed"
 
         elif action.action_type == StrategyType.APPLY_SECURITY_PATCH:
             # Apply security patch
-            return f"Security patch applied"
+            return "Security patch applied"
 
         elif action.action_type == StrategyType.SKIP_FLAKY:
             # Skip flaky test
@@ -326,11 +325,11 @@ class ActionExecutor:
 
         elif action.action_type == StrategyType.NOTIFY_OWNER:
             # Notify owner
-            return f"Owner notified"
+            return "Owner notified"
 
         elif action.action_type == StrategyType.ESCALATE:
             # Escalate
-            return f"Escalated to governance"
+            return "Escalated to governance"
 
         else:
             raise ValueError(f"Unknown action type: {action.action_type}")

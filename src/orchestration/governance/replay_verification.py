@@ -13,7 +13,7 @@ verification uses cryptographic hashes and deterministic RNG seeding.
 
 import logging
 import random  # noqa: S311  # Used for test simulation, not cryptography
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 

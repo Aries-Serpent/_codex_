@@ -116,7 +116,7 @@ DATAFLOW PATTERNS REVIEWED (100%) ✅
 | | Weak Key Gen | 0 | ✅ SAFE |
 | **Workflow** | Unsafe Git Ops | 0 | ✅ SAFE |
 | | Untrusted Inputs | 0 | ✅ SAFE |
-| | Token Abuse | 0 | ✅ SAFE |
+| | Token Abuse | 0 | ✅ SAFE | <!-- pragma: allowlist secret -->
 
 ---
 

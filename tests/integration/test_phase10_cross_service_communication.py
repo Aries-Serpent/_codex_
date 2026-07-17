@@ -8,9 +8,8 @@ Tests cross-service communication covering:
 - Service health propagation
 """
 
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-import json
 
 
 @pytest.mark.integration

@@ -15,14 +15,12 @@ Test Categories:
 Total: 20+ comprehensive tests
 """
 
-import time
 import uuid
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict, Optional
+from unittest.mock import MagicMock
 
 import pytest
-
 
 # ============================================================================
 # FIXTURES & HELPERS

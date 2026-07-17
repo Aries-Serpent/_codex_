@@ -227,7 +227,7 @@ print(f"transformers: {transformers.__version__}")  # Should be >= 4.20.0
 
 # Test known breaking APIs
 try:
-    from transformers import AutoTokenizer
+    from transformers import AutoTokenizer  # pragma: allowlist secret
     print("✅ transformers compatible")
 except ImportError as e:
     print(f"❌ transformers incompatible: {e}")
@@ -249,7 +249,7 @@ dependencies = [
 ]
 
 # Option B: Update code to use new API
-from transformers import AutoTokenizer  # Old: from transformers import TransformerModel
+from transformers import AutoTokenizer  # Old: from transformers import TransformerModel  # pragma: allowlist secret
 
 # Option C: Release v0.2.1 with fixes
 ```

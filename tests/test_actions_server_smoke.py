@@ -17,7 +17,6 @@ import pytest
 from freezegun import freeze_time
 
 
-
 def _get(url: str, timeout: int = 5, max_retries: int = 5):
     """
     GET request with retry logic for resilience.

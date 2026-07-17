@@ -239,7 +239,7 @@ class TestEnumValidation:
                         if isinstance(prop_def, dict) and "enum" in prop_def:
                             # Check for description
                             assert "description" in prop_def or "title" in prop_def, \
-                                f"Enum should have documentation"
+                                "Enum should have documentation"
             except (json.JSONDecodeError, UnicodeDecodeError, AssertionError):
                 continue
 
@@ -399,6 +399,6 @@ class TestSchemaDocumentation:
                     total = len(props)
                     # At least 20% should have descriptions
                     if total > 0:
-                        assert described >= total * 0.2, f"Too few properties with descriptions"
+                        assert described >= total * 0.2, "Too few properties with descriptions"
             except (json.JSONDecodeError, UnicodeDecodeError, AssertionError):
                 continue

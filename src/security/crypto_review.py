@@ -10,13 +10,11 @@ This module provides:
 
 from __future__ import annotations
 
-import hashlib
 import logging
 import os
 import re
-import ssl
 from enum import Enum
-from typing import Optional, Set
+from typing import Any, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -143,11 +141,11 @@ class CryptographicReviewer:
         if tls_version == TLSVersion.TLS_12:
             return (
                 True,
-                f"TLS 1.2 is acceptable but TLS 1.3 is recommended for better security.",
+                "TLS 1.2 is acceptable but TLS 1.3 is recommended for better security.",
             )
 
         if tls_version == TLSVersion.TLS_13:
-            return (True, f"TLS 1.3 is excellent. No issues found.")
+            return (True, "TLS 1.3 is excellent. No issues found.")
 
         return (False, f"Unexpected TLS version: {version}")
 
@@ -276,7 +274,7 @@ class CryptographicReviewer:
         return (len(missing) == 0, missing)
 
 
-def get_crypto_strength_assessment(algorithms: dict[str, str]) -> dict:
+def get_crypto_strength_assessment(algorithms: dict[str, str]) -> dict[str, Any]:
     """Get overall cryptographic strength assessment.
 
     Parameters
@@ -290,7 +288,7 @@ def get_crypto_strength_assessment(algorithms: dict[str, str]) -> dict:
         Assessment with recommendations
     """
     reviewer = CryptographicReviewer()
-    assessment = {
+    assessment: dict[str, Any] = {
         "overall_strength": CryptoStrength.EXCELLENT,
         "algorithms": {},
         "recommendations": [],

@@ -16,18 +16,16 @@ This test module validates the complete training pipeline including:
 
 import time
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict
 
-import pytest
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
-
 from tests.full.training_fixtures import (
     MiniTransformerModel,
     SyntheticCodeDataset,
     TrainingState,
 )
+from torch.utils.data import DataLoader
 
 
 class TestDataLoading:

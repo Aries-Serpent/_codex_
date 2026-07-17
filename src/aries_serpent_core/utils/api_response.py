@@ -62,7 +62,7 @@ def handle_response(
 
 def check_status(
     response: Any,
-    codes: List[int] = None,
+    codes: Optional[List[int]] = None,
 ) -> None:
     """
     Assert response has expected status code.

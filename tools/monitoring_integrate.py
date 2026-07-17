@@ -79,7 +79,7 @@ def log_change(title: str, path: Path, rationale: str, body_snippet: str = "") -
 # ---------------- Optional imports with graceful fallback ----------------
 
 
-def try_import(module_name: str) -> object:
+def try_import(module_name: str) -> Any:
     try:
         return __import__(module_name)
     except Exception:
@@ -137,12 +137,12 @@ class SystemMetrics(threading.Thread):
                     )
                 if self.gpu_ok:
                     try:
-                        count = pynvml.nvmlDeviceGetCount()  # type: ignore[attr-defined]
+                        count = pynvml.nvmlDeviceGetCount()
                         gpus = []
                         for i in range(count):
-                            h = pynvml.nvmlDeviceGetHandleByIndex(i)  # type: ignore[attr-defined]
-                            util = pynvml.nvmlDeviceGetUtilizationRates(h)  # type: ignore[attr-defined]
-                            mem = pynvml.nvmlDeviceGetMemoryInfo(h)  # type: ignore[attr-defined]
+                            h = pynvml.nvmlDeviceGetHandleByIndex(i)
+                            util = pynvml.nvmlDeviceGetUtilizationRates(h)
+                            mem = pynvml.nvmlDeviceGetMemoryInfo(h)
                             gpus.append(
                                 {
                                     "index": i,
@@ -169,7 +169,7 @@ class SystemMetrics(threading.Thread):
         self._stop_event.set()
         if self.gpu_ok:
             try:
-                pynvml.nvmlShutdown()  # type: ignore[attr-defined]
+                pynvml.nvmlShutdown()
             except Exception:
                 _ = None  # suppressed: no action needed
 

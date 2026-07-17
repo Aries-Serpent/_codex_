@@ -15,22 +15,16 @@ Test Coverage: ≥90%
 Confidence Target: ≥0.90
 """
 
-import pytest
-import asyncio
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional, List
-from .conftest import (
-    ServiceState,
-    RecoveryAction,
-    MockService,
-    MockDatabase,
-    MockCache,
-    CircuitBreaker,
-    ExponentialBackoffRetry,
-    StateManager,
-    RecoveryProcedure
-)
 
+import pytest
+
+from .conftest import (
+    MockService,
+    RecoveryAction,
+    RecoveryProcedure,
+    ServiceState,
+)
 
 # ============================================================================
 # TEST CATEGORY 1: Service Restart Recovery Procedures

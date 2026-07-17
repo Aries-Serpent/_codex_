@@ -15,9 +15,8 @@ import hmac
 import logging
 import time
 from collections import defaultdict
-from typing import Any, Callable, Dict, Optional, TypeVar
-
 from functools import wraps
+from typing import Any, Callable, Dict, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 

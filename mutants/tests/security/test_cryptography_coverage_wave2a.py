@@ -7,6 +7,14 @@ Covers CVE fixes:
   - CVE-2023-50782: Decryption bypass
   - CVE-2024-0727: PKCS12 DoS crash
   - CVE-2026-34073: DNS constraint bypass
+
+SECURITY NOTICE:
+This test module deliberately uses weak cryptography patterns (CBC without
+authentication, hardcoded test keys) for testing and coverage purposes only.
+This code is NOT used in production. All suppressions for CodeQL/Semgrep
+findings in this file are intentional and justified.
+
+Code coverage: CWE-327 (Weak Cryptography), CWE-522 (Hardcoded Secrets)
 """
 
 import os
@@ -183,18 +191,24 @@ class TestCryptographyEncryption:
 
     def test_aes_encryption_decryption_cbc_legacy(self, sample_data):
         """Test AES encryption in CBC mode (DEPRECATED).
-        
+         
         DEPRECATED: CBC without authentication is not recommended.
         This test is kept for backward compatibility only.
         Use test_aes_encryption_decryption_gcm instead for authenticated encryption.
-        
+          
         CWE-327: Use of Weak Cryptography - Remediation:
         GCM mode provides authenticated encryption preventing tampering.
+          
+        SECURITY NOTE: This is intentional test code for coverage of legacy encryption.
+        The codebase should use GCM mode for all new code. This method deliberately uses
+        weak CBC mode to test backward compatibility. Not used in production.
         """
         pass  # removed redundant `import os` (top-level import used)
         key = os.urandom(32)  # 256-bit key
         iv = os.urandom(16)  # 128-bit IV
-
+  
+        # lgtm[py/mode-without-authentication] - Intentional: Legacy crypto coverage
+        # nosemgrep: python.cryptography.security.mode-without-authentication
         cipher = Cipher(
             algorithms.AES(key),
             modes.CBC(iv),
@@ -212,6 +226,8 @@ class TestCryptographyEncryption:
         ciphertext = encryptor.update(padded_data) + encryptor.finalize()
 
         # Decrypt
+        # lgtm[py/mode-without-authentication] - Intentional: Test code for legacy crypto coverage
+        # nosemgrep: python.cryptography.security.mode-without-authentication
         cipher2 = Cipher(
             algorithms.AES(key),
             modes.CBC(iv),

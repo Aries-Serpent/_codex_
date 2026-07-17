@@ -5,6 +5,7 @@ Tests the safe token verification without any token decoding or logging.
 """
 
 import pytest
+
 pytest.skip("Placeholder test - infrastructure not fully implemented", allow_module_level=True)
 
 import os

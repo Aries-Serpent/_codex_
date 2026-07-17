@@ -9,10 +9,10 @@ Tracks metrics and provides adaptive feedback:
 Success metric: Accurate ETA within ±1 week
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
 import statistics
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List
 
 
 @dataclass
@@ -38,7 +38,7 @@ class BurndownReport:
     eta_completion_days: float = 0.0
     trend: str = "stable"  # accelerating, stable, decelerating
 
-    def get_summary(self) -> Dict[str, any]:
+    def get_summary(self) -> Dict[str, Any]:
         """Get report summary."""
         return {
             "week": self.week_number,
@@ -157,7 +157,7 @@ class BurndownTracker:
         self.week_reports.append(report)
         return report
 
-    def get_burndown_summary(self) -> Dict[str, any]:
+    def get_burndown_summary(self) -> Dict[str, Any]:
         """Get overall burndown summary."""
         if not self.snapshots:
             return {

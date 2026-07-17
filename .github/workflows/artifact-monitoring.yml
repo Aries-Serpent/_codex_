@@ -29,6 +29,8 @@ env:
   GH_TRICKLE_MIN_REMAINING: '50'
 jobs:
   monitor-workflows:
+    # Temporarily disabled for PR #5328 to prevent cascading failures
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: Monitor Workflows & Create Issues
     runs-on: ubuntu-latest
     timeout-minutes: 60

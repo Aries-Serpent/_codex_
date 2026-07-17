@@ -22,8 +22,10 @@ jobs:
   accountability-report:
     if: github.event.inputs.operation == 'accountability' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Post accountability report
         run: echo "Posting accountability report to discussion..."
 
@@ -31,8 +33,10 @@ jobs:
   ci-status-report:
     if: github.event.inputs.operation == 'ci-status' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Post CI status
         run: echo "Posting CI status to discussion..."
 
@@ -40,8 +44,10 @@ jobs:
   merge-validation:
     if: github.event.inputs.operation == 'validation' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run post-merge validation
         run: echo "Running post-merge validation checks..."
 
@@ -49,15 +55,19 @@ jobs:
   phase-reporting:
     if: github.event.inputs.operation == 'phase-reporting' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [accountability-report, ci-status-report, merge-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Post phase updates
         run: echo "Posting phase updates to discussion..."
 
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [accountability-report, ci-status-report, merge-validation, phase-reporting]
     steps:
       - name: Post-merge management complete

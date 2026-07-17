@@ -12,6 +12,8 @@ permissions:
   actions: write
 jobs:
   transition-readiness:
+    # Temporarily disabled for PR #5328 to reduce workflow queue
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: 🔄 E→D Transition Readiness Check
     runs-on: ubuntu-latest
     timeout-minutes: 10

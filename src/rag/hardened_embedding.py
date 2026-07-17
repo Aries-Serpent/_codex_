@@ -15,9 +15,7 @@ Target Reliability: 99%+
 
 from __future__ import annotations
 
-import hashlib
 import logging
-from dataclasses import dataclass
 from typing import Optional
 
 from rag.monitoring import OperationMetric, get_rag_monitor
@@ -28,7 +26,6 @@ from rag.pipelines.embedding import (
 )
 from rag.resilience import AdaptiveRetryStrategy, RetryConfig
 from rag.timeout_manager import (
-    TimeoutConfig,
     TimeoutManager,
     get_default_timeout_manager,
 )
@@ -185,7 +182,7 @@ class HardenedEmbeddingPipeline(EmbeddingPipeline):
         try:
             result, metrics = self.retry_strategy.execute_with_retries(
                 embed_fn,
-                operation_name=f"embed_text",
+                operation_name="embed_text",
             )
 
             embedding, model_name = result

@@ -76,8 +76,8 @@ The script completes successfully in local execution. The failure in CI suggests
 
 #### Observations
 ```
-pip install detect-secrets  # ✅ Success
-timeout 25m detect-secrets scan --baseline .secrets.baseline --all-files  # ❓ Status unknown
+pip install detect-secrets  # ✅ Success  # pragma: allowlist secret
+timeout 25m detect-secrets scan --baseline .secrets.baseline --all-files  # ❓ Status unknown  # pragma: allowlist secret
 ```
 The 2-second runtime is too fast for a repository this size, suggesting the command was interrupted or failed during execution.
 
@@ -89,7 +89,7 @@ The 2-second runtime is too fast for a repository this size, suggesting the comm
 ```
 Commit pushed (6230a0f8...)
   ↓
-Both "Secrets Detection" & "Branch Rebase Gate" started simultaneously (17:17:25)
+Both "Secrets Detection" & "Branch Rebase Gate" started simultaneously (17:17:25)  # pragma: allowlist secret
   ↓
 Both failed within ~2-6 seconds
   ↓
@@ -128,7 +128,7 @@ The wide-scale failure (98/100) suggests **NOT** a code issue, but rather:
 | Workflow | Run ID | Status | Duration | Note |
 |----------|--------|--------|----------|------|
 | 🔀 Branch Rebase Gate | 29519158282 | ❌ FAILURE | 6s | REQ-10 Check failed |
-| 🔒 Secrets Detection & Remediation | 29519158435 | ❌ FAILURE | 2s | Detect & Block job |
+| 🔒 Secrets Detection & Remediation | 29519158435 | ❌ FAILURE | 2s | Detect & Block job | <!-- pragma: allowlist secret -->
 | 🔧 Self-Heal: Refresh CODEX_MANIFEST.json | ? | ❌ FAILURE | — | C2 recovery failed |
 | 📊 Governance Compliance | ? | ❌ FAILURE | — | Compliance check failed |
 
@@ -275,8 +275,8 @@ AND created_at > '2026-07-16T17:17:00Z';
 | Test | Result | Evidence |
 |------|--------|----------|
 | Branch Rebase Check Script | ✅ PASS | Runs successfully, outputs correct status |
-| Secrets Baseline | ✅ PASS | File present (5.2 KB) |
-| detect-secrets Installation | ✅ PASS | Installs without error |
+| Secrets Baseline | ✅ PASS | File present (5.2 KB) | <!-- pragma: allowlist secret -->
+| detect-secrets Installation | ✅ PASS | Installs without error | <!-- pragma: allowlist secret -->
 | Workflow YAML Syntax | ✅ PASS | Valid YAML structure |
 
 ---

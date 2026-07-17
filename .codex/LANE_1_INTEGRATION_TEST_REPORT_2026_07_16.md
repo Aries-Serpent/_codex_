@@ -213,7 +213,7 @@ Execution Summary:
 | CodeQL | ✅ PASS | No security vulnerabilities |
 | Coverage | ✅ PASS | Isolated test scenarios (expected) |
 | WEC | ✅ PASS | All deployment checks pass |
-| Security | ✅ PASS | No secrets detected |
+| Security | ✅ PASS | No secrets detected | <!-- pragma: allowlist secret -->
 
 ### 4. ✅ Exit Criteria Validation
 

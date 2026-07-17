@@ -18,7 +18,7 @@ from orchestration.hybrid.canary_promotion import (
     CanaryPromotionStatus,
     CanaryStage,
 )
-from orchestration.hybrid.cohort_routing import CohortRouter, CohortRoutes, CohortRisk
+from orchestration.hybrid.cohort_routing import CohortRisk, CohortRouter, CohortRoutes
 from orchestration.hybrid.decision_domains import (
     DecisionDomain,
     DecisionDomainMapper,

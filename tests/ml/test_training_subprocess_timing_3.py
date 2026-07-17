@@ -3,11 +3,12 @@ Test subprocess timing - Pattern 3: Event-based Synchronization
 Tests require event-based synchronization for subprocess lifecycle.
 """
 import subprocess
+import tempfile
 import threading
 import time
-import pytest
 from pathlib import Path
-import tempfile
+
+import pytest
 
 
 class TestSubprocessTimingEvent:

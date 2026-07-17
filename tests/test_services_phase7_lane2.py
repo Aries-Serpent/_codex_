@@ -14,14 +14,8 @@ Checkpoint: 2026-07-17T04:00Z
 
 from __future__ import annotations
 
-import asyncio
-import logging
 import sys
 from pathlib import Path
-from typing import Any, Optional
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
 
 # Add src to path for proper imports
 src_path = str(Path(__file__).parent.parent / "src")
@@ -383,10 +377,10 @@ class TestWorkflowTypesAndMetadata:
     def test_workflow_metadata_types_imported(self):
         """Test workflow metadata types are importable."""
         from src.services.workflow import (
+            WorkflowDependency,
+            WorkflowJob,
             WorkflowMetadata,
             WorkflowTrigger,
-            WorkflowJob,
-            WorkflowDependency,
         )
 
         assert WorkflowMetadata is not None

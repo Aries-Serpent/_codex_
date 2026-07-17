@@ -12,17 +12,12 @@ This module contains 20+ comprehensive health check validation tests including:
 - Health check grace periods
 """
 
-import pytest
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
-from enum import Enum
-from .conftest import (
-    ServiceState,
-    HealthCheckResult,
-    MockService,
-    MockDatabase,
-    MockCache
-)
+from typing import Any, Dict, List
+
+import pytest
+
+from .conftest import HealthCheckResult, MockCache, MockDatabase, MockService, ServiceState
 
 
 class HTTPHealthChecker:

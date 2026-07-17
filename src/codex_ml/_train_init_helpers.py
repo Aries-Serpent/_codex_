@@ -6,9 +6,9 @@ These helpers encapsulate the initialization logic into smaller,
 testable functions with lower complexity.
 """
 
-import json
 import logging
 import os
+import time
 from pathlib import Path
 from typing import Any, Optional
 
@@ -54,7 +54,7 @@ def setup_differential_privacy_config(
         return None
     
     # Build DP kwargs from environment
-    dp_kwargs = {"enabled": True}
+    dp_kwargs: dict[str, bool | float] = {"enabled": True}
     for field_name, env_name in (
         ("epsilon", f"{env_prefix}EPSILON"),
         ("delta", f"{env_prefix}DELTA"),
@@ -299,7 +299,7 @@ def build_training_state(
     Reduces complexity by extracting state initialization (30+ lines).
     """
     return {
-        "start_time": _now_ts() if '_now_ts' in globals() else None,
+        "start_time": time.time(),
         "model": model,
         "optimizer": optimizer,
         "scheduler": scheduler,
@@ -388,7 +388,7 @@ def setup_model_device_dtype(
                     "requested": req_str or "bf16",
                     "effective": eff,
                     "message": "bf16 requested but parameters not bf16 (downcast)",
-                    "timestamp": _now_ts(),
+                    "timestamp": time.time(),
                 },
             )
     except Exception as e:
@@ -421,9 +421,10 @@ def setup_dataset_and_loader(
     Reduces complexity by extracting dataset initialization logic (15+ branches).
     """
     try:
-        from torch.utils.data import DataLoader
-        from codex_ml.training.toy_dataset import ToyDataset
         from codex_ml.training.collate import _make_casting_collate
+        from codex_ml.training.toy_dataset import ToyDataset
+
+        from torch.utils.data import DataLoader
     except ImportError:
         logger.debug("PyTorch or dataset utilities not available")
         return None, None
@@ -469,6 +470,18 @@ def _first_param_dtype(model: Any) -> Optional[str]:
     try:
         for param in model.parameters():
             return str(param.dtype)
+    except Exception:
+        return None
+
+
+def _select_parameters_for_optimization(model: Any) -> Any:
+    """Select parameters from the model for optimization.
+    
+    Returns:
+        Model parameters iterator, or None if model has no parameters.
+    """
+    try:
+        return list(model.parameters())
     except Exception:
         return None
 

@@ -32,7 +32,7 @@ import pathlib
 import time
 import uuid
 from contextlib import contextmanager
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Iterator, Optional
@@ -163,7 +163,7 @@ class TraceContext:
         return cls._current_trace_id
     
     @classmethod
-    def set_span_id(cls, span_id: str) -> None:
+    def set_span_id(cls, span_id: Optional[str]) -> None:
         cls._current_span_id = span_id
     
     @classmethod
@@ -305,16 +305,16 @@ class HandoffTracer:
         elif format == "prometheus":
             metrics = self.get_metrics_summary()
             lines = [
-                f"# HELP handoff_success_rate Proportion of successful handoffs",
-                f"# TYPE handoff_success_rate gauge",
+                "# HELP handoff_success_rate Proportion of successful handoffs",
+                "# TYPE handoff_success_rate gauge",
                 f"handoff_success_rate {{}} {metrics['handoff_success_rate']}",
-                f"",
-                f"# HELP handoff_latency_ms Average handoff latency in milliseconds",
-                f"# TYPE handoff_latency_ms gauge",
+                "",
+                "# HELP handoff_latency_ms Average handoff latency in milliseconds",
+                "# TYPE handoff_latency_ms gauge",
                 f"handoff_latency_ms {{}} {metrics['avg_latency_ms']}",
-                f"",
-                f"# HELP handoff_sla_compliance Proportion of SLA-compliant handoffs",
-                f"# TYPE handoff_sla_compliance gauge",
+                "",
+                "# HELP handoff_sla_compliance Proportion of SLA-compliant handoffs",
+                "# TYPE handoff_sla_compliance gauge",
                 f"handoff_sla_compliance {{}} {metrics['sla_compliance_rate']}",
             ]
             return "\n".join(lines)

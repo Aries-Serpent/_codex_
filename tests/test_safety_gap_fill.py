@@ -8,10 +8,6 @@ Test Coverage Target: +20pp increase (20.57% → 40%+)
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
-import pytest
-
 
 class TestSafetyModuleImports:
     """Gap-fill test suite targeting safety module initialization."""
@@ -30,9 +26,9 @@ class TestSafetyModuleImports:
         Targets: Module exports
         """
         from codex_ml.safety import (
+            compute_risk_score,
             is_safe,
             sanitize_prompt,
-            compute_risk_score,
         )
         
         assert callable(is_safe)
@@ -380,9 +376,9 @@ class TestSafetyIntegration:
         Targets: Pipeline integration
         """
         from codex_ml.safety import (
-            sanitize_prompt,
             compute_risk_score,
             is_safe,
+            sanitize_prompt,
         )
         
         prompt = "Write a function"
@@ -399,7 +395,7 @@ class TestSafetyIntegration:
         
         Targets: Module consistency
         """
-        from codex_ml.safety import is_safe, compute_risk_score
+        from codex_ml.safety import compute_risk_score, is_safe
         
         text = "Test content"
         

@@ -5,9 +5,10 @@ Implements bottleneck detection, risk scoring, and automated CAPEX recommendatio
 with Pareto frontier analysis for resource optimization.
 """
 
-from typing import List, Dict, Any, Optional, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
 import numpy as np
 
 

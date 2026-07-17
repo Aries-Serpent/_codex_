@@ -11,11 +11,11 @@ This test suite validates:
 5. Production metrics
 """
 
-import pytest
-import json
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
+
+import pytest
 
 
 class PatternLibraryValidator:
@@ -102,7 +102,7 @@ class TestPatternLibrary:
         medium_high = sum(1 for s in scores.values() if 0.88 <= s < 0.92)
         medium = sum(1 for s in scores.values() if 0.85 <= s < 0.88)
         
-        print(f"✅ Confidence distribution:")
+        print("✅ Confidence distribution:")
         print(f"   High (≥0.92): {high_conf}")
         print(f"   Medium-High (0.88-0.91): {medium_high}")
         print(f"   Medium (0.85-0.87): {medium}")

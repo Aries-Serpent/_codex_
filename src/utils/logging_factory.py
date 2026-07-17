@@ -54,7 +54,7 @@ def init_logging(
             if wandb_disable_env and os.environ.get("WANDB_API_KEY") is None:
                 logger.warning("WANDB_API_KEY not found — running wandb in offline mode")
                 os.environ["WANDB_MODE"] = "offline"
-            wandb.init(project=project)
+            wandb.init(project=project)  # type: ignore[attr-defined]
         except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.exception("Failed to initialize wandb; continuing in offline mode: %s", exc)
     elif resolved_mode == "tensorboard":

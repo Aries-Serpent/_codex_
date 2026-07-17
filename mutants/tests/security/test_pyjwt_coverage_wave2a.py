@@ -7,6 +7,14 @@ Covers CVE fixes:
   - CVE-2026-48526: Algorithm confusion
   - CVE-2026-48524: JWKS client exploitation
   - CVE-2026-48522: Unsafe request handling
+
+SECURITY NOTICE:
+This test module deliberately uses test secrets and JWT patterns for testing
+and coverage purposes only. All hardcoded secrets are explicitly marked for
+testing (e.g., 'test-secret-key-for-testing-only') and NOT used in production.
+All CodeQL/Semgrep suppressions in this file are intentional and justified.
+
+Code coverage: CWE-522 (Hardcoded Secrets), CWE-347 (Improper Verification)
 """
 
 import datetime  # pragma: allowlist secret
@@ -15,8 +23,10 @@ import os
 import time
 
 import pytest
-
 from codex.auth.token_manager import TokenManager
+
+# codeql[py/hardcoded-credentials,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
+# nosemgrep: python.jwt.security.jwt-hardcode - Intentional: Test-only hardcoded secrets
 
 
 class TestPyJWTTokenValidation:
@@ -25,6 +35,8 @@ class TestPyJWTTokenValidation:
     @pytest.fixture
     def token_manager(self):
         """Create token manager with test secret."""
+        # lgtm[py/hardcoded-credentials] - False positive: Test secret only
+        # nosemgrep: python.jwt.security.jwt-hardcode
         return TokenManager(secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'))
 
     def test_jwt_valid_token_validation(self, token_manager):

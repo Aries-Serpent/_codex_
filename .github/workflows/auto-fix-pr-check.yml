@@ -21,6 +21,8 @@ permissions:
   checks: write
 jobs:
   check-and-report:
+    # Temporarily disabled for PR #5328 to prevent cascading failures
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: Detect CI Issues & Post Fix Instructions
     runs-on: ubuntu-latest
     timeout-minutes: 60

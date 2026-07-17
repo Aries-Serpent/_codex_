@@ -236,13 +236,21 @@ except (ImportError, AttributeError):  # pragma: no cover - torch missing or stu
         def manual_seed(self, *_args: Any, **_kwargs: Any) -> None:  # pragma: no cover
             return None
 
-    torch = types.SimpleNamespace(
+    torch = types.SimpleNamespace(  # type: ignore[assignment]
         manual_seed=_noop,
         use_deterministic_algorithms=_noop,
         float16="float16",
         bfloat16="bfloat16",
         Generator=_Generator,
-        nn=types.SimpleNamespace(Module=object),
+        nn=types.SimpleNamespace(
+            Module=object,
+            functional=types.SimpleNamespace(
+                cross_entropy=_noop,
+            ),
+            utils=types.SimpleNamespace(
+                clip_grad_norm_=_noop,
+            ),
+        ),
         cuda=types.SimpleNamespace(
             is_available=lambda: False,
             manual_seed_all=_noop,
@@ -279,6 +287,8 @@ snapshot_hydra_config: Any = None
 set_reproducible: Any = None
 safe_load: Any = None
 log_env_info: Any = None
+MissingPyYAMLError: Any = None
+YAMLError: Any = None
 
 
 def _ensure_hf_trainer_imports() -> None:
@@ -302,6 +312,8 @@ def _ensure_hf_trainer_imports() -> None:
     global set_reproducible
     global safe_load
     global log_env_info
+    global MissingPyYAMLError
+    global YAMLError
     
     if split_dataset is not None:
         return  # Already loaded
@@ -355,7 +367,7 @@ def _ensure_hf_trainer_imports() -> None:
         pass
     
     try:
-        from codex_ml.utils.checkpointing import (
+        from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
             build_payload_bytes as _build_payload_bytes,
             load_payload as _load_payload,
             set_seed as _set_seed,
@@ -396,8 +408,10 @@ def _ensure_hf_trainer_imports() -> None:
         pass
     
     try:
-        from codex_ml.utils.yaml_support import safe_load as _safe_load
+        from codex_ml.utils.yaml_support import safe_load as _safe_load, MissingPyYAMLError as _MissingPyYAMLError, YAMLError as _YAMLError
         safe_load = _safe_load
+        MissingPyYAMLError = _MissingPyYAMLError
+        YAMLError = _YAMLError
     except (ImportError, AttributeError):
         pass
     
@@ -1499,7 +1513,7 @@ def run_hf_trainer(
             else output_dir / ("metrics.csv" if writer_choice == "csv" else "metrics.ndjson")
         )
         if writer_choice == "csv":
-            writer_obj = CSVMetricsWriter(str(path))
+            writer_obj: CSVMetricsWriter | NDJSONMetricsWriter = CSVMetricsWriter(str(path))
         else:
             writer_obj = NDJSONMetricsWriter(str(path))
         writer_obj.write(record)

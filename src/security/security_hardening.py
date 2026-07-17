@@ -14,9 +14,8 @@ import logging
 import os
 import re
 import subprocess
-import sys
 from pathlib import Path
-from typing import Any, Callable, Optional, Sequence, TypeVar, Union
+from typing import Any, Callable, Optional, Sequence, TypeVar
 
 import structlog
 
@@ -80,7 +79,7 @@ def _log_security_event(
             logger.warning(f"Security event: {event_type}", **log_data)
         else:
             logger.info(f"Security event: {event_type}", **log_data)
-    except Exception as exc:
+    except Exception:
         # Fallback to standard logging
         msg = f"Security event {event_type}: {context}"
         if severity == "CRITICAL":
@@ -254,7 +253,7 @@ def secure_subprocess_run(
 
         return result
 
-    except subprocess.TimeoutExpired as exc:
+    except subprocess.TimeoutExpired:
         _log_security_event(
             "subprocess_timeout",
             severity="WARNING",
@@ -377,7 +376,7 @@ def validate_input_string(
 
     if pattern is not None:
         if not re.match(pattern, value):
-            raise InputValidationError(f"String does not match required pattern")
+            raise InputValidationError("String does not match required pattern")
 
     if allowed_chars is not None:
         for char in value:

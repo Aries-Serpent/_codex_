@@ -114,7 +114,7 @@ nox -s tests
 |----------|----------|---------|
 | **Sprint Plan** | `.codex/PHASE_4_QUICK_WIN_SPRINT_PLAN.md` | Detailed execution guide |
 | **Module Mapping** | `.codex/TEST_MODULE_MAPPING.md` | Coverage data per module |
-| **Risk Assessment** | `.codex/PHASE_4_RISK_ASSESSMENT.md` | Risk mitigation strategies |
+| **Risk Assessment** | `.codex/PHASE_4_RISK_ASSESSMENT.md` | Risk mitigation strategies | <!-- pragma: allowlist secret -->
 | **Success Criteria** | `.codex/PHASE_4_PHASE_1_SUCCESS_CRITERIA.md` | Detailed success metrics |
 | **Test Patterns** | `tests/test_*.py` (existing) | Example test patterns |
 

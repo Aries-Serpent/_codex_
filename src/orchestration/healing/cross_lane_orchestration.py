@@ -12,7 +12,6 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from orchestration.healing.incident_detection import IncidentReport
-from orchestration.healing.strategy_generator import RepairStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -325,7 +324,7 @@ class CrossLaneOrchestrator:
     @classmethod
     def _count_incidents_by_type(cls) -> Dict[str, int]:
         """Count incidents by type."""
-        type_counts = {}
+        type_counts: Dict[str, int] = {}
         for incident in cls._incidents_by_lane["C"]:
             if incident.lane_c_report:
                 failure_type = incident.lane_c_report.failure_type.value
@@ -336,7 +335,7 @@ class CrossLaneOrchestrator:
     @classmethod
     def _count_incidents_by_severity(cls) -> Dict[str, int]:
         """Count incidents by severity."""
-        severity_counts = {}
+        severity_counts: Dict[str, int] = {}
         for incident in cls._incidents_by_lane["C"]:
             if incident.lane_c_report:
                 severity = incident.lane_c_report.severity.value

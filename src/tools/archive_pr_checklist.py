@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import argparse
 import logging
-import subprocess
 from collections.abc import Iterable, Sequence
 from contextlib import suppress
 from dataclasses import dataclass

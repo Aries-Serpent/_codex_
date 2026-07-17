@@ -2,22 +2,22 @@
 
 import logging
 import time
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
-from dataclasses import dataclass, field
 
 import numpy as np
 
+from src.codex.ensemble.models import (
+    BaseModel,
+    HeuristicModel,
+    MLModel,
+    SymbolicModel,
+)
 from src.codex.ensemble.types import (
     EnsemblePrediction,
     ModelPrediction,
     ModelType,
     PredictionType,
-)
-from src.codex.ensemble.models import (
-    HeuristicModel,
-    MLModel,
-    SymbolicModel,
-    BaseModel,
 )
 
 logger = logging.getLogger(__name__)

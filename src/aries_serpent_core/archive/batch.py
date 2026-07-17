@@ -28,7 +28,7 @@ from collections.abc import Callable, Iterable, Iterator  # noqa: E402
 from contextlib import contextmanager  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Any  # noqa: E402
+from typing import Any, Generator  # noqa: E402
 
 from .config import BatchConfig, PerformanceConfig  # noqa: E402
 from .perf import TimingMetrics, timer  # noqa: E402
@@ -162,7 +162,9 @@ class BatchRestore:
         succeeded = 0
         failed = 0
         performance_enabled = self.performance_config.enabled
-        with _optional_timer(performance_enabled, "batch_restore") as metrics:
+        metrics: TimingMetrics | None = None
+        with _optional_timer(performance_enabled, "batch_restore") as m:
+            metrics = m
             for index, item in enumerate(manifest.items, start=1):
                 entry = self._restore_single(item)
                 if entry["status"] == "SUCCESS":
@@ -214,7 +216,7 @@ class BatchRestore:
 
 
 @contextmanager
-def _optional_timer(enabled: bool, name: str) -> None:
+def _optional_timer(enabled: bool, name: str) -> Generator[TimingMetrics, None, None]:
     if enabled:
         with timer(name) as metrics:
             yield metrics

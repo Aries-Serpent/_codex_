@@ -218,11 +218,11 @@ The Copilot agent environment setup workflow (`.github/workflows/copilot-setup-s
 
 ### Secrets Used by copilot-setup-steps.yml
 
-| Secret Name | Usage in Workflow | Required? | Priority | Current Status |
+| Secret Name | Usage in Workflow | Required? | Priority | Current Status | <!-- pragma: allowlist secret -->
 |-------------|-------------------|-----------|----------|----------------|
-| `CODEX_MASTER_KEY` | Lines 117, 118, 168, 169, 197, 198, 268, 336, 1108, 1113: Primary auth token for agent operations | **YES** | **CRITICAL** | Org secret |
-| `CODEX_BACKUP_KEY` | Lines 118, 169, 198, 268, 336, 1113: Fallback auth token | **YES** | **CRITICAL** | Org secret |
-| `GITHUB_TOKEN` | Line 170, fallback in token chains: Default workflow token | Auto-provided | N/A | Auto-injected |
+| `CODEX_MASTER_KEY` | Lines 117, 118, 168, 169, 197, 198, 268, 336, 1108, 1113: Primary auth token for agent operations | **YES** | **CRITICAL** | Org secret | <!-- pragma: allowlist secret -->
+| `CODEX_BACKUP_KEY` | Lines 118, 169, 198, 268, 336, 1113: Fallback auth token | **YES** | **CRITICAL** | Org secret | <!-- pragma: allowlist secret -->
+| `GITHUB_TOKEN` | Line 170, fallback in token chains: Default workflow token | Auto-provided | N/A | Auto-injected | <!-- pragma: allowlist secret -->
 
 ### PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED
 
@@ -265,12 +265,12 @@ Use this section as the **single maintainer execution source** for manual entry.
 | `AGENT_HANDOFF_TIMEOUT_SECONDS` | `120` | Matches current runtime sync context and handoff baseline |
 | `AUTONOMOUS_ACTIONS_ENABLED` | `true` | Current governance state in master guide |
 | `AUTO_PROMOTE_TIER_ENABLED` | `true` | Current CI promotion setting in master guide |
-| `CODEX_BACKUP_KEY_EXPIRY_DATE` | `2026-08-06` | Token-expiry monitor documented baseline date |
+| `CODEX_BACKUP_KEY_EXPIRY_DATE` | `2026-08-06` | Token-expiry monitor documented baseline date | <!-- pragma: allowlist secret -->
 | `CODEX_CLI_API_URL` | `http://localhost:8765` | Current CLI API endpoint in master guide |
 | `CODEX_GROUNDED_TIER1_COUNT` | `0` | Safe counter initialization for grounded telemetry |
 | `CODEX_GROUNDED_TIER2_COUNT` | `0` | Safe counter initialization for grounded telemetry |
 | `CODEX_LAST_TELEMETRY_DATE` | `2026-06-04` | ISO date seed for telemetry freshness tracking |
-| `CODEX_MASTER_KEY_EXPIRY_DATE` | `2026-08-06` | Token-expiry monitor documented baseline date |
+| `CODEX_MASTER_KEY_EXPIRY_DATE` | `2026-08-06` | Token-expiry monitor documented baseline date | <!-- pragma: allowlist secret -->
 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Current retention setting in master guide |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Current cognitive memory tier in master guide |
 | `COPILOT_AGENT_LAST_SESSION_ID` | `bootstrap-pending` | Placeholder until session workflows write active ID |
@@ -1158,15 +1158,15 @@ After completing all above sections, validate the configuration:
 
 | Category | Count | Source Snapshot |
 |---|---:|---|
-| Environment Secrets | 3 | 2026-06-03T17:39:00Z |
+| Environment Secrets | 3 | 2026-06-03T17:39:00Z | <!-- pragma: allowlist secret -->
 
 #### Maintainer Add/Update Notes — Environment Secrets
 
-| Secret | Expected Action | Rotation / Rule | Reason |
+| Secret | Expected Action | Rotation / Rule | Reason | <!-- pragma: allowlist secret -->
 |---|---|---|---|
 | `CODEX_ENVIRONMENT_RUNNER` | ROTATE/VERIFY | 90-day cadence | Environment runner auth hardening. |
 | `CODEX_RUNNER_SHA256` | UPDATE on runner change | must match active runner binary | Integrity verification for runner payload. |
-| `CODEX_RUNNER_TOKEN` | ROTATE | 90-day cadence or on exposure | Limit long-lived runner token risk. |
+| `CODEX_RUNNER_TOKEN` | ROTATE | 90-day cadence or on exposure | Limit long-lived runner token risk. | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -1174,16 +1174,16 @@ After completing all above sections, validate the configuration:
 
 | Category | Count | Source Snapshot |
 |---|---:|---|
-| Repository Secrets | 7 | 2026-06-03T17:39:00Z |
+| Repository Secrets | 7 | 2026-06-03T17:39:00Z | <!-- pragma: allowlist secret -->
 
 #### Maintainer Add/Update Notes — Repository Secrets
 
-| Secret | Expected Action | Rotation / Rule | Reason |
+| Secret | Expected Action | Rotation / Rule | Reason | <!-- pragma: allowlist secret -->
 |---|---|---|---|
-| `OPENAI_API_KEY` | ROTATE/VERIFY | 90-day cadence | LLM runtime secret hygiene. |
-| `CODEX_WEBHOOK_SECRET` | ROTATE/VERIFY | on webhook infra change or 90-day | Protect webhook signature validation. |
-| `_CODEX_BOT_RUNNER` | ROTATE/VERIFY | 90-day cadence | Bot runner token should not remain static. |
-| `CODEX_GHP_TOKEN_BASE64` / `CODEX_GHP_TOKEN_HEX` | REVIEW necessity | keep one preferred encoding path | Reduce duplicate token encodings unless required for compatibility. |
+| `OPENAI_API_KEY` | ROTATE/VERIFY | 90-day cadence | LLM runtime secret hygiene. | <!-- pragma: allowlist secret -->
+| `CODEX_WEBHOOK_SECRET` | ROTATE/VERIFY | on webhook infra change or 90-day | Protect webhook signature validation. | <!-- pragma: allowlist secret -->
+| `_CODEX_BOT_RUNNER` | ROTATE/VERIFY | 90-day cadence | Bot runner token should not remain static. | <!-- pragma: allowlist secret -->
+| `CODEX_GHP_TOKEN_BASE64` / `CODEX_GHP_TOKEN_HEX` | REVIEW necessity | keep one preferred encoding path | Reduce duplicate token encodings unless required for compatibility. | <!-- pragma: allowlist secret -->
 | `CODEX_REPO_ID` | VERIFY | numeric repo ID current | Keep internal ID references consistent. |
 
 ---
@@ -1192,18 +1192,18 @@ After completing all above sections, validate the configuration:
 
 | Category | Count | Source Snapshot |
 |---|---:|---|
-| Organization Secrets | 13 | 2026-06-03T17:39:00Z |
+| Organization Secrets | 13 | 2026-06-03T17:39:00Z | <!-- pragma: allowlist secret -->
 
 #### Maintainer Add/Update Notes — Organization Secrets
 
-| Secret | Expected Action | Rotation / Rule | Reason |
+| Secret | Expected Action | Rotation / Rule | Reason | <!-- pragma: allowlist secret -->
 |---|---|---|---|
-| `CODEX_MASTER_KEY` | **ROTATE/VERIFY PRIORITY** | 90-day cadence | Primary write token in auth chain. |
-| `CODEX_BACKUP_KEY` | ROTATE/VERIFY | 90-day cadence | Fallback write token; must remain valid. |
-| `CODEX_ADMIN_KEY` | ROTATE/VERIFY | 90-day cadence | Elevated operations token. |
+| `CODEX_MASTER_KEY` | **ROTATE/VERIFY PRIORITY** | 90-day cadence | Primary write token in auth chain. | <!-- pragma: allowlist secret -->
+| `CODEX_BACKUP_KEY` | ROTATE/VERIFY | 90-day cadence | Fallback write token; must remain valid. | <!-- pragma: allowlist secret -->
+| `CODEX_ADMIN_KEY` | ROTATE/VERIFY | 90-day cadence | Elevated operations token. | <!-- pragma: allowlist secret -->
 | `_GITHUB_APP_PRIVATE_KEY` | ROTATE/VERIFY | app key rotation policy | Required for GitHub App JWT auth. |
-| `_GITHUB_APP_CLIENT_SECRET` | ROTATE/VERIFY | app secret rotation policy | OAuth/App exchange integrity. |
-| `HF_TOKEN`, `NPM_TOKEN`, `PYPI_TOKEN`, `_CODEX_ACTION_RUNNER`, `CODECOV_TOKEN` | REVIEW AGE + ROTATE as needed | follow provider policy | Aging secrets should be refreshed on schedule. |
+| `_GITHUB_APP_CLIENT_SECRET` | ROTATE/VERIFY | app secret rotation policy | OAuth/App exchange integrity. | <!-- pragma: allowlist secret -->
+| `HF_TOKEN`, `NPM_TOKEN`, `PYPI_TOKEN`, `_CODEX_ACTION_RUNNER`, `CODECOV_TOKEN` | REVIEW AGE + ROTATE as needed | follow provider policy | Aging secrets should be refreshed on schedule. | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -1221,12 +1221,12 @@ After completing all above sections, validate the configuration:
 | `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | ADD/VERIFY | MUST | Enables context/session restore. |
 | `COPILOT_AGENT_FIREWALL_ENABLED` | `true` | ADD/VERIFY | MUST | Enforces network boundary controls. |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | repo-var current value | ADD/SYNC | MUST | Keep agent allowlist aligned with repo policy. |
-| `COPILOT_AGENT_PREFLIGHT_RULES` | repo-var JSON | ADD/SYNC | MUST | Mandatory preflight, token, and WEC rules. |
+| `COPILOT_AGENT_PREFLIGHT_RULES` | repo-var JSON | ADD/SYNC | MUST | Mandatory preflight, token, and WEC rules. | <!-- pragma: allowlist secret -->
 | `COPILOT_WEC_SELECTION_MATRIX` | repo-var JSON | ADD/SYNC | MUST | Required for WEC workflow selection logic. |
 | `COPILOT_WEC_TEMPLATE_DRIFT` | repo-var JSON | ADD/SYNC | SHOULD | Keeps agent aware of known template drift. |
 | `COPILOT_SESSION_TOOL_CAPABILITIES` | repo-var JSON | ADD/SYNC | SHOULD | Agent capability map for guarded behavior. |
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | ADD/VERIFY | SHOULD | Enables cognitive brain injection controls. |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | ADD/VERIFY | SHOULD | Context budget awareness for agents. |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | ADD/VERIFY | SHOULD | Context budget awareness for agents. | <!-- pragma: allowlist secret -->
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | ADD/VERIFY | SHOULD | Pattern injection threshold consistency. |
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` | ADD/SYNC | SHOULD | Restricts who can update memory/session context. |
 | `CODEX_COVERAGE_THRESHOLD` | `80` | ADD/VERIFY | SHOULD | Useful for agent remediation decisions. |
@@ -1237,19 +1237,19 @@ After completing all above sections, validate the configuration:
 
 ### Agent Secrets (Copilot Agent Settings)
 
-| Secret Name | Source of Truth | Action | Priority | Notes |
+| Secret Name | Source of Truth | Action | Priority | Notes | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|
-| `CODEX_MASTER_KEY` | Org secret | ADD/GRANT/VERIFY | MUST | Primary write/auth token for agent operations. |
-| `CODEX_BACKUP_KEY` | Org secret | ADD/GRANT/VERIFY | MUST | Required fallback in token chain. |
-| `CODEX_ADMIN_KEY` | Org secret | ADD/GRANT/VERIFY | SHOULD | Needed for elevated admin workflows. |
-| `OPENAI_API_KEY` | Repo secret | ADD/GRANT/VERIFY | SHOULD | Needed for LLM-backed tasks where applicable. |
-| `RAG_OPENAI_KEY` | Org secret | ADD/GRANT/VERIFY | MAY | Needed for RAG-specific agent operations. |
-| `CODEX_WEBHOOK_SECRET` | Repo secret | ADD/GRANT/VERIFY | MAY | Needed only for webhook-managing agent flows. |
-| `_GITHUB_APP_ID` | Org secret | ADD/GRANT/VERIFY | SHOULD | GitHub App auth bundle member. |
-| `_GITHUB_APP_INSTALLATION_ID` | Org secret | ADD/GRANT/VERIFY | SHOULD | GitHub App installation token flow. |
-| `_GITHUB_APP_PRIVATE_KEY` | Org secret | ADD/GRANT/VERIFY | SHOULD | JWT signing for App auth. |
-| `_GITHUB_APP_CLIENT_SECRET` | Org secret | ADD/GRANT/VERIFY | SHOULD | OAuth/App client secret requirements. |
-| `_CODEX_BOT_RUNNER` | Repo secret | ADD/GRANT/VERIFY | MAY | Needed only for runner-management tasks. |
+| `CODEX_MASTER_KEY` | Org secret | ADD/GRANT/VERIFY | MUST | Primary write/auth token for agent operations. | <!-- pragma: allowlist secret -->
+| `CODEX_BACKUP_KEY` | Org secret | ADD/GRANT/VERIFY | MUST | Required fallback in token chain. | <!-- pragma: allowlist secret -->
+| `CODEX_ADMIN_KEY` | Org secret | ADD/GRANT/VERIFY | SHOULD | Needed for elevated admin workflows. | <!-- pragma: allowlist secret -->
+| `OPENAI_API_KEY` | Repo secret | ADD/GRANT/VERIFY | SHOULD | Needed for LLM-backed tasks where applicable. | <!-- pragma: allowlist secret -->
+| `RAG_OPENAI_KEY` | Org secret | ADD/GRANT/VERIFY | MAY | Needed for RAG-specific agent operations. | <!-- pragma: allowlist secret -->
+| `CODEX_WEBHOOK_SECRET` | Repo secret | ADD/GRANT/VERIFY | MAY | Needed only for webhook-managing agent flows. | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_ID` | Org secret | ADD/GRANT/VERIFY | SHOULD | GitHub App auth bundle member. | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_INSTALLATION_ID` | Org secret | ADD/GRANT/VERIFY | SHOULD | GitHub App installation token flow. | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_PRIVATE_KEY` | Org secret | ADD/GRANT/VERIFY | SHOULD | JWT signing for App auth. | <!-- pragma: allowlist secret -->
+| `_GITHUB_APP_CLIENT_SECRET` | Org secret | ADD/GRANT/VERIFY | SHOULD | OAuth/App client secret requirements. | <!-- pragma: allowlist secret -->
+| `_CODEX_BOT_RUNNER` | Repo secret | ADD/GRANT/VERIFY | MAY | Needed only for runner-management tasks. | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -1259,9 +1259,9 @@ After completing all above sections, validate the configuration:
 |----------|-------|
 | **Environment Variables** | 14 |
 | **Repository Variables** | 76 |
-| **Environment Secrets** | 3 |
-| **Repository Secrets** | 7 |
-| **Organization Secrets** | 13 |
+| **Environment Secrets** | 3 | <!-- pragma: allowlist secret -->
+| **Repository Secrets** | 7 | <!-- pragma: allowlist secret -->
+| **Organization Secrets** | 13 | <!-- pragma: allowlist secret -->
 | **TOTAL** | **113** |
 
 ---
@@ -1398,15 +1398,15 @@ Use this checklist to systematically configure all secrets and variables:
 Copy this template to your issue tracker or calendar:
 
 ```
-SECRET ROTATION SCHEDULE (2026-06-04 baseline)
+SECRET ROTATION SCHEDULE (2026-06-04 baseline)  # pragma: allowlist secret
 
 CRITICAL (Every 90 days):
-- 2026-09-02: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY
-- 2026-12-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY
-- 2027-03-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY
+- 2026-09-02: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY  # pragma: allowlist secret
+- 2026-12-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY  # pragma: allowlist secret
+- 2027-03-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY  # pragma: allowlist secret
 
 HIGH (Every 180 days):
-- 2026-12-01: Rotate CODEX_WEBHOOK_SECRET, HF_TOKEN, PYPI_TOKEN, NPM_TOKEN, CODECOV_TOKEN
+- 2026-12-01: Rotate CODEX_WEBHOOK_SECRET, HF_TOKEN, PYPI_TOKEN, NPM_TOKEN, CODECOV_TOKEN  # pragma: allowlist secret
 
 ANNUAL:
 - 2027-06-04: Rotate _GITHUB_APP_PRIVATE_KEY (if not compromised earlier)

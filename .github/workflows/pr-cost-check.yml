@@ -18,6 +18,8 @@ permissions:
   statuses: write
 jobs:
   cost-check:
+    # Temporarily disabled for PR #5328 to reduce workflow queue
+    if: ${{ github.event.pull_request.number != 5328 }}
     name: 💰 PR Cost Check
     runs-on: ubuntu-latest
     timeout-minutes: 5

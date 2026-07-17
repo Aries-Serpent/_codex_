@@ -16,7 +16,6 @@ NOT suitable for:
 """
 
 import random  # noqa: S311  # Used for deterministic testing, not cryptography
-from typing import Optional
 
 try:
     import numpy as np

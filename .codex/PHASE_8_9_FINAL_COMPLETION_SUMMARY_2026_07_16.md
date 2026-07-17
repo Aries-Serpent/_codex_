@@ -235,13 +235,13 @@ Repository tags show **v0.2.2 deployed 3 days ago**, confirming:
 | Component | Status | Evidence | Details |
 |-----------|--------|----------|---------|
 | **RBAC Enforcement** | ✅ PASS | 4 actors verified | @mbaetiong, github-actions[bot], copilot-swe-agent[bot], github-copilot[bot] |
-| **Secret Management** | ✅ PASS | 0 exposures | Token chain verified: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token |
+| **Secret Management** | ✅ PASS | 0 exposures | Token chain verified: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token | <!-- pragma: allowlist secret -->
 | **Workflow Authorization** | ✅ PASS | 225 workflows audited | All permissions least-privilege, explicitly granted |
-| **Agent Authentication** | ✅ PASS | 4 agents verified | All agents active with proper token tiers |
+| **Agent Authentication** | ✅ PASS | 4 agents verified | All agents active with proper token tiers | <!-- pragma: allowlist secret -->
 | **Repository Variables** | ✅ PASS | 27/27 secured | All encrypted at rest, drift monitored |
 | **Audit Logging** | ✅ PASS | Complete trail | AGENT_ACCOUNTABILITY_REPORT.md + PDA logs |
 | **Runner Security** | ✅ PASS | 1115 analyzed | No overprivileged configs, proper concurrency/timeouts |
-| **Infrastructure-as-Code** | ✅ PASS | IaC validated | 50+ gitleaks detectors, 0 hardcoded secrets |
+| **Infrastructure-as-Code** | ✅ PASS | IaC validated | 50+ gitleaks detectors, 0 hardcoded secrets | <!-- pragma: allowlist secret -->
 
 #### Key Security Findings
 

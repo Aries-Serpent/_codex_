@@ -8,9 +8,9 @@ Tests validate all 20 new patterns (P-041 through P-060) with:
 - Success criteria verification
 """
 
-import pytest
 from pathlib import Path
-import json
+
+import pytest
 
 
 class TestPhase19PatternExpansion:
@@ -186,7 +186,7 @@ class TestPhase19PatternExpansion:
         test_count += 20  # test_pattern_documentation_completeness
         test_count += 20  # test_pattern_category_classification
         
-        assert test_count >= 20, f"Insufficient test coverage (expected ≥20 pattern tests)"
+        assert test_count >= 20, "Insufficient test coverage (expected ≥20 pattern tests)"
 
 
 class TestPatternValidation:

@@ -3,37 +3,37 @@
 Implements 5-plane architecture: Policy, Control, Tunnel, Data, Observability.
 """
 
+from .data_plane import (
+    DataPlane,
+    TransferResult,
+)
+from .observability_plane import (
+    ObservabilityPlane,
+    ObservabilityReport,
+)
 from .policy_plane import (
     PolicyConfig,
+    PolicyPlane,
     Route,
     TrustBoundary,
-    PolicyPlane,
-)
-from .tunnel_lifecycle import (
-    Tunnel,
-    TunnelState,
-    TunnelLifecycle,
 )
 from .preflight_checks import (
     PreflightCheck,
     PreflightResult,
     PreflightValidator,
 )
-from .data_plane import (
-    TransferResult,
-    DataPlane,
-)
-from .observability_plane import (
-    ObservabilityReport,
-    ObservabilityPlane,
-)
 from .rollback_controls import (
-    RollbackResult,
     Checkpoint,
     RollbackManager,
+    RollbackResult,
 )
 from .transfer_aware_scheduler import (
     TransferAwareSchedulerV2,
+)
+from .tunnel_lifecycle import (
+    Tunnel,
+    TunnelLifecycle,
+    TunnelState,
 )
 
 __all__ = [

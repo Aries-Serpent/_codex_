@@ -19,14 +19,12 @@ Checkpoint: 2026-07-17T04:00Z
 from __future__ import annotations
 
 import json
-import os
 import tempfile
 from pathlib import Path
 from typing import Any
 from unittest import mock
 
 import pytest
-
 
 # ============================================================================
 # CATEGORY 1: ML MODEL INITIALIZATION PATTERNS (6 tests)
@@ -291,7 +289,6 @@ class TestTrainingLoopMechanics:
 
     def test_training_config_snapshot_handling(self):
         """Test config snapshot dataclass handling."""
-        import json
         from dataclasses import dataclass
 
         @dataclass
@@ -354,7 +351,6 @@ class TestFeatureExtractionAndNormalization:
     def test_feature_view_entity_mock(self):
         """Test FeatureView and Entity dataclass patterns."""
         from dataclasses import dataclass, field
-        from datetime import datetime
 
         @dataclass
         class FeatureView:
@@ -533,7 +529,7 @@ class TestErrorHandlingAndEdgeCases:
         except ImportError:
             pytest.skip("torch not available")
 
-        from codex_ml.codex_model import _load_checkpoint, ModelConfig
+        from codex_ml.codex_model import ModelConfig, _load_checkpoint
 
         config = ModelConfig(base_model_path="/nonexistent/path/model.pt")
 

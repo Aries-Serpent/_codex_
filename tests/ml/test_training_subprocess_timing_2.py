@@ -4,12 +4,13 @@ Tests require robust subprocess timing with event-based coordination.
 Fix: Replaced Barrier with Event signaling to avoid BrokenBarrierError
 """
 import subprocess
+import tempfile
 import threading
 import time
-import pytest
-from pathlib import Path
-import tempfile
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+import pytest
 
 
 class TestSubprocessTimingPool:

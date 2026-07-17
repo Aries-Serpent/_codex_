@@ -35,8 +35,8 @@ These docs were updated 2026-07-16
 | `docs/admin/integration/GITHUB_ENVIRONMENT_SETUP.md` | 2025-* | Date stamp updated |
 | `docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md` | 2025-* | Date stamp updated |
 | `docs/admin/integration/MCP_IMPLEMENTATION_SUMMARY.md` | 2025-12-30 | Audit note added |
-| `docs/admin/security/ADMIN_TOKEN_SETUP.md` | 2025-* | Date stamp updated |
-| `docs/admin/security/COPILOT_TOKEN_USAGE.md` | 2025-* | Date stamp updated |
+| `docs/admin/security/ADMIN_TOKEN_SETUP.md` | 2025-* | Date stamp updated | <!-- pragma: allowlist secret -->
+| `docs/admin/security/COPILOT_TOKEN_USAGE.md` | 2025-* | Date stamp updated | <!-- pragma: allowlist secret -->
 | `docs/admin/security/HUMAN_ADMIN_FOLLOWUP_PR2639.md` | 2025-* | Date stamp updated |
 | `docs/agent/OPERATIONAL_GUIDELINES.md` | 2025-12-26 | Date stamp updated |
 | `docs/how-to/admin_bootstrap.md` | 2025-* | Date stamp updated |
@@ -46,9 +46,9 @@ These docs were updated 2026-07-16
 | `docs/how-to/dataset_manifest.md` | 2025-* | Date stamp updated |
 | `docs/how-to/offline_tracking.md` | 2025-* | Date stamp updated |
 | `docs/how-to/repodeterminism_smoke.md` | 2025-* | Date stamp updated |
-| `docs/how-to/tokenizer_migration.md` | 2025-* | Date stamp updated |
+| `docs/how-to/tokenizer_migration.md` | 2025-* | Date stamp updated | <!-- pragma: allowlist secret -->
 | `docs/how-to/run_audit_0D_base_.md` | 2025-* | Date stamp updated |
-| **NEW** `docs/admin/TOKEN_ROTATION_GUIDE.md` | — | Created (was MISSING) |
+| **NEW** `docs/admin/TOKEN_ROTATION_GUIDE.md` | — | Created (was MISSING) | <!-- pragma: allowlist secret -->
 
 ---
 

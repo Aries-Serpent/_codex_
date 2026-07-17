@@ -96,7 +96,7 @@
 | [api/API_DOCUMENTATION.md](api/API_DOCUMENTATION.md) | API reference | Developers |
 | [api/rag_pipelines.md](api/rag_pipelines.md) | RAG integration | ML Engineers |
 | [api/loop_eval.md](api/loop_eval.md) | Evaluation loops | ML Engineers |
-| [tokenization_api.md](tokenization_api.md) | Tokenization API | Developers |
+| [tokenization_api.md](tokenization_api.md) | Tokenization API | Developers | <!-- pragma: allowlist secret -->
 
 ### AI & ML
 
@@ -121,9 +121,9 @@
 | Document | Purpose | Audience |
 |----------|---------|----------|
 | [zendesk/README.md](zendesk/README.md) | Zendesk integration | Support Eng |
-| [zendesk/ZENDESK_NEWCOMER_GUIDE.md](zendesk/ZENDESK_NEWCOMER_GUIDE.md) | Zendesk onboarding | Support Eng |
-| [runbooks/zendesk_e2e_support_workflows_plan.md](runbooks/zendesk_e2e_support_workflows_plan.md) | Support workflows | Support Eng |
-| [runbooks/zendesk_admin_workflow.md](runbooks/zendesk_admin_workflow.md) | Admin workflows | Admins |
+| [zendesk/ZENDESK_NEWCOMER_GUIDE.md](zendesk/ZENDESK_NEWCOMER_GUIDE.md) | Zendesk onboarding | Support Eng | <!-- pragma: allowlist secret -->
+| [runbooks/zendesk_e2e_support_workflows_plan.md](runbooks/zendesk_e2e_support_workflows_plan.md) | Support workflows | Support Eng | <!-- pragma: allowlist secret -->
+| [runbooks/zendesk_admin_workflow.md](runbooks/zendesk_admin_workflow.md) | Admin workflows | Admins | <!-- pragma: allowlist secret -->
 
 ### ️ Planning & Status
 
@@ -131,7 +131,7 @@
 |----------|---------|----------|
 | [ROADMAP.md](./ROADMAP.md) | Unified roadmap | All |
 | [system/CODEBASE_DASHBOARD.md](./system/CODEBASE_DASHBOARD.md) | Live status | All |
-| [TASK_COMPLETION_SUMMARY.md](TASK_COMPLETION_SUMMARY.md) | Task tracking | PM |
+| [TASK_COMPLETION_SUMMARY.md](TASK_COMPLETION_SUMMARY.md) | Task tracking | PM | <!-- pragma: allowlist secret -->
 | [ITERATION_3_GAP_ANALYSIS.md](ITERATION_3_GAP_ANALYSIS.md) | Gap analysis | PM |
 | [CHANGELOG.md](CHANGELOG.md) | Change history | All |
 | [plans/](plans/) | Project plans | PM, Leads |
@@ -143,7 +143,7 @@
 |----------|---------|----------|
 | [examples/python-variant/README.md](examples/python-variant/README.md) | Python examples | Developers |
 | [templates/README.md](templates/README.md) | Document templates | All |
-| [starterpacks/zendesk_desired_state/README.md](starterpacks/zendesk_desired_state/README.md) | Starter configurations | Ops |
+| [starterpacks/zendesk_desired_state/README.md](starterpacks/zendesk_desired_state/README.md) | Starter configurations | Ops | <!-- pragma: allowlist secret -->
 
 ### Prompts & AI Instructions
 

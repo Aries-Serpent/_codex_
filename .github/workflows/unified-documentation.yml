@@ -33,8 +33,10 @@ jobs:
   freshness-check:
     if: github.event.inputs.operation == 'freshness-check' || github.event.inputs.operation == 'all' || contains(github.event_name, 'pull_request')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check documentation freshness
         run: echo "Checking doc freshness timestamps..."
 
@@ -42,9 +44,11 @@ jobs:
   refresh-gate:
     if: github.event.inputs.operation == 'refresh-gate' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [freshness-check]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Validate refresh requirements
         run: echo "Validating refresh gate requirements..."
 
@@ -52,8 +56,10 @@ jobs:
   code-alignment:
     if: github.event.inputs.operation == 'code-alignment' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Verify code-documentation alignment
         run: echo "Checking code examples against implementation..."
 
@@ -61,8 +67,10 @@ jobs:
   health-check:
     if: github.event.inputs.operation == 'health-check' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check documentation health
         run: echo "Running doc health diagnostics..."
 
@@ -70,8 +78,10 @@ jobs:
   link-checker:
     if: github.event.inputs.operation == 'link-checker' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Validate documentation links
         run: echo "Checking for broken links in documentation..."
 
@@ -79,15 +89,19 @@ jobs:
   quality-check:
     if: github.event.inputs.operation == 'quality-check' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [freshness-check, code-alignment, health-check, link-checker]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Assess documentation quality
         run: echo "Running documentation quality checks..."
 
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [freshness-check, refresh-gate, code-alignment, health-check, link-checker, quality-check]
     steps:
       - name: Documentation suite completed

@@ -11,15 +11,13 @@ Gate Criterion 2: Failover time <1s
 """
 
 import logging
-import time
-import json
 import threading
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Callable
-from enum import Enum
-from collections import deque
+import time
 import uuid
-
+from collections import deque
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +197,6 @@ class FailoverManager:
             else:
                 # Default health check
                 status = HealthStatus.HEALTHY
-                latency = 10.0  # Mock
             
             latency_ms = (time.time() - start_time) * 1000
             

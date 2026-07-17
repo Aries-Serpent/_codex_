@@ -7,11 +7,12 @@ Updates policy rules to prevent similar findings.
 Success metric: Recurrence rate <5% (same type within 30 days)
 """
 
+import re
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Set
+from typing import Any, Dict, List, Optional
+
 from .clustering import FindingFamily
 from .ingest import NormalizedFinding
-import re
 
 
 @dataclass
@@ -132,7 +133,7 @@ class RecurrencePrevention:
             reverse=True,
         )
 
-    def get_pattern_effectiveness_report(self) -> Dict[str, any]:
+    def get_pattern_effectiveness_report(self) -> Dict[str, Any]:
         """Generate effectiveness report."""
         if not self.patterns:
             return {

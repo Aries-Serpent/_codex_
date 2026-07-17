@@ -122,7 +122,7 @@ class TestPerformanceMonitoring:
         threshold = 0.1  # 10% threshold
         
         regression = (current - baseline) / baseline > threshold
-        assert regression == True
+        assert regression
     
     def test_performance_improvement_tracking(self):
         """Track performance improvements"""
@@ -156,7 +156,7 @@ class TestDeploymentInfrastructure:
         }
         
         can_deploy = trigger["status"] == "success"
-        assert can_deploy == True
+        assert can_deploy
     
     def test_deployment_approval_workflow(self):
         """Support manual approval for deployments"""
@@ -168,7 +168,7 @@ class TestDeploymentInfrastructure:
         }
         
         can_proceed = approval["required"] == approval["approved"]
-        assert can_proceed == True
+        assert can_proceed
     
     def test_deployment_rollback_capability(self):
         """Support deployment rollback"""
@@ -179,7 +179,7 @@ class TestDeploymentInfrastructure:
             "rollback_available": True
         }
         
-        assert deployment["rollback_available"] == True
+        assert deployment["rollback_available"]
     
     def test_blue_green_deployment_support(self):
         """Support blue-green deployments"""
@@ -213,7 +213,7 @@ class TestDeploymentInfrastructure:
         }
         
         all_healthy = all(v == "healthy" for v in health_checks.values())
-        assert all_healthy == True
+        assert all_healthy
 
 
 class TestWorkflowVersioning:
@@ -238,7 +238,7 @@ class TestWorkflowVersioning:
             "outdated": True
         }
         
-        assert action["outdated"] == True
+        assert action["outdated"]
     
     def test_workflow_backward_compatibility(self):
         """Maintain backward compatibility"""
@@ -265,7 +265,7 @@ class TestErrorHandling:
         }
         
         can_retry = error["retry_count"] < error["max_retries"]
-        assert can_retry == True
+        assert can_retry
     
     def test_timeout_error_handling(self):
         """Handle timeout errors"""
@@ -276,7 +276,7 @@ class TestErrorHandling:
             "exceeded": True
         }
         
-        assert error["exceeded"] == True
+        assert error["exceeded"]
     
     def test_disk_space_error_handling(self):
         """Handle out of disk space errors"""
@@ -287,7 +287,7 @@ class TestErrorHandling:
         }
         
         needs_cleanup = error["available_bytes"] < error["required_bytes"]
-        assert needs_cleanup == True
+        assert needs_cleanup
     
     def test_memory_error_handling(self):
         """Handle out of memory errors"""
@@ -298,7 +298,7 @@ class TestErrorHandling:
         }
         
         is_oom = error["available_mb"] == 0
-        assert is_oom == True
+        assert is_oom
     
     def test_permission_error_handling(self):
         """Handle permission errors"""
@@ -323,7 +323,7 @@ class TestSecurityInfrastructure:
         }
         
         is_secure = not secret_injection["exposed_in_logs"]
-        assert is_secure == True
+        assert is_secure
     
     def test_token_expiration_handling(self):
         """Handle token expiration"""
@@ -333,7 +333,7 @@ class TestSecurityInfrastructure:
             "expired": True
         }
         
-        assert token["expired"] == True
+        assert token["expired"]
     
     def test_permission_boundary_enforcement(self):
         """Enforce permission boundaries"""
@@ -344,8 +344,8 @@ class TestSecurityInfrastructure:
         }
         
         # Only write allowed, not delete or modify
-        assert permissions["write_artifacts"] == True
-        assert permissions["delete_artifacts"] == False
+        assert permissions["write_artifacts"]
+        assert not permissions["delete_artifacts"]
     
     def test_audit_logging_for_sensitive_operations(self):
         """Log sensitive operations for audit"""
@@ -371,7 +371,7 @@ class TestResourceManagement:
         }
         
         at_limit = memory["used_mb"] / memory["limit_mb"] > 0.9
-        assert at_limit == False
+        assert not at_limit
     
     def test_disk_quota_enforcement(self):
         """Enforce disk quota"""
@@ -403,7 +403,7 @@ class TestResourceManagement:
         }
         
         can_queue = limits["current_jobs"] < limits["max_concurrent_jobs"]
-        assert can_queue == True
+        assert can_queue
 
 
 class TestInfrastructureOptimization:
@@ -473,7 +473,7 @@ class TestDisasterRecovery:
             "recovery_time": 30  # seconds
         }
         
-        assert recovery["recovered"] == True
+        assert recovery["recovered"]
     
     def test_failover_workflow_activation(self):
         """Activate failover workflows"""
@@ -493,7 +493,7 @@ class TestDisasterRecovery:
             "consistent": True
         }
         
-        assert verification["consistent"] == True
+        assert verification["consistent"]
 
 
 class TestMonitoringAndAlerting:
@@ -515,7 +515,7 @@ class TestMonitoringAndAlerting:
         metric = {"value": 92, "threshold": 80}
         
         should_alert = metric["value"] > metric["threshold"]
-        assert should_alert == True
+        assert should_alert
     
     def test_alert_deduplication(self):
         """Deduplicate alerts"""
@@ -537,7 +537,7 @@ class TestMonitoringAndAlerting:
         }
         
         should_escalate = (time.time() - alert["created_at"]) > alert["escalation_timeout"]
-        assert should_escalate == True
+        assert should_escalate
 
 
 # Summary count

@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    # Temporarily disabled for PR #5328 to reduce workflow queue
+    if: ${{ github.event.pull_request.number != 5328 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5

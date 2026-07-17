@@ -10,16 +10,16 @@ This module provides fixtures for testing the complete training pipeline:
 - Metrics collection
 """
 
-import os
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import pytest
+import torch.optim as optim
+
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, Dataset, TensorDataset
+from torch.utils.data import DataLoader, Dataset
 
 
 class SyntheticCodeDataset(Dataset):

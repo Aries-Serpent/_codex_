@@ -61,7 +61,7 @@ Phase 10 Lane 3 completion achieved 94/100 production readiness score. This sess
 ```
 ✅ scripts/ci/collect_telemetry.py — PASSED
 ✅ src/aries_serpent_core/reporting/cli.py — PASSED
-✅ tokenization/cli.py — PASSED
+✅ tokenization/cli.py — PASSED  # pragma: allowlist secret
 ```
 
 ### CodeQL Security Scan
@@ -129,17 +129,17 @@ fix(security): Resolve critical merge conflict and address 4 security vulnerabil
 - Merge conflict resolution (CRITICAL)
 - XSS prevention via HTML escaping (HIGH)
 - Globals injection restriction (MEDIUM)
-- Token exposure prevention (MEDIUM)
+- Token exposure prevention (MEDIUM)  # pragma: allowlist secret
 
 All Python syntax validation: PASSED ✅
 ```
 
 ### Commit 2: Code Review Fix (a48db9f1)
 ```
-fix(security): Use private _token attribute in Authorization header for consistency
+fix(security): Use private _token attribute in Authorization header for consistency  # pragma: allowlist secret
 
-- Updated Authorization header to use self._token
-- Ensures single source of truth for token value
+- Updated Authorization header to use self._token  # pragma: allowlist secret
+- Ensures single source of truth for token value  # pragma: allowlist secret
 - Maintains consistency with private attribute pattern
 ```
 

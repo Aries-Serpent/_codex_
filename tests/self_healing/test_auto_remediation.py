@@ -12,18 +12,15 @@ This module contains 25+ comprehensive auto-remediation tests including:
 - Custom remediation rules
 """
 
-import pytest
-from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional, Callable
+from datetime import datetime
 from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
+
+import pytest
+
 from .conftest import (
-    ServiceState,
-    RecoveryAction,
     MockService,
-    MockDatabase,
-    MockCache,
-    CircuitBreaker,
-    StateManager
+    ServiceState,
 )
 
 
@@ -453,7 +450,8 @@ class TestCustomRemediationRules:
         """Test registering custom remediation rule."""
         # Arrange
         engine = AutoRemediationEngine()
-        custom_action = lambda s: s.reset_connection_pool()
+        def custom_action(s):
+            return s.reset_connection_pool()
 
         # Act
         result = engine.register_rule("connection_pool_issue", custom_action, priority=5)
@@ -481,7 +479,8 @@ class TestCustomRemediationRules:
         engine = AutoRemediationEngine()
         service = MockService("cache")
         
-        custom_action = lambda s: s.reset_connection_pool()
+        def custom_action(s):
+            return s.reset_connection_pool()
         engine.register_rule("custom_issue", custom_action)
 
         # Act

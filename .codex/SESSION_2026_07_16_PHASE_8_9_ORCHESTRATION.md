@@ -114,7 +114,7 @@ BLOCKING = DO NOT PROCEED TO PHASE 10
 | CVE remediation | dependency-vulnerability-scanner | New HIGH/CRITICAL found |
 | CodeQL alerts | codeql-alert-resolution-agent | Any critical/high unfixed |
 | Compliance gaps | unified-governance-gate | <100% policy adherence |
-| Infrastructure security | security-audit-agent | RBAC/secret violations |
+| Infrastructure security | security-audit-agent | RBAC/secret violations | <!-- pragma: allowlist secret -->
 
 ---
 

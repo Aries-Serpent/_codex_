@@ -12,7 +12,7 @@ For testing and non-cryptographic purposes only.
 
 import logging
 import random  # noqa: S311  # Used for failure injection testing, not cryptography
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List, Optional

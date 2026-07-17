@@ -3,11 +3,12 @@ Test subprocess timing - Pattern 1: Barrier Synchronization
 Tests require robust subprocess timing synchronization using threading.Barrier
 """
 import subprocess
+import tempfile
 import threading
 import time
-import pytest
 from pathlib import Path
-import tempfile
+
+import pytest
 
 
 class TestSubprocessTimingBarrier:

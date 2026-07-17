@@ -380,6 +380,7 @@ class TestMCPEdgeCases:
         """Test that reimporting mcp is safe."""
         try:
             import sys
+
             from src import mcp as mcp1
             
             if "src.mcp" in sys.modules:

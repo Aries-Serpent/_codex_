@@ -6,7 +6,7 @@ and provides queryable pattern database for downstream reasoning layers.
 
 import json
 from collections import defaultdict
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
@@ -356,7 +356,7 @@ class KnowledgeBase:
 
         return patterns
 
-    def query(self, category: str = None, decision_type: str = None, tag: str = None) -> List[Pattern]:
+    def query(self, category: Optional[str] = None, decision_type: Optional[str] = None, tag: Optional[str] = None) -> List[Pattern]:
         """Generic query interface.
 
         Args:

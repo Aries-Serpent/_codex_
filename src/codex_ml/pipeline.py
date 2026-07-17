@@ -19,7 +19,7 @@ from collections.abc import Iterable, Mapping, Sequence
 from contextlib import contextmanager
 from pathlib import Path
 from statistics import fmean
-from typing import Any, Optional
+from typing import Any, Generator, Optional
 
 from .config import (
     PretrainingConfig,
@@ -40,7 +40,7 @@ DEFAULT_RL_PATH = "codex_ml.interfaces.rl:BanditRLAgent"
 
 
 @contextmanager
-def _temporary_env(overrides: Mapping[str, Optional[str]]) -> None:
+def _temporary_env(overrides: Mapping[str, Optional[str]]) -> Generator[None, None, None]:
     """Temporarily apply environment variable overrides."""
 
     previous: dict[str, Optional[str]] = {}

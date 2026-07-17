@@ -139,7 +139,7 @@ class LaneManifestContract:
             run_id = str(uuid.uuid4())
 
             # Build manifest
-            manifest = {
+            manifest: Dict[str, Any] = {
                 "lane_id": lane_id,
                 "lane_name": lane_name,
                 "execution_mode": execution_mode,

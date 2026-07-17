@@ -8,13 +8,14 @@ Provides REST endpoints for:
 - Load testing with 100+ concurrent requests
 """
 
-from typing import Dict, List, Any, Optional
-from datetime import datetime, timedelta
+import asyncio
+import time
+from dataclasses import asdict
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 import numpy as np
 import pandas as pd
-import time
-import asyncio
-from dataclasses import asdict
 
 try:
     from fastapi import FastAPI, HTTPException
@@ -23,12 +24,11 @@ try:
 except ImportError:
     HAS_FASTAPI = False
 
-from .models import ARIMAModel, ProphetModel, EnsembleForecaster, EnsembleConfig
 from .arima_prophet_ensemble import (
     BottleneckPredictor,
     CapexRecommendationEngine,
-    ParetoOptimizationResult,
 )
+from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
 
 
 # Pydantic models for request/response
@@ -336,7 +336,7 @@ def create_app() -> Optional[FastAPI]:
                 try:
                     start = time.time()
                     
-                    forecast_req = ForecastRequest(
+                    ForecastRequest(
                         dimension="cpu",
                         historical_data=historical_data,
                         forecast_steps=30,
@@ -353,7 +353,7 @@ def create_app() -> Optional[FastAPI]:
                     response_times.append(elapsed)
                     successful += 1
                 
-                except Exception as e:
+                except Exception:
                     failed += 1
             
             # Run load test

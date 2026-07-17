@@ -29,9 +29,11 @@ jobs:
   ci-health-check:
     if: github.event.inputs.operation == 'ci-health' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     name: CI Health Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check workflow health
         run: |
           echo "Monitoring CI pipeline health..."
@@ -41,10 +43,12 @@ jobs:
   dashboard-update:
     if: github.event.inputs.operation == 'dashboard-update' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     name: Dashboard Update
     needs: [ci-health-check]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update health dashboard
         run: |
           echo "Updating health dashboard..."
@@ -54,9 +58,11 @@ jobs:
   repository-health:
     if: github.event.inputs.operation == 'repository-health' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     name: Repository Health
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Monitor repository health
         run: |
           echo "Checking repository health metrics..."
@@ -66,10 +72,12 @@ jobs:
   workflow-health:
     if: github.event.inputs.operation == 'workflow-health' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     name: Workflow Health
     needs: [repository-health]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update workflow health metrics
         run: |
           echo "Updating workflow health status..."
@@ -79,6 +87,8 @@ jobs:
   summary:
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     name: Health Monitoring Summary
     needs: [ci-health-check, dashboard-update, repository-health, workflow-health]
     steps:

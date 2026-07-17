@@ -249,7 +249,7 @@ class TestCICodeQuality:
             "passed": True
         }
         
-        assert audit["passed"] == True
+        assert audit["passed"]
 
 
 class TestCINotifications:
@@ -309,7 +309,7 @@ class TestCIScheduling:
             "enabled": True
         }
         
-        assert schedule["enabled"] == True
+        assert schedule["enabled"]
     
     def test_scheduled_run_history(self):
         """Track scheduled run history"""
@@ -362,7 +362,7 @@ class TestCIConcurrency:
             "can_proceed": True
         }
         
-        assert mutex["can_proceed"] == True
+        assert mutex["can_proceed"]
 
 
 class TestCIValidationGates:
@@ -386,7 +386,7 @@ class TestCIValidationGates:
             "timed_out": False
         }
         
-        assert check["timed_out"] == False
+        assert not check["timed_out"]
     
     def test_pr_merge_requirements(self):
         """Define PR merge requirements"""

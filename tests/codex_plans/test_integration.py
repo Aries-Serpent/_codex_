@@ -129,6 +129,7 @@ class TestPerformance:
         """Test performance with many markdown files."""
         try:
             import tempfile
+
             from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -146,6 +147,7 @@ class TestPerformance:
         """Test that sorting works correctly with many files."""
         try:
             import tempfile
+
             from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:

@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import logging
 from dataclasses import dataclass
+from typing import Any
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -65,7 +66,7 @@ class EmbeddingPipeline:
     def __init__(self, config: EmbeddingConfig | None = None) -> None:
         """Initialize the embedding pipeline."""
         self.config = config or EmbeddingConfig()
-        self._model = None
+        self._model: Any = None
         self._use_fallback = False
 
         logger.info(

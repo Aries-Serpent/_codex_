@@ -8,9 +8,8 @@ Tests CI/CD pipeline integration covering:
 - Deployment gate checks
 """
 
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-import json
 
 
 @pytest.mark.integration

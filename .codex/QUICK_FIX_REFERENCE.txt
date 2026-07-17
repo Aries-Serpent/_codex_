@@ -1,0 +1,150 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    PR #5328 CASCADE FIX QUICK REFERENCE                      ║
+║                         Actions in Priority Order                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+🔴 CRITICAL STATUS: 32 FAILED + 66 BLOCKED WORKFLOWS — MERGE BLOCKED
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FIX #1: STOP THE CASCADE (ROOT CAUSE #1)
+─────────────────────────────────────────────────────────────────────────────
+File: .github/workflows/trigger-on-approval.yml
+Add after line 11 (after `cancel-in-progress: true`):
+
+  permissions:
+    contents: read
+    actions: write
+    pull-requests: write
+    issues: write
+    security-events: read
+
+Also in `on-approval` job, change line ~15 to:
+  if: ${{ github.event.review != null && github.event.review.state == 'approved' }}
+
+Time: 2 minutes | Impact: Stops 8 cascading failures
+
+
+FIX #2: STOP THE CASCADE (ROOT CAUSE #2)
+─────────────────────────────────────────────────────────────────────────────
+File: .github/workflows/agent-auth-delegation.yml
+Add after line ~33 (after all `workflow_dispatch` inputs):
+
+  permissions:
+    contents: write
+    pull-requests: write
+    checks: write
+    actions: write
+    issues: write
+
+Time: 2 minutes | Impact: Stops 6 more cascading failures + unblocks 66 workflows
+
+
+FIX #3: ADD MISSING PERMISSIONS TO 14 WORKFLOWS
+─────────────────────────────────────────────────────────────────────────────
+For each of these files, add this block after the `on:` section:
+
+  permissions:
+    contents: read
+    pull-requests: read
+    issues: read
+    actions: read
+
+Files:
+  • .github/workflows/slo-canary-check.yml
+  • .github/workflows/issue-resolution-gate.yml
+  • .github/workflows/pr-size-analyzer.yml
+  • .github/workflows/validate-token-health.yml
+  • .github/workflows/pages-scheduled-validation.yml
+  • .github/workflows/progressive-validation.yml
+  • .github/workflows/dependabot-sheriff.yml
+  • .github/workflows/coverage-with-timeout.yml
+  • .github/workflows/code-quality-coverage-suite.yml
+  • .github/workflows/audit-qa-suite.yml
+  • .github/workflows/release-to-pypi.yml
+  • .github/workflows/ml-tests.yml
+  • .github/workflows/proactive-ci-monitor.yml
+  • .github/workflows/build-agent-env-cache.yml
+
+Time: 5 minutes | Tool: Automated script or manual edits
+
+
+FIX #4: FIX SECURITY ALERTS (BLOCKING MERGE)
+─────────────────────────────────────────────────────────────────────────────
+
+Alert 1: CWE-798 Hardcoded Credentials (codex/config.py:18)
+  OLD: DATABASE_PASSWORD = "hardcoded_password_123"
+  NEW: DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD', '')
+
+Alert 2: CWE-89 SQL Injection (codex/db/queries.py:234)
+  OLD: cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
+  NEW: cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+
+Alert 3: CWE-79 XSS (codex/cli.py:125)
+  OLD: output = f"<div>{user_input}</div>"
+  NEW: output = f"<div>{html.escape(user_input)}</div>"
+
+Alert 4: CWE-502 Insecure Deserialization (codex/serialization.py:87)
+  OLD: data = pickle.loads(untrusted_bytes)
+  NEW: data = json.loads(untrusted_bytes.decode('utf-8'))
+
+Time: 30 minutes | Severity: 4 HIGH + 1 MEDIUM (MERGE BLOCKER)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+VERIFICATION CHECKLIST
+─────────────────────────────────────────────────────────────────────────────
+After making all fixes:
+
+  ☐ Fix #1 applied to trigger-on-approval.yml
+  ☐ Fix #2 applied to agent-auth-delegation.yml
+  ☐ Fix #3 applied to 14 affected workflows
+  ☐ Fix #4 security alerts resolved
+  ☐ Changes committed and pushed
+  ☐ No new cascade failures appear (wait 2-3 minutes)
+  ☐ 66 blocked workflows auto-unblock
+  ☐ All security alerts resolved
+  ☐ bash .codex/scripts/self_ci_validation.sh quick returns PASS
+  ☐ GitHub PR status shows all checks GREEN
+  ☐ Merge button becomes available
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TOTAL TIME ESTIMATE: ~50 minutes
+
+  Fix #1: 2 min
+  Fix #2: 2 min
+  Fix #3: 5 min
+  Fix #4: 30 min
+  Verify: 5 min
+  ─────────────
+  Total: 44 min (+ 5-10 min buffer for testing)
+
+
+IF CASCADE CONTINUES AFTER FIXES
+─────────────────────────────────────────────────────────────────────────────
+1. Check if workflows are still disabled:
+   gh workflow list | grep -E "trigger-on-approval|agent-auth-delegation"
+
+2. Look for NEW failures (not repeats):
+   Check commit timestamps of new runs
+
+3. Escalate if needed:
+   Issue: "[CI-EMERGENCY-CASCADE] Cascade continues after fixes"
+   Tag: @mbaetiong
+   Attach: This document + analysis
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+REFERENCE DOCUMENTS
+─────────────────────────────────────────────────────────────────────────────
+For detailed explanation of each fix:
+  📄 .codex/CASCADING_FAILURE_ANALYSIS_2026_07_17.md
+  📋 .codex/CASCADE_REMEDIATION_PLAYBOOK_2026_07_17.txt
+  📊 .codex/CASCADE_EXECUTIVE_SUMMARY_2026_07_17.txt
+
+Generated: 2026-07-17T01:30:05Z
+Status: READY FOR IMMEDIATE EXECUTION

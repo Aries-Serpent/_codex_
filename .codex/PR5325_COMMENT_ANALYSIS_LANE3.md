@@ -139,13 +139,13 @@ Phase 12.2 Compliance Check — **BLOCKED** on REQ-6 (No Secrets Committed)
 | 3 | Tests Pass | ✅ PASS | pytest check skipped (assumed pass) |
 | 4 | Accountability Report Updated | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md exists |
 | 5 | CHANGELOG in Last Commit | ✅ PASS | CHANGELOG.md with [Unreleased] |
-| 6 | **No Secrets Committed** | ❌ **FAIL** | **Found: `ita_api_key="test-api-key-12345"` @ line 118265** |
+| 6 | **No Secrets Committed** | ❌ **FAIL** | **Found: `ita_api_key="test-api-key-12345"` @ line 118265** | <!-- pragma: allowlist secret -->
 
 #### Critical Finding
 ```
-🔴 HEURISTIC SECRET DETECTED
+🔴 HEURISTIC SECRET DETECTED  # pragma: allowlist secret
 Location: Diff line 118265
-Content: ita_api_key="test-api-key-12345"
+Content: ita_api_key="test-api-key-12345"  # pragma: allowlist secret
 Confidence: High (matches API key pattern)
 Risk: Credentials exposed in repository history
 ```
@@ -204,7 +204,7 @@ CI Rescue Required — Multiple failures detected on commit `6230a0f800a4c4731a9
 
 | Rank | Check Name | Category | Workflow |
 |------|-----------|----------|----------|
-| 1 | Detect & Block Secrets | Security | 29519160152 |
+| 1 | Detect & Block Secrets | Security | 29519160152 | <!-- pragma: allowlist secret -->
 | 2 | 🔍 Scan PR comments | Gate | 29519158260 |
 | 3 | 🔎 mypy Anti-Regression Gate | Type-check | 29519159644 |
 | 4 | deterministic-diff-guard | Validation | 29519159890 |
@@ -270,7 +270,7 @@ Secrets False-Positive Healer (RP-007) automatically applied remediation
 | Pattern ID | Classification | Severity | Occurrences | Root Cause |
 |------------|-----------------|----------|-------------|-----------|
 | **SEC-001** | SECURITY_VULNERABILITY | CRITICAL | 4 | Hardcoded credentials, SQL injection, XSS, deserialization |
-| **SEC-002** | HARDCODED_SECRET | CRITICAL | 2 | ita_api_key in config; credentials in codex/config.py |
+| **SEC-002** | HARDCODED_SECRET | CRITICAL | 2 | ita_api_key in config; credentials in codex/config.py | <!-- pragma: allowlist secret -->
 | **CI-001** | CI_FAILURE_CASCADE | CRITICAL | 7 | Branch rebase, E-to-D transition, mypy baseline failures |
 | **GATE-001** | VALIDATION_FAILURE | HIGH | 1 | Setup steps validation 70% pass rate |
 | **REV-001** | REVIEW_GATE_ENFORCEMENT | CRITICAL | 1 | §0 Policy: Comments from @mbaetiong unaddressed |
@@ -281,10 +281,10 @@ Secrets False-Positive Healer (RP-007) automatically applied remediation
 2026-07-16T17:26:19Z  [SEC-001] Security findings posted
 2026-07-16T17:26:25Z  [REV-001] Review gate blocking enforcement
 2026-07-16T17:27:04Z  [GATE-001] Setup validation failures detected
-2026-07-16T17:27:21Z  [SEC-002] Hardcoded secret detected (REQ-6 block)
+2026-07-16T17:27:21Z  [SEC-002] Hardcoded secret detected (REQ-6 block)  # pragma: allowlist secret
 2026-07-16T17:27:34Z  [PATTERN] CI prevention gates passing (informational)
 2026-07-16T17:27:47Z  [CI-001] CI rescue alert posted (multi-gate failure)
-2026-07-16T17:27:50Z  [AUTO-REMEDIATION] Secrets false-positive healer applied
+2026-07-16T17:27:50Z  [AUTO-REMEDIATION] Secrets false-positive healer applied  # pragma: allowlist secret
 2026-07-16T17:28:34Z  [UPDATE] CI rescue comment updated with latest failures
 ```
 
@@ -314,8 +314,8 @@ Secrets False-Positive Healer (RP-007) automatically applied remediation
    ├─ CWE-79: XSS
    └─ CWE-502: Insecure deserialization
 
-🔴 HARDCODED SECRETS (2)
-   ├─ ita_api_key in diff @ line 118265
+🔴 HARDCODED SECRETS (2)  # pragma: allowlist secret
+   ├─ ita_api_key in diff @ line 118265  # pragma: allowlist secret
    └─ credentials in codex/config.py:18
 
 🔴 CI GATES FAILING (3)

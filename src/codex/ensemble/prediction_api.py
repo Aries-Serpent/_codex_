@@ -1,12 +1,11 @@
 """REST API for ensemble predictions."""
 
 import logging
-import json
-from typing import Any, Dict, List, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from src.codex.ensemble.ensemble_predictor import EnsemblePredictor, EnsembleConfig
-from src.codex.ensemble.types import PredictionType, EnsemblePrediction
+from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
+from src.codex.ensemble.types import EnsemblePrediction, PredictionType
 
 logger = logging.getLogger(__name__)
 

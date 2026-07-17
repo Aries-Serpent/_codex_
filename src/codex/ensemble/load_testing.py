@@ -1,16 +1,14 @@
 """Load testing framework for ensemble prediction API."""
 
-import asyncio
 import logging
 import time
-from typing import Any, Dict, List, Tuple
-from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import statistics
+from dataclasses import dataclass
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
-from src.codex.ensemble.ensemble_predictor import EnsemblePredictor, EnsembleConfig
+from src.codex.ensemble.ensemble_predictor import EnsemblePredictor
 
 logger = logging.getLogger(__name__)
 
@@ -246,23 +244,23 @@ class LoadTester:
         print("\n" + "=" * 70)
         print("LOAD TEST RESULTS")
         print("=" * 70)
-        print(f"\nRequest Summary:")
+        print("\nRequest Summary:")
         print(f"  Total Requests:       {result.total_requests:,}")
         print(f"  Successful:           {result.successful_requests:,}")
         print(f"  Failed:               {result.failed_requests:,}")
         print(f"  Error Rate:           {result.error_rate:.2%}")
-        print(f"\nTiming Metrics:")
+        print("\nTiming Metrics:")
         print(f"  Total Duration:       {result.total_duration_seconds:.2f}s")
         print(f"  Actual RPS:           {result.actual_rps:.1f} req/s")
         print(f"  Throughput:           {result.throughput_rps:.1f} req/s")
-        print(f"\nLatency Percentiles (ms):")
+        print("\nLatency Percentiles (ms):")
         print(f"  Min:                  {result.min_latency_ms:.2f}ms")
         print(f"  P50 (Median):         {result.p50_latency_ms:.2f}ms")
         print(f"  P95:                  {result.p95_latency_ms:.2f}ms (SLA: {result.p95_meets_sla})")
         print(f"  P99:                  {result.p99_latency_ms:.2f}ms (SLA: {result.p99_meets_sla})")
         print(f"  Max:                  {result.max_latency_ms:.2f}ms")
         print(f"  Mean:                 {result.mean_latency_ms:.2f}ms")
-        print(f"\nSLA Compliance:")
+        print("\nSLA Compliance:")
         print(f"  P99 Latency <200ms:   {'✓ PASS' if result.p99_meets_sla else '✗ FAIL'}")
         print(f"  P95 Latency <100ms:   {'✓ PASS' if result.p95_meets_sla else '✗ FAIL'}")
         print(f"  Error Rate <5%:       {'✓ PASS' if result.error_rate_acceptable else '✗ FAIL'}")

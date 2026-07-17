@@ -1,7 +1,9 @@
 import pytest
+
 pytest.skip("Comprehensive test - infrastructure not fully implemented", allow_module_level=True)
 
 from unittest.mock import patch
+
 from codex.logging.structured_logger import logger
 
 # Define HAS_TYPER for skipif conditions

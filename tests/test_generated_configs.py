@@ -6,7 +6,6 @@ These tests ensure that:
 3. Configuration generators can run without errors
 """
 
-import pytest
 import subprocess
 import sys
 from pathlib import Path

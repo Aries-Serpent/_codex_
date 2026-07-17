@@ -4,9 +4,8 @@ Automated provisioning recommendations with cost analysis.
 Recommends capacity increases, instance right-sizing, and cost optimizations.
 """
 
-from typing import Dict, List
 from dataclasses import dataclass
-from datetime import datetime
+from typing import List
 
 
 @dataclass

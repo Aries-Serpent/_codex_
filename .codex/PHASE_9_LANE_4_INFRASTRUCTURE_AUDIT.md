@@ -60,7 +60,7 @@ Workflow permissions granted (contents:write, issues:write, pull-requests:write)
 
 **Configured Token Chain**:
 ```
-CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token
+CODEX_MASTER_KEY → CODEX_BACKUP_KEY → github.token  # pragma: allowlist secret
 ```
 
 #### Token Chain Usage Verification:
@@ -78,9 +78,9 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 | Component | Status | Details |
 |-----------|--------|---------|
 | CODEX_MASTER_KEY | ✅ **CONFIGURED** | Fine-grained PAT with repo + workflow + actions:write scopes |
-| CODEX_BACKUP_KEY | ✅ **CONFIGURED** | Fallback token for continuity |
-| github.token | ✅ **CONFIGURED** | Last-resort fallback (limited scopes) |
-| Token Chain Adoption | ✅ **18/18 WORKFLOWS** | All checked workflows use proper fallback chain |
+| CODEX_BACKUP_KEY | ✅ **CONFIGURED** | Fallback token for continuity | <!-- pragma: allowlist secret -->
+| github.token | ✅ **CONFIGURED** | Last-resort fallback (limited scopes) | <!-- pragma: allowlist secret -->
+| Token Chain Adoption | ✅ **18/18 WORKFLOWS** | All checked workflows use proper fallback chain | <!-- pragma: allowlist secret -->
 
 #### Secret Exposure Assessment:
 
@@ -114,7 +114,7 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 | Workflow | Permissions | Scopes | Status |
 |----------|-----------|--------|--------|
 | agent-var-writer.yml | contents:write, issues:write, pull-requests:write | RESTRICTED | ✅ |
-| scheduled-dependency-audit.yml | All (via secrets) | RESTRICTED | ✅ |
+| scheduled-dependency-audit.yml | All (via secrets) | RESTRICTED | ✅ | <!-- pragma: allowlist secret -->
 | workflow-execution-gate.yml | contents:write | RESTRICTED | ✅ |
 | sbom.yml | contents:read | MINIMAL | ✅ |
 | auto-approve-workflows.yml | Limited scope | RESTRICTED | ✅ |
@@ -217,7 +217,7 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 | Variable | Value | Status |
 |----------|-------|--------|
 | COGNITIVE_BRAIN_INJECTION_ENABLED | true | ✅ |
-| COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS | 128000 | ✅ |
+| COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS | 128000 | ✅ | <!-- pragma: allowlist secret -->
 | COGNITIVE_BRAIN_MEMORY_TIER | both | ✅ |
 | COGNITIVE_BRAIN_SESSION_NUMBER | 1485 | ✅ |
 | COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE | 0.75 | ✅ |
@@ -351,7 +351,7 @@ ubuntu-8-core              0 workflows (not currently used)
 | Component | Audited | Passed | Failed | Warnings | Score |
 |-----------|---------|--------|--------|----------|-------|
 | 1. RBAC Enforcement | ✅ | 4/4 | 0 | 0 | 100% |
-| 2. Secret Management | ✅ | 5/5 | 0 | 0 | 100% |
+| 2. Secret Management | ✅ | 5/5 | 0 | 0 | 100% | <!-- pragma: allowlist secret -->
 | 3. Workflow Authorization | ✅ | 5/5 | 0 | 0 | 100% |
 | 4. Agent Authentication | ✅ | 4/4 | 0 | 0 | 100% |
 | 5. Repository Variables | ✅ | 27/27 | 0 | 0 | 100% |
@@ -381,8 +381,8 @@ ubuntu-8-core              0 workflows (not currently used)
 | Gate | Requirement | Status | Evidence |
 |------|-------------|--------|----------|
 | RBAC | All 4 actors verified active | ✅ PASS | agent_context.json + workflow validations |
-| Secrets | No exposed secrets in git | ✅ PASS | Git history scan (0 exposures) |
-| Workflows | Correct token scopes | ✅ PASS | 225 workflows audited (100% compliant) |
+| Secrets | No exposed secrets in git | ✅ PASS | Git history scan (0 exposures) | <!-- pragma: allowlist secret -->
+| Workflows | Correct token scopes | ✅ PASS | 225 workflows audited (100% compliant) | <!-- pragma: allowlist secret -->
 | Agents | All agents verified | ✅ PASS | 4/4 actors confirmed active |
 | Variables | Encryption & access control | ✅ PASS | 27 variables verified secure |
 | Audit | Operations logged | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md current |
@@ -415,9 +415,9 @@ This audit certifies that:
 | Blocking Criteria | Status |
 |------------------|--------|
 | RBAC violations found | ✅ NONE |
-| Secret exposure detected | ✅ NONE |
+| Secret exposure detected | ✅ NONE | <!-- pragma: allowlist secret -->
 | Auth failures | ✅ NONE |
-| Token rotation issues | ✅ NONE |
+| Token rotation issues | ✅ NONE | <!-- pragma: allowlist secret -->
 | Audit trail gaps | ✅ NONE |
 | Runner security issues | ✅ NONE |
 

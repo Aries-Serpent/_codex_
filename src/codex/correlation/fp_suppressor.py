@@ -8,12 +8,11 @@ Target: <5% false positive rate, maintains >95% recall
 
 from __future__ import annotations
 
-import json
 import logging
-from dataclasses import dataclass, field
+from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
-from collections import defaultdict
 
 import numpy as np
 

@@ -5,10 +5,10 @@ Tests require atomic file operations with unique naming using GUIDs.
 import tempfile
 import threading
 import time
-import pytest
-import os
 import uuid
 from pathlib import Path
+
+import pytest
 
 
 class TestFSRaceCondition:

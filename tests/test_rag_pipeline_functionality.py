@@ -14,10 +14,8 @@ Coverage:
 - Integration with ML inference
 """
 
+
 import pytest
-from typing import List, Dict, Any, Optional
-import tempfile
-import json
 
 
 class TestDocumentIngestion:
@@ -117,6 +115,7 @@ class TestVectorEmbedding:
         """Test embedding generation."""
         try:
             import numpy as np
+
             import torch
             
             class SimpleEmbedder:
@@ -455,8 +454,9 @@ class TestRAGPerformance:
     def test_batch_retrieval_performance(self):
         """Test batch retrieval performance."""
         try:
-            import numpy as np
             import time
+
+            import numpy as np
             
             class PerformanceTestRAG:
                 def __init__(self, num_docs=1000):

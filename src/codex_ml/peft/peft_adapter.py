@@ -28,12 +28,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 # [Integration]: LoRA adapter integration with graceful fallbacks
-from codex.logging.adapter import get_default_logger
-
 # Generated: 2025-08-31 08:51:51 | Author: mbaetiong
-
 import inspect  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+
+from codex.logging.adapter import get_default_logger
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
