@@ -474,6 +474,18 @@ def _first_param_dtype(model: Any) -> Optional[str]:
         return None
 
 
+def _select_parameters_for_optimization(model: Any) -> Any:
+    """Select parameters from the model for optimization.
+    
+    Returns:
+        Model parameters iterator, or None if model has no parameters.
+    """
+    try:
+        return list(model.parameters())
+    except Exception:
+        return None
+
+
 def setup_optimizer_with_dp(
     model: Any,
     learning_rate: float,
