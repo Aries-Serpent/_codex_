@@ -1,0 +1,383 @@
+# Cascade Remediation Playbook — PR #5328
+
+**Quick Reference for Fixing 32 Cascading Failures + 66 Blocked Runs**
+
+---
+
+## 🚨 IMMEDIATE ACTIONS (Next 15 minutes)
+
+### Action 1: Stop New Failures
+```bash
+# Disable approval triggers temporarily
+cd /home/runner/work/_codex_/_codex_
+gh workflow disable .github/workflows/trigger-on-approval.yml
+gh workflow disable .github/workflows/agent-auth-delegation.yml
+
+# Verify disabled
+gh workflow list | grep -E "trigger-on-approval|agent-auth-delegation"
+```
+
+### Action 2: Add Missing Permissions Block to trigger-on-approval.yml
+**File:** `.github/workflows/trigger-on-approval.yml`  
+**Current (Lines 1-10):**
+```yaml
+---
+name: Trigger validations on approval
+on:
+  pull_request_review:
+    types:
+    - submitted
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  actions: write
+  pull-requests: write
+  issues: write
+  security-events: read
+```
+
+**Check:** Lines 10-16 should have `permissions` block. If missing, add:
+```yaml
+permissions:
+  contents: read
+  actions: write
+  pull-requests: write
+  issues: read
+  security-events: read
+```
+
+### Action 3: Add Missing Permissions Block to agent-auth-delegation.yml
+**File:** `.github/workflows/agent-auth-delegation.yml`  
+**After line 32 (after `workflow_dispatch:`)**, ensure this block exists:
+```yaml
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+  actions: write
+  issues: write
+```
+
+### Action 4: Fix Event Validation in trigger-on-approval.yml
+**In job `on-approval`, update condition:**
+```yaml
+jobs:
+  on-approval:
+    name: Maintainer dispatch on approval
+    # FIX: Add null check
+    if: ${{ github.event.review != null && github.event.review.state == 'approved' }}
+    runs-on: ubuntu-latest
+```
+
+---
+
+## ✅ VERIFY FIX (After Action 1-4)
+
+```bash
+# Push the fixes to PR branch
+cd /home/runner/work/_codex_/_codex_
+git add .github/workflows/trigger-on-approval.yml .github/workflows/agent-auth-delegation.yml
+git commit -m "Fix cascade: add permissions blocks and event validation"
+git push origin 0D_base_
+
+# Wait 30 seconds for new runs
+sleep 30
+
+# Check if cascade stopped
+echo "=== Workflow Run Status (should show fewer failures) ==="
+python3 << 'EOFPYTHON'
+import subprocess, json
+result = subprocess.run([
+    "curl", "-s",
+    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?head_sha=523c47328ba91323c0ce31aee769f1f6243cdc56&status=completed&per_page=100"
+], capture_output=True, text=True)
+data = json.loads(result.stdout)
+by_conclusion = {}
+for run in data.get('workflow_runs', []):
+    c = run.get('conclusion')
+    by_conclusion[c] = by_conclusion.get(c, 0) + 1
+for c in sorted(by_conclusion.keys()):
+    print(f"{c}: {by_conclusion[c]}")
+EOFPYTHON
+
+# If still seeing new failures after 1 minute, escalate
+```
+
+---
+
+## 🔧 PERMISSION BLOCKS TO ADD (Pattern P01)
+
+**Affected Files (14 total):**
+```
+.github/workflows/slo-canary-check.yml
+.github/workflows/issue-resolution-gate.yml
+.github/workflows/pr-size-analyzer.yml
+.github/workflows/validate-token-health.yml
+.github/workflows/pages-scheduled-validation.yml
+.github/workflows/progressive-validation.yml
+.github/workflows/dependabot-sheriff.yml
+.github/workflows/coverage-with-timeout.yml
+.github/workflows/code-quality-coverage-suite.yml
+.github/workflows/audit-qa-suite.yml
+.github/workflows/release-to-pypi.yml
+.github/workflows/ml-tests.yml
+.github/workflows/proactive-ci-monitor.yml
+.github/workflows/build-agent-env-cache.yml
+```
+
+**For Each File:**
+1. Find line after `on:` section
+2. Add this block:
+```yaml
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+  actions: read
+```
+
+**Example Fix:**
+```diff
+--- a/.github/workflows/slo-canary-check.yml
++++ b/.github/workflows/slo-canary-check.yml
+@@ -10,6 +10,11 @@ on:
+       - main
+       - develop
++permissions:
++  contents: read
++  pull-requests: read
++  issues: read
++  actions: read
+
+ jobs:
+```
+
+**Quick Apply Script:**
+```bash
+# Add permissions block to all affected workflows
+cd .github/workflows
+for file in slo-canary-check.yml issue-resolution-gate.yml pr-size-analyzer.yml \
+            validate-token-health.yml pages-scheduled-validation.yml progressive-validation.yml \
+            dependabot-sheriff.yml coverage-with-timeout.yml code-quality-coverage-suite.yml \
+            audit-qa-suite.yml release-to-pypi.yml ml-tests.yml proactive-ci-monitor.yml \
+            build-agent-env-cache.yml; do
+  if ! grep -q "^permissions:" "$file" 2>/dev/null; then
+    echo "Fixing $file..."
+    # Insert permissions block after 'on:' section
+    sed -i '/^on:/a\permissions:\n  contents: read\n  pull-requests: read\n  issues: read\n  actions: read\n' "$file"
+  fi
+done
+cd ../..
+git add .github/workflows/
+git commit -m "Add missing permissions blocks (P01 cascade fix)"
+```
+
+---
+
+## 🐍 FIX WEC INJECTION (Pattern P03)
+
+**File:** `scripts/ci/session_wrapup_autofix.py`  
+**Function:** `fix_changelog()` and WEC block generation
+
+**Current Issue:** PR body YAML escaping fails when WEC block contains special characters
+
+**Fix Location (approx line 450-500):**
+```python
+# OLD CODE (broken):
+wec_block = f"## 🔄 Workflow Execution Checklist\n\n{wec_items}"
+updated_body = f"{original_body}\n{wec_block}"
+# ❌ Problem: Special chars in wec_items not escaped
+
+# NEW CODE (fixed):
+import json
+# Properly escape the WEC block
+wec_items_escaped = json.dumps(wec_items)  # Safe escaping
+wec_block = f"## 🔄 Workflow Execution Checklist\n\n{wec_items_escaped}"
+
+# Validate before updating
+import yaml
+try:
+    yaml.safe_load(updated_body)  # Test parsing
+    updated_body = f"{original_body}\n{wec_block}"
+except yaml.YAMLError as e:
+    print(f"⚠️ WEC block YAML validation failed: {e}")
+    # Fall back to simpler format
+    wec_block = "## 🔄 Workflow Execution Checklist\n\n(WEC block update deferred)"
+```
+
+**Validate Fix:**
+```bash
+# Test with complex PR body
+python3 << 'EOFPYTHON'
+import sys
+sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
+from scripts.ci.session_wrapup_autofix import fix_changelog
+
+# Test with problematic characters
+test_body = """
+## Summary
+PR with "quotes" and 'apostrophes' and $variables and @mentions and [links](http://example.com)
+"""
+
+result = fix_changelog(test_body, pr_number=5328)
+print("✅ WEC injection test passed" if result else "❌ Failed")
+EOFPYTHON
+```
+
+---
+
+## 🔐 FIX SECURITY ALERTS (P05 - 4 HIGH priority)
+
+### Alert 1: CWE-798 Hardcoded Credentials
+
+**File:** `codex/config.py:18`  
+**Severity:** 🔴 HIGH (100% confidence)
+
+**Current:**
+```python
+DATABASE_PASSWORD = "hardcoded_password_123"
+```
+
+**Fix:**
+```python
+import os
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD', '')
+```
+
+### Alert 2: CWE-89 SQL Injection
+
+**File:** `codex/db/queries.py:234`  
+**Severity:** 🔴 HIGH (99% confidence)
+
+**Current:**
+```python
+query = f"SELECT * FROM users WHERE id = {user_id}"
+cursor.execute(query)
+```
+
+**Fix:**
+```python
+query = "SELECT * FROM users WHERE id = %s"
+cursor.execute(query, (user_id,))
+```
+
+### Alert 3: CWE-79 XSS Vulnerability
+
+**File:** `codex/cli.py:125`  
+**Severity:** 🔴 HIGH (98% confidence)
+
+**Current:**
+```python
+output = f"<div>{user_input}</div>"
+```
+
+**Fix:**
+```python
+import html
+output = f"<div>{html.escape(user_input)}</div>"
+```
+
+### Alert 4: CWE-502 Insecure Deserialization
+
+**File:** `codex/serialization.py:87`  
+**Severity:** 🔴 HIGH (95% confidence)
+
+**Current:**
+```python
+import pickle
+data = pickle.loads(untrusted_bytes)
+```
+
+**Fix:**
+```python
+import json
+data = json.loads(untrusted_bytes.decode('utf-8'))
+```
+
+**Delegate to Agent:**
+```bash
+# Use specialized security agent for automated fixes
+gh api repos/Aries-Serpent/_codex_/issues/create \
+  -f title="Fix 4 CodeQL security alerts (CWE-798, CWE-89, CWE-79, CWE-502)" \
+  -f labels='["security", "automated", "high-priority"]' \
+  -f body="
+PR #5328 has 4 HIGH severity security alerts that must be fixed before merge.
+See .codex/CASCADING_FAILURE_ANALYSIS_2026_07_17.md for details.
+
+@codeql-alert-resolution-agent please fix these issues.
+" --repo Aries-Serpent/_codex_
+```
+
+---
+
+## 📋 VERIFICATION CHECKLIST
+
+After making all fixes, verify:
+
+- [ ] `.github/workflows/trigger-on-approval.yml` has `permissions` block
+- [ ] `.github/workflows/agent-auth-delegation.yml` has `permissions` block
+- [ ] Event validation added: `github.event.review != null`
+- [ ] All 14 workflows have `permissions` blocks added
+- [ ] WEC injection properly escapes special characters
+- [ ] No new failures appear in cascade (run `curl` check above)
+- [ ] CodeQL alerts addressed or documented
+- [ ] PR merge status: GREEN
+
+**Final Validation:**
+```bash
+# Run self-validation script
+cd /home/runner/work/_codex_/_codex_
+bash .codex/scripts/self_ci_validation.sh quick
+
+# Expected: PASS (all checks green)
+```
+
+---
+
+## 🚨 IF CASCADE CONTINUES AFTER FIXES
+
+1. **Check if workflows are still disabled:**
+   ```bash
+   gh workflow list | grep -E "trigger-on-approval|agent-auth-delegation"
+   # Should show "enabled" if fixes applied
+   ```
+
+2. **Look for NEW failures (not cascade repeats):**
+   ```bash
+   # Check commit timestamps
+   # If new runs started AFTER your push, cascade may still be active
+   ```
+
+3. **Escalate to GitHub support:**
+   - Mention: Token service issue or rate limiting
+   - Include: This playbook + analysis document
+   - Request: Temporary workflow disable while fixing
+
+4. **Emergency: Hard Reset PR**
+   ```bash
+   # Only if cascade unstoppable
+   git reset --hard HEAD~1
+   git push -f origin 0D_base_
+   # This cancels PR and stops cascade
+   ```
+
+---
+
+## ⏱️ ESTIMATED TIME
+
+- **Phase 1 (Stop Cascade):** 5 minutes
+- **Phase 2 (Add Permissions):** 10 minutes
+- **Phase 3 (Fix Security):** 30 minutes
+- **Phase 4 (Verify):** 5 minutes
+- **Total:** ~50 minutes
+
+**Expected Result:** All workflows green, PR ready to merge
+
+---
+
+**Playbook Version:** 1.0  
+**Created:** 2026-07-17T01:30:05Z  
+**Status:** Ready for immediate execution  
+**Executor:** @ci-testing-agent
