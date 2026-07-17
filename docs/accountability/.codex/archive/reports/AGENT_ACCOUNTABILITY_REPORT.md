@@ -12,7 +12,7 @@
 - ✅ Security findings acknowledged and assessed
 
 ### Agents Used
-- [x] `general-purpose`
+- [x] `session-analysis-agent`
 
 ### Commits This Session
 1. `e95ef160`: fix(lint): Apply ruff auto-fixes for import sorting and formatting

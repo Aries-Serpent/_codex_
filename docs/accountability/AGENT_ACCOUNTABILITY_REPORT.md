@@ -13,7 +13,7 @@
 - ⏳ Reply to blocking comments with commit SHAs (pending)
 
 ### Agents Used
-- None (direct agent execution)
+- [x] `session-analysis-agent`
 
 ### Blocking Comments to Address
 - Comment #4997506080: Security findings summary (4 CRITICAL, 4 HIGH, 2 MEDIUM)
