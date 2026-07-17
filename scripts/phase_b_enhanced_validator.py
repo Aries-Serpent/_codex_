@@ -38,10 +38,10 @@ def analyze_runs(workflow_name: str, runs: list) -> dict:
         return {}
     
     total = len(runs)
-    completed = sum(1 for r in runs if r['status'] == 'completed')
-    successful = sum(1 for r in runs if r['conclusion'] == 'success')
-    failed = sum(1 for r in runs if r['conclusion'] == 'failure')
-    action_required = sum(1 for r in runs if r['conclusion'] == 'action_required')
+    completed = sum(1 for r in runs if r.get('status') == 'completed')
+    successful = sum(1 for r in runs if r.get('conclusion') == 'success')
+    failed = sum(1 for r in runs if r.get('conclusion') == 'failure')
+    action_required = sum(1 for r in runs if r.get('conclusion') == 'action_required')
     
     success_rate = (successful / total * 100) if total > 0 else 0
     completion_rate = (completed / total * 100) if total > 0 else 0

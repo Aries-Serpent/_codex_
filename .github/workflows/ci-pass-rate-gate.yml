@@ -30,7 +30,7 @@ jobs:
       - name: Compute 7-day pass rate
         id: rate
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: "python3 - <<'PYEOF'\nimport json, os, subprocess, sys\nfrom datetime import\
         \ datetime, timedelta, timezone\n\ntoken = os.environ[\"GH_TOKEN\"]\nrepo\
         \  = os.environ.get(\"GITHUB_REPOSITORY\", \"Aries-Serpent/_codex_\")\nsince\
