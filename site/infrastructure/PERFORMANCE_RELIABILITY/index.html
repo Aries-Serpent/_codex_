@@ -1,0 +1,3263 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/infrastructure/PERFORMANCE_RELIABILITY/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Performance &amp; Reliability Guide - Codex ML - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#performance-reliability-guide-codex-ml">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Performance &amp; Reliability Guide - Codex ML
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-level-agreements">
+<span class="md-ellipsis">
+      
+        Service Level Agreements
+      
+    </span>
+</a>
+<nav aria-label="Service Level Agreements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-service-sla">
+<span class="md-ellipsis">
+      
+        API Service SLA
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model-serving-sla">
+<span class="md-ellipsis">
+      
+        Model Serving SLA
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#training-service-sla">
+<span class="md-ellipsis">
+      
+        Training Service SLA
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-durability-sla">
+<span class="md-ellipsis">
+      
+        Data Durability SLA
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-benchmarks">
+<span class="md-ellipsis">
+      
+        Performance Benchmarks
+      
+    </span>
+</a>
+<nav aria-label="Performance Benchmarks" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inference-performance">
+<span class="md-ellipsis">
+      
+        Inference Performance
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#training-performance">
+<span class="md-ellipsis">
+      
+        Training Performance
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#api-performance">
+<span class="md-ellipsis">
+      
+        API Performance
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#database-performance">
+<span class="md-ellipsis">
+      
+        Database Performance
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reliability-metrics">
+<span class="md-ellipsis">
+      
+        Reliability Metrics
+      
+    </span>
+</a>
+<nav aria-label="Reliability Metrics" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#availability-tracking">
+<span class="md-ellipsis">
+      
+        Availability Tracking
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-rates">
+<span class="md-ellipsis">
+      
+        Error Rates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#latency-metrics">
+<span class="md-ellipsis">
+      
+        Latency Metrics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#health-check-procedures">
+<span class="md-ellipsis">
+      
+        Health Check Procedures
+      
+    </span>
+</a>
+<nav aria-label="Health Check Procedures" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#automated-health-checks-every-10-seconds">
+<span class="md-ellipsis">
+      
+        Automated Health Checks (Every 10 seconds)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#manual-verification-checklist">
+<span class="md-ellipsis">
+      
+        Manual Verification Checklist
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-alerting">
+<span class="md-ellipsis">
+      
+        Monitoring &amp; Alerting
+      
+    </span>
+</a>
+<nav aria-label="Monitoring &amp; Alerting" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-metrics-dashboard">
+<span class="md-ellipsis">
+      
+        Key Metrics Dashboard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#alert-rules">
+<span class="md-ellipsis">
+      
+        Alert Rules
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#incident-response-thresholds">
+<span class="md-ellipsis">
+      
+        Incident Response Thresholds
+      
+    </span>
+</a>
+<nav aria-label="Incident Response Thresholds" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#automatic-scaling-thresholds">
+<span class="md-ellipsis">
+      
+        Automatic Scaling Thresholds
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#alert-to-action-mapping">
+<span class="md-ellipsis">
+      
+        Alert to Action Mapping
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-optimization-targets">
+<span class="md-ellipsis">
+      
+        Performance Optimization Targets
+      
+    </span>
+</a>
+<nav aria-label="Performance Optimization Targets" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2024-performance-goals">
+<span class="md-ellipsis">
+      
+        2024 Performance Goals
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sla-compliance-report-template">
+<span class="md-ellipsis">
+      
+        SLA Compliance Report Template
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#see-also">
+<span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="performance-reliability-guide-codex-ml">Performance &amp; Reliability Guide - Codex ML<a class="headerlink" href="#performance-reliability-guide-codex-ml" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p><strong>Document Version:</strong> 1.0.0
+<strong>Last Updated: 2026-07-08
+</strong>Authority:<strong> Phase 12 WS3 Documentation Lane 8
+</strong>Audience:<strong> SREs, Product Managers, Platform Architects
+</strong>Status:** Production SLA</p>
+<hr/>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#service-level-agreements">Service Level Agreements</a></li>
+<li><a href="#performance-benchmarks">Performance Benchmarks</a></li>
+<li><a href="#reliability-metrics">Reliability Metrics</a></li>
+<li><a href="#health-check-procedures">Health Check Procedures</a></li>
+<li><a href="#monitoring--alerting">Monitoring &amp; Alerting</a></li>
+<li><a href="#incident-response-thresholds">Incident Response Thresholds</a></li>
+</ol>
+<hr/>
+<h2 id="service-level-agreements">Service Level Agreements<a class="headerlink" href="#service-level-agreements" title="Permanent link">¶</a></h2>
+<h3 id="api-service-sla">API Service SLA<a class="headerlink" href="#api-service-sla" title="Permanent link">¶</a></h3>
+<p><strong>Target Availability:</strong> 99.9% (99.99% for enterprise customers)</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Calculation: (Total Time - Downtime) / Total Time
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>Monthly Downtime Budget:
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>- 99.9%: 43.2 minutes maximum
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>- 99.99%: 4.32 minutes maximum
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>- 99.95%: 21.6 minutes maximum
+</code></pre></div>
+<h4 id="downtime-categories">Downtime Categories<a class="headerlink" href="#downtime-categories" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Impact</th>
+<th>Counts Against SLA?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scheduled Maintenance (24h notice)</td>
+<td>Service unavailable</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Emergency Fixes (&lt;1 hour)</td>
+<td>Service unavailable</td>
+<td>No*</td>
+</tr>
+<tr>
+<td>Security Patches (customer announced)</td>
+<td>Service unavailable</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Third-party outages (AWS, GCP, etc.)</td>
+<td>Service degradation</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Customer misconfiguration</td>
+<td>No impact</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Network issues (customer side)</td>
+<td>No impact</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><em>*Emergency fixes bypass scheduled maintenance SLA if critical vulnerability</em></p>
+<h3 id="model-serving-sla">Model Serving SLA<a class="headerlink" href="#model-serving-sla" title="Permanent link">¶</a></h3>
+<p><strong>Target Availability:</strong> 99.95%
+<strong>Target Latency (p99):</strong> &lt;1 second
+<strong>Target Throughput:</strong> &gt;10,000 inferences/sec per cluster</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nt">SLA Targets</span><span class="p">:</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">API Error Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;0.5% (p99)</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Inference Latency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;500ms (p50), &lt;2s (p99)</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Model Load Time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;5 seconds</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Batch Processing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;2s per batch of 32</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Queue Wait Time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;500ms</span>
+</code></pre></div>
+<h3 id="training-service-sla">Training Service SLA<a class="headerlink" href="#training-service-sla" title="Permanent link">¶</a></h3>
+<p><strong>Target Availability:</strong> 99.9%
+<strong>No strict latency SLA</strong> (async job)
+<strong>Checkpoint Interval:</strong> ≤1 hour guaranteed</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">SLA Targets</span><span class="p">:</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Job Initiation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;5 minutes</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Checkpoint Success Rate</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">99.9%</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Data Loss Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;0.01% (with replication)</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Max Queue Wait</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;24 hours</span>
+</code></pre></div>
+<h3 id="data-durability-sla">Data Durability SLA<a class="headerlink" href="#data-durability-sla" title="Permanent link">¶</a></h3>
+<p><strong>Target Durability:</strong> 99.999999999% (11 nines)
+<strong>Minimum Replicas:</strong> 3 across availability zones
+<strong>Backup Frequency:</strong> Hourly with 30-day retention</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>AWS S3 Durability: 99.999999999%
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>Calculation: 1 - (1 - 10^-11)^N
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>With RDS Multi-AZ:
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>- RPO (Recovery Point Objective): &lt;1 minute
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>- RTO (Recovery Time Objective): &lt;5 minutes
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>- Data Loss Risk: &lt;0.001%
+</code></pre></div>
+<hr/>
+<h2 id="performance-benchmarks">Performance Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Permanent link">¶</a></h2>
+<h3 id="inference-performance">Inference Performance<a class="headerlink" href="#inference-performance" title="Permanent link">¶</a></h3>
+<h4 id="single-model-inference-cold-start">Single Model Inference (Cold Start)<a class="headerlink" href="#single-model-inference-cold-start" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Scenario: First inference after deployment
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Conditions: 8GB GPU memory, fp16 quantization
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>Latency Breakdown:
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> - Model Load: 2.5 seconds (cached)
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> - Initialization: 0.8 seconds
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> - Inference: 0.2 seconds (8 tokens)
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> - Total: 3.5 seconds (p50)
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> - Total: 5.0 seconds (p99)
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>Memory:
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> - Model Weight: 8GB
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> - Activation: 2GB
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> - Working Memory: 1GB
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> - Total: 11GB
+</code></pre></div>
+<h4 id="warm-inference">Warm Inference<a class="headerlink" href="#warm-inference" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Scenario: Sustained inference workload
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Conditions: 8GB GPU, batch size 32
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Latency (per inference):
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> - p50: 120ms
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> - p95: 180ms
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> - p99: 250ms
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> - max: 450ms
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>Throughput:
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> - Tokens/sec: 850 (model-dependent)
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> - Inferences/sec: 12-15
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> - Batch/sec: 0.3-0.4
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>Resource Utilization:
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> - GPU: 85-90%
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> - Memory: 14GB/16GB
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> - Power: 250W
+</code></pre></div>
+<h4 id="batch-inference-32-samples">Batch Inference (32 samples)<a class="headerlink" href="#batch-inference-32-samples" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Latency:
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> - p50: 800ms
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> - p99: 1.2s
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> - Total time / sample: ~30ms
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>Throughput:
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> - Samples/sec: 40
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> - Batch/sec: 1.25
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>Memory:
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> - Active: 15.5GB
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> - Utilization: 97%
+</code></pre></div>
+<h3 id="training-performance">Training Performance<a class="headerlink" href="#training-performance" title="Permanent link">¶</a></h3>
+<h4 id="model-training-throughput">Model Training Throughput<a class="headerlink" href="#model-training-throughput" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Scenario: 7B parameter model, 32 tokens
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Conditions: 8x A100 80GB GPUs, DDP (Distributed Data Parallel)
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>Single GPU:
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> - Throughput: 150 samples/sec
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> - Throughput: 1200 tokens/sec
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> - Memory/GPU: 75GB
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> - Time/Epoch: 6.7 hours (10M samples)
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>8-GPU Cluster:
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> - Throughput: 1200 samples/sec (linear scaling)
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> - Throughput: 9600 tokens/sec
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> - Time/Epoch: 50 minutes
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a> - Total Training: 2.5 hours (3 epochs)
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>Scaling Efficiency: 95% (near-linear)
+</code></pre></div>
+<h4 id="checkpoint-performance">Checkpoint Performance<a class="headerlink" href="#checkpoint-performance" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Scenario: Save 7B model checkpoint
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Conditions: Distributed filesystem, fp16
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>Checkpoint Size:
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> - Model Weights: 14GB
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> - Optimizer State: 28GB
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> - Training State: 2GB
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> - Total: 44GB
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>Time:
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> - Serialization: 8 seconds
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> - Network Transfer: 45 seconds (1Gbps)
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> - Filesystem Write: 65 seconds
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> - Total: 2 minutes
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>Checkpoint Frequency: Every 1000 steps (~6 min)
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>Overhead: 3.3% of training time
+</code></pre></div>
+<h3 id="api-performance">API Performance<a class="headerlink" href="#api-performance" title="Permanent link">¶</a></h3>
+<h4 id="request-latency">Request Latency<a class="headerlink" href="#request-latency" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Scenario: RESTful API calls, small payloads
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>List Models (zero-cache):
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> - p50: 45ms
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> - p99: 120ms
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>Get Model Details:
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> - p50: 8ms (cached)
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> - p50: 65ms (fresh)
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> - p99: 200ms
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>Single Inference:
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> - p50: 120ms
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> - p99: 280ms
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>Create Training Job:
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> - p50: 85ms
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> - p99: 250ms
+</code></pre></div>
+<h4 id="throughput">Throughput<a class="headerlink" href="#throughput" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Scenario: Sustained load, 3 API replicas
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>Throughput (RPS):
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> - Single replica: 333 RPS
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> - 3 replicas: 1000 RPS
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> - 10 replicas: 3300 RPS
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>Bottleneck Analysis:
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> - Without cache: Limited by database
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> - With cache: Limited by network bandwidth
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> - Sustained peak: ~2000 RPS before cascading failures
+</code></pre></div>
+<h3 id="database-performance">Database Performance<a class="headerlink" href="#database-performance" title="Permanent link">¶</a></h3>
+<h4 id="read-performance">Read Performance<a class="headerlink" href="#read-performance" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>Query: SELECT * FROM models WHERE status = 'active'
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>Index Hit Rate: 99.5%
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Latency:
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> - Cached (in memory): 0.5ms
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> - SSD Read: 2-5ms
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> - Cold (disk read): 20-50ms
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>Large Results (10k rows):
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> - Query time: 15ms
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> - Serialization: 8ms
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> - Network: 10ms
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> - Total: 33ms
+</code></pre></div>
+<h4 id="write-performance">Write Performance<a class="headerlink" href="#write-performance" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Operation: INSERT INTO inference_requests (...)
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>Latency (with replication):
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> - Write to primary: 1-2ms
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> - Sync replication: 5-8ms
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> - Ack to client: 8-10ms
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> - p99: 20ms
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>Throughput:
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> - Primary: 1000 writes/sec
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> - With replication: 500 writes/sec
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> - With fsync: 100 writes/sec
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>WAL Throughput:
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> - Unbounded: ~100MB/sec
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> - Network limited: ~50MB/sec
+</code></pre></div>
+<hr/>
+<h2 id="reliability-metrics">Reliability Metrics<a class="headerlink" href="#reliability-metrics" title="Permanent link">¶</a></h2>
+<h3 id="availability-tracking">Availability Tracking<a class="headerlink" href="#availability-tracking" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>Monthly Availability Report:
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>July 2024:
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> Total Minutes: 44,640
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> Downtime: 15 minutes
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> Availability: 99.966%
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> Exceeded SLA: Yes 
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>Downtime Events:
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> - 2024-07-05 14:30-14:42 (12 min) - DB connection pool exhaustion
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> - 2024-07-15 03:15-03:18 (3 min) - Network maintenance
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>Trend:
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> June 2024: 99.93%
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a> July 2024: 99.97% 
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> YTD Average: 99.94%
+</code></pre></div>
+<h3 id="error-rates">Error Rates<a class="headerlink" href="#error-rates" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>p50 Error Rate</th>
+<th>p99 Error Rate</th>
+<th>Target</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API</td>
+<td>0.01%</td>
+<td>0.05%</td>
+<td>&lt;0.5%</td>
+<td></td>
+</tr>
+<tr>
+<td>Model Server</td>
+<td>0.02%</td>
+<td>0.08%</td>
+<td>&lt;0.5%</td>
+<td></td>
+</tr>
+<tr>
+<td>Training</td>
+<td>0.03%</td>
+<td>0.10%</td>
+<td>&lt;1%</td>
+<td></td>
+</tr>
+<tr>
+<td>Database</td>
+<td>0.001%</td>
+<td>0.005%</td>
+<td>&lt;0.1%</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="latency-metrics">Latency Metrics<a class="headerlink" href="#latency-metrics" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>p50</th>
+<th>p95</th>
+<th>p99</th>
+<th>SLA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Health Check</td>
+<td>5ms</td>
+<td>8ms</td>
+<td>15ms</td>
+<td>&lt;10ms</td>
+</tr>
+<tr>
+<td>Model List</td>
+<td>25ms</td>
+<td>50ms</td>
+<td>120ms</td>
+<td>&lt;100ms</td>
+</tr>
+<tr>
+<td>Single Inference</td>
+<td>120ms</td>
+<td>180ms</td>
+<td>280ms</td>
+<td>&lt;500ms</td>
+</tr>
+<tr>
+<td>Batch Inference</td>
+<td>800ms</td>
+<td>1100ms</td>
+<td>1500ms</td>
+<td>&lt;2s</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="health-check-procedures">Health Check Procedures<a class="headerlink" href="#health-check-procedures" title="Permanent link">¶</a></h2>
+<h3 id="automated-health-checks-every-10-seconds">Automated Health Checks (Every 10 seconds)<a class="headerlink" href="#automated-health-checks-every-10-seconds" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Liveness probes</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>GET<span class="w"> </span>/health/live
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>Response:<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK<span class="w"> </span><span class="o">{</span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"alive"</span><span class="o">}</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="c1"># Readiness probes</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>GET<span class="w"> </span>/health/ready
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>Response:<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK<span class="w"> </span><span class="o">{</span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"ready"</span><span class="o">}</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="c1"># Detailed status</span>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>GET<span class="w"> </span>/health/status
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>Response:
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="o">{</span>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a><span class="w"> </span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"healthy"</span>,
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="w"> </span><span class="s2">"uptime_seconds"</span>:<span class="w"> </span><span class="m">86400</span>,
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a><span class="w"> </span><span class="s2">"checks"</span>:<span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a><span class="w"> </span><span class="s2">"database"</span>:<span class="w"> </span><span class="o">{</span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"ok"</span>,<span class="w"> </span><span class="s2">"latency_ms"</span>:<span class="w"> </span><span class="m">2</span><span class="o">}</span>,
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a><span class="w"> </span><span class="s2">"cache"</span>:<span class="w"> </span><span class="o">{</span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"ok"</span>,<span class="w"> </span><span class="s2">"latency_ms"</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a><span class="w"> </span><span class="s2">"storage"</span>:<span class="w"> </span><span class="o">{</span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"ok"</span>,<span class="w"> </span><span class="s2">"latency_ms"</span>:<span class="w"> </span><span class="m">45</span><span class="o">}</span>,
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a><span class="w"> </span><span class="s2">"model_server"</span>:<span class="w"> </span><span class="o">{</span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"ok"</span>,<span class="w"> </span><span class="s2">"replicas"</span>:<span class="w"> </span><span class="m">3</span><span class="o">}</span>
+<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a><span class="w"> </span><span class="o">}</span>
+<a href="#__codelineno-14-21" id="__codelineno-14-21" name="__codelineno-14-21"></a><span class="o">}</span>
+</code></pre></div>
+<h3 id="manual-verification-checklist">Manual Verification Checklist<a class="headerlink" href="#manual-verification-checklist" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>Daily (08:00 UTC):
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>[ ] Cluster status - kubectl get nodes
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>[ ] Pod status - kubectl get pods -n codex
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>[ ] Database connectivity - psql health check
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>[ ] Storage access - AWS S3 list operation
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>[ ] Metrics pipeline - Prometheus /metrics endpoint
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>[ ] Alerts - Check firing/resolved alerts
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>[ ] Error rates - Query last hour of metrics
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>Weekly (Monday 09:00):
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>[ ] Full backup verification
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>[ ] Cross-region failover test
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>[ ] Load balancer health
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>[ ] Certificate expiry check
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>[ ] Disk usage trend analysis
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>Monthly (First Monday 09:00):
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>[ ] Disaster recovery drill
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a>[ ] Capacity planning review
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a>[ ] Performance trend analysis
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a>[ ] Security vulnerability scan
+</code></pre></div>
+<hr/>
+<h2 id="monitoring-alerting">Monitoring &amp; Alerting<a class="headerlink" href="#monitoring-alerting" title="Permanent link">¶</a></h2>
+<h3 id="key-metrics-dashboard">Key Metrics Dashboard<a class="headerlink" href="#key-metrics-dashboard" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nt">Dashboard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Codex Infrastructure Health</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="nt">Refresh Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30 seconds</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="nt">Panels</span><span class="p">:</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1. System Overview</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">- Cluster availability</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">99.97%</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">API error rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.03%</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Active requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1,247</span>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">GPU utilization</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">78%</span>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2. API Performance</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Request latency (p50, p95, p99)</span>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Throughput (RPS)</span>
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Error rate by endpoint</span>
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Response size distribution</span>
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3. Model Serving</span>
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Inference latency by model</span>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Throughput by model</span>
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GPU memory utilization</span>
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Queue depth</span>
+<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>
+<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4. Infrastructure</span>
+<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Node CPU/Memory</span>
+<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Disk utilization</span>
+<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Network I/O</span>
+<a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pod restarts</span>
+<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a>
+<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5. Database</span>
+<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Connection pool usage</span>
+<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Query latency</span>
+<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Replication lag</span>
+<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Slow queries</span>
+<a href="#__codelineno-16-34" id="__codelineno-16-34" name="__codelineno-16-34"></a>
+<a href="#__codelineno-16-35" id="__codelineno-16-35" name="__codelineno-16-35"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6. Training</span>
+<a href="#__codelineno-16-36" id="__codelineno-16-36" name="__codelineno-16-36"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Active jobs</span>
+<a href="#__codelineno-16-37" id="__codelineno-16-37" name="__codelineno-16-37"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Job success rate</span>
+<a href="#__codelineno-16-38" id="__codelineno-16-38" name="__codelineno-16-38"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GPU utilization</span>
+<a href="#__codelineno-16-39" id="__codelineno-16-39" name="__codelineno-16-39"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkpoint frequency</span>
+</code></pre></div>
+<h3 id="alert-rules">Alert Rules<a class="headerlink" href="#alert-rules" title="Permanent link">¶</a></h3>
+<h4 id="critical-alerts-page-immediately">Critical Alerts (Page immediately)<a class="headerlink" href="#critical-alerts-page-immediately" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api-unavailable</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">up{job="api-server"} == 0</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2m</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"API</span><span class="nv"> </span><span class="s">service</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">down"</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Execute</span><span class="nv"> </span><span class="s">API</span><span class="nv"> </span><span class="s">recovery</span><span class="nv"> </span><span class="s">runbook"</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database-offline</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pg_up{job="postgres"} == 0</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Database</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">unreachable"</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Trigger</span><span class="nv"> </span><span class="s">failover</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">replica"</span>
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-loss-detected</span>
+<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">increase(inference_requests_total[5m]) == 0 AND</span>
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">increase(api_requests_total[5m]) &gt; 100</span>
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Data</span><span class="nv"> </span><span class="s">loss</span><span class="nv"> </span><span class="s">detected"</span>
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Trigger</span><span class="nv"> </span><span class="s">backup</span><span class="nv"> </span><span class="s">recovery"</span>
+</code></pre></div>
+<h4 id="high-priority-alerts-email-immediately">High-Priority Alerts (Email immediately)<a class="headerlink" href="#high-priority-alerts-email-immediately" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high-error-rate</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate(api_errors_total[5m]) &gt; 0.05</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"API</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">rate</span><span class="nv"> </span><span class="s">&gt;5%"</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Monitor,</span><span class="nv"> </span><span class="s">escalate</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">increasing"</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpu-memory-exhausted</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpu_memory_used{} / gpu_memory_total{} &gt; 0.95</span>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"GPU</span><span class="nv"> </span><span class="s">memory</span><span class="nv"> </span><span class="s">utilization</span><span class="nv"> </span><span class="s">&gt;95%"</span>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Scale</span><span class="nv"> </span><span class="s">up</span><span class="nv"> </span><span class="s">model</span><span class="nv"> </span><span class="s">server</span><span class="nv"> </span><span class="s">replicas"</span>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slow-database</span>
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">histogram_quantile(0.99, db_query_duration_ms{}) &gt; 500</span>
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10m</span>
+<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Database</span><span class="nv"> </span><span class="s">queries</span><span class="nv"> </span><span class="s">slow</span><span class="nv"> </span><span class="s">(p99</span><span class="nv"> </span><span class="s">&gt;500ms)"</span>
+<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Check</span><span class="nv"> </span><span class="s">running</span><span class="nv"> </span><span class="s">queries,</span><span class="nv"> </span><span class="s">scale</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">needed"</span>
+</code></pre></div>
+<h4 id="medium-priority-alerts-slack-notification">Medium-Priority Alerts (Slack notification)<a class="headerlink" href="#medium-priority-alerts-slack-notification" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">disk-usage-high</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">node_disk_used_percent{} &gt; 80</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30m</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Disk</span><span class="nv"> </span><span class="s">usage</span><span class="nv"> </span><span class="s">&gt;80%"</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">medium</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Review</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">clean</span><span class="nv"> </span><span class="s">up</span><span class="nv"> </span><span class="s">old</span><span class="nv"> </span><span class="s">artifacts"</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pod-restarts</span>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rate(kube_pod_container_status_restarts_total[1h]) &gt; 5</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15m</span>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"High</span><span class="nv"> </span><span class="s">pod</span><span class="nv"> </span><span class="s">restart</span><span class="nv"> </span><span class="s">rate"</span>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">medium</span>
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Investigate</span><span class="nv"> </span><span class="s">pod</span><span class="nv"> </span><span class="s">logs"</span>
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a>
+<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">certificate-expiry</span>
+<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a><span class="w w-Error"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls_cert_expiry_days{} &lt; 30</span>
+<a href="#__codelineno-19-17" id="__codelineno-19-17" name="__codelineno-19-17"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Certificate</span><span class="nv"> </span><span class="s">expiring</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">&lt;30</span><span class="nv"> </span><span class="s">days"</span>
+<a href="#__codelineno-19-18" id="__codelineno-19-18" name="__codelineno-19-18"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">medium</span>
+<a href="#__codelineno-19-19" id="__codelineno-19-19" name="__codelineno-19-19"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Rotate</span><span class="nv"> </span><span class="s">certificate"</span>
+</code></pre></div>
+<hr/>
+<h2 id="incident-response-thresholds">Incident Response Thresholds<a class="headerlink" href="#incident-response-thresholds" title="Permanent link">¶</a></h2>
+<h3 id="automatic-scaling-thresholds">Automatic Scaling Thresholds<a class="headerlink" href="#automatic-scaling-thresholds" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="nt">API Server Scaling</span><span class="p">:</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w"> </span><span class="nt">Scale Up When</span><span class="p">:</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CPU avg &gt;70% for 2 minutes</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OR Memory &gt;75% for 2 minutes</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OR Request queue &gt;100</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+2 replicas (min +25%, max +100%)</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="w"> </span><span class="nt">Scale Down When</span><span class="p">:</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CPU avg &lt;30% for 10 minutes</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AND Memory &lt;50% for 10 minutes</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1 replica (min -25%, max -50%)</span>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>
+<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a><span class="w"> </span><span class="nt">Limits</span><span class="p">:</span>
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Min replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Max replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Cooldown</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 minutes between scaling events</span>
+<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a>
+<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a><span class="nt">Model Server Scaling</span><span class="p">:</span>
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a><span class="w"> </span><span class="nt">Scale Up When</span><span class="p">:</span>
+<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Queue depth &gt;50 for 2 minutes</span>
+<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OR Inference latency p99 &gt;1 second</span>
+<a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OR GPU memory &gt;85% for 2 minutes</span>
+<a href="#__codelineno-20-23" id="__codelineno-20-23" name="__codelineno-20-23"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add 1-2 replicas (model loading ~2min)</span>
+<a href="#__codelineno-20-24" id="__codelineno-20-24" name="__codelineno-20-24"></a>
+<a href="#__codelineno-20-25" id="__codelineno-20-25" name="__codelineno-20-25"></a><span class="w"> </span><span class="nt">Limits</span><span class="p">:</span>
+<a href="#__codelineno-20-26" id="__codelineno-20-26" name="__codelineno-20-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Min replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a href="#__codelineno-20-27" id="__codelineno-20-27" name="__codelineno-20-27"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Max replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-20-28" id="__codelineno-20-28" name="__codelineno-20-28"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Cooldown</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2 minutes (model loading)</span>
+</code></pre></div>
+<h3 id="alert-to-action-mapping">Alert to Action Mapping<a class="headerlink" href="#alert-to-action-mapping" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Alert</th>
+<th>Auto-Action</th>
+<th>Manual Escalation</th>
+<th>SLA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Unavailable</td>
+<td>Restart pods</td>
+<td>Page on-call</td>
+<td>&lt;15min</td>
+</tr>
+<tr>
+<td>High Error Rate</td>
+<td>Scale up API</td>
+<td>Page if unresolved</td>
+<td>&lt;30min</td>
+</tr>
+<tr>
+<td>Database Slow</td>
+<td>Scale up DB</td>
+<td>Escalate to DB team</td>
+<td>&lt;1hr</td>
+</tr>
+<tr>
+<td>GPU Memory High</td>
+<td>Restart model server</td>
+<td>Scale up nodes</td>
+<td>&lt;1hr</td>
+</tr>
+<tr>
+<td>Disk Usage &gt;90%</td>
+<td>Alert only</td>
+<td>Manual cleanup</td>
+<td>&lt;4hr</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="performance-optimization-targets">Performance Optimization Targets<a class="headerlink" href="#performance-optimization-targets" title="Permanent link">¶</a></h2>
+<h3 id="2024-performance-goals">2024 Performance Goals<a class="headerlink" href="#2024-performance-goals" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a>Goal 1: Reduce API latency p99 from 280ms to 200ms
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a> Method: Caching optimization, database indexing
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a> Status: On track (280ms 240ms so far)
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>Goal 2: Increase throughput from 1K to 3K RPS
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a> Method: Horizontal scaling, connection pooling
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a> Status: Completed (now at 3.3K RPS)
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>Goal 3: Reduce model inference latency by 15%
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a> Method: Quantization, kernel optimization
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a> Status: Achieved (35% reduction)
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a>Goal 4: Improve training throughput 20%
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a> Method: Distributed training optimization
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a> Status: In progress (15% improvement)
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a>
+<a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a>Goal 5: Achieve 99.99% availability
+<a href="#__codelineno-21-18" id="__codelineno-21-18" name="__codelineno-21-18"></a> Method: Enhanced monitoring, better runbooks
+<a href="#__codelineno-21-19" id="__codelineno-21-19" name="__codelineno-21-19"></a> Status: On track (99.97% vs 99.94% target)
+</code></pre></div>
+<hr/>
+<h2 id="sla-compliance-report-template">SLA Compliance Report Template<a class="headerlink" href="#sla-compliance-report-template" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="gh"># SLA Compliance Report - [Month]</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="gs">**Reporting Period:**</span> [Date range]
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="gs">**Report Date:**</span> [Date]
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="gs">**Prepared By:**</span> [SRE Name]
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a><span class="gu">## Executive Summary</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="k">-</span><span class="w"> </span>Target Availability: 99.9%
+<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a><span class="k">-</span><span class="w"> </span>Actual Availability: [X%]
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a><span class="k">-</span><span class="w"> </span>SLA Status: Met / Missed
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a><span class="gu">## Detailed Metrics</span>
+<a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>| Metric | Target | Actual | Status |
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a>|--------|--------|--------|--------|
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a>| Availability | 99.9% | X.XX% | / |
+<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a>| API Latency p99 | &lt;500ms | XXXms | / |
+<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a>| Error Rate | &lt;0.5% | X.XX% | / |
+<a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a>| Data Durability | 99.99% | 100% | |
+<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a>
+<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="gu">## Incidents</span>
+<a href="#__codelineno-22-21" id="__codelineno-22-21" name="__codelineno-22-21"></a><span class="k">1.</span> [Date] - [Issue] - Duration: [Time] - Impact: [%]
+<a href="#__codelineno-22-22" id="__codelineno-22-22" name="__codelineno-22-22"></a><span class="k">2.</span> ...
+<a href="#__codelineno-22-23" id="__codelineno-22-23" name="__codelineno-22-23"></a>
+<a href="#__codelineno-22-24" id="__codelineno-22-24" name="__codelineno-22-24"></a><span class="gu">## Root Causes</span>
+<a href="#__codelineno-22-25" id="__codelineno-22-25" name="__codelineno-22-25"></a><span class="k">1.</span> [RCA 1]
+<a href="#__codelineno-22-26" id="__codelineno-22-26" name="__codelineno-22-26"></a><span class="k">2.</span> [RCA 2]
+<a href="#__codelineno-22-27" id="__codelineno-22-27" name="__codelineno-22-27"></a>
+<a href="#__codelineno-22-28" id="__codelineno-22-28" name="__codelineno-22-28"></a><span class="gu">## Improvements This Month</span>
+<a href="#__codelineno-22-29" id="__codelineno-22-29" name="__codelineno-22-29"></a><span class="k">-</span><span class="w"> </span>[Improvement 1]
+<a href="#__codelineno-22-30" id="__codelineno-22-30" name="__codelineno-22-30"></a><span class="k">-</span><span class="w"> </span>[Improvement 2]
+<a href="#__codelineno-22-31" id="__codelineno-22-31" name="__codelineno-22-31"></a>
+<a href="#__codelineno-22-32" id="__codelineno-22-32" name="__codelineno-22-32"></a><span class="gu">## Next Month Focus</span>
+<a href="#__codelineno-22-33" id="__codelineno-22-33" name="__codelineno-22-33"></a><span class="k">-</span><span class="w"> </span>[Focus 1]
+<a href="#__codelineno-22-34" id="__codelineno-22-34" name="__codelineno-22-34"></a><span class="k">-</span><span class="w"> </span>[Focus 2]
+</code></pre></div>
+<hr/>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../INFRASTRUCTURE_ARCHITECTURE/">Infrastructure Architecture</a></li>
+<li><a href="../OPERATIONS_MANUAL/">Operations Manual</a></li>
+<li><a href="../TECHNICAL_REFERENCE/">Technical Reference</a></li>
+<li><a href="../../deployment/PRODUCTION_READINESS_CHECKLIST/">Deployment Checklists</a></li>
+</ul>
+<hr/>
+<p><strong>Last Updated: 2026-07-08
+</strong>Next Review:<strong> 2026-10-08
+</strong>Escalation Contact:** @platform-leads</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

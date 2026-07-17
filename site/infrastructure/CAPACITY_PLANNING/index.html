@@ -1,0 +1,3160 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/infrastructure/CAPACITY_PLANNING/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Capacity Planning &amp; Scaling Strategy - Codex ML - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#capacity-planning-scaling-strategy-codex-ml">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Capacity Planning &amp; Scaling Strategy - Codex ML
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#capacity-planning-methodology">
+<span class="md-ellipsis">
+      
+        Capacity Planning Methodology
+      
+    </span>
+</a>
+<nav aria-label="Capacity Planning Methodology" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#capacity-planning-formula">
+<span class="md-ellipsis">
+      
+        Capacity Planning Formula
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#measurement-framework">
+<span class="md-ellipsis">
+      
+        Measurement Framework
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-baseline">
+<span class="md-ellipsis">
+      
+        Current Baseline
+      
+    </span>
+</a>
+<nav aria-label="Current Baseline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#july-2024-production-metrics">
+<span class="md-ellipsis">
+      
+        July 2024 Production Metrics
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cost-baseline-monthly">
+<span class="md-ellipsis">
+      
+        Cost Baseline (Monthly)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#growth-projections">
+<span class="md-ellipsis">
+      
+        Growth Projections
+      
+    </span>
+</a>
+<nav aria-label="Growth Projections" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-month-growth-forecast">
+<span class="md-ellipsis">
+      
+        12-Month Growth Forecast
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quarterly-scaling-decisions">
+<span class="md-ellipsis">
+      
+        Quarterly Scaling Decisions
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#resource-scaling-roadmap">
+<span class="md-ellipsis">
+      
+        Resource Scaling Roadmap
+      
+    </span>
+</a>
+<nav aria-label="Resource Scaling Roadmap" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-horizontal-scaling-months-1-6">
+<span class="md-ellipsis">
+      
+        Phase 1: Horizontal Scaling (Months 1-6)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-vertical-scaling-months-6-9">
+<span class="md-ellipsis">
+      
+        Phase 2: Vertical Scaling (Months 6-9)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-multi-region-expansion-months-9-12">
+<span class="md-ellipsis">
+      
+        Phase 3: Multi-Region Expansion (Months 9-12)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cost-projections">
+<span class="md-ellipsis">
+      
+        Cost Projections
+      
+    </span>
+</a>
+<nav aria-label="Cost Projections" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-month-cost-forecast">
+<span class="md-ellipsis">
+      
+        12-Month Cost Forecast
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cost-optimization-opportunities">
+<span class="md-ellipsis">
+      
+        Cost Optimization Opportunities
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-scaling-strategy">
+<span class="md-ellipsis">
+      
+        Performance Scaling Strategy
+      
+    </span>
+</a>
+<nav aria-label="Performance Scaling Strategy" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inference-scaling-path">
+<span class="md-ellipsis">
+      
+        Inference Scaling Path
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#training-scaling-path">
+<span class="md-ellipsis">
+      
+        Training Scaling Path
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#bottleneck-analysis">
+<span class="md-ellipsis">
+      
+        Bottleneck Analysis
+      
+    </span>
+</a>
+<nav aria-label="Bottleneck Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-bottlenecks-month-1">
+<span class="md-ellipsis">
+      
+        Current Bottlenecks (Month 1)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#projected-bottlenecks-month-6-12">
+<span class="md-ellipsis">
+      
+        Projected Bottlenecks (Month 6-12)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-for-bottlenecks">
+<span class="md-ellipsis">
+      
+        Monitoring for Bottlenecks
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#long-term-vision-2-years">
+<span class="md-ellipsis">
+      
+        Long-Term Vision (2+ Years)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#see-also">
+<span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="capacity-planning-scaling-strategy-codex-ml">Capacity Planning &amp; Scaling Strategy - Codex ML<a class="headerlink" href="#capacity-planning-scaling-strategy-codex-ml" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p><strong>Document Version:</strong> 1.0.0
+<strong>Last Updated: 2026-07-08
+</strong>Authority:<strong> Phase 12 WS3 Documentation Lane 8
+</strong>Audience:<strong> Infrastructure Engineers, Product Managers, Finance
+</strong>Status:** Growth Roadmap</p>
+<hr/>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#capacity-planning-methodology">Capacity Planning Methodology</a></li>
+<li><a href="#current-baseline">Current Baseline</a></li>
+<li><a href="#growth-projections">Growth Projections</a></li>
+<li><a href="#resource-scaling-roadmap">Resource Scaling Roadmap</a></li>
+<li><a href="#cost-projections">Cost Projections</a></li>
+<li><a href="#performance-scaling-strategy">Performance Scaling Strategy</a></li>
+<li><a href="#bottleneck-analysis">Bottleneck Analysis</a></li>
+</ol>
+<hr/>
+<h2 id="capacity-planning-methodology">Capacity Planning Methodology<a class="headerlink" href="#capacity-planning-methodology" title="Permanent link">¶</a></h2>
+<h3 id="capacity-planning-formula">Capacity Planning Formula<a class="headerlink" href="#capacity-planning-formula" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Required Capacity = (Current Usage × Growth Rate) + Headroom Buffer + Peak Load Buffer
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>Where:
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Current Usage = Measured from Prometheus metrics
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Growth Rate = YoY growth % based on historical data
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Headroom Buffer = 20-30% (prevent constant scaling)
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Peak Load Buffer = 2-3x (handle traffic spikes)
+</code></pre></div>
+<h3 id="measurement-framework">Measurement Framework<a class="headerlink" href="#measurement-framework" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Key Metrics to Track:
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>1. Compute Utilization:
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> - CPU: Target 60-70% (target), avoid &gt;85%
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> - Memory: Target 50-70% (target), avoid &gt;80%
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> - GPU: Target 70-85% (target), allow &gt;90% in bursts
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>2. Network:
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> - Throughput: 30-40% of capacity target
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> - Connections: 50% capacity target
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> - Latency: 50ms baseline, &lt;200ms p99
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>3. Storage:
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> - I/O: 40-50% capacity target
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> - Throughput: 50MB/s average (burst to 200MB/s)
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> - Disk: 60-70% capacity target
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>4. Database:
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> - Connections: 50-60% pool target
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> - Query latency: &lt;100ms p95
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> - Replication lag: &lt;500ms
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> - Transaction rate: 10K-50K/sec
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>5. Inference:
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> - Throughput: 80-90% of cluster capacity
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> - Latency: &lt;500ms p50, &lt;1s p99
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> - Error rate: &lt;0.5%
+</code></pre></div>
+<hr/>
+<h2 id="current-baseline">Current Baseline<a class="headerlink" href="#current-baseline" title="Permanent link">¶</a></h2>
+<h3 id="july-2024-production-metrics">July 2024 Production Metrics<a class="headerlink" href="#july-2024-production-metrics" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">API Service</span><span class="p">:</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="nt">Current Replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">Average CPU</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">45%</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">Average Memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">55%</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">Peak QPS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">800</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">99th Percentile Latency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">250ms</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="nt">Error Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.03%</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="nt">Daily Requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">68M</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="nt">Model Server</span><span class="p">:</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="nt">Current Replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="nt">Average GPU Util</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65%</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="nt">Average GPU Memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">58%</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="nt">Inference Throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500 req/s average</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w"> </span><span class="nt">Peak Throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1200 req/s</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w"> </span><span class="nt">Cold Start Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2% of requests</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="nt">Model Load Time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.5 seconds</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="nt">Training Workloads</span><span class="p">:</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="nt">Concurrent Jobs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2-4</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w"> </span><span class="nt">GPU Hours/Month</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1500-2000</span>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w"> </span><span class="nt">Average Job Duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8 hours</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w"> </span><span class="nt">Success Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">98.5%</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="nt">Checkpoint Size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">44GB per model</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w"> </span><span class="nt">Storage Growth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500GB/month</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="nt">Database</span><span class="p">:</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w"> </span><span class="nt">Active Connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120/400 (30%)</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w"> </span><span class="nt">Query Throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15K/sec average</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w"> </span><span class="nt">Peak Throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">45K/sec</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w"> </span><span class="nt">Replication Lag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;100ms</span>
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w"> </span><span class="nt">Storage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">250GB (growing 20GB/month)</span>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="nt">Cache</span><span class="p">:</span>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w"> </span><span class="nt">Connected Clients</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">45/1000 possible</span>
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w"> </span><span class="nt">Memory Usage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">85GB/256GB (33%)</span>
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="w"> </span><span class="nt">Eviction Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1%</span>
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="w"> </span><span class="nt">Hit Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">94.2%</span>
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a>
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="nt">Storage</span><span class="p">:</span>
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a><span class="w"> </span><span class="nt">S3 Usage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2TB (models + artifacts)</span>
+<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a><span class="w"> </span><span class="nt">Backup Usage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.5TB (daily snapshots)</span>
+<a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a><span class="w"> </span><span class="nt">Data Growth Rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">150GB/month</span>
+<a href="#__codelineno-2-44" id="__codelineno-2-44" name="__codelineno-2-44"></a><span class="w"> </span><span class="nt">Archive Lifecycle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30 days active, then cold storage</span>
+<a href="#__codelineno-2-45" id="__codelineno-2-45" name="__codelineno-2-45"></a>
+<a href="#__codelineno-2-46" id="__codelineno-2-46" name="__codelineno-2-46"></a><span class="nt">Network</span><span class="p">:</span>
+<a href="#__codelineno-2-47" id="__codelineno-2-47" name="__codelineno-2-47"></a><span class="w"> </span><span class="nt">Average Bandwidth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500Mbps</span>
+<a href="#__codelineno-2-48" id="__codelineno-2-48" name="__codelineno-2-48"></a><span class="w"> </span><span class="nt">Peak Bandwidth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2Gbps</span>
+<a href="#__codelineno-2-49" id="__codelineno-2-49" name="__codelineno-2-49"></a><span class="w"> </span><span class="nt">Cross-Region Traffic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50Mbps average</span>
+<a href="#__codelineno-2-50" id="__codelineno-2-50" name="__codelineno-2-50"></a><span class="w"> </span><span class="nt">Connections Per Second</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50K</span>
+</code></pre></div>
+<h3 id="cost-baseline-monthly">Cost Baseline (Monthly)<a class="headerlink" href="#cost-baseline-monthly" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Compute (Production):
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> EC2 GPU (p4d): 4x @ $200/hr = $143,000
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> EC2 CPU (c6i): 10x @ $0.68/hr = $4,900
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> K8s Management: $3,000
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> EBS Storage: $500
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> Total: $151,400
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>Data Services:
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> RDS Multi-AZ: 8vCPU, 64GB = $4,500
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> ElastiCache Redis: 6x16GB = $1,200
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> Backup Snapshots: $800
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> Total: $6,500
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>Storage:
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> S3 (2TB@$0.023/GB): $47
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> S3 Transfers (1TB@$0.02): $20
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> EFS (if used): $0
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> Snapshots: $30
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> Total: $97
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>Monitoring &amp; Logging:
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> Prometheus/Grafana: $200
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> CloudWatch: $300
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> Log Storage: $500
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> Total: $1,000
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>Networking:
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a> NAT Gateway: $45/month + $0.045/GB
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> Load Balancer: $16/month + $0.006/GB
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a> Data Transfer (1TB): $180
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> Total: $241
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>Contingency (5%): $8,012
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>**TOTAL: ~$167,250/month**
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>Cost Per Unit:
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a> - Per inference: $0.00012
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a> - Per API request: $0.00000246
+<a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a> - Per GPU hour: $111
+</code></pre></div>
+<hr/>
+<h2 id="growth-projections">Growth Projections<a class="headerlink" href="#growth-projections" title="Permanent link">¶</a></h2>
+<h3 id="12-month-growth-forecast">12-Month Growth Forecast<a class="headerlink" href="#12-month-growth-forecast" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Assumptions:
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> - API Growth: 30% YoY
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> - Inference Growth: 45% YoY (model growth + adoption)
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> - Training Growth: 25% YoY
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> - Data Growth: 40% YoY
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> - User Growth: 35% YoY
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>Monthly Projection:
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>Month 1 (Current):
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> API RPS: 800 1040 (30%)
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> Inference RPS: 500 725 (45%)
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> Concurrent Training: 4 5
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> Database: 250GB 270GB
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> Storage: 2TB 2.8TB
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>Month 3:
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> API RPS: 1040 1350
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> Inference RPS: 725 1050
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> Database: 270GB 320GB
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> Storage: 2.8TB 4.2TB
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> Action: Scale API to 4 replicas
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>Month 6:
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> API RPS: 1350 1750
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a> Inference RPS: 1050 1530
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> GPU Training: 2000 GPU hours/month
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> Database: 320GB 400GB
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> Storage: 4.2TB 6.3TB
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> Action: Add GPU node (5th node)
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a> Action: Upgrade RDS instance
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>Month 9:
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a> API RPS: 1750 2270
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a> Inference RPS: 1530 2220
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a> Concurrent Training: 6-8 jobs
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a> Database: 400GB 480GB
+<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a> Storage: 6.3TB 9.5TB
+<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a> Action: Scale API to 6 replicas
+<a href="#__codelineno-4-40" id="__codelineno-4-40" name="__codelineno-4-40"></a> Action: Add monitoring/logging capacity
+<a href="#__codelineno-4-41" id="__codelineno-4-41" name="__codelineno-4-41"></a>
+<a href="#__codelineno-4-42" id="__codelineno-4-42" name="__codelineno-4-42"></a>Month 12:
+<a href="#__codelineno-4-43" id="__codelineno-4-43" name="__codelineno-4-43"></a> API RPS: 2270 2950
+<a href="#__codelineno-4-44" id="__codelineno-4-44" name="__codelineno-4-44"></a> Inference RPS: 2220 3220
+<a href="#__codelineno-4-45" id="__codelineno-4-45" name="__codelineno-4-45"></a> GPU Training: 3500+ GPU hours/month
+<a href="#__codelineno-4-46" id="__codelineno-4-46" name="__codelineno-4-46"></a> Database: 480GB 570GB
+<a href="#__codelineno-4-47" id="__codelineno-4-47" name="__codelineno-4-47"></a> Storage: 9.5TB 14TB
+<a href="#__codelineno-4-48" id="__codelineno-4-48" name="__codelineno-4-48"></a> Action: Multi-region setup begins
+</code></pre></div>
+<h3 id="quarterly-scaling-decisions">Quarterly Scaling Decisions<a class="headerlink" href="#quarterly-scaling-decisions" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Q3 2024 (Current Quarter):
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> Status: At capacity, no action needed yet
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> Watch: Inference growth (45%)
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> Next Review: September 1
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>Q4 2024:
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> Expected: Inference hits 1000+ RPS average
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> Action: Add 4th model server replica (total 4)
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> Action: Evaluate multi-GPU node scaling
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> Timing: October 15
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>Q1 2025:
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> Expected: API consistently &gt;1500 RPS
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> Expected: Database &gt;350GB
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> Action: Scale API to 5 replicas
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> Action: Upgrade RDS to db.r6i.4xlarge (16vCPU, 128GB)
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> Action: Evaluate multi-region strategy
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> Timing: January 15
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>Q2 2025:
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> Expected: Inference &gt;1500 RPS sustained
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> Expected: Training backlog building
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> Action: Add 5th GPU node
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> Action: Implement training job prioritization
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> Action: Evaluate distributed training framework
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> Timing: April 15
+</code></pre></div>
+<hr/>
+<h2 id="resource-scaling-roadmap">Resource Scaling Roadmap<a class="headerlink" href="#resource-scaling-roadmap" title="Permanent link">¶</a></h2>
+<h3 id="phase-1-horizontal-scaling-months-1-6">Phase 1: Horizontal Scaling (Months 1-6)<a class="headerlink" href="#phase-1-horizontal-scaling-months-1-6" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Goal: Handle 2x current load without major redesign
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>API Service:
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> Current: 3 replicas, 800 RPS
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> Target: 6 replicas, 1600 RPS
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> Timeline: Gradual (1 replica every 6 weeks)
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> Cost Impact: +$2,900/month
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>Model Server:
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> Current: 3 replicas (3 GPUs)
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> Target: 5 replicas (5 GPUs)
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> Timeline: Add node in month 4
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a> Cost Impact: +$50,000/month
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>Database:
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> Current: db.r6i.2xlarge (8 vCPU, 64GB)
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> No change (sufficient until month 6)
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>Cache:
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> Current: 6 nodes, 96GB
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a> No change (well within capacity)
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>Action Items:
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a> [ ] Implement pod affinity rules
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a> [ ] Add node auto-scaling policies
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a> [ ] Test scaling procedures
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> [ ] Monitor for new bottlenecks
+</code></pre></div>
+<h3 id="phase-2-vertical-scaling-months-6-9">Phase 2: Vertical Scaling (Months 6-9)<a class="headerlink" href="#phase-2-vertical-scaling-months-6-9" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Goal: Upgrade infrastructure for better efficiency
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>API Service:
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> No change (horizontal scaling sufficient)
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>Model Server:
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> Current: 5x p4d.24xlarge
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> Target: 4x p5.24xlarge (if/when available) OR
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> 8x p4d.24xlarge (next-gen GPU shortage)
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> Timeline: Month 8-9
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> Cost Impact: Variable (depends on next-gen availability)
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>Database:
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a> Current: db.r6i.2xlarge
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> Target: db.r6i.4xlarge (16 vCPU, 128GB)
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a> Timeline: Month 6
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> Cost Impact: +$2,000/month
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a> Procedure: RDS parameter group, test failover, upgrade
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>Storage:
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a> EBS: Increase snapshot retention
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a> S3: Archive strategy starts
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a>
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>Action Items:
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a> [ ] Benchmark new instance types
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a> [ ] Upgrade RDS (planned maintenance window)
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a> [ ] Test backup/recovery procedures
+<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a> [ ] Monitor for new bottlenecks
+</code></pre></div>
+<h3 id="phase-3-multi-region-expansion-months-9-12">Phase 3: Multi-Region Expansion (Months 9-12)<a class="headerlink" href="#phase-3-multi-region-expansion-months-9-12" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Goal: Prepare for global scale, improve availability
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Setup: Secondary region in eu-west-1
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>Compute:
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> Secondary Region: 4 GPU nodes + 4 CPU nodes
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> Replication: Asynchronous model artifact sync
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>Database:
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> Secondary: Read replica of primary PostgreSQL
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> Failover: Manual upgrade to primary (automatic in future)
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> Replication Lag: &lt;1 minute acceptable
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>Inference:
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> Routing: Global load balancer
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> Model Distribution: S3 cross-region replication
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> Latency Target: &lt;200ms to nearest region
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>Cost:
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> Secondary Region Infrastructure: $80,000/month
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> Data Transfer (backup): $5,000/month
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a> Total Additional: $85,000/month
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>Action Items:
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a> [ ] Set up secondary VPC
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a> [ ] Establish cross-region connectivity
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a> [ ] Deploy infrastructure as code (Terraform)
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a> [ ] Test failover procedures
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a> [ ] Implement DNS failover
+</code></pre></div>
+<hr/>
+<h2 id="cost-projections">Cost Projections<a class="headerlink" href="#cost-projections" title="Permanent link">¶</a></h2>
+<h3 id="12-month-cost-forecast">12-Month Cost Forecast<a class="headerlink" href="#12-month-cost-forecast" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Baseline (Month 1): $167,250
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>Growth Cost Impact:
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> Month 3: +$8,000 (API 4 replicas) = $175,250
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> Month 6: +$52,000 (GPU node) = $227,250
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> Month 6: +$2,000 (RDS upgrade) = $229,250
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> Month 9: +$4,500 (monitoring) = $233,750
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> Month 12: +$85,000 (secondary region) = $318,750
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>Quarterly Costs:
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> Q3: $500,000 (Jul-Sep)
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> Q4: $680,000 (Oct-Dec)
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> Q1 2025: $700,000 (Jan-Mar)
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> Q2 2025: $950,000 (Apr-Jun)
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>Annual Cost (Year 1): ~$2.83M
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>Cost Per Inference:
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> Current: $0.00012
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> Month 12: $0.00008 (efficiency gains from scale)
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>ROI on Infrastructure Investments:
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> Query Processing Efficiency: +30% from optimizations
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a> Training Throughput: +40% from scaling
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a> Inference Latency: -25% from better hardware
+</code></pre></div>
+<h3 id="cost-optimization-opportunities">Cost Optimization Opportunities<a class="headerlink" href="#cost-optimization-opportunities" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Current Spend Analysis:
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>GPU Compute (85%):
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> Opportunity 1: Spot Instances for Training
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> - Savings: 60-70% on training costs
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> - Implementation: Use Ray auto-recovery
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> - Est. Savings: $25,000/month
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> Opportunity 2: GPU Time-Slicing for Dev/Test
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> - Savings: 30% by sharing GPUs
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> - Implementation: Enable NVIDIA MIG
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> - Est. Savings: $10,000/month
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> Opportunity 3: Auto-scaling on Queue Depth
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> - Savings: 10% from better utilization
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a> - Implementation: HPA based on custom metrics
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> - Est. Savings: $15,000/month
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>Database (4%):
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> Opportunity 1: Reserved Instances
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> - Savings: 25% with 1-year commitment
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a> - Est. Savings: $1,500/month
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a> Opportunity 2: Aurora Serverless
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a> - Savings: 20% if workload is bursty (not applicable)
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a> - Est. Savings: $0
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a>
+<a href="#__codelineno-10-28" id="__codelineno-10-28" name="__codelineno-10-28"></a>Storage (1%):
+<a href="#__codelineno-10-29" id="__codelineno-10-29" name="__codelineno-10-29"></a> Opportunity 1: Archive Old Models
+<a href="#__codelineno-10-30" id="__codelineno-10-30" name="__codelineno-10-30"></a> - Savings: 80% (move to Glacier)
+<a href="#__codelineno-10-31" id="__codelineno-10-31" name="__codelineno-10-31"></a> - Est. Savings: $20/month (minimal)
+<a href="#__codelineno-10-32" id="__codelineno-10-32" name="__codelineno-10-32"></a>
+<a href="#__codelineno-10-33" id="__codelineno-10-33" name="__codelineno-10-33"></a>Monitoring (1%):
+<a href="#__codelineno-10-34" id="__codelineno-10-34" name="__codelineno-10-34"></a> Opportunity 1: Metrics Sampling
+<a href="#__codelineno-10-35" id="__codelineno-10-35" name="__codelineno-10-35"></a> - Savings: 30% (1 in 3 samples)
+<a href="#__codelineno-10-36" id="__codelineno-10-36" name="__codelineno-10-36"></a> - Trade-off: Less granular data
+<a href="#__codelineno-10-37" id="__codelineno-10-37" name="__codelineno-10-37"></a> - Est. Savings: $300/month
+<a href="#__codelineno-10-38" id="__codelineno-10-38" name="__codelineno-10-38"></a>
+<a href="#__codelineno-10-39" id="__codelineno-10-39" name="__codelineno-10-39"></a>Total Optimization Potential: $51,820/month = $622K/year
+<a href="#__codelineno-10-40" id="__codelineno-10-40" name="__codelineno-10-40"></a>Achievable Without Trade-offs: $40,500/month = $486K/year
+</code></pre></div>
+<hr/>
+<h2 id="performance-scaling-strategy">Performance Scaling Strategy<a class="headerlink" href="#performance-scaling-strategy" title="Permanent link">¶</a></h2>
+<h3 id="inference-scaling-path">Inference Scaling Path<a class="headerlink" href="#inference-scaling-path" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>Current Bottleneck: GPU memory for large models
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>Strategy 1: Model Quantization
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> - 16-bit (fp16): Current
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> - 8-bit (int8): 2x throughput, &lt;1% accuracy loss
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> - 4-bit (int4): 4x throughput, 2-3% accuracy loss
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> Implementation: GPTQ, AWQ quantization
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> Timeline: Q4 2024
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> Expected Improvement: +150% throughput
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>Strategy 2: Distributed Inference (Tensor Parallelism)
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> - Split model across multiple GPUs
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> - Latency trade-off: +50ms
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> - Throughput gain: 4-8x per model
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> Timeline: Q1 2025
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> Implementation: vLLM, TensorRT-LLM
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>Strategy 3: Dynamic Batching
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> - Adaptive batch sizes based on queue depth
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a> - Latency: 50-100ms baseline + batch wait time
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a> - Throughput: +200-300%
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a> Timeline: Q3 2024 (immediate)
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> Implementation: Ray Serve batch support
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>Strategy 4: Multi-GPU Inference
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a> - Load balance inferences across GPUs
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a> - Currently: 1 GPU per replica
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a> - Target: 4 GPUs per replica (MIG or API routing)
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a> Timeline: Q4 2024-Q1 2025
+</code></pre></div>
+<h3 id="training-scaling-path">Training Scaling Path<a class="headerlink" href="#training-scaling-path" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Current Bottleneck: GPU memory and training time
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>Strategy 1: Mixed Precision Training
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> - Current: fp32 (full precision)
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> - Target: bf16 or tf32 (less memory, faster)
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> - Memory Savings: 50%
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> - Speed: +15% (less communication overhead)
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> Timeline: Immediate (already supported)
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>Strategy 2: Gradient Accumulation
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> - Simulate larger batch sizes with smaller batches
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> - Memory Trade-off: More iterations
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> - Current Batch Size: 32 per GPU
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> - Target: Equivalent 128 with accumulation
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> - Training Time: +3x (more steps)
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> Timeline: Immediate
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>Strategy 3: Distributed Training (Multi-Node)
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> - Current: Single 8-GPU node
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> - Target: 2-4 node clusters (64 GPUs)
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> - Scaling Efficiency: 90% (NVLink communication)
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> - Training Time: 8x faster
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> Timeline: Q1 2025
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>
+<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a>Strategy 4: Flash Attention &amp; Optimizations
+<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a> - Kernel optimization for attention
+<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a> - Speed: +20-30% per step
+<a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a> - Memory: -30% (streaming attention)
+<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a> Timeline: Q4 2024
+</code></pre></div>
+<hr/>
+<h2 id="bottleneck-analysis">Bottleneck Analysis<a class="headerlink" href="#bottleneck-analysis" title="Permanent link">¶</a></h2>
+<h3 id="current-bottlenecks-month-1">Current Bottlenecks (Month 1)<a class="headerlink" href="#current-bottlenecks-month-1" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>GPU Memory (Inference):
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> - Severity: HIGH
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> - Current: 58% utilization per model
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> - Issue: Large models (7B+) require full GPU
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> - Solution: Quantization + batching
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> - Impact on Performance: Critical for &gt;20B models
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>Database Connections:
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> - Severity: LOW
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> - Current: 30% of pool
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> - Issue: Connection pooling sufficient
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> - Solution: Monitor for spikes
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> - Impact: None currently
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>Network Bandwidth:
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> - Severity: LOW
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> - Current: 25% of provisioned capacity
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a> - Issue: Cross-region traffic will increase
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> - Solution: Regional replication strategy
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> - Impact: Affects multi-region latency
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>Cache Hit Rate:
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a> - Severity: MEDIUM
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a> - Current: 94.2%
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a> - Issue: 5.8% misses from cache eviction
+<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a> - Solution: Increase cache TTL or size
+<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a> - Impact: 3-5% latency increase on misses
+</code></pre></div>
+<h3 id="projected-bottlenecks-month-6-12">Projected Bottlenecks (Month 6-12)<a class="headerlink" href="#projected-bottlenecks-month-6-12" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Training Queue Depth:
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> - Severity: HIGH (projected)
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> - Current: None (2-4 concurrent jobs)
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> - Projected: 8-16 concurrent job requests
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> - Issue: Limited GPU availability
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> - Solution: GPU node scaling + prioritization
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> - Timeline: Address by Month 9
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> - Impact: Job latency increase from hours to days
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>Model Load Time:
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> - Severity: MEDIUM (projected)
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> - Current: 2.5s (acceptable)
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> - Projected: 4-5s with more concurrent models
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> - Issue: NVMe bandwidth saturation
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> - Solution: Dedicated cache nodes + pre-warming
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a> - Timeline: Address by Month 10
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a> - Impact: Cold start latency increase
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a>API Database Queries:
+<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a> - Severity: MEDIUM (projected)
+<a href="#__codelineno-14-21" id="__codelineno-14-21" name="__codelineno-14-21"></a> - Current: Query time &lt;50ms
+<a href="#__codelineno-14-22" id="__codelineno-14-22" name="__codelineno-14-22"></a> - Projected: Query time &gt;100ms at 3K RPS
+<a href="#__codelineno-14-23" id="__codelineno-14-23" name="__codelineno-14-23"></a> - Issue: Connection pool and I/O limits
+<a href="#__codelineno-14-24" id="__codelineno-14-24" name="__codelineno-14-24"></a> - Solution: Database scaling + query optimization
+<a href="#__codelineno-14-25" id="__codelineno-14-25" name="__codelineno-14-25"></a> - Timeline: Address by Month 9
+<a href="#__codelineno-14-26" id="__codelineno-14-26" name="__codelineno-14-26"></a> - Impact: API latency increase from 250ms to 400ms
+<a href="#__codelineno-14-27" id="__codelineno-14-27" name="__codelineno-14-27"></a>
+<a href="#__codelineno-14-28" id="__codelineno-14-28" name="__codelineno-14-28"></a>Network Egress:
+<a href="#__codelineno-14-29" id="__codelineno-14-29" name="__codelineno-14-29"></a> - Severity: HIGH (projected for multi-region)
+<a href="#__codelineno-14-30" id="__codelineno-14-30" name="__codelineno-14-30"></a> - Current: 500Mbps average
+<a href="#__codelineno-14-31" id="__codelineno-14-31" name="__codelineno-14-31"></a> - Projected: 2-3Gbps with secondary region
+<a href="#__codelineno-14-32" id="__codelineno-14-32" name="__codelineno-14-32"></a> - Issue: Data transfer costs + latency
+<a href="#__codelineno-14-33" id="__codelineno-14-33" name="__codelineno-14-33"></a> - Solution: Intelligent caching + regional models
+<a href="#__codelineno-14-34" id="__codelineno-14-34" name="__codelineno-14-34"></a> - Timeline: Address before Month 12
+<a href="#__codelineno-14-35" id="__codelineno-14-35" name="__codelineno-14-35"></a> - Impact: $5K+/month in transfer costs
+</code></pre></div>
+<h3 id="monitoring-for-bottlenecks">Monitoring for Bottlenecks<a class="headerlink" href="#monitoring-for-bottlenecks" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>Automated Alerts:
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>GPU Memory:
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> - Alert if avg &gt; 80%
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> - Alert if max &gt; 95%
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> - Action: Evaluate quantization
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>Database Latency:
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> - Alert if p95 &gt; 100ms
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> - Alert if connections &gt; 300
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a> - Action: Review slow queries, scale if needed
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>Network:
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a> - Alert if throughput &gt; 1.5Gbps sustained
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a> - Alert if packet loss &gt; 0.1%
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a> - Action: Investigate, plan scaling
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>Cache:
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a> - Alert if eviction rate &gt; 1%
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a> - Alert if hit rate &lt; 90%
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a> - Action: Increase TTL or cache size
+<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a>
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a>Training Queue:
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a> - Alert if pending &gt; 10 jobs
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a> - Alert if wait time &gt; 1 hour
+<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a> - Action: Add GPU capacity
+</code></pre></div>
+<hr/>
+<h2 id="long-term-vision-2-years">Long-Term Vision (2+ Years)<a class="headerlink" href="#long-term-vision-2-years" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>2025 Goals:
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> - 10x current inference capacity
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> - &lt;100ms p99 latency globally
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> - 99.99% availability SLA
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> - &lt;5% YoY cost per inference
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> - Multi-cloud deployment (AWS/GCP/Azure)
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>2026+ Goals:
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a> - 100x current inference capacity
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a> - &lt;50ms p99 latency globally
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a> - Sub-second model fine-tuning
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a> - Autonomous capacity management (no manual scaling)
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> - Edge deployment (device inference)
+</code></pre></div>
+<hr/>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../INFRASTRUCTURE_ARCHITECTURE/">Infrastructure Architecture</a></li>
+<li><a href="../PERFORMANCE_RELIABILITY/">Performance &amp; Reliability</a></li>
+<li><a href="../OPERATIONS_MANUAL/">Operations Manual</a></li>
+</ul>
+<hr/>
+<p><strong>Document Maintenance:</strong>
+- Review and update monthly with actual metrics
+- Update growth projections quarterly
+- Forecast next 12 months from current baseline
+- Archive old projections for accuracy tracking</p>
+<p><strong>Next Review Date:2026-07-13
+</strong>Last Updated:2026-07-13</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

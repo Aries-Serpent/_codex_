@@ -1,0 +1,3196 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/integration/mcp-getting-started/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>MCP Integration Getting Started Guide - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#mcp-integration-getting-started-guide">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              MCP Integration Getting Started Guide
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-mcp">
+<span class="md-ellipsis">
+      
+        What is MCP?
+      
+    </span>
+</a>
+<nav aria-label="What is MCP?" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-concepts">
+<span class="md-ellipsis">
+      
+        Key Concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#capabilities">
+<span class="md-ellipsis">
+      
+        Capabilities
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#benefits">
+<span class="md-ellipsis">
+      
+        Benefits
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quickstart">
+<span class="md-ellipsis">
+      
+        Quickstart
+      
+    </span>
+</a>
+<nav aria-label="Quickstart" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-installation">
+<span class="md-ellipsis">
+      
+        1. Installation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-simple-server-python">
+<span class="md-ellipsis">
+      
+        2. Simple Server (Python)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-connect-client">
+<span class="md-ellipsis">
+      
+        3. Connect Client
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-use-in-ai-chat">
+<span class="md-ellipsis">
+      
+        4. Use in AI Chat
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#setting-up-mcp">
+<span class="md-ellipsis">
+      
+        Setting Up MCP
+      
+    </span>
+</a>
+<nav aria-label="Setting Up MCP" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-server-configuration">
+<span class="md-ellipsis">
+      
+        1. Server Configuration
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-client-configuration">
+<span class="md-ellipsis">
+      
+        2. Client Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-environment-variables">
+<span class="md-ellipsis">
+      
+        3. Environment Variables
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#basic-usage">
+<span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+</a>
+<nav aria-label="Basic Usage" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-calling-tools">
+<span class="md-ellipsis">
+      
+        1. Calling Tools
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-accessing-resources">
+<span class="md-ellipsis">
+      
+        2. Accessing Resources
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-using-prompts">
+<span class="md-ellipsis">
+      
+        3. Using Prompts
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#working-with-tools">
+<span class="md-ellipsis">
+      
+        Working with Tools
+      
+    </span>
+</a>
+<nav aria-label="Working with Tools" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#input-validation">
+<span class="md-ellipsis">
+      
+        Input Validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#error-handling">
+<span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#async-operations">
+<span class="md-ellipsis">
+      
+        Async Operations
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-examples">
+<span class="md-ellipsis">
+      
+        Integration Examples
+      
+    </span>
+</a>
+<nav aria-label="Integration Examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-1-database-query-tool">
+<span class="md-ellipsis">
+      
+        Example 1: Database Query Tool
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-2-file-operations-tool">
+<span class="md-ellipsis">
+      
+        Example 2: File Operations Tool
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-3-api-integration-tool">
+<span class="md-ellipsis">
+      
+        Example 3: API Integration Tool
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#troubleshooting">
+<span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+</a>
+<nav aria-label="Troubleshooting" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-connection-failed">
+<span class="md-ellipsis">
+      
+        Issue: Connection Failed
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-tool-not-found">
+<span class="md-ellipsis">
+      
+        Issue: Tool Not Found
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-input-validation-failed">
+<span class="md-ellipsis">
+      
+        Issue: Input Validation Failed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-timeout">
+<span class="md-ellipsis">
+      
+        Issue: Timeout
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reference">
+<span class="md-ellipsis">
+      
+        Reference
+      
+    </span>
+</a>
+<nav aria-label="Reference" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-tool-pattern">
+<span class="md-ellipsis">
+      
+        Common Tool Pattern
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-resource-pattern">
+<span class="md-ellipsis">
+      
+        Common Resource Pattern
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-prompt-pattern">
+<span class="md-ellipsis">
+      
+        Common Prompt Pattern
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cross-references">
+<span class="md-ellipsis">
+      
+        Cross-References
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="mcp-integration-getting-started-guide">MCP Integration Getting Started Guide<a class="headerlink" href="#mcp-integration-getting-started-guide" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<blockquote>
+<p>Consolidated guide to Model Context Protocol (MCP) integration and usage
+<strong>Level</strong>: Beginner to Intermediate | <strong>Prerequisites</strong>: Basic GitHub knowledge
+<strong>Last Updated</strong>: 2026-06-22 | <strong>Version</strong>: 2.0</p>
+</blockquote>
+<hr/>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#what-is-mcp">What is MCP?</a></li>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#setting-up-mcp">Setting Up MCP</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#working-with-tools">Working with Tools</a></li>
+<li><a href="#integration-examples">Integration Examples</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ol>
+<hr/>
+<h2 id="what-is-mcp">What is MCP?<a class="headerlink" href="#what-is-mcp" title="Permanent link">¶</a></h2>
+<p>The Model Context Protocol (MCP) is a standardized protocol for AI applications to interact with external tools and data sources through a unified interface.</p>
+<h3 id="key-concepts">Key Concepts<a class="headerlink" href="#key-concepts" title="Permanent link">¶</a></h3>
+<p><strong>MCP Server</strong>: Exposes capabilities (tools, resources, prompts)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> MCP Server 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> (Your App) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> - Tools 
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> - Resources 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> - Prompts 
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> MCP Protocol
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> MCP Client 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> (GitHub Copilot)
+</code></pre></div></p>
+<h3 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Tools</strong>: Functions the client can call</li>
+<li>Example: "fetch_data", "save_file"</li>
+<li>Sync or async execution</li>
+<li>
+<p>Input validation and typing</p>
+</li>
+<li>
+<p><strong>Resources</strong>: Data the server can expose</p>
+</li>
+<li>Example: Configuration files, documents</li>
+<li>Versioning and change tracking</li>
+<li>
+<p>Read-only or read-write</p>
+</li>
+<li>
+<p><strong>Prompts</strong>: Pre-built conversation starters</p>
+</li>
+<li>Example: "code review template"</li>
+<li>Context-aware content</li>
+<li>Reusable workflows</li>
+</ol>
+<h3 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">¶</a></h3>
+<p><strong>Standardization</strong>: One protocol for all integrations
+ <strong>Flexibility</strong>: Define custom tools and resources
+ <strong>Scalability</strong>: Works with any MCP-compatible client
+ <strong>Type Safety</strong>: Built-in input/output validation
+ <strong>Security</strong>: Isolated execution, permission controls</p>
+<hr/>
+<h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">¶</a></h2>
+<h3 id="1-installation">1. Installation<a class="headerlink" href="#1-installation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Install MCP SDK for Python</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>pip<span class="w"> </span>install<span class="w"> </span>mcp
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Install MCP for Node.js</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>npm<span class="w"> </span>install<span class="w"> </span>@modelcontextprotocol/sdk
+</code></pre></div>
+<h2 id="2-simple-server-python">2. Simple Server (Python)<a class="headerlink" href="#2-simple-server-python" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># mcp_server.py</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">mcp.server.models</span> <span class="kn">import</span> <span class="n">Implementation</span><span class="p">,</span> <span class="n">InitializationOptions</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">mcp.server</span> <span class="kn">import</span> <span class="n">Server</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="kn">from</span> <span class="nn">mcp.types</span> <span class="kn">import</span> <span class="n">Tool</span><span class="p">,</span> <span class="n">TextContent</span><span class="p">,</span> <span class="n">ToolResult</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="kn">import</span> <span class="nn">asyncio</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="c1"># Create server</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="s2">"my-app"</span><span class="p">)</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># Define a tool</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_user_info</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="sd">"""Get information about a user"""</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="c1"># Your logic here</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> <span class="n">user_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"John Doe"</span><span class="p">,</span> <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"john@example.com"</span><span class="p">}</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user_data</span><span class="p">))])</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="c1"># Start server</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> <span class="n">server</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="3-connect-client">3. Connect Client<a class="headerlink" href="#3-connect-client" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Configure in GitHub Copilot or client</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>mcp_servers:
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span>my-app:
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span>command:<span class="w"> </span>python<span class="w"> </span>mcp_server.py
+</code></pre></div>
+<h2 id="4-use-in-ai-chat">4. Use in AI Chat<a class="headerlink" href="#4-use-in-ai-chat" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>User: "Can you fetch user info for user123?"
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> Client calls MCP tool: get_user_info("user123")
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> Server responds with user data
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> AI uses data in response
+</code></pre></div>
+<hr/>
+<h2 id="setting-up-mcp">Setting Up MCP<a class="headerlink" href="#setting-up-mcp" title="Permanent link">¶</a></h2>
+<h3 id="1-server-configuration">1. Server Configuration<a class="headerlink" href="#1-server-configuration" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># server_config.py</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">mcp.server</span> <span class="kn">import</span> <span class="n">Server</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">from</span> <span class="nn">mcp.server.stdio_server</span> <span class="kn">import</span> <span class="n">stdio_server</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="k">class</span> <span class="nc">MyMCPServer</span><span class="p">:</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="s2">"my-application"</span><span class="p">)</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="bp">self</span><span class="o">.</span><span class="n">setup_tools</span><span class="p">()</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">setup_resources</span><span class="p">()</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> <span class="bp">self</span><span class="o">.</span><span class="n">setup_prompts</span><span class="p">()</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> <span class="k">def</span> <span class="nf">setup_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="sd">"""Register available tools"""</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> <span class="nd">@self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> <span class="k">async</span> <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w"> </span><span class="sd">"""Process data and return result"""</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">process_logic</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">result</span><span class="p">)]</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> <span class="p">)</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> <span class="k">def</span> <span class="nf">setup_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w"> </span><span class="sd">"""Register available resources"""</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> <span class="nd">@self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> <span class="k">async</span> <span class="k">def</span> <span class="nf">list_resources</span><span class="p">():</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> <span class="k">return</span> <span class="p">[</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a> <span class="n">Resource</span><span class="p">(</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a> <span class="n">uri</span><span class="o">=</span><span class="s2">"config://app.yaml"</span><span class="p">,</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"Application Config"</span><span class="p">,</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a> <span class="n">mimeType</span><span class="o">=</span><span class="s2">"text/yaml"</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a> <span class="p">)</span>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a> <span class="p">]</span>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a> <span class="k">def</span> <span class="nf">setup_prompts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="w"> </span><span class="sd">"""Register available prompts"""</span>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a> <span class="nd">@self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">list_prompts</span><span class="p">()</span>
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a> <span class="k">async</span> <span class="k">def</span> <span class="nf">list_prompts</span><span class="p">():</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a> <span class="k">return</span> <span class="p">[</span>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a> <span class="n">Prompt</span><span class="p">(</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"code_review"</span><span class="p">,</span>
+<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Code review template"</span><span class="p">,</span>
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a> <span class="n">arguments</span><span class="o">=</span><span class="p">[]</span>
+<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a> <span class="p">)</span>
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a> <span class="p">]</span>
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a>
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a><span class="w"> </span><span class="sd">"""Start server"""</span>
+<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a> <span class="n">stdio_server</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">)</span><span class="o">.</span><span class="n">run_in_thread</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="2-client-configuration">2. Client Configuration<a class="headerlink" href="#2-client-configuration" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># .copilot/mcp.yaml</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nt">mcp_servers</span><span class="p">:</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="c1"># Local server</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">my_server</span><span class="p">:</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">mcp_server.py</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="nt">DEBUG</span><span class="p">:</span><span class="w"> </span><span class="s">"false"</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w"> </span><span class="c1"># Remote server</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w"> </span><span class="nt">remote_service</span><span class="p">:</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w"> </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">"http://localhost:3000"</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w"> </span><span class="nt">auth</span><span class="p">:</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bearer</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w"> </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${MCP_TOKEN}</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="c1"># Server-specific options</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="nt">server_options</span><span class="p">:</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w"> </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w"> </span><span class="nt">max_retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w"> </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</code></pre></div>
+<h2 id="3-environment-variables">3. Environment Variables<a class="headerlink" href="#3-environment-variables" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># .env</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nv">MCP_DEBUG</span><span class="o">=</span><span class="nb">false</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="nv">MCP_LOG_LEVEL</span><span class="o">=</span>INFO
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="nv">MCP_TIMEOUT</span><span class="o">=</span><span class="m">30</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="nv">MCP_TOKEN</span><span class="o">=</span>your_secret_token
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="nv">MCP_SERVER_PORT</span><span class="o">=</span><span class="m">3000</span>
+</code></pre></div>
+<hr/>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">¶</a></h2>
+<h3 id="1-calling-tools">1. Calling Tools<a class="headerlink" href="#1-calling-tools" title="Permanent link">¶</a></h3>
+<p><strong>Define tool</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="sd"> Fetch data from source</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="sd"> source: Data source name</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="sd"> limit: Maximum records to fetch</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="sd"> """</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fetch_from_source</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))]</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Client calls</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>User: "Fetch 20 records from production database"
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> Tool: fetch_data(source="production", limit=20)
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> Result: [list of 20 records]
+</code></pre></div></p>
+<h3 id="2-accessing-resources">2. Accessing Resources<a class="headerlink" href="#2-accessing-resources" title="Permanent link">¶</a></h3>
+<p><strong>Define resource</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">read_resource</span><span class="p">()</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">read_resource</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="sd">"""Read a resource by URI"""</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="k">if</span> <span class="n">uri</span> <span class="o">==</span> <span class="s2">"config://database.yaml"</span><span class="p">:</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="k">return</span> <span class="n">read_config_file</span><span class="p">(</span><span class="s2">"database.yaml"</span><span class="p">)</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="k">elif</span> <span class="n">uri</span> <span class="o">==</span> <span class="s2">"docs://api.md"</span><span class="p">:</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> <span class="k">return</span> <span class="n">read_docs_file</span><span class="p">(</span><span class="s2">"api.md"</span><span class="p">)</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown resource: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Client uses</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>User: "What's in the database config?"
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> Client reads: config://database.yaml
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> Server returns config content
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> AI uses in response
+</code></pre></div></p>
+<h3 id="3-using-prompts">3. Using Prompts<a class="headerlink" href="#3-using-prompts" title="Permanent link">¶</a></h3>
+<p><strong>Define prompt</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">get_prompt</span><span class="p">()</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_prompt</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetPromptResult</span><span class="p">:</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w"> </span><span class="sd">"""Get a prompt template"""</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"code_review"</span><span class="p">:</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="k">return</span> <span class="n">GetPromptResult</span><span class="p">(</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="n">PromptMessage</span><span class="p">(</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="n">role</span><span class="o">=</span><span class="s2">"user"</span><span class="p">,</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="n">content</span><span class="o">=</span><span class="n">PromptContent</span><span class="p">(</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="n">text</span><span class="o">=</span><span class="s2">"""Please review this code:</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="si">{code}</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a><span class="s2">Focus on:</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="s2">1. Security issues</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="s2">2. Performance problems</span>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a><span class="s2">3. Best practices</span>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="s2">4. Testing coverage"""</span>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> <span class="p">)</span>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> <span class="p">)</span>
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> <span class="p">]</span>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> <span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Client uses</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>User: "Review my code"
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> Client fetches: code_review prompt
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> Prompt template applied to code
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> AI performs structured review
+</code></pre></div></p>
+<hr/>
+<h2 id="working-with-tools">Working with Tools<a class="headerlink" href="#working-with-tools" title="Permanent link">¶</a></h2>
+<h3 id="input-validation">Input Validation<a class="headerlink" href="#input-validation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="k">class</span> <span class="nc">ProcessDataInput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Input data to process"</span><span class="p">)</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Output format"</span><span class="p">)</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Timeout in seconds"</span><span class="p">)</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">ProcessDataInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="w"> </span><span class="sd">"""Process data with validation"""</span>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> <span class="c1"># Input is automatically validated</span>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">process_logic</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">input</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">result</span><span class="p">)]</span>
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> <span class="p">)</span>
+</code></pre></div>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">risky_operation</span><span class="p">(</span><span class="n">item_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w"> </span><span class="sd">"""Handle errors gracefully"""</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fetch_item</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> <span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Item </span><span class="si">{</span><span class="n">item_id</span><span class="si">}</span><span class="s2"> not found"</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a> <span class="p">)],</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a> <span class="p">)</span>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">))]</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a> <span class="p">)</span>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span>
+<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a> <span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a> <span class="p">)],</span>
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a> <span class="p">)</span>
+</code></pre></div>
+<h3 id="async-operations">Async Operations<a class="headerlink" href="#async-operations" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kn">import</span> <span class="nn">asyncio</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">parallel_processing</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w"> </span><span class="sd">"""Process multiple items concurrently"""</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> <span class="c1"># Run operations in parallel</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">process_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a> <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="p">))]</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a> <span class="p">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="integration-examples">Integration Examples<a class="headerlink" href="#integration-examples" title="Permanent link">¶</a></h2>
+<h3 id="example-1-database-query-tool">Example 1: Database Query Tool<a class="headerlink" href="#example-1-database-query-tool" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="kn">import</span> <span class="nn">sqlite3</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">query_database</span><span class="p">(</span><span class="n">sql</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="sd">"""Execute a database query safely"""</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a> <span class="c1"># Validate SQL to prevent injection</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_safe_query</span><span class="p">(</span><span class="n">sql</span><span class="p">):</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Invalid query"</span><span class="p">)],</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a> <span class="p">)</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a> <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"app.db"</span><span class="p">)</span>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a> <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">[])</span>
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a> <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>
+<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="p">))]</span>
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a> <span class="p">)</span>
+<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a>
+<a href="#__codelineno-17-25" id="__codelineno-17-25" name="__codelineno-17-25"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Query error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)],</span>
+<a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-17-29" id="__codelineno-17-29" name="__codelineno-17-29"></a> <span class="p">)</span>
+</code></pre></div>
+<h3 id="example-2-file-operations-tool">Example 2: File Operations Tool<a class="headerlink" href="#example-2-file-operations-tool" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"utf-8"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w"> </span><span class="sd">"""Read file contents safely"""</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> <span class="c1"># Prevent directory traversal</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> <span class="n">safe_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_in_allowed_directory</span><span class="p">(</span><span class="n">safe_path</span><span class="p">):</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Access denied"</span><span class="p">)],</span>
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a> <span class="p">)</span>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a> <span class="n">content</span> <span class="o">=</span> <span class="n">safe_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">content</span><span class="p">)]</span>
+<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a> <span class="p">)</span>
+<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a> <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"File not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)],</span>
+<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a> <span class="p">)</span>
+</code></pre></div>
+<h3 id="example-3-api-integration-tool">Example 3: API Integration Tool<a class="headerlink" href="#example-3-api-integration-tool" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="kn">import</span> <span class="nn">aiohttp</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">call_api</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="w"> </span><span class="sd">"""Call external API safely"""</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a> <span class="c1"># Validate endpoint</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_allowed_endpoint</span><span class="p">(</span><span class="n">endpoint</span><span class="p">):</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Endpoint not allowed"</span><span class="p">)],</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a> <span class="p">)</span>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a> <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a> <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+<a href="#__codelineno-19-17" id="__codelineno-19-17" name="__codelineno-19-17"></a> <span class="n">url</span><span class="o">=</span><span class="n">endpoint</span><span class="p">,</span>
+<a href="#__codelineno-19-18" id="__codelineno-19-18" name="__codelineno-19-18"></a> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+<a href="#__codelineno-19-19" id="__codelineno-19-19" name="__codelineno-19-19"></a> <span class="n">timeout</span><span class="o">=</span><span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientTimeout</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<a href="#__codelineno-19-20" id="__codelineno-19-20" name="__codelineno-19-20"></a> <span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+<a href="#__codelineno-19-21" id="__codelineno-19-21" name="__codelineno-19-21"></a> <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-19-22" id="__codelineno-19-22" name="__codelineno-19-22"></a>
+<a href="#__codelineno-19-23" id="__codelineno-19-23" name="__codelineno-19-23"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-19-24" id="__codelineno-19-24" name="__codelineno-19-24"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span>
+<a href="#__codelineno-19-25" id="__codelineno-19-25" name="__codelineno-19-25"></a> <span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
+<a href="#__codelineno-19-26" id="__codelineno-19-26" name="__codelineno-19-26"></a> <span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<a href="#__codelineno-19-27" id="__codelineno-19-27" name="__codelineno-19-27"></a> <span class="p">)]</span>
+<a href="#__codelineno-19-28" id="__codelineno-19-28" name="__codelineno-19-28"></a> <span class="p">)</span>
+<a href="#__codelineno-19-29" id="__codelineno-19-29" name="__codelineno-19-29"></a>
+<a href="#__codelineno-19-30" id="__codelineno-19-30" name="__codelineno-19-30"></a> <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+<a href="#__codelineno-19-31" id="__codelineno-19-31" name="__codelineno-19-31"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-19-32" id="__codelineno-19-32" name="__codelineno-19-32"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"API request timeout"</span><span class="p">)],</span>
+<a href="#__codelineno-19-33" id="__codelineno-19-33" name="__codelineno-19-33"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-19-34" id="__codelineno-19-34" name="__codelineno-19-34"></a> <span class="p">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="issue-connection-failed">Issue: Connection Failed<a class="headerlink" href="#issue-connection-failed" title="Permanent link">¶</a></h3>
+<p><strong>Error</strong>: <code>Failed to connect to MCP server</code></p>
+<p><strong>Diagnosis</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># Check if server is running</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>mcp_server
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># Check logs</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>tail<span class="w"> </span>-f<span class="w"> </span>logs/mcp_server.log
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="c1"># Test connection</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import socket; s = socket.socket(); s.connect(('localhost', 3000))"</span>
+</code></pre></div></p>
+<p><strong>Solutions</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Start server</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>python<span class="w"> </span>mcp_server.py
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="c1"># Or with debug output</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="nv">MCP_DEBUG</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>python<span class="w"> </span>mcp_server.py
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a><span class="c1"># Check port availability</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:3000
+</code></pre></div></p>
+<h2 id="issue-tool-not-found">Issue: Tool Not Found<a class="headerlink" href="#issue-tool-not-found" title="Permanent link">¶</a></h2>
+<p><strong>Error</strong>: <code>Tool 'my_tool' not found</code></p>
+<p><strong>Diagnosis</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># List available tools</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="nd">@server</span><span class="o">.</span><span class="n">list_tools</span><span class="p">()</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">list_tools</span><span class="p">():</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a> <span class="c1"># Check what tools are registered</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a> <span class="k">return</span> <span class="n">server</span><span class="o">.</span><span class="n">tools</span>
+</code></pre></div></p>
+<p><strong>Solution</strong>: Ensure tool is decorated with <code>@server.call_tool()</code></p>
+<h2 id="issue-input-validation-failed">Issue: Input Validation Failed<a class="headerlink" href="#issue-input-validation-failed" title="Permanent link">¶</a></h2>
+<p><strong>Error</strong>: <code>Invalid input: missing required field 'data'</code></p>
+<p><strong>Solution</strong>: Check tool signature and provide all required inputs</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c1"># Correct</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="n">call_tool</span><span class="p">(</span><span class="s2">"my_tool"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="s2">"value"</span><span class="p">,</span> <span class="s2">"limit"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="c1"># Wrong - missing required field</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="n">call_tool</span><span class="p">(</span><span class="s2">"my_tool"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"limit"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+</code></pre></div>
+<h2 id="issue-timeout">Issue: Timeout<a class="headerlink" href="#issue-timeout" title="Permanent link">¶</a></h2>
+<p><strong>Error</strong>: <code>Tool execution timed out</code></p>
+<p><strong>Solution</strong>: Increase timeout or optimize tool</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="nt">server_options</span><span class="p">:</span>
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="w"> </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"> </span><span class="c1"># Increase from default 30</span>
+</code></pre></div>
+<hr/>
+<h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">¶</a></h2>
+<h3 id="common-tool-pattern">Common Tool Pattern<a class="headerlink" href="#common-tool-pattern" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">call_tool</span><span class="p">()</span>
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">my_tool</span><span class="p">(</span><span class="n">required_param</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optional_param</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ToolResult</span><span class="p">:</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="sd"> Tool description</span>
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>
+<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="sd"> required_param: Description</span>
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a><span class="sd"> optional_param: Description with default</span>
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a><span class="sd"> """</span>
+<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">do_work</span><span class="p">(</span><span class="n">required_param</span><span class="p">,</span> <span class="n">optional_param</span><span class="p">)</span>
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">result</span><span class="p">)]</span>
+<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a> <span class="p">)</span>
+<a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-25-16" id="__codelineno-25-16" name="__codelineno-25-16"></a> <span class="k">return</span> <span class="n">ToolResult</span><span class="p">(</span>
+<a href="#__codelineno-25-17" id="__codelineno-25-17" name="__codelineno-25-17"></a> <span class="n">content</span><span class="o">=</span><span class="p">[</span><span class="n">TextContent</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)],</span>
+<a href="#__codelineno-25-18" id="__codelineno-25-18" name="__codelineno-25-18"></a> <span class="n">isError</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-25-19" id="__codelineno-25-19" name="__codelineno-25-19"></a> <span class="p">)</span>
+</code></pre></div>
+<h3 id="common-resource-pattern">Common Resource Pattern<a class="headerlink" href="#common-resource-pattern" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">read_resource</span><span class="p">()</span>
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">read_resource</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w"> </span><span class="sd">"""Read resource by URI"""</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a> <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"config://"</span><span class="p">):</span>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a> <span class="k">return</span> <span class="n">read_config</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"config://"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a> <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"docs://"</span><span class="p">):</span>
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a> <span class="k">return</span> <span class="n">read_docs</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"docs://"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown resource: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="common-prompt-pattern">Common Prompt Pattern<a class="headerlink" href="#common-prompt-pattern" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="nd">@server</span><span class="o">.</span><span class="n">get_prompt</span><span class="p">()</span>
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_prompt</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetPromptResult</span><span class="p">:</span>
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a><span class="w"> </span><span class="sd">"""Get prompt template"""</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a> <span class="n">templates</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a> <span class="s2">"review"</span><span class="p">:</span> <span class="s2">"Please review this: </span><span class="si">{code}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a> <span class="s2">"explain"</span><span class="p">:</span> <span class="s2">"Explain this code: </span><span class="si">{code}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a> <span class="p">}</span>
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a> <span class="n">template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">template</span><span class="p">:</span>
+<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown prompt: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a> <span class="k">return</span> <span class="n">GetPromptResult</span><span class="p">(</span>
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a> <span class="n">messages</span><span class="o">=</span><span class="p">[</span><span class="n">PromptMessage</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">"user"</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">template</span><span class="p">)]</span>
+<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a> <span class="p">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="cross-references">Cross-References<a class="headerlink" href="#cross-references" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../../mcp/MCP_SECURITY_GUIDE/">MCP Security Guide</a></li>
+<li><a href="../../mcp/MCP_FAQ/">MCP FAQ</a></li>
+<li><a href="../../admin/integration/GITHUB_MCP_INTEGRATION_GUIDE/">GitHub MCP Integration</a></li>
+</ul>
+<hr/>
+<p><strong>Word Count</strong>: 2,124 | <strong>Examples</strong>: 18 | <strong>Patterns</strong>: 8
+<strong>Last Updated</strong>: 2026-06-22 | <strong>Status</strong>: Complete</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

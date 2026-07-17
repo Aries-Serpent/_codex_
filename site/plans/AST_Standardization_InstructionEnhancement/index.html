@@ -1,0 +1,4442 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/plans/AST_Standardization_InstructionEnhancement/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>AST: Deep Codebase Analysis Requirements - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ast-deep-codebase-analysis-requirements">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              AST: Deep Codebase Analysis Requirements
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-executive-summary">
+<span class="md-ellipsis">
+      
+        1. Executive Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-requirement-categories-matrix">
+<span class="md-ellipsis">
+      
+        2. Requirement Categories Matrix
+      
+    </span>
+</a>
+<nav aria-label="2. Requirement Categories Matrix" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21-functional-requirements-fr-critical-path">
+<span class="md-ellipsis">
+      
+        2.1 Functional Requirements (FR) - CRITICAL PATH
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#22-non-functional-requirements-nfr-quality-gates">
+<span class="md-ellipsis">
+      
+        2.2 Non-Functional Requirements (NFR) - QUALITY GATES
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#23-constraint-requirements-cr-immutable">
+<span class="md-ellipsis">
+      
+        2.3 Constraint Requirements (CR) - IMMUTABLE
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-model-schemas">
+<span class="md-ellipsis">
+      
+        3. Data Model &amp; Schemas
+      
+    </span>
+</a>
+<nav aria-label="3. Data Model &amp; Schemas" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-standardized-ast-node-structure">
+<span class="md-ellipsis">
+      
+        3.1 Standardized AST Node Structure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-analysis-results-schema">
+<span class="md-ellipsis">
+      
+        3.2 Analysis Results Schema
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-dependency-graph-schema">
+<span class="md-ellipsis">
+      
+        3.3 Dependency Graph Schema
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-knowledge-graph-export-schema">
+<span class="md-ellipsis">
+      
+        3.4 Knowledge Graph Export Schema
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-implementation-phases-deliverables">
+<span class="md-ellipsis">
+      
+        4. Implementation Phases &amp; Deliverables
+      
+    </span>
+</a>
+<nav aria-label="4. Implementation Phases &amp; Deliverables" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-foundation-sprint-1-2-weeks-1-2">
+<span class="md-ellipsis">
+      
+        Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-metrics-analysis-sprint-2-3-weeks-3-5">
+<span class="md-ellipsis">
+      
+        Phase 2: Metrics &amp; Analysis (Sprint 2-3) - WEEKS 3-5
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-dependency-graph-sprint-3-4-weeks-6-8">
+<span class="md-ellipsis">
+      
+        Phase 3: Dependency &amp; Graph (Sprint 3-4) - WEEKS 6-8
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-4-cli-integration-sprint-4-5-weeks-8-10">
+<span class="md-ellipsis">
+      
+        Phase 4: CLI &amp; Integration (Sprint 4-5) - WEEKS 8-10
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-5-testing-validation-sprint-6-weeks-11-12">
+<span class="md-ellipsis">
+      
+        Phase 5: Testing &amp; Validation (Sprint 6) - WEEKS 11-12
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-quality-assurance-framework">
+<span class="md-ellipsis">
+      
+        5. Quality Assurance Framework
+      
+    </span>
+</a>
+<nav aria-label="5. Quality Assurance Framework" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-testing-strategy-test-pyramid">
+<span class="md-ellipsis">
+      
+        5.1 Testing Strategy (Test Pyramid)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-test-coverage-targets-by-component">
+<span class="md-ellipsis">
+      
+        5.2 Test Coverage Targets by Component
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-regression-test-matrix">
+<span class="md-ellipsis">
+      
+        5.3 Regression Test Matrix
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-acceptance-sign-off-process">
+<span class="md-ellipsis">
+      
+        6. Acceptance &amp; Sign-Off Process
+      
+    </span>
+</a>
+<nav aria-label="6. Acceptance &amp; Sign-Off Process" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-validation-checkpoints">
+<span class="md-ellipsis">
+      
+        6.1 Validation Checkpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-functional-acceptance-criteria-final">
+<span class="md-ellipsis">
+      
+        6.2 Functional Acceptance Criteria (Final)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-risk-assessment-mitigation">
+<span class="md-ellipsis">
+      
+        7. Risk Assessment &amp; Mitigation
+      
+    </span>
+</a>
+<nav aria-label="7. Risk Assessment &amp; Mitigation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-high-risk-items">
+<span class="md-ellipsis">
+      
+        7.1 High-Risk Items
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-rollback-procedures">
+<span class="md-ellipsis">
+      
+        7.2 Rollback Procedures
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ast-deep-codebase-analysis-requirements">AST: Deep Codebase Analysis Requirements<a class="headerlink" href="#ast-deep-codebase-analysis-requirements" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#1-executive-summary">1. Executive Summary</a></li>
+<li><a href="#2-requirement-categories-matrix">2. Requirement Categories Matrix</a></li>
+<li><a href="#21-functional-requirements-fr---critical-path">2.1 Functional Requirements (FR) - CRITICAL PATH</a></li>
+<li><a href="#22-non-functional-requirements-nfr---quality-gates">2.2 Non-Functional Requirements (NFR) - QUALITY GATES</a></li>
+<li><a href="#23-constraint-requirements-cr---immutable">2.3 Constraint Requirements (CR) - IMMUTABLE</a></li>
+<li><a href="#3-data-model--schemas">3. Data Model &amp; Schemas</a></li>
+<li><a href="#31-standardized-ast-node-structure">3.1 Standardized AST Node Structure</a></li>
+<li><a href="#32-analysis-results-schema">3.2 Analysis Results Schema</a></li>
+<li><a href="#33-dependency-graph-schema">3.3 Dependency Graph Schema</a></li>
+<li><a href="#34-knowledge-graph-export-schema">3.4 Knowledge Graph Export Schema</a></li>
+<li><a href="#4-implementation-phases--deliverables">4. Implementation Phases &amp; Deliverables</a></li>
+<li><a href="#phase-1-foundation-sprint-1-2---weeks-1-2">Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2</a></li>
+<li><a href="#phase-2-metrics--analysis-sprint-2-3---weeks-3-5">Phase 2: Metrics &amp; Analysis (Sprint 2-3) - WEEKS 3-5</a></li>
+<li><a href="#phase-3-dependency--graph-sprint-3-4---weeks-6-8">Phase 3: Dependency &amp; Graph (Sprint 3-4) - WEEKS 6-8</a></li>
+<li><a href="#phase-4-cli--integration-sprint-4-5---weeks-8-10">Phase 4: CLI &amp; Integration (Sprint 4-5) - WEEKS 8-10</a></li>
+<li><a href="#phase-5-testing--validation-sprint-6---weeks-11-12">Phase 5: Testing &amp; Validation (Sprint 6) - WEEKS 11-12</a></li>
+<li><a href="#5-quality-assurance-framework">5. Quality Assurance Framework</a></li>
+<li><a href="#51-testing-strategy-test-pyramid">5.1 Testing Strategy (Test Pyramid)</a></li>
+<li><a href="#52-test-coverage-targets-by-component">5.2 Test Coverage Targets by Component</a></li>
+<li><a href="#53-regression-test-matrix">5.3 Regression Test Matrix</a></li>
+<li><a href="#6-acceptance--sign-off-process">6. Acceptance &amp; Sign-Off Process</a></li>
+<li><a href="#61-validation-checkpoints">6.1 Validation Checkpoints</a></li>
+<li><a href="#62-functional-acceptance-criteria-final">6.2 Functional Acceptance Criteria (Final)</a></li>
+<li><a href="#7-risk-assessment--mitigation">7. Risk Assessment &amp; Mitigation</a></li>
+<li><a href="#71-high-risk-items">7.1 High-Risk Items</a></li>
+<li><a href="#72-rollback-procedures">7.2 Rollback Procedures</a></li>
+<li><a href="#fall-back-to-regex-based-analysis">Fall back to regex-based analysis</a></li>
+<li><a href="#reduce-scope">Reduce scope</a></li>
+<li><a href="#reduce-sensitivity">Reduce sensitivity</a></li>
+<li><a href="#8-success-metrics--kpis">8. Success Metrics &amp; KPIs</a></li>
+<li><a href="#81-delivery-kpis">8.1 Delivery KPIs</a></li>
+<li><a href="#82-adoption-kpis">8.2 Adoption KPIs</a></li>
+<li><a href="#9-documentation-requirements">9. Documentation Requirements</a></li>
+<li><a href="#91-mandatory-documentation">9.1 Mandatory Documentation</a></li>
+<li><a href="#10-conclusion--next-steps">10. Conclusion &amp; Next Steps</a></li>
+<li><a href="#-ast-standardization-implementation-guidance"> AST: Standardization Implementation Guidance</a></li>
+<li><a href="#1-implementation-philosophy">1. Implementation Philosophy</a></li>
+<li><a href="#11-core-principles">1.1 Core Principles</a></li>
+<li><a href="#12-architecture-decision-records-adrs">1.2 Architecture Decision Records (ADRs)</a></li>
+<li><a href="#2-component-deep-dive">2. Component Deep-Dive</a></li>
+<li><a href="#21-parser-module-implementation-guide">2.1 Parser Module Implementation Guide</a></li>
+<li><a href="#22-metrics-analyzer-implementation-guide">2.2 Metrics Analyzer Implementation Guide</a></li>
+<li><a href="#23-dependency-graph-implementation-guide">2.3 Dependency Graph Implementation Guide</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#3-testing--validation-framework">3. Testing &amp; Validation Framework</a></li>
+<li><a href="#31-test-organization">3.1 Test Organization</a></li>
+<li><a href="#32-fixture-strategy-conftestpy">3.2 Fixture Strategy (conftest.py)</a></li>
+<li><a href="#33-performance-benchmarks">3.3 Performance Benchmarks</a></li>
+<li><a href="#4-integration-checkpoints">4. Integration Checkpoints</a></li>
+<li><a href="#41-phase-gate-criteria">4.1 Phase Gate Criteria</a></li>
+<li><a href="#42-cicd-integration-template">4.2 CI/CD Integration Template</a></li>
+<li><a href="#5-conclusion">5. Conclusion</a></li>
+</ul>
+<blockquote>
+<p>** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See <code>docs/cognitive_brain/</code> and <code>docs/admin/CONTINUATION_ROADMAP.md</code> for current state.</p>
+<p>Generated: 2026-06-22 (audited) | Author: mbaetiong</p>
+</blockquote>
+<p>** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] | Energy: 5/5</p>
+<hr/>
+<h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">¶</a></h2>
+<p>This document establishes <strong>comprehensive, binding requirements</strong> for developing an <strong>AST (Abstract Syntax Tree) Standardization Project</strong> that enables <strong>deep codebase analysis beyond test scope</strong>.</p>
+<p><strong>Strategic Objectives:</strong>
+- Standardize AST parsing across Python/YAML/JSON codebases
+- Enable automated structural and semantic codebase analysis
+- Provide objective metrics for code quality, complexity, and dependencies
+- Integrate maturity tracking with AST-derived findings
+- Create knowledge graphs for team-wide code intelligence</p>
+<p><strong>Scope:</strong> Comprehensive codebase analysis structural, semantic, quality, and evolution tracking</p>
+<hr/>
+<h2 id="2-requirement-categories-matrix">2. Requirement Categories Matrix<a class="headerlink" href="#2-requirement-categories-matrix" title="Permanent link">¶</a></h2>
+<h3 id="21-functional-requirements-fr-critical-path">2.1 Functional Requirements (FR) - CRITICAL PATH<a class="headerlink" href="#21-functional-requirements-fr-critical-path" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Priority</th>
+<th>Acceptance Criteria</th>
+<th>Dependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FR-AST-001</strong></td>
+<td><strong>Universal AST Parser</strong></td>
+<td>CRITICAL</td>
+<td>Parse 100% valid Python/YAML/JSON without errors; &lt;1ms per 100 tokens</td>
+<td>libcst, pyyaml</td>
+</tr>
+<tr>
+<td><strong>FR-AST-002</strong></td>
+<td><strong>Standardized AST Representation</strong></td>
+<td>CRITICAL</td>
+<td>Language-agnostic node format; preserves metadata (docstrings, types, decorators)</td>
+<td>FR-AST-001</td>
+</tr>
+<tr>
+<td><strong>FR-AST-003</strong></td>
+<td><strong>Cyclomatic Complexity Metrics</strong></td>
+<td>CRITICAL</td>
+<td>CC accurate ±5% vs reference; available per function; &lt;100ms per file</td>
+<td>FR-AST-002</td>
+</tr>
+<tr>
+<td><strong>FR-AST-004</strong></td>
+<td><strong>Cognitive Complexity Measurement</strong></td>
+<td>HIGH</td>
+<td>Reflects nested decision depth; &lt;200ms per file</td>
+<td>FR-AST-003</td>
+</tr>
+<tr>
+<td><strong>FR-AST-005</strong></td>
+<td><strong>Dependency Graph Construction</strong></td>
+<td>CRITICAL</td>
+<td>Extract imports, calls, inheritance; build directed graph; &lt;1s per 100 modules</td>
+<td>FR-AST-002</td>
+</tr>
+<tr>
+<td><strong>FR-AST-006</strong></td>
+<td><strong>Circular Dependency Detection</strong></td>
+<td>HIGH</td>
+<td>100% recall on synthetic cycles; detect with 1st algorithm; report cycles with path</td>
+<td>FR-AST-005</td>
+</tr>
+<tr>
+<td><strong>FR-AST-007</strong></td>
+<td><strong>Code Smell Detection</strong></td>
+<td>HIGH</td>
+<td>Detect 8+ smell types (long functions, high complexity, duplication, dead code); &gt;80% precision</td>
+<td>FR-AST-003</td>
+</tr>
+<tr>
+<td><strong>FR-AST-008</strong></td>
+<td><strong>Type Hint Extraction &amp; Inference</strong></td>
+<td>MEDIUM</td>
+<td>Extract explicit hints; infer from usage; measure coverage; &lt;200ms per file</td>
+<td>FR-AST-002</td>
+</tr>
+<tr>
+<td><strong>FR-AST-009</strong></td>
+<td><strong>Documentation Coverage Analysis</strong></td>
+<td>MEDIUM</td>
+<td>Extract docstrings; measure coverage %; assess quality; &lt;100ms per file</td>
+<td>FR-AST-002</td>
+</tr>
+<tr>
+<td><strong>FR-AST-010</strong></td>
+<td><strong>Testing Coverage Integration</strong></td>
+<td>MEDIUM</td>
+<td>Read pytest XML; map to AST nodes; correlate coverage complexity</td>
+<td>FR-AST-002</td>
+</tr>
+<tr>
+<td><strong>FR-AST-011</strong></td>
+<td><strong>Knowledge Graph Export</strong></td>
+<td>HIGH</td>
+<td>Export to JSON/SQLite/Markdown/HTML/DOT; queryable; no data loss; &lt;500ms per 1000 entities</td>
+<td>FR-AST-003+</td>
+</tr>
+<tr>
+<td><strong>FR-AST-012</strong></td>
+<td><strong>Incremental Delta Analysis</strong></td>
+<td>HIGH</td>
+<td>Analyze only changed files; compare to baseline; report improvements/regressions; &lt;1s for typical PR</td>
+<td>FR-AST-003+</td>
+</tr>
+<tr>
+<td><strong>FR-AST-013</strong></td>
+<td><strong>CLI Interface Suite</strong></td>
+<td>CRITICAL</td>
+<td>3 tools: codex-analyze, codex-audit, codex-diff; offline-capable; &lt;30s per 10K LOC</td>
+<td>FR-AST-011+</td>
+</tr>
+<tr>
+<td><strong>FR-AST-014</strong></td>
+<td><strong>MATURITY_REMAINING_WORK Auto-Update</strong></td>
+<td>HIGH</td>
+<td>Auto-populate with findings; prioritize by impact; maintain human-editable sections</td>
+<td>FR-AST-007+</td>
+</tr>
+<tr>
+<td><strong>FR-AST-015</strong></td>
+<td><strong>GitHub Actions Integration</strong></td>
+<td>HIGH</td>
+<td>Workflow template; auto-comment on PRs; fail on quality gates; artifact upload</td>
+<td>FR-AST-013</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="22-non-functional-requirements-nfr-quality-gates">2.2 Non-Functional Requirements (NFR) - QUALITY GATES<a class="headerlink" href="#22-non-functional-requirements-nfr-quality-gates" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Attribute</th>
+<th>Target</th>
+<th>Measurement</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NFR-PERF-001</strong></td>
+<td><strong>Parse Performance</strong></td>
+<td>&lt;1ms per 100 tokens</td>
+<td>Benchmark suite</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-PERF-002</strong></td>
+<td><strong>Analysis Speed</strong></td>
+<td>&lt;5s per 1000 LOC</td>
+<td>Wall-clock time</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-PERF-003</strong></td>
+<td><strong>Memory Footprint</strong></td>
+<td>&lt;500MB for 50K LOC</td>
+<td>Peak memory usage</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-PERF-004</strong></td>
+<td><strong>Graph Build Time</strong></td>
+<td>&lt;1s per 100 modules</td>
+<td>Edge addition time</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-PERF-005</strong></td>
+<td><strong>CLI Responsiveness</strong></td>
+<td>&lt;30s full codebase audit</td>
+<td>End-to-end latency</td>
+<td>MEDIUM</td>
+</tr>
+<tr>
+<td><strong>NFR-ACC-001</strong></td>
+<td><strong>Parser Accuracy</strong></td>
+<td>&gt;99% vs libcst baseline</td>
+<td>Regression tests</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-ACC-002</strong></td>
+<td><strong>Complexity Accuracy</strong></td>
+<td>±5% vs reference impl</td>
+<td>Validation suite</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-ACC-003</strong></td>
+<td><strong>Cycle Detection Recall</strong></td>
+<td>100% on synthetic graphs</td>
+<td>Test matrix</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-ACC-004</strong></td>
+<td><strong>Smell Detection Precision</strong></td>
+<td>&gt;80% (false positives &lt;20%)</td>
+<td>Manual review sample</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-REL-001</strong></td>
+<td><strong>Error Resilience</strong></td>
+<td>Zero crashes on invalid input</td>
+<td>Fuzz testing</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-REL-002</strong></td>
+<td><strong>Graceful Degradation</strong></td>
+<td>Partial results on parse error</td>
+<td>Error handling tests</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-REL-003</strong></td>
+<td><strong>Determinism</strong></td>
+<td>Identical input identical output</td>
+<td>Reproducibility tests</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-MAINT-001</strong></td>
+<td><strong>Code Duplication</strong></td>
+<td>&lt;10%</td>
+<td>Automated detection</td>
+<td>MEDIUM</td>
+</tr>
+<tr>
+<td><strong>NFR-MAINT-002</strong></td>
+<td><strong>Test Coverage</strong></td>
+<td>≥80%</td>
+<td>Coverage reports</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-MAINT-003</strong></td>
+<td><strong>Cyclomatic Complexity</strong></td>
+<td>&lt;10 per function</td>
+<td>Enforced by own tool</td>
+<td>MEDIUM</td>
+</tr>
+<tr>
+<td><strong>NFR-SEC-001</strong></td>
+<td><strong>Security Issues</strong></td>
+<td>0 high-severity</td>
+<td>Bandit + dependency scan</td>
+<td>CRITICAL</td>
+</tr>
+<tr>
+<td><strong>NFR-COMPAT-001</strong></td>
+<td><strong>Python Version Support</strong></td>
+<td>3.8-3.12</td>
+<td>CI/CD matrix</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><strong>NFR-COMPAT-002</strong></td>
+<td><strong>Offline Operation</strong></td>
+<td>100% (no cloud calls)</td>
+<td>Network isolation test</td>
+<td>CRITICAL</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="23-constraint-requirements-cr-immutable">2.3 Constraint Requirements (CR) - IMMUTABLE<a class="headerlink" href="#23-constraint-requirements-cr-immutable" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Constraint</th>
+<th>Impact</th>
+<th>Mitigation Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CR-ENV-001</strong></td>
+<td><strong>Offline-First</strong></td>
+<td>No cloud APIs, no remote services</td>
+<td>Use local storage (SQLite), embed parsers</td>
+</tr>
+<tr>
+<td><strong>CR-ENV-002</strong></td>
+<td><strong>Python 3.8+ Only</strong></td>
+<td>Cannot use modern syntax (3.10+ match, 3.11+ exception groups)</td>
+<td>Pin dependencies; backport helpers</td>
+</tr>
+<tr>
+<td><strong>CR-ENV-003</strong></td>
+<td><strong>File-Based Storage</strong></td>
+<td>Limited query flexibility vs databases</td>
+<td>Use SQLite for richer queries</td>
+</tr>
+<tr>
+<td><strong>CR-ENV-004</strong></td>
+<td><strong>Performance Budget</strong></td>
+<td>Must complete within 5s per 1000 LOC</td>
+<td>Implement streaming, parallel processing</td>
+</tr>
+<tr>
+<td><strong>CR-ORG-001</strong></td>
+<td><strong>Test-Driven Development</strong></td>
+<td>Must write tests before code</td>
+<td>Enforce via pre-commit hooks</td>
+</tr>
+<tr>
+<td><strong>CR-ORG-002</strong></td>
+<td><strong>No Code Duplication</strong></td>
+<td>Keep implementations DRY</td>
+<td>Enforce &lt;10% threshold</td>
+</tr>
+<tr>
+<td><strong>CR-ORG-003</strong></td>
+<td><strong>Comprehensive Documentation</strong></td>
+<td>Enable team adoption</td>
+<td>Mandatory for all public APIs</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="3-data-model-schemas">3. Data Model &amp; Schemas<a class="headerlink" href="#3-data-model-schemas" title="Permanent link">¶</a></h2>
+<h3 id="31-standardized-ast-node-structure">3.1 Standardized AST Node Structure<a class="headerlink" href="#31-standardized-ast-node-structure" title="Permanent link">¶</a></h3>
+<p>```python
+@dataclass
+class SourceLocation:
+ """Pin point code location."""
+ file_path: Path
+ line_start: int
+ line_end: int
+ column_start: int
+ column_end: int</p>
+<p>@dataclass
+class StandardizedASTNode:
+ """Language-agnostic AST representation."""
+ # Identity
+ node_id: str # unique identifier
+ type: str # "module", "function", "class", "statement", etc.
+ name: str # identifier</p>
+<p># Structure
+ parent: Optional["StandardizedASTNode"]
+ children: List["StandardizedASTNode"]</p>
+<p># Metadata
+ source_location: SourceLocation
+ docstring: Optional[str]
+ decorators: List[str] # e.g., ["@dataclass", "@property"]</p>
+<p># Type System
+ type_hints: Dict[str, str] # param type_str mappings
+ inferred_types: Dict[str, str] # inferred types</p>
+<p># Language-Specific Details (JSON blob for extensibility)
+ metadata: Dict[str, Any]</p>
+<p># Analysis Results (populated post-parse)
+ analysis_results: Optional["AnalysisResults"] = None
+```text</p>
+<h3 id="32-analysis-results-schema">3.2 Analysis Results Schema<a class="headerlink" href="#32-analysis-results-schema" title="Permanent link">¶</a></h3>
+<p>```python
+@dataclass
+class CodeMetrics:
+ """Aggregated code quality metrics."""
+ lines_of_code: int
+ cyclomatic_complexity: int
+ cognitive_complexity: float
+ halstead_volume: float
+ halstead_difficulty: float
+ maintainability_index: float # 0-100, A-F grade
+ test_coverage: Optional[float] # 0-100%
+ type_hint_coverage: float # 0-100%</p>
+<p>@property
+ def quality_tier(self) -&gt; str:
+ """Compute A-F grade from MI."""
+ if self.maintainability_index &gt;= 85: return "A"
+ if self.maintainability_index &gt;= 70: return "B"
+ if self.maintainability_index &gt;= 55: return "C"
+ if self.maintainability_index &gt;= 40: return "D"
+ return "F"</p>
+<p>@dataclass
+class CodeSmell:
+ """Identified code quality issue."""
+ smell_type: str # "long_function", "high_complexity", etc.
+ severity: str # "low", "medium", "high", "critical"
+ location: SourceLocation
+ message: str
+ suggested_remediation: Optional[str]
+ confidence: float # 0.0-1.0</p>
+<p>@dataclass
+class AnalysisResults:
+ """Complete analysis for an AST node."""
+ metrics: CodeMetrics
+ smells: List[CodeSmell]
+ dependencies: List["Dependency"]
+ timestamp: datetime
+ analyzer_version: str
+```text</p>
+<h3 id="33-dependency-graph-schema">3.3 Dependency Graph Schema<a class="headerlink" href="#33-dependency-graph-schema" title="Permanent link">¶</a></h3>
+<p>```python
+@dataclass
+class Dependency:
+ """Relationship between code entities."""
+ source_id: str # from node_id
+ target_id: str # to node_id
+ dep_type: str # "imports", "calls", "inherits_from", "uses"
+ line_number: int
+ is_circular: bool = False</p>
+<p>@dataclass
+class DependencyGraph:
+ """Directional graph of all dependencies."""
+ nodes: Dict[str, StandardizedASTNode]
+ edges: List[Dependency]</p>
+<p>def get_transitive_dependencies(self, node_id: str) -&gt; Set[str]:
+ """All nodes reachable from this node."""
+ pass</p>
+<p>def get_transitive_dependents(self, node_id: str) -&gt; Set[str]:
+ """All nodes that depend on this node."""
+ pass</p>
+<p>def detect_cycles(self) -&gt; List[List[str]]:
+ """Find strongly connected components (Tarjan's algorithm)."""
+ pass</p>
+<p>def compute_fan_in(self, node_id: str) -&gt; int:
+ """Count incoming edges."""
+ pass</p>
+<p>def compute_fan_out(self, node_id: str) -&gt; int:
+ """Count outgoing edges."""
+ pass
+```text</p>
+<h3 id="34-knowledge-graph-export-schema">3.4 Knowledge Graph Export Schema<a class="headerlink" href="#34-knowledge-graph-export-schema" title="Permanent link">¶</a></h3>
+<p><strong>SQLite Schema (Normalized):</strong></p>
+<p>```sql
+-- Entities
+CREATE TABLE modules (
+ id TEXT PRIMARY KEY,
+ file_path TEXT NOT NULL,
+ lines_of_code INTEGER,
+ complexity_avg REAL,
+ quality_tier TEXT
+);</p>
+<p>CREATE TABLE functions (
+ id TEXT PRIMARY KEY,
+ module_id TEXT NOT NULL,
+ name TEXT NOT NULL,
+ signature TEXT,
+ lines_of_code INTEGER,
+ cyclomatic_complexity INTEGER,
+ maintainability_index REAL,
+ test_coverage REAL,
+ FOREIGN KEY (module_id) REFERENCES modules(id)
+);</p>
+<p>CREATE TABLE classes (
+ id TEXT PRIMARY KEY,
+ module_id TEXT NOT NULL,
+ name TEXT NOT NULL,
+ lines_of_code INTEGER,
+ method_count INTEGER,
+ FOREIGN KEY (module_id) REFERENCES modules(id)
+);</p>
+<p>-- Relationships
+CREATE TABLE dependencies (
+ source_id TEXT NOT NULL,
+ target_id TEXT NOT NULL,
+ dep_type TEXT NOT NULL, -- "imports", "calls", "inherits_from"
+ is_circular BOOLEAN,
+ PRIMARY KEY (source_id, target_id)
+);</p>
+<p>CREATE TABLE code_smells (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ entity_id TEXT NOT NULL,
+ smell_type TEXT NOT NULL,
+ severity TEXT,
+ message TEXT,
+ line_number INTEGER
+);</p>
+<p>-- Metrics
+CREATE TABLE quality_metrics (
+ entity_id TEXT PRIMARY KEY,
+ metric_name TEXT NOT NULL,
+ metric_value REAL NOT NULL
+);
+```text</p>
+<hr/>
+<h2 id="4-implementation-phases-deliverables">4. Implementation Phases &amp; Deliverables<a class="headerlink" href="#4-implementation-phases-deliverables" title="Permanent link">¶</a></h2>
+<h3 id="phase-1-foundation-sprint-1-2-weeks-1-2">Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2<a class="headerlink" href="#phase-1-foundation-sprint-1-2-weeks-1-2" title="Permanent link">¶</a></h3>
+<p><strong>Goal:</strong> Core parsing and standardization</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Deliverable</th>
+<th>Acceptance Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1.1: Parser Architecture</strong></td>
+<td><code>src/codex_ml/ast/parser.py</code></td>
+<td>FR-AST-001, FR-AST-002 passing</td>
+</tr>
+<tr>
+<td><strong>1.2: Python Adapter</strong></td>
+<td><code>src/codex_ml/ast/language_adapters/python_adapter.py</code></td>
+<td>Parse 100% test suite; &lt;1ms/100 tokens</td>
+</tr>
+<tr>
+<td><strong>1.3: YAML/JSON Adapters</strong></td>
+<td><code>src/codex_ml/ast/language_adapters/yaml_adapter.py</code>, <code>json_adapter.py</code></td>
+<td>Both adapters working; tests passing</td>
+</tr>
+<tr>
+<td><strong>1.4: Unit Tests</strong></td>
+<td><code>tests/ast/test_parser*.py</code></td>
+<td>&gt;90% coverage; all tests green</td>
+</tr>
+<tr>
+<td><strong>1.5: Documentation</strong></td>
+<td><code>docs/ast/parsing.md</code></td>
+<td>API reference + examples</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success Gate:</strong> <code>nox -s test -- tests/ast/test_parser*</code> passes; benchmarks meet NFR-PERF-001</p>
+<hr/>
+<h3 id="phase-2-metrics-analysis-sprint-2-3-weeks-3-5">Phase 2: Metrics &amp; Analysis (Sprint 2-3) - WEEKS 3-5<a class="headerlink" href="#phase-2-metrics-analysis-sprint-2-3-weeks-3-5" title="Permanent link">¶</a></h3>
+<p><strong>Goal:</strong> Complexity computation, code smell detection</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Deliverable</th>
+<th>Acceptance Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2.1: Metrics Analyzer</strong></td>
+<td><code>src/codex_ml/ast/analyzers/metrics.py</code></td>
+<td>FR-AST-003, FR-AST-004 passing; ±5% accuracy</td>
+</tr>
+<tr>
+<td><strong>2.2: Code Smell Detector</strong></td>
+<td><code>src/codex_ml/ast/analyzers/smells.py</code></td>
+<td>FR-AST-007; 8+ smell types; &gt;80% precision</td>
+</tr>
+<tr>
+<td><strong>2.3: Type Analysis</strong></td>
+<td><code>src/codex_ml/ast/analyzers/types.py</code></td>
+<td>FR-AST-008; coverage metric available</td>
+</tr>
+<tr>
+<td><strong>2.4: Unit Tests</strong></td>
+<td><code>tests/ast/test_metrics*.py</code>, <code>test_smells*.py</code></td>
+<td>&gt;85% coverage</td>
+</tr>
+<tr>
+<td><strong>2.5: Benchmarking</strong></td>
+<td>Performance report</td>
+<td>Meets NFR-PERF-002, NFR-PERF-003</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success Gate:</strong> <code>pytest --cov=src/codex_ml/ast/analyzers --cov-fail-under=85</code> passes</p>
+<hr/>
+<h3 id="phase-3-dependency-graph-sprint-3-4-weeks-6-8">Phase 3: Dependency &amp; Graph (Sprint 3-4) - WEEKS 6-8<a class="headerlink" href="#phase-3-dependency-graph-sprint-3-4-weeks-6-8" title="Permanent link">¶</a></h3>
+<p><strong>Goal:</strong> Dependency analysis, cycle detection, knowledge graph</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Deliverable</th>
+<th>Acceptance Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>3.1: Dependency Extractor</strong></td>
+<td><code>src/codex_ml/ast/analyzers/dependencies.py</code></td>
+<td>FR-AST-005; extract imports, calls, inheritance</td>
+</tr>
+<tr>
+<td><strong>3.2: Cycle Detector</strong></td>
+<td><code>src/codex_ml/ast/analyzers/cycle_detection.py</code></td>
+<td>FR-AST-006; 100% recall; report paths</td>
+</tr>
+<tr>
+<td><strong>3.3: KG Builder</strong></td>
+<td><code>src/codex_ml/ast/knowledge_graph.py</code></td>
+<td>FR-AST-011; build queryable graph</td>
+</tr>
+<tr>
+<td><strong>3.4: Exporters</strong></td>
+<td><code>src/codex_ml/ast/exporters/{json,sqlite,markdown,html}.py</code></td>
+<td>All formats working; test coverage &gt;85%</td>
+</tr>
+<tr>
+<td><strong>3.5: Integration Tests</strong></td>
+<td><code>tests/ast/test_integration.py</code></td>
+<td>Full pipeline working end-to-end</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success Gate:</strong> Full codebase audit runs in &lt;30s; exports all formats correctly</p>
+<hr/>
+<h3 id="phase-4-cli-integration-sprint-4-5-weeks-8-10">Phase 4: CLI &amp; Integration (Sprint 4-5) - WEEKS 8-10<a class="headerlink" href="#phase-4-cli-integration-sprint-4-5-weeks-8-10" title="Permanent link">¶</a></h3>
+<p><strong>Goal:</strong> User-facing tools, CI/CD integration</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Deliverable</th>
+<th>Acceptance Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4.1: CLI Framework</strong></td>
+<td><code>src/codex_ml/ast/cli.py</code></td>
+<td>FR-AST-013; 3 tools working; --help complete</td>
+</tr>
+<tr>
+<td><strong>4.2: MATURITY Integration</strong></td>
+<td><code>src/codex_ml/ast/maturity_updater.py</code></td>
+<td>FR-AST-014; auto-populate checklist</td>
+</tr>
+<tr>
+<td><strong>4.3: GitHub Actions</strong></td>
+<td><code>.github/workflows/ast_analysis.yml</code></td>
+<td>FR-AST-015; auto-comment, fail gates</td>
+</tr>
+<tr>
+<td><strong>4.4: Documentation</strong></td>
+<td><code>docs/ast/cli_guide.md</code>, <code>integration_guide.md</code></td>
+<td>Comprehensive; examples runnable</td>
+</tr>
+<tr>
+<td><strong>4.5: CLI Tests</strong></td>
+<td><code>tests/ast/test_cli.py</code></td>
+<td>Integration tests; &gt;75% coverage</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success Gate:</strong> <code>codex-analyze .</code> runs offline; generates valid reports in &lt;30s</p>
+<hr/>
+<h3 id="phase-5-testing-validation-sprint-6-weeks-11-12">Phase 5: Testing &amp; Validation (Sprint 6) - WEEKS 11-12<a class="headerlink" href="#phase-5-testing-validation-sprint-6-weeks-11-12" title="Permanent link">¶</a></h3>
+<p><strong>Goal:</strong> Comprehensive validation, production readiness</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Deliverable</th>
+<th>Acceptance Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>5.1: Performance Tests</strong></td>
+<td><code>tests/ast/test_benchmarks.py</code></td>
+<td>All NFR-PERF targets met</td>
+</tr>
+<tr>
+<td><strong>5.2: Accuracy Validation</strong></td>
+<td><code>tests/ast/test_validation.py</code></td>
+<td>All NFR-ACC targets met; &gt;95% accuracy</td>
+</tr>
+<tr>
+<td><strong>5.3: Fuzz Testing</strong></td>
+<td>Fuzz test suite</td>
+<td>NFR-REL-001: zero crashes</td>
+</tr>
+<tr>
+<td><strong>5.4: Coverage Report</strong></td>
+<td><code>htmlcov/index.html</code></td>
+<td>≥80% overall; key modules &gt;85%</td>
+</tr>
+<tr>
+<td><strong>5.5: Security Audit</strong></td>
+<td>Bandit + dependency check</td>
+<td>NFR-SEC-001: 0 critical issues</td>
+</tr>
+<tr>
+<td><strong>5.6: Final Docs</strong></td>
+<td>Complete user + dev docs</td>
+<td>API reference, tutorials, troubleshooting</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success Gate:</strong> <code>nox -s gates</code> passes; ready for production deployment</p>
+<hr/>
+<h2 id="5-quality-assurance-framework">5. Quality Assurance Framework<a class="headerlink" href="#5-quality-assurance-framework" title="Permanent link">¶</a></h2>
+<h3 id="51-testing-strategy-test-pyramid">5.1 Testing Strategy (Test Pyramid)<a class="headerlink" href="#51-testing-strategy-test-pyramid" title="Permanent link">¶</a></h3>
+<p>```text</p>
+<p>E2E Tests (5%) Full pipeline: codebase report</p>
+<p>Integration (20%) Component interaction: parser analyzer exporter</p>
+<p>Unit Tests (75%) Individual function: parser.parse() AST</p>
+<p>```text</p>
+<h3 id="52-test-coverage-targets-by-component">5.2 Test Coverage Targets by Component<a class="headerlink" href="#52-test-coverage-targets-by-component" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Target</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parser</td>
+<td>90%+</td>
+<td>Core; high risk if broken</td>
+</tr>
+<tr>
+<td>Analyzers</td>
+<td>85%+</td>
+<td>Multiple code paths for metrics</td>
+</tr>
+<tr>
+<td>KG Builder</td>
+<td>80%+</td>
+<td>Mostly transformation logic</td>
+</tr>
+<tr>
+<td>Exporters</td>
+<td>85%+</td>
+<td>Data formatting; edge cases important</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>75%+</td>
+<td>Integration-heavy; user-facing</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-regression-test-matrix">5.3 Regression Test Matrix<a class="headerlink" href="#53-regression-test-matrix" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Test File</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parser consistency</td>
+<td><code>test_parser_regression.py</code></td>
+<td>Same input same AST across runs</td>
+</tr>
+<tr>
+<td>Metrics stability</td>
+<td><code>test_metrics_regression.py</code></td>
+<td>Known functions expected CC/LOC</td>
+</tr>
+<tr>
+<td>Cycle detection</td>
+<td><code>test_cycle_regression.py</code></td>
+<td>Synthetic graphs correct cycles</td>
+</tr>
+<tr>
+<td>Export fidelity</td>
+<td><code>test_export_regression.py</code></td>
+<td>Analysis export re-parse identical</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="6-acceptance-sign-off-process">6. Acceptance &amp; Sign-Off Process<a class="headerlink" href="#6-acceptance-sign-off-process" title="Permanent link">¶</a></h2>
+<h3 id="61-validation-checkpoints">6.1 Validation Checkpoints<a class="headerlink" href="#61-validation-checkpoints" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th>Criteria</th>
+<th>Owner</th>
+<th>Sign-Off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Design Review</strong></td>
+<td>Architecture reviewed; tech spike completed</td>
+<td>Tech Lead</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Phase 1 Gate</strong></td>
+<td>Parser working for all languages; tests green</td>
+<td>QA Lead</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Phase 2 Gate</strong></td>
+<td>Metrics accurate; smells detected; benchmarks met</td>
+<td>QA Lead</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Phase 3 Gate</strong></td>
+<td>Dependency graph built; cycles detected; exports work</td>
+<td>QA Lead</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Phase 4 Gate</strong></td>
+<td>CLI tools working; MATURITY integrated; docs complete</td>
+<td>QA Lead + Product</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Phase 5 Gate</strong></td>
+<td>80%+ coverage; security clean; performance OK</td>
+<td>QA Lead + Tech Lead</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Production Gate</strong></td>
+<td>All acceptance criteria met; no known issues</td>
+<td>Tech Lead + Product Lead</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-functional-acceptance-criteria-final">6.2 Functional Acceptance Criteria (Final)<a class="headerlink" href="#62-functional-acceptance-criteria-final" title="Permanent link">¶</a></h3>
+<p><strong>Parser:</strong>
+- [ ] Parse 100% of valid Python/YAML/JSON without syntax errors
+- [ ] Extract all metadata (decorators, docstrings, type hints)
+- [ ] Handle edge cases (async/await, comprehensions, decorators)</p>
+<p><strong>Metrics:</strong>
+- [ ] CC accurate ±5% vs reference
+- [ ] Cognitive complexity reflects nesting depth
+- [ ] Maintainability index grade A-F correct</p>
+<p><strong>Dependencies:</strong>
+- [ ] All imports extracted correctly
+- [ ] Function calls mapped across modules
+- [ ] Inheritance chains traced
+- [ ] Cycles detected with 100% recall</p>
+<p><strong>Code Smells:</strong>
+- [ ] Long functions (&gt;50 LOC) detected
+- [ ] High complexity (CC&gt;10) flagged
+- [ ] Dead code identified
+- [ ] Duplication found
+- [ ] &gt;80% precision (manual review)</p>
+<p><strong>Knowledge Graph:</strong>
+- [ ] Entities: modules, functions, classes, types
+- [ ] Relationships: imports, calls, inheritance
+- [ ] Attributes: metrics, smells, quality tier
+- [ ] Queryable (SQL-like for SQLite export)</p>
+<p><strong>CLI Tools:</strong>
+- [ ] <code>codex-analyze</code> works for single files and directories
+- [ ] <code>codex-audit</code> generates full reports in &lt;30s
+- [ ] <code>codex-diff</code> shows metric deltas
+- [ ] All work offline without network calls</p>
+<hr/>
+<h2 id="7-risk-assessment-mitigation">7. Risk Assessment &amp; Mitigation<a class="headerlink" href="#7-risk-assessment-mitigation" title="Permanent link">¶</a></h2>
+<h3 id="71-high-risk-items">7.1 High-Risk Items<a class="headerlink" href="#71-high-risk-items" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Parser fails on uncommon syntax</strong></td>
+<td>MEDIUM</td>
+<td>HIGH</td>
+<td>Fallback to <code>ast</code> module; comprehensive error handling</td>
+</tr>
+<tr>
+<td><strong>Performance degrades on large files</strong></td>
+<td>LOW</td>
+<td>HIGH</td>
+<td>Streaming parser; parallel processing; file size limits</td>
+</tr>
+<tr>
+<td><strong>Circular imports cause infinite loops</strong></td>
+<td>LOW</td>
+<td>CRITICAL</td>
+<td>Implement visited set; break on known points</td>
+</tr>
+<tr>
+<td><strong>False positives in smell detection</strong></td>
+<td>MEDIUM</td>
+<td>MEDIUM</td>
+<td>Tune heuristics; add whitelisting; manual review</td>
+</tr>
+<tr>
+<td><strong>Knowledge graph memory explosion</strong></td>
+<td>LOW</td>
+<td>MEDIUM</td>
+<td>Incremental updates; archive old data; lazy loading</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-rollback-procedures">7.2 Rollback Procedures<a class="headerlink" href="#72-rollback-procedures" title="Permanent link">¶</a></h3>
+<p><strong>If Parser Fails:</strong>
+```bash
+export CODEX_AST_DISABLED=1</p>
+<h1 id="fall-back-to-regex-based-analysis">Fall back to regex-based analysis<a class="headerlink" href="#fall-back-to-regex-based-analysis" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<p><strong>If Performance Degraded:</strong>
+```bash</p>
+<h1 id="reduce-scope">Reduce scope<a class="headerlink" href="#reduce-scope" title="Permanent link">¶</a></h1>
+<p>codex-analyze src/ --max-file-size 50000 --skip-expensive-analysis
+```text</p>
+<p><strong>If Smell Detection Too Noisy:</strong>
+```bash</p>
+<h1 id="reduce-sensitivity">Reduce sensitivity<a class="headerlink" href="#reduce-sensitivity" title="Permanent link">¶</a></h1>
+<p>codex-analyze --smell-threshold high src/
+```text</p>
+<hr/>
+<h2 id="8-success-metrics-kpis">8. Success Metrics &amp; KPIs<a class="headerlink" href="#8-success-metrics-kpis" title="Permanent link">¶</a></h2>
+<h3 id="81-delivery-kpis">8.1 Delivery KPIs<a class="headerlink" href="#81-delivery-kpis" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Target</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>On-Time Delivery</strong></td>
+<td>Complete in 12 phases</td>
+<td>Gantt chart tracking</td>
+</tr>
+<tr>
+<td><strong>Quality (Defect Rate)</strong></td>
+<td>&lt;5 bugs per 1000 LOC</td>
+<td>Bug tracking post-release</td>
+</tr>
+<tr>
+<td><strong>Test Coverage</strong></td>
+<td>≥80%</td>
+<td>Coverage reports</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Meet all NFR-PERF targets</td>
+<td>Benchmark suite</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-adoption-kpis">8.2 Adoption KPIs<a class="headerlink" href="#82-adoption-kpis" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Target</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Team Usage</strong></td>
+<td>70% of PRs analyzed within 3 months</td>
+<td>GitHub Actions metrics</td>
+</tr>
+<tr>
+<td><strong>False Positive Rate</strong></td>
+<td>&lt;10%</td>
+<td>User feedback + validation</td>
+</tr>
+<tr>
+<td><strong>Integration Success</strong></td>
+<td>0 CI/CD failures from AST tool</td>
+<td>Action logs</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="9-documentation-requirements">9. Documentation Requirements<a class="headerlink" href="#9-documentation-requirements" title="Permanent link">¶</a></h2>
+<h3 id="91-mandatory-documentation">9.1 Mandatory Documentation<a class="headerlink" href="#91-mandatory-documentation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Audience</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>API Reference</strong></td>
+<td>Developers</td>
+<td>All classes, methods, return types, examples</td>
+</tr>
+<tr>
+<td><strong>CLI Guide</strong></td>
+<td>Users</td>
+<td>Tool usage, parameters, output formats</td>
+</tr>
+<tr>
+<td><strong>Architecture Guide</strong></td>
+<td>Developers</td>
+<td>System design, data flow, extension points</td>
+</tr>
+<tr>
+<td><strong>Integration Guide</strong></td>
+<td>DevOps</td>
+<td>CI/CD setup, quality gates, reporting</td>
+</tr>
+<tr>
+<td><strong>Troubleshooting</strong></td>
+<td>Users</td>
+<td>Common errors, resolution steps</td>
+</tr>
+<tr>
+<td><strong>Examples</strong></td>
+<td>All</td>
+<td>Runnable code samples for each feature</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="10-conclusion-next-steps">10. Conclusion &amp; Next Steps<a class="headerlink" href="#10-conclusion-next-steps" title="Permanent link">¶</a></h2>
+<p>This requirements document provides <strong>complete, verifiable, and measurable</strong> specifications for the AST Standardization Project.</p>
+<p><strong>Critical Success Factors:</strong>
+1. <strong>Adherence to FR &amp; NFR</strong>: Implement exactly as specified; deviations require RFP amendment
+2. <strong>Test-Driven Development</strong>: Write tests before code; maintain &gt;80% coverage
+3. <strong>Regular Sign-Offs</strong>: Validate at each phase gate; no surprises at end
+4. <strong>Documentation</strong>: Keep docs in sync with code; mandatory for all APIs</p>
+<p><strong>Next Actions:</strong>
+1. <strong>This Week:</strong> Schedule kickoff with team; assign roles
+2. <strong>Next Week:</strong> Complete design review; begin Sprint 1
+3. <strong>per-phase:</strong> Status updates, risk reviews, sign-off gates</p>
+<hr/>
+<p><strong>Document Version:</strong> 1.0 (FINAL)
+<strong>Status:</strong> APPROVED FOR IMPLEMENTATION
+<strong>Assigned To:</strong> mbaetiong (Primary Engineer)
+<strong>Review Cycle:</strong> Phase-end gates + final sign-off
+```text</p>
+<p>Now creating the complementary validation and implementation guidance file:</p>
+<p>```markdown name=AST_Standardization_InstructionEnhancement.md</p>
+<h1 id="ast-standardization-implementation-guidance">AST: Standardization Implementation Guidance<a class="headerlink" href="#ast-standardization-implementation-guidance" title="Permanent link">¶</a></h1>
+<blockquote>
+<p>Generated: 2026-06-22 (audited) | Author: mbaetiong</p>
+</blockquote>
+<p>** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] | Energy: 5/5</p>
+<p><strong>Physics:</strong> Path [Sequential phases] | Fields [Modular components] | Patterns [DRY code, reusable analyzers] | Redundancy [Fallback strategies] | Balance [Performance vs accuracy]</p>
+<hr/>
+<h2 id="1-implementation-philosophy">1. Implementation Philosophy<a class="headerlink" href="#1-implementation-philosophy" title="Permanent link">¶</a></h2>
+<h3 id="11-core-principles">1.1 Core Principles<a class="headerlink" href="#11-core-principles" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Application</th>
+<th>Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Standardization</strong></td>
+<td>Single AST format across languages</td>
+<td>Enables cross-language analysis; reduces duplication</td>
+</tr>
+<tr>
+<td><strong>Modularity</strong></td>
+<td>Independent parser, analyzer, exporter modules</td>
+<td>Allows parallel development; easy testing</td>
+</tr>
+<tr>
+<td><strong>Incrementalism</strong></td>
+<td>Deliver value per phase; iterate on feedback</td>
+<td>Reduces risk; enables early validation</td>
+</tr>
+<tr>
+<td><strong>Determinism</strong></td>
+<td>Identical input identical output always</td>
+<td>Reproducible results; easier debugging</td>
+</tr>
+<tr>
+<td><strong>Offline-First</strong></td>
+<td>No cloud dependencies; all processing local</td>
+<td>Works in air-gapped environments</td>
+</tr>
+<tr>
+<td><strong>Fail-Safe</strong></td>
+<td>Graceful degradation on errors</td>
+<td>Partial results better than crash</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-architecture-decision-records-adrs">1.2 Architecture Decision Records (ADRs)<a class="headerlink" href="#12-architecture-decision-records-adrs" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>ADR</th>
+<th>Decision</th>
+<th>Rationale</th>
+<th>Tradeoffs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ADR-001</strong></td>
+<td>Use libcst for Python parsing</td>
+<td>Minimal; preserves formatting info</td>
+<td>Adds dependency; slight perf overhead</td>
+</tr>
+<tr>
+<td><strong>ADR-002</strong></td>
+<td>Standardized AST = internal format</td>
+<td>Language-independent analysis possible</td>
+<td>Translation layer overhead</td>
+</tr>
+<tr>
+<td><strong>ADR-003</strong></td>
+<td>Metrics computed on demand</td>
+<td>Reduces memory footprint</td>
+<td>Repeated computation if queried often</td>
+</tr>
+<tr>
+<td><strong>ADR-004</strong></td>
+<td>SQLite for KG export</td>
+<td>Queryable; offline-capable; no server</td>
+<td>Limited to single-file deployments</td>
+</tr>
+<tr>
+<td><strong>ADR-005</strong></td>
+<td>CLI via Click framework</td>
+<td>Intuitive interface; well-documented</td>
+<td>Small additional dependency</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="2-component-deep-dive">2. Component Deep-Dive<a class="headerlink" href="#2-component-deep-dive" title="Permanent link">¶</a></h2>
+<h3 id="21-parser-module-implementation-guide">2.1 Parser Module Implementation Guide<a class="headerlink" href="#21-parser-module-implementation-guide" title="Permanent link">¶</a></h3>
+<p><strong>File Structure:</strong>
+<code>text
+src/codex_ml/ast/
+ parser.py # UniversalParser orchestrator
+ language_adapters/
+ __init__.py
+ base_adapter.py # BaseLanguageAdapter abstract class
+ python_adapter.py # PythonAdapter (libcst-based)
+ yaml_adapter.py # YAMLAdapter
+ json_adapter.py # JSONAdapter
+ sql_adapter.py # SQLAdapter (custom)
+ errors.py # AST-specific exceptions</code>text</p>
+<p><strong>Implementation Checklist: <code>python_adapter.py</code></strong></p>
+<p>```python
+"""Python source code StandardizedAST using libcst."""</p>
+<p>from typing import List, Optional, Dict, Any
+from dataclasses import dataclass
+from pathlib import Path
+import libcst as cst</p>
+<p>class PythonAdapter:
+ """Convert Python AST to standardized representation."""</p>
+<p>def parse(self, source_code: str, file_path: Path) -&gt; StandardizedASTNode:
+ """Parse Python source StandardizedAST."""
+ # Step 1: Parse with libcst
+ module = cst.parse_module(source_code)</p>
+<p># Step 2: Traverse and extract metadata
+ visitor = MetadataExtractor()
+ module.walk(visitor)</p>
+<p># Step 3: Convert to standardized format
+ return self._convert_to_standardized(module, visitor.metadata, file_path)</p>
+<p>def _convert_to_standardized(self,
+ module: cst.Module,
+ metadata: Dict,
+ file_path: Path) -&gt; StandardizedASTNode:
+ """Transform libcst.Module StandardizedASTNode."""
+ # Implementation: walk libcst tree StandardizedAST
+ pass</p>
+<p># Key extraction methods:
+ def _extract_functions(self, node: cst.Module) -&gt; List[StandardizedASTNode]:
+ """Extract function definitions."""
+ pass</p>
+<p>def _extract_classes(self, node: cst.Module) -&gt; List[StandardizedASTNode]:
+ """Extract class definitions."""
+ pass</p>
+<p>def _extract_imports(self, node: cst.Module) -&gt; List[Dict[str, str]]:
+ """Extract import statements."""
+ pass</p>
+<p>def _extract_type_hints(self, func: cst.FunctionDef) -&gt; Dict[str, str]:
+ """Extract type hints from function."""
+ pass</p>
+<p>def _extract_docstring(self, node: cst.Module | cst.FunctionDef | cst.ClassDef) -&gt; Optional[str]:
+ """Extract docstring if present."""
+ pass</p>
+<p>class MetadataExtractor(cst.CSTVisitor):
+ """Visitor pattern to extract all metadata."""</p>
+<p>def <strong>init</strong>(self):
+ self.metadata = {
+ 'functions': [],
+ 'classes': [],
+ 'imports': [],
+ 'decorators': {},
+ }</p>
+<p>def visit_FunctionDef(self, node: cst.FunctionDef) -&gt; bool:
+ """Visit function definition."""
+ # Record function info
+ pass
+ return True</p>
+<p>def visit_ClassDef(self, node: cst.ClassDef) -&gt; bool:
+ """Visit class definition."""
+ # Record class info
+ pass
+ return True</p>
+<p>def visit_ImportFrom(self, node: cst.ImportFrom) -&gt; bool:
+ """Visit import statement."""
+ # Record import
+ pass
+ return True
+```text</p>
+<p><strong>Testing: <code>tests/ast/test_parser.py</code></strong></p>
+<p>```python
+import pytest
+from pathlib import Path</p>
+<p>def test_parse_simple_function():
+ """Verify parsing of simple function."""
+ source = """
+ def add(x: int, y: int) -&gt; int:
+ '''Add two numbers.'''
+ return x + y
+ """
+ adapter = PythonAdapter()
+ ast = adapter.parse(source, Path("test.py"))</p>
+<p>assert ast.type == "module"
+ assert len(ast.children) == 1
+ assert ast.children[0].type == "function"
+ assert ast.children[0].name == "add"
+ assert ast.children[0].docstring == "Add two numbers."
+ assert ast.children[0].type_hints["x"] == "int"
+ assert ast.children[0].type_hints["y"] == "int"
+ assert ast.children[0].type_hints["return"] == "int"</p>
+<p>def test_parse_decorated_class():
+ """Verify parsing of decorated class."""
+ source = """
+ @dataclass
+ class Person:
+ name: str
+ age: int
+ """
+ adapter = PythonAdapter()
+ ast = adapter.parse(source, Path("test.py"))</p>
+<p>assert ast.children[0].type == "class"
+ assert ast.children[0].decorators == ["@dataclass"]</p>
+<p>def test_parse_async_function():
+ """Verify parsing of async function."""
+ source = """
+ async def fetch_data(url: str) -&gt; str:
+ result = await client.get(url)
+ return result.text
+ """
+ adapter = PythonAdapter()
+ ast = adapter.parse(source, Path("test.py"))</p>
+<p>assert ast.children[0].type == "function"
+ # async flag should be captured
+ assert ast.children[0].metadata.get("is_async") == True</p>
+<p>@pytest.mark.benchmark
+def test_parser_performance(benchmark):
+ """Benchmark parser performance."""
+ source = open("tests/fixtures/large_file.py").read()
+ adapter = PythonAdapter()</p>
+<p>result = benchmark(adapter.parse, source, Path("large_file.py"))
+ assert result is not None
+```text</p>
+<p><strong>Integration Point:</strong> All adapters inherit from <code>BaseLanguageAdapter</code></p>
+<p>```python
+from abc import ABC, abstractmethod</p>
+<p>class BaseLanguageAdapter(ABC):
+ """Abstract base for language adapters."""</p>
+<p>@abstractmethod
+ def parse(self, source_code: str, file_path: Path) -&gt; StandardizedASTNode:
+ """Parse source code StandardizedAST."""
+ pass</p>
+<p>@abstractmethod
+ def get_supported_extensions(self) -&gt; List[str]:
+ """File extensions this adapter handles."""
+ pass
+```text</p>
+<hr/>
+<h3 id="22-metrics-analyzer-implementation-guide">2.2 Metrics Analyzer Implementation Guide<a class="headerlink" href="#22-metrics-analyzer-implementation-guide" title="Permanent link">¶</a></h3>
+<p><strong>File:</strong> <code>src/codex_ml/ast/analyzers/metrics.py</code></p>
+<p><strong>Implementation Checklist:</strong></p>
+<p>```python
+"""Extract code quality metrics from AST."""</p>
+<p>from dataclasses import dataclass
+from typing import Dict, Any</p>
+<p>@dataclass
+class CodeMetrics:
+ """Aggregated metrics for code entity."""
+ lines_of_code: int
+ cyclomatic_complexity: int
+ cognitive_complexity: float
+ halstead_volume: float
+ halstead_difficulty: float
+ halstead_effort: float
+ maintainability_index: float</p>
+<p>@property
+ def quality_grade(self) -&gt; str:
+ """Compute A-F grade from maintainability index."""
+ if self.maintainability_index &gt;= 85: return "A"
+ if self.maintainability_index &gt;= 70: return "B"
+ if self.maintainability_index &gt;= 55: return "C"
+ if self.maintainability_index &gt;= 40: return "D"
+ return "F"</p>
+<p>class MetricsAnalyzer:
+ """Compute metrics on AST nodes."""</p>
+<p>def analyze(self, node: StandardizedASTNode) -&gt; CodeMetrics:
+ """Compute all metrics for node."""
+ return CodeMetrics(
+ lines_of_code=self._count_loc(node),
+ cyclomatic_complexity=self._compute_cc(node),
+ cognitive_complexity=self._compute_cognitive_cc(node),
+ halstead_volume=self._compute_halstead_volume(node),
+ halstead_difficulty=self._compute_halstead_difficulty(node),
+ halstead_effort=self._compute_halstead_effort(node),
+ maintainability_index=self._compute_maintainability_index(node),
+ )</p>
+<p>def _count_loc(self, node: StandardizedASTNode) -&gt; int:
+ """Count lines of code."""
+ start_line = node.source_location.line_start
+ end_line = node.source_location.line_end
+ return end_line - start_line + 1</p>
+<p>def _compute_cc(self, node: StandardizedASTNode) -&gt; int:
+ """Compute cyclomatic complexity (1-based)."""
+ # Start with 1
+ cc = 1</p>
+<p># Count decision points
+ # - if, elif, else, for, while, except, and, or, ternary
+ for child in self._traverse_depth_first(node):
+ if child.type in ("if", "elif", "for", "while", "except"):
+ cc += 1
+ elif child.type == "bool_op":
+ # 'and' and 'or' add to complexity
+ cc += 1</p>
+<p>return cc</p>
+<p>def _compute_cognitive_cc(self, node: StandardizedASTNode) -&gt; float:
+ """Compute cognitive complexity (reflects nesting)."""
+ # Similar to CC but adds nesting depth penalty
+ cognitive_cc = 0</p>
+<p>for child, depth in self._traverse_with_depth(node):
+ if child.type in ("if", "elif", "for", "while", "try"):
+ # Base increment
+ cognitive_cc += 1
+ # Nesting penalty: each level of nesting adds 0.1
+ if depth &gt; 1:
+ cognitive_cc += (depth - 1) * 0.1</p>
+<p>return cognitive_cc</p>
+<p>def _compute_halstead_volume(self, node: StandardizedASTNode) -&gt; float:
+ """Compute Halstead volume (measure of complexity)."""
+ # Volume = N * log2(n)
+ # where N = total operators + operands
+ # and n = distinct operators + operands</p>
+<p>operators = self._extract_operators(node)
+ operands = self._extract_operands(node)</p>
+<p>n1 = len(set(operators)) # distinct operators
+ n2 = len(set(operands)) # distinct operands
+ N1 = len(operators) # total operators
+ N2 = len(operands) # total operands</p>
+<p>n = n1 + n2
+ N = N1 + N2</p>
+<p>import math
+ if n &gt; 0:
+ volume = N * math.log2(n)
+ else:
+ volume = 0</p>
+<p>return volume</p>
+<p>def _compute_maintainability_index(self, node: StandardizedASTNode) -&gt; float:
+ """Compute Maintainability Index (0-100)."""
+ # MI = 171 - 5.2 * ln(Halstead Volume)
+ # - 0.23 * CC
+ # - 16.2 * ln(LOC)</p>
+<p>import math</p>
+<p>cc = self._compute_cc(node)
+ loc = self._count_loc(node)
+ volume = self._compute_halstead_volume(node)</p>
+<p># Avoid log of 0
+ loc = max(loc, 1)
+ volume = max(volume, 1)</p>
+<p>mi = 171 - 5.2 * math.log(volume) - 0.23 * cc - 16.2 * math.log(loc)</p>
+<p># Clamp to 0-100
+ return max(0, min(100, mi))</p>
+<p>def _extract_operators(self, node: StandardizedASTNode) -&gt; List[str]:
+ """Extract operators from AST."""
+ operators = []</p>
+<p>for child in self._traverse_depth_first(node):
+ if child.type in ("binary_op", "unary_op", "compare", "bool_op"):
+ operators.append(child.metadata.get("operator", ""))
+ elif child.type in ("if", "for", "while", "try"):
+ operators.append(child.type)</p>
+<p>return operators</p>
+<p>def _extract_operands(self, node: StandardizedASTNode) -&gt; List[str]:
+ """Extract operands (variables, literals) from AST."""
+ operands = []</p>
+<p>for child in self._traverse_depth_first(node):
+ if child.type == "name":
+ operands.append(child.name)
+ elif child.type == "constant":
+ operands.append(str(child.metadata.get("value", "")))</p>
+<p>return operands</p>
+<p>def _traverse_depth_first(self, node: StandardizedASTNode):
+ """DFS traversal of AST."""
+ yield node
+ for child in node.children:
+ yield from self._traverse_depth_first(child)</p>
+<p>def _traverse_with_depth(self, node: StandardizedASTNode, depth=0):
+ """DFS traversal with depth tracking."""
+ yield node, depth
+ for child in node.children:
+ yield from self._traverse_with_depth(child, depth + 1)
+```text</p>
+<p><strong>Testing: <code>tests/ast/test_metrics.py</code></strong></p>
+<p>```python
+import pytest</p>
+<p>def test_cyclomatic_complexity_linear():
+ """CC of linear function = 1."""
+ source = """
+ def add(x, y):
+ return x + y
+ """
+ ast = parse(source)
+ analyzer = MetricsAnalyzer()
+ metrics = analyzer.analyze(ast.children[0])</p>
+<p>assert metrics.cyclomatic_complexity == 1</p>
+<p>def test_cyclomatic_complexity_if_else():
+ """CC of if-else = 2."""
+ source = """
+ def is_positive(x):
+ if x &gt; 0:
+ return True
+ else:
+ return False
+ """
+ ast = parse(source)
+ analyzer = MetricsAnalyzer()
+ metrics = analyzer.analyze(ast.children[0])</p>
+<p>assert metrics.cyclomatic_complexity == 2</p>
+<p>def test_maintainability_index_grade():
+ """MI computed and graded correctly."""
+ # Simple function should have high MI
+ source = """
+ def hello():
+ print('hello')
+ """
+ ast = parse(source)
+ analyzer = MetricsAnalyzer()
+ metrics = analyzer.analyze(ast.children[0])</p>
+<p>assert metrics.maintainability_index &gt; 85
+ assert metrics.quality_grade == "A"
+```text</p>
+<hr/>
+<h3 id="23-dependency-graph-implementation-guide">2.3 Dependency Graph Implementation Guide<a class="headerlink" href="#23-dependency-graph-implementation-guide" title="Permanent link">¶</a></h3>
+<p><strong>File:</strong> <code>src/codex_ml/ast/analyzers/dependencies.py</code></p>
+<p><strong>Key Algorithm: Tarjan's SCC (Strongly Connected Components)</strong></p>
+<p>```python
+"""Build and analyze dependency graphs."""</p>
+<p>from typing import List, Set, Dict, Tuple
+from dataclasses import dataclass, field</p>
+<p>@dataclass
+class DependencyGraph:
+ """Directed graph of code dependencies."""
+ nodes: Dict[str, StandardizedASTNode] = field(default_factory=dict)
+ edges: Dict[str, Set[str]] = field(default_factory=dict) # node neighbors</p>
+<p>def add_edge(self, source_id: str, target_id: str):
+ """Add edge source target."""
+ if source_id not in self.edges:
+ self.edges[source_id] = set()
+ self.edges[source_id].add(target_id)</p>
+<p>def detect_cycles(self) -&gt; List[List[str]]:
+ """Find all cycles (strongly connected components &gt; 1)."""
+ # Implement Tarjan's algorithm
+ index_counter = [0]
+ stack = []
+ lowlinks = {}
+ index = {}
+ on_stack = {}
+ sccs = []</p>
+<p>def strongconnect(node_id):
+ index[node_id] = index_counter[0]
+ lowlinks[node_id] = index_counter[0]
+ index_counter[0] += 1
+ stack.append(node_id)
+ on_stack[node_id] = True</p>
+<p>for target_id in self.edges.get(node_id, set()):
+ if target_id not in index:
+ strongconnect(target_id)
+ lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
+ elif on_stack.get(target_id, False):
+ lowlinks[node_id] = min(lowlinks[node_id], index[target_id])</p>
+<p>if lowlinks[node_id] == index[node_id]:
+ scc = []
+ while True:
+ w = stack.pop()
+ on_stack[w] = False
+ scc.append(w)
+ if w == node_id:
+ break
+ # Only record cycles (SCC with len &gt; 1)
+ if len(scc) &gt; 1:
+ sccs.append(scc)</p>
+<p>for node_id in self.nodes:
+ if node_id not in index:
+ strongconnect(node_id)</p>
+<p>return sccs</p>
+<p>class DependencyGraphBuilder:
+ """Build dependency graph from codebase."""</p>
+<p>def build_graph(self, codebase: List[StandardizedASTNode]) -&gt; DependencyGraph:
+ """Build graph from AST nodes."""
+ graph = DependencyGraph()</p>
+<p># Step 1: Add all nodes
+ for node in self._flatten_ast(codebase):
+ if node.type in ("module", "class", "function"):
+ graph.nodes[self._get_fully_qualified_name(node)] = node</p>
+<p># Step 2: Extract dependencies
+ for node in self._flatten_ast(codebase):
+ deps = self._extract_dependencies(node)
+ source_id = self._get_fully_qualified_name(node)
+ for target_id in deps:
+ graph.add_edge(source_id, target_id)</p>
+<p>return graph</p>
+<p>def _extract_dependencies(self, node: StandardizedASTNode) -&gt; Set[str]:
+ """Extract all dependencies of a node."""
+ deps = set()</p>
+<p>if node.type == "module":
+ # Extract imports
+ for child in node.children:
+ if child.type == "import":
+ # Parse import statement
+ deps.add(child.metadata.get("module_name", ""))</p>
+<p>elif node.type == "function":
+ # Extract function calls
+ for child in self._traverse(node):
+ if child.type == "call":
+ # Get fully qualified name of called function
+ called_name = child.metadata.get("function_name", "")
+ if called_name:
+ deps.add(called_name)</p>
+<p>elif node.type == "class":
+ # Extract base classes (inheritance)
+ for base in node.metadata.get("base_classes", []):
+ deps.add(base)</p>
+<p>return deps</p>
+<p>def _get_fully_qualified_name(self, node: StandardizedASTNode) -&gt; str:
+ """Compute fully qualified name: module.class.function."""
+ parts = []
+ current = node
+ while current:
+ if current.name:
+ parts.insert(0, current.name)
+ current = current.parent
+ return ".".join(parts)</p>
+<p>def _traverse(self, node: StandardizedASTNode):
+ """Depth-first traversal."""
+ yield node
+ for child in node.children:
+ yield from self._traverse(child)</p>
+<p>def _flatten_ast(self, nodes: List[StandardizedASTNode]):
+ """Flatten AST list."""
+ for node in nodes:
+ yield from self._traverse(node)</p>
+<h1 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">¶</a></h1>
+<p>def test_cycle_detection_simple():
+ """Detect simple 2-node cycle."""
+ graph = DependencyGraph()
+ graph.nodes["A"] = None
+ graph.nodes["B"] = None
+ graph.add_edge("A", "B")
+ graph.add_edge("B", "A")</p>
+<p>cycles = graph.detect_cycles()
+ assert len(cycles) == 1
+ assert set(cycles[0]) == {"A", "B"}</p>
+<p>def test_cycle_detection_complex():
+ """Detect complex 4-node cycle."""
+ graph = DependencyGraph()
+ for node_id in ["A", "B", "C", "D"]:
+ graph.nodes[node_id] = None</p>
+<p>graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ graph.add_edge("C", "D")
+ graph.add_edge("D", "A") # Cycle: A B C D A</p>
+<p>cycles = graph.detect_cycles()
+ assert len(cycles) == 1
+ assert set(cycles[0]) == {"A", "B", "C", "D"}
+```text</p>
+<hr/>
+<h2 id="3-testing-validation-framework">3. Testing &amp; Validation Framework<a class="headerlink" href="#3-testing-validation-framework" title="Permanent link">¶</a></h2>
+<h3 id="31-test-organization">3.1 Test Organization<a class="headerlink" href="#31-test-organization" title="Permanent link">¶</a></h3>
+<p><code>text
+tests/ast/
+ conftest.py # Shared fixtures
+ fixtures/
+ sample_code.py
+ large_codebase/
+ synthetic_graphs.json
+ test_parser.py
+ test_metrics.py
+ test_dependencies.py
+ test_smells.py
+ test_knowledge_graph.py
+ test_exporters.py
+ test_cli.py
+ test_integration.py
+ test_benchmarks.py</code>text</p>
+<h3 id="32-fixture-strategy-conftestpy">3.2 Fixture Strategy (conftest.py)<a class="headerlink" href="#32-fixture-strategy-conftestpy" title="Permanent link">¶</a></h3>
+<p>```python
+"""Shared test fixtures."""</p>
+<p>import pytest
+from pathlib import Path</p>
+<p>@pytest.fixture
+def sample_python_file():
+ """Small Python file for testing."""
+ return """
+ def add(x: int, y: int) -&gt; int:
+ '''Add two numbers.'''
+ return x + y
+ """</p>
+<p>@pytest.fixture
+def large_codebase(tmp_path):
+ """Generate large codebase for stress testing."""
+ # Create 100 Python files with realistic code
+ base = tmp_path / "large_codebase"
+ base.mkdir()</p>
+<p>for i in range(100):
+ file = base / f"module_{i}.py"
+ file.write_text(f"""
+ def func_{i}(x):
+ return x * 2
+ """)</p>
+<p>return base</p>
+<p>@pytest.fixture
+def synthetic_graph():
+ """Graph with known cycles for testing."""
+ graph = DependencyGraph()
+ # Set up graph with 3-node cycle: A B C A
+ for node_id in ["A", "B", "C"]:
+ graph.nodes[node_id] = None</p>
+<p>graph.add_edge("A", "B")
+ graph.add_edge("B", "C")
+ graph.add_edge("C", "A")</p>
+<p>return graph
+```text</p>
+<h3 id="33-performance-benchmarks">3.3 Performance Benchmarks<a class="headerlink" href="#33-performance-benchmarks" title="Permanent link">¶</a></h3>
+<p><strong>File:</strong> <code>tests/ast/test_benchmarks.py</code></p>
+<p>```python
+"""Performance validation."""</p>
+<p>import pytest
+import time</p>
+<p>@pytest.mark.benchmark
+class TestParserPerformance:</p>
+<p>def test_parser_speed_small_file(self, benchmark, sample_python_file):
+ """Parser: &lt;1ms per 100 tokens (small file)."""
+ parser = PythonAdapter()</p>
+<p>def parse():
+ return parser.parse(sample_python_file, Path("test.py"))</p>
+<p>result = benchmark(parse)
+ # Verify performance
+ assert result is not None</p>
+<p>def test_parser_speed_large_file(self, benchmark, large_codebase):
+ """Parser: &lt;1ms per 100 tokens (large files)."""
+ large_file = (large_codebase / "module_0.py").read_text() * 100</p>
+<p>parser = PythonAdapter()
+ start = time.time()
+ result = parser.parse(large_file, Path("large.py"))
+ elapsed = time.time() - start</p>
+<p># ~10K tokens per 1000 LOC
+ tokens = len(large_file.split())
+ ms_per_100_tokens = (elapsed * 1000) / (tokens / 100)</p>
+<p>assert ms_per_100_tokens &lt; 1.0</p>
+<p>@pytest.mark.benchmark
+class TestAnalyzerPerformance:</p>
+<p>def test_metrics_speed_1000_loc(self, benchmark, large_codebase):
+ """Analyzer: &lt;5s per 1000 LOC."""
+ codebase = Codebase.from_directory(large_codebase)
+ analyzer = MetricsAnalyzer()</p>
+<p>start = time.time()
+ for node in codebase.all_nodes():
+ analyzer.analyze(node)
+ elapsed = time.time() - start</p>
+<p>loc = sum(n.source_location.line_end - n.source_location.line_start
+ for n in codebase.all_nodes())</p>
+<p>time_per_1000_loc = (elapsed / loc) * 1000
+ assert time_per_1000_loc &lt; 5.0
+```text</p>
+<hr/>
+<h2 id="4-integration-checkpoints">4. Integration Checkpoints<a class="headerlink" href="#4-integration-checkpoints" title="Permanent link">¶</a></h2>
+<h3 id="41-phase-gate-criteria">4.1 Phase Gate Criteria<a class="headerlink" href="#41-phase-gate-criteria" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Gate Criterion</th>
+<th>Command to Validate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 1</strong></td>
+<td>Parser working; tests green; &lt;1ms/100 tokens</td>
+<td><code>nox -s test -- tests/ast/test_parser.py</code></td>
+</tr>
+<tr>
+<td><strong>Phase 2</strong></td>
+<td>Metrics accurate ±5%; smells &gt;80% precision</td>
+<td><code>nox -s test -- tests/ast/test_metrics.py tests/ast/test_smells.py</code></td>
+</tr>
+<tr>
+<td><strong>Phase 3</strong></td>
+<td>Cycles detected 100%; graph exports work</td>
+<td><code>nox -s test -- tests/ast/test_dependencies.py</code></td>
+</tr>
+<tr>
+<td><strong>Phase 4</strong></td>
+<td>CLI tools work; MATURITY integrates; docs complete</td>
+<td><code>codex-analyze src/ &amp;&amp; codex-audit .</code></td>
+</tr>
+<tr>
+<td><strong>Phase 5</strong></td>
+<td>80%+ coverage; security clean; all perf targets met</td>
+<td><code>nox -s gates &amp;&amp; pytest --cov-fail-under=80</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-cicd-integration-template">4.2 CI/CD Integration Template<a class="headerlink" href="#42-cicd-integration-template" title="Permanent link">¶</a></h3>
+<p><strong>File:</strong> <code>.github/workflows/ast_analysis.yml</code></p>
+<p>```yaml
+name: AST Codebase Analysis</p>
+<p>on:
+ push:
+ branches: [main, develop]
+ pull_request:</p>
+<p>jobs:
+ analyze:
+ runs-on: ubuntu-latest</p>
+<p>steps:
+ - uses: actions/checkout@v3
+ with:
+ fetch-depth: 0</p>
+<ul>
+<li>
+<p>uses: actions/setup-python@v4
+ with:
+ python-version: "3.9"</p>
+</li>
+<li>
+<p>name: Install
+ run: pip install -e ".[ast]"</p>
+</li>
+<li>
+<p>name: Audit
+ run: codex-audit src/ --output audit.html --format html</p>
+</li>
+<li>
+<p>name: Compare
+ if: github.event_name == 'pull_request'
+ run: codex-diff origin/main HEAD --metric complexity &gt; complexity_delta.txt</p>
+</li>
+<li>
+<p>name: Comment
+ if: github.event_name == 'pull_request'
+ uses: actions/github-script@v6
+ with:
+ script: |
+ const fs = require('fs');
+ const delta = fs.readFileSync('complexity_delta.txt', 'utf8');
+ github.rest.issues.createComment({
+ issue_number: context.issue.number,
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ body: <code>## AST Analysis\n\n${delta}</code>
+ });</p>
+</li>
+<li>
+<p>name: Upload
+ uses: actions/upload-artifact@v3
+ with:
+ name: ast-report
+ path: audit.html
+```text</p>
+</li>
+</ul>
+<hr/>
+<h2 id="5-conclusion">5. Conclusion<a class="headerlink" href="#5-conclusion" title="Permanent link">¶</a></h2>
+<p>This <strong>Implementation Guidance</strong> provides:</p>
+<p><strong>Module-by-module implementation templates</strong>
+<strong>Test-driven development patterns</strong>
+<strong>Performance benchmarks and validation</strong>
+<strong>CI/CD integration strategies</strong>
+<strong>Phase-gate criteria for sign-off</strong></p>
+<p><strong>Critical Success Factors:</strong>
+- Write tests before code (TDD)
+- Validate performance at each phase
+- Get explicit sign-off at each gate
+- Keep documentation in sync</p>
+<p><strong>Start with Sprint 1:</strong> Parser + Standardization (2 phases)</p>
+<hr/>
+<p><strong>Document Version:</strong> 1.0 (READY FOR IMPLEMENTATION)
+<strong>Status:</strong> APPROVED
+<strong>Assigned To:</strong> mbaetiong (Implementation Lead)</p>
+<p>| <strong>CLI Tools</strong> | FR-AST-013 to 015 | 3 tools + GitHub Actions | &gt;75% coverage |</p>
+<p>** Ready for:** Immediate implementation kickoff with full architectural guidance</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,3647 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/plans/Agentic_AI_System/READINESS_AUDIT_ANALYSIS/" rel="canonical"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Soft GROUNDED Conversion: Readiness Audit Analysis - Codex Docs v0.2.1</title>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#soft-grounded-conversion-readiness-audit-analysis">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Soft GROUNDED Conversion: Readiness Audit Analysis
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-summary">
+<span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#challenge-analysis">
+<span class="md-ellipsis">
+      
+        Challenge Analysis
+      
+    </span>
+</a>
+<nav aria-label="Challenge Analysis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-1-agent-count-discrepancy-impact-medium-resolved">
+<span class="md-ellipsis">
+      
+        C-1: Agent Count Discrepancy (Impact: Medium) — RESOLVED
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-2-no-existing-registry-or-manifest-infrastructure-impact-high-resolved">
+<span class="md-ellipsis">
+      
+        C-2: No Existing Registry or Manifest Infrastructure (Impact: High) — RESOLVED
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-3-cognitive-preflight-integration-point-impact-high-resolved">
+<span class="md-ellipsis">
+      
+        C-3: cognitive-preflight Integration Point (Impact: High) — RESOLVED
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-4-security-surface-context-injection-impact-critical">
+<span class="md-ellipsis">
+      
+        C-4: Security Surface — Context Injection (Impact: Critical)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-5-dependency-installation-for-phase-3-impact-medium-resolved">
+<span class="md-ellipsis">
+      
+        C-5: Dependency Installation for Phase 3 (Impact: Medium) — RESOLVED
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-6-workflow-cascade-risk-impact-high-resolved">
+<span class="md-ellipsis">
+      
+        C-6: Workflow Cascade Risk (Impact: High) — RESOLVED
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-7-phase-ordering-dependencies-impact-medium">
+<span class="md-ellipsis">
+      
+        C-7: Phase Ordering Dependencies (Impact: Medium)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-8-human-approval-gates-impact-low">
+<span class="md-ellipsis">
+      
+        C-8: Human Approval Gates (Impact: Low)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#groundwork-assessment">
+<span class="md-ellipsis">
+      
+        Groundwork Assessment
+      
+    </span>
+</a>
+<nav aria-label="Groundwork Assessment" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-preparation-before-phase-0-execution">
+<span class="md-ellipsis">
+      
+        Required Preparation Before Phase 0 Execution
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#existing-infrastructure-that-supports-execution">
+<span class="md-ellipsis">
+      
+        Existing Infrastructure That Supports Execution
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#readiness-implementation-score">
+<span class="md-ellipsis">
+      
+        Readiness Implementation Score
+      
+    </span>
+</a>
+<nav aria-label="Readiness Implementation Score" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scoring-methodology">
+<span class="md-ellipsis">
+      
+        Scoring Methodology
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dimension-scores">
+<span class="md-ellipsis">
+      
+        Dimension Scores
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#readiness-score-100-100">
+<span class="md-ellipsis">
+      
+        Readiness Score: 100 / 100
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#score-interpretation">
+<span class="md-ellipsis">
+      
+        Score Interpretation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#expected-execution-timeline">
+<span class="md-ellipsis">
+      
+        Expected Execution Timeline
+      
+    </span>
+</a>
+<nav aria-label="Expected Execution Timeline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-duration-estimates">
+<span class="md-ellipsis">
+      
+        Phase Duration Estimates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#timeline-summary">
+<span class="md-ellipsis">
+      
+        Timeline Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-milestones">
+<span class="md-ellipsis">
+      
+        Key Milestones
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#parsed-implementation-plan">
+<span class="md-ellipsis">
+      
+        Parsed Implementation Plan
+      
+    </span>
+</a>
+<nav aria-label="Parsed Implementation Plan" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#structure-for-iterative-copilot-coding-agent-sessions">
+<span class="md-ellipsis">
+      
+        Structure for Iterative Copilot Coding Agent Sessions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-0-baseline-audit-3-work-units-complete">
+<span class="md-ellipsis">
+      
+        PHASE 0 — Baseline Audit (3 Work Units) COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-agent-registry-discovery-4-work-units-complete">
+<span class="md-ellipsis">
+      
+        PHASE 1 — Agent Registry &amp; Discovery (4 Work Units) COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-handoff-protocol-top-20-3-work-units-complete">
+<span class="md-ellipsis">
+      
+        PHASE 2 — Handoff Protocol + Top-20 (3 Work Units) COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-memory-corpus-2-work-units-parallel-with-phase-2-complete">
+<span class="md-ellipsis">
+      
+        PHASE 3 — Memory Corpus (2 Work Units) [Parallel with Phase 2] COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-4-ed-transition-gate-2-work-units-complete">
+<span class="md-ellipsis">
+      
+        PHASE 4 — ED Transition Gate (2 Work Units) COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-5-self-healing-auto-documentation-2-work-units-complete">
+<span class="md-ellipsis">
+      
+        PHASE 5 — Self-Healing &amp; Auto-Documentation (2 Work Units) COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-6-final-hardening-2-work-units-complete">
+<span class="md-ellipsis">
+      
+        PHASE 6 — Final Hardening (2 Work Units) COMPLETE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#work-unit-summary">
+<span class="md-ellipsis">
+      
+        Work Unit Summary
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#risk-register-summary">
+<span class="md-ellipsis">
+      
+        Risk Register Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommendation">
+<span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="soft-grounded-conversion-readiness-audit-analysis">Soft GROUNDED Conversion: Readiness Audit Analysis<a class="headerlink" href="#soft-grounded-conversion-readiness-audit-analysis" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<blockquote>
+<p><strong>Generated:</strong> 2026-03-02 | <strong>Last Updated: 2026-07-11
+</strong>Source Document:<strong> <a href="../soft_to_GROUNDED/"><code>soft_to_GROUNDED.md</code></a>
+</strong>Purpose:<strong> Audit challenges, assess groundwork, score readiness, and parse into Copilot agent work units
+</strong>Status:<strong> </strong>ALL PHASES COMPLETE** — SoftGROUNDED conversion fully implemented (Phases 0–6)</p>
+</blockquote>
+<hr/>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#executive-summary">Executive Summary</a></li>
+<li><a href="#challenge-analysis">Challenge Analysis</a></li>
+<li><a href="#groundwork-assessment">Groundwork Assessment</a></li>
+<li><a href="#readiness-implementation-score">Readiness Implementation Score</a></li>
+<li><a href="#expected-execution-timeline">Expected Execution Timeline</a></li>
+<li><a href="#parsed-implementation-plan">Parsed Implementation Plan for Iterative Copilot Coding Agent Sessions</a></li>
+</ol>
+<hr/>
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<p>The <code>soft_to_GROUNDED.md</code> document is a comprehensive deep research output spanning 4 chunks,
+8 research domains (D1–D8), and 7 implementation phases (Phase 0–6). It proposes transforming the
+<code>_codex_</code> repository's agent behavioral enforcement from predominantly <strong>soft</strong> (text-based, passively
+bypassed) to <strong>GROUNDED</strong> (structurally enforced CI gates that require conscious override to bypass).</p>
+<p><strong>Key Deliverables Across All Phases:</strong>
+- <code>AGENT_REGISTRY.yaml</code> — Centralized agent catalog (Microsoft AgentSchema)
+- <code>CODEX_MANIFEST.json</code> — Root discovery index with integrity hashing
+- <code>AgentHandoffManifest v1.1</code> — Structured agent-to-agent delegation protocol
+- FAISS + SQLite unified agent memory corpus
+- ED tiered autonomy transition gate system
+- Self-healing CI enforcement gap detection loop
+- Policy-as-Code validation infrastructure</p>
+<p><strong>Current Repository State:</strong> The repository has completed the full SoftGROUNDED conversion.
+AGENT_REGISTRY.yaml v0.2.1 contains 152 agents with enforcement fields, CODEX_MANIFEST.json
+provides integrity-hashed discovery, 5 Tier-1 CI gates block merges on violations, FAISS
+semantic memory corpus is active with nightly + on-push rebuilds, and the ED transition
+gate enforces all 5 conditions as a hard block.</p>
+<p><strong>Readiness Score: 100/100</strong> — All phases complete. No remaining gaps.</p>
+<hr/>
+<h2 id="challenge-analysis">Challenge Analysis<a class="headerlink" href="#challenge-analysis" title="Permanent link">¶</a></h2>
+<h3 id="c-1-agent-count-discrepancy-impact-medium-resolved">C-1: Agent Count Discrepancy (Impact: Medium) — RESOLVED<a class="headerlink" href="#c-1-agent-count-discrepancy-impact-medium-resolved" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Document States</th>
+<th>Actual Repo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent definitions</td>
+<td>193 agents</td>
+<td>372 <code>.md</code> files across <code>.github/agents/**</code>; <strong>152 registered in <code>.github/agents/AGENT_REGISTRY.yaml</code> v0.2.1</strong></td>
+</tr>
+<tr>
+<td>Active workflows</td>
+<td>~96 workflows</td>
+<td>96 <code>.yml</code> files in <code>.github/workflows/</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Resolution:</strong> Phase 0 frequency audit (<code>agent_frequency_audit.py</code>) reconciled the count.
+The canonical active count is <strong>152 agents</strong> registered in AGENT_REGISTRY.yaml v0.2.1.
+The 372 <code>.md</code> files include sub-components, templates, and archived agents. All 152 agents
+now have <code>enforcement_tier</code>, <code>autonomy_model</code>, <code>handoff_protocol</code>, and <code>accepts_handoff_from</code> fields.
+Distribution: GROUNDED=8, PARTIAL=144, SOFT=0.</p>
+<hr/>
+<h3 id="c-2-no-existing-registry-or-manifest-infrastructure-impact-high-resolved">C-2: No Existing Registry or Manifest Infrastructure (Impact: High) — RESOLVED<a class="headerlink" href="#c-2-no-existing-registry-or-manifest-infrastructure-impact-high-resolved" title="Permanent link">¶</a></h3>
+<p>All critical files have been created and are operational:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Referenced In</th>
+<th>Current Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENT_REGISTRY.yaml</code> (plan schema)</td>
+<td>Phases 1–6</td>
+<td><code>.github/agents/AGENT_REGISTRY.yaml</code> v0.2.1 — extended in-place with 152 agents, all enforcement fields</td>
+</tr>
+<tr>
+<td><code>CODEX_MANIFEST.json</code></td>
+<td>Phases 1–6</td>
+<td>Created — integrity-hashed, regenerated by <code>generate_manifest.py</code></td>
+</tr>
+<tr>
+<td><code>scripts/ci/generate_manifest.py</code></td>
+<td>Phases 1, 3, 5</td>
+<td>Created — <code>--verify-integrity</code> and <code>--dump-safe-injection</code> modes</td>
+</tr>
+<tr>
+<td><code>.codex/schemas/AgentRegistrySchema.json</code></td>
+<td>Phase 1</td>
+<td>Created — JSON Schema draft-07 validation</td>
+</tr>
+<tr>
+<td><code>.codex/schemas/CodexManifestSchema.json</code></td>
+<td>Phase 1</td>
+<td>Created — JSON Schema draft-07 validation</td>
+</tr>
+<tr>
+<td><code>.codex/schemas/AgentHandoffManifest_v1.1.json</code></td>
+<td>Phase 2</td>
+<td>Created — handoff protocol schema</td>
+</tr>
+<tr>
+<td><code>scripts/ci/workflow_compliance_scan.py</code></td>
+<td>Phase 0</td>
+<td>Created — generates WORKFLOW_COMPLIANCE_MATRIX.md</td>
+</tr>
+<tr>
+<td><code>scripts/ci/build_embeddings.py</code></td>
+<td>Phase 3</td>
+<td>Created — FAISS + sentence-transformers index builder</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decision made (Option A — extend):</strong> AGENT_REGISTRY.yaml was extended in-place at
+<code>.github/agents/AGENT_REGISTRY.yaml</code> with GROUNDED schema fields rather than creating a
+root-level duplicate. This preserves backward compatibility with existing workflows.</p>
+<hr/>
+<h3 id="c-3-cognitive-preflight-integration-point-impact-high-resolved">C-3: <code>cognitive-preflight</code> Integration Point (Impact: High) — RESOLVED<a class="headerlink" href="#c-3-cognitive-preflight-integration-point-impact-high-resolved" title="Permanent link">¶</a></h3>
+<p>REQ-9 (manifest integrity) and REQ-10 (corpus health) are now implemented as standalone
+Tier-1 gates rather than injected into <code>agent-auth-delegation.yml</code>. This avoids the risk
+of regressing the critical-path workflow. The 5 Tier-1 gates are:
+- <code>agent-registry-validation.yml</code> — schema + manifest integrity
+- <code>agent-handoff-gate.yml</code> — handoff schema validation
+- <code>actionlint-audit.yml</code> — workflow lint
+- <code>e-to-d-transition-gate.yml</code> — 5-condition FSM gate
+- <code>embedding-index-rebuild.yml</code> — REQ-10 corpus health</p>
+<p><strong>Challenge:</strong> Adding new REQ-N gates (REQ-9 for manifest integrity, REQ-10 for corpus health)
+requires modifying <code>agent-auth-delegation.yml</code>, which is a critical-path workflow. Regressions
+in this workflow could block all agent delegation.</p>
+<p><strong>Mitigation:</strong>
+- New gates start as <strong>Tier-2 canary</strong> (<code>::warning::</code> not <code>exit 1</code>)
+- 2-sprint observation period before promotion to Tier-1
+- Each REQ-N addition is a separate commit with YAML parse verification</p>
+<hr/>
+<h3 id="c-4-security-surface-context-injection-impact-critical">C-4: Security Surface — Context Injection (Impact: Critical)<a class="headerlink" href="#c-4-security-surface-context-injection-impact-critical" title="Permanent link">¶</a></h3>
+<p>Domain 8 of the research identifies <strong>context injection attacks</strong> as the #1 new risk introduced
+by <code>CODEX_MANIFEST.json</code> and <code>agent_context.json</code> injection (CVE-2025-55319, CVE-2025-61260).</p>
+<p><strong>Challenge:</strong> The manifest becomes a new attack vector if not properly hardened. The
+<code>sanitize_for_injection()</code> function and <code>INJECTION_BLOCKLIST</code> are described but not yet
+implemented. This must be in place <strong>before</strong> any manifest data is injected into agent context.</p>
+<p><strong>Mitigation:</strong> The document specifies:
+- <code>SAFE_INJECTION_FIELDS</code> allowlist (7 fields only)
+- <code>INJECTION_BLOCKLIST</code> regex patterns (7 patterns)
+- <code>integrity_sha256</code> tamper detection
+- CODEOWNERS protection for manifest and registry files</p>
+<hr/>
+<h3 id="c-5-dependency-installation-for-phase-3-impact-medium-resolved">C-5: Dependency Installation for Phase 3 (Impact: Medium) — RESOLVED<a class="headerlink" href="#c-5-dependency-installation-for-phase-3-impact-medium-resolved" title="Permanent link">¶</a></h3>
+<p>The <code>embedding-index-rebuild.yml</code> workflow installs <code>sentence-transformers</code> and <code>faiss-cpu</code>
+as a dedicated step with a 15-minute timeout. The FAISS index binary is git-ignored; only
+<code>codex_index_meta.json</code> metadata is committed. The workflow runs nightly at 2AM UTC and is
+also triggered by <code>agent-registry-validation.yml</code> on push to main.</p>
+<hr/>
+<h3 id="c-6-workflow-cascade-risk-impact-high-resolved">C-6: Workflow Cascade Risk (Impact: High) — RESOLVED<a class="headerlink" href="#c-6-workflow-cascade-risk-impact-high-resolved" title="Permanent link">¶</a></h3>
+<p>All 4 new workflows have branch-scoped concurrency groups and <code>timeout-minutes</code> on every job:
+- <code>agent-handoff-gate.yml</code> — concurrency: <code>agent-handoff-${{ github.head_ref || github.ref }}</code>
+- <code>e-to-d-transition-gate.yml</code> — concurrency: <code>e-to-d-gate-${{ github.head_ref || github.ref }}</code>
+- <code>embedding-index-rebuild.yml</code> — concurrency: <code>embedding-index-rebuild</code>
+- <code>actionlint-audit.yml</code> — concurrency: <code>actionlint-${{ github.head_ref || github.ref }}</code></p>
+<p>Phase 0's <code>workflow_compliance_scan.py</code> verified all workflows are compliant.</p>
+<hr/>
+<h3 id="c-7-phase-ordering-dependencies-impact-medium">C-7: Phase Ordering Dependencies (Impact: Medium)<a class="headerlink" href="#c-7-phase-ordering-dependencies-impact-medium" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Phase 0 Phase 1 Phase 2 Phase 4 Phase 6
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> Phase 3 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> Phase 5 
+</code></pre></div>
+<p>Phases 2 and 3 can run in parallel after Phase 1. Phase 4 needs Phase 1 + 2 complete.
+Phase 5 needs Phase 3 + 4 signals. Phase 6 is the final hardening pass.</p>
+<p><strong>Challenge:</strong> If Phase 3 (embedding corpus) is slow, Phase 4 (ED transition gate)
+can proceed with degraded routing (zero-session baseline) but won't have full semantic
+search capability until Phase 3 completes.</p>
+<p><strong>Mitigation:</strong> Risk R-15 in the document explicitly addresses this with a degraded
+fallback mode for Phase 4.</p>
+<hr/>
+<h3 id="c-8-human-approval-gates-impact-low">C-8: Human Approval Gates (Impact: Low)<a class="headerlink" href="#c-8-human-approval-gates-impact-low" title="Permanent link">¶</a></h3>
+<p>Each phase completion gate requires <code>mbaetiong approval received before Phase N+1 begins</code>.
+This is a deliberate safety control, not a blocker — but it means phases cannot be
+auto-chained without human review.</p>
+<p><strong>Mitigation:</strong> This is by design. The Copilot Coding Agent completes each phase and
+posts the completion gate checklist; the human approves before the next phase starts.</p>
+<hr/>
+<h2 id="groundwork-assessment">Groundwork Assessment<a class="headerlink" href="#groundwork-assessment" title="Permanent link">¶</a></h2>
+<h3 id="required-preparation-before-phase-0-execution">Required Preparation Before Phase 0 Execution<a class="headerlink" href="#required-preparation-before-phase-0-execution" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Groundwork Item</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G-1</td>
+<td>Confirm active agent count (372 files; 128 in AGENT_REGISTRY.yaml reconcile with doc's 193)</td>
+<td>Done — 152 agents in v0.2.1</td>
+<td><strong>P0</strong></td>
+<td>Done</td>
+</tr>
+<tr>
+<td>G-2</td>
+<td>Create <code>docs/audits/</code> directory</td>
+<td>Done</td>
+<td><strong>P0</strong></td>
+<td>Done</td>
+</tr>
+<tr>
+<td>G-3</td>
+<td>Verify <code>jsonschema</code> importable in current Python env</td>
+<td>In pyproject.toml</td>
+<td>Done</td>
+<td>—</td>
+</tr>
+<tr>
+<td>G-4</td>
+<td>Verify <code>pyyaml</code> importable in current Python env</td>
+<td>In pyproject.toml</td>
+<td>Done</td>
+<td>—</td>
+</tr>
+<tr>
+<td>G-5</td>
+<td>Confirm <code>agent-auth-delegation.yml</code> structure (locate cognitive-preflight job)</td>
+<td>Done — gates implemented as standalone workflows instead</td>
+<td><strong>P0</strong></td>
+<td>Done</td>
+</tr>
+<tr>
+<td>G-6</td>
+<td>Confirm <code>.github/CODEOWNERS</code> has correct format for new entries</td>
+<td>Updated with GROUNDED path entries</td>
+<td>Done</td>
+<td>—</td>
+</tr>
+<tr>
+<td>G-7</td>
+<td>Confirm <code>CHANGELOG.md</code> format for new Phase entries</td>
+<td>Exists at root</td>
+<td>Done</td>
+<td>—</td>
+</tr>
+<tr>
+<td>G-8</td>
+<td>Confirm <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> W-NNN format</td>
+<td>Exists</td>
+<td>Done</td>
+<td>—</td>
+</tr>
+<tr>
+<td>G-9</td>
+<td>Ensure no merge conflicts with <code>main</code> branch</td>
+<td>PR is up-to-date</td>
+<td><strong>P0</strong></td>
+<td>Done</td>
+</tr>
+<tr>
+<td>G-10</td>
+<td>Assess <code>.github/agents/AGENT_REGISTRY.yaml</code> (v0.2.1, 128 agents) and determine extend vs. migrate strategy for Phase 1</td>
+<td>Done — Option A (extend in-place) chosen. Now v0.2.1 with 152 agents</td>
+<td><strong>P0</strong></td>
+<td>Done</td>
+</tr>
+</tbody>
+</table>
+<h3 id="existing-infrastructure-that-supports-execution">Existing Infrastructure That Supports Execution<a class="headerlink" href="#existing-infrastructure-that-supports-execution" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Infrastructure</th>
+<th>Status</th>
+<th>Supports Phase(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent-auth-delegation.yml</code> (cognitive-preflight host)</td>
+<td>Exists</td>
+<td>All (REQ-N gates)</td>
+</tr>
+<tr>
+<td><code>ci-health-monitor.yml</code></td>
+<td>Exists</td>
+<td>Phase 5 (self-healing loop)</td>
+</tr>
+<tr>
+<td><code>copilot-agent-vars-bootstrap.yml</code></td>
+<td>Exists</td>
+<td>Phase 1 (manifest injection)</td>
+</tr>
+<tr>
+<td><code>session-watchdog.yml</code></td>
+<td>Exists</td>
+<td>All (timebox enforcement)</td>
+</tr>
+<tr>
+<td><code>token-probe.yml</code></td>
+<td>Exists</td>
+<td>All (token health)</td>
+</tr>
+<tr>
+<td><code>self_healing_ci.yml</code> + <code>iterative-self-healing-ci.yml</code></td>
+<td>Exist</td>
+<td>Phase 5 (self-healing extension)</td>
+</tr>
+<tr>
+<td><code>chatops_copilot_trigger.yml</code></td>
+<td>Exists</td>
+<td>Phase 5 (session close hook)</td>
+</tr>
+<tr>
+<td><code>.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md</code></td>
+<td>Exists</td>
+<td>All (enforcement tier reference)</td>
+</tr>
+<tr>
+<td><code>.codex/docs/AGENT_HANDOFF_PROTOCOL.md</code></td>
+<td>Exists</td>
+<td>Phase 2 (protocol documentation)</td>
+</tr>
+<tr>
+<td><code>.codex/schemas/</code> directory</td>
+<td>Exists (2 schemas)</td>
+<td>Phase 1 (schema home)</td>
+</tr>
+<tr>
+<td><code>docs/architecture/</code> directory</td>
+<td>Exists (13 files)</td>
+<td>Phase 0 (transition map home)</td>
+</tr>
+<tr>
+<td><code>.github/CODEOWNERS</code></td>
+<td>Exists (234 lines)</td>
+<td>Phase 1 (security entries)</td>
+</tr>
+<tr>
+<td><code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code></td>
+<td>Exists</td>
+<td>All (W-NNN tracking)</td>
+</tr>
+<tr>
+<td><code>CHANGELOG.md</code></td>
+<td>Exists</td>
+<td>All (phase entries)</td>
+</tr>
+<tr>
+<td>FAISS/sentence-transformers in codebase</td>
+<td>Used in RAG modules</td>
+<td>Phase 3 (patterns available)</td>
+</tr>
+<tr>
+<td><code>jsonschema</code> dependency</td>
+<td>In pyproject.toml</td>
+<td>Phases 1, 2 (schema validation)</td>
+</tr>
+<tr>
+<td><code>pyyaml</code> dependency</td>
+<td>In pyproject.toml</td>
+<td>Phases 0, 1 (YAML parsing)</td>
+</tr>
+<tr>
+<td><code>sqlite3</code></td>
+<td>Python stdlib</td>
+<td>Phases 3, 4, 5</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="readiness-implementation-score">Readiness Implementation Score<a class="headerlink" href="#readiness-implementation-score" title="Permanent link">¶</a></h2>
+<h3 id="scoring-methodology">Scoring Methodology<a class="headerlink" href="#scoring-methodology" title="Permanent link">¶</a></h3>
+<p>Each dimension is scored on its scale based on the ratio of existing infrastructure
+to required infrastructure for Phase 0 execution readiness. A score of 100 means
+all prerequisites are met and execution can begin immediately.</p>
+<h3 id="dimension-scores">Dimension Scores<a class="headerlink" href="#dimension-scores" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Dimension</th>
+<th>Weight</th>
+<th>Score</th>
+<th>Max</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1</td>
+<td><strong>CI/CD Workflow Foundation</strong></td>
+<td>20</td>
+<td>20</td>
+<td>20</td>
+<td>96 workflows; 5 Tier-1 GROUNDED gates active; all workflows compliant (concurrency + timeout)</td>
+</tr>
+<tr>
+<td>D2</td>
+<td><strong>Agent Ecosystem Maturity</strong></td>
+<td>20</td>
+<td>20</td>
+<td>20</td>
+<td>152 agents in AGENT_REGISTRY.yaml v0.2.1; GROUNDED=8, PARTIAL=144, SOFT=0; all enforcement fields populated</td>
+</tr>
+<tr>
+<td>D3</td>
+<td><strong>Enforcement Architecture</strong></td>
+<td>15</td>
+<td>15</td>
+<td>15</td>
+<td>5 Tier-1 gates; ED transition gate with 5-condition FSM + automated demotion annotations; chatops tier-check/tier-promote</td>
+</tr>
+<tr>
+<td>D4</td>
+<td><strong>Data Infrastructure</strong></td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>FAISS corpus active; nightly + on-push rebuilds; <code>query_corpus.py</code> for semantic search; 90-day retention via <code>prune_corpus.py</code></td>
+</tr>
+<tr>
+<td>D5</td>
+<td><strong>Security Posture</strong></td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>CODEOWNERS with GROUNDED entries; integrity_sha256 on manifest; <code>sanitize_for_injection()</code> in generate_manifest.py; semgrep policy rules deployed</td>
+</tr>
+<tr>
+<td>D6</td>
+<td><strong>Documentation &amp; Audit Trail</strong></td>
+<td>15</td>
+<td>15</td>
+<td>15</td>
+<td>7 ADRs; AGENTIC_REPO_SYSTEM_GUIDE.md; KPI reports; baseline audit; compliance matrix; accountability report</td>
+</tr>
+<tr>
+<td>D7</td>
+<td><strong>Dependencies &amp; Tooling</strong></td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>actionlint active; auto_promote_tier.py + enforcement_kpi_dashboard.py operational; semgrep policy rules at <code>.codex/policies/semgrep/</code></td>
+</tr>
+<tr>
+<td></td>
+<td><strong>TOTAL</strong></td>
+<td><strong>100</strong></td>
+<td><strong>100</strong></td>
+<td><strong>100</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="readiness-score-100-100">Readiness Score: <strong>100 / 100</strong><a class="headerlink" href="#readiness-score-100-100" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>██████████████████████████████████████████████████ 100%
+</code></pre></div>
+<h3 id="score-interpretation">Score Interpretation<a class="headerlink" href="#score-interpretation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Meaning</th>
+<th>Our Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>90–100</strong></td>
+<td><strong>Execution-ready — all phases complete</strong></td>
+<td>** We are here (100)**</td>
+</tr>
+<tr>
+<td>75–89</td>
+<td>Ready with minor prep — 1 session prep needed</td>
+<td>—</td>
+</tr>
+<tr>
+<td>60–74</td>
+<td>Ready for Phase 0 — groundwork items addressable in Phase 0 itself</td>
+<td>—</td>
+</tr>
+<tr>
+<td>40–59</td>
+<td>Significant gaps — multiple prep sessions needed</td>
+<td>—</td>
+</tr>
+<tr>
+<td>0–39</td>
+<td>Major infrastructure missing — plan revision needed</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verdict:</strong> The SoftGROUNDED conversion is <strong>fully complete</strong>. All 7 phases (0–6) have been
+executed with no remaining gaps. All agents are at PARTIAL or GROUNDED tier. Semgrep policy
+rules are deployed. Context injection hardening is operational in <code>generate_manifest.py</code>.
+Automated demotion annotations are active in the ED transition gate.</p>
+<hr/>
+<h2 id="expected-execution-timeline">Expected Execution Timeline<a class="headerlink" href="#expected-execution-timeline" title="Permanent link">¶</a></h2>
+<h3 id="phase-duration-estimates">Phase Duration Estimates<a class="headerlink" href="#phase-duration-estimates" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Name</th>
+<th style="text-align: center;">Est. Sessions</th>
+<th style="text-align: center;">Est. Calendar Days</th>
+<th>Dependencies</th>
+<th style="text-align: center;">Confidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 0</strong></td>
+<td>Baseline Audit</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">3–5 days</td>
+<td>None</td>
+<td style="text-align: center;">High</td>
+</tr>
+<tr>
+<td><strong>Phase 1</strong></td>
+<td>Agent Registry &amp; Discovery</td>
+<td style="text-align: center;">3–4</td>
+<td style="text-align: center;">5–7 days</td>
+<td>Phase 0 gate + owner approval</td>
+<td style="text-align: center;">High</td>
+</tr>
+<tr>
+<td><strong>Phase 2</strong></td>
+<td>Handoff Protocol + Top-20</td>
+<td style="text-align: center;">4–5</td>
+<td style="text-align: center;">7–10 days</td>
+<td>Phase 1 gate + owner approval</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr>
+<td><strong>Phase 3</strong></td>
+<td>Memory Corpus (FAISS+SQLite)</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">3–5 days</td>
+<td>Phase 1 (parallel with Phase 2)</td>
+<td style="text-align: center;">High</td>
+</tr>
+<tr>
+<td><strong>Phase 4</strong></td>
+<td>ED Transition Gate</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">3–5 days</td>
+<td>Phase 1 + Phase 2</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr>
+<td><strong>Phase 5</strong></td>
+<td>Self-Healing &amp; Auto-Docs</td>
+<td style="text-align: center;">3–4</td>
+<td style="text-align: center;">5–7 days</td>
+<td>Phase 3 + Phase 4</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr>
+<td><strong>Phase 6</strong></td>
+<td>Final Hardening &amp; Guide</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">3–5 days</td>
+<td>Phase 5</td>
+<td style="text-align: center;">High</td>
+</tr>
+</tbody>
+</table>
+<h3 id="timeline-summary">Timeline Summary<a class="headerlink" href="#timeline-summary" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Week 1 Week 2 Week 3 Week 4 Week 5 Week 6
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>▓▓▓▓░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>Phase 0 ▓▓▓▓▓▓▓▓░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> Phase 1 ▓▓▓▓▓▓▓▓▓▓░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> Phase 2 ▓▓▓▓░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> Phase 3 ▓▓▓▓▓░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> Phase 4 ▓▓▓▓▓▓░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> Phase 5 ▓▓▓▓▓▓▓▓░░░░░░░ ░░░░░░░░░░
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> Phase 6 ▓▓▓▓▓▓░░
+</code></pre></div>
+<p><strong>Estimated Total: 5–7 weeks</strong> (including human approval gates between phases)</p>
+<p><strong>Earliest Phase 0 start:</strong> Immediate (this session or next)
+<strong>Earliest Phase 6 completion:</strong> ~Week 6 from Phase 0 start (~mid-April 2026)</p>
+<h3 id="key-milestones">Key Milestones<a class="headerlink" href="#key-milestones" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Target Date</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 0 Complete</td>
+<td>Week 1 end</td>
+<td><code>WORKFLOW_COMPLIANCE_MATRIX.md</code>, <code>AGENTIC_BASELINE_AUDIT_v2.md</code>, <code>E_TO_D_TRANSITION_MAP.md</code></td>
+</tr>
+<tr>
+<td>Phase 1 Complete</td>
+<td>Week 2 end</td>
+<td><code>AGENT_REGISTRY.yaml</code>, <code>CODEX_MANIFEST.json</code>, <code>generate_manifest.py</code>, REQ-9 gate</td>
+</tr>
+<tr>
+<td>Phase 2+3 Complete</td>
+<td>Week 4 end</td>
+<td>Handoff protocol + top-20 consolidation + FAISS corpus</td>
+</tr>
+<tr>
+<td>Phase 4 Complete</td>
+<td>Week 5 start</td>
+<td>ED transition gate system</td>
+</tr>
+<tr>
+<td>Phase 5 Complete</td>
+<td>Week 5 end</td>
+<td>Self-healing enforcement gap loop</td>
+</tr>
+<tr>
+<td>Phase 6 Complete</td>
+<td>Week 6</td>
+<td>Final hardening, <code>AGENTIC_REPO_SYSTEM_GUIDE.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="parsed-implementation-plan">Parsed Implementation Plan<a class="headerlink" href="#parsed-implementation-plan" title="Permanent link">¶</a></h2>
+<h3 id="structure-for-iterative-copilot-coding-agent-sessions">Structure for Iterative Copilot Coding Agent Sessions<a class="headerlink" href="#structure-for-iterative-copilot-coding-agent-sessions" title="Permanent link">¶</a></h3>
+<p>Each phase below is broken into <strong>atomic work units</strong> (WU) sized for a single Copilot
+Coding Agent session (~1–2 hours of focused work). Each WU has clear inputs, outputs,
+and verification criteria.</p>
+<hr/>
+<h3 id="phase-0-baseline-audit-3-work-units-complete">PHASE 0 — Baseline Audit (3 Work Units) COMPLETE<a class="headerlink" href="#phase-0-baseline-audit-3-work-units-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-01-workflow-compliance-scan">WU-0.1: Workflow Compliance Scan<a class="headerlink" href="#wu-01-workflow-compliance-scan" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Create and run the workflow compliance scanning script.</p>
+<p><strong>Inputs:</strong>
+- <code>.github/workflows/*.yml</code> (all matching files; currently 96)
+- Pattern from <code>soft_to_GROUNDED.md</code> Domain 7</p>
+<p><strong>Tasks:</strong>
+1. Create <code>docs/audits/</code> directory
+2. Create <code>scripts/ci/workflow_compliance_scan.py</code> (Python script using <code>pyyaml</code>)
+3. Run script generate <code>docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md</code>
+4. Record KPI baselines (GROUNDED/PARTIAL/SOFT counts, cascade risks)</p>
+<p><strong>Outputs:</strong>
+- <code>scripts/ci/workflow_compliance_scan.py</code>
+- <code>docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md</code></p>
+<p><strong>Verification:</strong>
+- Matrix covers all workflow files in <code>.github/workflows/</code> (use <code>glob("*.yml")</code> count at runtime, not a hard-coded number)
+- KPI counts are real numbers (not placeholders)</p>
+<hr/>
+<h4 id="wu-02-agent-frequency-audit-classification">WU-0.2: Agent Frequency Audit &amp; Classification<a class="headerlink" href="#wu-02-agent-frequency-audit-classification" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Determine active agent count, rank by activation frequency, classify enforcement tiers.</p>
+<p><strong>Inputs:</strong>
+- <code>.github/agents/**/*.md</code> (recursive; 372 files across nested subdirectories)
+- <code>.github/agents/AGENT_REGISTRY.yaml</code> (128 formally registered agents, v0.2.1)
+- <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>
+- <code>.github/workflows/*.yml</code> (agent name references)</p>
+<p><strong>Tasks:</strong>
+1. Create <code>scripts/ci/agent_frequency_audit.py</code>
+2. Scan all sources for agent activation mentions
+3. Deduplicate and establish canonical active agent count
+4. Classify each agent: <code>enforcement_tier</code>, <code>handoff_protocol</code>
+5. Flag top-20 by frequency for Phase 2 consolidation
+6. Create <code>docs/audits/AGENTIC_BASELINE_AUDIT_v2.md</code> with all classifications</p>
+<p><strong>Outputs:</strong>
+- <code>scripts/ci/agent_frequency_audit.py</code>
+- <code>docs/audits/AGENTIC_BASELINE_AUDIT_v2.md</code></p>
+<p><strong>Verification:</strong>
+- Agent count reconciled (document's 193 vs. actual)
+- Top-20 list based on data (not guessed)
+- All KPI baselines filled with real numbers</p>
+<hr/>
+<h4 id="wu-03-architecture-map-phase-0-completion">WU-0.3: Architecture Map &amp; Phase 0 Completion<a class="headerlink" href="#wu-03-architecture-map-phase-0-completion" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Create ED transition map, complete KPI baselines, update accountability.</p>
+<p><strong>Inputs:</strong>
+- Phase 0 audit data from WU-0.1 and WU-0.2
+- FSM diagram from <code>soft_to_GROUNDED.md</code> Domain 5</p>
+<p><strong>Tasks:</strong>
+1. Create <code>docs/architecture/E_TO_D_TRANSITION_MAP.md</code> with Mermaid FSM diagram
+2. Complete KPI baseline table in <code>AGENTIC_BASELINE_AUDIT_v2.md</code>
+3. Add W-NNN entries to <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>
+4. Add Phase 0 entry to <code>CHANGELOG.md</code></p>
+<p><strong>Outputs:</strong>
+- <code>docs/architecture/E_TO_D_TRANSITION_MAP.md</code>
+- Updated <code>AGENTIC_BASELINE_AUDIT_v2.md</code> (KPI section)
+- Updated <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>
+- Updated <code>CHANGELOG.md</code></p>
+<p><strong>Verification:</strong>
+- All 9 Phase 0 completion gate conditions met
+- Ready for owner approval to proceed to Phase 1</p>
+<hr/>
+<h3 id="phase-1-agent-registry-discovery-4-work-units-complete">PHASE 1 — Agent Registry &amp; Discovery (4 Work Units) COMPLETE<a class="headerlink" href="#phase-1-agent-registry-discovery-4-work-units-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-11-json-schema-definitions-generate_manifestpy">WU-1.1: JSON Schema Definitions + generate_manifest.py<a class="headerlink" href="#wu-11-json-schema-definitions-generate_manifestpy" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Create the schema validation infrastructure and the central manifest generator.</p>
+<p><strong>Tasks:</strong>
+1. Create <code>.codex/schemas/AgentRegistrySchema.json</code> (JSON Schema draft-07)
+2. Create <code>.codex/schemas/CodexManifestSchema.json</code> (JSON Schema draft-07)
+3. Create <code>scripts/ci/generate_manifest.py</code> with all 10 functions from the document
+4. Run <code>generate_manifest.py</code> verify initial <code>CODEX_MANIFEST.json</code>
+5. Test <code>--verify-integrity</code> and <code>--dump-safe-injection</code> modes</p>
+<p><strong>Outputs:</strong>
+- <code>.codex/schemas/AgentRegistrySchema.json</code>
+- <code>.codex/schemas/CodexManifestSchema.json</code>
+- <code>scripts/ci/generate_manifest.py</code>
+- <code>CODEX_MANIFEST.json</code> (initial, 0 agents)</p>
+<p><strong>Verification:</strong>
+- Schemas validate as valid JSON Schema draft-07
+- <code>CODEX_MANIFEST.json</code> has <code>integrity_sha256</code> field
+- 3 consecutive runs produce identical output (determinism)
+- <code>--dump-safe-injection</code> contains only <code>SAFE_INJECTION_FIELDS</code></p>
+<hr/>
+<h4 id="wu-12-agent_registryyaml-build-full-registry">WU-1.2: AGENT_REGISTRY.yaml — Build Full Registry<a class="headerlink" href="#wu-12-agent_registryyaml-build-full-registry" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Create the complete agent registry from Phase 0 audit data.</p>
+<p><strong>Tasks:</strong>
+1. Extend <code>.github/agents/AGENT_REGISTRY.yaml</code> (or migrate to root-level <code>AGENT_REGISTRY.yaml</code>) with GROUNDED schema fields
+2. For each active agent (from Phase 0 frequency audit):
+ - Populate <code>name</code>, <code>role</code>, <code>enforcement_tier</code>, <code>primary_workflow</code>
+ - Set <code>autonomy_model: "E"</code> for all
+ - Set <code>handoff_protocol</code> from Phase 0 classification
+ - Set <code>activation_frequency_rank</code> from Phase 0 data
+ - Flag top-20: <code>consolidation_priority: true</code>
+3. Validate against <code>AgentRegistrySchema.json</code></p>
+<p><strong>Decision point (resolve in Phase 0):</strong> Determine whether to:
+- <strong>Option A (extend):</strong> Add new fields to existing <code>.github/agents/AGENT_REGISTRY.yaml</code> in-place
+- <strong>Option B (migrate):</strong> Create root-level <code>AGENT_REGISTRY.yaml</code> and cross-reference the existing one</p>
+<p><strong>Outputs:</strong>
+- <code>AGENT_REGISTRY.yaml</code> (all agents registered, with GROUNDED schema fields)</p>
+<p><strong>Verification:</strong>
+- <code>total_agents</code> matches actual list length
+- All entries pass schema validation
+- Top-20 agents have <code>consolidation_priority: true</code>
+- No duplicate registry with identical data exists</p>
+<hr/>
+<h4 id="wu-13-req-9-gate-codeowners-security">WU-1.3: REQ-9 Gate + CODEOWNERS Security<a class="headerlink" href="#wu-13-req-9-gate-codeowners-security" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Add manifest integrity verification to the cognitive-preflight pipeline.</p>
+<p><strong>Tasks:</strong>
+1. Add REQ-9 step to <code>agent-auth-delegation.yml</code> (Tier-2 canary: <code>::warning::</code>)
+2. Verify YAML still parses after modification
+3. Add Phase 1 CODEOWNERS entries for registry, manifest, schemas, agents
+4. Regenerate <code>CODEX_MANIFEST.json</code> with full registry</p>
+<p><strong>Outputs:</strong>
+- Updated <code>agent-auth-delegation.yml</code> (REQ-9 added)
+- Updated <code>.github/CODEOWNERS</code> (Phase 1 entries)
+- Updated <code>CODEX_MANIFEST.json</code> (full registry)</p>
+<p><strong>Verification:</strong>
+- REQ-9 emits <code>::warning::</code> on corrupted manifest; passes on valid
+- YAML parses correctly
+- CODEOWNERS entries are syntactically valid</p>
+<hr/>
+<h4 id="wu-14-manifest-injection-phase-1-completion">WU-1.4: Manifest Injection + Phase 1 Completion<a class="headerlink" href="#wu-14-manifest-injection-phase-1-completion" title="Permanent link">¶</a></h4>
+<p><strong>Objective:</strong> Wire manifest into agent context and complete Phase 1 accountability.</p>
+<p><strong>Tasks:</strong>
+1. Add manifest injection step to <code>copilot-agent-vars-bootstrap.yml</code>
+2. Verify <code>agent_context.json</code> receives safe manifest fields only
+3. Add W-NNN entries to <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>
+4. Add Phase 1 entry to <code>CHANGELOG.md</code>
+5. Verify all Phase 1 completion gate conditions</p>
+<p><strong>Outputs:</strong>
+- Updated <code>copilot-agent-vars-bootstrap.yml</code>
+- Updated <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>
+- Updated <code>CHANGELOG.md</code></p>
+<p><strong>Verification:</strong>
+- All 12 Phase 1 completion gate conditions met
+- <code>agent_context.json</code> contains only safe fields (no executable content)</p>
+<hr/>
+<h3 id="phase-2-handoff-protocol-top-20-3-work-units-complete">PHASE 2 — Handoff Protocol + Top-20 (3 Work Units) COMPLETE<a class="headerlink" href="#phase-2-handoff-protocol-top-20-3-work-units-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-21-handoff-schema-validation-script">WU-2.1: Handoff Schema + Validation Script<a class="headerlink" href="#wu-21-handoff-schema-validation-script" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>.codex/schemas/AgentHandoffManifest_v1.1.json</code>
+2. Create <code>scripts/ci/validate_handoff_manifest.py</code>
+3. Create test fixtures: <code>tests/fixtures/valid_handoff.json</code>, <code>tests/fixtures/invalid_handoff.json</code>
+4. Validate both fixtures through the validator</p>
+<hr/>
+<h4 id="wu-22-handoff-gate-workflow-phase-23-bridge">WU-2.2: Handoff Gate Workflow + Phase 2+3 Bridge<a class="headerlink" href="#wu-22-handoff-gate-workflow-phase-23-bridge" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>.github/workflows/agent-handoff-gate.yml</code> (Tier-2 canary)
+2. Create <code>scripts/ci/handoff_context_population.py</code> (with Phase 3 stub)
+3. Add CODEOWNERS entry for handoff gate
+4. Validate workflow YAML</p>
+<hr/>
+<h4 id="wu-23-top-20-consolidation-batched">WU-2.3: Top-20 Consolidation (Batched)<a class="headerlink" href="#wu-23-top-20-consolidation-batched" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Update top-20 agent <code>.md</code> files with structured handoff instructions
+2. Update <code>AGENT_REGISTRY.yaml</code> entries: <code>handoff_protocol: "structured"</code>
+3. Identify overlapping agents add <code>aliases</code> field
+4. Regenerate manifest, update accountability report + changelog
+5. Verify Phase 2 completion gate</p>
+<hr/>
+<h3 id="phase-3-memory-corpus-2-work-units-parallel-with-phase-2-complete">PHASE 3 — Memory Corpus (2 Work Units) [Parallel with Phase 2] COMPLETE<a class="headerlink" href="#phase-3-memory-corpus-2-work-units-parallel-with-phase-2-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-31-embedding-index-builder">WU-3.1: Embedding Index Builder<a class="headerlink" href="#wu-31-embedding-index-builder" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>scripts/ci/build_embeddings.py</code> (FAISS + sentence-transformers)
+2. Create <code>scripts/ci/query_corpus.py</code> (semantic + SQLite hybrid)
+3. Create <code>.codex/embeddings/</code> directory
+4. Add <code>.codex/embeddings/codex_index.faiss</code> to <code>.gitignore</code>
+5. Test build and query locally</p>
+<hr/>
+<h4 id="wu-32-nightly-rebuild-workflow-corpus-pruning">WU-3.2: Nightly Rebuild Workflow + Corpus Pruning<a class="headerlink" href="#wu-32-nightly-rebuild-workflow-corpus-pruning" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>.github/workflows/embedding-index-rebuild.yml</code> (nightly 2AM UTC)
+2. Create <code>scripts/ci/prune_corpus.py</code> (90-day retention)
+3. Add REQ-10 to cognitive-preflight (Tier-2 corpus health warning)
+4. Update accountability report + changelog</p>
+<hr/>
+<h3 id="phase-4-ed-transition-gate-2-work-units-complete">PHASE 4 — ED Transition Gate (2 Work Units) COMPLETE<a class="headerlink" href="#phase-4-ed-transition-gate-2-work-units-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-41-transition-gate-workflow">WU-4.1: Transition Gate Workflow<a class="headerlink" href="#wu-41-transition-gate-workflow" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>.github/workflows/e-to-d-transition-gate.yml</code> (5-condition FSM check)
+2. Create <code>scripts/ci/orchestrator_routing.py</code> (FAISScapability_tags routing)
+3. Create <code>.github/agents/orchestrator-agent.md</code> (orchestrator definition)
+4. Add CODEOWNERS entry</p>
+<hr/>
+<h4 id="wu-42-autonomy-demotion-phase-4-completion">WU-4.2: Autonomy Demotion + Phase 4 Completion<a class="headerlink" href="#wu-42-autonomy-demotion-phase-4-completion" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create autonomy demotion script (Phase 4+5 bridge)
+2. Update all 193+ <code>AGENT_REGISTRY.yaml</code> entries with <code>role</code> tags
+3. Add <code>operating_model</code> step to cognitive-preflight
+4. Update accountability report + changelog</p>
+<hr/>
+<h3 id="phase-5-self-healing-auto-documentation-2-work-units-complete">PHASE 5 — Self-Healing &amp; Auto-Documentation (2 Work Units) COMPLETE<a class="headerlink" href="#phase-5-self-healing-auto-documentation-2-work-units-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-51-auto-promotion-auto-accountability">WU-5.1: Auto-Promotion + Auto-Accountability<a class="headerlink" href="#wu-51-auto-promotion-auto-accountability" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>scripts/ci/auto_promote_tier.py</code> (dry-run REQ-N stub generator)
+2. Create <code>scripts/ci/auto_append_accountability.py</code> (W-NNN auto-append)
+3. Extend <code>ci-health-monitor.yml</code> with enforcement gap scan
+4. Extend <code>generate_manifest.py</code> with <code>--update-enforcement-doc</code></p>
+<hr/>
+<h4 id="wu-52-kpi-dashboard-phase-5-completion">WU-5.2: KPI Dashboard + Phase 5 Completion<a class="headerlink" href="#wu-52-kpi-dashboard-phase-5-completion" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Add KPI dashboard comment injection to <code>ci-health-monitor.yml</code>
+2. Wire autonomy demotion to violation threshold
+3. Test full self-healing loop (gap detection issue creation)
+4. Update accountability report + changelog</p>
+<hr/>
+<h3 id="phase-6-final-hardening-2-work-units-complete">PHASE 6 — Final Hardening (2 Work Units) COMPLETE<a class="headerlink" href="#phase-6-final-hardening-2-work-units-complete" title="Permanent link">¶</a></h3>
+<h4 id="wu-61-governance-tooling">WU-6.1: Governance Tooling<a class="headerlink" href="#wu-61-governance-tooling" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>.github/workflows/actionlint-audit.yml</code> (permanent workflow linting)
+2. Create <code>.codex/policies/semgrep/soft_enforcement.yaml</code> (Semgrep rules)
+3. Create <code>docs/AGENTIC_REPO_SYSTEM_GUIDE.md</code> (canonical operating guide)</p>
+<hr/>
+<h4 id="wu-62-final-kpi-report-completion">WU-6.2: Final KPI Report + Completion<a class="headerlink" href="#wu-62-final-kpi-report-completion" title="Permanent link">¶</a></h4>
+<p><strong>Tasks:</strong>
+1. Create <code>docs/audits/AGENTIC_FINAL_KPI_REPORT.md</code> (Phase 0 repeat + delta)
+2. Run full compliance scan compare with Phase 0 baseline
+3. Final accountability report + changelog entries
+4. Verify all Phase 6 completion gate conditions</p>
+<hr/>
+<h3 id="work-unit-summary">Work Unit Summary<a class="headerlink" href="#work-unit-summary" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th style="text-align: center;">Work Units</th>
+<th style="text-align: center;">Est. Sessions</th>
+<th style="text-align: center;">Status</th>
+<th>Key Deliverables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 0</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>Compliance matrix, agent audit, ED map</td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">3–4</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>Registry v0.2.1, manifest, generate_manifest.py, schemas</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4–5</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>Handoff schema, gate workflow, top-20 consolidation</td>
+</tr>
+<tr>
+<td>Phase 3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>FAISS builder, query module, nightly + on-push rebuild</td>
+</tr>
+<tr>
+<td>Phase 4</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>Transition gate (Tier-1), orchestrator routing</td>
+</tr>
+<tr>
+<td>Phase 5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3–4</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>Auto-promotion, KPI dashboard, chatops tier commands</td>
+</tr>
+<tr>
+<td>Phase 6</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">COMPLETE</td>
+<td>actionlint, final guide, KPI report</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td style="text-align: center;"><strong>18</strong></td>
+<td style="text-align: center;"><strong>18–25</strong></td>
+<td style="text-align: center;">** ALL COMPLETE**</td>
+<td><strong>Complete SoftGROUNDED conversion</strong></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="risk-register-summary">Risk Register Summary<a class="headerlink" href="#risk-register-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Severity</th>
+<th>Phase</th>
+<th style="text-align: center;">Mitigation Available</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R-11: Context injection via CODEX_MANIFEST.json</td>
+<td><strong>Critical</strong></td>
+<td>1+</td>
+<td style="text-align: center;">integrity_sha256 + allowlist</td>
+</tr>
+<tr>
+<td>R-12: Prompt injection via prior_context[]</td>
+<td><strong>Critical</strong></td>
+<td>3+</td>
+<td style="text-align: center;">300-char limit + blocklist</td>
+</tr>
+<tr>
+<td>R-01: Premature ED activation</td>
+<td>High</td>
+<td>4</td>
+<td style="text-align: center;">5-condition Tier-1 block</td>
+</tr>
+<tr>
+<td>R-02: Top-20 consolidation errors</td>
+<td>High</td>
+<td>2</td>
+<td style="text-align: center;">Alias-first, never delete</td>
+</tr>
+<tr>
+<td>R-09: Orchestrator cascade</td>
+<td>High</td>
+<td>4</td>
+<td style="text-align: center;">1 max + 3 concurrent limit</td>
+</tr>
+<tr>
+<td>R-13: Registry tampering</td>
+<td>High</td>
+<td>1+</td>
+<td style="text-align: center;">integrity hash + CODEOWNERS</td>
+</tr>
+<tr>
+<td>R-14: Malicious agent definitions</td>
+<td>High</td>
+<td>2+</td>
+<td style="text-align: center;">Semgrep + CODEOWNERS</td>
+</tr>
+<tr>
+<td>R-06: Canary PR comment noise</td>
+<td>Medium</td>
+<td>All</td>
+<td style="text-align: center;">SHA-dedup + cooldown</td>
+</tr>
+</tbody>
+</table>
+<p>All critical and high risks have documented mitigation strategies in the source document.</p>
+<hr/>
+<h2 id="recommendation">Recommendation<a class="headerlink" href="#recommendation" title="Permanent link">¶</a></h2>
+<p>** All phases are complete — 100/100.** The SoftGROUNDED conversion has been fully implemented
+across all 7 phases (0–6). Every deliverable is in place: 152 agents cataloged (0 SOFT remaining),
+5 Tier-1 gates active, FAISS corpus operational, semgrep policy rules deployed, context injection
+hardening active, automated demotion annotations in ED gate.</p>
+<p><strong>This PR is safe to merge.</strong> All deliverables are in place, all gates are operational, and
+no disabled workflows require re-enablement.</p>
+<hr/>
+<p><em>Generated: 2026-03-02 | Last Updated: 2026-07-11
+</em>Analysis performed against: Aries-Serpent/<em>codex</em> repository at HEAD<em>
+</em>Phases 0–6: ALL COMPLETE*</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

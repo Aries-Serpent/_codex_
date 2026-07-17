@@ -1,0 +1,3111 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/operations/PERFORMANCE_TROUBLESHOOTING/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Performance Troubleshooting Playbook - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#performance-troubleshooting-playbook">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Performance Troubleshooting Playbook
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-summary">
+<span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-metrics-interpretation">
+<span class="md-ellipsis">
+      
+        Performance Metrics Interpretation
+      
+    </span>
+</a>
+<nav aria-label="Performance Metrics Interpretation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-key-performance-indicators-kpis">
+<span class="md-ellipsis">
+      
+        1.1 Key Performance Indicators (KPIs)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-querying-key-metrics">
+<span class="md-ellipsis">
+      
+        1.2 Querying Key Metrics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#bottleneck-identification">
+<span class="md-ellipsis">
+      
+        Bottleneck Identification
+      
+    </span>
+</a>
+<nav aria-label="Bottleneck Identification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21-application-level-bottlenecks">
+<span class="md-ellipsis">
+      
+        2.1 Application-Level Bottlenecks
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#22-database-bottlenecks">
+<span class="md-ellipsis">
+      
+        2.2 Database Bottlenecks
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#23-cache-bottlenecks">
+<span class="md-ellipsis">
+      
+        2.3 Cache Bottlenecks
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#24-network-and-infrastructure-bottlenecks">
+<span class="md-ellipsis">
+      
+        2.4 Network and Infrastructure Bottlenecks
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#resolution-strategies">
+<span class="md-ellipsis">
+      
+        Resolution Strategies
+      
+    </span>
+</a>
+<nav aria-label="Resolution Strategies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-application-performance-optimization">
+<span class="md-ellipsis">
+      
+        3.1 Application Performance Optimization
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-database-optimization">
+<span class="md-ellipsis">
+      
+        3.2 Database Optimization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-cache-strategy-adjustment">
+<span class="md-ellipsis">
+      
+        3.3 Cache Strategy Adjustment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-infrastructure-scaling">
+<span class="md-ellipsis">
+      
+        3.4 Infrastructure Scaling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-testing-and-validation">
+<span class="md-ellipsis">
+      
+        Performance Testing and Validation
+      
+    </span>
+</a>
+<nav aria-label="Performance Testing and Validation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-load-testing">
+<span class="md-ellipsis">
+      
+        4.1 Load Testing
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-stress-testing">
+<span class="md-ellipsis">
+      
+        4.2 Stress Testing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-monitoring-dashboard">
+<span class="md-ellipsis">
+      
+        Performance Monitoring Dashboard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quick-reference-common-performance-issues">
+<span class="md-ellipsis">
+      
+        Quick Reference: Common Performance Issues
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="performance-troubleshooting-playbook">Performance Troubleshooting Playbook<a class="headerlink" href="#performance-troubleshooting-playbook" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p><strong>Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-06-22
+<strong>Maintainer</strong>: Performance Engineering
+<strong>SLA Target</strong>: Response time p95 &lt; 200ms, p99 &lt; 500ms</p>
+<hr/>
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<p>This playbook provides systematic procedures for identifying and resolving performance issues in production. It includes metrics interpretation, bottleneck identification techniques, and resolution strategies.</p>
+<p><strong>Performance SLA Targets</strong>:
+- <strong>Response Time (p95)</strong>: &lt; 200ms
+- <strong>Response Time (p99)</strong>: &lt; 500ms
+- <strong>Error Rate</strong>: &lt; 0.1%
+- <strong>Cache Hit Ratio</strong>: &gt; 80%
+- <strong>Database Query Time</strong>: &lt; 50ms (p95)</p>
+<hr/>
+<h2 id="performance-metrics-interpretation">Performance Metrics Interpretation<a class="headerlink" href="#performance-metrics-interpretation" title="Permanent link">¶</a></h2>
+<h3 id="11-key-performance-indicators-kpis">1.1 Key Performance Indicators (KPIs)<a class="headerlink" href="#11-key-performance-indicators-kpis" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Healthy Range</th>
+<th>Warning</th>
+<th>Critical</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Response Time (p95)</td>
+<td>&lt; 150ms</td>
+<td>150-200ms</td>
+<td>&gt; 200ms</td>
+</tr>
+<tr>
+<td>Response Time (p99)</td>
+<td>&lt; 300ms</td>
+<td>300-500ms</td>
+<td>&gt; 500ms</td>
+</tr>
+<tr>
+<td>Error Rate</td>
+<td>&lt; 0.01%</td>
+<td>0.01-0.1%</td>
+<td>&gt; 0.1%</td>
+</tr>
+<tr>
+<td>CPU Utilization</td>
+<td>30-60%</td>
+<td>60-80%</td>
+<td>&gt; 80%</td>
+</tr>
+<tr>
+<td>Memory Utilization</td>
+<td>40-70%</td>
+<td>70-85%</td>
+<td>&gt; 85%</td>
+</tr>
+<tr>
+<td>Database Pool Utilization</td>
+<td>20-40%</td>
+<td>40-70%</td>
+<td>&gt; 70%</td>
+</tr>
+<tr>
+<td>Cache Hit Ratio</td>
+<td>&gt; 85%</td>
+<td>70-85%</td>
+<td>&lt; 70%</td>
+</tr>
+<tr>
+<td>Disk I/O Wait</td>
+<td>&lt; 5%</td>
+<td>5-10%</td>
+<td>&gt; 10%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-querying-key-metrics">1.2 Querying Key Metrics<a class="headerlink" href="#12-querying-key-metrics" title="Permanent link">¶</a></h3>
+<p><strong>Response Time Metrics</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Query p95 response time</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))'</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Query p99 response time</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))'</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1"># Response time by endpoint</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{handler="/api/v1/resource"}[5m]))'</span>
+</code></pre></div>
+<p><strong>Resource Utilization</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># CPU utilization</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=rate(process_cpu_seconds_total[5m])'</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Memory usage</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=process_resident_memory_bytes'</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="c1"># Kubernetes node resources</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>kubectl<span class="w"> </span>top<span class="w"> </span>nodes
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>kubectl<span class="w"> </span>top<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>--containers
+</code></pre></div>
+<p><strong>Cache Performance</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Redis cache hit ratio</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>INFO<span class="w"> </span>stats<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"hits|misses"</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># Calculate hit ratio</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>INFO<span class="w"> </span>stats<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'/hits:/{hits=$2} /misses:/{misses=$2} END{if(hits+misses&gt;0) print "Hit Ratio: " (hits/(hits+misses))*100"%"}'</span>
+</code></pre></div>
+<p><strong>Database Performance</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Query execution time</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=rate(pg_query_duration_seconds_bucket[5m])'</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="c1"># Connection pool usage</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT count(*) FROM pg_stat_activity WHERE state = 'active';"</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="c1"># Slow query log</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;"</span>
+</code></pre></div>
+<hr/>
+<h2 id="bottleneck-identification">Bottleneck Identification<a class="headerlink" href="#bottleneck-identification" title="Permanent link">¶</a></h2>
+<h3 id="21-application-level-bottlenecks">2.1 Application-Level Bottlenecks<a class="headerlink" href="#21-application-level-bottlenecks" title="Permanent link">¶</a></h3>
+<p><strong>Detection Procedure</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Step 1: Check application metrics in Prometheus</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=rate(http_request_duration_seconds_sum[5m])'</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># Step 2: Check for high memory allocation rate</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=rate(go_memstats_alloc_bytes_total[5m])'</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Step 3: Check for goroutine leaks</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>curl<span class="w"> </span><span class="s1">'http://localhost:9090/api/v1/query?query=go_goroutines'</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1"># Step 4: Analyze CPU usage</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>kubectl<span class="w"> </span>top<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>codex-api<span class="w"> </span>--containers
+</code></pre></div>
+<p><strong>Common Application Bottlenecks</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Root Cause</th>
+<th>Investigation</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High CPU (&gt; 80%)</td>
+<td>CPU-intensive operation</td>
+<td>Profile: <code>pprof</code> CPU profile</td>
+<td>Optimize algorithm, add caching</td>
+</tr>
+<tr>
+<td>Memory growing</td>
+<td>Memory leak</td>
+<td>Check allocation rate</td>
+<td>Fix leak, add GC tuning</td>
+</tr>
+<tr>
+<td>Goroutine leak</td>
+<td>Goroutines not terminating</td>
+<td>Monitor goroutine count</td>
+<td>Add context cancellation</td>
+</tr>
+<tr>
+<td>GC pauses</td>
+<td>Large heaps</td>
+<td>Tune GC settings</td>
+<td>Reduce allocation rate</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Profiling Application</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Get CPU profile from running application</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>svc/codex-api<span class="w"> </span><span class="m">6060</span>:6060<span class="w"> </span><span class="p">&amp;</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>curl<span class="w"> </span>http://localhost:6060/debug/pprof/profile?seconds<span class="o">=</span><span class="m">30</span><span class="w"> </span>&gt;<span class="w"> </span>cpu.prof
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>go<span class="w"> </span>tool<span class="w"> </span>pprof<span class="w"> </span>cpu.prof
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="c1"># In pprof: top10, list [function]</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="c1"># Get memory profile</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>curl<span class="w"> </span>http://localhost:6060/debug/pprof/heap<span class="w"> </span>&gt;<span class="w"> </span>mem.prof
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>go<span class="w"> </span>tool<span class="w"> </span>pprof<span class="w"> </span>mem.prof
+</code></pre></div>
+<h2 id="22-database-bottlenecks">2.2 Database Bottlenecks<a class="headerlink" href="#22-database-bottlenecks" title="Permanent link">¶</a></h2>
+<p><strong>Detection Procedure</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Step 1: Check query performance</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY total_time DESC LIMIT 20;"</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="c1"># Step 2: Check for missing indexes</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT schemaname, tablename, indexname FROM pg_indexes WHERE schemaname NOT IN ('pg_catalog', 'information_schema');"</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="c1"># Step 3: Check table bloat</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) FROM pg_tables ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC LIMIT 10;"</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="c1"># Step 4: Check connection pool status</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT pid, usename, application_name, state, query_start FROM pg_stat_activity WHERE state != 'idle';"</span>
+</code></pre></div>
+<p><strong>Database Performance Issues</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Symptom</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slow queries</td>
+<td>Response time &gt; 200ms</td>
+<td>Add index, optimize query</td>
+</tr>
+<tr>
+<td>Inefficient query plan</td>
+<td>Full table scan</td>
+<td>Update table stats: <code>ANALYZE</code></td>
+</tr>
+<tr>
+<td>Connection pool exhaustion</td>
+<td>"too many connections" error</td>
+<td>Increase pool size, add connection retry</td>
+</tr>
+<tr>
+<td>Lock contention</td>
+<td>Queries waiting on locks</td>
+<td>Check for long-running transactions</td>
+</tr>
+<tr>
+<td>Index bloat</td>
+<td>Index size &gt; data size</td>
+<td>Reindex: <code>REINDEX INDEX index_name</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Query Optimization Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Identify slow query</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nv">SLOW_QUERY</span><span class="o">=</span><span class="s2">"SELECT * FROM orders WHERE user_id = </span><span class="nv">$1</span><span class="s2"> AND created_at &gt; now() - INTERVAL '30 days';"</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1"># Explain query plan</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"EXPLAIN (ANALYZE, BUFFERS) </span><span class="si">${</span><span class="nv">SLOW_QUERY</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="c1"># If doing seq scan, create index</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"CREATE INDEX idx_orders_user_created ON orders(user_id, created_at);"</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="c1"># Verify index usage</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"EXPLAIN (ANALYZE, BUFFERS) </span><span class="si">${</span><span class="nv">SLOW_QUERY</span><span class="si">}</span><span class="s2">"</span>
+</code></pre></div>
+<h2 id="23-cache-bottlenecks">2.3 Cache Bottlenecks<a class="headerlink" href="#23-cache-bottlenecks" title="Permanent link">¶</a></h2>
+<p><strong>Detection Procedure</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Step 1: Check cache hit ratio</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>INFO<span class="w"> </span>stats
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Step 2: Check Redis memory usage</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>INFO<span class="w"> </span>memory<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"used_memory|used_memory_human|maxmemory"</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1"># Step 3: Check eviction policy</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>CONFIG<span class="w"> </span>GET<span class="w"> </span>maxmemory-policy
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="c1"># Step 4: Check hot keys</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>--hotkeys
+</code></pre></div>
+<p><strong>Cache Optimization</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Low hit ratio (&lt; 70%)</td>
+<td>Cache misses too high</td>
+<td>Increase cache size, improve cache key strategy</td>
+</tr>
+<tr>
+<td>High evictions</td>
+<td>Cache full</td>
+<td>Increase Redis memory, reduce TTL</td>
+</tr>
+<tr>
+<td>Stale cache</td>
+<td>Data not refreshing</td>
+<td>Reduce TTL, implement cache invalidation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cache Warming Strategy</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Pre-populate hot keys at startup</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>redis-cli<span class="w"> </span>-h<span class="w"> </span><span class="nv">$REDIS_ENDPOINT</span><span class="w"> </span>MSET<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="s2">"config:feature-flags"</span><span class="w"> </span><span class="s1">'{"feature_a": true}'</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span><span class="s2">"user-profile:trending"</span><span class="w"> </span><span class="s1">'[{"id":1}, {"id":2}]'</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w"> </span><span class="s2">"leaderboard:top-100"</span><span class="w"> </span><span class="s1">'[...]'</span>
+</code></pre></div>
+<h2 id="24-network-and-infrastructure-bottlenecks">2.4 Network and Infrastructure Bottlenecks<a class="headerlink" href="#24-network-and-infrastructure-bottlenecks" title="Permanent link">¶</a></h2>
+<p><strong>Detection Procedure</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Step 1: Check network utilization</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>pod-name<span class="w"> </span>--<span class="w"> </span>ss<span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-20
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Step 2: Check for packet loss</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>pod-name<span class="w"> </span>--<span class="w"> </span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="nv">$DB_HOST</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="c1"># Step 3: Check DNS resolution time</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="nb">time</span><span class="w"> </span>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>pod-name<span class="w"> </span>--<span class="w"> </span>nslookup<span class="w"> </span><span class="nv">$DB_HOST</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="c1"># Step 4: Monitor disk I/O</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>kubectl<span class="w"> </span>top<span class="w"> </span>nodes
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>iostat<span class="w"> </span>-x<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<p><strong>Infrastructure Bottlenecks</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Detection</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Network saturation</td>
+<td>High packet loss, retransmits</td>
+<td>Add network bandwidth, enable compression</td>
+</tr>
+<tr>
+<td>DNS slowness</td>
+<td>nslookup &gt; 100ms</td>
+<td>Use local DNS cache, upgrade nameservers</td>
+</tr>
+<tr>
+<td>Disk I/O contention</td>
+<td>I/O wait &gt; 10%</td>
+<td>Add faster storage, optimize queries</td>
+</tr>
+<tr>
+<td>Pod scheduling</td>
+<td>Pending pods</td>
+<td>Add cluster nodes, optimize resource requests</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="resolution-strategies">Resolution Strategies<a class="headerlink" href="#resolution-strategies" title="Permanent link">¶</a></h2>
+<h3 id="31-application-performance-optimization">3.1 Application Performance Optimization<a class="headerlink" href="#31-application-performance-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Strategy 1: Add Caching Layer</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># For frequently accessed data</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="c1"># Before: Direct DB query for every request</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="c1"># After: Cache in Redis with 5-minute TTL</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="c1"># Example: Cache user profile</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="c1"># In application code:</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>redis.get<span class="o">(</span>f<span class="s2">"user-profile:{user_id}"</span><span class="o">)</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>profile:
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w"> </span><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>db.query<span class="o">(</span>f<span class="s2">"SELECT * FROM users WHERE id = {user_id}"</span><span class="o">)</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w"> </span>redis.set<span class="o">(</span>f<span class="s2">"user-profile:{user_id}"</span>,<span class="w"> </span>profile,<span class="w"> </span><span class="nv">ex</span><span class="o">=</span><span class="m">300</span><span class="o">)</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="k">return</span><span class="w"> </span>profile
+</code></pre></div>
+<p><strong>Strategy 2: Optimize Database Queries</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Bad query (full table scan):</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>orders<span class="w"> </span>WHERE<span class="w"> </span>customer_name<span class="w"> </span>LIKE<span class="w"> </span><span class="s1">'%John%'</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># Good query (with index):</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>CREATE<span class="w"> </span>INDEX<span class="w"> </span>idx_orders_customer_id<span class="w"> </span>ON<span class="w"> </span>orders<span class="o">(</span>customer_id<span class="o">)</span><span class="p">;</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>orders<span class="w"> </span>WHERE<span class="w"> </span><span class="nv">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">123</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="c1"># Or use partial index for common filters:</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>CREATE<span class="w"> </span>INDEX<span class="w"> </span>idx_active_orders<span class="w"> </span>ON<span class="w"> </span>orders<span class="o">(</span>customer_id<span class="o">)</span><span class="w"> </span>WHERE<span class="w"> </span><span class="nv">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'active'</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>Strategy 3: Implement Connection Pooling</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Configure connection pool in application</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="c1"># Parameters:</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="c1"># - Min connections: 5</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="c1"># - Max connections: 50</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="c1"># - Idle timeout: 300s</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="c1"># - Max lifetime: 1800s</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="nv">CONN_POOL_CONFIG</span><span class="o">=</span><span class="s2">"</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="s2">pool_size: 50</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="s2">max_overflow: 10</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="s2">pool_recycle: 3600</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="s2">pool_pre_ping: true</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="s2">"</span>
+</code></pre></div>
+<p><strong>Strategy 4: Batch Operations</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Bad: Individual queries in loop</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="k">for</span><span class="w"> </span>user<span class="w"> </span><span class="k">in</span><span class="w"> </span>users:
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w"> </span>db.query<span class="o">(</span>f<span class="s2">"INSERT INTO logs VALUES ({user.id}, ...)"</span><span class="o">)</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="c1"># Good: Batch insert</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="nv">batch_insert_sql</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"INSERT INTO logs (user_id, ...) VALUES "</span><span class="w"> </span>+<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="w"> </span><span class="s2">","</span>.join<span class="o">([</span>f<span class="s2">"({user.id}, ...)"</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>user<span class="w"> </span><span class="k">in</span><span class="w"> </span>users<span class="o">])</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>db.execute<span class="o">(</span>batch_insert_sql<span class="o">)</span>
+</code></pre></div>
+<h2 id="32-database-optimization">3.2 Database Optimization<a class="headerlink" href="#32-database-optimization" title="Permanent link">¶</a></h2>
+<p><strong>Optimization 1: Index Addition</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Identify missing index need</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="s">-- Check for seq scans on large tables</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="s">SELECT schemaname, tablename, seq_scan</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="s">FROM pg_stat_user_tables</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="s">WHERE seq_scan &gt; 1000</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="s">ORDER BY seq_scan DESC;</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="s">EOF</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="c1"># Create needed indexes</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="nv">$DB_PASSWORD</span><span class="w"> </span>psql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$DB_HOST</span><span class="w"> </span>-U<span class="w"> </span><span class="nv">$DB_USER</span><span class="w"> </span>-d<span class="w"> </span>codex_prod<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span>-c<span class="w"> </span><span class="s2">"CREATE INDEX idx_orders_status_created ON orders(status, created_at);"</span>
+</code></pre></div>
+<p><strong>Optimization 2: Query Refactoring</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Original slow query (N+1 problem):</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>posts<span class="p">;</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>FOR<span class="w"> </span>EACH<span class="w"> </span>post:
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w"> </span>SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>comments<span class="w"> </span>WHERE<span class="w"> </span><span class="nv">post_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>post.id<span class="p">;</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="c1"># Optimized query (JOIN):</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>SELECT<span class="w"> </span>p.*,<span class="w"> </span>c.*
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>FROM<span class="w"> </span>posts<span class="w"> </span>p
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>LEFT<span class="w"> </span>JOIN<span class="w"> </span>comments<span class="w"> </span>c<span class="w"> </span>ON<span class="w"> </span>p.id<span class="w"> </span><span class="o">=</span><span class="w"> </span>c.post_id
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>ORDER<span class="w"> </span>BY<span class="w"> </span>p.id,<span class="w"> </span>c.id<span class="p">;</span>
+</code></pre></div>
+<p><strong>Optimization 3: Partitioning Large Tables</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Create partitioned table for time-series data</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>CREATE<span class="w"> </span>TABLE<span class="w"> </span>events<span class="w"> </span><span class="o">(</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w"> </span>id<span class="w"> </span>BIGSERIAL,
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span>timestamp<span class="w"> </span>TIMESTAMP,
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span>data<span class="w"> </span>JSONB
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="o">)</span><span class="w"> </span>PARTITION<span class="w"> </span>BY<span class="w"> </span>RANGE<span class="w"> </span><span class="o">(</span>timestamp<span class="o">)</span><span class="p">;</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>CREATE<span class="w"> </span>TABLE<span class="w"> </span>events_2024_01<span class="w"> </span>PARTITION<span class="w"> </span>OF<span class="w"> </span>events
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w"> </span>FOR<span class="w"> </span>VALUES<span class="w"> </span>FROM<span class="w"> </span><span class="o">(</span><span class="s1">'2024-01-01'</span><span class="o">)</span><span class="w"> </span>TO<span class="w"> </span><span class="o">(</span><span class="s1">'2024-02-01'</span><span class="o">)</span><span class="p">;</span>
+</code></pre></div>
+<h2 id="33-cache-strategy-adjustment">3.3 Cache Strategy Adjustment<a class="headerlink" href="#33-cache-strategy-adjustment" title="Permanent link">¶</a></h2>
+<p><strong>Strategy 1: Multi-Level Caching</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>Request L1 Cache (In-Process)
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a> (Hit) Return
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> (Miss) L2 Cache (Redis)
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> (Hit) Load to L1, Return
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> (Miss) Database
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> Load to L2, Return
+</code></pre></div>
+<p><strong>Strategy 2: Cache Invalidation Pattern</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># TTL-based invalidation (safe, simple)</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>redis.set<span class="o">(</span>f<span class="s2">"user:{user_id}"</span>,<span class="w"> </span>data,<span class="w"> </span><span class="nv">ex</span><span class="o">=</span><span class="m">300</span><span class="o">)</span><span class="w"> </span><span class="c1"># 5 min TTL</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="c1"># Event-based invalidation (accurate)</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="c1"># When user updates:</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>redis.delete<span class="o">(</span>f<span class="s2">"user:{user_id}"</span><span class="o">)</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>redis.delete<span class="o">(</span>f<span class="s2">"user-profile:{user_id}"</span><span class="o">)</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="c1"># Hybrid approach (TTL + event)</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>redis.set<span class="o">(</span>f<span class="s2">"user:{user_id}"</span>,<span class="w"> </span>data,<span class="w"> </span><span class="nv">ex</span><span class="o">=</span><span class="m">3600</span><span class="o">)</span><span class="w"> </span><span class="c1"># 1 hour TTL</span>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="c1"># On update, delete immediately (event-based)</span>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="c1"># But still expires if no update occurs</span>
+</code></pre></div>
+<h2 id="34-infrastructure-scaling">3.4 Infrastructure Scaling<a class="headerlink" href="#34-infrastructure-scaling" title="Permanent link">¶</a></h2>
+<p><strong>Strategy 1: Horizontal Scaling</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># Increase pod replicas for load distribution</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>kubectl<span class="w"> </span>scale<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span>--replicas<span class="o">=</span><span class="m">20</span><span class="w"> </span>-n<span class="w"> </span>production
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># Verify distribution</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span>-o<span class="w"> </span>wide<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>codex-api
+</code></pre></div>
+<p><strong>Strategy 2: Resource Limit Adjustment</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Increase CPU/Memory allocation</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>kubectl<span class="w"> </span><span class="nb">set</span><span class="w"> </span>resources<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w"> </span>--requests<span class="o">=</span><span class="nv">cpu</span><span class="o">=</span>500m,memory<span class="o">=</span>512Mi<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="w"> </span>--limits<span class="o">=</span><span class="nv">cpu</span><span class="o">=</span>1000m,memory<span class="o">=</span>1Gi
+</code></pre></div>
+<p><strong>Strategy 3: Auto-scaling Configuration</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Create HPA for automatic scaling</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>kubectl<span class="w"> </span>autoscale<span class="w"> </span>deployment<span class="w"> </span>codex-api<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w"> </span>-n<span class="w"> </span>production<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w"> </span>--min<span class="o">=</span><span class="m">10</span><span class="w"> </span>--max<span class="o">=</span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w"> </span>--cpu-percent<span class="o">=</span><span class="m">70</span>
+</code></pre></div>
+<hr/>
+<h2 id="performance-testing-and-validation">Performance Testing and Validation<a class="headerlink" href="#performance-testing-and-validation" title="Permanent link">¶</a></h2>
+<h3 id="41-load-testing">4.1 Load Testing<a class="headerlink" href="#41-load-testing" title="Permanent link">¶</a></h3>
+<p><strong>Setup Load Test</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c1"># Using Apache Bench</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>ab<span class="w"> </span>-n<span class="w"> </span><span class="m">10000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">100</span><span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/api/v1/health
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="c1"># Using Apache JMeter</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>jmeter<span class="w"> </span>-n<span class="w"> </span>-t<span class="w"> </span>load-test.jmx<span class="w"> </span>-l<span class="w"> </span>results.jtl<span class="w"> </span>-j<span class="w"> </span>jmeter.log
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a><span class="c1"># Using Gatling</span>
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>gatling.sh<span class="w"> </span>-s<span class="w"> </span>com.example.SampleSimulation
+</code></pre></div>
+<p><strong>Analyze Results</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>Requests per second: 1000
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>Mean response time: 150ms
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>Std deviation: 45ms
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>Min: 50ms
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>Max: 450ms
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>p95: 200ms
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>p99: 350ms
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>Error rate: 0%
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>Assessment: PASS - All metrics within SLA
+</code></pre></div>
+<h2 id="42-stress-testing">4.2 Stress Testing<a class="headerlink" href="#42-stress-testing" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="c1"># Gradually increase load until failure</span>
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="c1"># Monitor metrics throughout</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="c1"># Start with 100 RPS</span>
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>ab<span class="w"> </span>-n<span class="w"> </span><span class="m">100000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">100</span><span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/...
+<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a>
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="c1"># Increase to 500 RPS</span>
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>ab<span class="w"> </span>-n<span class="w"> </span><span class="m">500000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">500</span><span class="w"> </span>http://<span class="si">${</span><span class="nv">API_ENDPOINT</span><span class="si">}</span>/...
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>
+<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a><span class="c1"># Identify breaking point</span>
+<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a><span class="c1"># Acceptable degradation:</span>
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a><span class="c1"># - Response time can increase 2-3x</span>
+<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a><span class="c1"># - Error rate should remain &lt; 1%</span>
+<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a><span class="c1"># - System should recover when load returns to normal</span>
+</code></pre></div>
+<hr/>
+<h2 id="performance-monitoring-dashboard">Performance Monitoring Dashboard<a class="headerlink" href="#performance-monitoring-dashboard" title="Permanent link">¶</a></h2>
+<p><strong>Key Dashboard Panels</strong>:</p>
+<ol>
+<li><strong>Response Time Dashboard</strong></li>
+<li>p50, p95, p99 latency</li>
+<li>Latency by endpoint</li>
+<li>
+<p>Latency trend (24h, 7d)</p>
+</li>
+<li>
+<p><strong>Error Rate Dashboard</strong></p>
+</li>
+<li>Overall error rate</li>
+<li>Error rate by endpoint</li>
+<li>
+<p>Error types breakdown</p>
+</li>
+<li>
+<p><strong>Resource Utilization Dashboard</strong></p>
+</li>
+<li>CPU usage by pod</li>
+<li>Memory usage by pod</li>
+<li>
+<p>Network I/O</p>
+</li>
+<li>
+<p><strong>Database Dashboard</strong></p>
+</li>
+<li>Query execution time</li>
+<li>Connection pool utilization</li>
+<li>
+<p>Slow queries log</p>
+</li>
+<li>
+<p><strong>Cache Dashboard</strong></p>
+</li>
+<li>Hit/miss ratio</li>
+<li>Eviction rate</li>
+<li>Redis memory usage</li>
+</ol>
+<hr/>
+<h2 id="quick-reference-common-performance-issues">Quick Reference: Common Performance Issues<a class="headerlink" href="#quick-reference-common-performance-issues" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Root Cause</th>
+<th>Quick Check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High response time</td>
+<td>DB overload</td>
+<td><code>PGPASSWORD=$DB_PASSWORD psql ... -c "SELECT count(*) FROM pg_stat_activity WHERE state='active';"</code></td>
+<td>Add DB replicas, optimize queries</td>
+</tr>
+<tr>
+<td>High error rate</td>
+<td>OOM killer</td>
+<td><code>kubectl describe pod pod-name \| grep OOMKilled</code></td>
+<td>Increase memory, find leak</td>
+</tr>
+<tr>
+<td>CPU spike</td>
+<td>Runaway process</td>
+<td><code>kubectl top pods -n production</code></td>
+<td>Kill pod, deploy fix</td>
+</tr>
+<tr>
+<td>Cache misses</td>
+<td>Invalid strategy</td>
+<td><code>redis-cli INFO stats</code></td>
+<td>Adjust cache key pattern</td>
+</tr>
+<tr>
+<td>Slow API</td>
+<td>N+1 queries</td>
+<td><code>PGPASSWORD=$DB_PASSWORD psql ... -c "SELECT query, calls FROM pg_stat_statements ORDER BY calls DESC LIMIT 10;"</code></td>
+<td>Use JOIN, add index</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Reviewed</strong>: 2024-01-15
+<strong>Next Review Date</strong>: 2024-02-15</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

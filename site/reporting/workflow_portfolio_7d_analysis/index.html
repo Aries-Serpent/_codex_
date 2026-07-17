@@ -1,0 +1,3874 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/reporting/workflow_portfolio_7d_analysis/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Workflow Portfolio Analysis (7-Day Window) - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#workflow-portfolio-analysis-7-day-window">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Workflow Portfolio Analysis (7-Day Window)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dataset-artifacts">
+<span class="md-ellipsis">
+      
+        Dataset Artifacts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-snapshot">
+<span class="md-ellipsis">
+      
+        Executive Snapshot
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#portfolio-action-snapshot">
+<span class="md-ellipsis">
+      
+        Portfolio Action Snapshot
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mermaid-mapping-workflow-variable-conflict-logic">
+<span class="md-ellipsis">
+      
+        Mermaid Mapping — Workflow + Variable + Conflict Logic
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tokenized-variable-mapping-top-frequency">
+<span class="md-ellipsis">
+      
+        Tokenized Variable Mapping (Top Frequency)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#wec-workflow-mapping-groups-token-contracts">
+<span class="md-ellipsis">
+      
+        WEC Workflow Mapping — Groups + Token Contracts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quantum-inspired-equations-depicting-workflow-logic-tokenized">
+<span class="md-ellipsis">
+      
+        Quantum-Inspired Equations Depicting Workflow Logic (Tokenized)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#copilot-session-intended-process-codeless-workflow-centric">
+<span class="md-ellipsis">
+      
+        Copilot Session Intended Process (Codeless, Workflow-Centric)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#copilot-session-operating-envelope">
+<span class="md-ellipsis">
+      
+        Copilot Session Operating Envelope
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#smoke-test-posture-and-expected-edge-cases">
+<span class="md-ellipsis">
+      
+        Smoke-Test Posture and Expected Edge Cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requested-findings-summary">
+<span class="md-ellipsis">
+      
+        Requested Findings Summary
+      
+    </span>
+</a>
+<nav aria-label="Requested Findings Summary" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-works">
+<span class="md-ellipsis">
+      
+        What works
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-does-not-work">
+<span class="md-ellipsis">
+      
+        What does not work
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-missing">
+<span class="md-ellipsis">
+      
+        What is missing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-needs-to-be-improved">
+<span class="md-ellipsis">
+      
+        What needs to be improved
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validated-disable-keep-archive-decisions">
+<span class="md-ellipsis">
+      
+        Validated Disable / Keep / Archive Decisions
+      
+    </span>
+</a>
+<nav aria-label="Validated Disable / Keep / Archive Decisions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#disable-now-validated">
+<span class="md-ellipsis">
+      
+        Disable-now (validated)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#keep-enabled-after-lifetime-review">
+<span class="md-ellipsis">
+      
+        Keep-enabled after lifetime review
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#archive-review-bucket">
+<span class="md-ellipsis">
+      
+        Archive-review bucket
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#similar-logic-overlap-groups">
+<span class="md-ellipsis">
+      
+        Similar Logic / Overlap Groups
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#branch-update-conflict-dashboard">
+<span class="md-ellipsis">
+      
+        Branch-Update Conflict Dashboard
+      
+    </span>
+</a>
+<nav aria-label="Branch-Update Conflict Dashboard" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#active-session-conflict-protocol">
+<span class="md-ellipsis">
+      
+        Active Session Conflict Protocol
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mitigation-variables-quick-reference">
+<span class="md-ellipsis">
+      
+        Mitigation Variables — Quick Reference
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-risk-workflows-mandatory-mitigation">
+<span class="md-ellipsis">
+      
+        HIGH-Risk Workflows — Mandatory Mitigation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium-risk-workflows-standard-mitigation">
+<span class="md-ellipsis">
+      
+        MEDIUM-Risk Workflows — Standard Mitigation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions">
+<span class="md-ellipsis">
+      
+        Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#top-20-quick-win-workflows-to-update-copilot-session-first">
+<span class="md-ellipsis">
+      
+        Top 20 Quick-Win Workflows to Update (Copilot Session First)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#perspective-capability-future-vision">
+<span class="md-ellipsis">
+      
+        Perspective: Capability + Future Vision
+      
+    </span>
+</a>
+<nav aria-label="Perspective: Capability + Future Vision" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-this-codebase-is-capable-of-doing-well">
+<span class="md-ellipsis">
+      
+        What this codebase is capable of doing well
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-vision-and-path-improvement">
+<span class="md-ellipsis">
+      
+        Future vision and path improvement
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="workflow-portfolio-analysis-7-day-window">Workflow Portfolio Analysis (7-Day Window)<a class="headerlink" href="#workflow-portfolio-analysis-7-day-window" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#dataset-artifacts">Dataset Artifacts</a></li>
+<li><a href="#executive-snapshot">Executive Snapshot</a></li>
+<li><a href="#portfolio-action-snapshot">Portfolio Action Snapshot</a></li>
+<li><a href="#mermaid-mapping--workflow--variable--conflict-logic">Mermaid Mapping — Workflow + Variable + Conflict Logic</a></li>
+<li><a href="#tokenized-variable-mapping-top-frequency">Tokenized Variable Mapping (Top Frequency)</a></li>
+<li><a href="#wec-workflow-mapping--groups--token-contracts">WEC Workflow Mapping — Groups + Token Contracts</a></li>
+<li><a href="#quantum-inspired-equations-depicting-workflow-logic-tokenized">Quantum-Inspired Equations Depicting Workflow Logic (Tokenized)</a></li>
+<li><a href="#copilot-session-intended-process-codeless-workflow-centric">Copilot Session Intended Process (Codeless, Workflow-Centric)</a></li>
+<li><a href="#copilot-session-operating-envelope">Copilot Session Operating Envelope</a></li>
+<li><a href="#smoke-test-posture-and-expected-edge-cases">Smoke-Test Posture and Expected Edge Cases</a></li>
+<li><a href="#requested-findings-summary">Requested Findings Summary</a></li>
+<li><a href="#what-works">What works</a></li>
+<li><a href="#what-does-not-work">What does not work</a></li>
+<li><a href="#what-is-missing">What is missing</a></li>
+<li><a href="#what-needs-to-be-improved">What needs to be improved</a></li>
+<li><a href="#validated-disable--keep--archive-decisions">Validated Disable / Keep / Archive Decisions</a></li>
+<li><a href="#disable-now-validated">Disable-now (validated)</a></li>
+<li><a href="#keep-enabled-after-lifetime-review">Keep-enabled after lifetime review</a></li>
+<li><a href="#archive-review-bucket">Archive-review bucket</a></li>
+<li><a href="#similar-logic--overlap-groups">Similar Logic / Overlap Groups</a></li>
+<li><a href="#-branch-update-conflict-dashboard"> Branch-Update Conflict Dashboard</a></li>
+<li><a href="#active-session-conflict-protocol">Active Session Conflict Protocol</a></li>
+<li><a href="#mitigation-variables--quick-reference">Mitigation Variables — Quick Reference</a></li>
+<li><a href="#high-risk-workflows--mandatory-mitigation">HIGH-Risk Workflows — Mandatory Mitigation</a></li>
+<li><a href="#-iterative-self-healing-ciyml--iterative-self-healing-ci"> <code>iterative-self-healing-ci.yml</code> — Iterative Self-Healing CI</a></li>
+<li><a href="#-copilot-evolution-suiteyml--copilot-evolution--review-unified"> <code>copilot-evolution-suite.yml</code> — Copilot Evolution &amp; Review (Unified)</a></li>
+<li><a href="#-copilot-agent-session-doneyml--auto-post-copilot-review-after-agent-session"> <code>copilot-agent-session-done.yml</code> — Auto-Post @copilot Review After Agent Session</a></li>
+<li><a href="#-agent-var-writeryml--agent-variable-writer-provenance-chain"> <code>agent-var-writer.yml</code> — Agent Variable Writer (Provenance-Chain)</a></li>
+<li><a href="#-copilot-session-chainyml--copilot-session-chain"> <code>copilot-session-chain.yml</code> — Copilot Session Chain</a></li>
+<li><a href="#-agent-orchestration-unifiedyml--agent-orchestration-unified"> <code>agent-orchestration-unified.yml</code> — Agent Orchestration (Unified)</a></li>
+<li><a href="#medium-risk-workflows--standard-mitigation">MEDIUM-Risk Workflows — Standard Mitigation</a></li>
+<li><a href="#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions">Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions</a></li>
+<li><a href="#top-20-quick-win-workflows-to-update-copilot-session-first">Top 20 Quick-Win Workflows to Update (Copilot Session First)</a></li>
+<li><a href="#perspective-capability--future-vision">Perspective: Capability + Future Vision</a></li>
+<li><a href="#what-this-codebase-is-capable-of-doing-well">What this codebase is capable of doing well</a></li>
+<li><a href="#future-vision-and-path-improvement">Future vision and path improvement</a></li>
+</ul>
+<p>Generated at: 2026-05-16T15:26:16.938000+00:00
+Repository: <code>Aries-Serpent/_codex_</code></p>
+<h2 id="dataset-artifacts">Dataset Artifacts<a class="headerlink" href="#dataset-artifacts" title="Permanent link">¶</a></h2>
+<ul>
+<li><code>docs/reporting/workflow_portfolio_7d_table.csv</code></li>
+<li><code>docs/reporting/workflow_portfolio_7d_table.md</code></li>
+<li><code>docs/reporting/copilot_agent_session_standard_operation.md</code> (standard Copilot session lifecycle, required living docs, and streamlining planset)</li>
+</ul>
+<h2 id="executive-snapshot">Executive Snapshot<a class="headerlink" href="#executive-snapshot" title="Permanent link">¶</a></h2>
+<ul>
+<li>Total workflows discovered: <strong>180</strong></li>
+<li>Workflows currently active in GitHub Actions: <strong>153</strong></li>
+<li>Workflows currently non-active in GitHub Actions: <strong>27</strong></li>
+<li>Workflows active in last 7 days: <strong>82</strong></li>
+<li>Active workflows not utilized in the last 7 days: <strong>73</strong></li>
+<li>Workflows not utilized in 7 days (including disabled): <strong>100</strong></li>
+<li>Workflows with rate-limit controls/signals: <strong>155</strong></li>
+<li>Workflows with variable mappings detected: <strong>144</strong></li>
+<li>Branch-update conflict risk counts: <strong>high=10</strong>, <strong>medium=38</strong></li>
+<li>Aggregate run conclusions (7 days): success=361, failure=50, action_required=78</li>
+</ul>
+<h2 id="portfolio-action-snapshot">Portfolio Action Snapshot<a class="headerlink" href="#portfolio-action-snapshot" title="Permanent link">¶</a></h2>
+<ul>
+<li>The refreshed portfolio table now carries three Copilot-facing decision columns:
+ <code>recommended_portfolio_action</code>, <code>copilot_smoke_posture</code>, and <code>portfolio_note</code>.</li>
+<li><strong>Do not treat 7-day inactivity by itself as a disable signal.</strong> Historical run counts matter:
+ several 7-day-idle workflows still have deep lifetime usage (<code>actionlint-audit.yml</code> 908 runs,
+ <code>agent-registry-validation.yml</code> 992, <code>api-documentation.yml</code> 139, <code>admin_setup_verification.yml</code> 70).</li>
+<li><strong>Validated immediate disable/archive targets:</strong> three active orphan workflows that no longer exist
+ on <code>main</code>, so keeping them active only clutters Actions:</li>
+<li><code>documentation-quality-check.yml</code> (workflow id <code>232765053</code>)</li>
+<li><code>cache-validation.yml</code> (workflow id <code>232765010</code>)</li>
+<li><code>cache-health-monitor.yml</code> (workflow id <code>232765030</code>)</li>
+<li><strong>Disable attempt result:</strong> direct REST <code>PUT /actions/workflows/{id}/disable</code> calls returned
+ <code>HTTP 403 Resource not accessible by integration</code> when authenticated only with <code>github.token</code>.
+ The operation requires <code>CODEX_MASTER_KEY</code> or <code>CODEX_BACKUP_KEY</code>.</li>
+<li><strong>Archive-review bucket:</strong> workflows that are low-usage but still intentional/manual utilities
+ (for example <code>app-package-download.yml</code>) should be reviewed for product value before disablement.</li>
+</ul>
+<h2 id="mermaid-mapping-workflow-variable-conflict-logic">Mermaid Mapping — Workflow + Variable + Conflict Logic<a class="headerlink" href="#mermaid-mapping-workflow-variable-conflict-logic" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Trigger Event, Workflow Entry'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> A[Trigger Event] --&gt; B[Workflow Entry]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> B --&gt; C{Guardrails}
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> C --&gt; C1[permissions]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> C --&gt; C2[concurrency/rate-limit]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> C --&gt; C3[timeout-minutes]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> C --&gt; D[Execution + Artifacts]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> D --&gt; E{Dependency Paths}
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> E --&gt; E1[workflow_call]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> E --&gt; E2[workflow_run]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> E --&gt; E3[direct jobs]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> E1 --&gt; F[Session Context Outputs]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> E2 --&gt; F
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> E3 --&gt; F
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing main branch update, PR branch behind'}}%%
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>flowchart LR
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> M[main branch update] --&gt; G[PR branch behind]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> G --&gt; H{Write-capable workflows?}
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> H --&gt;|yes| I[Conflict risk rises
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>merge/rebase/write races]
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> H --&gt;|no| J[Low conflict risk]
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> I --&gt; K[Mitigation vars
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>CODEX_SWEEP_SKIP_MAIN
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>CODEX_MAX_HEALER_RUNS_PER_HOUR
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>CODEX_HEALER_SKIP_SKIPCI]
+</code></pre></div>
+<h2 id="tokenized-variable-mapping-top-frequency">Tokenized Variable Mapping (Top Frequency)<a class="headerlink" href="#tokenized-variable-mapping-top-frequency" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th style="text-align: right;">Referencing workflows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TSEC_CODEX_MASTER_KEY</code></td>
+<td style="text-align: right;">119</td>
+</tr>
+<tr>
+<td><code>TSEC_CODEX_BACKUP_KEY</code></td>
+<td style="text-align: right;">114</td>
+</tr>
+<tr>
+<td><code>TSEC_GITHUB_TOKEN</code></td>
+<td style="text-align: right;">93</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_CACHE_VERSION</code></td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr>
+<td><code>TENV_PYTHON_VERSION</code></td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td><code>TVAR_COPILOT_AGENT_AUTH_ENABLED</code></td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td><code>TVAR_COGNITIVE_BRAIN_SESSION_NUMBER</code></td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td><code>TENV_PR_NUMBER</code></td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td><code>TVAR_COGNITIVE_BRAIN_ALLOWED_ACTORS</code></td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td><code>TENV_DRY_RUN</code></td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td><code>TSEC_CODECOV_TOKEN</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_CI_LAST_GREEN_SHA</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_HEALER_SKIP_SKIPCI</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_MAX_HEALER_RUNS_PER_HOUR</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_SWEEP_SKIP_MAIN</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td><code>TVAR_AUTONOMOUS_ACTIONS_ENABLED</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_COGNITIVE_BRAIN_INJECTION_ENABLED</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_AGENT_HANDOFF_TIMEOUT_SECONDS</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_EMBEDDING_INDEX_AUTO_REBUILD</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_CI_FAILURE_THRESHOLD</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TENV_REF</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TENV_SHA</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_CI_FAILURE_RATE</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_CODEX_COVERAGE_THRESHOLD</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td><code>TVAR_COPILOT_AGENT_STATE</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="wec-workflow-mapping-groups-token-contracts">WEC Workflow Mapping — Groups + Token Contracts<a class="headerlink" href="#wec-workflow-mapping-groups-token-contracts" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Copilot session start, "copilot-setup-steps.yml&lt;br/&gt;TVAR_CODEX_CACHE_VERSION&lt;br/&gt;TVAR_CODEX_CI_LAST_GREEN_SHA&lt;br/&gt;TVAR_CODEX_SWEEP_SKIP_MAIN"'}}%%
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>flowchart TD
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> S[Copilot session start] --&gt; SETUP["copilot-setup-steps.yml&lt;br/&gt;TVAR_CODEX_CACHE_VERSION&lt;br/&gt;TVAR_CODEX_CI_LAST_GREEN_SHA&lt;br/&gt;TVAR_CODEX_SWEEP_SKIP_MAIN"]
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> SETUP --&gt; WEC["workflow-execution-gate.yml&lt;br/&gt;TSEC_CODEX_MASTER_KEY&lt;br/&gt;TSEC_CODEX_BACKUP_KEY&lt;br/&gt;TSEC_GITHUB_TOKEN"]
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> WEC --&gt; ALWAYS["Always-required WEC&lt;br/&gt;pre-merge-validation.yml&lt;br/&gt;comment-review-gate.yml&lt;br/&gt;deferral-language-gate.yml&lt;br/&gt;agent-auth-delegation.yml&lt;br/&gt;workflow-execution-gate.yml&lt;br/&gt;copilot-agent-checkin.yml&lt;br/&gt;cost-gate.yml"]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> WEC --&gt; ACTIVE["Always-active but never auto-checked&lt;br/&gt;copilot-agent-session-done.yml&lt;br/&gt;copilot-iterative-self-healing.yml"]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> WEC --&gt; VALIDATE["Validation &amp; testing opt-ins&lt;br/&gt;validate.yml&lt;br/&gt;resilient_validation.yml&lt;br/&gt;nox_gates.yml&lt;br/&gt;mypy-baseline.yml&lt;br/&gt;coverage-with-timeout.yml&lt;br/&gt;progressive-validation.yml&lt;br/&gt;pre-flight-validation.yml&lt;br/&gt;ci-checkpoint-validation.yml&lt;br/&gt;data-quality-suite.yml&lt;br/&gt;auth-tests.yml&lt;br/&gt;pr-checks.yml&lt;br/&gt;html_visual_regression.yml"]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> WEC --&gt; SECURITY["Security &amp; quality opt-ins&lt;br/&gt;security-scanning-suite.yml&lt;br/&gt;codeql-analysis.yml&lt;br/&gt;actionlint-audit.yml&lt;br/&gt;semgrep_sarif.yml&lt;br/&gt;auto-fix-common-issues.yml&lt;br/&gt;auto-fix-pr-check.yml&lt;br/&gt;code-quality-coverage-suite.yml&lt;br/&gt;audit-qa-suite.yml&lt;br/&gt;template_lint.yml&lt;br/&gt;codeql-alert-fetcher.yml"]
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> WEC --&gt; DOCS["Documentation opt-ins&lt;br/&gt;documentation-link-checker.yml&lt;br/&gt;pages-pre-merge-validation.yml"]
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> WEC --&gt; INFRA["Infrastructure &amp; deploy opt-ins&lt;br/&gt;reference-integrity.yml&lt;br/&gt;dependency-submission.yml&lt;br/&gt;docker-build-push.yml&lt;br/&gt;rust_swarm_ci.yml&lt;br/&gt;root-org-validation.yml&lt;br/&gt;agent-registry-validation.yml&lt;br/&gt;qa-walkthrough.yml"]
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> WEC --&gt; APPROVE["Autonomy grant&lt;br/&gt;auto-approve-workflows"]
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>WEC group</th>
+<th>Workflow set</th>
+<th>Primary tokenized variables</th>
+<th>How Copilot uses it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Always-required gates</td>
+<td><code>pre-merge-validation.yml</code>, <code>comment-review-gate.yml</code>, <code>deferral-language-gate.yml</code>, <code>agent-auth-delegation.yml</code>, <code>workflow-execution-gate.yml</code>, <code>copilot-agent-checkin.yml</code>, <code>cost-gate.yml</code></td>
+<td><code>TSEC_CODEX_MASTER_KEY</code>, <code>TSEC_CODEX_BACKUP_KEY</code>, <code>TSEC_GITHUB_TOKEN</code>, <code>TVAR_COPILOT_AGENT_AUTH_ENABLED</code>, <code>TVAR_COGNITIVE_BRAIN_SESSION_NUMBER</code></td>
+<td>Keeps the PR executable, preserves WEC state, and maintains delegated autonomy.</td>
+</tr>
+<tr>
+<td>Validation/testing opt-ins</td>
+<td><code>validate.yml</code>, <code>resilient_validation.yml</code>, <code>nox_gates.yml</code>, <code>mypy-baseline.yml</code>, <code>coverage-with-timeout.yml</code>, <code>progressive-validation.yml</code>, <code>pre-flight-validation.yml</code>, <code>ci-checkpoint-validation.yml</code>, <code>data-quality-suite.yml</code>, <code>auth-tests.yml</code>, <code>pr-checks.yml</code>, <code>html_visual_regression.yml</code></td>
+<td><code>TVAR_CODEX_CACHE_VERSION</code>, <code>TENV_PYTHON_VERSION</code>, <code>TVAR_CODEX_COVERAGE_THRESHOLD</code></td>
+<td>Used when the current task needs deeper correctness evidence than the always-required gates provide.</td>
+</tr>
+<tr>
+<td>Security/quality opt-ins</td>
+<td><code>security-scanning-suite.yml</code>, <code>codeql-analysis.yml</code>, <code>actionlint-audit.yml</code>, <code>semgrep_sarif.yml</code>, <code>auto-fix-common-issues.yml</code>, <code>auto-fix-pr-check.yml</code>, <code>code-quality-coverage-suite.yml</code>, <code>audit-qa-suite.yml</code>, <code>template_lint.yml</code>, <code>codeql-alert-fetcher.yml</code></td>
+<td><code>TSEC_CODEX_MASTER_KEY</code>, <code>TSEC_CODEX_BACKUP_KEY</code>, <code>TSEC_GITHUB_TOKEN</code>, <code>TVAR_CODEX_CACHE_VERSION</code>, <code>TVAR_CODEX_CI_FAILURE_RATE</code></td>
+<td>Used to tighten review quality, surface security findings, and auto-fix common regressions.</td>
+</tr>
+<tr>
+<td>Documentation opt-ins</td>
+<td><code>documentation-link-checker.yml</code>, <code>pages-pre-merge-validation.yml</code></td>
+<td><code>TSEC_GITHUB_TOKEN</code>, <code>TVAR_CODEX_CACHE_VERSION</code></td>
+<td>Used when the change touches docs/Pages and the session needs docs-specific validation.</td>
+</tr>
+<tr>
+<td>Infrastructure/deploy opt-ins</td>
+<td><code>reference-integrity.yml</code>, <code>dependency-submission.yml</code>, <code>docker-build-push.yml</code>, <code>rust_swarm_ci.yml</code>, <code>root-org-validation.yml</code>, <code>agent-registry-validation.yml</code>, <code>qa-walkthrough.yml</code></td>
+<td><code>TSEC_CODEX_MASTER_KEY</code>, <code>TSEC_CODEX_BACKUP_KEY</code>, <code>TVAR_CODEX_CACHE_VERSION</code>, <code>TVAR_CODEX_SWEEP_SKIP_MAIN</code></td>
+<td>Used for structure, packaging, deployment, and agent-registry correctness.</td>
+</tr>
+<tr>
+<td>Autonomy grant</td>
+<td><code>auto-approve-workflows</code></td>
+<td><code>TVAR_COPILOT_AGENT_AUTH_ENABLED</code>, <code>TSEC_CODEX_MASTER_KEY</code>, <code>TSEC_CODEX_BACKUP_KEY</code></td>
+<td>Clears <code>action_required</code> fanout runs without waiting for a human maintainer.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="quantum-inspired-equations-depicting-workflow-logic-tokenized">Quantum-Inspired Equations Depicting Workflow Logic (Tokenized)<a class="headerlink" href="#quantum-inspired-equations-depicting-workflow-logic-tokenized" title="Permanent link">¶</a></h2>
+<p>[
+\left|\Psi_{workflow}\right\rangle =
+\sum_{i=1}^{N} \alpha_i \left|w_i\right\rangle
++ \beta_1 \cdot TVAR_COPILOT_AGENT_AUTH_ENABLED
++ \beta_2 \cdot TVAR_COGNITIVE_BRAIN_SESSION_NUMBER
+]</p>
+<p>[
+U_i = \lambda_1 A_i + \lambda_2 D_i + \lambda_3 V_i - \lambda_4 R_i
++ \lambda_5 \cdot \mathbb{I}(TVAR_CODEX_SWEEP_SKIP_MAIN=1)
+]</p>
+<p>[
+Q_i = \mu_1(1-A_i) + \mu_2R_i + \mu_3C_i + \mu_4B_i
++ \mu_5 \cdot TVAR_CODEX_CI_FAILURE_RATE
++ \mu_6 \cdot \mathbb{I}(TVAR_CODEX_HEALER_SKIP_SKIPCI=0)
+]</p>
+<p>Where:
+- (A_i): 7-day activity utility
+- (D_i): dependency centrality
+- (V_i): variable observability/tokenization quality
+- (R_i): missing guardrail risk
+- (C_i): Copilot cloud/coding-session relevance
+- (B_i): branch-update conflict exposure
+- <code>TVAR_CODEX_SWEEP_SKIP_MAIN</code>: branch-drift safety gate
+- <code>TVAR_CODEX_CI_FAILURE_RATE</code>: live instability pressure signal
+- <code>TVAR_CODEX_HEALER_SKIP_SKIPCI</code>: skip-ci bypass risk control</p>
+<h2 id="copilot-session-intended-process-codeless-workflow-centric">Copilot Session Intended Process (Codeless, Workflow-Centric)<a class="headerlink" href="#copilot-session-intended-process-codeless-workflow-centric" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Copilot session starts, Read startup packet + conflict dashboard'}}%%
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>flowchart LR
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> S0[Copilot session starts] --&gt; S1[Read startup packet + conflict dashboard]
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> S1 --&gt; S2{drift severity}
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> S2 --&gt;|LOW| S3[Run planned workflow path]
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> S2 --&gt;|MED/HIGH| S4[Set TVAR_CODEX_SWEEP_SKIP_MAIN + healer bounds]
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> S4 --&gt; S5[Rebase gate]
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> S5 --&gt; S3
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> S3 --&gt; S6[Validation + checks]
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> S6 --&gt; S7[Living-doc updates]
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> S7 --&gt; S8[Session handoff]
+</code></pre></div>
+<h2 id="copilot-session-operating-envelope">Copilot Session Operating Envelope<a class="headerlink" href="#copilot-session-operating-envelope" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Session budget:</strong> treat each Copilot coding/cloud-agent session as a hard <strong>60-minute</strong> window.</li>
+<li><strong>Suggested time slices:</strong></li>
+<li><strong>0–10 min:</strong> environment setup, repo preload, drift/rate-limit probe, WEC review.</li>
+<li><strong>10–50 min:</strong> scoped implementation + targeted validation.</li>
+<li><strong>50–55 min:</strong> final checks, artifact refresh, accountability/changelog updates.</li>
+<li><strong>55–60 min:</strong> <code>report_progress</code>, handoff prompt, next-session continuation notes.</li>
+<li><strong>Do not start broad workflow fanout after minute 50.</strong> Long matrix or <code>workflow_run</code> chains will
+ often outlive the active session and produce stale handoff context.</li>
+<li><strong>Rate-limit posture:</strong> prefer read-only MCP queries first, throttle repeated GitHub REST calls,
+ and keep <code>auto-approve-workflows</code> / <code>workflow-execution-gate</code> fanout bounded to the workflows
+ actually needed for the current task.</li>
+</ul>
+<h2 id="smoke-test-posture-and-expected-edge-cases">Smoke-Test Posture and Expected Edge Cases<a class="headerlink" href="#smoke-test-posture-and-expected-edge-cases" title="Permanent link">¶</a></h2>
+<ul>
+<li>This portfolio uses <strong>observed smoke posture</strong> rather than re-dispatching every workflow. The
+ <code>copilot_smoke_posture</code> column records whether the latest 7-day evidence is:</li>
+<li><code>observed-green</code></li>
+<li><code>observed-failures</code></li>
+<li><code>approval-gated-or-mixed</code></li>
+<li><code>unobserved-7d</code></li>
+<li><code>disabled</code></li>
+<li>Full live smoke-dispatch of all workflows was intentionally <strong>not</strong> performed: it would create
+ unnecessary queue pressure, mutate live PR state, and requires <code>actions:write</code> for approval-gated
+ runs.</li>
+<li>Expected edge cases:</li>
+<li><strong>Approval-gated fanout:</strong> WEC-selected workflows can stall in <code>action_required</code> unless
+ <code>auto-approve-workflows</code> is active.</li>
+<li><strong>Branch drift:</strong> <code>workflow_run</code> listeners and write-capable workflows can act on stale SHAs.</li>
+<li><strong>Token scope mismatch:</strong> <code>github.token</code> can read inventory but cannot enable/disable workflows.</li>
+<li><strong>Historical orphan records:</strong> some workflows remain active in Actions even when the backing
+ workflow file is gone from <code>main</code>.</li>
+</ul>
+<h2 id="requested-findings-summary">Requested Findings Summary<a class="headerlink" href="#requested-findings-summary" title="Permanent link">¶</a></h2>
+<h3 id="what-works">What works<a class="headerlink" href="#what-works" title="Permanent link">¶</a></h3>
+<ul>
+<li>Strong automation breadth and policy controls across core workflows.</li>
+<li>High adoption of guardrails (permissions/concurrency/timeout) in many active paths.</li>
+<li>Variable ecosystem (<code>CODEX_*</code>, <code>COPILOT_*</code>, <code>COGNITIVE_BRAIN_*</code>) is present and exploitable for session optimization.</li>
+</ul>
+<h3 id="what-does-not-work">What does not work<a class="headerlink" href="#what-does-not-work" title="Permanent link">¶</a></h3>
+<ul>
+<li>Workflow sprawl and mixed orchestration modes increase debugging overhead.</li>
+<li>Some high-value active workflows are under-utilized in the recent 7-day window.</li>
+<li>Branch-update conflict exposure remains in write-capable, event-driven workflows.</li>
+<li>7-day inactivity alone is a weak pruning heuristic; historical run counts are required.</li>
+<li>Workflow disablement is blocked in this session without an <code>actions:write</code> token.</li>
+</ul>
+<h3 id="what-is-missing">What is missing<a class="headerlink" href="#what-is-missing" title="Permanent link">¶</a></h3>
+<ul>
+<li>Canonical owner/criticality metadata contract per workflow.</li>
+<li>Unified variable token registry and enforcement policy.</li>
+<li>Automated conflict-risk scoring artifact in CI outputs.</li>
+<li>A write-scoped token in this runtime for workflow state changes (<code>disable</code> / <code>enable</code>).</li>
+</ul>
+<h3 id="what-needs-to-be-improved">What needs to be improved<a class="headerlink" href="#what-needs-to-be-improved" title="Permanent link">¶</a></h3>
+<ol>
+<li>Standardize tokenized variable contracts in all Copilot/agent workflows.</li>
+<li>Apply branch-scoped concurrency + timeout parity to lagging workflows.</li>
+<li>Harden write-capable automation against main-branch drift.</li>
+<li>Consolidate overlapping pipelines to reduce fanout complexity.</li>
+<li>Publish conflict-risk and quick-win rankings as default Copilot session context.</li>
+<li>Disable orphan active workflows that no longer exist on <code>main</code>.</li>
+<li>Distinguish <strong>disable-now</strong>, <strong>archive-review</strong>, and <strong>keep-enabled</strong> buckets in the portfolio table.</li>
+</ol>
+<h2 id="validated-disable-keep-archive-decisions">Validated Disable / Keep / Archive Decisions<a class="headerlink" href="#validated-disable-keep-archive-decisions" title="Permanent link">¶</a></h2>
+<h3 id="disable-now-validated">Disable-now (validated)<a class="headerlink" href="#disable-now-validated" title="Permanent link">¶</a></h3>
+<p>These workflows are still active in GitHub Actions but the workflow files do not exist on <code>main</code>,
+so disabling them will not interrupt a current repository process:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Workflow id</th>
+<th>Workflow path in Actions</th>
+<th>Why safe to disable now</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><code>232765053</code></td>
+<td><code>.github/workflows/documentation-quality-check.yml</code></td>
+<td>Backing file absent on <code>main</code>; only 1 lifetime run; historical orphan.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>232765010</code></td>
+<td><code>.github/workflows/cache-validation.yml</code></td>
+<td>Backing file absent on <code>main</code>; historical orphan.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>232765030</code></td>
+<td><code>.github/workflows/cache-health-monitor.yml</code></td>
+<td>Backing file absent on <code>main</code>; historical orphan.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="keep-enabled-after-lifetime-review">Keep-enabled after lifetime review<a class="headerlink" href="#keep-enabled-after-lifetime-review" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Why it stays enabled despite 7-day inactivity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actionlint-audit.yml</code></td>
+<td>908 lifetime runs; still a valid workflow compliance gate.</td>
+</tr>
+<tr>
+<td><code>agent-registry-validation.yml</code></td>
+<td>992 lifetime runs; still part of agent/repo integrity checks.</td>
+</tr>
+<tr>
+<td><code>api-documentation.yml</code></td>
+<td>139 lifetime runs; still supports documentation publishing.</td>
+</tr>
+<tr>
+<td><code>admin_setup_verification.yml</code></td>
+<td>70 lifetime runs; still used for setup/auth verification.</td>
+</tr>
+<tr>
+<td><code>app-package-download.yml</code></td>
+<td>Only 2 lifetime runs, but it is a standalone end-user packaging utility with maintained docs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="archive-review-bucket">Archive-review bucket<a class="headerlink" href="#archive-review-bucket" title="Permanent link">¶</a></h3>
+<ul>
+<li>Manual niche workflows with very low lifetime usage but still-documented product value should
+ move to an explicit archive review, not an automatic disable. <code>app-package-download.yml</code> is the
+ clearest current example.</li>
+</ul>
+<h2 id="similar-logic-overlap-groups">Similar Logic / Overlap Groups<a class="headerlink" href="#similar-logic-overlap-groups" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Representative workflows</th>
+<th>Consolidation note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WEC and PR gates</td>
+<td><code>pre-merge-validation.yml</code>, <code>comment-review-gate.yml</code>, <code>deferral-language-gate.yml</code>, <code>agent-auth-delegation.yml</code>, <code>workflow-execution-gate.yml</code>, <code>auto-approve-workflows.yml</code></td>
+<td>Keep distinct, but document as one operating cluster for Copilot sessions.</td>
+</tr>
+<tr>
+<td>Auto-fix and rescue</td>
+<td><code>auto-fix-common-issues.yml</code>, <code>auto-fix-pr-check.yml</code>, <code>ci-rescue.yml</code>, <code>self-healing.yml</code>, <code>iterative-self-healing-ci.yml</code></td>
+<td>Highest overlap area; prune duplicate auto-fix surfaces before adding more rescue paths.</td>
+</tr>
+<tr>
+<td>Validation suites</td>
+<td><code>validate.yml</code>, <code>resilient_validation.yml</code>, <code>nox_gates.yml</code>, <code>mypy-baseline.yml</code>, <code>progressive-validation.yml</code>, <code>pre-flight-validation.yml</code>, <code>ci-checkpoint-validation.yml</code>, <code>pr-checks.yml</code></td>
+<td>Large fanout with overlapping confidence goals; best place for future reduction.</td>
+</tr>
+<tr>
+<td>Security and code scanning</td>
+<td><code>codeql-analysis.yml</code>, <code>codeql-alert-fetcher.yml</code>, <code>semgrep_sarif.yml</code>, <code>security-scanning-suite.yml</code>, <code>actionlint-audit.yml</code></td>
+<td>Keep as layered controls, but unify reporting and activation language.</td>
+</tr>
+<tr>
+<td>Docs and Pages</td>
+<td><code>documentation-link-checker.yml</code>, <code>pages-pre-merge-validation.yml</code>, <code>pages-scheduled-validation.yml</code>, <code>pages-mkdocs.yml</code>, <code>workflow-link-validation.yml</code></td>
+<td>Several docs workflows share similar signal paths and can likely be simplified.</td>
+</tr>
+<tr>
+<td>Agent and cognitive orchestration</td>
+<td><code>agent-orchestration-unified.yml</code>, <code>copilot-session-chain.yml</code>, <code>copilot-pr-session-injector.yml</code>, <code>copilot-setup-steps.yml</code>, <code>chatops_copilot_trigger.yml</code></td>
+<td>Highest coordination risk when branch drift or rate limits appear mid-session.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="branch-update-conflict-dashboard">Branch-Update Conflict Dashboard<a class="headerlink" href="#branch-update-conflict-dashboard" title="Permanent link">¶</a></h2>
+<blockquote>
+<p><strong>Priority section — read before editing any file during an active session.</strong>
+When <code>main</code> receives commits while your branch session is active, the workflows below
+can race, produce stale-head writes, or cascade into each other via <code>workflow_run</code>.
+<strong>Total conflict-risk workflows: HIGH=10, MEDIUM=38.</strong></p>
+<p>Cross-reference: <a href="../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md">.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md Plan C</a></p>
+</blockquote>
+<h3 id="active-session-conflict-protocol">Active Session Conflict Protocol<a class="headerlink" href="#active-session-conflict-protocol" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Detect drift (git log main..HEAD --oneline | wc -l):
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> 0 commits LOW proceed normally
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> 1–3 MEDIUM add drift note to handoff; set CODEX_SWEEP_SKIP_MAIN=true if writing
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> 4+ HIGH rebase first; run steps below before ANY write operation
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> force-push CRITICAL abort session; fetch main; restart from baseline
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Active Copilot Session, LOW: Proceed normally'}}%%
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>flowchart TD
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> START([Active Copilot Session]) --&gt; DETECT{Detect branch drift\ngit log main..HEAD}
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> DETECT --&gt;|0 commits| LOW[LOW: Proceed normally]
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> DETECT --&gt;|1-3 commits| MEDIUM[MEDIUM: Note drift in handoff]
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> DETECT --&gt;|4+ commits| HIGH[HIGH: Rebase before any write]
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> DETECT --&gt;|force-push detected| CRIT[CRITICAL: Abort + Restart]
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> MEDIUM --&gt; MITM[Set CODEX_SWEEP_SKIP_MAIN=true\nfor all write-capable workflows]
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> HIGH --&gt; MITH[1 Rebase branch on main\n2 Re-run setup probe\n3 Set all three mitigation vars]
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> CRIT --&gt; MITC[Fetch latest main\nRe-run session bootstrap\nRe-validate required checks]
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> MITM --&gt; WRITE[Safe to edit files]
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> MITH --&gt; WRITE
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> LOW --&gt; WRITE
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a> WRITE --&gt; DONE([Continue session])
+</code></pre></div>
+<h3 id="mitigation-variables-quick-reference">Mitigation Variables — Quick Reference<a class="headerlink" href="#mitigation-variables-quick-reference" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+<th>Set when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code></td>
+<td>Stops write-capable sweeps from touching main during drift</td>
+<td>Drift ≥ MEDIUM</td>
+</tr>
+<tr>
+<td><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></td>
+<td>Caps self-healer firing rate to prevent cascades</td>
+<td>Any active session with high run volume</td>
+</tr>
+<tr>
+<td><code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+<td>Prevents healer from ignoring <code>[skip ci]</code> tags</td>
+<td>Drift ≥ MEDIUM to avoid feedback loops</td>
+</tr>
+</tbody>
+</table>
+<h3 id="high-risk-workflows-mandatory-mitigation">HIGH-Risk Workflows — Mandatory Mitigation<a class="headerlink" href="#high-risk-workflows-mandatory-mitigation" title="Permanent link">¶</a></h3>
+<blockquote>
+<p>These workflows <strong>write to the repo or dispatch other workflows</strong> and will race with branch
+drift if not guarded. Apply all three mitigation variables before running these during an
+active session.</p>
+</blockquote>
+<hr/>
+<h4 id="iterative-self-healing-ciyml-iterative-self-healing-ci"><code>iterative-self-healing-ci.yml</code> — Iterative Self-Healing CI<a class="headerlink" href="#iterative-self-healing-ciyml-iterative-self-healing-ci" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Runs (7d):</strong> 413  |  <strong>Risk:</strong> HIGH</li>
+<li><strong>Why it conflicts:</strong> Write-capable + event-driven; fires on every push and can race with
+ main-branch updates during active sessions, producing concurrent writes to the same files.</li>
+<li><strong>Mitigation steps:</strong></li>
+<li>Set repo variable <code>CODEX_SWEEP_SKIP_MAIN=true</code> before running or triggering this workflow.</li>
+<li>Set <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code> to <code>3</code> or lower to cap cascade rate.</li>
+<li>Set <code>CODEX_HEALER_SKIP_SKIPCI=true</code> to prevent skip-ci bypass during drift.</li>
+<li>Rebase your branch on latest <code>main</code> before committing any healer-initiated changes.</li>
+<li>After rebase, re-run the session access probe to confirm drift is cleared.</li>
+<li><strong>Required workflow controls:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">concurrency</span><span class="p">:</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">"${{</span><span class="nv"> </span><span class="s">github.workflow</span><span class="nv"> </span><span class="s">}}-${{</span><span class="nv"> </span><span class="s">github.head_ref</span><span class="nv"> </span><span class="s">}}"</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+</code></pre></div></li>
+</ul>
+<hr/>
+<h4 id="copilot-evolution-suiteyml-copilot-evolution-review-unified"><code>copilot-evolution-suite.yml</code> — Copilot Evolution &amp; Review (Unified)<a class="headerlink" href="#copilot-evolution-suiteyml-copilot-evolution-review-unified" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Runs (7d):</strong> 10  |  <strong>Risk:</strong> HIGH</li>
+<li><strong>Why it conflicts:</strong> Dispatches review + write operations; if <code>main</code> moved since checkout,
+ the "evolution" diff will target a stale base and can produce incorrect PR edits.</li>
+<li><strong>Mitigation steps:</strong></li>
+<li>Confirm <code>main</code> HEAD SHA matches your branch's merge-base before triggering.</li>
+<li>Set <code>CODEX_SWEEP_SKIP_MAIN=true</code>.</li>
+<li>Do not trigger manually during HIGH drift; wait for rebase to complete.</li>
+<li>After rebase, confirm no open review comments from a prior run target stale lines.</li>
+<li><strong>Required workflow controls:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nt">concurrency</span><span class="p">:</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">"${{</span><span class="nv"> </span><span class="s">github.workflow</span><span class="nv"> </span><span class="s">}}-${{</span><span class="nv"> </span><span class="s">github.head_ref</span><span class="nv"> </span><span class="s">}}"</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">45</span>
+</code></pre></div></li>
+</ul>
+<hr/>
+<h4 id="copilot-agent-session-doneyml-auto-post-copilot-review-after-agent-session"><code>copilot-agent-session-done.yml</code> — Auto-Post @copilot Review After Agent Session<a class="headerlink" href="#copilot-agent-session-doneyml-auto-post-copilot-review-after-agent-session" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Runs (7d):</strong> 10  |  <strong>Risk:</strong> HIGH</li>
+<li><strong>Why it conflicts:</strong> Fires on <code>workflow_run</code> completion; if the triggering run targeted a
+ stale SHA, the auto-post will reference an outdated diff and can confuse subsequent sessions.</li>
+<li><strong>Mitigation steps:</strong></li>
+<li>Verify the triggering workflow ran against your current branch HEAD (not a prior SHA).</li>
+<li>Set <code>CODEX_SWEEP_SKIP_MAIN=true</code> when drift is detected.</li>
+<li>If auto-post fires against a stale SHA, manually close the generated comment and re-trigger
+ after rebase.</li>
+<li><strong>Required workflow controls:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nt">concurrency</span><span class="p">:</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">"${{</span><span class="nv"> </span><span class="s">github.workflow</span><span class="nv"> </span><span class="s">}}-${{</span><span class="nv"> </span><span class="s">github.head_ref</span><span class="nv"> </span><span class="s">}}"</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># allow completion but gate new runs</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+</code></pre></div></li>
+</ul>
+<hr/>
+<h4 id="agent-var-writeryml-agent-variable-writer-provenance-chain"><code>agent-var-writer.yml</code> — Agent Variable Writer (Provenance-Chain)<a class="headerlink" href="#agent-var-writeryml-agent-variable-writer-provenance-chain" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Runs (7d):</strong> 5  |  <strong>Risk:</strong> HIGH</li>
+<li><strong>Why it conflicts:</strong> Writes directly to GitHub Repo Variables using <code>CODEX_MASTER_KEY</code>;
+ concurrent writes during drift can overwrite a value set by a prior healer run.</li>
+<li><strong>Mitigation steps:</strong></li>
+<li>Never trigger in parallel with <code>iterative-self-healing-ci.yml</code> on the same branch.</li>
+<li>Confirm <code>CODEX_CI_LAST_GREEN_SHA</code> matches the last known-good commit before writing.</li>
+<li>Set <code>CODEX_SWEEP_SKIP_MAIN=true</code> to prevent the variable writer from broadcasting to <code>main</code>.</li>
+<li>After any variable write, re-read the value via the GitHub API to confirm it was not
+ overwritten by a concurrent run.</li>
+<li><strong>Required workflow controls:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nt">concurrency</span><span class="p">:</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">"var-writer-${{</span><span class="nv"> </span><span class="s">github.repository</span><span class="nv"> </span><span class="s">}}"</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># variable writes must not be interrupted mid-write</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+</code></pre></div></li>
+</ul>
+<hr/>
+<h4 id="copilot-session-chainyml-copilot-session-chain"><code>copilot-session-chain.yml</code> — Copilot Session Chain<a class="headerlink" href="#copilot-session-chainyml-copilot-session-chain" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Runs (7d):</strong> 0 (active, not triggered recently)  |  <strong>Risk:</strong> HIGH</li>
+<li><strong>Why it conflicts:</strong> Chains multiple session workflows in sequence; if <code>main</code> moves between
+ chain steps, later steps will operate on a branch that is already behind, producing
+ incorrect artifacts or triggering redundant self-healing cycles.</li>
+<li><strong>Mitigation steps:</strong></li>
+<li>Only trigger when branch drift is LOW (0 commits behind <code>main</code>).</li>
+<li>Add a <code>git fetch origin main &amp;&amp; git merge-base --is-ancestor main HEAD</code> pre-check to the
+ first job; fail fast if the check fails.</li>
+<li>Set all three mitigation variables before any chain run when drift is MEDIUM or higher.</li>
+<li><strong>Required workflow controls:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nt">concurrency</span><span class="p">:</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">"${{</span><span class="nv"> </span><span class="s">github.workflow</span><span class="nv"> </span><span class="s">}}-${{</span><span class="nv"> </span><span class="s">github.head_ref</span><span class="nv"> </span><span class="s">}}"</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+</code></pre></div></li>
+</ul>
+<hr/>
+<h4 id="agent-orchestration-unifiedyml-agent-orchestration-unified"><code>agent-orchestration-unified.yml</code> — Agent Orchestration (Unified)<a class="headerlink" href="#agent-orchestration-unifiedyml-agent-orchestration-unified" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Runs (7d):</strong> 0 (active)  |  <strong>Risk:</strong> HIGH (elevated from medium by write scope)</li>
+<li><strong>Why it conflicts:</strong> Orchestrates multiple write-capable sub-agents; stale-branch execution
+ will propagate stale context to all sub-agents simultaneously.</li>
+<li><strong>Mitigation steps:</strong></li>
+<li>Inject <code>branch_drift_severity</code> from startup probe into the orchestration context before
+ dispatching sub-agents.</li>
+<li>Add a drift gate: if <code>drift_severity != LOW</code>, sub-agents that write should be skipped.</li>
+<li>Set <code>CODEX_SWEEP_SKIP_MAIN=true</code> and <code>CODEX_MAX_HEALER_RUNS_PER_HOUR=2</code>.</li>
+<li><strong>Required workflow controls:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nt">concurrency</span><span class="p">:</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">"${{</span><span class="nv"> </span><span class="s">github.workflow</span><span class="nv"> </span><span class="s">}}-${{</span><span class="nv"> </span><span class="s">github.head_ref</span><span class="nv"> </span><span class="s">}}"</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="nt">cancel-in-progress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+</code></pre></div></li>
+</ul>
+<hr/>
+<h3 id="medium-risk-workflows-standard-mitigation">MEDIUM-Risk Workflows — Standard Mitigation<a class="headerlink" href="#medium-risk-workflows-standard-mitigation" title="Permanent link">¶</a></h3>
+<p>Apply <code>CODEX_SWEEP_SKIP_MAIN=true</code> and branch-scoped concurrency when drift is MEDIUM or higher.
+No immediate abort required, but monitor for <code>workflow_run</code> ordering anomalies.</p>
+<table>
+<thead>
+<tr>
+<th>Workflow file</th>
+<th>Workflow name</th>
+<th style="text-align: right;">Runs 7d</th>
+<th>Conflict reason</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ci-rescue.yml</code></td>
+<td>CI Rescue — Auto-Fix &amp; @copilot RCA</td>
+<td style="text-align: right;">55</td>
+<td><code>workflow_run</code> chain ordering; stale-head auto-fix applies to wrong base</td>
+<td>Set <code>CODEX_SWEEP_SKIP_MAIN=true</code>; verify triggering run SHA matches branch HEAD</td>
+</tr>
+<tr>
+<td><code>copilot-iterative-self-healing.yml</code></td>
+<td>Copilot Iterative Self-Healing Auto-Poster</td>
+<td style="text-align: right;">55</td>
+<td>Fires on <code>workflow_run</code>; stale-head post targets wrong diff</td>
+<td>Confirm triggering run HEAD before allowing auto-post</td>
+</tr>
+<tr>
+<td><code>cleanup-stale-pr-comments.yml</code></td>
+<td>Cleanup Stale PR Comments</td>
+<td style="text-align: right;">12</td>
+<td>Writes PR comment deletions; can conflict if PR metadata changed mid-drift</td>
+<td>Run only after rebase when drift ≥ MEDIUM</td>
+</tr>
+<tr>
+<td><code>codebase-health-sweep.yml</code></td>
+<td>Codebase Health Sweep</td>
+<td style="text-align: right;">7</td>
+<td>Write-capable sweep; stale-head run touches wrong file versions</td>
+<td>Set <code>CODEX_SWEEP_SKIP_MAIN=true</code>; re-run post-rebase</td>
+</tr>
+<tr>
+<td><code>audit-qa-suite.yml</code></td>
+<td>Audit &amp; QA Suite (Unified)</td>
+<td style="text-align: right;">6</td>
+<td>Writes audit artifacts; stale base produces mismatched diff</td>
+<td>Confirm base SHA before triggering</td>
+</tr>
+<tr>
+<td><code>pr-followup-generator.yml</code></td>
+<td>Generate PR Follow-Up Prompt</td>
+<td style="text-align: right;">6</td>
+<td>Writes follow-up prompt file; stale PR state produces wrong next-action list</td>
+<td>Rebase + re-trigger</td>
+</tr>
+<tr>
+<td><code>agent_infrastructure_manager.yml</code></td>
+<td>Agent Infrastructure Manager</td>
+<td style="text-align: right;">5</td>
+<td>Infrastructure writes conflict with concurrent healer changes</td>
+<td>Serialize with <code>iterative-self-healing-ci.yml</code> via concurrency group</td>
+</tr>
+<tr>
+<td><code>agent-auth-delegation.yml</code></td>
+<td>Agent Token Delegation</td>
+<td style="text-align: right;">5</td>
+<td>Token delegation writes can race with healer variable writes</td>
+<td>Set concurrency group shared with <code>agent-var-writer.yml</code></td>
+</tr>
+<tr>
+<td><code>copilot-agent-vars-bootstrap.yml</code></td>
+<td>Agent Vars Bootstrap</td>
+<td style="text-align: right;">5</td>
+<td>Variable bootstrap conflicts with mid-session variable mutations</td>
+<td>Only run at session start before any writes</td>
+</tr>
+<tr>
+<td><code>chatops_copilot_trigger.yml</code></td>
+<td>Chat-Ops @copilot Webhook Trigger</td>
+<td style="text-align: right;">5</td>
+<td>Dispatches other workflows; stale trigger context propagates</td>
+<td>Validate branch HEAD SHA in webhook payload</td>
+</tr>
+<tr>
+<td><code>session-watchdog.yml</code></td>
+<td>Session Watchdog</td>
+<td style="text-align: right;">5</td>
+<td>Timebox enforcement may cancel work mid-rebase</td>
+<td>Set generous timeout when rebase is in progress</td>
+</tr>
+<tr>
+<td><code>workflow-execution-gate.yml</code></td>
+<td>Workflow Execution Gate</td>
+<td style="text-align: right;">5</td>
+<td>Gate parses PR body; stale PR body from drift produces wrong gate state</td>
+<td>Re-push after rebase to refresh PR body parse</td>
+</tr>
+<tr>
+<td><code>secrets-baseline-enforcer.yml</code></td>
+<td>Secrets Baseline Enforcer</td>
+<td style="text-align: right;">5</td>
+<td>Writes baseline file; concurrent writes corrupt the baseline</td>
+<td>Serialize via <code>secrets-baseline-enforcer</code> concurrency group</td>
+</tr>
+<tr>
+<td><code>copilot-agent-checkin.yml</code></td>
+<td>Agent Check-In</td>
+<td style="text-align: right;">5</td>
+<td>Check-in fires on push; stale-head check-in logs wrong context</td>
+<td>Acceptable; log only — no write action needed</td>
+</tr>
+<tr>
+<td><code>copilot-review-responder.yml</code></td>
+<td>Copilot Review Responder</td>
+<td style="text-align: right;">5</td>
+<td>Responds to review events; stale PR state produces mismatched response</td>
+<td>Re-trigger after rebase if response targets stale diff</td>
+</tr>
+<tr>
+<td><code>codex-manifest-refresh.yml</code></td>
+<td>CODEX Manifest Auto-Refresh</td>
+<td style="text-align: right;">4</td>
+<td>Writes manifest; stale-head manifest references removed files</td>
+<td>Run post-rebase; add <code>main</code> merge-base check</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions">Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions<a class="headerlink" href="#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions" title="Permanent link">¶</a></h3>
+<blockquote>
+<p>Legacy flat table retained for grep/tooling compatibility. The expanded cards above
+are the authoritative reference for step-by-step mitigation.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Workflow file</th>
+<th>Workflow name</th>
+<th>Risk</th>
+<th style="text-align: right;">Runs 7d</th>
+<th>Conflict reason</th>
+<th>Suggested mitigation variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/workflows/iterative-self-healing-ci.yml</code></td>
+<td>Iterative Self-Healing CI</td>
+<td><strong>HIGH</strong></td>
+<td style="text-align: right;">413</td>
+<td>write-capable + event-driven; races with branch/main drift</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-evolution-suite.yml</code></td>
+<td>Copilot Evolution &amp; Review (Unified)</td>
+<td><strong>HIGH</strong></td>
+<td style="text-align: right;">10</td>
+<td>write-capable + event-driven; stale base diff</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-agent-session-done.yml</code></td>
+<td>Auto-Post @copilot review After Agent Session</td>
+<td><strong>HIGH</strong></td>
+<td style="text-align: right;">10</td>
+<td>workflow_run stale-SHA auto-post</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/agent-var-writer.yml</code></td>
+<td>Agent Variable Writer (Provenance-Chain)</td>
+<td><strong>HIGH</strong></td>
+<td style="text-align: right;">5</td>
+<td>concurrent variable writes with healer</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-session-chain.yml</code></td>
+<td>Copilot Session Chain</td>
+<td><strong>HIGH</strong></td>
+<td style="text-align: right;">0</td>
+<td>chained workflows amplify stale-head errors</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/agent-orchestration-unified.yml</code></td>
+<td>Agent Orchestration (Unified)</td>
+<td><strong>HIGH</strong></td>
+<td style="text-align: right;">0</td>
+<td>stale context propagated to all sub-agents</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/ci-rescue.yml</code></td>
+<td>CI Rescue — Auto-Fix &amp; @copilot RCA</td>
+<td>medium</td>
+<td style="text-align: right;">55</td>
+<td>workflow_run ordering; stale-head auto-fix</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-iterative-self-healing.yml</code></td>
+<td>Copilot Iterative Self-Healing Auto-Poster</td>
+<td>medium</td>
+<td style="text-align: right;">55</td>
+<td>workflow_run stale-head post</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/cleanup-stale-pr-comments.yml</code></td>
+<td>Cleanup Stale PR Comments</td>
+<td>medium</td>
+<td style="text-align: right;">12</td>
+<td>comment writes on stale PR state</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/codebase-health-sweep.yml</code></td>
+<td>Codebase Health Sweep</td>
+<td>medium</td>
+<td style="text-align: right;">7</td>
+<td>write-capable; stale-head sweep</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/audit-qa-suite.yml</code></td>
+<td>Audit &amp; QA Suite (Unified)</td>
+<td>medium</td>
+<td style="text-align: right;">6</td>
+<td>stale base audit artifacts</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/pr-followup-generator.yml</code></td>
+<td>Generate PR Follow-Up Prompt</td>
+<td>medium</td>
+<td style="text-align: right;">6</td>
+<td>stale PR next-action file</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/agent_infrastructure_manager.yml</code></td>
+<td>Agent Infrastructure Manager</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>concurrent infrastructure writes</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/agent-auth-delegation.yml</code></td>
+<td>Agent Token Delegation</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>token delegation races with variable writes</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-agent-vars-bootstrap.yml</code></td>
+<td>Agent Vars Bootstrap</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>mid-session variable mutation conflicts</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/chatops_copilot_trigger.yml</code></td>
+<td>Chat-Ops @copilot Webhook Trigger</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>stale trigger context propagated</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/session-watchdog.yml</code></td>
+<td>Session Watchdog</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>cancels work mid-rebase</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/workflow-execution-gate.yml</code></td>
+<td>Workflow Execution Gate</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>stale PR body parse</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/secrets-baseline-enforcer.yml</code></td>
+<td>Secrets Baseline Enforcer</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>concurrent baseline file writes</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-agent-checkin.yml</code></td>
+<td>Agent Check-In</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>stale-head check-in log</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/copilot-review-responder.yml</code></td>
+<td>Copilot Review Responder</td>
+<td>medium</td>
+<td style="text-align: right;">5</td>
+<td>stale diff review response</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+<tr>
+<td><code>.github/workflows/codex-manifest-refresh.yml</code></td>
+<td>CODEX Manifest Auto-Refresh</td>
+<td>medium</td>
+<td style="text-align: right;">4</td>
+<td>stale-head manifest</td>
+<td><code>CODEX_SWEEP_SKIP_MAIN</code>, <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code>, <code>CODEX_HEALER_SKIP_SKIPCI</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="top-20-quick-win-workflows-to-update-copilot-session-first">Top 20 Quick-Win Workflows to Update (Copilot Session First)<a class="headerlink" href="#top-20-quick-win-workflows-to-update-copilot-session-first" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Rank</th>
+<th>Workflow file</th>
+<th>Workflow name</th>
+<th>State</th>
+<th style="text-align: right;">Runs 7d</th>
+<th>Conflict risk</th>
+<th>Quick-win updates</th>
+<th>Copilot variable refs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>dynamic/agents/anthropic-code-agent</code></td>
+<td>Claude</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>unknown</td>
+<td>Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>dynamic/anthropic-code-agent/claude</code></td>
+<td>Claude</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>unknown</td>
+<td>Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>.github/workflows/copilot-automation.yml</code></td>
+<td>Copilot Automation Suite</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>unknown</td>
+<td>Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer</code></td>
+<td>Copilot code review</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>unknown</td>
+<td>Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>dynamic/agents/openai-code-agent</code></td>
+<td>OpenAI Codex</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>unknown</td>
+<td>Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>.github/workflows/copilot-session-chain.yml</code></td>
+<td>Copilot Session Chain</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>high</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>dynamic/copilot-swe-agent/copilot</code></td>
+<td>Copilot cloud agent</td>
+<td>active</td>
+<td style="text-align: right;">6</td>
+<td>unknown</td>
+<td>Add timeout-minutes to jobs; Add branch-scoped concurrency group; Add explicit rate-limit/throughput guard</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>.github/workflows/agent-orchestration-unified.yml</code></td>
+<td>Agent Orchestration (Unified)</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>CODEX_CACHE_VERSION</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>.github/workflows/ci-rescue.yml</code></td>
+<td>CI Rescue — Auto-Fix &amp; @copilot RCA</td>
+<td>disabled_manually</td>
+<td style="text-align: right;">55</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>COPILOT_AGENT_AUTH_ENABLED</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><code>.github/workflows/cognitive_brain_ci_feedback.yml</code></td>
+<td>Cognitive Brain CI Feedback</td>
+<td>disabled_manually</td>
+<td style="text-align: right;">0</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>CODEX_CACHE_VERSION</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>.github/workflows/copilot-setup-steps.yml</code></td>
+<td>Copilot Agent Environment Setup</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>CODEX_CACHE_VERSION,CODEX_CI_LAST_GREEN_SHA,CODEX_HEALER_SKIP_SKIPCI,CODEX_MAX_HEALER_RUNS_PER_HOUR,CODEX_SWEEP_SKIP_MAIN,COPILOT_AGENT_STATE,COPILOT_RUNNER_PROFILE</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><code>.github/workflows/copilot-iterative-self-healing.yml</code></td>
+<td>Copilot Iterative Self-Healing Auto-Poster</td>
+<td>disabled_manually</td>
+<td style="text-align: right;">55</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>COGNITIVE_BRAIN_SESSION_NUMBER</td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><code>.github/workflows/copilot-pr-session-injector.yml</code></td>
+<td>Copilot PR Session Injector</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><code>.github/workflows/d-capable-promotion-gate.yml</code></td>
+<td>D_CAPABLE Agent Promotion Gate</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>medium</td>
+<td>Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><code>.github/workflows/agent-registry-validation.yml</code></td>
+<td>Agent Registry Validation</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>low</td>
+<td>Review trigger scope and remove stale fanout</td>
+<td>CODEX_CACHE_VERSION</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><code>.github/workflows/build-agent-env-cache.yml</code></td>
+<td>Build Agent Environment Cache</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>low</td>
+<td>Review trigger scope and remove stale fanout</td>
+<td>CODEX_CACHE_VERSION</td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td><code>.github/workflows/create-sub-pr-to-0D_base_.yml</code></td>
+<td>Create Sub-PR: Session Branch 0D_base_</td>
+<td>active</td>
+<td style="text-align: right;">0</td>
+<td>low</td>
+<td>Review trigger scope and remove stale fanout</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><code>.github/workflows/agent-var-writer.yml</code></td>
+<td>Agent Variable Writer (Provenance-Chain)</td>
+<td>active</td>
+<td style="text-align: right;">5</td>
+<td>high</td>
+<td>Harden against main-update drift (rebase gate + write isolation)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><code>.github/workflows/copilot-evolution-suite.yml</code></td>
+<td>Copilot Evolution &amp; Review (Unified)</td>
+<td>active</td>
+<td style="text-align: right;">10</td>
+<td>high</td>
+<td>Harden against main-update drift (rebase gate + write isolation)</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><code>.github/workflows/copilot-agent-session-done.yml</code></td>
+<td>Auto-Post @copilot review After Agent Session</td>
+<td>active</td>
+<td style="text-align: right;">10</td>
+<td>high</td>
+<td>Harden against main-update drift (rebase gate + write isolation)</td>
+<td>COPILOT_AGENT_AUTH_ENABLED</td>
+</tr>
+</tbody>
+</table>
+<h2 id="perspective-capability-future-vision">Perspective: Capability + Future Vision<a class="headerlink" href="#perspective-capability-future-vision" title="Permanent link">¶</a></h2>
+<h3 id="what-this-codebase-is-capable-of-doing-well">What this codebase is capable of doing well<a class="headerlink" href="#what-this-codebase-is-capable-of-doing-well" title="Permanent link">¶</a></h3>
+<p>The repository can already function as a policy-aware CI/CD and agent-orchestration platform with strong guardrail patterns and reusable workflow composition.</p>
+<h3 id="future-vision-and-path-improvement">Future vision and path improvement<a class="headerlink" href="#future-vision-and-path-improvement" title="Permanent link">¶</a></h3>
+<p>Move toward a lean, high-signal workflow operating system for Copilot sessions: standardized tokenized variable contracts, explicit conflict-risk controls for branch drift, and continuous pruning/consolidation of stale or overlapping automation paths.</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,3212 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/plans/AST_IMPLEMENTATION_ROADMAP/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>AST Implementation Roadmap - Based on Deep Research Analysis - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ast-implementation-roadmap-based-on-deep-research-analysis">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              AST Implementation Roadmap - Based on Deep Research Analysis
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-summary">
+<span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-assessment-matrix">
+<span class="md-ellipsis">
+      
+        Implementation Assessment Matrix
+      
+    </span>
+</a>
+<nav aria-label="Implementation Assessment Matrix" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#can-implement-now-phase-1-quick-wins">
+<span class="md-ellipsis">
+      
+        CAN IMPLEMENT NOW (Phase 1: Quick Wins)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requires-stakeholder-approval-phase-2-medium-scope">
+<span class="md-ellipsis">
+      
+        REQUIRES STAKEHOLDER APPROVAL (Phase 2: Medium Scope)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requires-dedicated-project-phase-3-full-implementation">
+<span class="md-ellipsis">
+      
+        REQUIRES DEDICATED PROJECT (Phase 3: Full Implementation)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-quick-wins-detailed-implementation-guide">
+<span class="md-ellipsis">
+      
+        Phase 1: Quick Wins - Detailed Implementation Guide
+      
+    </span>
+</a>
+<nav aria-label="Phase 1: Quick Wins - Detailed Implementation Guide" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-add-core-dependencies-05-iterations">
+<span class="md-ellipsis">
+      
+        1. Add Core Dependencies (0.5 iterations)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ast-implementation-roadmap-based-on-deep-research-analysis">AST Implementation Roadmap - Based on Deep Research Analysis<a class="headerlink" href="#ast-implementation-roadmap-based-on-deep-research-analysis" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<blockquote>
+<p>** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See <code>docs/cognitive_brain/</code> and <code>docs/admin/CONTINUATION_ROADMAP.md</code> for current state.</p>
+<p><strong>Source</strong>: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)
+<strong>Generated</strong>: 2026-06-22
+<strong>Purpose</strong>: Executable implementation roadmap for AST standardization based on comprehensive blocker research</p>
+</blockquote>
+<hr/>
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<p><strong>Context</strong>: Deep research document analyzed 46 AST blockers with comprehensive solutions from OSS, academia, and internal repositories. This roadmap translates research into <strong>actionable implementation phases</strong> with clear go/no-go criteria.</p>
+<p><strong>Key Findings</strong>:
+- <strong>46 blockers</strong> identified (15 critical, 23 implementation issues, 8 architectural challenges)
+- <strong>25+ OSS references</strong> provide proven solutions
+- <strong>3 implementation phases</strong> with distinct risk/effort profiles
+- <strong>Phase 1 (Quick Wins)</strong>: 5 iterations, can implement immediately
+- <strong>Phase 2-3</strong>: Require stakeholder approval and dedicated resources</p>
+<p><strong>Recommendation</strong>: <strong>Implement Phase 1 Quick Wins ONLY</strong> (5 iterations, low risk, high value)</p>
+<hr/>
+<h2 id="implementation-assessment-matrix">Implementation Assessment Matrix<a class="headerlink" href="#implementation-assessment-matrix" title="Permanent link">¶</a></h2>
+<h3 id="can-implement-now-phase-1-quick-wins">CAN IMPLEMENT NOW (Phase 1: Quick Wins)<a class="headerlink" href="#can-implement-now-phase-1-quick-wins" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Item</th>
+<th>Effort</th>
+<th>Risk</th>
+<th>Value</th>
+<th>Blocker(s) Resolved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Add core dependencies to pyproject.toml</td>
+<td>0.5d</td>
+<td>LOW</td>
+<td>HIGH</td>
+<td>BLOCK-DEP-001, 003, 004</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Create StandardizedASTNode dataclass</td>
+<td>1d</td>
+<td>LOW</td>
+<td>HIGH</td>
+<td>BLOCK-ARCH-001</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Implement basic DependencyGraph</td>
+<td>1d</td>
+<td>LOW</td>
+<td>MED</td>
+<td>BLOCK-ARCH-002</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Add simple MetricsAggregator</td>
+<td>0.5d</td>
+<td>LOW</td>
+<td>MED</td>
+<td>BLOCK-ARCH-003</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Create basic test suite (20+ tests)</td>
+<td>1d</td>
+<td>LOW</td>
+<td>HIGH</td>
+<td>BLOCK-TEST-001</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Add documentation templates</td>
+<td>0.5d</td>
+<td>LOW</td>
+<td>MED</td>
+<td>BLOCK-DOC-001</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Create minimal CLI interface</td>
+<td>0.5d</td>
+<td>LOW</td>
+<td>MED</td>
+<td>BLOCK-CLI-001</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Add pre-commit hook skeleton</td>
+<td>0.25d</td>
+<td>LOW</td>
+<td>LOW</td>
+<td>BLOCK-INT-001</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total Phase 1</strong>: 5.25 person-days
+<strong>Blockers Resolved</strong>: 8 of 46 (17%)
+<strong>Risk</strong>: LOW (no architectural changes, reversible)
+<strong>Value</strong>: HIGH (foundation for future work)</p>
+<hr/>
+<h3 id="requires-stakeholder-approval-phase-2-medium-scope">REQUIRES STAKEHOLDER APPROVAL (Phase 2: Medium Scope)<a class="headerlink" href="#requires-stakeholder-approval-phase-2-medium-scope" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Item</th>
+<th>Effort</th>
+<th>Risk</th>
+<th>Value</th>
+<th>Prerequisites</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>Performance baseline benchmarks</td>
+<td>1d</td>
+<td>MED</td>
+<td>HIGH</td>
+<td>Phase 1 complete</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Streaming parser for large files</td>
+<td>2d</td>
+<td>MED</td>
+<td>MED</td>
+<td>Phase 1 complete</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Parallel processing framework</td>
+<td>2d</td>
+<td>MED</td>
+<td>HIGH</td>
+<td>Phase 1 complete</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Plugin system architecture</td>
+<td>2d</td>
+<td>HIGH</td>
+<td>MED</td>
+<td>Architecture approval</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Basic knowledge graph exporter</td>
+<td>1.5d</td>
+<td>MED</td>
+<td>LOW</td>
+<td>Phase 1 complete</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Integration with existing AST code</td>
+<td>3d</td>
+<td>HIGH</td>
+<td>HIGH</td>
+<td>Migration plan</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Security hardening (SQLite, input)</td>
+<td>1.5d</td>
+<td>HIGH</td>
+<td>HIGH</td>
+<td>Security review</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Comprehensive test suite (150+ tests)</td>
+<td>3d</td>
+<td>MED</td>
+<td>HIGH</td>
+<td>Phase 1 complete</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Enhanced CLI tools</td>
+<td>2d</td>
+<td>MED</td>
+<td>MED</td>
+<td>Phase 1 complete</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Code smell detector</td>
+<td>1.5d</td>
+<td>MED</td>
+<td>MED</td>
+<td>Phase 1 complete</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total Phase 2</strong>: 19.5 person-days
+<strong>Blockers Resolved</strong>: +15 of 46 (total 50%)
+<strong>Risk</strong>: MEDIUM (requires approval, testing, review)
+<strong>Value</strong>: HIGH (production-ready features)</p>
+<hr/>
+<h3 id="requires-dedicated-project-phase-3-full-implementation">REQUIRES DEDICATED PROJECT (Phase 3: Full Implementation)<a class="headerlink" href="#requires-dedicated-project-phase-3-full-implementation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Items</th>
+<th>Effort</th>
+<th>Prerequisites</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Complete architecture</td>
+<td>5 items</td>
+<td>10d</td>
+<td>Phases 1-2, architecture approval</td>
+</tr>
+<tr>
+<td>Full metrics suite</td>
+<td>4 items</td>
+<td>8d</td>
+<td>Phases 1-2, performance testing</td>
+</tr>
+<tr>
+<td>Production CLI tools</td>
+<td>3 items</td>
+<td>6d</td>
+<td>Phases 1-2, UX design</td>
+</tr>
+<tr>
+<td>GitHub Actions integration</td>
+<td>3 items</td>
+<td>5d</td>
+<td>Phases 1-2, CI/CD setup</td>
+</tr>
+<tr>
+<td>Migration of existing code</td>
+<td>4 items</td>
+<td>12d</td>
+<td>Phases 1-2, migration plan</td>
+</tr>
+<tr>
+<td>Performance optimization</td>
+<td>3 items</td>
+<td>6d</td>
+<td>Phases 1-2, benchmarks</td>
+</tr>
+<tr>
+<td>Security audit</td>
+<td>2 items</td>
+<td>4d</td>
+<td>Phases 1-2, security review</td>
+</tr>
+<tr>
+<td>Full documentation</td>
+<td>3 items</td>
+<td>6d</td>
+<td>Phases 1-2, content complete</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total Phase 3</strong>: 57 person-days
+<strong>Blockers Resolved</strong>: +23 of 46 (total 100%)
+<strong>Risk</strong>: HIGH (major project, resources, timeline)
+<strong>Value</strong>: VERY HIGH (complete AST standardization)</p>
+<hr/>
+<h2 id="phase-1-quick-wins-detailed-implementation-guide">Phase 1: Quick Wins - Detailed Implementation Guide<a class="headerlink" href="#phase-1-quick-wins-detailed-implementation-guide" title="Permanent link">¶</a></h2>
+<h3 id="1-add-core-dependencies-05-iterations">1. Add Core Dependencies (0.5 iterations)<a class="headerlink" href="#1-add-core-dependencies-05-iterations" title="Permanent link">¶</a></h3>
+<p><strong>Blockers Resolved</strong>: BLOCK-DEP-001, BLOCK-DEP-003, BLOCK-DEP-004</p>
+<p><strong>Implementation</strong>:
+```toml</p>
+<h1 id="pyprojecttoml">pyproject.toml<a class="headerlink" href="#pyprojecttoml" title="Permanent link">¶</a></h1>
+<p>[project]
+dependencies = [
+    # ... existing ...
+    "libcst&gt;=1.0.0",     # Universal Python parser (MIT license)
+    "radon&gt;=6.0.0",      # Complexity metrics (MIT license)
+    "parso&gt;=0.8.0",      # Fallback parser (MIT license)
+]</p>
+<p>[project.optional-dependencies]
+ast_extended = [
+    "tree-sitter&gt;=0.20.0",
+    "tree-sitter-python&gt;=0.20.0",
+]
+```text</p>
+<p><strong>OSS References</strong>:
+- <a href="https://github.com/Instagram/LibCST">libcst (Instagram)</a> - Universal Python parser
+- <a href="https://github.com/rubik/radon">radon (Michele Lacchia)</a> - Complexity analysis
+- <a href="https://github.com/davidhalter/parso">parso (David Halter)</a> - Fallback parser</p>
+<p><strong>Verification</strong>:
+<code>bash
+pip install -e .
+python -c "import libcst; import radon; import parso; print(' Dependencies OK')"</code>text</p>
+<p><strong>Risk Mitigation</strong>:
+- All licenses are MIT (permissive)
+- No breaking changes to existing code
+- Optional dependencies isolate experimental features</p>
+<hr/>
+<h2 id="2-create-standardizedastnode-dataclass-1-iteration">2. Create StandardizedASTNode Dataclass (1 iteration)<a class="headerlink" href="#2-create-standardizedastnode-dataclass-1-iteration" title="Permanent link">¶</a></h2>
+<p><strong>Blocker Resolved</strong>: BLOCK-ARCH-001</p>
+<p><strong>Implementation</strong>:
+```python</p>
+<h1 id="srccodexastnodepy">src/codex/ast/node.py<a class="headerlink" href="#srccodexastnodepy" title="Permanent link">¶</a></h1>
+<p>from dataclasses import dataclass, field
+from typing import List, Optional, Dict, Any</p>
+<p>@dataclass
+class SourceLocation:
+    """Source code location."""
+    file: str
+    line: int
+    column: int
+    end_line: int
+    end_column: int</p>
+<p>@dataclass
+class StandardizedASTNode:
+    """Language-agnostic AST node representation.</p>
+<div class="highlight"><pre><span></span><code>Design inspired by:
+- libcst.MetadataWrapper
+- tree-sitter Node
+- Roslyn SyntaxNode
+"""
+node_id: str
+type: str  # "module", "function", "class", "import", etc.
+name: str
+source_location: SourceLocation
+children: List['StandardizedASTNode'] = field(default_factory=list)
+parent: Optional['StandardizedASTNode'] = None
+docstring: Optional[str] = None
+decorators: List[str] = field(default_factory=list)
+type_hints: Dict[str, str] = field(default_factory=dict)
+metadata: Dict[str, Any] = field(default_factory=dict)
+
+def to_dict(self) -&gt; Dict[str, Any]:
+    """Serialize to dictionary for JSON export."""
+    return {
+        "id": self.node_id,
+        "type": self.type,
+        "name": self.name,
+        "location": {
+            "file": self.source_location.file,
+            "start": (self.source_location.line, self.source_location.column),
+            "end": (self.source_location.end_line, self.source_location.end_column),
+        },
+        "children": [child.node_id for child in self.children],
+        "docstring": self.docstring,
+        "decorators": self.decorators,
+        "type_hints": self.type_hints,
+        "metadata": self.metadata,
+    }
+
+def walk(self):
+    """Depth-first traversal of tree."""
+    yield self
+    for child in self.children:
+        yield from child.walk()
+</code></pre></div>
+<p>```text</p>
+<p><strong>OSS References</strong>:
+- <a href="https://libcst.readthedocs.io/en/latest/metadata.html">libcst MetadataWrapper</a>
+- <a href="https://tree-sitter.github.io/tree-sitter/using-parsers#walking-trees-with-tree-cursors">tree-sitter Node API</a>
+- <a href="https://github.com/dotnet/roslyn/blob/main/docs/wiki/Roslyn-Overview.md">Roslyn SyntaxNode</a></p>
+<p><strong>Tests</strong>:
+```python</p>
+<h1 id="testsasttest_nodepy">tests/ast/test_node.py<a class="headerlink" href="#testsasttest_nodepy" title="Permanent link">¶</a></h1>
+<p>def test_standardized_node_creation():
+    """Test basic node creation."""
+    loc = SourceLocation("test.py", 1, 0, 1, 10)
+    node = StandardizedASTNode(
+        node_id="func_1",
+        type="function",
+        name="test_func",
+        source_location=loc
+    )
+    assert node.node_id == "func_1"
+    assert node.type == "function"</p>
+<p>def test_node_serialization():
+    """Test node serialization to dict."""
+    loc = SourceLocation("test.py", 1, 0, 1, 10)
+    node = StandardizedASTNode("n1", "function", "test", loc)
+    data = node.to_dict()
+    assert data["id"] == "n1"
+    assert data["type"] == "function"
+```text</p>
+<hr/>
+<h2 id="3-implement-basic-dependencygraph-1-iteration">3. Implement Basic DependencyGraph (1 iteration)<a class="headerlink" href="#3-implement-basic-dependencygraph-1-iteration" title="Permanent link">¶</a></h2>
+<p><strong>Blocker Resolved</strong>: BLOCK-ARCH-002</p>
+<p><strong>Implementation</strong>:
+```python</p>
+<h1 id="srccodexastgraphpy">src/codex/ast/graph.py<a class="headerlink" href="#srccodexastgraphpy" title="Permanent link">¶</a></h1>
+<p>from typing import Dict, List, Set
+from collections import defaultdict</p>
+<p>class DependencyGraph:
+    """Directed graph with cycle detection using Tarjan's SCC algorithm.</p>
+<div class="highlight"><pre><span></span><code>Reference: NetworkX strongly_connected_components
+https://github.com/networkx/networkx/blob/main/networkx/algorithms/components/strongly_connected.py
+"""
+
+def __init__(self):
+    self.nodes: Set[str] = set()
+    self.edges: Dict[str, Set[str]] = defaultdict(set)
+
+def add_node(self, node_id: str):
+    """Add a node to the graph."""
+    self.nodes.add(node_id)
+
+def add_edge(self, source: str, target: str):
+    """Add a directed edge from source to target."""
+    self.nodes.add(source)
+    self.nodes.add(target)
+    self.edges[source].add(target)
+
+def detect_cycles(self) -&gt; List[List[str]]:
+    """Find strongly connected components (cycles) using Tarjan's algorithm.
+
+    Returns:
+        List of cycles (each cycle is a list of node IDs)
+    """
+    index_counter = [0]
+    stack = []
+    lowlinks = {}
+    index = {}
+    on_stack = {}
+    sccs = []
+
+    def strongconnect(node_id: str):
+        index[node_id] = index_counter[0]
+        lowlinks[node_id] = index_counter[0]
+        index_counter[0] += 1
+        stack.append(node_id)
+        on_stack[node_id] = True
+
+        for target_id in self.edges.get(node_id, set()):
+            if target_id not in index:
+                strongconnect(target_id)
+                lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
+            elif on_stack.get(target_id, False):
+                lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
+
+        if lowlinks[node_id] == index[node_id]:
+            scc = []
+            while True:
+                w = stack.pop()
+                on_stack[w] = False
+                scc.append(w)
+                if w == node_id:
+                    break
+
+            if len(scc) &gt; 1:  # Only record actual cycles
+                sccs.append(scc)
+
+    for node_id in self.nodes:
+        if node_id not in index:
+            strongconnect(node_id)
+
+    return sccs
+
+def topological_sort(self) -&gt; List[str]:
+    """Return topological ordering if DAG, else raise ValueError."""
+    cycles = self.detect_cycles()
+    if cycles:
+        raise ValueError(f"Graph has cycles: {cycles}")
+
+    visited = set()
+    stack = []
+
+    def dfs(node_id: str):
+        visited.add(node_id)
+        for target in self.edges.get(node_id, set()):
+            if target not in visited:
+                dfs(target)
+        stack.append(node_id)
+
+    for node_id in self.nodes:
+        if node_id not in visited:
+            dfs(node_id)
+
+    return stack[::-1]
+</code></pre></div>
+<p>```text</p>
+<p><strong>OSS References</strong>:
+- <a href="https://github.com/networkx/networkx/blob/main/networkx/algorithms/components/strongly_connected.py">NetworkX Tarjan's SCC</a>
+- <a href="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm">Wikipedia: Tarjan's Algorithm</a></p>
+<p><strong>Tests</strong>:
+```python</p>
+<h1 id="testsasttest_graphpy">tests/ast/test_graph.py<a class="headerlink" href="#testsasttest_graphpy" title="Permanent link">¶</a></h1>
+<p>def test_cycle_detection():
+    """Test cycle detection with simple cycle."""
+    graph = DependencyGraph()
+    graph.add_edge("A", "B")
+    graph.add_edge("B", "C")
+    graph.add_edge("C", "A")  # Creates cycle</p>
+<div class="highlight"><pre><span></span><code>cycles = graph.detect_cycles()
+assert len(cycles) == 1
+assert set(cycles[0]) == {"A", "B", "C"}
+</code></pre></div>
+<p>def test_topological_sort_dag():
+    """Test topological sort on DAG."""
+    graph = DependencyGraph()
+    graph.add_edge("A", "B")
+    graph.add_edge("B", "C")</p>
+<div class="highlight"><pre><span></span><code>order = graph.topological_sort()
+assert order.index("A") &lt; order.index("B")
+assert order.index("B") &lt; order.index("C")
+</code></pre></div>
+<p>```text</p>
+<hr/>
+<h2 id="4-add-simple-metricsaggregator-05-iterations">4. Add Simple MetricsAggregator (0.5 iterations)<a class="headerlink" href="#4-add-simple-metricsaggregator-05-iterations" title="Permanent link">¶</a></h2>
+<p><strong>Blocker Resolved</strong>: BLOCK-ARCH-003</p>
+<p><strong>Implementation</strong>:
+```python</p>
+<h1 id="srccodexastmetricspy">src/codex/ast/metrics.py<a class="headerlink" href="#srccodexastmetricspy" title="Permanent link">¶</a></h1>
+<p>from dataclasses import dataclass
+from typing import Dict, List</p>
+<p>@dataclass
+class CodeMetrics:
+    """Aggregated code metrics."""
+    cyclomatic_complexity: int
+    cognitive_complexity: int
+    lines_of_code: int
+    comment_lines: int
+    maintainability_index: float</p>
+<div class="highlight"><pre><span></span><code>def to_dict(self) -&gt; Dict:
+    return {
+        "cyclomatic": self.cyclomatic_complexity,
+        "cognitive": self.cognitive_complexity,
+        "loc": self.lines_of_code,
+        "comments": self.comment_lines,
+        "maintainability": self.maintainability_index,
+    }
+</code></pre></div>
+<p>class MetricsAggregator:
+    """Aggregate metrics from multiple sources."""</p>
+<div class="highlight"><pre><span></span><code>def aggregate(self, metrics_list: List[CodeMetrics]) -&gt; CodeMetrics:
+    """Aggregate multiple metrics into summary."""
+    if not metrics_list:
+        return CodeMetrics(0, 0, 0, 0, 100.0)
+
+    return CodeMetrics(
+        cyclomatic_complexity=sum(m.cyclomatic_complexity for m in metrics_list),
+        cognitive_complexity=sum(m.cognitive_complexity for m in metrics_list),
+        lines_of_code=sum(m.lines_of_code for m in metrics_list),
+        comment_lines=sum(m.comment_lines for m in metrics_list),
+        maintainability_index=sum(m.maintainability_index for m in metrics_list) / len(metrics_list),
+    )
+</code></pre></div>
+<p>```text</p>
+<p><strong>Tests</strong>:
+```python</p>
+<h1 id="testsasttest_metricspy">tests/ast/test_metrics.py<a class="headerlink" href="#testsasttest_metricspy" title="Permanent link">¶</a></h1>
+<p>def test_metrics_aggregation():
+    """Test basic metrics aggregation."""
+    m1 = CodeMetrics(5, 3, 100, 10, 80.0)
+    m2 = CodeMetrics(3, 2, 50, 5, 90.0)</p>
+<div class="highlight"><pre><span></span><code>agg = MetricsAggregator()
+result = agg.aggregate([m1, m2])
+
+assert result.cyclomatic_complexity == 8
+assert result.lines_of_code == 150
+assert result.maintainability_index == 85.0
+</code></pre></div>
+<p>```text</p>
+<hr/>
+<h2 id="5-create-basic-test-suite-1-iteration">5. Create Basic Test Suite (1 iteration)<a class="headerlink" href="#5-create-basic-test-suite-1-iteration" title="Permanent link">¶</a></h2>
+<p><strong>Blocker Resolved</strong>: BLOCK-TEST-001</p>
+<p><strong>Test Coverage Plan</strong>:
+- <code>tests/ast/test_node.py</code> - 5 tests (node creation, serialization, traversal)
+- <code>tests/ast/test_graph.py</code> - 5 tests (graph operations, cycle detection, topological sort)
+- <code>tests/ast/test_metrics.py</code> - 3 tests (metrics creation, aggregation)
+- <code>tests/ast/test_integration.py</code> - 7 tests (end-to-end workflows)</p>
+<p><strong>Total</strong>: 20 tests, targeting 80%+ coverage of new code</p>
+<hr/>
+<h3 id="6-8-documentation-cli-pre-commit-125-iterations">6-8. Documentation, CLI, Pre-commit (1.25 iterations)<a class="headerlink" href="#6-8-documentation-cli-pre-commit-125-iterations" title="Permanent link">¶</a></h3>
+<p>Minimal implementations to complete Phase 1 foundation.</p>
+<hr/>
+<h2 id="gono-go-decision-framework">Go/No-Go Decision Framework<a class="headerlink" href="#gono-go-decision-framework" title="Permanent link">¶</a></h2>
+<h3 id="go-criteria-for-phase-1">GO Criteria for Phase 1<a class="headerlink" href="#go-criteria-for-phase-1" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Effort &lt; 1 phase</td>
+<td>YES</td>
+<td>5.25 iterations</td>
+</tr>
+<tr>
+<td>No architectural approval needed</td>
+<td>YES</td>
+<td>Additive only, no changes</td>
+</tr>
+<tr>
+<td>No external dependencies (license issues)</td>
+<td>YES</td>
+<td>All MIT licensed</td>
+</tr>
+<tr>
+<td>Aligns with maturity goals</td>
+<td>YES</td>
+<td>Improves code quality</td>
+</tr>
+<tr>
+<td>Provides immediate value</td>
+<td>YES</td>
+<td>Foundation + 8 blockers resolved</td>
+</tr>
+<tr>
+<td>Reversible if needed</td>
+<td>YES</td>
+<td>Can be removed easily</td>
+</tr>
+<tr>
+<td>Does not disrupt current work</td>
+<td>YES</td>
+<td>75% maturity complete, no conflict</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decision</strong>: <strong>RECOMMEND GO FOR PHASE 1</strong></p>
+<hr/>
+<h3 id="no-go-criteria-for-phase-2-3">NO-GO Criteria for Phase 2-3<a class="headerlink" href="#no-go-criteria-for-phase-2-3" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requires stakeholder approval</td>
+<td>BLOCK</td>
+<td>Need architecture review</td>
+</tr>
+<tr>
+<td>Needs dedicated engineering</td>
+<td>BLOCK</td>
+<td>19.5 - 57 iterations effort</td>
+</tr>
+<tr>
+<td>Performance impact assessment</td>
+<td>BLOCK</td>
+<td>Benchmarking required</td>
+</tr>
+<tr>
+<td>Security review required</td>
+<td>BLOCK</td>
+<td>SQLite, input validation</td>
+</tr>
+<tr>
+<td>Beyond current scope</td>
+<td>BLOCK</td>
+<td>75% maturity work complete</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decision</strong>: <strong>DEFER PHASE 2-3 TO DEDICATED PROJECT</strong></p>
+<hr/>
+<h2 id="success-metrics-phase-1-only">Success Metrics (Phase 1 Only)<a class="headerlink" href="#success-metrics-phase-1-only" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Verification Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dependencies installed</td>
+<td>100%</td>
+<td><code>pip check &amp;&amp; python -c "import libcst, radon, parso"</code></td>
+</tr>
+<tr>
+<td>Test coverage (new code)</td>
+<td>&gt;80%</td>
+<td><code>pytest --cov=codex.ast tests/ast/</code></td>
+</tr>
+<tr>
+<td>Tests passing</td>
+<td>100%</td>
+<td><code>pytest tests/ast/ -v</code></td>
+</tr>
+<tr>
+<td>Documentation complete</td>
+<td>100%</td>
+<td>All classes/functions have docstrings</td>
+</tr>
+<tr>
+<td>No breaking changes</td>
+<td>100%</td>
+<td>Existing tests still pass</td>
+</tr>
+<tr>
+<td>Blockers resolved</td>
+<td>8 of 46</td>
+<td>Manual verification against blocker list</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="risk-assessment">Risk Assessment<a class="headerlink" href="#risk-assessment" title="Permanent link">¶</a></h2>
+<h3 id="phase-1-risks">Phase 1 Risks<a class="headerlink" href="#phase-1-risks" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Probability</th>
+<th>Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dependency conflicts</td>
+<td>LOW</td>
+<td>MED</td>
+<td>Pin versions, test in isolation</td>
+</tr>
+<tr>
+<td>Performance regression</td>
+<td>LOW</td>
+<td>LOW</td>
+<td>No changes to existing code paths</td>
+</tr>
+<tr>
+<td>Code complexity increase</td>
+<td>LOW</td>
+<td>LOW</td>
+<td>Minimal, well-documented code</td>
+</tr>
+<tr>
+<td>Integration issues</td>
+<td>LOW</td>
+<td>MED</td>
+<td>Isolated namespace, optional import</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-2-3-risks">Phase 2-3 Risks<a class="headerlink" href="#phase-2-3-risks" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Probability</th>
+<th>Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope creep</td>
+<td>HIGH</td>
+<td>HIGH</td>
+<td>Strict phase boundaries, stakeholder alignment</td>
+</tr>
+<tr>
+<td>Performance degradation</td>
+<td>MED</td>
+<td>HIGH</td>
+<td>Comprehensive benchmarking required</td>
+</tr>
+<tr>
+<td>Security vulnerabilities</td>
+<td>MED</td>
+<td>HIGH</td>
+<td>Security audit before production</td>
+</tr>
+<tr>
+<td>Resource availability</td>
+<td>HIGH</td>
+<td>HIGH</td>
+<td>Dedicated team allocation required</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">¶</a></h2>
+<h3 id="immediate-pre-commit-1-0">Immediate (Pre-commit -1-0)<a class="headerlink" href="#immediate-pre-commit-1-0" title="Permanent link">¶</a></h3>
+<ol>
+<li>** APPROVE Phase 1 Quick Wins** (5 iterations, low risk, high value)</li>
+<li>Add dependencies to pyproject.toml</li>
+<li>Create basic AST infrastructure (node, graph, metrics)</li>
+<li>Add 20+ tests</li>
+<li>
+<p>Update documentation</p>
+</li>
+<li>
+<p>** HOLD Phase 2-3** for future dedicated project</p>
+</li>
+<li>Requires stakeholder alignment</li>
+<li>Needs dedicated resources (3-8 phases)</li>
+<li>Performance and security review required</li>
+</ol>
+<h3 id="short-term-pre-commit-1-4">Short-term (Pre-commit 1-4)<a class="headerlink" href="#short-term-pre-commit-1-4" title="Permanent link">¶</a></h3>
+<ul>
+<li>Execute Phase 1 implementation</li>
+<li>Verify all success metrics met</li>
+<li>Document lessons learned</li>
+<li>Prepare Phase 2 proposal (if desired)</li>
+</ul>
+<h3 id="long-term-months-1-3">Long-term (Months 1-3)<a class="headerlink" href="#long-term-months-1-3" title="Permanent link">¶</a></h3>
+<ul>
+<li>Review Phase 1 outcomes</li>
+<li>Decide on Phase 2-3 project funding</li>
+<li>Allocate dedicated engineering resources</li>
+<li>Execute full AST standardization project</li>
+</ul>
+<hr/>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
+<p><strong>Phase 1 Quick Wins</strong> represents the <strong>optimal balance</strong> of:
+- Low effort (5 iterations)
+- Low risk (reversible, additive)
+- High value (foundation, 8 blockers resolved)
+- Aligned with current goals (maturity improvement)</p>
+<p><strong>Recommendation</strong>: Execute Phase 1 immediately, defer Phase 2-3 to dedicated project.</p>
+<p><strong>Total Planning Documentation</strong>: 14 documents, 4,200+ lines
+- Maturity improvement (5 docs)
+- AST Phase 0 planning (7 docs)
+- AST engineering guide (1 doc)
+- AST implementation roadmap (1 doc - THIS)</p>
+<p><strong>Status</strong>: Ready for Phase 1 execution upon stakeholder approval.</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

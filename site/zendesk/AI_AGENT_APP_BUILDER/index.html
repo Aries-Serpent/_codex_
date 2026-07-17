@@ -1,0 +1,4281 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/zendesk/AI_AGENT_APP_BUILDER/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Zendesk AI Agent App Builder: Mathematical Model &amp; Design Guide - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#zendesk-ai-agent-app-builder-mathematical-model-design-guide">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Zendesk AI Agent App Builder: Mathematical Model &amp; Design Guide
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+<nav aria-label="Overview" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-distinction-app-builder-vs-zaf">
+<span class="md-ellipsis">
+      
+        Key Distinction: App Builder vs ZAF
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#visual-capability-maps">
+<span class="md-ellipsis">
+      
+        Visual Capability Maps
+      
+    </span>
+</a>
+<nav aria-label="Visual Capability Maps" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#location-spectrum">
+<span class="md-ellipsis">
+      
+        Location Spectrum
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#capability-matrix">
+<span class="md-ellipsis">
+      
+        Capability Matrix
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architectural-boundaries">
+<span class="md-ellipsis">
+      
+        Architectural Boundaries
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-flow-topology">
+<span class="md-ellipsis">
+      
+        Data Flow Topology
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-boundary-map">
+<span class="md-ellipsis">
+      
+        Security Boundary Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-profile">
+<span class="md-ellipsis">
+      
+        Performance Profile
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#navbar-space-allocation">
+<span class="md-ellipsis">
+      
+        Navbar Space Allocation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#navbar-capability-signature">
+<span class="md-ellipsis">
+      
+        Navbar Capability Signature
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mathematical-foundation">
+<span class="md-ellipsis">
+      
+        Mathematical Foundation
+      
+    </span>
+</a>
+<nav aria-label="Mathematical Foundation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#notation-conventions">
+<span class="md-ellipsis">
+      
+        Notation &amp; Conventions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#physical-interpretation">
+<span class="md-ellipsis">
+      
+        Physical Interpretation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#location-manifold-capacity-fields">
+<span class="md-ellipsis">
+      
+        Location Manifold &amp; Capacity Fields
+      
+    </span>
+</a>
+<nav aria-label="Location Manifold &amp; Capacity Fields" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-ui-location-manifold">
+<span class="md-ellipsis">
+      
+        1. UI Location Manifold
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-capacity-field-definition">
+<span class="md-ellipsis">
+      
+        2. Capacity Field Definition
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-location-capacity-values">
+<span class="md-ellipsis">
+      
+        3. Location Capacity Values
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-extended-navbar-fingerprint">
+<span class="md-ellipsis">
+      
+        4. Extended Navbar Fingerprint
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#capability-spectrum">
+<span class="md-ellipsis">
+      
+        Capability Spectrum
+      
+    </span>
+</a>
+<nav aria-label="Capability Spectrum" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-capability-dimensions">
+<span class="md-ellipsis">
+      
+        1. Capability Dimensions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-available-capability-field">
+<span class="md-ellipsis">
+      
+        2. Available-Capability Field
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-capability-interpretation">
+<span class="md-ellipsis">
+      
+        3. Capability Interpretation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-potential-well-interpretation">
+<span class="md-ellipsis">
+      
+        4. Potential Well Interpretation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-boundary-constraints">
+<span class="md-ellipsis">
+      
+        Security Boundary Constraints
+      
+    </span>
+</a>
+<nav aria-label="Security Boundary Constraints" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-forbidden-operations-set">
+<span class="md-ellipsis">
+      
+        1. Forbidden Operations Set
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-feasible-design-space">
+<span class="md-ellipsis">
+      
+        2. Feasible Design Space
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-projection-operator">
+<span class="md-ellipsis">
+      
+        3. Projection Operator
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-permission-conservation-law">
+<span class="md-ellipsis">
+      
+        4. Permission Conservation Law
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-flow-latency-model">
+<span class="md-ellipsis">
+      
+        Data Flow &amp; Latency Model
+      
+    </span>
+</a>
+<nav aria-label="Data Flow &amp; Latency Model" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-directed-flow-graph">
+<span class="md-ellipsis">
+      
+        1. Directed Flow Graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-latency-weights">
+<span class="md-ellipsis">
+      
+        2. Latency Weights
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-path-latency-functional">
+<span class="md-ellipsis">
+      
+        3. Path Latency Functional
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-rate-limit-stability">
+<span class="md-ellipsis">
+      
+        4. Rate Limit Stability
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-visual-data-flow">
+<span class="md-ellipsis">
+      
+        5. Visual Data Flow
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-feasibility-classification">
+<span class="md-ellipsis">
+      
+        Feature Feasibility Classification
+      
+    </span>
+</a>
+<nav aria-label="Feature Feasibility Classification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-feature-feasibility-amplitude">
+<span class="md-ellipsis">
+      
+        1. Feature Feasibility Amplitude
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-feasibility-classification">
+<span class="md-ellipsis">
+      
+        2. Feasibility Classification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-visual-scorecard-mapping">
+<span class="md-ellipsis">
+      
+        3. Visual Scorecard Mapping
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#location-capability-coupling">
+<span class="md-ellipsis">
+      
+        Location-Capability Coupling
+      
+    </span>
+</a>
+<nav aria-label="Location-Capability Coupling" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-compatibility-tensor">
+<span class="md-ellipsis">
+      
+        1. Compatibility Tensor
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-effective-capability">
+<span class="md-ellipsis">
+      
+        2. Effective Capability
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-location-selection-rule">
+<span class="md-ellipsis">
+      
+        3. Location Selection Rule
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#optimization-framework">
+<span class="md-ellipsis">
+      
+        Optimization Framework
+      
+    </span>
+</a>
+<nav aria-label="Optimization Framework" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-value-complexity-action-functional">
+<span class="md-ellipsis">
+      
+        1. Value-Complexity Action Functional
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-optimal-feature-selection">
+<span class="md-ellipsis">
+      
+        2. Optimal Feature Selection
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-sweet-spot-region">
+<span class="md-ellipsis">
+      
+        3. Sweet Spot Region
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#practical-decision-rules">
+<span class="md-ellipsis">
+      
+        Practical Decision Rules
+      
+    </span>
+</a>
+<nav aria-label="Practical Decision Rules" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-closed-form-heuristic">
+<span class="md-ellipsis">
+      
+        1. Closed-Form Heuristic
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-quick-decision-matrix">
+<span class="md-ellipsis">
+      
+        2. Quick Decision Matrix
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-location-decision-tree">
+<span class="md-ellipsis">
+      
+        3. Location Decision Tree
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#worked-examples">
+<span class="md-ellipsis">
+      
+        Worked Examples
+      
+    </span>
+</a>
+<nav aria-label="Worked Examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-a-multi-step-configuration-wizard">
+<span class="md-ellipsis">
+      
+        Example A: Multi-Step Configuration Wizard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-b-real-time-ticket-monitor">
+<span class="md-ellipsis">
+      
+        Example B: Real-Time Ticket Monitor
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-c-bulk-data-export-tool">
+<span class="md-ellipsis">
+      
+        Example C: Bulk Data Export Tool
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-d-simple-form-with-external-validation">
+<span class="md-ellipsis">
+      
+        Example D: Simple Form with External Validation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-guidance">
+<span class="md-ellipsis">
+      
+        Implementation Guidance
+      
+    </span>
+</a>
+<nav aria-label="Implementation Guidance" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-design-checklist">
+<span class="md-ellipsis">
+      
+        1. Design Checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-capability-mapping-template">
+<span class="md-ellipsis">
+      
+        2. Capability Mapping Template
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-forbidden-patterns">
+<span class="md-ellipsis">
+      
+        3. Forbidden Patterns
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-performance-optimization">
+<span class="md-ellipsis">
+      
+        4. Performance Optimization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-testing-strategy">
+<span class="md-ellipsis">
+      
+        5. Testing Strategy
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-monitoring-metrics">
+<span class="md-ellipsis">
+      
+        6. Monitoring &amp; Metrics
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-migration-from-zaf">
+<span class="md-ellipsis">
+      
+        7. Migration from ZAF
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#summary">
+<span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+</a>
+<nav aria-label="Summary" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-takeaways">
+<span class="md-ellipsis">
+      
+        Key Takeaways
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reference">
+<span class="md-ellipsis">
+      
+        Reference
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#next-steps">
+<span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#extended-visual-reference">
+<span class="md-ellipsis">
+      
+        Extended Visual Reference
+      
+    </span>
+</a>
+<nav aria-label="Extended Visual Reference" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-pattern-matrix">
+<span class="md-ellipsis">
+      
+        Integration Pattern Matrix
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#development-lifecycle">
+<span class="md-ellipsis">
+      
+        Development Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-feasibility-scorecard-navbar-context">
+<span class="md-ellipsis">
+      
+        Feature Feasibility Scorecard (Navbar Context)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anti-patterns-to-avoid">
+<span class="md-ellipsis">
+      
+        Anti-Patterns to Avoid
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cost-benefit-zones">
+<span class="md-ellipsis">
+      
+        Cost-Benefit Zones
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#optimal-use-cases-summary">
+<span class="md-ellipsis">
+      
+        Optimal Use Cases Summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommended-workflow">
+<span class="md-ellipsis">
+      
+        Recommended Workflow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#final-recommendations-for-navbar-app-projects">
+<span class="md-ellipsis">
+      
+        Final Recommendations for Navbar App Projects
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai-assistant-context-limitations">
+<span class="md-ellipsis">
+      
+        AI Assistant Context &amp; Limitations
+      
+    </span>
+</a>
+<nav aria-label="AI Assistant Context &amp; Limitations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#knowledge-basis">
+<span class="md-ellipsis">
+      
+        Knowledge Basis
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitations-validation">
+<span class="md-ellipsis">
+      
+        Limitations &amp; Validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#confidence-calibration">
+<span class="md-ellipsis">
+      
+        Confidence Calibration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai-assistant-capability-profile">
+<span class="md-ellipsis">
+      
+        AI Assistant Capability Profile
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#effective-usage-guidelines">
+<span class="md-ellipsis">
+      
+        Effective Usage Guidelines
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#transparency-notes">
+<span class="md-ellipsis">
+      
+        Transparency Notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#comparison-ai-assistant-vs-other-tools">
+<span class="md-ellipsis">
+      
+        Comparison: AI Assistant vs Other Tools
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="zendesk-ai-agent-app-builder-mathematical-model-design-guide">Zendesk AI Agent App Builder: Mathematical Model &amp; Design Guide<a class="headerlink" href="#zendesk-ai-agent-app-builder-mathematical-model-design-guide" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.0</p>
+<p>**Last Updated: 2026-06-22</p>
+<p>This document provides a formal, physics-inspired mathematical model for understanding the capabilities, limitations, and optimal design patterns for <strong>Zendesk AI Agent App Builder</strong> (distinct from the traditional Zendesk App Framework/ZAF).</p>
+<blockquote>
+<p><strong>Note</strong>: For a visual-first overview with comprehensive ASCII diagrams and AI transparency notes, see <a href="../CANONICAL_CAPABILITY_MAP/">CANONICAL_CAPABILITY_MAP.md</a>.</p>
+</blockquote>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#visual-capability-maps">Visual Capability Maps</a></li>
+<li><a href="#mathematical-foundation">Mathematical Foundation</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#location-manifold-capacity-fields">Location Manifold &amp; Capacity Fields</a> --></li>
+<li><a href="#capability-spectrum">Capability Spectrum</a></li>
+<li><a href="#security-boundary-constraints">Security Boundary Constraints</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#data-flow-latency-model">Data Flow &amp; Latency Model</a> --></li>
+<li><a href="#feature-feasibility-classification">Feature Feasibility Classification</a></li>
+<li><a href="#location-capability-coupling">Location-Capability Coupling</a></li>
+<li><a href="#optimization-framework">Optimization Framework</a></li>
+<li><a href="#practical-decision-rules">Practical Decision Rules</a></li>
+<li><a href="#worked-examples">Worked Examples</a></li>
+<li><a href="#implementation-guidance">Implementation Guidance</a></li>
+<li><a href="#extended-visual-reference">Extended Visual Reference</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#ai-assistant-context-limitations">AI Assistant Context &amp; Limitations</a> --></li>
+</ol>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>Zendesk AI Agent App Builder operates within a constrained environment with specific capabilities and limitations. This document models these as a <strong>constrained field theory</strong> where:</p>
+<ul>
+<li><strong>Locations</strong> (Sidebar, Topbar, Navbar) have different capacity profiles</li>
+<li><strong>Capabilities</strong> exist on a spectrum of feasibility</li>
+<li><strong>Security boundaries</strong> act as hard constraints</li>
+<li><strong>Latency</strong> and <strong>rate limits</strong> impose natural bottlenecks</li>
+<li><strong>Feature decisions</strong> can be optimized using a physics-inspired action functional</li>
+</ul>
+<h3 id="key-distinction-app-builder-vs-zaf">Key Distinction: App Builder vs ZAF<a class="headerlink" href="#key-distinction-app-builder-vs-zaf" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>AI Agent App Builder</th>
+<th>ZAF (Zendesk App Framework)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Primary Use</strong></td>
+<td>AI-driven agent workflows</td>
+<td>Custom UI extensions</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Native Zendesk locations</td>
+<td>iFrame-based apps</td>
+</tr>
+<tr>
+<td><strong>Capabilities</strong></td>
+<td>Constrained by mathematical model</td>
+<td>More flexible, developer-controlled</td>
+</tr>
+<tr>
+<td><strong>Security Model</strong></td>
+<td>Proxy-based, sandboxed</td>
+<td>OAuth, controlled API access</td>
+</tr>
+</tbody>
+</table>
+<h2 id="visual-capability-maps">Visual Capability Maps<a class="headerlink" href="#visual-capability-maps" title="Permanent link">¶</a></h2>
+<p>This section provides ASCII-based visual representations of the Zendesk App Builder ecosystem, complementing the mathematical model with intuitive diagrams.</p>
+<h3 id="location-spectrum">Location Spectrum<a class="headerlink" href="#location-spectrum" title="Permanent link">¶</a></h3>
+<p>```text</p>
+<p>ZENDESK APP BUILDER ECOSYSTEM (Navbar Context) </p>
+<p>Ticket Sidebar Topbar Navbar (App Area)
+▓▓▓ ▓▓▓▓▓ ▓▓▓▓▓▓▓▓▓▓
+[|||] [=====] []</p>
+<p>Context: ████ Context: ██ Context: █
+ Space: █ Space: ██ Space: ██████████
+ Persist: ████ Persist: █ Persist: █████
+ Complex: █ Complex: ██ Complex: ████████
+```text
+<strong>Interpretation</strong>:
+- <strong>Sidebar</strong>: High contextual awareness (sees current ticket), minimal space
+- <strong>Topbar</strong>: Balanced but limited in all dimensions
+- <strong>Navbar</strong>: Maximum space and complexity support, minimal ticket context</p>
+<h3 id="capability-matrix">Capability Matrix<a class="headerlink" href="#capability-matrix" title="Permanent link">¶</a></h3>
+<p>```text
+DIMENSION CAPABILITY [▓] LIMITATION [▒] BLOCKED [░]</p>
+<p>UI Complexity [▓▓▓▓▓▓▓▓░░] Multi-step Native modal 
+Data Rendering [▓▓▓▓▓▓▓▓▓░] Tables/Charts Real-time push 
+External APIs [▓▓▓▓▓▒▒▒░░] REST via proxy Direct calls 
+Authentication [▓▓▓▓▓▒▒░░░] OAuth/API key Custom SSO 
+State Management [▓▓▓▓▓▓▒░░░] React state Redux/Context ≈
+Backend Logic [░░░░░░░░░░] Client-side Custom server 
+Real-time Data [▓▓▒▒░░░░░░] Polling WebSockets 
+Data Persistence [▓▓▓▒▒▒░░░░] Zendesk objects Custom DB 
+Bulk Operations [▓▓▓▒▒▒▒░░░] Small batches 1000s records 
+Custom Navigation [▓▓▓▓▓▓▒░░░] In-app routing Chrome override 
+```text
+<strong>Legend</strong>:
+- <strong>▓</strong> = Full or strong support
+- <strong>▒</strong> = Partial support with limitations
+- <strong>░</strong> = Minimal or no support</p>
+<h3 id="architectural-boundaries">Architectural Boundaries<a class="headerlink" href="#architectural-boundaries" title="Permanent link">¶</a></h3>
+<p>```text</p>
+<p>BROWSER RUNTIME (Client-Side) </p>
+<p>APPLICATION (JavaScript/React) 
+ • Render UI 
+ • Handle events 
+ • Call APIs via proxy 
+ • Store state (ephemeral) </p>
+<p>ZENDESK SECURITY PROXY 
+ • API key hiding 
+ • Rate limiting 
+ • CORS bypass </p>
+<p>[External APIs] </p>
+<p>[Zendesk Core APIs]</p>
+<p>FORBIDDEN 
+ ZONE 
+ • Custom server 
+ • Direct DB 
+ • File system 
+ • Native code </p>
+<p>```text</p>
+<h3 id="data-flow-topology">Data Flow Topology<a class="headerlink" href="#data-flow-topology" title="Permanent link">¶</a></h3>
+<p>```json
+Agent Action App UI Client Logic API Proxy External Service</p>
+<p>[FAST] [FAST] [MEDIUM] [SLOW] [SLOW]
+ &lt;1ms &lt;10ms &lt;100ms 200-500ms 500-2000ms
+ ▓ ▓ ▒ ▒ ░</p>
+<p>BOTTLENECK POINTS:
+ API Proxy (rate limits, latency)
+ External Service (downtime, throttling)
+ Client Processing (heavy computation freezes UI)
+```text</p>
+<h3 id="security-boundary-map">Security Boundary Map<a class="headerlink" href="#security-boundary-map" title="Permanent link">¶</a></h3>
+<p>```text</p>
+<p>PUBLIC WEB (Untrusted)</p>
+<p>CSP, CORS, Auth
+ ZENDESK WALL </p>
+<p>APPLICATION (Sandboxed)</p>
+<p>Zendesk Agent External
+ API Data APIs 
+ [] [] [≈] </p>
+<p>ALLOWED: Read agent-permitted data
+ Write via Zendesk APIs
+ Call external APIs (proxied)</p>
+<p>FORBIDDEN: Access other agents' private data
+ Bypass Zendesk permissions
+ Store credentials client-side
+ Direct external API calls
+```text</p>
+<h3 id="performance-profile">Performance Profile<a class="headerlink" href="#performance-profile" title="Permanent link">¶</a></h3>
+<p>```text
+Operation Type Speed Reliability Scalability</p>
+<p>UI Rendering ▓▓▓▓▓ ▓▓▓▓▓ ▓▓▓▓▓
+Local State Updates ▓▓▓▓▓ ▓▓▓▓▓ ▓▓▓░
+Zendesk API (single) ▓▓▓░░ ▓▓▓▓░ ▓▓▓░░
+Zendesk API (bulk) ▓▓░░░ ▓▓▓░░ ▓░░░░
+External API (proxied) ▓▓░░░ ▓▓░░░ ▓▓░░░
+Heavy Computation ▓░░░░ ▓▓▓▓▓ ░░░░░
+Real-time Updates ▓░░░░ ▓▓░░░ ▓░░░░</p>
+<p>LEGEND: ▓ = Good, ░ = Poor (Speed in ms: ▓ &lt; 100, ░ &gt; 1000)
+```text</p>
+<h3 id="navbar-space-allocation">Navbar Space Allocation<a class="headerlink" href="#navbar-space-allocation" title="Permanent link">¶</a></h3>
+<p>```text</p>
+<p>[Z] Zendesk Global Header [Agent] [Settings] FIXED</p>
+<p>[] 
+ Nav 
+ bar </p>
+<p>APP CONTENT AREA 
+ (Full width ~1200-1800px) 
+ (Full height = viewport - chrome) </p>
+<p>Multi-column layouts 
+ Data tables 
+ Dashboards 
+ Forms &amp; wizards </p>
+<p>FIXED CONSTRAINTS:
+ Cannot hide Zendesk header/sidebar
+ Cannot go full-screen
+ Can use tabs/routing within the app area
+ Can open modals/overlays
+```text</p>
+<h3 id="navbar-capability-signature">Navbar Capability Signature<a class="headerlink" href="#navbar-capability-signature" title="Permanent link">¶</a></h3>
+<p>```text
+CAPABILITY FINGERPRINT:
+Space: ██████████ 10/10
+Complexity: ████████░░ 8/10
+Context: █░░░░░░░░░ 1/10
+Performance: ██████░░░░ 6/10
+Integration: ███████░░░ 7/10
+Real-time: ██░░░░░░░░ 2/10</p>
+<p>OVERALL SCORE: 34/60 (Navbar excels at complex, space-intensive apps)
+```text</p>
+<h2 id="mathematical-foundation">Mathematical Foundation<a class="headerlink" href="#mathematical-foundation" title="Permanent link">¶</a></h2>
+<h3 id="notation-conventions">Notation &amp; Conventions<a class="headerlink" href="#notation-conventions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Spaces</strong>: Calligraphic letters (e.g., $\mathcal{L}$, $\mathcal{D}$)</li>
+<li><strong>Fields</strong>: Bold lowercase (e.g., $\mathbf{s}$, $\mathbf{f}$)</li>
+<li><strong>Scalars</strong>: Greek letters (e.g., $\phi$, $\alpha$, $\lambda$)</li>
+<li><strong>Sets</strong>: Uppercase Roman (e.g., $V$, $E$, $\Omega$)</li>
+<li><strong>Normalization</strong>: All capacity/capability values ∈ [0,1]</li>
+</ul>
+<h3 id="physical-interpretation">Physical Interpretation<a class="headerlink" href="#physical-interpretation" title="Permanent link">¶</a></h3>
+<p>Think of this model as a <strong>constrained field theory</strong> where:</p>
+<ul>
+<li><strong>Potential wells</strong> represent capability availability ($\phi_d$)</li>
+<li><strong>Action functionals</strong> guide optimal feature selection ($\mathcal{S}$)</li>
+<li><strong>Conservation laws</strong> enforce security invariants ($\nabla \cdot J = 0$)</li>
+<li><strong>Projection operators</strong> map ideal designs onto feasible space ($\mathcal{P}$)</li>
+</ul>
+<h2 id="location-manifold-capacity-fields">Location Manifold &amp; Capacity Fields<a class="headerlink" href="#location-manifold-capacity-fields" title="Permanent link">¶</a></h2>
+<h3 id="1-ui-location-manifold">1. UI Location Manifold<a class="headerlink" href="#1-ui-location-manifold" title="Permanent link">¶</a></h3>
+<p>The <strong>UI location manifold</strong> represents the three primary deployment locations:</p>
+<p>$$
+\mathcal{L} = {\mathrm{SB}, \mathrm{TB}, \mathrm{NB}}
+$$</p>
+<p>where:
+- <strong>SB</strong> = Sidebar
+- <strong>TB</strong> = Topbar
+- <strong>NB</strong> = Navbar</p>
+<h3 id="2-capacity-field-definition">2. Capacity Field Definition<a class="headerlink" href="#2-capacity-field-definition" title="Permanent link">¶</a></h3>
+<p>Each location $\ell \in \mathcal{L}$ has a 4-component <strong>capacity field</strong>:</p>
+<p>$$
+\mathbf{s}(\ell) = \big(C_{\text{ctx}}, C_{\text{space}}, C_{\text{persist}}, C_{\text{complex}}\big) \in [0,1]^4
+$$</p>
+<p><strong>Components</strong>:
+- $C_{\text{ctx}}$ — Contextual information availability
+- $C_{\text{space}}$ — UI space/real estate
+- $C_{\text{persist}}$ — State persistence capability
+- $C_{\text{complex}}$ — Support for complex interactions</p>
+<h3 id="3-location-capacity-values">3. Location Capacity Values<a class="headerlink" href="#3-location-capacity-values" title="Permanent link">¶</a></h3>
+<p>Normalized from empirical "block" measurements (k blocks k/10):</p>
+<p>$$
+\begin{aligned}
+\mathbf{s}(\mathrm{SB}) &amp;= (0.4, 0.1, 0.4, 0.1) \
+\mathbf{s}(\mathrm{TB}) &amp;= (0.2, 0.2, 0.1, 0.2) \
+\mathbf{s}(\mathrm{NB}) &amp;= (0.1, 1.0, 0.5, 0.8)
+\end{aligned}
+$$</p>
+<p><strong>Interpretation</strong>:
+- <strong>Sidebar</strong>: High context, limited space
+- <strong>Topbar</strong>: Balanced but constrained
+- <strong>Navbar</strong>: Massive space, excellent for complex UIs</p>
+<h3 id="4-extended-navbar-fingerprint">4. Extended Navbar Fingerprint<a class="headerlink" href="#4-extended-navbar-fingerprint" title="Permanent link">¶</a></h3>
+<p>For the <strong>Navbar</strong>, we use an extended 6-component fingerprint:</p>
+<p>$$
+\mathbf{f}(\mathrm{NB}) = (C_{\text{space}}, C_{\text{complex}}, C_{\text{ctx}}, C_{\text{perf}}, C_{\text{integ}}, C_{\text{rt}})
+$$</p>
+<p>$$
+\mathbf{f}(\mathrm{NB}) = (1.0, 0.8, 0.1, 0.6, 0.7, 0.2)
+$$</p>
+<p><strong>Additional Components</strong>:
+- $C_{\text{perf}}$ — Performance headroom (0.6)
+- $C_{\text{integ}}$ — Integration capability (0.7)
+- $C_{\text{rt}}$ — Real-time support (0.2)</p>
+<h2 id="capability-spectrum">Capability Spectrum<a class="headerlink" href="#capability-spectrum" title="Permanent link">¶</a></h2>
+<h3 id="1-capability-dimensions">1. Capability Dimensions<a class="headerlink" href="#1-capability-dimensions" title="Permanent link">¶</a></h3>
+<p>The <strong>capability dimension space</strong>:</p>
+<p>$$
+\mathcal{D} = {\text{UI}, \text{Render}, \text{ExtAPI}, \text{Auth}, \text{State}, \text{Backend}, \text{Realtime}, \text{Persist}, \text{Bulk}, \text{Nav}}
+$$</p>
+<h3 id="2-available-capability-field">2. Available-Capability Field<a class="headerlink" href="#2-available-capability-field" title="Permanent link">¶</a></h3>
+<p>For each dimension $d \in \mathcal{D}$, define the <strong>available-capability field</strong>:</p>
+<p>$$
+\phi_d \in [0,1] \quad (d \in \mathcal{D})
+$$</p>
+<p>Measured as the fraction of "▓" (available) in a 10-cell visual bar:</p>
+<p>$$
+\begin{aligned}
+\phi_{\text{UI}} &amp;= 0.8 &amp; \phi_{\text{Render}} &amp;= 0.9 &amp; \phi_{\text{ExtAPI}} &amp;= 0.5 \
+\phi_{\text{Auth}} &amp;= 0.5 &amp; \phi_{\text{State}} &amp;= 0.6 &amp; \phi_{\text{Backend}} &amp;= 0.0 \
+\phi_{\text{Realtime}} &amp;= 0.2 &amp; \phi_{\text{Persist}} &amp;= 0.3 &amp; \phi_{\text{Bulk}} &amp;= 0.3 \
+\phi_{\text{Nav}} &amp;= 0.6
+\end{aligned}
+$$</p>
+<h3 id="3-capability-interpretation">3. Capability Interpretation<a class="headerlink" href="#3-capability-interpretation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>$\phi$</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>UI</strong></td>
+<td>0.8</td>
+<td>Rich UI components available</td>
+</tr>
+<tr>
+<td><strong>Render</strong></td>
+<td>0.9</td>
+<td>Excellent rendering performance</td>
+</tr>
+<tr>
+<td><strong>ExtAPI</strong></td>
+<td>0.5</td>
+<td>Moderate external API access (via proxy)</td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td>0.5</td>
+<td>OAuth flows supported but constrained</td>
+</tr>
+<tr>
+<td><strong>State</strong></td>
+<td>0.6</td>
+<td>Good client-side state management</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>0.0</td>
+<td><strong>No custom backend</strong> (hard limit)</td>
+</tr>
+<tr>
+<td><strong>Realtime</strong></td>
+<td>0.2</td>
+<td>Limited real-time capabilities</td>
+</tr>
+<tr>
+<td><strong>Persist</strong></td>
+<td>0.3</td>
+<td>Limited persistent storage</td>
+</tr>
+<tr>
+<td><strong>Bulk</strong></td>
+<td>0.3</td>
+<td>Limited bulk operations</td>
+</tr>
+<tr>
+<td><strong>Nav</strong></td>
+<td>0.6</td>
+<td>Good navigation/routing support</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-potential-well-interpretation">4. Potential Well Interpretation<a class="headerlink" href="#4-potential-well-interpretation" title="Permanent link">¶</a></h3>
+<p>Interpret $\phi_d$ as a <strong>potential well</strong>:
+- <strong>High $\phi_d$</strong> Low "action cost" to realize capability
+- <strong>Low $\phi_d$</strong> High friction, may not be feasible
+- $\phi_d = 0$ Forbidden/impossible</p>
+<h2 id="security-boundary-constraints">Security Boundary Constraints<a class="headerlink" href="#security-boundary-constraints" title="Permanent link">¶</a></h2>
+<h3 id="1-forbidden-operations-set">1. Forbidden Operations Set<a class="headerlink" href="#1-forbidden-operations-set" title="Permanent link">¶</a></h3>
+<p>Define the <strong>forbidden operation set</strong>:</p>
+<p>$$
+\mathcal{F} = {\text{DirectExternalCalls}, \text{CustomServer}, \text{DirectDB}, \text{NativeCode}, \text{ClientStoredCreds}}
+$$</p>
+<p><strong>Rationale</strong>: Zendesk App Builder operates in a sandboxed environment with proxy-mediated external access.</p>
+<h3 id="2-feasible-design-space">2. Feasible Design Space<a class="headerlink" href="#2-feasible-design-space" title="Permanent link">¶</a></h3>
+<p>The <strong>feasible design space</strong> $\Omega$ is defined by constraints:</p>
+<p>$$
+\Omega = {x \in {0,1}^n \mid g_j(x) \leq 0, \; h_k(x) = 0, \; \chi_{\mathcal{F}}(x) = 0}
+$$</p>
+<p>where:
+- $x$ — Feature toggle vector (binary: include feature or not)
+- $g_j(x) \leq 0$ — Inequality constraints (rate limits, latency ceilings, resource limits)
+- $h_k(x) = 0$ — Equality constraints (permission invariants)
+- $\chi_{\mathcal{F}}(x) = 0$ — Indicator function: nulls any design using forbidden operations</p>
+<h3 id="3-projection-operator">3. Projection Operator<a class="headerlink" href="#3-projection-operator" title="Permanent link">¶</a></h3>
+<p><strong>Project</strong> an ideal design $x$ onto the feasible space:</p>
+<p>$$
+\mathcal{P}(x) = \arg\min_{y \in \Omega} |y - x|_2
+$$</p>
+<p>This models "what survives" the Zendesk security wall (CSP, CORS, Auth, Proxy).</p>
+<h3 id="4-permission-conservation-law">4. Permission Conservation Law<a class="headerlink" href="#4-permission-conservation-law" title="Permanent link">¶</a></h3>
+<p>Define a <strong>permission current</strong> $J$ with conservation law:</p>
+<p>$$
+\nabla \cdot J = 0 \quad \text{(inside sandbox)}
+$$</p>
+<p>$$
+J \cdot n\big|_{\text{wall}} = 0 \quad \text{(for forbidden ops)}
+$$</p>
+<p><strong>Interpretation</strong>: Permissions neither appear nor vanish; flows that violate the wall have zero normal component (they don't pass).</p>
+<h2 id="data-flow-latency-model">Data Flow &amp; Latency Model<a class="headerlink" href="#data-flow-latency-model" title="Permanent link">¶</a></h2>
+<h3 id="1-directed-flow-graph">1. Directed Flow Graph<a class="headerlink" href="#1-directed-flow-graph" title="Permanent link">¶</a></h3>
+<p>Model the system as a <strong>directed graph</strong>:</p>
+<p>$$
+\mathcal{G} = (V, E)
+$$</p>
+<p>where:</p>
+<p>$$
+V = {\mathrm{Agent}, \mathrm{UI}, \mathrm{Client}, \mathrm{Proxy}, \mathrm{External}}
+$$</p>
+<h3 id="2-latency-weights">2. Latency Weights<a class="headerlink" href="#2-latency-weights" title="Permanent link">¶</a></h3>
+<p>Edges $e \in E$ carry <strong>latency weights</strong> $w_e$:</p>
+<p>$$
+\begin{aligned}
+w_{\mathrm{Agent} \to \mathrm{UI}} &amp;\approx 0.5 \text{ ms} \
+w_{\mathrm{UI} \to \mathrm{Client}} &amp;\approx 5 \text{ ms} \
+w_{\mathrm{Client} \to \mathrm{Proxy}} &amp;\approx 50 \text{ ms} \
+w_{\mathrm{Proxy} \to \mathrm{External}} &amp;\approx 350 \text{ ms} \
+w_{\mathrm{External} \to \mathrm{Resp}} &amp;\approx 1200 \text{ ms}
+\end{aligned}
+$$</p>
+<h3 id="3-path-latency-functional">3. Path Latency Functional<a class="headerlink" href="#3-path-latency-functional" title="Permanent link">¶</a></h3>
+<p>For a data flow path $\pi$, define <strong>path latency</strong>:</p>
+<p>$$
+\mathcal{L}(\pi) = \sum_{e \in \pi} w_e
+$$</p>
+<p><strong>Expected latency</strong> for typical external API call:</p>
+<p>$$
+\mathbb{E}[\mathcal{L}] \approx 1.6 \text{ s}
+$$</p>
+<h3 id="4-rate-limit-stability">4. Rate Limit Stability<a class="headerlink" href="#4-rate-limit-stability" title="Permanent link">¶</a></h3>
+<p>Model rate limiting as <strong>queueing stability</strong>:</p>
+<p>$$
+\rho = \frac{\lambda}{\mu_{\text{proxy}}} &lt; 1
+$$</p>
+<p>where:
+- $\lambda$ — Request arrival rate
+- $\mu_{\text{proxy}}$ — Proxy service rate
+- $\rho &lt; 1$ — Stability condition (avoid saturation)</p>
+<p>Use <strong>exponential backoff</strong> policies to maintain $\rho$ subcritical.</p>
+<h3 id="5-visual-data-flow">5. Visual Data Flow<a class="headerlink" href="#5-visual-data-flow" title="Permanent link">¶</a></h3>
+<p>```text
+Agent UI Client Proxy External API</p>
+<p>0.5ms 5ms 50ms 350ms 1200ms</p>
+<p>Total Expected Latency: ~1.6s
+```text</p>
+<h2 id="feature-feasibility-classification">Feature Feasibility Classification<a class="headerlink" href="#feature-feasibility-classification" title="Permanent link">¶</a></h2>
+<h3 id="1-feature-feasibility-amplitude">1. Feature Feasibility Amplitude<a class="headerlink" href="#1-feature-feasibility-amplitude" title="Permanent link">¶</a></h3>
+<p>For a feature $i$ requiring dimensions $D_i \subseteq \mathcal{D}$, define:</p>
+<p>$$
+\Psi_i = \prod_{d \in D_i} \phi_d^{\alpha_{i,d}}
+$$</p>
+<p>where $\alpha_{i,d} \geq 0$ encodes how strongly feature $i$ depends on dimension $d$.</p>
+<h3 id="2-feasibility-classification">2. Feasibility Classification<a class="headerlink" href="#2-feasibility-classification" title="Permanent link">¶</a></h3>
+<p>Classify features by $\Psi_i$:</p>
+<p>$$
+\Psi_i \begin{cases}</p>
+<blockquote>
+<p>0.7 &amp; \text{Highly feasible (█)} \
+\in (0.4, 0.7] &amp; \text{Feasible (▓)} \
+\in (0.2, 0.4] &amp; \text{Difficult (▒)} \
+\leq 0.2 &amp; \text{Not recommended (░)}
+\end{cases}
+$$</p>
+</blockquote>
+<h3 id="3-visual-scorecard-mapping">3. Visual Scorecard Mapping<a class="headerlink" href="#3-visual-scorecard-mapping" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Range</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>█</td>
+<td>&gt;0.7</td>
+<td><strong>Highly feasible</strong> — Build in Navbar</td>
+</tr>
+<tr>
+<td>▓</td>
+<td>0.4-0.7</td>
+<td><strong>Feasible</strong> — Good fit for Navbar</td>
+</tr>
+<tr>
+<td>▒</td>
+<td>0.2-0.4</td>
+<td><strong>Difficult</strong> — Consider alternatives</td>
+</tr>
+<tr>
+<td>░</td>
+<td>≤0.2</td>
+<td><strong>Not recommended</strong> — Use different approach</td>
+</tr>
+</tbody>
+</table>
+<h2 id="location-capability-coupling">Location-Capability Coupling<a class="headerlink" href="#location-capability-coupling" title="Permanent link">¶</a></h2>
+<h3 id="1-compatibility-tensor">1. Compatibility Tensor<a class="headerlink" href="#1-compatibility-tensor" title="Permanent link">¶</a></h3>
+<p>Define a <strong>compatibility tensor</strong> coupling locations and capabilities:</p>
+<p>$$
+\Gamma_{d\ell} = \beta_d^\top \mathbf{s}(\ell)
+$$</p>
+<p>where $\beta_d \in \mathbb{R}^4_{\geq 0}$ weights which capacity components ($\text{ctx, space, persist, complex}$) a dimension $d$ consumes.</p>
+<p><strong>Example $\beta$ vectors</strong>:
+- Tables/Charts: $\beta = (0, 1, 0, 0.5)$ — needs space + some complexity
+- Real-time: $\beta = (0.7, 0, 0.5, 0.3)$ — needs context + persistence
+- Navigation: $\beta = (0, 0.5, 0.2, 0.8)$ — needs space + complexity</p>
+<h3 id="2-effective-capability">2. Effective Capability<a class="headerlink" href="#2-effective-capability" title="Permanent link">¶</a></h3>
+<p>The <strong>effective capability</strong> in location $\ell$ is:</p>
+<p>$$
+\tilde{\phi}<em d_ell="d\ell">{d,\ell} = \min{\phi_d, \Gamma</em>}
+$$</p>
+<p><strong>Interpretation</strong>:
+- Navbar wins when $d$ needs <strong>space/complexity</strong>
+- Sidebar wins when $d$ needs <strong>context</strong>
+- Location mismatch reduces effective capability</p>
+<h3 id="3-location-selection-rule">3. Location Selection Rule<a class="headerlink" href="#3-location-selection-rule" title="Permanent link">¶</a></h3>
+<p>For feature $i$ with dimensions $D_i$:</p>
+<p>$$
+\ell^* = \arg\max_{\ell \in \mathcal{L}} \sum_{d \in D_i} \tilde{\phi}_{d,\ell}
+$$</p>
+<p>Choose the location that maximizes total effective capability.</p>
+<h2 id="optimization-framework">Optimization Framework<a class="headerlink" href="#optimization-framework" title="Permanent link">¶</a></h2>
+<h3 id="1-value-complexity-action-functional">1. Value-Complexity Action Functional<a class="headerlink" href="#1-value-complexity-action-functional" title="Permanent link">¶</a></h3>
+<p>Define a <strong>design action</strong> (Lagrangian-style):</p>
+<p>$$
+\mathcal{S}(x) = -\sum_i v_i \cdot x_i \cdot \underbrace{\left(\sum_{d \in D_i} \tilde{\phi}<em _text_capability="\text{capability" gain="gain">{d,\mathrm{NB}}\right)}</em>(x)] + \nu \cdot \rho(x)
+$$}} + \lambda \sum_i c_i \cdot x_i + \mu \cdot \mathbb{E}[\mathcal{L</p>
+<p><strong>Terms</strong>:
+- $v_i$ — Business value of feature $i$
+- $c_i$ — Complexity/cost of feature $i$
+- $x_i \in {0,1}$ — Feature inclusion indicator
+- $\lambda, \mu, \nu \geq 0$ — Penalty multipliers
+- $\mathbb{E}[\mathcal{L}(x)]$ — Expected latency given feature set
+- $\rho(x)$ — Load/saturation factor</p>
+<h3 id="2-optimal-feature-selection">2. Optimal Feature Selection<a class="headerlink" href="#2-optimal-feature-selection" title="Permanent link">¶</a></h3>
+<p>The <strong>optimal Navbar plan</strong> solves:</p>
+<p>$$
+x^* = \arg\min_{x \in \Omega} \mathcal{S}(x)
+$$</p>
+<p>This yields the "sweet spot" region: <strong>high value, moderate complexity</strong>.</p>
+<h3 id="3-sweet-spot-region">3. Sweet Spot Region<a class="headerlink" href="#3-sweet-spot-region" title="Permanent link">¶</a></h3>
+<p>```text
+Value (v)</p>
+<p>SWEET SPOT High value
+ (BUILD) Moderate complexity
+ High capability</p>
+<p>CONSIDER OTHER 
+ LOCATIONS </p>
+<p>DON'T BUILD IN NAVBAR </p>
+<p>Complexity (c)
+```text</p>
+<h2 id="practical-decision-rules">Practical Decision Rules<a class="headerlink" href="#practical-decision-rules" title="Permanent link">¶</a></h2>
+<h3 id="1-closed-form-heuristic">1. Closed-Form Heuristic<a class="headerlink" href="#1-closed-form-heuristic" title="Permanent link">¶</a></h3>
+<p>For candidate feature $i$ in <strong>Navbar</strong>:</p>
+<p>$$
+\text{Build}<em _in="\in" d="d" d_i="D_i">i = \mathbf{1}\left[
+\underbrace{\sum</em>} \tilde{\phi<em _text_capability="\text{capability" mass="mass">{d,\mathrm{NB}}}</em>}} \cdot \underbrace{v_i<em _text_cost_drag="\text{cost/drag">{\text{value}} - \underbrace{(\lambda c_i + \mu \mathbb{E}[\mathcal{L}_i] + \nu \rho_i)}</em> &gt; \tau
+\right]
+$$}</p>
+<p>where $\tau$ is a calibrated threshold.</p>
+<h3 id="2-quick-decision-matrix">2. Quick Decision Matrix<a class="headerlink" href="#2-quick-decision-matrix" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Decision</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\Psi_i &gt; 0.7$ AND $v_i/c_i &gt; 2$</td>
+<td><strong>BUILD</strong></td>
+<td>High feasibility, high value</td>
+</tr>
+<tr>
+<td>$\Psi_i \in [0.4, 0.7]$ AND $v_i/c_i &gt; 1.5$</td>
+<td><strong>CONSIDER</strong></td>
+<td>Feasible if value justifies</td>
+</tr>
+<tr>
+<td>$\Psi_i &lt; 0.4$ OR $v_i/c_i &lt; 1$</td>
+<td><strong>DON'T BUILD</strong></td>
+<td>Low feasibility or poor value</td>
+</tr>
+<tr>
+<td>$\phi_{\text{Backend}} &gt; 0$ needed</td>
+<td><strong>IMPOSSIBLE</strong></td>
+<td>No custom backend</td>
+</tr>
+<tr>
+<td>$\mathbb{E}[\mathcal{L}] &gt; 3$s</td>
+<td><strong>RECONSIDER</strong></td>
+<td>Too slow for UX</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-location-decision-tree">3. Location Decision Tree<a class="headerlink" href="#3-location-decision-tree" title="Permanent link">¶</a></h3>
+<p>```text
+Feature Needs Space + Complexity?</p>
+<p>YES Navbar </p>
+<p>NO Feature Needs Context?</p>
+<p>YES Sidebar </p>
+<p>NO Feature Needs Real-time?</p>
+<p>YES Sidebar (limited) or External</p>
+<p>NO Topbar or Navbar
+```text</p>
+<h2 id="worked-examples">Worked Examples<a class="headerlink" href="#worked-examples" title="Permanent link">¶</a></h2>
+<h3 id="example-a-multi-step-configuration-wizard">Example A: Multi-Step Configuration Wizard<a class="headerlink" href="#example-a-multi-step-configuration-wizard" title="Permanent link">¶</a></h3>
+<p><strong>Requirements</strong>:
+- Dimensions: $D_A = {\text{UI}, \text{Render}, \text{State}, \text{Nav}}$
+- Complexity: $c_A = 7$ (moderate-high)
+- Value: $v_A = 8$ (high business value)</p>
+<p><strong>Raw Feasibility</strong>:
+$$
+\Psi_A = \phi_{\text{UI}} \cdot \phi_{\text{Render}} \cdot \phi_{\text{State}} \cdot \phi_{\text{Nav}}
+$$
+$$
+\Psi_A = 0.8 \times 0.9 \times 0.6 \times 0.6 \approx 0.26 \quad \text{(▒ Difficult)}
+$$</p>
+<p><strong>Location Coupling</strong>:
+- Needs: space (1.0), complexity (0.8), some persistence (0.5)
+- Navbar $\mathbf{s}(\mathrm{NB}) = (0.1, 1.0, 0.5, 0.8)$ matches well
+- $\Gamma_{\cdot,\mathrm{NB}}$ boosts effective capability</p>
+<p><strong>Effective Capability</strong>:
+$$
+\sum_{d \in D_A} \tilde{\phi}_{d,\mathrm{NB}} \approx 0.8 + 0.9 + 0.6 + 0.6 = 2.9
+$$</p>
+<p><strong>Decision</strong>:
+$$
+2.9 \times 8 - (1.0 \times 7 + 0.5 \times 1.0 + 0.3 \times 0.2) = 23.2 - 7.56 \approx 15.6 &gt; \tau
+$$</p>
+<p><strong>Verdict</strong>: <strong>YES — Build in Navbar</strong> (sweet spot: high value, manageable complexity, location match)</p>
+<hr/>
+<h3 id="example-b-real-time-ticket-monitor">Example B: Real-Time Ticket Monitor<a class="headerlink" href="#example-b-real-time-ticket-monitor" title="Permanent link">¶</a></h3>
+<p><strong>Requirements</strong>:
+- Dimensions: $D_B = {\text{Realtime}, \text{UI}, \text{State}}$
+- Complexity: $c_B = 6$
+- Value: $v_B = 7$</p>
+<p><strong>Raw Feasibility</strong>:
+$$
+\Psi_B = \phi_{\text{Realtime}} \cdot \phi_{\text{UI}} \cdot \phi_{\text{State}}
+$$
+$$
+\Psi_B = 0.2 \times 0.8 \times 0.6 = 0.096 \quad \text{(░ Not recommended)}
+$$</p>
+<p><strong>Location Coupling</strong>:
+- Needs: context (high), real-time support
+- Navbar $C_{\text{ctx}} = 0.1$, $C_{\text{rt}} = 0.2$ — both low
+- Sidebar $C_{\text{ctx}} = 0.4$, better for context-heavy features</p>
+<p><strong>Effective Capability</strong>:
+$$
+\tilde{\phi}_{\text{Realtime}, \mathrm{NB}} \approx \min{0.2, 0.1} = 0.1
+$$</p>
+<p><strong>Decision</strong>:
+$$
+(0.1 + 0.8 + 0.6) \times 7 - (1.0 \times 6 + 0.5 \times 1.2) = 10.5 - 6.6 = 3.9
+$$</p>
+<p>Borderline, but $\phi_{\text{Realtime}}$ is critically low.</p>
+<p><strong>Verdict</strong>: <strong>NO — Don't build in Navbar</strong> Move to <strong>Sidebar</strong> or use <strong>external polling service</strong></p>
+<hr/>
+<h3 id="example-c-bulk-data-export-tool">Example C: Bulk Data Export Tool<a class="headerlink" href="#example-c-bulk-data-export-tool" title="Permanent link">¶</a></h3>
+<p><strong>Requirements</strong>:
+- Dimensions: $D_C = {\text{Bulk}, \text{ExtAPI}, \text{UI}}$
+- Complexity: $c_C = 5$
+- Value: $v_C = 6$</p>
+<p><strong>Raw Feasibility</strong>:
+$$
+\Psi_C = \phi_{\text{Bulk}} \cdot \phi_{\text{ExtAPI}} \cdot \phi_{\text{UI}}
+$$
+$$
+\Psi_C = 0.3 \times 0.5 \times 0.8 = 0.12 \quad \text{(░ Not recommended)}
+$$</p>
+<p><strong>Latency Concern</strong>:
+- Bulk operations trigger multiple external API calls
+- $\mathbb{E}[\mathcal{L}] \approx 1.6 \text{ s per call} \times N$ calls
+- For $N=50$ records ~80s total (unacceptable UX)</p>
+<p><strong>Decision</strong>:
+$$
+\text{Latency penalty} = \mu \cdot 80 \gg v_C
+$$</p>
+<p><strong>Verdict</strong>: <strong>NO — Don't build in Navbar</strong> Use <strong>async job queue</strong> or <strong>external service</strong> with status polling</p>
+<hr/>
+<h3 id="example-d-simple-form-with-external-validation">Example D: Simple Form with External Validation<a class="headerlink" href="#example-d-simple-form-with-external-validation" title="Permanent link">¶</a></h3>
+<p><strong>Requirements</strong>:
+- Dimensions: $D_D = {\text{UI}, \text{ExtAPI}, \text{State}}$
+- Complexity: $c_D = 3$ (low)
+- Value: $v_D = 5$</p>
+<p><strong>Raw Feasibility</strong>:
+$$
+\Psi_D = \phi_{\text{UI}} \cdot \phi_{\text{ExtAPI}} \cdot \phi_{\text{State}}
+$$
+$$
+\Psi_D = 0.8 \times 0.5 \times 0.6 = 0.24 \quad \text{(▒ Difficult)}
+$$</p>
+<p><strong>Mitigations</strong>:
+- Use debouncing for external validation calls
+- Cache validation results in state
+- Show loading states for UX</p>
+<p><strong>Decision</strong>:
+$$
+(0.8 + 0.5 + 0.6) \times 5 - (1.0 \times 3 + 0.5 \times 1.6) = 9.5 - 3.8 = 5.7
+$$</p>
+<p><strong>Verdict</strong>: <strong>YES — Build with care</strong> (low complexity makes it viable despite moderate $\Psi$)</p>
+<h2 id="implementation-guidance">Implementation Guidance<a class="headerlink" href="#implementation-guidance" title="Permanent link">¶</a></h2>
+<h3 id="1-design-checklist">1. Design Checklist<a class="headerlink" href="#1-design-checklist" title="Permanent link">¶</a></h3>
+<p>Before implementing a Navbar feature:</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Capability Check</strong>: Compute $\Psi_i$ for your feature</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Location Match</strong>: Verify $\tilde{\phi}_{d,\ell}$ favors Navbar</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Security Audit</strong>: Ensure no operations in $\mathcal{F}$</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Latency Budget</strong>: Estimate $\mathbb{E}[\mathcal{L}]$ &lt; 3s</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Rate Limit</strong>: Plan for $\rho &lt; 0.8$ (leave headroom)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Value/Complexity</strong>: Check $v_i/c_i &gt; 1.5$</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Action Score</strong>: Compute $\mathcal{S}$ and verify &lt; $\tau$</li>
+</ul>
+<h3 id="2-capability-mapping-template">2. Capability Mapping Template<a class="headerlink" href="#2-capability-mapping-template" title="Permanent link">¶</a></h3>
+<p><code>json
+{
+ "feature": "My Feature Name",
+ "dimensions": {
+ "UI": {"required": true, "weight": 0.8},
+ "Render": {"required": true, "weight": 0.9},
+ "ExtAPI": {"required": false, "weight": 0.5},
+ "State": {"required": true, "weight": 0.6}
+ },
+ "location": {
+ "target": "Navbar",
+ "capacities_needed": {
+ "space": 0.7,
+ "complexity": 0.6,
+ "context": 0.1,
+ "persist": 0.3
+ }
+ },
+ "metrics": {
+ "complexity": 5,
+ "value": 7,
+ "psi": 0.432,
+ "classification": "Feasible (▓)"
+ },
+ "decision": "BUILD"
+}</code>text</p>
+<h3 id="3-forbidden-patterns">3. Forbidden Patterns<a class="headerlink" href="#3-forbidden-patterns" title="Permanent link">¶</a></h3>
+<p><strong>Never attempt in App Builder</strong>:</p>
+<p>```javascript
+// Direct external API call (bypassing proxy)
+fetch('https://external-api.com/data')</p>
+<p>// Custom backend server
+const server = express()</p>
+<p>// Direct database access
+const db = mongoose.connect('mongodb://...')</p>
+<p>// Native code execution
+eval(userInput)</p>
+<p>// Client-stored credentials
+localStorage.setItem('api_key', secretKey)
+```text</p>
+<p><strong>Always use</strong>:</p>
+<p>```javascript
+// Proxy-mediated API calls
+zendeskAPI.request({
+ url: '/api/v2/external/proxy',
+ type: 'GET'
+})</p>
+<p>// Zendesk-managed state
+client.set('mykey', value)</p>
+<p>// OAuth flows
+client.invoke('oauth', {provider: 'custom'})
+```text</p>
+<h3 id="4-performance-optimization">4. Performance Optimization<a class="headerlink" href="#4-performance-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Reduce Latency</strong>:
+<code>``javascript
+// Batch API calls
+const promises = items.map(item =&gt;
+ zendeskAPI.request({url:</code>/api/v2/items/${item.id}`})
+)
+await Promise.all(promises)</p>
+<p>// Cache results
+const cache = new Map()
+function getCached(key, fetchFn) {
+ if (!cache.has(key)) {
+ cache.set(key, fetchFn())
+ }
+ return cache.get(key)
+}</p>
+<p>// Debounce external calls
+const debouncedValidate = debounce(validateExternal, 500)
+```text</p>
+<p><strong>Manage Rate Limits</strong>:
+<code>javascript
+// Exponential backoff
+async function retryWithBackoff(fn, maxRetries = 3) {
+ for (let i = 0; i &lt; maxRetries; i++) {
+ try {
+ return await fn()
+ } catch (err) {
+ if (err.status === 429 &amp;&amp; i &lt; maxRetries - 1) {
+ await sleep(Math.pow(2, i) * 1000)
+ } else {
+ throw err
+ }
+ }
+ }
+}</code>text</p>
+<h3 id="5-testing-strategy">5. Testing Strategy<a class="headerlink" href="#5-testing-strategy" title="Permanent link">¶</a></h3>
+<p><strong>Test Matrix</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Test Type</th>
+<th>Focus</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Unit</strong></td>
+<td>Component logic</td>
+<td>Jest, Mocha</td>
+</tr>
+<tr>
+<td><strong>Integration</strong></td>
+<td>API interactions</td>
+<td>Mock proxy responses</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Latency, rate limits</td>
+<td>Load testing, profiling</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>Constraint violations</td>
+<td>Static analysis, CSP audits</td>
+</tr>
+<tr>
+<td><strong>UX</strong></td>
+<td>User workflows</td>
+<td>Selenium, Playwright</td>
+</tr>
+</tbody>
+</table>
+<h3 id="6-monitoring-metrics">6. Monitoring &amp; Metrics<a class="headerlink" href="#6-monitoring-metrics" title="Permanent link">¶</a></h3>
+<p><strong>Track</strong>:
+- API call latency distribution
+- Rate limit hit rate
+- Error rates by type
+- User interaction patterns
+- Feature usage analytics</p>
+<p><strong>Alert on</strong>:
+- $\mathbb{E}[\mathcal{L}] &gt; 3$s (latency threshold)
+- $\rho &gt; 0.9$ (approaching rate limit)
+- Error rate &gt; 5%
+- Security constraint violations</p>
+<h3 id="7-migration-from-zaf">7. Migration from ZAF<a class="headerlink" href="#7-migration-from-zaf" title="Permanent link">¶</a></h3>
+<p>If migrating from traditional ZAF apps:</p>
+<table>
+<thead>
+<tr>
+<th>ZAF Pattern</th>
+<th>App Builder Equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Custom backend</td>
+<td>Not supported Use Zendesk APIs + external webhook targets</td>
+</tr>
+<tr>
+<td>Direct API calls</td>
+<td>Proxy-mediated calls via Zendesk API</td>
+</tr>
+<tr>
+<td>iFrame embedding</td>
+<td>Native UI components</td>
+</tr>
+<tr>
+<td>Custom OAuth</td>
+<td>Zendesk-managed OAuth flows</td>
+</tr>
+<tr>
+<td>Local storage</td>
+<td>Zendesk client.set/get</td>
+</tr>
+</tbody>
+</table>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<h3 id="key-takeaways">Key Takeaways<a class="headerlink" href="#key-takeaways" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Mathematical Model</strong>: App Builder capabilities modeled as constrained field theory</li>
+<li><strong>Locations</strong>: Navbar excels at space/complexity; Sidebar at context</li>
+<li><strong>Feasibility</strong>: Use $\Psi_i$ to classify features (█▓▒░)</li>
+<li><strong>Constraints</strong>: Hard limits on backend, limited real-time, proxy-only external access</li>
+<li><strong>Optimization</strong>: Minimize action $\mathcal{S}$ to find sweet spot</li>
+<li><strong>Latency</strong>: Budget ~1.6s per external API call</li>
+<li><strong>Security</strong>: Permissions conserved; forbidden operations blocked at wall</li>
+</ol>
+<h3 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">¶</a></h3>
+<p>```python
+def should_build_in_navbar(feature):
+ psi = calculate_feasibility(feature)
+ value_complexity_ratio = feature.value / feature.complexity
+ latency = estimate_latency(feature)</p>
+<p>if psi &gt; 0.7 and value_complexity_ratio &gt; 2:
+ return "BUILD"
+ elif psi &gt;= 0.4 and value_complexity_ratio &gt; 1.5 and latency &lt; 3:
+ return "CONSIDER"
+ else:
+ return "DON'T BUILD - Use alternative"
+```text</p>
+<h3 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Read</strong>: <a href="../ZENDESK_NEWCOMER_GUIDE/">ZENDESK_NEWCOMER_GUIDE.md</a></li>
+<li><strong>Review</strong>: Existing App Builder limitations doc</li>
+<li><strong>Calculate</strong>: $\Psi_i$ for your features</li>
+<li><strong>Optimize</strong>: Use $\mathcal{S}$ to prioritize roadmap</li>
+<li><strong>Build</strong>: Follow implementation guidance</li>
+<li><strong>Monitor</strong>: Track latency and rate limits</li>
+</ol>
+<h2 id="extended-visual-reference">Extended Visual Reference<a class="headerlink" href="#extended-visual-reference" title="Permanent link">¶</a></h2>
+<p>This section provides additional visual aids and reference materials for understanding Zendesk App Builder capabilities in practical terms.</p>
+<h3 id="integration-pattern-matrix">Integration Pattern Matrix<a class="headerlink" href="#integration-pattern-matrix" title="Permanent link">¶</a></h3>
+<p>```text
+Pattern Supported Complexity Recommended</p>
+<p>REST API YES
+OAuth 2.0 YES
+API Keys (proxied) YES
+Basic Auth ░ ≈ OK
+Webhooks (inbound) ░ NO (use polling)
+WebSockets NO
+GraphQL ░ ≈ OK
+SOAP ░ AVOID
+Server-Sent Events NO
+```text</p>
+<h3 id="development-lifecycle">Development Lifecycle<a class="headerlink" href="#development-lifecycle" title="Permanent link">¶</a></h3>
+<p>```text
+Phase Duration Complexity Friction Points</p>
+<p>Ideation ░░░░░ ▒░░░░ Requirements clarity
+Setup ░░░ ▒▒░░░ OAuth config, proxies
+Development ░░░░░░░ ▒▒▒▒▒ API limitations, debugging
+Testing ░░░░░ ▒▒▒▒░ Limited test data
+Private Beta ░░░ ▒▒░░░ Agent feedback cycles
+Publication ░░░░░░ ▒▒▒▒▒ Marketplace approval
+Maintenance ░░░░... ▒▒▒░░ Platform changes, support</p>
+<p>TIME SCALE: ░ = Days/Weeks, ▒ = Complexity level
+```text</p>
+<h3 id="feature-feasibility-scorecard-navbar-context">Feature Feasibility Scorecard (Navbar Context)<a class="headerlink" href="#feature-feasibility-scorecard-navbar-context" title="Permanent link">¶</a></h3>
+<p>```text
+Feature Type Simple Medium Complex Not Possible</p>
+<p>Read-only dashboards ████ ▓▓▓ ▒▒ ░
+Single-step actions ████ ▓▓▓ ▒ ░
+Multi-step wizards ▓▓▓ ▓▓▓▓ ▒▒▒ ░
+Real-time monitoring ▓ ▒▒▒ ▒▒▒▒ ░░░
+Data export (small) ████ ▓▓▓ ▒ ░
+Data export (bulk) ▓ ▒▒▒ ▒▒▒▒ ░░
+Complex filters/search ▓▓▓ ▓▓▓▓ ▒▒▒ ░
+User permissions (custom) ▓ ▒▒ ▒▒▒▒ ░░░
+Offline functionality ░ ░ ░░ ░░░░
+AI/ML features (external) ▓▓ ▓▓▓ ▒▒▒▒ ░
+File uploads/processing ▓▓ ▓▓▓ ▒▒▒ ░
+Custom notifications ▓ ▒▒▒ ▒▒▒▒ ░░░</p>
+<p>LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
+```text</p>
+<h3 id="anti-patterns-to-avoid">Anti-Patterns to Avoid<a class="headerlink" href="#anti-patterns-to-avoid" title="Permanent link">¶</a></h3>
+<p>```text
+ NEVER:
+ Store API keys in client code
+ Make direct external API calls (bypass proxy)
+ Store sensitive data in localStorage
+ Implement custom authentication
+ Try to hide Zendesk UI chrome
+ Perform heavy computation on main thread
+ Assume real-time data without polling</p>
+<p>USE WITH CAUTION:
+ Bulk operations (&gt;100 items)
+ Nested API calls (waterfall requests)
+ Complex state management without clear patterns
+ Third-party libraries (bundle size)
+ Animations/transitions (performance)
+ Multi-language support (maintenance burden)</p>
+<p>RECOMMENDED PRACTICES:
+ Use Zendesk Garden components
+ Implement error boundaries
+ Show loading states
+ Handle API rate limits gracefully
+ Use async/await for API calls
+ Keep bundle size minimal
+ Test with representative Zendesk data
+```text</p>
+<h3 id="cost-benefit-zones">Cost-Benefit Zones<a class="headerlink" href="#cost-benefit-zones" title="Permanent link">¶</a></h3>
+<p>```text
+ HIGH VALUE </p>
+<p>SWEET SPOT 
+ • Read-only 
+ dashboards 
+ • Simple 
+ integrations 
+ • Visualization</p>
+<p>POSSIBLE BUT HARD LOW VALUE 
+ • Complex workflows • Trivial displays 
+ • Real-time features • Over-engineered 
+ • Heavy computation • Simple tasks </p>
+<p>LOW COMPLEXITY HIGH COMPLEXITY</p>
+<p>LOW VALUE
+```text</p>
+<h3 id="optimal-use-cases-summary">Optimal Use Cases Summary<a class="headerlink" href="#optimal-use-cases-summary" title="Permanent link">¶</a></h3>
+<p>```text
+OPTIMAL USE CASES:
+ Configuration interfaces
+ Reporting dashboards
+ Data management tools
+ Multi-step workflows
+ Search &amp; filter interfaces
+ Analytics &amp; insights</p>
+<p>AVOID IN NAVBAR:
+ Real-time ticket monitoring (prefer Sidebar)
+ Quick actions (prefer Topbar)
+ Context-heavy features (prefer Sidebar)
+ Single-purpose simple tools
+```text</p>
+<h3 id="recommended-workflow">Recommended Workflow<a class="headerlink" href="#recommended-workflow" title="Permanent link">¶</a></h3>
+<p><code>text
+Developer Team AI Assistant (ideation/planning) Official Docs (validation)
+ Development Environment (testing) AI Assistant (refinement)
+ Production</code>text</p>
+<h3 id="final-recommendations-for-navbar-app-projects">Final Recommendations for Navbar App Projects<a class="headerlink" href="#final-recommendations-for-navbar-app-projects" title="Permanent link">¶</a></h3>
+<p>```text
+1) INITIATE:
+ Define scope and features
+ Identify integration points
+ Draft technical architecture
+ Generate initial code structure</p>
+<p>2) VALIDATE:
+ Check Zendesk Developer docs
+ Review Garden component patterns
+ Test authentication flows in sandbox
+ Verify current rate limits and quotas</p>
+<p>3) ITERATE:
+ Start with minimum viable feature
+ Test early in a real environment
+ Increase complexity incrementally
+ Revisit architecture decisions as needed</p>
+<p>4) WHEN BLOCKED:
+ Review trade-offs and alternatives
+ Consider fallback patterns (polling vs webhooks)
+ Refactor for performance/bundle size
+ Escalate platform issues via official support
+```text</p>
+<h2 id="ai-assistant-context-limitations">AI Assistant Context &amp; Limitations<a class="headerlink" href="#ai-assistant-context-limitations" title="Permanent link">¶</a></h2>
+<p>This documentation was created with assistance from AI language models. Understanding the context and limitations of AI-generated content is important for proper usage.</p>
+<h3 id="knowledge-basis">Knowledge Basis<a class="headerlink" href="#knowledge-basis" title="Permanent link">¶</a></h3>
+<p><strong>Training Foundation</strong>:
+- Trained on broad technical materials (architecture patterns, API design, web security, developer resources)
+- Knowledge cutoff: Apr 2024
+- No direct access to live Zendesk documentation or proprietary systems</p>
+<p><strong>Approach for This Output</strong>:
+- Applied constraints for app locations (Navbar, Sidebar, Topbar) and associated UI/UX limits
+- Drew from general patterns in:
+ - Web application architecture
+ - Client-side JavaScript frameworks (e.g., React)
+ - API integration (REST, OAuth, proxies)
+ - Browser security models (CSP, CORS, sandboxing)
+ - Common SaaS marketplace constraints</p>
+<h3 id="limitations-validation">Limitations &amp; Validation<a class="headerlink" href="#limitations-validation" title="Permanent link">¶</a></h3>
+<p><strong>AI Assistant Limitations</strong>:
+- Not authoritative on current Zendesk specifics
+- Patterns are generalized; verify against official documentation
+- Not version-specific; capabilities may have changed post-cutoff
+- ASCII diagrams are illustrative, not a substitute for platform specs</p>
+<p><strong>Recommended Validation Steps</strong>:
+1. Cross-reference with official Zendesk Developer Documentation
+2. Build small prototypes to validate assumptions
+3. Confirm current rate limits, payload sizes, and timeouts
+4. Engage Zendesk Support for edge cases</p>
+<h3 id="confidence-calibration">Confidence Calibration<a class="headerlink" href="#confidence-calibration" title="Permanent link">¶</a></h3>
+<p>```text
+HIGH CONFIDENCE (≈90%+):
+• Location constraints (Navbar vs Sidebar)
+• General API patterns (REST, OAuth)
+• React/JavaScript best practices
+• SaaS UX principles
+• Browser security fundamentals
+• Common integration patterns</p>
+<p>MEDIUM CONFIDENCE (≈70-90%):
+• Specific Zendesk API endpoints
+• Garden component usage patterns
+• App framework conventions
+• Performance characteristics
+• Rate-limiting strategies
+• Authentication flows</p>
+<p>LOW CONFIDENCE (≈50-70%):
+• Exact API parameter names (post-2024)
+• New framework features released after cutoff
+• Specific current rate limits
+• Account-specific configurations
+• Marketplace approval criteria details
+• Latest Garden component updates</p>
+<p>SHOULD BE VERIFIED EXTERNALLY:
+• Current Zendesk documentation and deprecations
+• Security best practices (evolving)
+• Browser compatibility (latest versions)
+• Third-party API specifications
+• Pricing and billing details
+```text</p>
+<h3 id="ai-assistant-capability-profile">AI Assistant Capability Profile<a class="headerlink" href="#ai-assistant-capability-profile" title="Permanent link">¶</a></h3>
+<p>```text
+PHASE CAPABILITY LEVEL LIMITATION LEVEL</p>
+<p>Ideation ▓▓▓▓▓▓▓▓▓▓ ░░
+Planning ▓▓▓▓▓▓▓▓▓░ ░░
+Code Generation ▓▓▓▓▓▓▓▓░░ ░░░
+Architecture ▓▓▓▓▓▓▓▓░░ ░░░
+Debugging ▓▓▓░░░░░░░ ░░░░░░
+Testing ░░░░░░░░░░ ▓▓▓▓▓▓▓▓▓▓
+Deployment ░░░░░░░░░░ ▓▓▓▓▓▓▓▓▓▓
+Maintenance ▓▓▓▓░░░░░░ ░░░░░░░</p>
+<p>EXCELS AT: Design, planning, code scaffolding, constraint explanation
+CANNOT: Execute code, test applications, access live systems, update model knowledge
+```text</p>
+<h3 id="effective-usage-guidelines">Effective Usage Guidelines<a class="headerlink" href="#effective-usage-guidelines" title="Permanent link">¶</a></h3>
+<p><strong>Effective Prompts</strong>:
+- "Build a Navbar app to display Jira issues with filters."
+- "Assess feasibility of real-time Slack notifications in Sidebar."
+- "Compare Sidebar vs Navbar for an analytics dashboard."
+- "What are performance implications of polling vs webhooks?"</p>
+<p><strong>Ineffective Prompts</strong>:
+- "Make it better."
+- "Add all the features."
+- "Here is an API key: …"
+- "Why doesn't my code work?" [massive dump without context]</p>
+<h3 id="transparency-notes">Transparency Notes<a class="headerlink" href="#transparency-notes" title="Permanent link">¶</a></h3>
+<p><strong>may Be Inaccurate</strong>:
+- Endpoint URLs and exact rate limits (subject to change)
+- Specific error codes and latest best practices
+- Deprecated or newly released features (post-cutoff)</p>
+<p><strong>Consistent Strengths</strong>:
+- Conceptual architecture and trade-off analysis
+- Starter code templates and rationale
+- Identification of common anti-patterns
+- Structuring technical plans</p>
+<p><strong>Effective Usage</strong>:
+1. Use during DESIGN and PLANNING
+2. Validate against official docs
+3. Test snippets in a sandbox
+4. Treat as informed starting point
+5. Request clarifications for ambiguous areas
+6. Cross-check security-critical details</p>
+<h3 id="comparison-ai-assistant-vs-other-tools">Comparison: AI Assistant vs Other Tools<a class="headerlink" href="#comparison-ai-assistant-vs-other-tools" title="Permanent link">¶</a></h3>
+<p>```text
+TOOL TYPE STRENGTH WHEN TO USE AI ASSISTANT</p>
+<p>Stack Overflow Community Q&amp;A Real user experiences Initial research synthesis
+Official Docs Authoritative specs Precise definitions Verify suggestions and parameters
+GitHub Copilot IDE assistant Inline code completion After architecture is set
+ChatGPT Conversational LLM General ideation/help Similar planning use cases
+Zendesk Support Vendor support Platform-specific help Critical platform issues
+AI Assistant (LLM) Planning/analysis Comprehensive planning START HERE for architecture
+```text</p>
+<hr/>
+<p><strong>This mathematical framework enables data-driven decisions about what to build in Zendesk AI Agent App Builder and how to optimize for success within its constraints.</strong></p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,4603 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/roadmap/review_codebase_next_changes_whats_next/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Review Codebase / Next Changes — What's Next - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#review-codebase-next-changes-whats-next">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Review Codebase / Next Changes — What's Next
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-pr-4641-continue-dispatch-ci-evidence-pass-2026-05-28t1602z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#immediate-remaining-objectives-this-session">
+<span class="md-ellipsis">
+      
+        Immediate Remaining Objectives (this session)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-pr-4641-review-thread-remediation-workflow-monitor-2026-05-28t1554z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — PR #4641 review-thread remediation + workflow monitor · 2026-05-28T15:54Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (Current — PR #4641 review-thread remediation + workflow monitor · 2026-05-28T15:54Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#immediate-remaining-objectives-this-session_1">
+<span class="md-ellipsis">
+      
+        Immediate Remaining Objectives (this session)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#continuation-prompt-next-session">
+<span class="md-ellipsis">
+      
+        Continuation Prompt (Next Session)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-coverage-baseline-confirm-blocker-triage-2026-05-28t0356z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — Coverage Baseline Confirm + Blocker Triage · 2026-05-28T03:56Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (Current — Coverage Baseline Confirm + Blocker Triage · 2026-05-28T03:56Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#coverage-snapshot-2026-05-28t0356z">
+<span class="md-ellipsis">
+      
+        Coverage Snapshot (2026-05-28T03:56Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#collection-blockers-still-open">
+<span class="md-ellipsis">
+      
+        Collection Blockers Still Open
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pending-approval-workflows-pr-branch-fb15b05892">
+<span class="md-ellipsis">
+      
+        Pending Approval Workflows (PR-branch fb15b05892)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#next-session-objectives">
+<span class="md-ellipsis">
+      
+        Next Session Objectives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#continuation-prompt-next-session_1">
+<span class="md-ellipsis">
+      
+        Continuation Prompt (Next Session)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-final-coverage-wave-phase-cde-2026-05-27t2119z">
+<span class="md-ellipsis">
+      
+        Session Status (FINAL — Coverage Wave Phase C/D/E · 2026-05-27T21:19Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (FINAL — Coverage Wave Phase C/D/E · 2026-05-27T21:19Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-c-final-coverage-srcsecurity">
+<span class="md-ellipsis">
+      
+        Phase C Final Coverage (src/security/)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-d-cb-objectives">
+<span class="md-ellipsis">
+      
+        Phase D CB Objectives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-e-final-coverage">
+<span class="md-ellipsis">
+      
+        Phase E Final Coverage
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#remaining-work-next-session">
+<span class="md-ellipsis">
+      
+        Remaining Work (next session)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#continuation-prompt">
+<span class="md-ellipsis">
+      
+        Continuation Prompt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#continuation-prompt-next-session_2">
+<span class="md-ellipsis">
+      
+        Continuation Prompt (Next Session)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-pr-4528-ci-rescue-artifact-review-2026-05-21t1555z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#follow-up-prompt-continuation">
+<span class="md-ellipsis">
+      
+        Follow-up prompt (continuation)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-workflow-triage-phase-4-trigger-remediation-2026-05-21t0310z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — workflow-triage Phase 4 trigger remediation · 2026-05-21T03:10Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (Current — workflow-triage Phase 4 trigger remediation · 2026-05-21T03:10Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#follow-up-prompt-continuation_1">
+<span class="md-ellipsis">
+      
+        Follow-up prompt (continuation)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-pr-4510-speaker-timeout-follow-up-approved-workflow-monitoring-2026-05-19t2235z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — PR #4510 speaker-timeout follow-up + approved-workflow monitoring · 2026-05-19T22:35Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-add-transcription-application-standalone-packaging-pass-2026-05-19t1723z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — add-transcription-application standalone packaging pass · 2026-05-19T17:23Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1071-codebase-review-quick-wins-2026-05-19t0141z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1071 codebase-review-quick-wins · 2026-05-19T01:41Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-prior-s1070-pr-4501-approved-workflow-monitoring-continuation-2026-05-19t0108z">
+<span class="md-ellipsis">
+      
+        Session Status (Prior — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1069-pr-4501-comment-thread-ci-rescue-remediation-2026-05-19t0100z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1069 PR #4501 comment-thread + CI rescue remediation · 2026-05-19T01:00Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1068-approved-workflow-monitoring-continuation-2026-05-18t2321z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1067-approved-workflow-monitoring-wrap-up-reserve-tracking-2026-05-18t2321z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1066-approval-dispatch-continuation-expanded-checklist-2026-05-18t2321z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1065-approval-dispatch-continuation-prompt-append-2026-05-18t2308z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1065 approval-dispatch continuation + prompt append · 2026-05-18T23:08Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1064-approval-hook-queue-hygiene-ci-rescue-continuation-2026-05-18t2227z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1064 approval-hook queue hygiene + CI rescue continuation · 2026-05-18T22:27Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1063-pr-4498-review-thread-closure-workflow-monitor-2026-05-18t2200z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1063 PR #4498 review-thread closure + workflow monitor · 2026-05-18T22:00Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1062-checkpoint-manager-and-artifact-remediation-2026-05-18t2028z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1062 checkpoint-manager-and-artifact-remediation · 2026-05-18T20:28Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1061-approval-monitor-continuation-2026-05-18t1919z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#merge-readiness-checkpoint">
+<span class="md-ellipsis">
+      
+        Merge-readiness checkpoint
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#follow-up-prompt-options">
+<span class="md-ellipsis">
+      
+        Follow-up prompt options
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#copilot-continue-next-phase-tasks-for-pr-4497">
+<span class="md-ellipsis">
+      
+        @copilot continue — next phase tasks for PR #4497
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1060-approval-monitor-wrap-up-planning-2026-05-18t1844z">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1060 approval-monitor + wrap-up planning · 2026-05-18T18:44Z)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-s1056-snapshot-dependabot-absorb-session-2026-05-18t1720z">
+<span class="md-ellipsis">
+      
+        Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependabot-absorb-summary">
+<span class="md-ellipsis">
+      
+        Dependabot absorb summary
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-s1055-snapshot-pr-4479-follow-up-2026-05-18t1554z">
+<span class="md-ellipsis">
+      
+        Session Status (S1055 snapshot — PR #4479 follow-up · 2026-05-18T15:54Z)
+      
+    </span>
+</a>
+<nav aria-label="Session Status (S1055 snapshot — PR #4479 follow-up · 2026-05-18T15:54Z)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#priority-1-maintainer-directed-checklist">
+<span class="md-ellipsis">
+      
+        Priority 1 (Maintainer-directed checklist)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflowprocess-hardening-regression-prevention">
+<span class="md-ellipsis">
+      
+        Workflow/Process hardening (regression prevention)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-s1043-snapshot">
+<span class="md-ellipsis">
+      
+        Session Status (S1043 snapshot)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evidence-summary-s1042s1043-2026-05-17">
+<span class="md-ellipsis">
+      
+        Evidence Summary (S1042/S1043-2026-05-17)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evidence-summary-s1044-2026-05-17">
+<span class="md-ellipsis">
+      
+        Evidence Summary (S1044-2026-05-17)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evidence-summary-s1045-2026-05-17">
+<span class="md-ellipsis">
+      
+        Evidence Summary (S1045-2026-05-17)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evidence-summary-s1048-2026-05-18">
+<span class="md-ellipsis">
+      
+        Evidence Summary (S1048-2026-05-18)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#session-status-current-s1048">
+<span class="md-ellipsis">
+      
+        Session Status (Current — S1048)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#next-objectives-session-d-continuation">
+<span class="md-ellipsis">
+      
+        Next Objectives (Session D continuation)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#follow-up-continuation-prompt">
+<span class="md-ellipsis">
+      
+        Follow-Up Continuation Prompt
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="review-codebase-next-changes-whats-next">Review Codebase / Next Changes — What's Next<a class="headerlink" href="#review-codebase-next-changes-whats-next" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.0</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#session-status-current--pr-4641-continue-dispatch--ci-evidence-pass--2026-05-28t1602z">Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)</a></li>
+<li><a href="#immediate-remaining-objectives-this-session">Immediate Remaining Objectives (this session)</a></li>
+<li><a href="#session-status-current--pr-4641-review-thread-remediation--workflow-monitor--2026-05-28t1554z">Session Status (Current — PR #4641 review-thread remediation + workflow monitor · 2026-05-28T15:54Z)</a></li>
+<li><a href="#immediate-remaining-objectives-this-session">Immediate Remaining Objectives (this session)</a></li>
+<li><a href="#continuation-prompt-next-session">Continuation Prompt (Next Session)</a></li>
+<li><a href="#session-status-current--coverage-baseline-confirm--blocker-triage--2026-05-28t0356z">Session Status (Current — Coverage Baseline Confirm + Blocker Triage · 2026-05-28T03:56Z)</a></li>
+<li><a href="#coverage-snapshot-2026-05-28t0356z">Coverage Snapshot (2026-05-28T03:56Z)</a></li>
+<li><a href="#collection-blockers-still-open">Collection Blockers Still Open</a></li>
+<li><a href="#pending-approval-workflows-pr-branch-fb15b05892">Pending Approval Workflows (PR-branch <code>fb15b05892</code>)</a></li>
+<li><a href="#next-session-objectives">Next Session Objectives</a></li>
+<li><a href="#continuation-prompt-next-session">Continuation Prompt (Next Session)</a></li>
+<li><a href="#session-status-final--coverage-wave-phase-cde--2026-05-27t2119z">Session Status (FINAL — Coverage Wave Phase C/D/E · 2026-05-27T21:19Z)</a></li>
+<li><a href="#phase-c-final-coverage-srcsecurity">Phase C Final Coverage (src/security/)</a></li>
+<li><a href="#phase-d-cb-objectives">Phase D CB Objectives</a></li>
+<li><a href="#phase-e-final-coverage">Phase E Final Coverage</a></li>
+<li><a href="#remaining-work-next-session">Remaining Work (next session)</a></li>
+<li><a href="#continuation-prompt">Continuation Prompt</a></li>
+<li><a href="#continuation-prompt-next-session">Continuation Prompt (Next Session)</a></li>
+<li><a href="#session-status-current--pr-4528-ci-rescue--artifact-review--2026-05-21t1555z">Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)</a></li>
+<li><a href="#follow-up-prompt-continuation">Follow-up prompt (continuation)</a></li>
+<li><a href="#session-status-current--workflow-triage-phase-4-trigger-remediation--2026-05-21t0310z">Session Status (Current — workflow-triage Phase 4 trigger remediation · 2026-05-21T03:10Z)</a></li>
+<li><a href="#follow-up-prompt-continuation">Follow-up prompt (continuation)</a></li>
+<li><a href="#session-status-current--pr-4510-speaker-timeout-follow-up--approved-workflow-monitoring--2026-05-19t2235z">Session Status (Current — PR #4510 speaker-timeout follow-up + approved-workflow monitoring · 2026-05-19T22:35Z)</a></li>
+<li><a href="#session-status-current--add-transcription-application-standalone-packaging-pass--2026-05-19t1723z">Session Status (Current — add-transcription-application standalone packaging pass · 2026-05-19T17:23Z)</a></li>
+<li><a href="#session-status-current--s1071-codebase-review-quick-wins--2026-05-19t0141z">Session Status (Current — S1071 codebase-review-quick-wins · 2026-05-19T01:41Z)</a></li>
+<li><a href="#session-status-prior--s1070-pr-4501-approved-workflow-monitoring-continuation--2026-05-19t0108z">Session Status (Prior — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)</a></li>
+<li><a href="#session-status-current--s1069-pr-4501-comment-thread--ci-rescue-remediation--2026-05-19t0100z">Session Status (Current — S1069 PR #4501 comment-thread + CI rescue remediation · 2026-05-19T01:00Z)</a></li>
+<li><a href="#session-status-current--s1068-approved-workflow-monitoring-continuation--2026-05-18t2321z">Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)</a></li>
+<li><a href="#session-status-current--s1067-approved-workflow-monitoring--wrap-up-reserve-tracking--2026-05-18t2321z">Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)</a></li>
+<li><a href="#session-status-current--s1066-approval-dispatch-continuation--expanded-checklist--2026-05-18t2321z">Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)</a></li>
+<li><a href="#session-status-current--s1065-approval-dispatch-continuation--prompt-append--2026-05-18t2308z">Session Status (Current — S1065 approval-dispatch continuation + prompt append · 2026-05-18T23:08Z)</a></li>
+<li><a href="#session-status-current--s1064-approval-hook-queue-hygiene--ci-rescue-continuation--2026-05-18t2227z">Session Status (Current — S1064 approval-hook queue hygiene + CI rescue continuation · 2026-05-18T22:27Z)</a></li>
+<li><a href="#session-status-current--s1063-pr-4498-review-thread-closure--workflow-monitor--2026-05-18t2200z">Session Status (Current — S1063 PR #4498 review-thread closure + workflow monitor · 2026-05-18T22:00Z)</a></li>
+<li><a href="#session-status-current--s1062-checkpoint-manager-and-artifact-remediation--2026-05-18t2028z">Session Status (Current — S1062 checkpoint-manager-and-artifact-remediation · 2026-05-18T20:28Z)</a></li>
+<li><a href="#session-status-current--s1061-approval-monitor-continuation--2026-05-18t1919z">Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)</a></li>
+<li><a href="#merge-readiness-checkpoint">Merge-readiness checkpoint</a></li>
+<li><a href="#follow-up-prompt-options">Follow-up prompt options</a></li>
+<li><a href="#copilot-continue--next-phase-tasks-for-pr-4497">@copilot continue — next phase tasks for PR #4497</a></li>
+<li><a href="#session-status-current--s1060-approval-monitor--wrap-up-planning--2026-05-18t1844z">Session Status (Current — S1060 approval-monitor + wrap-up planning · 2026-05-18T18:44Z)</a></li>
+<li><a href="#session-status-s1056-snapshot--dependabot-absorb-session--2026-05-18t1720z">Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)</a></li>
+<li><a href="#dependabot-absorb-summary">Dependabot absorb summary</a></li>
+<li><a href="#session-status-s1055-snapshot--pr-4479-follow-up--2026-05-18t1554z">Session Status (S1055 snapshot — PR #4479 follow-up · 2026-05-18T15:54Z)</a></li>
+<li><a href="#priority-1-maintainer-directed-checklist">Priority 1 (Maintainer-directed checklist)</a></li>
+<li><a href="#workflowprocess-hardening-regression-prevention">Workflow/Process hardening (regression prevention)</a></li>
+<li><a href="#session-status-s1043-snapshot">Session Status (S1043 snapshot)</a></li>
+<li><a href="#evidence-summary-s1042s1043-2026-05-17">Evidence Summary (S1042/S1043-2026-05-17)</a></li>
+<li><a href="#evidence-summary-s1044-2026-05-17">Evidence Summary (S1044-2026-05-17)</a></li>
+<li><a href="#evidence-summary-s1045-2026-05-17">Evidence Summary (S1045-2026-05-17)</a></li>
+<li><a href="#evidence-summary-s1048-2026-05-18">Evidence Summary (S1048-2026-05-18)</a></li>
+<li><a href="#session-status-current--s1048">Session Status (Current — S1048)</a></li>
+<li><a href="#next-objectives-session-d-continuation">Next Objectives (Session D continuation)</a></li>
+<li><a href="#follow-up-continuation-prompt">Follow-Up Continuation Prompt</a></li>
+</ul>
+<p>**Last Updated: 2026-06-22</p>
+<h2 id="session-status-current-pr-4641-continue-dispatch-ci-evidence-pass-2026-05-28t1602z">Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)<a class="headerlink" href="#session-status-current-pr-4641-continue-dispatch-ci-evidence-pass-2026-05-28t1602z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget</td>
+<td>Early session checkpoint</td>
+<td>Preserve final 5-minute wrap-up reserve</td>
+</tr>
+<tr>
+<td>Continue target head</td>
+<td><code>2e845b29f</code></td>
+<td>Re-checked latest workflow runs on <code>copilot/fix-asyncssh-path-traversal</code></td>
+</tr>
+<tr>
+<td>Completed run outcomes on current head</td>
+<td>Infra-gated</td>
+<td>Latest completed runs are <code>action_required</code> (e.g., <code>26586425969</code>, <code>26586426145</code>) with <strong>0 jobs</strong></td>
+</tr>
+<tr>
+<td>Code-fixable failed jobs (current head)</td>
+<td>None</td>
+<td>No completed <code>failure</code> jobs found in latest branch runs</td>
+</tr>
+<tr>
+<td>Infrastructure-only evidence</td>
+<td>Captured</td>
+<td><code>get_job_logs(run_id=26586135512, failed_only=true)</code> returned <code>total_jobs: 0</code></td>
+</tr>
+<tr>
+<td>Legacy base-branch failure check</td>
+<td>ℹ Reviewed</td>
+<td><code>0D_base_</code> had historical failure <code>26582476436</code> on old SHA <code>a031e054</code> (not current PR head)</td>
+</tr>
+<tr>
+<td>PR #4641 review threads</td>
+<td>No new unresolved requests</td>
+<td>Existing reviewer threads are outdated and already replied with fix commit references</td>
+</tr>
+<tr>
+<td>Living docs sync</td>
+<td>In progress</td>
+<td>whats_next + session_diagram + CHANGELOG + accountability being refreshed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="immediate-remaining-objectives-this-session">Immediate Remaining Objectives (this session)<a class="headerlink" href="#immediate-remaining-objectives-this-session" title="Permanent link">¶</a></h3>
+<ul>
+<li>Keep monitoring latest <code>2e845b29f</code> runs and only remediate if a completed code-fixable failure appears.</li>
+<li>Preserve final 5-minute reserve for wrap-up + continuation handoff.</li>
+</ul>
+<h2 id="session-status-current-pr-4641-review-thread-remediation-workflow-monitor-2026-05-28t1554z">Session Status (Current — PR #4641 review-thread remediation + workflow monitor · 2026-05-28T15:54Z)<a class="headerlink" href="#session-status-current-pr-4641-review-thread-remediation-workflow-monitor-2026-05-28t1554z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget</td>
+<td>~3/60 min used at start</td>
+<td>Keep final 5 min for wrap-up</td>
+</tr>
+<tr>
+<td>Maintainer approval state</td>
+<td>Confirmed</td>
+<td>All pending workflows approved</td>
+</tr>
+<tr>
+<td>Latest head</td>
+<td><code>754f57e28</code></td>
+<td>Tracking runs on <code>copilot/fix-asyncssh-path-traversal</code></td>
+</tr>
+<tr>
+<td>Current workflow monitor snapshot</td>
+<td>Active</td>
+<td>In-progress: Agent Token Delegation, Generate PR Follow-Up Prompt, Addressing comment on PR #4641</td>
+</tr>
+<tr>
+<td>Current completed conclusions</td>
+<td>Mixed</td>
+<td><code>Workflow Execution Gate</code> success + <code>action_required</code> reruns present; no failed-job logs surfaced in current monitor pass</td>
+</tr>
+<tr>
+<td>PR #4641 review-thread scope</td>
+<td>In progress</td>
+<td>Applying all 3 unresolved review comments in referenced files</td>
+</tr>
+<tr>
+<td>Living docs + accountability sync</td>
+<td>In progress</td>
+<td>whats_next + session_diagram + CHANGELOG + AGENT_ACCOUNTABILITY_REPORT</td>
+</tr>
+</tbody>
+</table>
+<h3 id="immediate-remaining-objectives-this-session_1">Immediate Remaining Objectives (this session)<a class="headerlink" href="#immediate-remaining-objectives-this-session_1" title="Permanent link">¶</a></h3>
+<ul>
+<li>Apply and validate all requested PR #4641 review-thread fixes.</li>
+<li>Keep monitoring active runs on current head and react only if a completed, code-fixable failure appears.</li>
+<li>Reserve final 5 minutes for wrap-up + continuation prompt.</li>
+</ul>
+<h3 id="continuation-prompt-next-session">Continuation Prompt (Next Session)<a class="headerlink" href="#continuation-prompt-next-session" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>@copilot continue on PR #4641 from head 754f57e28:
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>- Re-check latest workflow runs on branch copilot/fix-asyncssh-path-traversal.
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>- If any completed run has code-fixable failed jobs, remediate all code-fixable failures.
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>- If failures are infrastructure-only (startup/action_required/no jobs), document evidence and keep code unchanged.
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>- Confirm all review-thread comments remain resolved.
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>- Keep living docs synchronized:
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> - docs/roadmap/review_codebase_next_changes_whats_next.md
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> - CHANGELOG.md
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>- Preserve final 5-minute wrap-up reserve in the next pass.
+</code></pre></div>
+<h2 id="session-status-current-coverage-baseline-confirm-blocker-triage-2026-05-28t0356z">Session Status (Current — Coverage Baseline Confirm + Blocker Triage · 2026-05-28T03:56Z)<a class="headerlink" href="#session-status-current-coverage-baseline-confirm-blocker-triage-2026-05-28t0356z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget</td>
+<td>~8/60 min used</td>
+<td>Reserve final 5 min for wrap-up</td>
+</tr>
+<tr>
+<td><code>/tmp/nox_full_run.log</code></td>
+<td>Not present</td>
+<td>Artifact not persisted from prior session (expected — /tmp is ephemeral)</td>
+</tr>
+<tr>
+<td>Coverage measurement via <code>unified-coverage-agent</code></td>
+<td>Delegated + completed</td>
+<td><strong>17.57%</strong> overall — parity with baseline</td>
+</tr>
+<tr>
+<td>Regression vs 17.57% baseline</td>
+<td>No regression</td>
+<td>Baseline held; no delegation to unified-coverage-agent remediation path</td>
+</tr>
+<tr>
+<td>Collection errors (2 modules)</td>
+<td>Known blockers</td>
+<td><code>tests/monitoring/test_monitoring_mlflow_utils.py</code> + <code>tests/src/test_cli_phase10.py</code></td>
+</tr>
+<tr>
+<td>HEAD on main (<code>d8d5d0ef</code>)</td>
+<td>Healthy</td>
+<td>Nightly health sweep committed; Auto-Approve ran; Admin scope gate success</td>
+</tr>
+<tr>
+<td>PR-branch <code>fb15b05892</code> workflow queue</td>
+<td>action_required</td>
+<td>SecurityScan, Rust, Dependabot, Secrets, AgentVars, CodeQL — all pending approval</td>
+</tr>
+<tr>
+<td><code>copilot-setup-steps.yml</code> on PR-branch</td>
+<td>Failure</td>
+<td>Run <code>26553433879</code> — requires investigation</td>
+</tr>
+<tr>
+<td>Living docs update</td>
+<td>In progress</td>
+<td>Updating whats_next, session_diagram, CHANGELOG, accountability report</td>
+</tr>
+<tr>
+<td>Artifact storage policy</td>
+<td>Enforced</td>
+<td>All tracked work to use repo paths; /tmp off-limits for persistent artifacts</td>
+</tr>
+</tbody>
+</table>
+<h3 id="coverage-snapshot-2026-05-28t0356z">Coverage Snapshot (2026-05-28T03:56Z)<a class="headerlink" href="#coverage-snapshot-2026-05-28t0356z" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Overall</strong></td>
+<td><strong>17.57%</strong></td>
+</tr>
+<tr>
+<td>src/security/</td>
+<td>90.72% (Phase C — stable)</td>
+</tr>
+<tr>
+<td>services/api/main.py</td>
+<td>71.38% (Phase E — stable)</td>
+</tr>
+<tr>
+<td>services/msp_gateway/rate_limit.py</td>
+<td>49.52% (partial)</td>
+</tr>
+<tr>
+<td>src/training/</td>
+<td>~11.97% (torch-blocked)</td>
+</tr>
+<tr>
+<td>services/ita/</td>
+<td>~0% (all modules unstarted)</td>
+</tr>
+<tr>
+<td>agents/</td>
+<td>~74.4% (Phase A baseline)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="collection-blockers-still-open">Collection Blockers Still Open<a class="headerlink" href="#collection-blockers-still-open" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Error Type</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tests/monitoring/test_monitoring_mlflow_utils.py</code></td>
+<td>Collection error</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><code>tests/src/test_cli_phase10.py</code></td>
+<td>Collection error</td>
+<td>Medium</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pending-approval-workflows-pr-branch-fb15b05892">Pending Approval Workflows (PR-branch <code>fb15b05892</code>)<a class="headerlink" href="#pending-approval-workflows-pr-branch-fb15b05892" title="Permanent link">¶</a></h3>
+<blockquote>
+<p>Navigate to these URLs to approve — doing so allows current CI to source artifact logs:</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Run ID</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Security Scanning Suite</td>
+<td>26553434357</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553434357</td>
+</tr>
+<tr>
+<td>Rust-Python Hybrid Swarm CI/CD</td>
+<td>26553434379</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553434379</td>
+</tr>
+<tr>
+<td>Resilient Dependency Submission</td>
+<td>26553434381</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553434381</td>
+</tr>
+<tr>
+<td>Secrets Baseline Enforcer</td>
+<td>26553434358</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553434358</td>
+</tr>
+<tr>
+<td>Agent Vars Bootstrap</td>
+<td>26553434383</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553434383</td>
+</tr>
+<tr>
+<td>CodeQL</td>
+<td>26553434424</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553434424</td>
+</tr>
+<tr>
+<td>copilot-setup-steps.yml (<strong>FAILED</strong>)</td>
+<td>26553433879</td>
+<td>https://github.com/Aries-Serpent/<em>codex</em>/actions/runs/26553433879</td>
+</tr>
+</tbody>
+</table>
+<h3 id="next-session-objectives">Next Session Objectives<a class="headerlink" href="#next-session-objectives" title="Permanent link">¶</a></h3>
+<ul>
+<li>Investigate <code>copilot-setup-steps.yml</code> failure (run <code>26553433879</code>) — likely YAML/shell safety regression</li>
+<li>Fix 2 collection blockers: <code>test_monitoring_mlflow_utils.py</code> + <code>test_cli_phase10.py</code></li>
+<li>services/ita/ coverage: 0% across all modules — delegate to <code>unified-coverage-agent</code></li>
+<li>services/msp_gateway/: rate_limit 49% ≥70%; tenant_context 16% ≥50%</li>
+<li>src/training/: mock torch imports to test torch-free paths; target trainer.py ≥40%</li>
+<li>mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%)</li>
+<li>Approve all pending action_required workflows above then re-run this session's objectives</li>
+</ul>
+<h3 id="continuation-prompt-next-session_1">Continuation Prompt (Next Session)<a class="headerlink" href="#continuation-prompt-next-session_1" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>@copilot continue codebase coverage work on branch copilot/explore-codebase-implementation-plan.
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>STATE: Session 2026-05-28T03:56Z — Coverage at 17.57% (no regression). Phase C/D/E complete.
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>IMMEDIATE ACTIONS:
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>1. Investigate copilot-setup-steps.yml failure: https://github.com/Aries-Serpent/_codex_/actions/runs/26553433879
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>2. Fix collection errors in tests/monitoring/test_monitoring_mlflow_utils.py + tests/src/test_cli_phase10.py
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>3. Approve pending workflows (see whats_next table) then re-source their artifacts
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>COVERAGE NEXT PHASE (delegate to unified-coverage-agent + test-enhancement-agent):
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>1. services/ita/: all modules at 0% (git_ops, hygiene, knowledge_base, main, security, tests_runner, models)
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>2. services/msp_gateway/: rate_limit 49%≥70%, tenant_context 16%≥50%
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>3. src/training/: mock torch; target trainer.py ≥40%
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>4. mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%)
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>5. Run nox -s tests --cov for cross-domain number after blockers fixed
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>MEASUREMENT COMMANDS (verified working):
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>UPDATE LIVING DOCS after each phase:
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> - docs/roadmap/review_codebase_next_changes_whats_next.md
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> - CHANGELOG.md
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>ARTIFACT STORAGE: All tracked results must go to repo paths — NEVER /tmp
+</code></pre></div>
+<h2 id="session-status-final-coverage-wave-phase-cde-2026-05-27t2119z">Session Status (FINAL — Coverage Wave Phase C/D/E · 2026-05-27T21:19Z)<a class="headerlink" href="#session-status-final-coverage-wave-phase-cde-2026-05-27t2119z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 0 + Wave A + Phase B</td>
+<td>Complete</td>
+<td>4 blockers fixed; 3079 tests; agents=74.4%, overall=6.66% baseline</td>
+</tr>
+<tr>
+<td>Torch collection blockers</td>
+<td>Fixed</td>
+<td>conftest.py: space_traversal + 4 root files ignored when torch absent</td>
+</tr>
+<tr>
+<td>Phase C — Security coverage</td>
+<td><strong>COMPLETE</strong></td>
+<td>src/security/ <strong>90.72%</strong> (target ≥70%) — 885 passed, 17 skip, 3 xfail</td>
+</tr>
+<tr>
+<td>Phase D — CB objectives</td>
+<td><strong>COMPLETE</strong></td>
+<td>CB-001 through CB-006 all done</td>
+</tr>
+<tr>
+<td>Phase E — Lift overall</td>
+<td><strong>COMPLETE</strong></td>
+<td>services/api/main.py 0%71.38%; rate_limit 0%49.52%; training 11.97% (torch-blocked)</td>
+</tr>
+<tr>
+<td>Living docs update</td>
+<td>Done</td>
+<td>CHANGELOG, accountability, roadmap, 48h report all updated</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-c-final-coverage-srcsecurity">Phase C Final Coverage (src/security/)<a class="headerlink" href="#phase-c-final-coverage-srcsecurity" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>core.py</td>
+<td>~11%</td>
+<td><strong>95.96%</strong></td>
+</tr>
+<tr>
+<td>decorators.py</td>
+<td>0%</td>
+<td><strong>92.31%</strong></td>
+</tr>
+<tr>
+<td>token_rotation.py</td>
+<td>0%</td>
+<td><strong>91.43%</strong></td>
+</tr>
+<tr>
+<td>audit_logger.py</td>
+<td>0%</td>
+<td><strong>95.24%</strong></td>
+</tr>
+<tr>
+<td>github_provider.py</td>
+<td>0%</td>
+<td><strong>97.98%</strong></td>
+</tr>
+<tr>
+<td>scope_validator.py</td>
+<td>0%</td>
+<td><strong>95.56%</strong></td>
+</tr>
+<tr>
+<td>tls_config.py</td>
+<td>0%</td>
+<td><strong>88.24%</strong></td>
+</tr>
+<tr>
+<td>secrets.py</td>
+<td>0%</td>
+<td><strong>89.29%</strong></td>
+</tr>
+<tr>
+<td>provider_factory.py</td>
+<td>0%</td>
+<td><strong>78.57%</strong></td>
+</tr>
+<tr>
+<td>aws_provider.py</td>
+<td>0%</td>
+<td><strong>70.14%</strong></td>
+</tr>
+<tr>
+<td><strong>TOTAL</strong></td>
+<td><strong>~5%</strong></td>
+<td><strong>90.72%</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-d-cb-objectives">Phase D CB Objectives<a class="headerlink" href="#phase-d-cb-objectives" title="Permanent link">¶</a></h3>
+<ul>
+<li>CB-001: Typer API migration (<code>src/codex_cli/app.py</code>)</li>
+<li>CB-002: RAG test coverage (<code>tests/rag/test_rag_analytics_coverage.py</code>, 30+ tests)</li>
+<li>CB-003: actionlint YAML multiline fix (<code>.github/workflows/copilot-setup-steps.yml</code>)</li>
+<li>CB-004: PDA pattern library 1116 entries (<code>src/codex/skills/ci_health_analyzer/handler.py</code>)</li>
+<li>CB-005: max_concurrency throttling (<code>src/codex/skills/aais_batch/handler.py</code>)</li>
+<li>CB-006: proactive-ci-monitor.py wired to ci_health_analyzer</li>
+</ul>
+<h3 id="phase-e-final-coverage">Phase E Final Coverage<a class="headerlink" href="#phase-e-final-coverage" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>services/api/main.py</td>
+<td>0%</td>
+<td><strong>71.38%</strong></td>
+</tr>
+<tr>
+<td>services/msp_gateway/rate_limit.py</td>
+<td>0%</td>
+<td><strong>49.52%</strong></td>
+</tr>
+<tr>
+<td>src/training/ (total)</td>
+<td>~12%</td>
+<td><strong>11.97%</strong> (torch paths blocked)</td>
+</tr>
+<tr>
+<td>services/ (total)</td>
+<td>17.4%</td>
+<td><strong>20.19%</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="remaining-work-next-session">Remaining Work (next session)<a class="headerlink" href="#remaining-work-next-session" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>src/training/</code>: raise above 20% by mocking torch in training tests</li>
+<li><code>services/msp_gateway/</code>: rate_limit 49% ≥70%; tenant_context 16% ≥50%</li>
+<li><code>services/ita/</code>: 0% across all modules (git_ops, hygiene, knowledge_base, main, security)</li>
+<li>Overall coverage measurement across all domains (full nox run)</li>
+<li>mutation-testing-agent for weak spots in security module (provider_factory 79%, aws_provider 70%)</li>
+</ul>
+<h3 id="continuation-prompt">Continuation Prompt<a class="headerlink" href="#continuation-prompt" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>@copilot continue coverage improvement on branch copilot/explore-codebase-implementation-plan:
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>STATE: Phase C/D/E delegated to background agents (phase-c-security-coverage, phase-d-cognitive-brain, phase-e-coverage-lift).
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>- Check agent completion status and review their committed changes
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>- Run coverage baseline measurement across all phases
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>- If Phase C security coverage &lt; 70%, extend test-enhancement-agent targeting uncovered lines
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>- If Phase D CB objectives incomplete, continue with cognitive-ooda-loop-agent
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>- If Phase E overall &lt; 75%, run mutation-testing-agent to identify weak spots
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>- Update CHANGELOG, accountability report, roadmap docs after each phase
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>- Delegate unified-security-scanner to validate no new vulnerabilities from Phase C tests
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>- Final: update docs/reporting/next_expected_codebase_change_48h.md
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer note acknowledged: ~8/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Branch alignment with <code>main</code></td>
+<td>Verified: branch is ahead-only and not behind <code>origin/main</code></td>
+</tr>
+<tr>
+<td>Approved-workflow monitoring (<code>a1fb880</code>)</td>
+<td>Previously <code>action_required</code> workflows are now approved and transitioned</td>
+</tr>
+<tr>
+<td>Latest head outcome snapshot</td>
+<td><code>7</code> completed-success runs (<code>CodeQL</code>, <code>Security Scanning Suite</code>, <code>Secrets Baseline Enforcer</code>, docs/dependency gates) and <code>1</code> in-progress (<code>Running Copilot cloud agent</code>)</td>
+</tr>
+<tr>
+<td>Code-fixable failure triage</td>
+<td>No completed failed jobs on latest head; no additional remediation required in this pass</td>
+</tr>
+<tr>
+<td>Living docs / tracking updates</td>
+<td>Updating <code>whats_next</code>, <code>session_diagram</code>, <code>CHANGELOG.md</code>, and <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserve for wrap-up + continuation prompt</td>
+</tr>
+</tbody>
+</table>
+<h3 id="continuation-prompt-next-session_2">Continuation Prompt (Next Session)<a class="headerlink" href="#continuation-prompt-next-session_2" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>@copilot continue coverage improvement on branch copilot/explore-codebase-implementation-plan.
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>STATE: Phase C/D/E COMPLETE (2026-05-27T21:19Z session).
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>CONFIRMED RESULTS:
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> - Phase C: src/security/ = 90.72% (885 passed, 17 skip)
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> - Phase D: CB-001 through CB-006 all complete 
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> - Phase E: services/api/main.py 71.38% , rate_limit 49.52%, training 11.97% (torch-blocked)
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>NEXT OBJECTIVES (delegate to unified-coverage-agent + test-enhancement-agent):
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>1. services/msp_gateway/: rate_limit 49%≥70%, tenant_context 16%≥50%, msp_gateway/app.py 0%≥60%
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>2. services/ita/: all modules at 0% (git_ops, hygiene, knowledge_base, main, security, tests_runner, models)
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>3. src/training/: mock torch imports to test torch-free code paths; target trainer.py ≥40%
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>4. Run mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%) to find weak assertions
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>5. Run nox -s tests --cov to get cross-domain overall coverage number
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>MEASUREMENT COMMANDS (verified working):
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>UPDATE LIVING DOCS after each phase:
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> - docs/roadmap/review_codebase_next_changes_whats_next.md
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> - docs/reporting/next_expected_codebase_change_48h.md
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> - CHANGELOG.md
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+</code></pre></div>
+<h2 id="session-status-current-pr-4528-ci-rescue-artifact-review-2026-05-21t1555z">Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)<a class="headerlink" href="#session-status-current-pr-4528-ci-rescue-artifact-review-2026-05-21t1555z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer note acknowledged: ~14/60 minutes used; reserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>CI rescue root cause (<code>4048c786</code>)</td>
+<td>Confirmed from run <code>26235874552</code> failed job logs: Pattern 25 (<code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> not updated in last commit)</td>
+</tr>
+<tr>
+<td>Required artifact fetch</td>
+<td>Downloaded and reviewed artifacts <code>7125084971</code> and <code>7125082754</code> from run <code>26199091939</code></td>
+</tr>
+<tr>
+<td>Artifact concern handling</td>
+<td>Dependency-scan findings reviewed explicitly; SBOM files reviewed; no new PR-scoped code regressions introduced by this session</td>
+</tr>
+<tr>
+<td>CI auto-fix execution</td>
+<td>Ran <code>auto_fix_common_issues.py</code>; Pattern 25 auto-fix applied to accountability tracking</td>
+</tr>
+<tr>
+<td>Required validation chain</td>
+<td><code>ruff check src/ tests/ --fix</code> and <code>auto_fix_common_issues.py --check-only</code> executed; <code>mypy_baseline --require-baseline</code> currently reports pre-existing baseline regression (+6)</td>
+</tr>
+<tr>
+<td>Living docs / tracking updates</td>
+<td>Updating <code>whats_next</code>, <code>session_diagram</code>, <code>CHANGELOG.md</code>, and <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserve for wrap-up + continuation prompt</td>
+</tr>
+</tbody>
+</table>
+<h3 id="follow-up-prompt-continuation">Follow-up prompt (continuation)<a class="headerlink" href="#follow-up-prompt-continuation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>@copilot continue on PR #4528:
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>- re-check latest CI status for head after accountability-touch commit
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>- if Pattern 25 clears, post concise merge-readiness update
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>- if any remaining failed checks are actionable, fix only those with minimal scope
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>- keep CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs synchronized
+</code></pre></div>
+<h2 id="session-status-current-workflow-triage-phase-4-trigger-remediation-2026-05-21t0310z">Session Status (Current — workflow-triage Phase 4 trigger remediation · 2026-05-21T03:10Z)<a class="headerlink" href="#session-status-current-workflow-triage-phase-4-trigger-remediation-2026-05-21t0310z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer note acknowledged: ~11/60 minutes used; reserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Objective source</td>
+<td>Issue #4524 comment <code>4504378838</code> loaded and triaged</td>
+</tr>
+<tr>
+<td>Critical trigger audit</td>
+<td>Completed for <code>cleanup-stale-pr-comments</code>, <code>ci-failure-issue-creator</code>, <code>comment-review-gate</code>, <code>proactive-ci-monitor</code></td>
+</tr>
+<tr>
+<td>Trigger remediation applied</td>
+<td><code>proactive-ci-monitor.yml</code> schedule reduced from <code>*/30 * * * *</code> to <code>0 */6 * * *</code></td>
+</tr>
+<tr>
+<td>Documentation updates</td>
+<td>Added <code>docs/workflows/WORKFLOW_TRIGGER_AUDIT_2026-05-21.md</code>; updated <code>docs/workflows/CONSOLIDATION_PLAN.md</code> with Phase 4 section</td>
+</tr>
+<tr>
+<td>Tracking freshness maintenance</td>
+<td><code>auto_fix_common_issues.py</code> + <code>doc_metrics_sync.py --fix</code> + <code>sync_tracked_files.py --fix</code> executed</td>
+</tr>
+<tr>
+<td>Changelog/accountability updates</td>
+<td>Updating in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserve for wrap-up + continuation prompt</td>
+</tr>
+</tbody>
+</table>
+<h3 id="follow-up-prompt-continuation_1">Follow-up prompt (continuation)<a class="headerlink" href="#follow-up-prompt-continuation_1" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>@copilot continue Phase 4/4 from current head on copilot/review-and-assess-workflows:
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>- monitor post-change CI behavior for proactive-ci-monitor cadence reduction
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>- expand trigger-audit coverage from critical set to remaining scheduled workflows
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>- apply only low-risk schedule/path-scope remediations backed by MCP run evidence
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>- keep CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs in sync
+</code></pre></div>
+<h2 id="session-status-current-pr-4510-speaker-timeout-follow-up-approved-workflow-monitoring-2026-05-19t2235z">Session Status (Current — PR #4510 speaker-timeout follow-up + approved-workflow monitoring · 2026-05-19T22:35Z)<a class="headerlink" href="#session-status-current-pr-4510-speaker-timeout-follow-up-approved-workflow-monitoring-2026-05-19t2235z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>PR review comments applied</td>
+<td>Interactive speaker naming timeout is now configurable via <code>AudioTranscriberUI(speaker_name_timeout_seconds=...)</code>; audio workflow tests now use public <code>process_path()</code> coverage with a stubbed <code>process_file()</code> helper; pyannote test fixture now uses a named fake segment class</td>
+</tr>
+<tr>
+<td>Targeted validation</td>
+<td><code>python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py</code>; <code>python -m pytest -q tests/services/audio/test_transcription_workflow.py</code>; <code>python -m pytest -q tests/services/audio</code></td>
+</tr>
+<tr>
+<td>Manual verification</td>
+<td><code>_gui_input_func()</code> verified with a stubbed root and <code>speaker_name_timeout_seconds=0.01</code>, returning the expected empty-string timeout fallback</td>
+</tr>
+<tr>
+<td>Approved-workflow monitor (<code>f0185d1e</code>)</td>
+<td>Active fan-out confirmed via MCP: validation/security/QA workflows are in progress; control workflows (<code>Agent Token Delegation</code>, <code>Workflow Execution Gate</code>, <code>PR Cost Check</code>, <code>Generate PR Follow-Up Prompt</code>) are currently <code>action_required</code></td>
+</tr>
+<tr>
+<td>Startup-level fail-like runs</td>
+<td><code>Rust-Python Hybrid Swarm CI/CD</code> (<code>26129073147</code>), <code>Progressive Validation Suite</code> (<code>26129073150</code>), and <code>Data Quality &amp; Determinism Suite</code> (<code>26129073148</code>) each currently expose <code>0</code> jobs via MCP in this snapshot</td>
+</tr>
+<tr>
+<td>Living docs / accountability parity</td>
+<td>Updating <code>whats_next</code>, <code>session_diagram</code>, <code>CHANGELOG.md</code>, and <code>.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserve for final validation + wrap-up</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-add-transcription-application-standalone-packaging-pass-2026-05-19t1723z">Session Status (Current — add-transcription-application standalone packaging pass · 2026-05-19T17:23Z)<a class="headerlink" href="#session-status-current-add-transcription-application-standalone-packaging-pass-2026-05-19t1723z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~20/60 minutes consumed; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Transcription workflow extension (<code>src/services/audio</code>)</td>
+<td>Added ingest diarize speaker-label map transcribe output merge pipeline</td>
+</tr>
+<tr>
+<td>CLI extension (<code>smart_cli.py</code>)</td>
+<td>Added <code>transcribe</code> command with backward-compatible tune default</td>
+</tr>
+<tr>
+<td>Speaker labeling + mapping</td>
+<td>JSON speaker-map support + interactive fallback + stable IDs (<code>SPEAKER_00+</code>)</td>
+</tr>
+<tr>
+<td>Output formats</td>
+<td>TXT + JSON + SRT + VTT generation</td>
+</tr>
+<tr>
+<td>Standalone desktop UI</td>
+<td>Added <code>apps/dev/audio_transcriber_ui.py</code> with browse/run/status UX</td>
+</tr>
+<tr>
+<td>Downloadable packaging path</td>
+<td>Updated <code>app-package-download.yml</code> with <code>app_name=audio_transcriber_ui</code> packaging flow</td>
+</tr>
+<tr>
+<td>Standalone runtime hardening</td>
+<td>Packaged local <code>services/audio/workflow/transcription_workflow.py</code> + package markers</td>
+</tr>
+<tr>
+<td>AI Findings follow-up (tests)</td>
+<td>Consolidated redundant docstrings + strengthened profile/aggressive assertions</td>
+</tr>
+<tr>
+<td>Validation snapshot</td>
+<td><code>ruff</code> and <code>pytest -q tests/services/audio</code> passing</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1071-codebase-review-quick-wins-2026-05-19t0141z">Session Status (Current — S1071 codebase-review-quick-wins · 2026-05-19T01:41Z)<a class="headerlink" href="#session-status-current-s1071-codebase-review-quick-wins-2026-05-19t0141z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Top 5 quick wins identification</td>
+<td>Completed</td>
+</tr>
+<tr>
+<td>Quick Win 1: Fix DTZ003 <code>datetime.utcnow()</code> in scripts/tools/cli (130+ files)</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>Quick Win 2: Fix Pattern 25 accountability drift</td>
+<td>Auto-fixed</td>
+</tr>
+<tr>
+<td>Quick Win 3: Update PDA iterations JSONL</td>
+<td>Appended session entry</td>
+</tr>
+<tr>
+<td>Quick Win 4: Update living docs (whats_next + codebase_review_quick_wins.md)</td>
+<td>Created</td>
+</tr>
+<tr>
+<td>Quick Win 5: Agentic behavior summary document</td>
+<td>Created at <code>docs/roadmap/codebase_review_quick_wins.md</code></td>
+</tr>
+<tr>
+<td>DTZ003 ruff check in scripts/tools/cli</td>
+<td>All checks passed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-prior-s1070-pr-4501-approved-workflow-monitoring-continuation-2026-05-19t0108z">Session Status (Prior — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)<a class="headerlink" href="#session-status-prior-s1070-pr-4501-approved-workflow-monitoring-continuation-2026-05-19t0108z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer guidance: ~20/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Approval state</td>
+<td>Maintainer confirms pending workflows approved for current PR</td>
+</tr>
+<tr>
+<td>Current-head in-progress snapshot (<code>f6d749c6</code>)</td>
+<td>30 runs currently in progress (validation/security/qa/auto-fix fan-out active)</td>
+</tr>
+<tr>
+<td>Current-head completed snapshot (<code>f6d749c6</code>)</td>
+<td>Multiple control gates succeeded (<code>cost</code>, <code>comment-review</code>, <code>deferral</code>, <code>rebase-gate</code>, <code>auto-approve</code>)</td>
+</tr>
+<tr>
+<td>Startup-level triage on completed fail-like runs</td>
+<td><code>Rust-Python Hybrid Swarm CI/CD</code> (<code>26070028902</code>), <code>Data Quality &amp; Determinism Suite</code> (<code>26070028991</code>), and <code>Progressive Validation Suite</code> (<code>26070028955</code>) each report <code>total_count: 0</code> jobs (no in-job remediation path)</td>
+</tr>
+<tr>
+<td>Living docs parity</td>
+<td><code>whats_next</code> + <code>session_diagram</code> refreshed in this pass</td>
+</tr>
+<tr>
+<td>Changelog/accountability parity</td>
+<td>Updated in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserved for concise wrap-up/handoff</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1069-pr-4501-comment-thread-ci-rescue-remediation-2026-05-19t0100z">Session Status (Current — S1069 PR #4501 comment-thread + CI rescue remediation · 2026-05-19T01:00Z)<a class="headerlink" href="#session-status-current-s1069-pr-4501-comment-thread-ci-rescue-remediation-2026-05-19t0100z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Review-thread remediation (<code>pullrequestreview-4314989322</code>)</td>
+<td>Resolved by removing out-of-scope PR artifacts and narrowing scope to requested docs/test updates only</td>
+</tr>
+<tr>
+<td>CI auto-fix failure (<code>PR Auto-Fix Check</code> run <code>26069350387</code>)</td>
+<td>Root cause captured from job logs (<code>Pattern 25/30</code>: accountability + PDA freshness + tracked sync drift)</td>
+</tr>
+<tr>
+<td>Living docs updates requested by maintainer</td>
+<td><code>whats_next</code> + <code>session_diagram</code> updated in this pass</td>
+</tr>
+<tr>
+<td>Tracking updates requested by maintainer</td>
+<td><code>CHANGELOG.md</code> + <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code> updated in this pass</td>
+</tr>
+<tr>
+<td>Final wrap-up reserve</td>
+<td>Preserve final ~5 minutes for concise handoff</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1068-approved-workflow-monitoring-continuation-2026-05-18t2321z">Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)<a class="headerlink" href="#session-status-current-s1068-approved-workflow-monitoring-continuation-2026-05-18t2321z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Approval state</td>
+<td>Maintainer confirms pending workflows approved</td>
+</tr>
+<tr>
+<td>Latest completed-head snapshot (<code>e35c2520</code>)</td>
+<td>Most critical checks now green/cancelled/skipped; three startup-level fail-like runs observed (<code>Progressive Validation Suite</code>, <code>Data Quality &amp; Determinism Suite</code>, <code>Rust-Python Hybrid Swarm CI/CD</code>)</td>
+</tr>
+<tr>
+<td>Startup-failure job triage</td>
+<td><code>list_workflow_jobs</code> for runs <code>26066450670</code>, <code>26066450659</code>, <code>26066450700</code> each returned <code>total_count: 0</code> (no in-job logs/code-fix path)</td>
+</tr>
+<tr>
+<td>In-progress run monitor (<code>e35c2520</code>)</td>
+<td>Active queue includes docs/registry/audit/security/pre-flight flows; continue monitor-only until concrete failed job logs exist</td>
+</tr>
+<tr>
+<td>Living docs parity</td>
+<td>Updated <code>whats_next</code> + <code>session_diagram</code> in this pass</td>
+</tr>
+<tr>
+<td>Changelog/accountability parity</td>
+<td>Updated in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserved for concise wrap-up/handoff</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1067-approved-workflow-monitoring-wrap-up-reserve-tracking-2026-05-18t2321z">Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)<a class="headerlink" href="#session-status-current-s1067-approved-workflow-monitoring-wrap-up-reserve-tracking-2026-05-18t2321z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>Maintainer guidance: ~10/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Approval state</td>
+<td>Maintainer confirmed pending workflows approved for current PR</td>
+</tr>
+<tr>
+<td>Latest completed-head snapshot (<code>5dbd9410</code>)</td>
+<td>Predominantly <code>action_required</code>/queued workflow states tied to approval-gated execution; no failed job logs captured yet for code remediation</td>
+</tr>
+<tr>
+<td>Latest in-progress head snapshot (<code>fa43f721</code>)</td>
+<td>Active queue on validation/security/code-quality flows; continue monitor-only until concrete failed job logs appear</td>
+</tr>
+<tr>
+<td>Current job-level triage</td>
+<td>Sampled current jobs via MCP (<code>Auto-Fix Common CI Issues</code>, <code>Workflow Execution Gate</code>, <code>CI Checkpoint Validation</code>) and found no completed failed jobs requiring code fixes</td>
+</tr>
+<tr>
+<td>Living docs parity</td>
+<td>Updated <code>whats_next</code> + <code>session_diagram</code> in this pass</td>
+</tr>
+<tr>
+<td>Changelog/accountability parity</td>
+<td>Updating in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Preserved for concise wrap-up/handoff</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1066-approval-dispatch-continuation-expanded-checklist-2026-05-18t2321z">Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)<a class="headerlink" href="#session-status-current-s1066-approval-dispatch-continuation-expanded-checklist-2026-05-18t2321z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~42/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>New blocking maintainer continuation comment (<code>#4483007895</code>)</td>
+<td>Triaged and continuation resumed</td>
+</tr>
+<tr>
+<td>Latest PR-head monitor snapshot (<code>fa43f721</code>)</td>
+<td>Approval-dispatched runs currently in progress/queued; no failed jobs captured yet for in-job remediation</td>
+</tr>
+<tr>
+<td>Job-log triage on latest head</td>
+<td>inspected run jobs for <code>Secrets Baseline Enforcer</code>, <code>CodeQL</code>, <code>Security Scanning Suite</code>, <code>Agent Vars Bootstrap</code>, <code>Resilient Dependency Submission</code>, <code>Documentation Link Checker</code>; none currently failed</td>
+</tr>
+<tr>
+<td>Continuation prompt alignment</td>
+<td>Appended expanded 10-item Priority 1 checklist to <code>.github/copilot-prompts/active/PR-4498-followup.md</code></td>
+</tr>
+<tr>
+<td>Required validation + targeted checkpoint parity reruns</td>
+<td>Running in this pass</td>
+</tr>
+<tr>
+<td>Living docs + changelog + accountability</td>
+<td>Updating in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1065-approval-dispatch-continuation-prompt-append-2026-05-18t2308z">Session Status (Current — S1065 approval-dispatch continuation + prompt append · 2026-05-18T23:08Z)<a class="headerlink" href="#session-status-current-s1065-approval-dispatch-continuation-prompt-append-2026-05-18t2308z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~34/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>New approval-dispatch comment (<code>#4482756378</code>)</td>
+<td>Triaged and continuation flow resumed</td>
+</tr>
+<tr>
+<td>Latest run monitor snapshot</td>
+<td>Head <code>a1ace279</code> currently shows <code>Automatic Dependency Submission (Python)</code> completed success</td>
+</tr>
+<tr>
+<td>Prior active-head monitor snapshot (<code>b31f0d5</code>)</td>
+<td>Startup-level fail-like runs observed (<code>Progressive Validation Suite</code>, <code>Data Quality &amp; Determinism Suite</code>, <code>Rust-Python Hybrid Swarm CI/CD</code>) with <strong>0 jobs</strong> each; no in-job code remediation path</td>
+</tr>
+<tr>
+<td>Continuation prompt alignment</td>
+<td>Appended requested <code>@copilot continue</code> Priority 1 six-task checklist to <code>.github/copilot-prompts/active/PR-4498-followup.md</code></td>
+</tr>
+<tr>
+<td>Living docs + changelog + accountability</td>
+<td>Updating in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1064-approval-hook-queue-hygiene-ci-rescue-continuation-2026-05-18t2227z">Session Status (Current — S1064 approval-hook queue hygiene + CI rescue continuation · 2026-05-18T22:27Z)<a class="headerlink" href="#session-status-current-s1064-approval-hook-queue-hygiene-ci-rescue-continuation-2026-05-18t2227z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~29/60 minutes used at latest maintainer checkpoint; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Approval-coupled Copilot queue hygiene</td>
+<td>Implemented in <code>approve_pending_runs.py</code> and wired in <code>trigger-on-approval.yml</code></td>
+</tr>
+<tr>
+<td>`` cleanup behavior</td>
+<td>Removes stale Copilot <code>eyes</code> reactions during approval pass when token scope permits; non-fatal logging on permission blocks</td>
+</tr>
+<tr>
+<td>CI rescue comment context (<code>64cca281</code>)</td>
+<td>Verified via MCP: fail-like signals are startup-level with 0 jobs for affected runs (no code-level job logs)</td>
+</tr>
+<tr>
+<td>Latest PR-head workflow monitor (<code>153e43b0</code>)</td>
+<td>Active — three startup-level fail-like runs (<code>Rust-Python Hybrid Swarm CI/CD</code>, <code>Progressive Validation Suite</code>, <code>Data Quality &amp; Determinism Suite</code>) all report <strong>0 jobs</strong> (non-code-fixable at job layer)</td>
+</tr>
+<tr>
+<td>Required validation chain</td>
+<td><code>ruff</code> + <code>mypy_baseline</code> + <code>auto_fix_common_issues --check-only</code> all green</td>
+</tr>
+<tr>
+<td>Living docs + changelog + accountability</td>
+<td>Updated in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1063-pr-4498-review-thread-closure-workflow-monitor-2026-05-18t2200z">Session Status (Current — S1063 PR #4498 review-thread closure + workflow monitor · 2026-05-18T22:00Z)<a class="headerlink" href="#session-status-current-s1063-pr-4498-review-thread-closure-workflow-monitor-2026-05-18t2200z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~35/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Review thread <code>pullrequestreview-4313843683</code> closure</td>
+<td>Addressed all requested items (<code>PR-4498-followup.md</code>, accountability PR field, <code>training/checkpoint_manager.py</code>, <code>src/training/checkpoint_manager.py</code> parity)</td>
+</tr>
+<tr>
+<td>Checkpoint parity fixes (legacy <code>training/</code> vs <code>src/training/</code>)</td>
+<td>Applied and validated (save guard, step-0 callback guard, prune-path protection, CUDA RNG helper extraction in src fallback)</td>
+</tr>
+<tr>
+<td>Required validation chain</td>
+<td><code>pytest</code> targeted set + <code>ruff</code> + <code>mypy_baseline</code> + <code>auto_fix_common_issues --check-only</code></td>
+</tr>
+<tr>
+<td>Current PR-head workflow monitor (<code>0cdaf740</code>)</td>
+<td>Active — many runs in progress; currently observed <code>startup_failure</code> on <code>Progressive Validation Suite</code> and <code>Data Quality &amp; Determinism Suite</code> with <strong>0 jobs</strong> each (startup-level, non-code-fixable from repo code). A few earlier control runs show <code>cancelled</code> due superseding pushes.</td>
+</tr>
+<tr>
+<td>Copilot queued reaction hygiene</td>
+<td>Verified process: detect comments with <code>eyes</code> reactions and inspect reaction owners; delete attempt for reaction <code>358870127</code> currently blocked by token scope (<code>403 Resource not accessible by integration</code>)</td>
+</tr>
+<tr>
+<td>Living docs + changelog + accountability</td>
+<td>Updating in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1062-checkpoint-manager-and-artifact-remediation-2026-05-18t2028z">Session Status (Current — S1062 checkpoint-manager-and-artifact-remediation · 2026-05-18T20:28Z)<a class="headerlink" href="#session-status-current-s1062-checkpoint-manager-and-artifact-remediation-2026-05-18t2028z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~10/60 minutes used; preserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Artifact ingestion (<code>run 26058314535</code>)</td>
+<td>Downloaded and SHA256-verified (<code>dependency-scan-results</code>, <code>sbom-reports</code>)</td>
+</tr>
+<tr>
+<td>Dependency scan remediation status</td>
+<td>Explicitly reviewed — 2 known CVEs (<code>diskcache</code>, <code>sqlitedict</code>) still no fix versions; existing <code>pip-audit</code> ignore policy in <code>pyproject.toml</code> remains current</td>
+</tr>
+<tr>
+<td>SBOM remediation status</td>
+<td><code>sbom.json</code> reviewed: 326 components, 0 vulnerabilities</td>
+</tr>
+<tr>
+<td>Requested code diffs application</td>
+<td>Complete — requested checkpoint manager and test diffs applied</td>
+</tr>
+<tr>
+<td>Targeted validation status</td>
+<td><code>pytest</code> target set, <code>ruff</code> (changed files), and <code>nox -s tests</code> target run all passing</td>
+</tr>
+<tr>
+<td>Living docs + changelog + accountability</td>
+<td>Updated in this pass</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-current-s1061-approval-monitor-continuation-2026-05-18t1919z">Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)<a class="headerlink" href="#session-status-current-s1061-approval-monitor-continuation-2026-05-18t1919z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~26/60 minutes used; reserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Latest PR head SHA</td>
+<td><code>2986420f2187f1567b9c914dc97337ecf7cb8da0</code> (<code>MERGEABLE</code>)</td>
+</tr>
+<tr>
+<td>Approval-dispatched workflow monitoring</td>
+<td>Maintainer approved pending workflows; latest check-run snapshot shows heavy active load (<code>35 in_progress</code>, <code>3 queued</code>) plus <code>action_required</code> workflow conclusions on the same head — under active monitoring</td>
+</tr>
+<tr>
+<td>Tracked-file/accountability freshness</td>
+<td>In progress — refresh docs/changelog/accountability in this pass</td>
+</tr>
+<tr>
+<td>Validation chain parity</td>
+<td>In progress — rerun <code>ruff</code>, <code>mypy_baseline</code>, <code>auto_fix_common_issues</code> and compare with CI outcomes</td>
+</tr>
+<tr>
+<td>Workflow action pin/comment drift</td>
+<td>In progress — recheck for new drift after branch updates</td>
+</tr>
+<tr>
+<td><code>PR-4497-followup.md</code> continuation prompt</td>
+<td>Updated — appended current Priority 1 task block for next @copilot phase</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending — preserve for wrap-up and handoff</td>
+</tr>
+</tbody>
+</table>
+<h3 id="merge-readiness-checkpoint">Merge-readiness checkpoint<a class="headerlink" href="#merge-readiness-checkpoint" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Current merge-readiness score:</strong> <strong>100/100</strong> (local Pattern 30 dimensions green).</li>
+<li><strong>Pattern 30 definition:</strong> merge-readiness composite in <code>auto_fix_common_issues.py</code> that checks key gates (tracked-file sync, accountability freshness, action-version hygiene, and related readiness dimensions).</li>
+</ul>
+<h3 id="follow-up-prompt-options">Follow-up prompt options<a class="headerlink" href="#follow-up-prompt-options" title="Permanent link">¶</a></h3>
+<p><strong>For current PR (#4497):</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>@copilot continue with next phase tasks for this PR
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>Priority: monitor approved workflow queue outcomes, keep tracked/accountability fresh, and prepare final merge handoff.
+</code></pre></div></p>
+<p><strong>For immediate post-merge new PR (if needed):</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>@copilot continue in a new PR for post-merge stabilization:
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>- verify main branch CI on merge SHA
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>- close residual follow-up items from PR #4497
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>- refresh living docs and accountability for the new branch/PR context
+</code></pre></div></p>
+<h3 id="copilot-continue-next-phase-tasks-for-pr-4497">@copilot continue — next phase tasks for PR #4497<a class="headerlink" href="#copilot-continue-next-phase-tasks-for-pr-4497" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 1. Monitor approval-dispatched workflow queue outcomes on latest head SHA</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 2. Keep tracked-file/accountability freshness intact for final merge pass</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 3. Re-run required local validation chain in a clean environment and confirm CI parity</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 4. Confirm no new action pin/comment drift in workflow files</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 5. Continue consolidated Dependabot absorb workflow for subsequent update waves</li>
+</ul>
+<h2 id="session-status-current-s1060-approval-monitor-wrap-up-planning-2026-05-18t1844z">Session Status (Current — S1060 approval-monitor + wrap-up planning · 2026-05-18T18:44Z)<a class="headerlink" href="#session-status-current-s1060-approval-monitor-wrap-up-planning-2026-05-18t1844z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~28/60 minutes used; reserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>PR merge conflict state (<code>gh pr view</code>)</td>
+<td>Cleared — PR #4497 now <code>MERGEABLE</code> on HEAD <code>e0fee31</code></td>
+</tr>
+<tr>
+<td>Review thread <code>pullrequestreview-4312820254</code> remediation</td>
+<td>Complete — workflow comment alignment + pages SHA pin + stale status-label cleanup</td>
+</tr>
+<tr>
+<td>CI dependency resolver blocker (<code>mlflow</code> vs <code>pandas</code>)</td>
+<td>Complete — pandas constraints restored to <code>&gt;=2.3.1,&lt;3</code> / <code>2.3.3</code> pins</td>
+</tr>
+<tr>
+<td>Workflow monitoring after approval dispatch</td>
+<td>Ongoing — latest runs on <code>e0fee31</code> are predominantly <code>action_required</code>/queued; no new code-fixable failures identified in current snapshot</td>
+</tr>
+<tr>
+<td>Living docs + CHANGELOG + accountability sync</td>
+<td>Updated in-session</td>
+</tr>
+<tr>
+<td>Final 5-minute reserve</td>
+<td>Pending — hold remaining time for wrap-up summary and handoff</td>
+</tr>
+</tbody>
+</table>
+<h2 id="session-status-s1056-snapshot-dependabot-absorb-session-2026-05-18t1720z">Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)<a class="headerlink" href="#session-status-s1056-snapshot-dependabot-absorb-session-2026-05-18t1720z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~52/60 minutes used; final 5 minutes reserved for wrap-up</td>
+</tr>
+<tr>
+<td>Active Dependabot PR absorb into <code>copilot/gather-active-dependabots</code></td>
+<td>Complete — 15 update commits cherry-picked on top of <code>9aa5ae4</code> through HEAD <code>5d14f3b</code></td>
+</tr>
+<tr>
+<td>Consumed GitHub Actions PRs</td>
+<td><code>#4480</code>, <code>#4482</code>, <code>#4484</code>, <code>#4493</code>, <code>#4494</code> absorbed</td>
+</tr>
+<tr>
+<td>Consumed Python dependency PRs</td>
+<td><code>#4481</code>, <code>#4483</code>, <code>#4485</code>, <code>#4486</code>, <code>#4487</code>, <code>#4488</code>, <code>#4489</code>, <code>#4490</code>, <code>#4491</code>, <code>#4492</code> absorbed</td>
+</tr>
+<tr>
+<td>Closure candidate list</td>
+<td>Prepared — #4480, #4481, #4482, #4483, #4484, #4485, #4486, #4487, #4488, #4489, #4490, #4491, #4492, #4493, #4494</td>
+</tr>
+<tr>
+<td>Living docs + CHANGELOG + accountability sync</td>
+<td>Complete (<code>whats_next</code>, <code>session_diagram</code>, <code>CHANGELOG</code>, <code>AGENT_ACCOUNTABILITY_REPORT</code>)</td>
+</tr>
+<tr>
+<td>Final wrap-up / PR closure sweep</td>
+<td>Pending — keep final 5-minute reserve</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dependabot-absorb-summary">Dependabot absorb summary<a class="headerlink" href="#dependabot-absorb-summary" title="Permanent link">¶</a></h3>
+<ul>
+<li>Cherry-picked the exact Dependabot update commits for all 15 active open dependency PRs into the active session branch.</li>
+<li>Consolidated workflow action bumps: <code>actions/create-github-app-token</code>, <code>actions/github-script</code>, <code>actions/download-artifact</code>, <code>actions/deploy-pages</code>, and <code>actions/cache</code>.</li>
+<li>Consolidated dependency bumps across Python requirement surfaces and lock files: <code>dvc</code>, <code>matplotlib-inline</code>, <code>iniconfig</code>, <code>alembic</code>, <code>opentelemetry-api</code>, <code>rich-toolkit</code>, <code>matplotlib</code>, <code>sacrebleu</code>, grouped <code>numpy</code>/<code>pandas</code>, and grouped <code>transformers</code>.</li>
+<li>Prepared the consumed-PR closure list so the absorbed Dependabot PRs can be closed once this branch state is pushed and verified.</li>
+</ul>
+<h2 id="session-status-s1055-snapshot-pr-4479-follow-up-2026-05-18t1554z">Session Status (S1055 snapshot — PR #4479 follow-up · 2026-05-18T15:54Z)<a class="headerlink" href="#session-status-s1055-snapshot-pr-4479-follow-up-2026-05-18t1554z" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Session budget tracking</td>
+<td>~25/60 minutes used; reserve final 5 minutes for wrap-up</td>
+</tr>
+<tr>
+<td>Session D runtime rerun — 3 collection errors fixed</td>
+<td>Complete (Bucket A: path-shadow; Bucket B ×2: numpy importorskip)</td>
+</tr>
+<tr>
+<td>CI: <code>sync_tracked_files</code> stale hash</td>
+<td>Fixed (<code>sync_tracked_files.py --fix</code>)</td>
+</tr>
+<tr>
+<td>CI: Secrets Baseline Enforcer (archive_ops.jsonl false positives)</td>
+<td>Fixed (4 new entries added to <code>.secrets.baseline</code>)</td>
+</tr>
+<tr>
+<td><code>sys.path.insert</code> module-level calls audit + fixture migration</td>
+<td>Complete (<code>conftest.py</code> created in <code>tests/scripts/</code> and <code>tests/checkpointing/</code>)</td>
+</tr>
+<tr>
+<td>Code review: narrow <code>except ImportError</code> <code>ModuleNotFoundError</code></td>
+<td>Fixed (commit <code>b588342</code>)</td>
+</tr>
+<tr>
+<td>Code review: fix wrong PR #4478 reference in <code>PR-4479-followup.md</code></td>
+<td>Fixed (commit <code>b588342</code>)</td>
+</tr>
+<tr>
+<td>Code review: remove duplicate checklist block in <code>PR-4479-followup.md</code></td>
+<td>Fixed (commit <code>b588342</code>)</td>
+</tr>
+<tr>
+<td>CI: Auto-Fix PR Check on commit <code>173a5ad</code> (superseded)</td>
+<td>Superseded — current HEAD passes <code>Auto-Fix Common CI Issues</code></td>
+</tr>
+<tr>
+<td>CI rescue command set (<code>ruff</code>, <code>mypy_baseline</code>, <code>auto_fix_common_issues</code>)</td>
+<td>All pass on current HEAD</td>
+</tr>
+<tr>
+<td>Living docs + CHANGELOG + accountability sync</td>
+<td>In progress (this update)</td>
+</tr>
+<tr>
+<td>Final 5-minute wrap-up + continuation prompt</td>
+<td>Pending (reserve at end of session)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="priority-1-maintainer-directed-checklist">Priority 1 (Maintainer-directed checklist)<a class="headerlink" href="#priority-1-maintainer-directed-checklist" title="Permanent link">¶</a></h3>
+<ol>
+<li>Finish full Session D runtime rerun to terminal pytest summary and bucket failures.</li>
+<li>Land minimal fix for highest-frequency non-heavy-dependency runtime bucket.</li>
+<li>Re-check CI after S1051 fix (<code>70359ee</code>) and clear remaining blocking gates.</li>
+<li>Re-run CI rescue command set and confirm clean status.</li>
+<li>Validate <code>promote-integration-branch.yml</code> dispatch to <code>main</code> with current <code>source_sha</code> (token-scope dependent).</li>
+<li>Verify WEC-driven automation/checks via report console with SHA correlation.</li>
+<li>Worker-stability follow-up after runtime fixes.</li>
+<li>Keep continuation docs/changelog/accountability synchronized per session.</li>
+<li>Apply changes requested in review threads:</li>
+<li><code>#pullrequestreview-4307843777</code></li>
+<li><code>#pullrequestreview-4307833235</code></li>
+<li>Re-attempt cancellation of stale old-SHA in-progress comment-triggered run once API rate budget is available.</li>
+<li>Keep workflow-misfire prevention process active (pre-edit divergence check + rebase-first + live WEC sourcing).</li>
+</ol>
+<h3 id="workflowprocess-hardening-regression-prevention">Workflow/Process hardening (regression prevention)<a class="headerlink" href="#workflowprocess-hardening-regression-prevention" title="Permanent link">¶</a></h3>
+<ul>
+<li>Add an explicit pre-edit branch-divergence check (<code>origin/main...HEAD</code>) in each continuation start.</li>
+<li>If behind/diverged, rebase before edits to avoid <code>REQ-10</code> pre-flight gate regressions.</li>
+<li>Keep WEC block sourced from live PR body for every progress update (no manual reconstruction).</li>
+<li>Apply comment-driven fixes from review threads:</li>
+<li><code>#pullrequestreview-4307843777</code></li>
+<li><code>#pullrequestreview-4307833235</code></li>
+</ul>
+<h2 id="session-status-s1043-snapshot">Session Status (S1043 snapshot)<a class="headerlink" href="#session-status-s1043-snapshot" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core report (<code>next_expected_codebase_change_48h.md</code>)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Mermaid + expected results + equations + token descriptions</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Iterative promptset + groundwork package</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Living docs sync (<code>whats_next</code>, <code>session_diagram</code>)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>CHANGELOG + accountability updates</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>S1042 — Quantum conftest remediation</strong></td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>S1043 — Loader import-contract stabilization</strong></td>
+<td>Complete</td>
+</tr>
+</tbody>
+</table>
+<h2 id="evidence-summary-s1042s1043-2026-05-17">Evidence Summary (S1042/S1043-2026-05-17)<a class="headerlink" href="#evidence-summary-s1042s1043-2026-05-17" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collection errors</td>
+<td>143 (<code>_core_loaders.stream_paths</code> cascade after S1042)</td>
+<td>56</td>
+</tr>
+<tr>
+<td>Dominant collection failure</td>
+<td><code>_core_loaders.stream_paths</code> import cascade</td>
+<td>Optional-dependency gaps in baseline nox env</td>
+</tr>
+<tr>
+<td>Loader-focused targeted regressions</td>
+<td>blocked</td>
+<td>16/16 pass</td>
+</tr>
+<tr>
+<td>Quantum regression sample</td>
+<td>blocked</td>
+<td>14/14 pass</td>
+</tr>
+<tr>
+<td>Full <code>nox -s tests</code> runtime phase</td>
+<td>not reached</td>
+<td>not reached (collection still interrupts)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>S1042 root cause:</strong> <code>pytest_plugins = ("tests.utils.quantum_helpers",)</code> in <code>tests/quantum/conftest.py</code> was rejected by pytest 8+ as unsupported in non-root conftest files.
+<strong>S1042 fix:</strong> Removed <code>pytest_plugins</code>, directly imported <code>quantum_plugin_fixture</code>.</p>
+<p><strong>S1043 root cause class:</strong> recursive loader import contract plus optional monitoring coupling:
+- <code>src/codex_ml/data/__init__.py</code> eagerly imported <code>.loaders</code>, exposing a partially initialized <code>codex_ml.data._core_loaders</code>
+- <code>src/codex_ml/connectors/remote.py</code> tied loader importability to optional monitoring extras</p>
+<p><strong>S1043 fix:</strong> removed eager <code>.loaders</code> package import and added optional <code>record_health_event</code> fallback.</p>
+<p><strong>Remaining baseline nox collection blockers (56 total):</strong>
+- <code>pydantic</code>: 26
+- <code>click</code>: 23
+- <code>fastapi.testclient</code>: 2
+- <code>httpx</code>: 1
+- <code>cryptography</code>: 1
+- pydantic symbol imports (<code>ConfigDict</code>, <code>ValidationError</code>): 3</p>
+<h2 id="evidence-summary-s1044-2026-05-17">Evidence Summary (S1044-2026-05-17)<a class="headerlink" href="#evidence-summary-s1044-2026-05-17" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before S1044</th>
+<th>After S1044</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collection errors</td>
+<td>56 (dep bucket)</td>
+<td><strong>0</strong> (collect-only succeeded, nox session successful)</td>
+</tr>
+<tr>
+<td>Dominant collection failure</td>
+<td><code>pydantic</code>/<code>click</code>/<code>fastapi</code>/<code>httpx</code>/<code>crypto</code> missing</td>
+<td>None — all 5 resolved via <code>requirements-dev.txt</code></td>
+</tr>
+<tr>
+<td><code>pydantic</code> missing</td>
+<td>26 errors</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><code>click</code> missing</td>
+<td>23 errors</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><code>fastapi.testclient</code> missing</td>
+<td>2 errors</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><code>httpx</code> missing</td>
+<td>1 error</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><code>cryptography</code> missing</td>
+<td>1 error</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>Workflow promotion</td>
+<td><code>0D_base_</code> hard-coded</td>
+<td><strong>configurable</strong> via <code>target_branch</code>/<code>pr_base_branch</code> inputs</td>
+</tr>
+<tr>
+<td>Full runtime phase</td>
+<td>not reached</td>
+<td>partial (full run still in progress at session end)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>S1044 changes:</strong>
+- Added <code>pydantic&gt;=2.4,&lt;3</code>, <code>click&gt;=8.1,&lt;9</code>, <code>fastapi&gt;=0.135.3,&lt;1</code>, <code>httpx&gt;=0.26,&lt;1</code>, <code>cryptography&gt;=42.0.0,&lt;47.0.0</code> to <code>requirements-dev.txt</code>.
+- Extended <code>.github/workflows/promote-integration-branch.yml</code> with <code>target_branch</code>, <code>pr_base_branch</code>, <code>create_or_update_pr</code> inputs — enables UI-driven SHAbranch promotion for files in <code>copilot/review-codebase-and-next-changes</code> (or any source branch) to <code>main</code>.</p>
+<h2 id="evidence-summary-s1045-2026-05-17">Evidence Summary (S1045-2026-05-17)<a class="headerlink" href="#evidence-summary-s1045-2026-05-17" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>S1044 baseline</th>
+<th>S1045 runtime scan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Runtime command</td>
+<td>pending</td>
+<td><code>nox -s tests -- -n auto --dist=loadfile</code></td>
+</tr>
+<tr>
+<td>Runtime progress reached</td>
+<td>partial start</td>
+<td><strong>98% observed</strong> before stop</td>
+</tr>
+<tr>
+<td>Failure markers (partial log scan)</td>
+<td>N/A</td>
+<td><code>F=47</code>, <code>E=5</code>, <code>xfailed=40</code>, <code>xpassed=13</code></td>
+</tr>
+<tr>
+<td>Infra/runtime instability markers</td>
+<td>N/A</td>
+<td><code>node down: Not properly terminated</code> = 1</td>
+</tr>
+<tr>
+<td>Collection blocker status</td>
+<td>cleared in S1044</td>
+<td>remains cleared (runtime-only issues observed)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>S1045 notes:</strong>
+- Full runtime scan executed with xdist and produced stable progress through 98% with reproducible failure/error markers in <code>/tmp/codex_s1045/nox_tests_full_xdist.log</code>.
+- The dominant non-skip runtime signals are now assertion failures (<code>F</code>) plus a smaller error/setup bucket (<code>E</code>) and one worker termination event.
+- Session was closed under time guard after collecting sufficient runtime evidence for targeted follow-up.</p>
+<h2 id="evidence-summary-s1048-2026-05-18">Evidence Summary (S1048-2026-05-18)<a class="headerlink" href="#evidence-summary-s1048-2026-05-18" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Last confirmed</th>
+<th>Current continuation state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Branch tip used for latest handoff commit</td>
+<td><code>c722310db1ed0fe50a7c2575af819a98c66011e5</code></td>
+<td>preserved in branch history</td>
+</tr>
+<tr>
+<td>Current branch tip (latest session-planning push)</td>
+<td>N/A</td>
+<td><code>ab6d12dee6904d03d114935c0f577fbdacac6f80</code></td>
+</tr>
+<tr>
+<td>Promotion workflow <code>source_sha</code> (previously shared)</td>
+<td><code>97d52f011c105b5007b56ac1e027b222e213a9ab</code></td>
+<td>superseded by current branch tip at dispatch time</td>
+</tr>
+<tr>
+<td>Runtime log path continuity</td>
+<td><code>/tmp/codex_s1045/...</code> and <code>/tmp/codex_s1047/...</code></td>
+<td>requires fresh rerun in this session environment</td>
+</tr>
+<tr>
+<td>WEC + workflow monitoring surface</td>
+<td>available</td>
+<td>use report console: <code>docs/reporting/copilot_workflow_report_console.html</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>S1048 notes:</strong>
+- Continued next-objective handoff and prepared PR-ready continuation context with explicit promotion SHA tracking.
+- Confirmed that final <code>source_sha</code> for <code>promote-integration-branch.yml</code> should be the current branch tip at dispatch time.
+- Anchored workflow monitoring to the report console so WEC/state checks can be observed from one place.</p>
+<h2 id="session-status-current-s1048">Session Status (Current — S1048)<a class="headerlink" href="#session-status-current-s1048" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core report (<code>next_expected_codebase_change_48h.md</code>)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Mermaid + expected results + equations + token descriptions</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Iterative promptset + groundwork package</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Living docs sync (<code>whats_next</code>, <code>session_diagram</code>)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>CHANGELOG + accountability updates</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>S1042 — Quantum conftest remediation</strong></td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>S1043 — Loader import-contract stabilization</strong></td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>S1044 — Baseline dep normalization</strong></td>
+<td>Complete (<code>requirements-dev.txt</code> +5 deps, 0 collection errors)</td>
+</tr>
+<tr>
+<td><strong>S1044 — SHAbranch promotion workflow</strong></td>
+<td>Complete (<code>promote-integration-branch.yml</code> generalized)</td>
+</tr>
+<tr>
+<td>Full <code>nox -s tests</code> runtime failure triage</td>
+<td>In progress (S1045 reached 98%; rerun required for terminal summary in current session env)</td>
+</tr>
+<tr>
+<td>Runtime failure marker inventory (<code>F/E/node-down</code>)</td>
+<td>Captured</td>
+</tr>
+<tr>
+<td><code>promote-integration-branch.yml</code> Actions-tab dispatch validation (<code>target_branch=main</code>)</td>
+<td>Pending verification (use current branch tip SHA)</td>
+</tr>
+<tr>
+<td>WEC/template-aligned PR preparation + report console alignment</td>
+<td>In progress</td>
+</tr>
+</tbody>
+</table>
+<h2 id="next-objectives-session-d-continuation">Next Objectives (Session D continuation)<a class="headerlink" href="#next-objectives-session-d-continuation" title="Permanent link">¶</a></h2>
+<ol>
+<li>Complete one full runtime pass to terminal pytest summary and extract exact failing test module counts.</li>
+<li>Group failures into buckets: assertion/runtime vs setup/import/worker termination.</li>
+<li>Triage the highest-frequency non-heavy-dependency bucket and land minimal corrective fix(es).</li>
+<li>Validate <code>promote-integration-branch.yml</code> workflow_dispatch from Actions with <code>target_branch=main</code> and <strong>current branch head SHA</strong>.</li>
+<li>Validate WEC state/checklist alignment in the PR body and monitor workflow outcomes from <code>docs/reporting/copilot_workflow_report_console.html</code>.</li>
+<li>Refresh reporting/accountability artifacts with post-fix runtime deltas.</li>
+<li>Reserve final 5 minutes for wrap-up and publish the next continuation prompt.</li>
+</ol>
+<h2 id="follow-up-continuation-prompt">Follow-Up Continuation Prompt<a class="headerlink" href="#follow-up-continuation-prompt" title="Permanent link">¶</a></h2>
+<blockquote>
+<p>Continue from <code>docs/roadmap/review_codebase_next_changes_whats_next.md</code> and <code>docs/reporting/next_expected_codebase_change_48h.md</code> (Session D continuation).
+Collection is clean (S1044), and prior runtime evidence captured <code>F=47</code>, <code>E=5</code>, <code>node down=1</code> with progress reaching 98% under xdist (with a later rerun reaching ~99% but still missing terminal summary in-session).
+Re-run full runtime in the current session environment to reach terminal pytest summary, then group failures by module/error type and fix the top non-heavy-dependency runtime bucket.
+Validate <code>promote-integration-branch.yml</code> dispatch via Actions (<code>target_branch=main</code>, <code>source_sha=&lt;current branch tip&gt;</code>), keep WEC checklist wired in PR body, and monitor outcomes through <code>docs/reporting/copilot_workflow_report_console.html</code>.
+Update <code>CHANGELOG.md</code> and <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>, then leave final 5-minute wrap-up notes with the next continuation prompt.
+Ensure review-thread tasks are appended and tracked in <code>.github/copilot-prompts/active/PR-4478-followup.md</code>.</p>
+</blockquote>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>
