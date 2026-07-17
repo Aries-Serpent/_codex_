@@ -1,21 +1,22 @@
-# Session Context — 2026-07-17T20:30:22Z
+# Session Context — 2026-07-17T20:35:29Z
 **Branch:** `copilot/implementation-custom-agents-plan-campaign`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **pip in /.github, /requirements, /wandb/offline-run-20260710_081452-ygm1cfph/files, /wandb/offline-run-20260710_083624-jyh84cb6/files, /wandb/offline-run-20260710_084103-t2brzbto/files, /wandb/offline-run-20260710_084221-8189tn3t/files for Jinja2, Jinja2, PyJWT, PyJWT, PyJWT, Pygments, Twisted, Twisted, certifi, configobj, cryptography, cryptography, cryptography, cryptography, cryptography, cryptography, cryptography, cryptography, diskcache, idna, idna, idna, jinja2, jinja2, jinja2, mlflow, mlflow, mlfl...** — `failure` on `main` (2026-07-17)
-- **.github/workflows/code-quality-coverage-suite.yml** — `failure` on `main` (2026-07-17)
-- **.github/workflows/pr-size-analyzer.yml** — `failure` on `main` (2026-07-17)
-- **.github/workflows/progressive-validation.yml** — `failure` on `main` (2026-07-17)
-- **.github/workflows/trigger-on-approval.yml** — `failure` on `main` (2026-07-17)
+- **.github/workflows/security-scan-phase-16.yml** — `failure` on `copilot/implementation-custom-agents-plan-campaign` (2026-07-17)
+- **.github/workflows/scaling-framework-monitor.yml** — `failure` on `copilot/implementation-custom-agents-plan-campaign` (2026-07-17)
+- **.github/workflows/release.yml** — `failure` on `copilot/implementation-custom-agents-plan-campaign` (2026-07-17)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/implementation-custom-agents-plan-campaign` (2026-07-17)
+- **.github/workflows/release-to-pypi.yml** — `failure` on `copilot/implementation-custom-agents-plan-campaign` (2026-07-17)
 
 ## 📝 Recent Commits
+- `720e4a0f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `762cdf6f` feat(phase10): complete CLI module discovery reconnaissance and remediation - 7  — copilot-swe-agent[bot] (2026-07-17)
 - `01e9d602` docs: Phase 1 & 2A remediation complete with 3 fixes applied and torch stub reso — copilot-swe-agent[bot] (2026-07-17)
 - `33de1a66` fix(cli): add torch stub replacement fixture for CLI subprocess tests — copilot-swe-agent[bot] (2026-07-17)
@@ -23,7 +24,6 @@
 - `6be4b6c2` fix(recon): quick CLI discovery fixes - add missing os import and correct CLI pa — copilot-swe-agent[bot] (2026-07-17)
 - `9eaee3ac` Fix #2: Add missing SessionDB query methods — copilot-swe-agent[bot] (2026-07-17)
 - `2003aa5a` Fix #1: Consolidate WorkflowParser to src/ module - update test imports — copilot-swe-agent[bot] (2026-07-17)
-- `8b445f8d` PHASE 10 complete: deployment runbook for v0.2.0 staged rollout with automation — copilot-swe-agent[bot] (2026-07-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
