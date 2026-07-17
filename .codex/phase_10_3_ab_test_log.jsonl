@@ -433,3 +433,4 @@
 {"timestamp": "2026-07-17T03:33:31.037324", "github_ref": "refs/heads/0D_base_", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
 {"timestamp": "2026-07-17T03:43:01.319567", "github_ref": "refs/heads/0D_base_", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
 {"timestamp": "2026-07-17T04:08:34.135544", "github_ref": "refs/heads/copilot/continuing-next-steps", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
+{"timestamp": "2026-07-17T04:16:17.099214", "github_ref": "refs/heads/copilot/continuing-next-steps", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
