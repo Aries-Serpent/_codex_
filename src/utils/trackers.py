@@ -42,7 +42,7 @@ def init_wandb_offline(project: str = "codex"):
     mode = os.environ.get("WANDB_MODE", "offline")
     if mode == "offline" or not os.environ.get("WANDB_API_KEY"):
         os.environ.setdefault("WANDB_MODE", "offline")
-    return wandb.init(project=project)
+    return wandb.init(project=project)  # type: ignore[attr-defined]
 
 
 def init_mlflow_local():

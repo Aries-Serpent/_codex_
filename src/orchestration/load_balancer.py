@@ -286,9 +286,10 @@ class LoadBalancer:
         _, entry = heapq.heappop(self._queues[agent_id])
         entry.started_at = datetime.now(timezone.utc).isoformat()
         
-        capacity.queue_depth -= 1
-        capacity.current_active += 1
-        capacity.last_activity = datetime.now(timezone.utc).isoformat()
+        if capacity:
+            capacity.queue_depth -= 1
+            capacity.current_active += 1
+            capacity.last_activity = datetime.now(timezone.utc).isoformat()
         
         return entry
     

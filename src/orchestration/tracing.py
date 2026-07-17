@@ -163,7 +163,7 @@ class TraceContext:
         return cls._current_trace_id
     
     @classmethod
-    def set_span_id(cls, span_id: str) -> None:
+    def set_span_id(cls, span_id: Optional[str]) -> None:
         cls._current_span_id = span_id
     
     @classmethod
