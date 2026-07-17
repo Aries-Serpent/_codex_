@@ -218,7 +218,7 @@ From repository root
 All documents must follow:
 
 1. First heading is H1 (`#`)
-2. No hierarchy jumps (H1 → H3 invalid, must use H2)
+2. No hierarchy jumps (H1 H3 invalid, must use H2)
 3. Consistent nesting within documents
 4. Unique headings within sections (MD024)
 
@@ -315,7 +315,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 **PR Annotations:**
 
 - Errors appear as annotations on PR
-- Warnings appear as ️ (external links)
+- Warnings appear as (external links)
 - PR comments with detailed issues
 
 **Artifacts:**
@@ -328,7 +328,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 For merging PRs:
 
 - All consistency checks must pass
-- ️ Warnings do not block merge
+- Warnings do not block merge
 - External link warnings are informational
 
 ## Best Practices

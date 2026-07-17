@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.0  
-**Audience**: Azure platform engineers, DevOps specialists, enterprise architects  
-**Environment**: Azure AKS (Azure Kubernetes Service)  
+**Last Updated**: 2026-07-08
+**Version**: 1.0
+**Audience**: Azure platform engineers, DevOps specialists, enterprise architects
+**Environment**: Azure AKS (Azure Kubernetes Service)
 **Tier**: Production-Ready
 
 ---

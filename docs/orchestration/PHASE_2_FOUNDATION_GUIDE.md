@@ -5,19 +5,19 @@
 Phase 2 Foundation Hardening builds on Phase 1's determinism baseline to implement governance, safety, and scheduling infrastructure for the orchestration system.
 
 **Phase 1 Delivered:**
-- ✅ InputLockAdapter: Deterministic SHA256 hashing (0% collision)
-- ✅ SeedControlSystem: Seed propagation to random/numpy/torch
-- ✅ DecisionTraceWriter: JSONL audit logs
-- ✅ LaneManifestContract: Manifest validation
-- ✅ 63 tests: 100% pass rate, 100-run determinism verification
+- InputLockAdapter: Deterministic SHA256 hashing (0% collision)
+- SeedControlSystem: Seed propagation to random/numpy/torch
+- DecisionTraceWriter: JSONL audit logs
+- LaneManifestContract: Manifest validation
+- 63 tests: 100% pass rate, 100-run determinism verification
 
 **Phase 2 Delivers:**
-- ✅ Contract Gate System: 8-gate compliance validator
-- ✅ Policy Tier Engine: T0-T3 automatic classification
-- ✅ Rollback Controls: One-command recovery system
-- ✅ Lane Scheduler v1: Basic lane execution coordinator
-- ✅ 40+ tests: Comprehensive coverage of all modules
-- ✅ No regressions: Phase 1 tests remain passing
+- Contract Gate System: 8-gate compliance validator
+- Policy Tier Engine: T0-T3 automatic classification
+- Rollback Controls: One-command recovery system
+- Lane Scheduler v1: Basic lane execution coordinator
+- 40+ tests: Comprehensive coverage of all modules
+- No regressions: Phase 1 tests remain passing
 
 ---
 
@@ -124,9 +124,9 @@ Risk scores are computed based on:
 - Auto-escalation if risk exceeds tier threshold
 
 Example:
-- T0 action with risk >10 → escalates to T1
-- T1 action with risk >35 → escalates to T2
-- T2 action with risk >65 → escalates to T3
+- T0 action with risk >10 escalates to T1
+- T1 action with risk >35 escalates to T2
+- T2 action with risk >65 escalates to T3
 
 ### Integration Points
 
@@ -209,8 +209,8 @@ Basic lane execution coordinator with dependency tracking and deterministic orde
 
 - **Lane**: Logical execution unit with dependencies
 - **Execution Order**: Topologically sorted based on dependencies
-- **Lane State**: PENDING → RUNNING → PASSED/FAILED
-- **Deterministic Ordering**: Same seed → identical execution order
+- **Lane State**: PENDING RUNNING PASSED/FAILED
+- **Deterministic Ordering**: Same seed identical execution order
 
 ### Key Classes
 
@@ -307,16 +307,16 @@ pytest tests/orchestration/test_foundation_hardening.py --cov=src/orchestration
 
 ---
 
-## Phase 2 → Phase 3 Gate
+## Phase 2 Phase 3 Gate
 
 When Phase 2 completes, verify:
 
-1. ✅ All 40+ tests pass
-2. ✅ Phase 1 tests still pass (63 tests)
-3. ✅ 8-gate compliance on mock Tier 2 proposals
-4. ✅ Rollback execution for 5+ scenario types
-5. ✅ Lane scheduler determinism with 10+ runs
-6. ✅ Code coverage >85%
+1. All 40+ tests pass
+2. Phase 1 tests still pass (63 tests)
+3. 8-gate compliance on mock Tier 2 proposals
+4. Rollback execution for 5+ scenario types
+5. Lane scheduler determinism with 10+ runs
+6. Code coverage >85%
 
 Once verified, Phase 3 (Security Factory) can begin.
 
@@ -326,11 +326,11 @@ Once verified, Phase 3 (Security Factory) can begin.
 
 | Metric | Target | Status |
 |--------|--------|--------|
-| Tests passing | 40+ | ✅ |
-| Phase 1 regressions | 0 | ✅ |
-| 8-gate pass rate | 100% on valid proposals | ✅ |
-| Tier classification accuracy | >95% | ✅ |
-| Rollback success rate | 100% on valid instructions | ✅ |
-| Code coverage | >85% | ✅ |
-| Deterministic ordering | 100% consistency | ✅ |
+| Tests passing | 40+ | |
+| Phase 1 regressions | 0 | |
+| 8-gate pass rate | 100% on valid proposals | |
+| Tier classification accuracy | >95% | |
+| Rollback success rate | 100% on valid instructions | |
+| Code coverage | >85% | |
+| Deterministic ordering | 100% consistency | |
 

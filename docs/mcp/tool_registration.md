@@ -11,14 +11,23 @@ The MCP server exposes tools via the in-memory `ToolRegistry` (`src/mcp/server/_
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Tool Definition, ToolRegistry'}}%%
+
 graph TB
+
     A[Tool Definition] --> B[ToolRegistry]
+
     B --> C{Registration}
+
     C -->|Success| D[Tool Catalog]
+
     C -->|Duplicate| E[Error: Already Registered]
+
     D --> F[JSON-RPC listTools]
+
     D --> G[HTTP /mcp/v1/tools]
+
     F --> H[Client Discovery]
+
     G --> H
 ```
 
@@ -743,15 +752,15 @@ def test_json_schema_generation():
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Provide flexible, extensible tool registration system for MCP servers with JSON-RPC and HTTP interfaces, supporting dynamic discovery and execution.
 
 **Energy Level:** 4/5 (High Priority - Core MCP Capability)
 
-**Operational Status:**  **ACTIVE** - Production-ready with Python/Node implementations
+**Operational Status:** **ACTIVE** - Production-ready with Python/Node implementations
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] Tool definition model (name, description, parameters)
 - [x] ToolRegistry implementation
@@ -773,41 +782,41 @@ def test_json_schema_generation():
 - Tool handler implementations
 - JSON Schema validation
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Tool Registration Time** | <10ms | 3-5ms |  |
-| **Tool Listing Time** | <20ms | 10-15ms |  |
-| **Tool Execution Time** | Varies | Handler-dependent |  |
-| **Schema Validation Accuracy** | 100% | 100% |  |
-| **Hot Reload Time** | <100ms | 50-80ms |  |
-| **Test Coverage** | >90% | 95% |  |
-| **API Compatibility** | Python ↔ Node.js | 100% |  |
+| **Tool Registration Time** | <10ms | 3-5ms | |
+| **Tool Listing Time** | <20ms | 10-15ms | |
+| **Tool Execution Time** | Varies | Handler-dependent | |
+| **Schema Validation Accuracy** | 100% | 100% | |
+| **Hot Reload Time** | <100ms | 50-80ms | |
+| **Test Coverage** | >90% | 95% | |
+| **API Compatibility** | Python Node.js | 100% | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Tool Lifecycle Flow:**
-1. Definition → Registration → Discovery → Invocation → Execution → Response
-2. Config change → Hot reload → Updated registry
-3. Client query → List tools → Filter by tags → Return catalog
+1. Definition Registration Discovery Invocation Execution Response
+2. Config change Hot reload Updated registry
+3. Client query List tools Filter by tags Return catalog
 
 **Sequential Dependencies:**
-- Server startup → Tool registration → Ready for discovery
-- Discovery → Selection → Validation → Execution
+- Server startup Tool registration Ready for discovery
+- Discovery Selection Validation Execution
 
-### Fields 
+### Fields
 **State Management:**
 - **Registry state**: In-memory tool catalog
 - **Handler state**: Function references
 - **Config state**: Dynamic reload from disk/env
 
 **State Transitions:**
-- Unregistered → Registered → Available → Invoked → Executed
-- Config update → Reload → Registry refresh
+- Unregistered Registered Available Invoked Executed
+- Config update Reload Registry refresh
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Log all tool registrations
 - Track tool invocations (count, duration, errors)
@@ -820,30 +829,30 @@ def test_json_schema_generation():
 - Factory pattern (dynamic handler loading)
 - Schema-driven validation
 
-### Redundancy 
+### Redundancy
 **Failure Modes:**
-1. **Duplicate registration** → Error, reject
-2. **Handler missing** → Error on execution
-3. **Invalid parameters** → Validation error
-4. **Handler exception** → Catch and return error response
+1. **Duplicate registration** Error, reject
+2. **Handler missing** Error on execution
+3. **Invalid parameters** Validation error
+4. **Handler exception** Catch and return error response
 
 **Recovery:**
 - Hot reload on config change
 - Graceful degradation (skip failed tools)
 - Fallback to default tools if config missing
 
-### Balance ️
+### Balance
 **Flexibility vs Validation:**
--  Dynamic registration (flexible)
--  Schema validation (safe)
-- ️ Trade-off: Loose types vs strict validation
+- Dynamic registration (flexible)
+- Schema validation (safe)
+- Trade-off: Loose types vs strict validation
 
 **Performance vs Features:**
 - Fast in-memory registry vs persistent storage
 - Simple sync handlers vs async with concurrency
 - Static registration vs dynamic hot reload
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -853,7 +862,7 @@ def test_json_schema_generation():
 | **P1** | Dynamic loading | 10% | Hot reload capability |
 | **P2** | Decorator syntax | 5% | Developer UX |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

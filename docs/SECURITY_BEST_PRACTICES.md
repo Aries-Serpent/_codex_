@@ -32,7 +32,7 @@ Apply multiple layers of security controls:
 
 ---
 
-## ️ Security Patterns by Category
+## Security Patterns by Category
 
 ### Model Loading (PyTorch)
 
@@ -342,6 +342,6 @@ Track these metrics for ongoing security health:
 
 ---
 
-**Last Updated**: 2025-12-22 
-**Version**: 1.0 
+**Last Updated**: 2025-12-22
+**Version**: 1.0
 **Owner**: Security Team

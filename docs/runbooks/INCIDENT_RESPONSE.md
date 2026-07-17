@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Last Updated: 2026-07-10
-**Audience:** On-Call Engineers, DevOps  
-**Response Time SLA:** P1 issues < 15 min, P2 < 1 hour, P3 < 4 hours  
+**Audience:** On-Call Engineers, DevOps
+**Response Time SLA:** P1 issues < 15 min, P2 < 1 hour, P3 < 4 hours
 
 ---
 
@@ -440,20 +440,20 @@ curl http://localhost:8000/health
 If incident not resolved in SLA:
 
 **P1 (15 min):**
--  Notify on-call
-- → Notify team lead
-- → Notify engineering manager
-- → Page VP of Engineering
+- Notify on-call
+- Notify team lead
+- Notify engineering manager
+- Page VP of Engineering
 
 **P2 (1 hour):**
--  Notify team
-- → Notify team lead after 30 min
-- → Notify engineering manager after 1 hour
+- Notify team
+- Notify team lead after 30 min
+- Notify engineering manager after 1 hour
 
 **P3 (4 hours):**
--  Create ticket
-- → Assign to sprint
-- → Review in next planning meeting
+- Create ticket
+- Assign to sprint
+- Review in next planning meeting
 
 ---
 
@@ -485,6 +485,6 @@ Within 24 hours of P1/P2 incident:
 
 ---
 
-**Maintained by:** @mbaetiong  
-**Last tested:** 2026-07-10  
+**Maintained by:** @mbaetiong
+**Last tested:** 2026-07-10
 **Next drill:** 2026-07-17

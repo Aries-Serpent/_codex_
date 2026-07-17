@@ -351,7 +351,7 @@ manage_tenant_indices(
 - **Advanced Guide**: See `docs/RAG_ADVANCED.md` for multi-index, provenance, and advanced caching
 - **Custom Agents**: Learn about `@rag-index-manager` and `@semantic-search` agents
 - **Monitoring**: Set up Prometheus and Grafana dashboards
-- 🧪 **Examples**: Check `examples/rag_workflow.py` for complete workflows
+- **Examples**: Check `examples/rag_workflow.py` for complete workflows
 
 ---
 
@@ -388,4 +388,4 @@ metrics.export_cloudwatch()
 - Discussions: GitHub Discussions
 - Email: rag-team@example.com
 
-Happy searching! 
+Happy searching!

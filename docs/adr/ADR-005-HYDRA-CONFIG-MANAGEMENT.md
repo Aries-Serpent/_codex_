@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Accepted  
-**Date:** 2026-07-10  
-**Author:** @mbaetiong  
-**Session:** S250-doc-arch  
+**Status:** Accepted
+**Date:** 2026-07-10
+**Author:** @mbaetiong
+**Session:** S250-doc-arch
 
 ---
 
@@ -28,7 +28,7 @@ Manual configuration management (dict files, environment variables) became unmai
 Use **Hydra** as the configuration management framework:
 
 **Why Hydra:**
-1. **Composition** — Layer configs (base → experiment → run-specific)
+1. **Composition** — Layer configs (base experiment run-specific)
 2. **Type Safety** — OmegaConf schema validation
 3. **CLI Overrides** — `--opt key=value` from command line
 4. **Automatic Reproducibility** — Configs captured in runs
@@ -119,17 +119,17 @@ cs.store(name="config", node=AppConfig)
 ## Consequences
 
 ### Positive
- Configuration fully reproducible and versionable  
- Experiments easy to run and compare  
- No hardcoded parameters scattered throughout codebase  
- Team can run experiments without code changes  
- Type safety catches config errors early  
- CLI-based workflows feel natural to users  
+ Configuration fully reproducible and versionable
+ Experiments easy to run and compare
+ No hardcoded parameters scattered throughout codebase
+ Team can run experiments without code changes
+ Type safety catches config errors early
+ CLI-based workflows feel natural to users
 
 ### Negative
-️ Learning curve for Hydra concepts (Compose API, overrides)  
-️ Large config files can become hard to navigate  
-️ Debugging config composition issues can be tricky  
+ Learning curve for Hydra concepts (Compose API, overrides)
+ Large config files can become hard to navigate
+ Debugging config composition issues can be tricky
 
 ### Mitigations
 - Comprehensive Hydra training for team

@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08 
+**Last Updated**: 2026-07-08
 **Version**: 1.0.0
 
 Welcome to the Codex ML community! This guide outlines how to participate constructively, get help when you need it, and build relationships with fellow contributors.
@@ -81,7 +81,7 @@ We believe in:
 ### Support Channels
 
 #### GitHub Discussions
-**Best for**: Questions, ideas, general chat 
+**Best for**: Questions, ideas, general chat
 **How to use**:
 1. Click "Discussions" tab on the repo
 2. Search existing discussions
@@ -90,7 +90,7 @@ We believe in:
 5. Write your question with details
 
 #### GitHub Issues
-**Best for**: Bugs, feature requests, confirmed problems 
+**Best for**: Bugs, feature requests, confirmed problems
 **Use these labels**:
 - `bug` - Something doesn't work
 - `feature-request` - New capability wanted
@@ -99,7 +99,7 @@ We believe in:
 - `question` - Request for information
 
 #### Pull Request Comments
-**Best for**: Questions about specific code changes 
+**Best for**: Questions about specific code changes
 **How it works**:
 1. Comment on the PR
 2. Mention relevant people: `@username`
@@ -516,31 +516,31 @@ Don't:
 ### Common Scenarios
 
 **"I found a bug!"**
-→ Open an issue with the bug template
+ Open an issue with the bug template
 
 **"I want to suggest a feature"**
-→ Start a discussion or open a feature-request issue
+ Start a discussion or open a feature-request issue
 
 **"I'm interested in contributing"**
-→ Read CONTRIBUTING.md, check good-first-issue labels
+ Read CONTRIBUTING.md, check good-first-issue labels
 
 **"I disagree with a decision"**
-→ Ask about the reasoning in discussions, respectfully
+ Ask about the reasoning in discussions, respectfully
 
 **"Someone was rude to me"**
-→ Report to conduct@aries-serpent.dev, or reach out privately
+ Report to conduct@aries-serpent.dev, or reach out privately
 
 **"My PR is stuck"**
-→ Ask for feedback in a comment, don't bump repeatedly
+ Ask for feedback in a comment, don't bump repeatedly
 
 **"I want to know more about the roadmap"**
-→ Check ROADMAP.md or ask in discussions
+ Check ROADMAP.md or ask in discussions
 
 ---
 
 ## Thank You!
 
-We appreciate every contribution, question, and piece of feedback. The community makes this project better! 
+We appreciate every contribution, question, and piece of feedback. The community makes this project better!
 
 **Questions about this guide?** Open a discussion or reach out to maintainers.
 

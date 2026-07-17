@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
- Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor]  Energy: 5
+ Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor] Energy: 5
 
 ## 1. Objective
 Codify a reproducible, explainable capability maturity assessment pipeline with deterministic outputs.
@@ -65,7 +65,7 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 | Sorted traversal | Use `sorted(Path.rglob())` |
 | Read truncation | Cap file read length (200KB) |
 | Hash chain | Manifest collects per-artifact SHA |
-| Template fingerprint | Concatenate `.j2` files → SHA |
+| Template fingerprint | Concatenate `.j2` files SHA |
 | Weight normalization | Auto-correct + record warning |
 
 ## 8. Diff Usage
@@ -188,7 +188,7 @@ For a full MCP-oriented description of S1–S7, scoring, and gaps:
 - See `MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md` (Sections A & E) and `MCP_IMPLEMENTATION_SUMMARY.md`.
 
 In summary, the MCP audit uses the same deterministic pipeline:
-- S1–S7 unchanged (index → facets → capabilities → scoring → gaps → render → manifest).
+- S1–S7 unchanged (index facets capabilities scoring gaps render manifest).
 - MCP capabilities (e.g., `mcp-protocol-surface`, `mcp-schema-validation`, `mcp-rate-limiting`) are just **additional capabilities** produced at S3 and scored at S4.
 - New MCP-specific detectors under `scripts/space_traversal/detectors/` (9 files: `mcp_*.py`).
 - New MCP core modules under `mcp/` package (registry, auth, rate_limit, errors, versioning).

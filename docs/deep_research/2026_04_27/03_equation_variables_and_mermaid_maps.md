@@ -55,18 +55,31 @@ w_i + w_d + w_r + w_t + w_b + w_n = 1
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Cp: heat capacity at constant pressure, h approx CpT'}}%%
+
 flowchart TD
+
     Cp[Cp: heat capacity at constant pressure] --> H[h approx CpT]
+
     Temp[T: absolute temperature] --> H
+
     H --> DH[Delta h = integral Cp(T)dT]
+
     Ca[Ca: access heat capacity] --> HSA[H_sa = Ca Theta Phi - mu F + Omega]
+
     Theta[Theta: threat temperature] --> HSA
+
     Phi[Phi_context] --> HSA
+
     Friction[mu F: friction burden] --> HSA
+
     Obs[Omega_obs: observability] --> HSA
+
     HSA --> Decision{Decision band}
+
     Decision -->|high positive| Allow[Allow + audit]
+
     Decision -->|near zero| StepUp[Step-up / JIT / scope]
+
     Decision -->|negative| Deny[Deny or redesign]
 ```
 
@@ -74,21 +87,37 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Access Request, Context Sensors'}}%%
+
 flowchart LR
+
     Request[Access Request] --> Sensors[Context Sensors]
+
     Sensors --> Phi[Compute Phi_context]
+
     Sensors --> Theta[Compute Theta]
+
     Phi --> Enthalpy[Compute H_sa]
+
     Theta --> Enthalpy
+
     Capacity[Access Capacity C_a] --> Enthalpy
+
     Friction[Friction mu F] --> Enthalpy
+
     Observability[Observability Omega] --> Enthalpy
+
     Enthalpy --> Action{Balance}
+
     Action --> Allow[Allow]
+
     Action --> Scope[Scope/JIT/Step-up]
+
     Action --> Block[Block]
+
     Allow --> Telemetry[Telemetry feedback]
+
     Scope --> Telemetry
+
     Block --> Telemetry
     Telemetry -.updates.-> Capacity
     Telemetry -.updates.-> Observability
@@ -99,14 +128,23 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
+
 stateDiagram-v2
+
     [*] --> Balanced
+
     Balanced --> Heated: threat temperature rises
+
     Heated --> Adaptive_Control: step-up controls activate
+
     Adaptive_Control --> Balanced: observability improves and friction remains tolerable
+
     Adaptive_Control --> Frozen: friction exceeds tolerance
+
     Heated --> Breach_Prone: surface entropy remains high
+
     Frozen --> Balanced: remove low-efficiency controls
+
     Breach_Prone --> Balanced: reduce entropy and increase observability
 ```
 

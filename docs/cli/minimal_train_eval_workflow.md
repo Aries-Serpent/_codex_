@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-This guide describes a small, **local-only** train→eval flow using the
+This guide describes a small, **local-only** traineval flow using the
 scaffolding CLIs:
 
 - `codex_ml.cli.train_minimal`

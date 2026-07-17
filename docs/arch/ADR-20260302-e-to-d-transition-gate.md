@@ -1,4 +1,4 @@
-# ADR-20260302: E→D Transition Finite State Machine Gate
+# ADR-20260302: ED Transition Finite State Machine Gate
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -15,7 +15,7 @@ The agentic system defines two autonomy models:
 
 Premature promotion to D_CAPABLE without verifying that the enforcement
 infrastructure is in place could allow unvalidated autonomous actions.
-The Soft→GROUNDED plan requires a formal gate that blocks E→D transitions
+The SoftGROUNDED plan requires a formal gate that blocks ED transitions
 until all prerequisite conditions are satisfied.
 
 ## 2. Problem Statement
@@ -41,7 +41,7 @@ The gate evaluates all 5 conditions and reports a score (0–5).
 Transition is only permitted when score = 5/5.
 
 Current state:
-- Score: 5/5  (all conditions satisfied)
+- Score: 5/5 (all conditions satisfied)
 - `d_capable_agents`: 0 (no agents promoted yet)
 - `transition_active`: false (gate is ready but no D_CAPABLE assignments made)
 
@@ -83,18 +83,18 @@ confirming zero false positives over 2 sprints.
 
 ### Risks & Mitigations
 - **Risk**: Threshold values become stale as agent count grows.
-  **Mitigation**: Thresholds are defined as constants in the workflow script;
-  review during quarterly governance audits.
+ **Mitigation**: Thresholds are defined as constants in the workflow script;
+ review during quarterly governance audits.
 - **Risk**: False positive blocks after Tier-1 promotion.
-  **Mitigation**: 2-sprint observation period before promotion; rollback to
-  Tier-2 documented in the workflow header.
+ **Mitigation**: 2-sprint observation period before promotion; rollback to
+ Tier-2 documented in the workflow header.
 - **Risk**: Gate bypassed by editing workflow file directly.
-  **Mitigation**: `.github/CODEOWNERS` requires `@Aries-Serpent/owners` review
-  for all governance workflow changes.
+ **Mitigation**: `.github/CODEOWNERS` requires `@Aries-Serpent/owners` review
+ for all governance workflow changes.
 
 ## 7. Provenance & Compliance
 - **Workflow**: `.github/workflows/e-to-d-transition-gate.yml` (Tier-2 canary)
 - **Conditions**: C1–C5 defined in `orchestrator_routing.py` and gate script
-- **Current score**: 5/5 
+- **Current score**: 5/5
 - **Promotion path**: Tier-1 after 2-sprint observation (TASK 4 in follow-up)
 - **Change log**: PR #3447 merged to main

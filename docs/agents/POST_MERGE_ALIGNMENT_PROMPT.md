@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **USE AFTER:** PR #3818 (`0D_base_` → `main`) is merged
+> **USE AFTER:** PR #3818 (`0D_base_` `main`) is merged
 > **INVOKE WITH:** `@copilot Execute docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md`
 > **AGENT DEFINITION:** `.github/agents/post-merge-doc-alignment-agent.md`
 > **ESTIMATED DURATION:** 1 session (~45 min)
@@ -61,15 +61,15 @@ Check ALL of the following:
 - [ ] Page loads (HTTP 200, not 404)
 - [ ] Title: "CI Rescue Pipeline — Golden Path Documentation"
 - [ ] All 9 Mermaid diagrams render as SVG (not raw text blocks):
-  - [ ] §2 `flowchart TD` — Complete Pipeline Flowchart
-  - [ ] §3 `graph LR` — Comment Channel Architecture
-  - [ ] §4 `stateDiagram-v2` — Deduplication State Machine
-  - [ ] §5 `sequenceDiagram` — Golden Path Sequence Diagram
-  - [ ] §6 `timeline` — Rescue Comment Lifecycle
-  - [ ] §7 `graph TD` — Workflow Dependency Graph
-  - [ ] §8 `graph LR` — Anti-Pattern Map 1 (RP-004 loop)
-  - [ ] §8 `graph LR` — Anti-Pattern Map 2 (duplicate retriggers)
-  - [ ] §10 `flowchart LR` — New Channel Checklist
+ - [ ] §2 `flowchart TD` — Complete Pipeline Flowchart
+ - [ ] §3 `graph LR` — Comment Channel Architecture
+ - [ ] §4 `stateDiagram-v2` — Deduplication State Machine
+ - [ ] §5 `sequenceDiagram` — Golden Path Sequence Diagram
+ - [ ] §6 `timeline` — Rescue Comment Lifecycle
+ - [ ] §7 `graph TD` — Workflow Dependency Graph
+ - [ ] §8 `graph LR` — Anti-Pattern Map 1 (RP-004 loop)
+ - [ ] §8 `graph LR` — Anti-Pattern Map 2 (duplicate retriggers)
+ - [ ] §10 `flowchart LR` — New Channel Checklist
 - [ ] Table of Contents sidebar shows all 10 sections
 - [ ] All internal links work (§7 file table links, §9 marker reference table)
 - [ ] Code blocks are syntax-highlighted
@@ -89,7 +89,7 @@ URL: https://aries-serpent.github.io/_codex_/ci/INDEX/
 URL: https://aries-serpent.github.io/_codex_/
 ```
 - [ ] " CI Rescue & Health" section visible in nav sidebar
-- [ ] " CI Rescue Pipeline" quick-link present under " Quick Links →  CI Rescue & Health"
+- [ ] " CI Rescue Pipeline" quick-link present under " Quick Links CI Rescue & Health"
 - [ ] No broken links in the quick-links section
 
 ### 1B. Verify Site Navigation
@@ -127,7 +127,7 @@ For each page below, fetch content and scan for the staleness patterns listed:
 
 ## Phase 2 — Detect and Fix Drift
 
-Work through this checklist in order. For each item: detect → fix source file → verify.
+Work through this checklist in order. For each item: detect fix source file verify.
 
 ### 2A. Branch Name References in Docs (High Priority)
 
@@ -149,7 +149,7 @@ grep -rn "0D_base_" docs/ \
   | grep -v "^Binary"
 ```
 
-For each hit, determine: is this a **current instruction** (fix → `main`) or **historical record** (preserve)?
+For each hit, determine: is this a **current instruction** (fix `main`) or **historical record** (preserve)?
 
 ## 2B. Nav Entry Verification
 

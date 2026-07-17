@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
-> **Roles:** [Primary: Research Integrator], [Secondary: CI Engineer]  Energy: 9
+> **Roles:** [Primary: Research Integrator], [Secondary: CI Engineer] Energy: 9
 > **Target:** `https://github.com/Aries-Serpent/_codex_/discussions`
 > **Index:** `docs/deepresearch/INDEX.md`
 
@@ -13,7 +13,7 @@
 
 The `_codex_` repository already has a functioning GitHub Discussions integration
 built around `src/codex/github/mcp_poster.py` and the
-`.github/workflows/post-accountability-to-discussion.yml` workflow.  As of S192
+`.github/workflows/post-accountability-to-discussion.yml` workflow. As of S192
 this infrastructure has been **hardened** with five new methods and four new CLI
 subcommands that close the remaining gaps:
 
@@ -34,24 +34,24 @@ subcommands that close the remaining gaps:
 
 | Method | Status | Purpose |
 |---|---|---|
-| `create_discussion()` |  Pre-existing | Create a new Discussion (GraphQL `createDiscussion`) |
-| `post_session_summary_discussion()` |  Pre-existing | Wrapper: S-number summary → "session-summaries" category |
-| `add_discussion_comment()` |  **New S192** | Add a comment to an existing Discussion |
-| `upsert_discussion_comment()` |  **New S192** | Idempotent add-or-update by HTML marker |
-| `post_ci_pattern_summary()` |  **New S192** | Upsert CI pattern knowledge-graph summary |
-| `post_continuation_chain()` |  **New S192** | Always-new comment: tokenized chain prompt | <!-- pragma: allowlist secret -->
-| `_resolve_discussion_node_id()` |  **New S192** | GraphQL: discussion number → node ID |
-| `_find_discussion_comment()` |  **New S192** | GraphQL: search 50 most recent comments for marker |
-| `_update_discussion_comment()` |  **New S192** | GraphQL `updateDiscussionComment` |
-| `_resolve_discussion_ids()` |  Pre-existing | repo + category → node IDs for `createDiscussion` |
-| `retrieve_cb_patterns()` |  Pre-existing | Query CB SQLite → markdown table for context injection |
+| `create_discussion()` | Pre-existing | Create a new Discussion (GraphQL `createDiscussion`) |
+| `post_session_summary_discussion()` | Pre-existing | Wrapper: S-number summary "session-summaries" category |
+| `add_discussion_comment()` | **New S192** | Add a comment to an existing Discussion |
+| `upsert_discussion_comment()` | **New S192** | Idempotent add-or-update by HTML marker |
+| `post_ci_pattern_summary()` | **New S192** | Upsert CI pattern knowledge-graph summary |
+| `post_continuation_chain()` | **New S192** | Always-new comment: tokenized chain prompt | <!-- pragma: allowlist secret -->
+| `_resolve_discussion_node_id()` | **New S192** | GraphQL: discussion number node ID |
+| `_find_discussion_comment()` | **New S192** | GraphQL: search 50 most recent comments for marker |
+| `_update_discussion_comment()` | **New S192** | GraphQL `updateDiscussionComment` |
+| `_resolve_discussion_ids()` | Pre-existing | repo + category node IDs for `createDiscussion` |
+| `retrieve_cb_patterns()` | Pre-existing | Query CB SQLite markdown table for context injection |
 
 ### 2.2 Workflows
 
 | Workflow | File | Status | Purpose |
 |---|---|---|---|
-| Post Accountability to Discussion | `post-accountability-to-discussion.yml` |  Pre-existing | Upserts the latest accountability session entry into authoritative discussion #3673 with a branch/PR/session/turn key |
-| Post CI Status to Discussions | `post-ci-status-to-discussion.yml` |  **New S192** | Posts continuation chain + CI pattern summary on push to `0D_base_`/`copilot/**` |
+| Post Accountability to Discussion | `post-accountability-to-discussion.yml` | Pre-existing | Upserts the latest accountability session entry into authoritative discussion #3673 with a branch/PR/session/turn key |
+| Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | **New S192** | Posts continuation chain + CI pattern summary on push to `0D_base_`/`copilot/**` |
 
 ### 2.3 Discussion Threads in Use
 
@@ -112,7 +112,7 @@ python -m codex.github.mcp_poster upsert-discussion-comment \
 ```
 
 **Purpose:** Idempotent sync of any markdown document to a Discussion comment.
-One command, no duplicates.  Marker encodes the commit SHA so each unique
+One command, no duplicates. Marker encodes the commit SHA so each unique
 commit gets exactly one comment; re-runs on the same commit update the
 existing comment.
 
@@ -126,7 +126,7 @@ python scripts/cognitive/continuation_chain.py \
 ```
 
 **Purpose:** A single `continuation_chain.py` invocation reads all live state
-and posts a self-contained prompt.  Any Copilot Agent picking up this Discussion
+and posts a self-contained prompt. Any Copilot Agent picking up this Discussion
 thread can resume context without accessing any other file.
 
 #### CLI 3: `post-continuation` — Tokenized chain for Agent pickup
@@ -152,7 +152,7 @@ python -m codex.github.mcp_poster post-ci-pattern-summary \
   --session-id "run-$GITHUB_RUN_ID"
 ```
 
-**Purpose:** CI-triggered, idempotent.  Each workflow run upserts the CI
+**Purpose:** CI-triggered, idempotent. Each workflow run upserts the CI
 pattern table, keeping discussion #3673 always showing the latest state.
 
 #### CLI 5 (Future): `discussion-search` — Search Discussion for patterns
@@ -271,9 +271,9 @@ Any Copilot Agent or Copilot Assistant can:
 - `retrieve_cb_patterns()` — queries CB SQLite memory for recent patterns
 
 **Planned (Phase 8):**
-- `discussion_digest.py` — scan N most recent chain comments → build aggregate context
+- `discussion_digest.py` — scan N most recent chain comments build aggregate context
 - Pattern-aware RAG index over Discussion thread history
-- `cross_pr_correlation()` → auto-create GitHub Issue when ≥3 PRs affected
+- `cross_pr_correlation()` auto-create GitHub Issue when ≥3 PRs affected
 
 ---
 
@@ -296,8 +296,8 @@ poster.upsert_discussion_comment(repo, number, full_body, marker)
 - If not found: `addDiscussionComment` — new comment only
 
 **Best practice: session-scoped markers**
-- Same session re-running: `<!-- ci-pattern-summary:run-12345 -->` → upsert
-- New session: `<!-- ci-pattern-summary:run-12346 -->` → new comment
+- Same session re-running: `<!-- ci-pattern-summary:run-12345 -->` upsert
+- New session: `<!-- ci-pattern-summary:run-12346 -->` new comment
 
 ---
 
@@ -306,12 +306,12 @@ poster.upsert_discussion_comment(repo, number, full_body, marker)
 | Operation | Required Permission | Token Priority | <!-- pragma: allowlist secret -->
 |---|---|---|
 | Read discussions | `discussions: read` | `GITHUB_TOKEN` | <!-- pragma: allowlist secret -->
-| Add/update discussion comment | `discussions: write` | `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` |
+| Add/update discussion comment | `discussions: write` | `CODEX_MASTER_KEY` `CODEX_BACKUP_KEY` |
 | Create new discussion | `discussions: write` | `CODEX_MASTER_KEY` |
 | Search comments (GraphQL) | `discussions: read` | `GITHUB_TOKEN` | <!-- pragma: allowlist secret -->
 
 All write operations require `discussions: write` permission in the workflow
-`permissions:` block AND on the token itself.  `GITHUB_TOKEN` from Actions
+`permissions:` block AND on the token itself. `GITHUB_TOKEN` from Actions
 has `discussions: write` in the default permissions if the repo has Discussions
 enabled.
 
@@ -338,7 +338,7 @@ if [ "$STATUS" = "200" ]; then echo "Discussions enabled"; fi
 | `scripts/ci/pattern_recorder.py` | Pattern DB queried by continuation_chain.py |
 | `.codex/docs/COGNITIVE_BRAIN_STATUS_*.md` | Phase status read by continuation_chain.py |
 | `tests/github/test_mcp_poster.py` | Tests for `create_discussion`, `post_session_summary_discussion` |
-| `.github/agents/ci-pattern-guardian.md` | Agent spec referencing CI pattern → Discussion pipeline |
+| `.github/agents/ci-pattern-guardian.md` | Agent spec referencing CI pattern Discussion pipeline |
 
 ---
 
@@ -348,10 +348,10 @@ if [ "$STATUS" = "200" ]; then echo "Discussions enabled"; fi
 |---|---|---|
 | P1 | Add tests for `add_discussion_comment`, `upsert_discussion_comment`, `post_ci_pattern_summary` | `tests/github/test_mcp_poster.py` |
 | P1 | Verify `post-ci-status-to-discussion.yml` triggers successfully on next `0D_base_` push | CI |
-| P2 | Build `scripts/cognitive/discussion_digest.py` — scan last N chain comments → aggregate context | New script |
+| P2 | Build `scripts/cognitive/discussion_digest.py` — scan last N chain comments aggregate context | New script |
 | P2 | Add `discussion-search` CLI: find comments by marker across a thread | `mcp_poster.py` |
 | P3 | RAG-index Discussion thread history for semantic search by Copilot Agents | `src/codex/api/rag_api.py` |
-| P3 | `cross_pr_correlation()` → auto-create GitHub Issue (Phase 8 P3) | `pattern_recorder.py` |
+| P3 | `cross_pr_correlation()` auto-create GitHub Issue (Phase 8 P3) | `pattern_recorder.py` |
 
 ---
 

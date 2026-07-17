@@ -4,8 +4,8 @@
 
 **Last Updated: 2026-06-22
 
-**Estimated time:** 20 minutes  
-**Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`  
+**Estimated time:** 20 minutes
+**Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`
 **Optional:** `scipy` (auto-detected; improves t-distribution accuracy)
 
 ---
@@ -19,13 +19,13 @@ Use an A/B test when you want a **statistically rigorous answer** to:
 Typical scenarios:
 
 - You retrained a model (e.g. with fresh data) and want to confirm it is
-  better before promoting it to production.
+ better before promoting it to production.
 - You changed a pre-processing step and need to quantify the effect.
 - You are comparing two prompt templates for an LLM and want to see which one
-  improves task accuracy.
+ improves task accuracy.
 
 A/B testing guards against **cherry-picking**: a model can look better by
-chance, especially on small evaluation sets.  The Welch's t-test framework
+chance, especially on small evaluation sets. The Welch's t-test framework
 in `codex_ml.experiments.ab_testing` gives you a p-value and effect size so
 you can make a principled decision.
 
@@ -33,7 +33,7 @@ you can make a principled decision.
 
 ## Quick Start — `run_ab_test`
 
-The simplest entry point is the `run_ab_test` function.  Give it two lists of
+The simplest entry point is the `run_ab_test` function. Give it two lists of
 per-sample metric values (one for each model variant) and get a structured
 result back.
 
@@ -82,10 +82,10 @@ Effect size (d):     0.48
 ### `p_value`
 
 The probability of observing a difference at least this large if the two
-models were actually identical.  A small p-value (< `alpha`) means the
+models were actually identical. A small p-value (< `alpha`) means the
 difference is unlikely to be random noise.
 
-**Rule of thumb:** p < 0.05 → significant; p ≥ 0.05 → inconclusive.
+**Rule of thumb:** p < 0.05 significant; p ≥ 0.05 inconclusive.
 
 ### `effect_size` (Cohen's d)
 
@@ -98,7 +98,7 @@ Measures the *magnitude* of the difference, independent of sample size:
 | 0.8 | Large effect |
 
 A result can be statistically significant but practically negligible (tiny d
-with a huge sample).  Always look at both.
+with a huge sample). Always look at both.
 
 ### `confidence_interval`
 
@@ -153,7 +153,7 @@ Example output:
 ```
 
 Reading this: Model B is significantly better on accuracy and F1, but
-**slower**.  Whether to promote it depends on your latency budget.
+**slower**. Whether to promote it depends on your latency budget.
 
 ## Structured report
 
@@ -177,7 +177,7 @@ report = suite.report()
 
 Welch's t-test requires **at least 2 observations per group** (enforced by
 `run_ab_test`), but in practice you need at least 30 samples per group to get
-reliable p-values.  Use a power analysis to determine the required sample size
+reliable p-values. Use a power analysis to determine the required sample size
 before running the experiment.
 
 A rough guideline for 80 % power at α = 0.05:
@@ -193,18 +193,18 @@ A rough guideline for 80 % power at α = 0.05:
 - `alpha=0.05` is the standard for most ML experiments.
 - Lower `alpha` (e.g. `0.01`) for high-stakes decisions (e.g. medical models).
 - Higher `alpha` (e.g. `0.10`) is acceptable for early-stage exploration where
-  false negatives (missing a real improvement) are more costly.
+ false negatives (missing a real improvement) are more costly.
 
 ### Multiple comparisons
 
 When running an `ABTestSuite` with many metrics, the chance of a false
-positive increases.  Apply a **Bonferroni correction**: divide `alpha` by the
-number of tests.  For 5 tests at α = 0.05, use `alpha=0.01` per test.
+positive increases. Apply a **Bonferroni correction**: divide `alpha` by the
+number of tests. For 5 tests at α = 0.05, use `alpha=0.01` per test.
 
 ### Keep groups independent
 
 Ensure your control and treatment samples are independent (e.g. different
-evaluation examples, not the same examples scored twice).  Paired samples
+evaluation examples, not the same examples scored twice). Paired samples
 require a different test (paired t-test).
 
 ---
@@ -218,5 +218,5 @@ promotion on statistically verified quality thresholds.
 
 ---
 
-> **See also:**  
+> **See also:**
 > `src/codex_ml/experiments/ab_testing.py`

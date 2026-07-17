@@ -428,5 +428,5 @@ def track_invocation(tool_name: str, duration_ms: float, success: bool):
 
 ---
 
-**Last Updated**: 2025-12-09  
+**Last Updated**: 2025-12-09
 **Capability ID**: mcp-tooling-registry

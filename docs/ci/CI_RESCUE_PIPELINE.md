@@ -44,7 +44,7 @@ For files that **only take effect from `main`** (workflow schedules, `workflow_r
 
 | Trigger | System | Description |
 |---------|--------|-------------|
-| WEC checkbox ` Fast-Forward Approved` | **`workflow-execution-gate.yml`** → `fast-forward-safe-files.yml` | Maintainer ticks checkbox in PR body → WEC gate parses it → FF workflow auto-fires |
+| WEC checkbox ` Fast-Forward Approved` | **`workflow-execution-gate.yml`** `fast-forward-safe-files.yml` | Maintainer ticks checkbox in PR body WEC gate parses it FF workflow auto-fires |
 | Manual | **`fast-forward-safe-files.yml`** | Direct trigger from GitHub Actions UI or `gh workflow run` |
 | CLI | **`codex-skill ff --pr <N>`** | Copilot Agent or maintainer previews/applies from terminal |
 
@@ -56,10 +56,15 @@ Allowed file patterns are governed by `.codex/fast_forward_allowlist.yaml`.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Push to PR branch, GitHub Actions triggers\nmonitored workflow'}}%%
+
 flowchart TD
+
     A([Push to PR branch]) --> B[GitHub Actions triggers\nmonitored workflow]
+
     B --> C{Workflow\nresult?}
+
     C -->|success| Z([CI green — no rescue needed])
+
     C -->|failure| D
 
     D[Inline rescue job inside\nfailing workflow fires] --> E[POST or PATCH\nChannel A comment\ngeneric fix instructions]
@@ -67,50 +72,85 @@ flowchart TD
     D --> F[workflow_run: completed\ntriggers ci-rescue.yml]
 
     F --> G[ci-rescue.yml\nRescue — analyse and post RCA]
+
     G --> H[Download ci_rescue.py\nfrom PR head SHA]
+
     H --> I[Fetch failed job logs\nvia GitHub API]
+
     I --> J[Match against\nci_failure_patterns.yaml]
+
     J --> K{Pattern\nmatched?}
+
     K -->|known pattern| L[Build structured RCA comment\nwith fix command + log snippet]
+
     K -->|unknown| M[Build generic escalation\nwith raw log excerpt]
+
     L --> N[Upsert SHA-scoped comment\nChannel B RCA\nat-copilot+claude-sonnet-4.6]
+
     M --> N
 
     D --> SH[copilot-iterative-self-healing.yml\ncancel-in-progress=false\nevery failure gets own run]
+
     SH --> SH2{Auto-fix\npatterns\nexhausted?}
+
     SH2 -->|no| SH3[Apply auto-fix pattern\npush fix commit]
+
     SH2 -->|yes| SH4[Escalation comment\nto @copilot]
 
     SCHED([⏱️ Scheduled every 30 min\nproactive-ci-monitor.yml\nS280 NEW]) --> PM[Poll ALL open PRs\nfor unaddressed failures]
+
     PM --> PM2{Failure found\nwith no rescue\ncomment yet?}
+
     PM2 -->|no| PM3([Nothing to do])
+
     PM2 -->|transient infra| PM4([Skip — auto-retry])
+
     PM2 -->|real failure| PM5[Classify with\npattern catalogue\nconfidence score]
+
     PM5 --> PM6{confidence ≥\nthreshold?}
+
     PM6 -->|no| PM7([Below threshold\nskip])
+
     PM6 -->|yes| PM8[POST @copilot rescue\ncomment to PR]
 
     N --> O{Copilot session\nstarted within\n45 min?}
+
     PM8 --> O
+
     SH4 --> O
+
     O -->|yes| P[Copilot Coding Agent\nreads RCA and applies fix]
+
     O -->|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires]
+
     Q --> T[POST retrigger comment\nsession-done-retrigger]
+
     T --> P
 
     P --> U[Apply fix locally\nrun ruff + pytest]
+
     U --> V[commit + report_progress\npush to branch]
+
     V --> W[Reply to RCA comment:\nFixed in commit SHA]
+
     W --> X[New CI run\non fixed commit]
+
     X --> C
 
     subgraph FF [" Fast-Forward Safe Files (S280 NEW)"]
+
         FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --> FF2[workflow-execution-gate.yml\nparses FF section]
+
         FF2 --> FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
+
         FF3 --> FF4{Merge\nmode?}
+
         FF4 -->|create-pr| FF5[Open fast-forward PR\nstaging → main]
+
         FF4 -->|direct-push| FF6[Push files directly\nto main]
+
         FF5 --> FF7([Files take effect on main\nimmediately])
+
         FF6 --> FF7
     end
 ```
@@ -121,20 +161,28 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing auto-fix-pr-check.yml\nrescue-comment job, PATCH or POST\nci-rescue:NNN'}}%%
+
 graph LR
     subgraph "Channel A — Generic Fix Notice"
+
         A1[auto-fix-pr-check.yml\nrescue-comment job] --> A2[PATCH or POST\nci-rescue:NNN]
+
         A3[pre-merge-validation.yml\nrescue-comment job] --> A2
     end
 
     subgraph "Channel B — RCA Golden Path"
+
         B1[ci-rescue.yml\nworkflow_run trigger] --> B2[ci_rescue.py\npattern analysis engine]
+
         B2 --> B3[POST or PATCH\nci-rescue:NNN:sha12\nat-copilot+claude-sonnet-4.6]
     end
 
     subgraph "Missed-Trigger Guard"
+
         C1[copilot-agent-checkin.yml\npush trigger every commit] --> C2{Latest rescue comment\nhas at-copilot + age under 45 min?}
+
         C2 -->|yes| C3[Skip — RCA is live]
+
         C2 -->|no| C4[POST retrigger\nsession-done-retrigger]
     end
 
@@ -157,7 +205,9 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
+
     [*] --> NoRescue : branch has no open rescue comment
 
     NoRescue --> ChannelA_Open : Workflow fails\ninline rescue job posts Channel A
@@ -195,6 +245,7 @@ This documents the **exact sequence** that produced the ideal rescue scenario �
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing skip ci, skip ci'}}%%
+
 sequenceDiagram
     autonumber
     actor Dev as Copilot Agent S243
@@ -224,6 +275,7 @@ sequenceDiagram
     Rescue->>Engine: python3 ci_rescue.py --run-id 23772216208
 
     Engine->>GH: GET actions/runs/23772216208/jobs
+
     GH-->>Engine: Job logs failed job
 
     Engine->>Engine: Match logs against ci_failure_patterns.yaml<br/>RP-004 Pattern 22 matched<br/>CODEX_MANIFEST drift
@@ -259,6 +311,7 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 timeline
     title Single PR Rescue Comment Timeline PR 3818 commit 1a9fcaab
 
@@ -292,6 +345,7 @@ timeline
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR Auto-Fix Check, Pre-Merge Validation'}}%%
+
 graph TD
     subgraph "Monitored Workflows — trigger ci-rescue.yml"
         W1[PR Auto-Fix Check]
@@ -323,14 +377,21 @@ graph TD
     end
 
     W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9 & W10 -->|failure| R1
+
     W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 -->|inline rescue job| C1
+
     R1 --> R2
+
     R2 --> R3
+
     R2 --> C2
     C1 -.->|detected by| S1
     C2 -.->|detected by| S1
+
     C2 -->|at-copilot mention| S2
+
     S1 -->|retrigger if dropped| S2
+
     S2 -->|push fix| W1
 
     style C2 fill:#d4edda,stroke:#28a745
@@ -345,21 +406,33 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Bot auto-commit\nchore auth / chore d00, CODEX_MANIFEST\nhash drifts'}}%%
+
 graph LR
     subgraph "BEFORE fix — infinite loop"
+
         AP1[Bot auto-commit\nchore auth / chore d00] --> AP2[CODEX_MANIFEST\nhash drifts]
+
         AP2 --> AP3[Pattern 22 = hard ERROR\nin auto_fixable_patterns]
+
         AP3 --> AP4[CI fails exit 1]
+
         AP4 --> AP5[ci-rescue.yml fires\nRCA posted]
+
         AP5 --> AP6[Copilot session\nruns sync --fix]
+
         AP6 --> AP7[Fix commit pushed]
+
         AP7 --> AP1
     end
 
     subgraph "AFTER fix — loop broken"
+
         FX1[Bot auto-commit] --> FX2[CODEX_MANIFEST drifts]
+
         FX2 --> FX3[Pattern 22 = soft WARNING\nin soft_warning_patterns]
+
         FX3 --> FX4[CI reports warning\nno exit 1]
+
         FX4 --> FX5[No rescue comment\nno loop]
     end
 
@@ -375,16 +448,23 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing RCA Channel B posted\nat-copilot+claude-sonnet, Bot commit pushes\ntriggers checkin.yml'}}%%
+
 graph LR
     subgraph "BEFORE fix — competing sessions"
+
         D1[RCA Channel B posted\nat-copilot+claude-sonnet] --> D2[Bot commit pushes\ntriggers checkin.yml]
+
         D2 --> D3[Guard sees open\nChannel A rescue\nno at-copilot check]
+
         D3 --> D4[Guard posts retrigger\nduplicate at-copilot\ncompeting sessions]
     end
 
     subgraph "AFTER fix — 45-min grace"
+
         G1[RCA Channel B posted\nat-copilot+claude-sonnet] --> G2[Bot commit pushes\ntriggers checkin.yml]
+
         G2 --> G3[Guard detects\nrcaHasCopilotCall\nage under 45 min]
+
         G3 --> G4[Guard skips\nRCA is still live\nno duplicate]
     end
 
@@ -398,11 +478,11 @@ graph LR
 
 | Component | Detects failure | Posts Channel A | Posts Channel B RCA | Deduplicates | Retriggers dropped sessions |
 |-----------|:-:|:-:|:-:|:-:|:-:|
-| Inline rescue jobs (auto-fix-pr-check, pre-merge-validation, etc.) |  |  |  |  PR-scoped PATCH |  |
-| `ci-rescue.yml` |  workflow_run |  |  |  SHA-scoped PATCH |  |
-| `ci_rescue.py` |  log analysis |  |  |  HTTP_STATUS delimiter |  |
-| `copilot-agent-checkin.yml` missed-trigger guard |  |  |  |  grace period |  |
-| `auto_fix_common_issues.py` |  Pattern 22+ |  |  | N/A |  |
+| Inline rescue jobs (auto-fix-pr-check, pre-merge-validation, etc.) | | | | PR-scoped PATCH | |
+| `ci-rescue.yml` | workflow_run | | | SHA-scoped PATCH | |
+| `ci_rescue.py` | log analysis | | | HTTP_STATUS delimiter | |
+| `copilot-agent-checkin.yml` missed-trigger guard | | | | grace period | |
+| `auto_fix_common_issues.py` | Pattern 22+ | | | N/A | |
 
 ### Marker Reference
 
@@ -420,28 +500,38 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing New rescue channel needed, Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes'}}%%
+
 flowchart LR
+
     A([New rescue channel needed]) --> B{Can ci_rescue.py\nhandle this pattern?}
+
     B -->|yes| C[Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes]
+
     B -->|no| D[Create inline rescue job\nin the failing workflow]
+
     C --> E[ci-rescue.yml picks it up\nautomatically]
+
     D --> F[Use PR-scoped marker or\nSHA-scoped if per-commit context needed]
+
     E --> G[Update SKIP_BODY_MARKERS\nin check_pr_comments.py]
+
     F --> G
+
     G --> H[Add to monitoring list\nin ci-rescue.yml workflows:]
+
     H --> I([Done])
 ```
 
 **Mandatory checklist for new rescue channels:**
 
-1. ☐ **Unique parseable HTML marker** — use `<!-- ci-rescue-{source}:{pr}:{sha} -->` for new sources
-2. ☐ **`@copilot+claude-sonnet-4.6`** in body — triggers session without human intervention
-3. ☐ **Paginate comment search** (up to 50 pages) before creating to find existing marker
-4. ☐ **Upsert semantics** — `PATCH` existing comment, `POST` only if not found
-5. ☐ **Register pattern** in `.codex/patterns/ci_failure_patterns.yaml`
-6. ☐ **Update `SKIP_BODY_MARKERS`** in `check_pr_comments.py` — prevent circular gate failure
-7. ☐ **Update `rescueMarkerRe`** in `copilot-agent-checkin.yml` if marker format differs
-8. ☐ **Add workflow** to monitored list in `ci-rescue.yml` `on.workflow_run.workflows:`
+1. **Unique parseable HTML marker** — use `<!-- ci-rescue-{source}:{pr}:{sha} -->` for new sources
+2. **`@copilot+claude-sonnet-4.6`** in body — triggers session without human intervention
+3. **Paginate comment search** (up to 50 pages) before creating to find existing marker
+4. **Upsert semantics** — `PATCH` existing comment, `POST` only if not found
+5. **Register pattern** in `.codex/patterns/ci_failure_patterns.yaml`
+6. **Update `SKIP_BODY_MARKERS`** in `check_pr_comments.py` — prevent circular gate failure
+7. **Update `rescueMarkerRe`** in `copilot-agent-checkin.yml` if marker format differs
+8. **Add workflow** to monitored list in `ci-rescue.yml` `on.workflow_run.workflows:`
 
 ---
 

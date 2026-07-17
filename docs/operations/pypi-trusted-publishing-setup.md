@@ -3,13 +3,13 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong  
-> **Type:** Operations Guide  
+> **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong
+> **Type:** Operations Guide
 > **Status:** Complete Setup Documentation
 
 ---
 
-##  Overview
+## Overview
 
 This guide provides **end-to-end, click-by-click instructions** for configuring PyPI Trusted Publishing (OIDC) to allow GitHub Actions workflows to publish Python packages without API tokens.
 
@@ -27,7 +27,7 @@ Non-user identities cannot create new projects.
 
 ---
 
-##  Prerequisites
+## Prerequisites
 
 **Required Before Starting:**
 - [ ] PyPI user account (not TestPyPI) with verified email
@@ -39,7 +39,7 @@ Non-user identities cannot create new projects.
 
 ---
 
-##  Phase 1: Manual PyPI Project Creation
+## Phase 1: Manual PyPI Project Creation
 
 ### Step 1: Build Your First Package Locally
 
@@ -50,17 +50,17 @@ Non-user identities cannot create new projects.
 1. **Navigate to your repository root:**
    ```bash
    cd /path/to/Aries-Serpent/_codex_
-   ```
+ ```
 
 2. **Install build tools:**
    ```bash
    pip install --upgrade build twine
-   ```
+ ```
 
 3. **Build the package:**
    ```bash
    python -m build
-   ```
+ ```
 
 4. **Verify distribution files created:**
    ```bash
@@ -68,7 +68,7 @@ Non-user identities cannot create new projects.
    # Expected output:
    # codex_ml-0.0.0-py3-none-any.whl
    # codex_ml-0.0.0.tar.gz
-   ```
+ ```
 
 **Validation:**
 ```bash
@@ -92,18 +92,18 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 1. **Open browser and navigate to:**
    ```
    https://pypi.org/
-   ```
+ ```
 
 2. **Click "Log in"** (top right corner)
 
 3. **Enter credentials:**
-   - Username: `[your-pypi-username]`
-   - Password: `[your-password]`
-   - 2FA code (if enabled)
+ - Username: `[your-pypi-username]`
+ - Password: `[your-password]`
+ - 2FA code (if enabled)
 
 4. **Verify successful login:**
-   - You should see your username in top right corner
-   - Dashboard link should be visible
+ - You should see your username in top right corner
+ - Dashboard link should be visible
 
 **Validation:**
 - [ ] Logged in successfully
@@ -120,20 +120,20 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Actions:**
 
 1. **Generate PyPI API token** (one-time use):
-   - Navigate to: `https://pypi.org/manage/account/token/`
-   - Click **"Add API token"**
-   - **Token name:** `Initial codex-ml upload`
-   - **Scope:** "Entire account (all projects)"
-   - Click **"Add token"**
-   - **COPY THE TOKEN NOW** (you won't see it again)
-   - Format: `pypi-AgEIcH...` (starts with `pypi-`)
+ - Navigate to: `https://pypi.org/manage/account/token/`
+ - Click **"Add API token"**
+ - **Token name:** `Initial codex-ml upload`
+ - **Scope:** "Entire account (all projects)"
+ - Click **"Add token"**
+ - **COPY THE TOKEN NOW** (you won't see it again)
+ - Format: `pypi-AgEIcH...` (starts with `pypi-`)
 
 2. **Upload package using twine:**
    ```bash
    twine upload dist/* -u __token__ -p pypi-AgEIcH...
-   ```
+ ```
 
-   Replace `pypi-AgEIcH...` with your actual token.
+ Replace `pypi-AgEIcH...` with your actual token.
 
 3. **Confirm upload:**
    ```
@@ -143,7 +143,7 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
    View at:
    https://pypi.org/project/codex-ml/0.0.0/
-   ```
+ ```
 
 #### Option B: Upload via Web Interface
 
@@ -152,19 +152,19 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 1. **Navigate to upload page:**
    ```
    https://pypi.org/manage/projects/
-   ```
+ ```
 
-2. **Click:** **"Your projects"** → **"Publishing"** → **"Upload"**
+2. **Click:** **"Your projects"** **"Publishing"** **"Upload"**
 
 3. **Fill upload form:**
-   - **File:** Click "Choose File" → Select `dist/codex_ml-0.0.0-py3-none-any.whl`
-   - **Comment:** "Initial release for OIDC setup"
+ - **File:** Click "Choose File" Select `dist/codex_ml-0.0.0-py3-none-any.whl`
+ - **Comment:** "Initial release for OIDC setup"
 
 4. **Click:** **"Upload"**
 
 5. **Verify project created:**
-   - Navigate to: `https://pypi.org/project/codex-ml/`
-   - You should see version 0.0.0 listed
+ - Navigate to: `https://pypi.org/project/codex-ml/`
+ - You should see version 0.0.0 listed
 
 **Validation:**
 - [ ] Package uploaded successfully
@@ -173,7 +173,7 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
 ---
 
-##  Phase 2: Configure Trusted Publishing
+## Phase 2: Configure Trusted Publishing
 
 ### Step 4: Add GitHub Actions as Trusted Publisher
 
@@ -184,7 +184,7 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 1. **Navigate to project management:**
    ```
    https://pypi.org/manage/project/codex-ml/settings/publishing/
-   ```
+ ```
 
 2. **Scroll to "Trusted Publishers" section**
 
@@ -194,14 +194,14 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
 5. **Fill in publisher details:**
 
-   | Field | Value | Example | Notes |
-   |-------|-------|---------|-------|
-   | **Owner** | `Aries-Serpent` | `Aries-Serpent` | GitHub username or org |
-   | **Repository** | `_codex_` | `_codex_` | Repository name |
-   | **Workflow name** | `pypi-publish.yml` | `pypi-publish.yml` | Filename from `.github/workflows/` |
-   | **Environment** | `pypi` | `pypi` | Must match workflow environment name |
+ | Field | Value | Example | Notes |
+ |-------|-------|---------|-------|
+ | **Owner** | `Aries-Serpent` | `Aries-Serpent` | GitHub username or org |
+ | **Repository** | `_codex_` | `_codex_` | Repository name |
+ | **Workflow name** | `pypi-publish.yml` | `pypi-publish.yml` | Filename from `.github/workflows/` |
+ | **Environment** | `pypi` | `pypi` | Must match workflow environment name |
 
-   **Critical:** Field values are **case-sensitive** and must match exactly.
+ **Critical:** Field values are **case-sensitive** and must match exactly.
 
 6. **Verify your entries:**
    ```yaml
@@ -211,13 +211,13 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
    environment:
      name: pypi  # ← Must match "Environment" field
      url: https://pypi.org/p/codex-ml
-   ```
+ ```
 
 7. **Click:** **"Add publisher"**
 
 8. **Confirm publisher added:**
-   - You should see the publisher listed under "Trusted Publishers"
-   - Format: `GitHub Actions: Aries-Serpent/_codex_ → pypi-publish.yml (pypi)`
+ - You should see the publisher listed under "Trusted Publishers"
+ - Format: `GitHub Actions: Aries-Serpent/_codex_ pypi-publish.yml (pypi)`
 
 **Validation:**
 - [ ] Trusted publisher appears in list
@@ -238,14 +238,14 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 1. **Open workflow file:**
    ```bash
    cat .github/workflows/pypi-publish.yml
-   ```
+ ```
 
 2. **Verify permissions block exists (lines 17-19):**
    ```yaml
    permissions:
      contents: read
      id-token: write  # Required for OIDC trusted publishing
-   ```
+ ```
 
 3. **Verify publish job uses correct action (lines 91-94):**
    ```yaml
@@ -253,9 +253,9 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
      uses: pypa/gh-action-pypi-publish@release/v1
      with:
        skip-existing: false
-   ```
+ ```
 
-   **Critical:** Do NOT include `password` or `repository-url` parameters when using OIDC.
+ **Critical:** Do NOT include `password` or `repository-url` parameters when using OIDC.
 
 **Validation:**
 - [ ] `id-token: write` permission present
@@ -264,7 +264,7 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
 ---
 
-##  Phase 3: Testing & Verification
+## Phase 3: Testing & Verification
 
 ### Step 6: Test Trusted Publishing with Workflow Dispatch
 
@@ -275,20 +275,20 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 1. **Navigate to GitHub Actions:**
    ```
    https://github.com/Aries-Serpent/_codex_/actions/workflows/pypi-publish.yml
-   ```
+ ```
 
 2. **Click:** **"Run workflow"** (top right)
 
 3. **Select environment:**
-   - **Branch:** `main` (or your default branch)
-   - **Target environment:** `testpypi` (for testing) or `pypi` (for production)
+ - **Branch:** `main` (or your default branch)
+ - **Target environment:** `testpypi` (for testing) or `pypi` (for production)
 
 4. **Click:** **"Run workflow"** (green button)
 
 5. **Monitor workflow execution:**
-   - Click on the running workflow
-   - Expand each step to view logs
-   - Wait for completion (~2-3 minutes)
+ - Click on the running workflow
+ - Expand each step to view logs
+ - Wait for completion (~2-3 minutes)
 
 **Expected Workflow Logs:**
 
@@ -324,28 +324,28 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
    ```bash
    python -m venv /tmp/test-codex-ml
    source /tmp/test-codex-ml/bin/activate  # On Windows: test-codex-ml\Scripts\activate
-   ```
+ ```
 
 2. **Install from PyPI:**
    ```bash
    pip install codex-ml
-   ```
+ ```
 
 3. **Test import:**
    ```bash
    python -c "import codex_ml; print(f'Version: {codex_ml.__version__}')"
-   ```
+ ```
 
 4. **Expected output:**
    ```
    version: 0.1.0
-   ```
+ ```
 
 5. **Clean up:**
    ```bash
    deactivate
    rm -rf /tmp/test-codex-ml
-   ```
+ ```
 
 **Validation:**
 - [ ] Package installs without errors
@@ -354,7 +354,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-## 🛡️ Phase 4: Security & Maintenance
+## Phase 4: Security & Maintenance
 
 ### Step 8: Revoke Temporary API Token
 
@@ -365,11 +365,11 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 1. **Navigate to token management:**
    ```
    https://pypi.org/manage/account/token/  # pragma: allowlist secret
-   ```
+ ```
 
 2. **Find token:** "Initial codex-ml upload"
 
-3. **Click:** **"Options"** → **"Remove token"**
+3. **Click:** **"Options"** **"Remove token"**
 
 4. **Confirm deletion:** Click **"Remove token"** in confirmation dialog
 
@@ -400,20 +400,20 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 **Troubleshooting:**
 
 - **Error:** "Non-user identities cannot create new projects"
-  - **Cause:** Project doesn't exist on PyPI
-  - **Fix:** Follow Phase 1 of setup guide
+ - **Cause:** Project doesn't exist on PyPI
+ - **Fix:** Follow Phase 1 of setup guide
 
 - **Error:** "Trusted publishing exchange failure"
-  - **Cause:** Workflow/environment mismatch
-  - **Fix:** Verify environment name matches PyPI config
+ - **Cause:** Workflow/environment mismatch
+ - **Fix:** Verify environment name matches PyPI config
 
 - **Error:** "Audience claim did not match"
-  - **Cause:** Repository or workflow name mismatch
-  - **Fix:** Verify exact match (case-sensitive) in PyPI trusted publisher settings
+ - **Cause:** Repository or workflow name mismatch
+ - **Fix:** Verify exact match (case-sensitive) in PyPI trusted publisher settings
 
 ---
 
-##  Additional Resources
+## Additional Resources
 
 ### Official Documentation
 
@@ -435,7 +435,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-##  Success Criteria
+## Success Criteria
 
 **Definition of Done:**
 - [x] PyPI project `codex-ml` created
@@ -449,7 +449,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-##  Troubleshooting Guide
+## Troubleshooting Guide
 
 ### Issue 1: "Publisher mismatch"
 
@@ -467,15 +467,15 @@ Trusted publishing exchange failure: Token request failed  # pragma: allowlist s
 1. **Check workflow environment:**
    ```bash
    grep -A2 "environment:" .github/workflows/pypi-publish.yml
-   ```
+ ```
 
 2. **Compare with PyPI settings:**
-   - Navigate to: `https://pypi.org/manage/project/codex-ml/settings/publishing/`
-   - Verify all fields match exactly
+ - Navigate to: `https://pypi.org/manage/project/codex-ml/settings/publishing/`
+ - Verify all fields match exactly
 
 3. **Update if needed:**
-   - Either update workflow file OR update PyPI trusted publisher
-   - Ensure case-sensitive match
+ - Either update workflow file OR update PyPI trusted publisher
+ - Ensure case-sensitive match
 
 ---
 
@@ -496,11 +496,11 @@ ERROR: You do not have permission to upload to codex-ml
    ```bash
    # Check who published last version
    curl -s https://pypi.org/pypi/codex-ml/json | jq '.urls[0].upload_time'
-   ```
+ ```
 
 2. **Re-add trusted publisher:**
-   - Follow Phase 2, Step 4 again
-   - Ensure using correct PyPI account
+ - Follow Phase 2, Step 4 again
+ - Ensure using correct PyPI account
 
 ---
 
@@ -520,16 +520,16 @@ Trusted publishing exchange failure: workflow not found
 1. **Check workflow filename:**
    ```bash
    ls -la .github/workflows/
-   ```
+ ```
 
 2. **Update PyPI trusted publisher:**
-   - Navigate to: `https://pypi.org/manage/project/codex-ml/settings/publishing/`
-   - Remove old publisher
-   - Add new publisher with correct workflow name
+ - Navigate to: `https://pypi.org/manage/project/codex-ml/settings/publishing/`
+ - Remove old publisher
+ - Add new publisher with correct workflow name
 
 ---
 
-##  Related Workflows
+## Related Workflows
 
 **TestPyPI Setup (Optional):**
 
@@ -542,7 +542,7 @@ If you want to test on TestPyPI first:
 
 ---
 
-##  Verification Checklist
+## Verification Checklist
 
 **Post-Setup Verification:**
 - [ ] Can trigger workflow manually
@@ -555,7 +555,7 @@ If you want to test on TestPyPI first:
 
 ---
 
-## 📅 Maintenance Schedule
+## Maintenance Schedule
 
 **Quarterly Review:**
 - [ ] Verify trusted publisher still active
@@ -564,9 +564,9 @@ If you want to test on TestPyPI first:
 - [ ] Test publish workflow
 
 **After GitHub Repository Changes:**
-- [ ] Repository renamed → Update PyPI trusted publisher
-- [ ] Workflow renamed → Update PyPI trusted publisher
-- [ ] Environment renamed → Update PyPI trusted publisher
+- [ ] Repository renamed Update PyPI trusted publisher
+- [ ] Workflow renamed Update PyPI trusted publisher
+- [ ] Environment renamed Update PyPI trusted publisher
 
 ---
 
@@ -579,7 +579,7 @@ If you want to test on TestPyPI first:
 
 ---
 
-**Status:**  Complete Setup Guide  
-**Generated:** 2026-02-10T08:00:00Z  
-**Author:** mbaetiong  
+**Status:** Complete Setup Guide
+**Generated:** 2026-02-10T08:00:00Z
+**Author:** mbaetiong
 **Next Review:** 2026-05-10 (Quarterly)

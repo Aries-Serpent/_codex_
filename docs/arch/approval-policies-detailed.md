@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Production Ready  
-**Version:** 1.0.0  
+**Status:** Production Ready
+**Version:** 1.0.0
 **Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
@@ -75,9 +75,9 @@ The approval system provides a human-in-the-loop gate for sensitive operations, 
 - Context and metadata immutable
 
 **Transitions:**
-- → APPROVED: All required approvers approved
-- → REJECTED: Any required approver rejected
-- → EXPIRED: 5 minutes elapsed without decision
+- APPROVED: All required approvers approved
+- REJECTED: Any required approver rejected
+- EXPIRED: 5 minutes elapsed without decision
 
 **Example:**
 ```python
@@ -101,8 +101,8 @@ request = ApprovalRequest(
 - Full decision history retained
 
 **Transitions:**
-- ← PENDING: When last required approver approved
-- → ARCHIVED: After 90-day retention
+- PENDING: When last required approver approved
+- ARCHIVED: After 90-day retention
 
 **Example:**
 ```python
@@ -132,8 +132,8 @@ request.decisions = [
 - Rejection reason documented
 
 **Transitions:**
-- ← PENDING: When any required approver rejected
-- → ARCHIVED: After 90-day retention
+- PENDING: When any required approver rejected
+- ARCHIVED: After 90-day retention
 
 **Escalation Options:**
 - Requester can submit new request for re-approval
@@ -162,9 +162,9 @@ request.decisions = [
 - Requester can resubmit immediately
 
 **Transitions:**
-- ← PENDING: When 5 minutes elapsed
-- → Auto-escalate: Escalate to Level 2 approvers if multi-level policy
-- → ARCHIVED: After 90-day retention
+- PENDING: When 5 minutes elapsed
+- Auto-escalate: Escalate to Level 2 approvers if multi-level policy
+- ARCHIVED: After 90-day retention
 
 **Example:**
 ```python
@@ -234,7 +234,7 @@ if time.time() > request.sla_deadline:
 
 **Who:** Director, manager, or authority figure
 
-**Authority:** 
+**Authority:**
 - Can override previous concerns
 - Final decision authority
 - May make executive decision
@@ -580,19 +580,27 @@ AuditCode.AUTO_APPROVAL_RBAC_PRIVILEGE = "AUTO_APPROVAL_RBAC_PRIVILEGE"
 
 ```mermaid
 graph TD
+
     A["Approval Request<br/>policy_code: AGENT_DEPLOY_DEV<br/>5-minute SLA"] --> B{"Requester has<br/>agent_operator<br/>role?"}
     
     B -->|Yes| C[" Auto-Approve<br/>status: APPROVED"]
+
     B -->|No| D["Require Approval<br/>status: PENDING<br/>Start 5-minute SLA"]
     
     D --> E{"approver<br/>responds?"}
+
     E -->|Approved| F[" Approved<br/>status: APPROVED"]
+
     E -->|Rejected| G[" Rejected<br/>status: REJECTED"]
+
     E -->|No Response| H[" Expired<br/>status: EXPIRED<br/>Request expires"]
     
     C --> I["Proceed"]
+
     F --> I
+
     G --> J["Block"]
+
     H --> J
 ```
 
@@ -600,37 +608,53 @@ graph TD
 
 ```mermaid
 graph TD
+
     A["Request Submitted<br/>SLA: 4 hours"] --> B["Level 1 Approver<br/>(Primary Owner)"]
     
     B --> C{"L1 Response?"}
+
     C -->|Approved| D[" L1 Approved"]
+
     C -->|Rejected| E[" Rejected"]
+
     C -->|No Response| F["L1 SLA Elapsed"]
     
     D --> G["Continue"]
+
     E --> H["Block"]
+
     F --> I["Escalate to L2"]
     
     I --> J["Level 2 Approver<br/>(Secondary)<br/>SLA: 4 hours"]
+
     J --> K{"L2 Response?"}
     
     K -->|Approved| L[" L2 Approved"]
+
     K -->|Rejected| M[" Rejected"]
+
     K -->|No Response| N["L2 SLA Elapsed"]
     
     L --> O["Continue"]
+
     M --> H
+
     N --> P["Escalate to L3"]
     
     P --> Q["Level 3 Approver<br/>(Senior Authority)<br/>SLA: 4 hours"]
+
     Q --> R{"L3 Response?"}
     
     R -->|Approved| S[" L3 Approved"]
+
     R -->|Rejected| T[" Rejected"]
+
     R -->|No Response| U["Auto-Approve<br/>Quorum Unavailable"]
     
     S --> V["Proceed"]
+
     T --> H
+
     U --> V
 ```
 
@@ -638,26 +662,37 @@ graph TD
 
 ```mermaid
 graph TD
+
     A["Incident Mode Active"] --> B["Request Submitted<br/>30-minute SLA"]
     
     B --> C["Level 1 Approver<br/>(Primary)"]
+
     C --> D{"L1 Response<br/>30 min SLA?"}
     
     D -->|Approved| E[" Approved"]
+
     D -->|Rejected| F[" Rejected"]
+
     D -->|No Response| G["Skip L2<br/>Go to L3"]
     
     E --> H["Proceed"]
+
     F --> I["Block"]
+
     G --> J["Level 3 Approver<br/>(Senior Authority)<br/>30-minute SLA"]
     
     J --> K{"L3 Response?"}
+
     K -->|Approved| L[" Approved"]
+
     K -->|Rejected| M[" Rejected"]
+
     K -->|No Response| N["Auto-Approve<br/>Incident Override"]
     
     L --> H
+
     M --> I
+
     N --> H
 ```
 
@@ -761,5 +796,5 @@ if request.status == "expired":
 ---
 
 **Last Updated: 2026-07-08
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Status:** Production Ready

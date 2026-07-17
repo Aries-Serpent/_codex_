@@ -32,7 +32,7 @@ The `mcp-authz-authn` capability provides API key authentication and role-based 
 
 **Secure Credential Hashing**:
 
-> ️ **Important**: For password storage, use a proper password hashing function like bcrypt, scrypt, or Argon2 with salt and appropriate iterations. SHA-256 alone is NOT suitable for password hashing as it's too fast and vulnerable to brute-force attacks.
+> **Important**: For password storage, use a proper password hashing function like bcrypt, scrypt, or Argon2 with salt and appropriate iterations. SHA-256 alone is NOT suitable for password hashing as it's too fast and vulnerable to brute-force attacks.
 
 ```python
 from mcp.auth import MCPAuthenticator
@@ -63,13 +63,13 @@ principal = authenticator.authenticate(api_key)
 ```
 
 **Security Best Practices**:
--  Use bcrypt/argon2 for password hashing (NOT SHA-256)
--  SHA-256 is acceptable for API key/token comparison only
--  Use secure RNG with seed for token generation
--  Implement token expiration
--  Use HTTPS for credential transmission
--  Never log plaintext credentials
--  Never store plaintext API keys
+- Use bcrypt/argon2 for password hashing (NOT SHA-256)
+- SHA-256 is acceptable for API key/token comparison only
+- Use secure RNG with seed for token generation
+- Implement token expiration
+- Use HTTPS for credential transmission
+- Never log plaintext credentials
+- Never store plaintext API keys
 
 ## Authorization Patterns
 
@@ -157,14 +157,14 @@ result = execute_tool(tool_name)
 
 ## Security Best Practices
 
--  Set conservative default limits (5-10 req/sec)
--  Use burst capacity for legitimate spikes
--  Implement per-principal tracking
--  Use RNG with seed for deterministic testing in offline mode
--  Monitor RateLimitExceeded errors for abuse detection
--  Different limits for different tool categories
--  Don't allow unlimited requests
--  Don't share rate limits across tenants
+- Set conservative default limits (5-10 req/sec)
+- Use burst capacity for legitimate spikes
+- Implement per-principal tracking
+- Use RNG with seed for deterministic testing in offline mode
+- Monitor RateLimitExceeded errors for abuse detection
+- Different limits for different tool categories
+- Don't allow unlimited requests
+- Don't share rate limits across tenants
 
 ### DDoS Protection
 
@@ -252,14 +252,14 @@ except MCPError as e:
 
 ### Security Considerations
 
--  Use specific error classes (ToolNotFound, Unauthorized, RateLimitExceeded)
--  Map errors to appropriate HTTP status codes
--  Log errors with full context internally
--  Return sanitized errors externally
--  Include request correlation ID (X-Request-Id)
--  Never expose stack traces to clients
--  Never expose internal paths or configuration
--  Never leak database schema information
+- Use specific error classes (ToolNotFound, Unauthorized, RateLimitExceeded)
+- Map errors to appropriate HTTP status codes
+- Log errors with full context internally
+- Return sanitized errors externally
+- Include request correlation ID (X-Request-Id)
+- Never expose stack traces to clients
+- Never expose internal paths or configuration
+- Never leak database schema information
 
 ---
 
@@ -330,14 +330,14 @@ def get_tools_for_tenant(tenant_id: str):
 ```
 
 **Security Best Practices**:
--  Always include tenant_id in Principal
--  Validate tenant_id on every request
--  Use tenant-specific encryption keys
--  Implement tenant-specific rate limits
--  Audit all cross-tenant access attempts
--  Use checksums to verify tenant data integrity
--  Never allow wildcard tenant access
--  Never share resources across tenants without explicit permission
+- Always include tenant_id in Principal
+- Validate tenant_id on every request
+- Use tenant-specific encryption keys
+- Implement tenant-specific rate limits
+- Audit all cross-tenant access attempts
+- Use checksums to verify tenant data integrity
+- Never allow wildcard tenant access
+- Never share resources across tenants without explicit permission
 
 ---
 
@@ -489,48 +489,48 @@ def process_request(request):
 ### Pre-Deployment Checklist
 
 - [ ] **mcp-authz-authn**
-  - [ ] All credentials hashed with SHA-256
-  - [ ] API keys never logged in plaintext
-  - [ ] Session tokens use secure RNG with appropriate seed
-  - [ ] HTTPS enforced for all authentication endpoints
-  - [ ] Token expiration implemented
-  - [ ] Unauthorized errors properly handled
+ - [ ] All credentials hashed with SHA-256
+ - [ ] API keys never logged in plaintext
+ - [ ] Session tokens use secure RNG with appropriate seed
+ - [ ] HTTPS enforced for all authentication endpoints
+ - [ ] Token expiration implemented
+ - [ ] Unauthorized errors properly handled
 
 - [ ] **mcp-rate-limiting**
-  - [ ] Rate limits configured for all endpoints
-  - [ ] RateLimitExceeded errors monitored
-  - [ ] Per-principal rate tracking enabled
-  - [ ] Burst capacity set appropriately
-  - [ ] RNG seed configured for testing/production
-  - [ ] Offline mode tested
+ - [ ] Rate limits configured for all endpoints
+ - [ ] RateLimitExceeded errors monitored
+ - [ ] Per-principal rate tracking enabled
+ - [ ] Burst capacity set appropriately
+ - [ ] RNG seed configured for testing/production
+ - [ ] Offline mode tested
 
 - [ ] **mcp-error-handling**
-  - [ ] All errors use MCPError hierarchy
-  - [ ] Error messages sanitized for external consumption
-  - [ ] Stack traces never exposed to clients
-  - [ ] Internal errors logged with full context
-  - [ ] HTTP status codes mapped correctly
+ - [ ] All errors use MCPError hierarchy
+ - [ ] Error messages sanitized for external consumption
+ - [ ] Stack traces never exposed to clients
+ - [ ] Internal errors logged with full context
+ - [ ] HTTP status codes mapped correctly
 
 - [ ] **mcp-multi-tenant**
-  - [ ] All principals include tenant_id
-  - [ ] Tenant boundaries enforced on all operations
-  - [ ] Cross-tenant access attempts audited
-  - [ ] Tenant-specific encryption keys used
-  - [ ] Checksums verify tenant data integrity
+ - [ ] All principals include tenant_id
+ - [ ] Tenant boundaries enforced on all operations
+ - [ ] Cross-tenant access attempts audited
+ - [ ] Tenant-specific encryption keys used
+ - [ ] Checksums verify tenant data integrity
 
 - [ ] **mcp-protocol-surface**
-  - [ ] JSON-RPC 2.0 validation enabled
-  - [ ] Request size limits enforced
-  - [ ] Input sanitization implemented
-  - [ ] HTTPS required in production
-  - [ ] Invalid requests rejected with ValidationError
+ - [ ] JSON-RPC 2.0 validation enabled
+ - [ ] Request size limits enforced
+ - [ ] Input sanitization implemented
+ - [ ] HTTPS required in production
+ - [ ] Invalid requests rejected with ValidationError
 
 - [ ] **mcp-observability**
-  - [ ] Audit logging enabled for security events
-  - [ ] Security metrics tracked and alerted
-  - [ ] X-Request-Id header propagated
-  - [ ] PII sanitized in logs
-  - [ ] Log retention policy enforced
+ - [ ] Audit logging enabled for security events
+ - [ ] Security metrics tracked and alerted
+ - [ ] X-Request-Id header propagated
+ - [ ] PII sanitized in logs
+ - [ ] Log retention policy enforced
 
 ### Security Testing
 
@@ -582,20 +582,20 @@ For security issues, please review the audit reports and implement recommended s
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Provide comprehensive security guidance for implementing and deploying MCP capabilities in production environments, ensuring authentication, authorization, rate limiting, error handling, multi-tenant security, and audit compliance across all mcp-* capabilities.
 
-**Energy Level**:  (5/5) - Security Critical
+**Energy Level**: (5/5) - Security Critical
 - Critical impact: Protects production systems from vulnerabilities
 - High stakes: Security breaches have severe consequences
 - Long-term value: Foundation for trusted MCP deployments
 
-**Status**:  Production Ready |  Security Hardened |  Continuously Audited
+**Status**: Production Ready | Security Hardened | Continuously Audited
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **Authentication & Authorization**:
 - [ ] API keys hashed with SHA-256 (not passwords)
@@ -634,43 +634,43 @@ For security issues, please review the audit reports and implement recommended s
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Safeguard Score (mcp-authz-authn) | ≥70% | 85% |  Excellent |
-| Safeguard Score (mcp-rate-limiting) | ≥70% | 80% |  Excellent |
-| Unauthorized Access Attempts | <1% | 0.3% |  Secure |
-| Rate Limit Violation Rate | <5% | 2.1% |  Healthy |
-| Security Incident Response Time | <15 min | ~10 min |  Fast |
-| Credential Compromise Rate | 0% | 0% |  Perfect |
-| Audit Log Coverage | 100% | 100% |  Complete |
-| Security Review Frequency | Weekly | Weekly |  On Track |
+| Safeguard Score (mcp-authz-authn) | ≥70% | 85% | Excellent |
+| Safeguard Score (mcp-rate-limiting) | ≥70% | 80% | Excellent |
+| Unauthorized Access Attempts | <1% | 0.3% | Secure |
+| Rate Limit Violation Rate | <5% | 2.1% | Healthy |
+| Security Incident Response Time | <15 min | ~10 min | Fast |
+| Credential Compromise Rate | 0% | 0% | Perfect |
+| Audit Log Coverage | 100% | 100% | Complete |
+| Security Review Frequency | Weekly | Weekly | On Track |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Security Flow)
+### Path (Security Flow)
 ```
 Authentication → Authorization → Rate limit check → Input validation → Tool execution → Audit logging → Error handling
 ```
 
-### Fields  (Security Energy)
-Threat detection → Security controls → Access denied/granted → Audit trail → Incident response → Policy update
+### Fields (Security Energy)
+Threat detection Security controls Access denied/granted Audit trail Incident response Policy update
 
-### Patterns ️ (Security Patterns)
+### Patterns (Security Patterns)
 **Defense-in-depth**: Multiple validation layers | **Fail-secure**: Deny by default | **Least privilege**: Minimal permissions | **Audit everything**: Comprehensive logging
 
-### Redundancy  (Security Layers)
-Authentication → Authorization → Rate limiting → Input validation → Execution sandboxing → Audit logging
+### Redundancy (Security Layers)
+Authentication Authorization Rate limiting Input validation Execution sandboxing Audit logging
 
-### Balance ️
-Security (strict controls) ↔ Usability (developer experience) ↔ Performance (low latency)
+### Balance
+Security (strict controls) Usability (developer experience) Performance (low latency)
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 **P0 - Critical Security (50%)**:
 - Authentication and authorization (mcp-authz-authn)
@@ -692,7 +692,7 @@ Security (strict controls) ↔ Usability (developer experience) ↔ Performance 
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Credential Compromise Recovery**:
 1. **Pre-compromise state**: All credentials secure
@@ -726,6 +726,6 @@ Security (strict controls) ↔ Usability (developer experience) ↔ Performance 
 
 **Last Updated**: 2026-01-23T11:45:00Z
 **Version**: 2.0
-**Security Level**:  Hardened
-**Audit Status**:  Compliant (Safeguard Score: 80%+)
-**Template Compliance**:  Phase 2 Physics-Aligned
+**Security Level**: Hardened
+**Audit Status**: Compliant (Safeguard Score: 80%+)
+**Template Compliance**: Phase 2 Physics-Aligned

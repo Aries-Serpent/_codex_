@@ -13,9 +13,9 @@ The determinism check job in PR #3178 was failing with pytest exit code 2 (inter
 1. **No Tests with Marker**: Currently, NO test files have the `@pytest.mark.determinism` decorator
 2. **Collection Errors**: 118 test files have import/collection errors (missing PyTorch, typer, etc.)
 3. **Pytest Behavior**: When running `pytest tests/ -m determinism`:
-   - Pytest must collect ALL test files to find tests matching the marker
-   - Collection errors in ANY file cause pytest to return exit code 2
-   - Even though 0 tests matched the marker, exit code is 2 (not 5)
+ - Pytest must collect ALL test files to find tests matching the marker
+ - Collection errors in ANY file cause pytest to return exit code 2
+ - Even though 0 tests matched the marker, exit code is 2 (not 5)
 
 ### Why This Happens
 
@@ -34,10 +34,10 @@ Key line: `118 errors / ... / 0 selected`
 ### Workflow Expectation vs Reality
 
 **Expected:**
-- Exit code 5 (no tests collected) → Workflow passes with warning
+- Exit code 5 (no tests collected) Workflow passes with warning
 
 **Reality:**
-- Exit code 2 (collection errors) → Workflow fails at line 217-222
+- Exit code 2 (collection errors) Workflow fails at line 217-222
 
 ## Solution Implemented
 
@@ -88,14 +88,14 @@ Result:  Exit 0 (success)
 ## Impact
 
 ### Immediate Impact
--  Determinism check job in PR #3178 will now pass
--  Clear summary message explains why check passed
--  Guidance provided for implementing determinism tests
+- Determinism check job in PR #3178 will now pass
+- Clear summary message explains why check passed
+- Guidance provided for implementing determinism tests
 
 ### Future Impact
--  No changes needed to test code or conftest.py
--  Workflow will continue to work when tests are added
--  Proper error handling if real collection issues occur
+- No changes needed to test code or conftest.py
+- Workflow will continue to work when tests are added
+- Proper error handling if real collection issues occur
 
 ## How to Add Determinism Tests
 
@@ -110,9 +110,9 @@ def test_reproducible_behavior():
 ```
 
 2. **Expected workflow behavior:**
-   - If tests pass both runs → Exit 0 (success)
-   - If tests fail both runs → Exit 1 (failure)
-   - If results differ between runs → Exit 1 (non-deterministic)
+ - If tests pass both runs Exit 0 (success)
+ - If tests fail both runs Exit 1 (failure)
+ - If results differ between runs Exit 1 (non-deterministic)
 
 ## Testing Commands
 
@@ -145,24 +145,24 @@ Key indicator: `0 selected` means no tests matched the marker.
 
 ## No Changes Needed
 
--  No changes to test files
--  No changes to `tests/conftest.py`
--  No changes to `pytest.ini`
--  No changes to test collection logic
+- No changes to test files
+- No changes to `tests/conftest.py`
+- No changes to `pytest.ini`
+- No changes to test collection logic
 
 ## Related Issues
 
 - PR #3178: Original failing determinism check
 - pytest exit codes:
-  - 0: All tests passed
-  - 1: Tests failed
-  - 2: Collection errors / internal error
-  - 5: No tests collected
+ - 0: All tests passed
+ - 1: Tests failed
+ - 2: Collection errors / internal error
+ - 5: No tests collected
 
 ## Next Steps
 
 1. Merge this fix to make PR #3178 determinism check pass
 2. Later: Add `@pytest.mark.determinism` to relevant tests
 3. Workflow will automatically handle both scenarios:
-   - No tests (exit 0 with warning)
-   - Tests exist (normal pass/fail behavior)
+ - No tests (exit 0 with warning)
+ - Tests exist (normal pass/fail behavior)

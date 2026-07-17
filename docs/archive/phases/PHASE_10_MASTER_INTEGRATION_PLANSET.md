@@ -7,39 +7,39 @@
 - [NotebookLM Live Sync & AI Architect Implementation](#notebooklm-live-sync--ai-architect-implementation)
 - [Executive Summary](#executive-summary)
 - [Strategic Alignment with Cognitive Brain](#strategic-alignment-with-cognitive-brain)
-  - [Cognitive Brain Objectives Mapping](#cognitive-brain-objectives-mapping)
-  - [Correlation Matrix](#correlation-matrix)
+ - [Cognitive Brain Objectives Mapping](#cognitive-brain-objectives-mapping)
+ - [Correlation Matrix](#correlation-matrix)
 - [Phase Structure & Timeline](#phase-structure--timeline)
-  - [Overall Timeline: 3 phases](#overall-timeline-3-phases)
+ - [Overall Timeline: 3 phases](#overall-timeline-3-phases)
 - [Task 1: Initialize Repository Transformation Configuration](#task-1-initialize-repository-transformation-configuration)
-  - [Objective](#objective)
-  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
-  - [Prerequisites](#prerequisites)
-  - [Implementation Steps](#implementation-steps)
-    - [Step 1.1: Install Repomix (Local Testing)](#step-11-install-repomix-local-testing)
+ - [Objective](#objective)
+ - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+ - [Prerequisites](#prerequisites)
+ - [Implementation Steps](#implementation-steps)
+ - [Step 1.1: Install Repomix (Local Testing)](#step-11-install-repomix-local-testing)
 - [Install repomix globally](#install-repomix-globally)
 - [Verify installation](#verify-installation)
 - [Step 1.2: Create Base Configuration](#step-12-create-base-configuration)
-  - [Step 1.3: Create Instruction File](#step-13-create-instruction-file)
+ - [Step 1.3: Create Instruction File](#step-13-create-instruction-file)
 - [_codex_ Repository Architecture & Guidelines](#_codex_-repository-architecture--guidelines)
 - [Project Overview](#project-overview)
 - [Architecture Principles](#architecture-principles)
-  - [1. Modular Design](#1-modular-design)
-  - [2. Security First](#2-security-first)
-  - [3. Test-Driven Development](#3-test-driven-development)
-  - [4. Documentation Standards](#4-documentation-standards)
+ - [1. Modular Design](#1-modular-design)
+ - [2. Security First](#2-security-first)
+ - [3. Test-Driven Development](#3-test-driven-development)
+ - [4. Documentation Standards](#4-documentation-standards)
 - [Key Modules](#key-modules)
-  - [Auto-Remediation (`tools/auto_remediation/`)](#auto-remediation-toolsauto_remediation)
-  - [CI Diagnostic (`/github/agents/ci-diagnostic-agent/`)](#ci-diagnostic-githubagentsci-diagnostic-agent)
-  - [Monitoring (`monitoring/`)](#monitoring-monitoring)
-  - [Security Scanning (`semgrep_rules/`, `.github/workflows/security-*.yml`)](#security-scanning-semgrep_rules-githubworkflowssecurity-yml)
+ - [Auto-Remediation (`tools/auto_remediation/`)](#auto-remediation-toolsauto_remediation)
+ - [CI Diagnostic (`/github/agents/ci-diagnostic-agent/`)](#ci-diagnostic-githubagentsci-diagnostic-agent)
+ - [Monitoring (`monitoring/`)](#monitoring-monitoring)
+ - [Security Scanning (`semgrep_rules/`, `.github/workflows/security-*.yml`)](#security-scanning-semgrep_rules-githubworkflowssecurity-yml)
 - [Coding Conventions](#coding-conventions)
-  - [Python](#python)
-  - [Rust](#rust)
-  - [YAML (Workflows)](#yaml-workflows)
+ - [Python](#python)
+ - [Rust](#rust)
+ - [YAML (Workflows)](#yaml-workflows)
 - [Critical Paths to Analyze](#critical-paths-to-analyze)
 - [AI Architect Focus Areas](#ai-architect-focus-areas)
-  - [Step 1.4: Create Enhanced .repomixignore](#step-14-create-enhanced-repomixignore)
+ - [Step 1.4: Create Enhanced .repomixignore](#step-14-create-enhanced-repomixignore)
 - [Security Sensitive Files](#security-sensitive-files)
 - [Build Artifacts](#build-artifacts)
 - [Test Artifacts](#test-artifacts)
@@ -53,15 +53,15 @@
 - [Validate XML structure](#validate-xml-structure)
 - [Check for secrets (should be none)](#check-for-secrets-should-be-none)
 - [Step 1.6: Optimize Compression Settings](#step-16-optimize-compression-settings)
-  - [Deliverables Checklist](#deliverables-checklist)
-  - [Success Metrics](#success-metrics)
-  - [Rollback Plan](#rollback-plan)
+ - [Deliverables Checklist](#deliverables-checklist)
+ - [Success Metrics](#success-metrics)
+ - [Rollback Plan](#rollback-plan)
 - [Task 2: Develop GitHub Action for Live Sync](#task-2-develop-github-action-for-live-sync)
-  - [Objective](#objective)
-  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
-  - [Prerequisites](#prerequisites)
-  - [Implementation Steps](#implementation-steps)
-    - [Step 2.1: Google Cloud Setup](#step-21-google-cloud-setup)
+ - [Objective](#objective)
+ - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+ - [Prerequisites](#prerequisites)
+ - [Implementation Steps](#implementation-steps)
+ - [Step 2.1: Google Cloud Setup](#step-21-google-cloud-setup)
 - [Install gcloud CLI if not present](#install-gcloud-cli-if-not-present)
 - [Create project](#create-project)
 - [Enable Drive API](#enable-drive-api)
@@ -74,21 +74,21 @@
 - [Share folder with service account (manual step via web UI)](#share-folder-with-service-account-manual-step-via-web-ui)
 - [Share with: [SA_EMAIL] with Editor permissions](#share-with-sa_email-with-editor-permissions)
 - [Step 2.2: Configure GitHub Secrets](#step-22-configure-github-secrets)
-  - [Step 2.3: Create Workflow File](#step-23-create-workflow-file)
-    - [Step 2.4: Test Workflow](#step-24-test-workflow)
+ - [Step 2.3: Create Workflow File](#step-23-create-workflow-file)
+ - [Step 2.4: Test Workflow](#step-24-test-workflow)
 - [Trigger workflow manually](#trigger-workflow-manually)
 - [Watch workflow execution](#watch-workflow-execution)
 - [Check output](#check-output)
 - [Step 2.5: Optimize Workflow Performance](#step-25-optimize-workflow-performance)
-  - [Deliverables Checklist](#deliverables-checklist)
-  - [Success Metrics](#success-metrics)
-  - [Rollback Plan](#rollback-plan)
+ - [Deliverables Checklist](#deliverables-checklist)
+ - [Success Metrics](#success-metrics)
+ - [Rollback Plan](#rollback-plan)
 - [Task 3: Configure Agentic Troubleshooting Skill](#task-3-configure-agentic-troubleshooting-skill)
-  - [Objective](#objective)
-  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
-  - [Prerequisites](#prerequisites)
-  - [Implementation Steps](#implementation-steps)
-    - [Step 3.1: Install notebooklm-skill](#step-31-install-notebooklm-skill)
+ - [Objective](#objective)
+ - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+ - [Prerequisites](#prerequisites)
+ - [Implementation Steps](#implementation-steps)
+ - [Step 3.1: Install notebooklm-skill](#step-31-install-notebooklm-skill)
 - [Create skills directory if not exists](#create-skills-directory-if-not-exists)
 - [Clone the skill repository](#clone-the-skill-repository)
 - [Navigate to skill directory](#navigate-to-skill-directory)
@@ -112,50 +112,50 @@
 - [Configure caching](#configure-caching)
 - [View all configuration](#view-all-configuration)
 - [Step 3.5: Test Claude Code Integration](#step-35-test-claude-code-integration)
-  - [Step 3.6: Create Custom Skill Commands](#step-36-create-custom-skill-commands)
-  - [Deliverables Checklist](#deliverables-checklist)
-  - [Success Metrics](#success-metrics)
-  - [Rollback Plan](#rollback-plan)
+ - [Step 3.6: Create Custom Skill Commands](#step-36-create-custom-skill-commands)
+ - [Deliverables Checklist](#deliverables-checklist)
+ - [Success Metrics](#success-metrics)
+ - [Rollback Plan](#rollback-plan)
 - [Task 4: Implement Architect Role Logic](#task-4-implement-architect-role-logic)
-  - [Objective](#objective)
-  - [Cognitive Brain Correlation](#cognitive-brain-correlation)
-  - [Prerequisites](#prerequisites)
-  - [Implementation Steps](#implementation-steps)
-    - [Step 4.1: Create Base Architect Prompt](#step-41-create-base-architect-prompt)
-    - [Step 4.2: Configure NotebookLM Instructions](#step-42-configure-notebooklm-instructions)
-    - [Step 4.3: Create Health Check Protocol](#step-43-create-health-check-protocol)
-    - [Step 4.4: Create Health Check Script](#step-44-create-health-check-script)
-    - [Step 4.5: Create Report Generator](#step-45-create-report-generator)
+ - [Objective](#objective)
+ - [Cognitive Brain Correlation](#cognitive-brain-correlation)
+ - [Prerequisites](#prerequisites)
+ - [Implementation Steps](#implementation-steps)
+ - [Step 4.1: Create Base Architect Prompt](#step-41-create-base-architect-prompt)
+ - [Step 4.2: Configure NotebookLM Instructions](#step-42-configure-notebooklm-instructions)
+ - [Step 4.3: Create Health Check Protocol](#step-43-create-health-check-protocol)
+ - [Step 4.4: Create Health Check Script](#step-44-create-health-check-script)
+ - [Step 4.5: Create Report Generator](#step-45-create-report-generator)
 - [Summary](#summary)
 - [Category Scores](#category-scores)
 - [Critical Issues](#critical-issues)
 - [Recommendations](#recommendations)
 - [Dependency Analysis](#dependency-analysis)
-  - [Step 4.6: Test Complete Pipeline](#step-46-test-complete-pipeline)
+ - [Step 4.6: Test Complete Pipeline](#step-46-test-complete-pipeline)
 - [Run health check locally](#run-health-check-locally)
 - [Generate report](#generate-report)
 - [View report](#view-report)
 - [Deliverables Checklist](#deliverables-checklist)
-  - [Success Metrics](#success-metrics)
-  - [Rollback Plan](#rollback-plan)
+ - [Success Metrics](#success-metrics)
+ - [Rollback Plan](#rollback-plan)
 - [Phase Integration & Validation](#phase-integration--validation)
-  - [End-to-End Testing Checklist](#end-to-end-testing-checklist)
-  - [Performance Benchmarks](#performance-benchmarks)
-  - [Cognitive Brain Health Impact](#cognitive-brain-health-impact)
+ - [End-to-End Testing Checklist](#end-to-end-testing-checklist)
+ - [Performance Benchmarks](#performance-benchmarks)
+ - [Cognitive Brain Health Impact](#cognitive-brain-health-impact)
 - [Next Steps & Continuation](#next-steps--continuation)
-  - [Immediate Next Actions](#immediate-next-actions)
-  - [Future Enhancements (Phase 11+)](#future-enhancements-phase-11)
+ - [Immediate Next Actions](#immediate-next-actions)
+ - [Future Enhancements (Phase 11+)](#future-enhancements-phase-11)
 - [Success Criteria Summary](#success-criteria-summary)
-  - [Must-Have (Critical)](#must-have-critical)
-  - [Should-Have (High Priority)](#should-have-high-priority)
-  - [Nice-to-Have (Medium Priority)](#nice-to-have-medium-priority)
+ - [Must-Have (Critical)](#must-have-critical)
+ - [Should-Have (High Priority)](#should-have-high-priority)
+ - [Nice-to-Have (Medium Priority)](#nice-to-have-medium-priority)
 
 **Last Updated: 2026-06-22
 # NotebookLM Live Sync & AI Architect Implementation
 
-**Document Version**: 1.0.0  
-**Created**: 2026-01-13T16:45:00Z  
-**Target Completion**: Phase 10.5 (3 phases)  
+**Document Version**: 1.0.0
+**Created**: 2026-01-13T16:45:00Z
+**Target Completion**: Phase 10.5 (3 phases)
 **Cognitive Brain Correlation**: HIGH (99/100 alignment)
 
 ---
@@ -172,6 +172,7 @@ This planset provides a comprehensive, step-by-step implementation guide for int
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Self-Healing, Continuous Improvement'}}%%
+
 graph TB
     subgraph "Cognitive Brain Core Objectives"
         SELF[Self-Healing]
@@ -195,13 +196,19 @@ graph TB
     end
 
     SELF --> ARCH
+
     CONT --> SYNC
+
     AUTO --> FEED
+
     KNOW --> SYNC
 
     SYNC --> FRESH
+
     SEC --> SAFE
+
     ARCH --> INSIGHT
+
     FEED --> EVOLVE
 
     style SELF fill:#DDA0DD
@@ -229,6 +236,7 @@ graph TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
+
 gantt
     title Phase 10 Master Integration Implementation
     dateFormat YYYY-MM-DD
@@ -601,12 +609,12 @@ grep -i "api.key\|password\|secret" codex-architecture-sync.xml
 ```
 
 **Validation Criteria**:
--  XML file created successfully
--  File size < 10MB (target: 5MB)
--  XML is well-formed (xmllint passes)
--  No secrets found in output
--  All key modules included
--  Comments preserved for context
+- XML file created successfully
+- File size < 10MB (target: 5MB)
+- XML is well-formed (xmllint passes)
+- No secrets found in output
+- All key modules included
+- Comments preserved for context
 
 ## Step 1.6: Optimize Compression Settings
 
@@ -657,14 +665,14 @@ If issues encountered:
 
 ## Task 2: Develop GitHub Action for Live Sync
 
-> **️ HUMAN DEFERRAL NOTICE (2026-01-16)**:  
-> Google Drive integration has been **DEFERRED to future scope** pending external setup.  
-> Status: Workflow created but automated triggers disabled (manual dispatch only).  
-> Reference: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`  
+> ** HUMAN DEFERRAL NOTICE (2026-01-16)**:
+> Google Drive integration has been **DEFERRED to future scope** pending external setup.
+> Status: Workflow created but automated triggers disabled (manual dispatch only).
+> Reference: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`
 >
 > **AI Agency Policy Compliance**:
-> -  ALLOWED: Human Deferral (external prerequisites AI agents cannot complete)
-> -  NOT ALLOWED: AI Agent Deferral (AI agents avoiding technical work)
+> - ALLOWED: Human Deferral (external prerequisites AI agents cannot complete)
+> - NOT ALLOWED: AI Agent Deferral (AI agents avoiding technical work)
 > - This deferral is VALID: Physical limitation (no Google account access), not capability limitation
 >
 > **Implementation Plan**:
@@ -748,16 +756,16 @@ Navigate to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
 **Add Secrets:**
 
 1. `GDRIVE_SERVICE_ACCOUNT_JSON`
-   - Value: Contents of `notebooklm-sync-key.json`
-   - Format: JSON (entire file contents)
+ - Value: Contents of `notebooklm-sync-key.json`
+ - Format: JSON (entire file contents)
 
 2. `GDRIVE_FOLDER_ID`
-   - Value: Folder ID from Drive URL
-   - Format: String (e.g., `1a2b3c4d5e6f7g8h9i0j`)
+ - Value: Folder ID from Drive URL
+ - Format: String (e.g., `1a2b3c4d5e6f7g8h9i0j`)
 
 3. `NOTEBOOKLM_WEBHOOK_URL` (optional)
-   - Value: Webhook for notifications
-   - Format: HTTPS URL
+ - Value: Webhook for notifications
+ - Format: HTTPS URL
 
 **Validation**: Secrets show as configured (values hidden)
 
@@ -959,12 +967,12 @@ gh run view --log
 ```
 
 **Validation Criteria**:
--  Workflow completes successfully
--  No secrets detected in scans
--  File uploaded to Drive
--  Notification sent (if configured)
--  Artifact uploaded to GitHub
--  Summary generated
+- Workflow completes successfully
+- No secrets detected in scans
+- File uploaded to Drive
+- Notification sent (if configured)
+- Artifact uploaded to GitHub
+- Summary generated
 
 ## Step 2.5: Optimize Workflow Performance
 
@@ -1526,25 +1534,25 @@ def generate_report(data):
         category_table='\n'.join(category_rows),
         critical_issues='\n\n'.join(critical_items) or 'No critical issues found ',
         recommendations='\n'.join(rec_items) or 'No recommendations at this time ',
-        dependency_graph=f"```mermaid\n{data.get('dependency_graph', 'graph TB')}\n```"
-    )
+ dependency_graph=f"```mermaid\n{data.get('dependency_graph', 'graph TB')}\n```"
+ )
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--input', required=True)
-    parser.add_argument('--output', required=True)
-    args = parser.parse_args()
+ parser = argparse.ArgumentParser()
+ parser.add_argument('--input', required=True)
+ parser.add_argument('--output', required=True)
+ args = parser.parse_args()
 
-    with open(args.input, 'r') as f:
-        data = json.load(f)
+ with open(args.input, 'r') as f:
+ data = json.load(f)
 
-    report = generate_report(data)
+ report = generate_report(data)
 
-    with open(args.output, 'w') as f:
-        f.write(report)
+ with open(args.output, 'w') as f:
+ f.write(report)
 
 if __name__ == '__main__':
-    main()
+ main()
 ```
 
 **Validation**: Script generates valid markdown
@@ -1554,13 +1562,13 @@ if __name__ == '__main__':
 ```bash
 # Run health check locally
 ANTHROPIC_API_KEY=sk-... python scripts/ai_architect_check.py \
-  --focus all \
-  --output health_report.json
+ --focus all \
+ --output health_report.json
 
 # Generate report
 python scripts/generate_health_report.py \
-  --input health_report.json \
-  --output HEALTH_REPORT.md
+ --input health_report.json \
+ --output HEALTH_REPORT.md
 
 # View report
 cat HEALTH_REPORT.md

@@ -3,8 +3,8 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-**Document Type:** User Guide 
-**Audience:** Developers, DevOps Engineers, System Administrators, ML Engineers 
+**Document Type:** User Guide
+**Audience:** Developers, DevOps Engineers, System Administrators, ML Engineers
 **Last Updated: 2026-07-10
 **Version:** 0.1.0
 
@@ -152,7 +152,7 @@ pip install codex-ml[full]==0.1.0 # Development
 python -c "import codex_ml; print(codex_ml.__version__)"
 ```
 
-**Installation time:** 2-5 minutes (runtime), 1-2 minutes (core) 
+**Installation time:** 2-5 minutes (runtime), 1-2 minutes (core)
 **Estimated size:** See [Installation Profiles](#installation-profiles)
 
 ### Method 2: Source Installation (For Contributors)
@@ -178,7 +178,7 @@ pytest tests/ -x --tb=short
 codex-ml --help
 ```
 
-**Installation time:** 5-15 minutes (includes compilation) 
+**Installation time:** 5-15 minutes (includes compilation)
 **Best combined with:** Pre-commit hooks setup
 
 ### Method 3: Docker Installation (Containerized)
@@ -201,7 +201,7 @@ docker run -it -v $(pwd):/workspace \
 docker build -t codex:latest -f Dockerfile .
 ```
 
-**Container size:** ~1.5 GB (pre-built image) 
+**Container size:** ~1.5 GB (pre-built image)
 **Requires:** Docker or Docker Desktop
 
 ### Method 4: Offline Installation (Air-Gapped Environments)
@@ -448,7 +448,7 @@ docker-compose exec codex codex-ml --help
 
 ---
 
-### ☸️ Kubernetes (Enterprise)
+### Kubernetes (Enterprise)
 
 ```bash
 # Create namespace
@@ -1050,7 +1050,7 @@ cmd /c "codex-env\Scripts\activate.bat"
 
 #### Linux: Missing Development Headers
 
-**Symptoms:** `error: Microsoft Visual C++ 14.0 or greater is required` (on Windows) 
+**Symptoms:** `error: Microsoft Visual C++ 14.0 or greater is required` (on Windows)
 or `fatal error: Python.h: No such file or directory` (on Linux)
 
 ```bash
@@ -1140,7 +1140,7 @@ if torch.cuda.is_available():
 - ** Cognitive Brain Guide:** [./quickstart/QUICK_START_COGNITIVE_BRAIN.md](./quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - ** Configuration Guide:** [docs/configuration/](configuration/)
 - ** Docker Guide:** [docker/README.md](../../docker/Dockerfile.api)
-- **☸️ Kubernetes Guide:** [k8s/README.md](../../k8s/Deployment.yaml)
+- ** Kubernetes Guide:** [k8s/README.md](../../k8s/Deployment.yaml)
 
 ### Community Support
 
@@ -1153,7 +1153,7 @@ if torch.cuda.is_available():
 
 - ** PyPI Package:** https://pypi.org/project/codex-ml/
 - ** Docker Hub:** https://ghcr.io/aries-serpent/codex
-- ** Full Documentation:** 
+- ** Full Documentation:**
 - ** Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
 
 ---
@@ -1227,5 +1227,5 @@ codex-ml is open source and available under the [MIT License](../LICENSE).
 ---
 
 **Last Updated: 2026-07-10
-**Installation Status:** Ready for Production 
+**Installation Status:** Ready for Production
 **Support Level:** Production

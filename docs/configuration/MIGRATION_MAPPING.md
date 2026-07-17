@@ -5,8 +5,8 @@
 
 **Last Updated: 2026-06-22
 
-**Status:** Planning  
-**Created:** 2026-01-08  
+**Status:** Planning
+**Created:** 2026-01-08
 **Target:** Pre-commit Cycle 2
 
 ## Executive Summary
@@ -53,9 +53,9 @@ Migrate configs that:
 - Have minimal external dependencies
 
 **Target configs:**
-1. `configs/training/` → `conf/training/`
-2. `configs/evaluation/` → `conf/evaluation/`
-3. `configs/experiments/` → `conf/experiment/`
+1. `configs/training/` `conf/training/`
+2. `configs/evaluation/` `conf/evaluation/`
+3. `configs/experiments/` `conf/experiment/`
 4. Error configs ( already migrated in Cycle 1)
 
 ### Phase 2: Medium-Priority Configs (Cycle 3)
@@ -65,9 +65,9 @@ Migrate configs that:
 - Have moderate coupling to external systems
 
 **Target configs:**
-1. `configs/base/` → `conf/base/`
-2. `configs/msp/` → `conf/msp/`
-3. `configs/safety/` → `conf/safety/`
+1. `configs/base/` `conf/base/`
+2. `configs/msp/` `conf/msp/`
+3. `configs/safety/` `conf/safety/`
 
 ### Phase 3: Low-Priority Configs (Post-PS-01)
 
@@ -262,13 +262,13 @@ def test_config_migration():
 ### High Risk Areas
 
 1. **Training Pipelines**: Heavy config dependency
-   - **Mitigation**: Extensive testing, gradual rollout
+ - **Mitigation**: Extensive testing, gradual rollout
 
 2. **CI/CD Workflows**: Hardcoded paths
-   - **Mitigation**: Update workflows, test in dev environment
+ - **Mitigation**: Update workflows, test in dev environment
 
 3. **External Tools**: May reference old paths
-   - **Mitigation**: Symlinks for compatibility
+ - **Mitigation**: Symlinks for compatibility
 
 ### Rollback Plan
 
@@ -297,7 +297,7 @@ If critical issues arise:
 
 | Milestone | Target | Status |
 |-----------|--------|--------|
-| Cycle 1: Error configs |  Complete | Done |
+| Cycle 1: Error configs | Complete | Done |
 | Cycle 2: Training configs | Week 2 | Planning |
 | Cycle 2: Evaluation configs | Week 2 | Planning |
 | Cycle 3: Infrastructure configs | Week 3 | Planned |
@@ -320,6 +320,6 @@ If critical issues arise:
 
 ---
 
-**Document Owner:** GitHub Copilot (PS-01)  
-**Review Date:** After Cycle 2 completion  
+**Document Owner:** GitHub Copilot (PS-01)
+**Review Date:** After Cycle 2 completion
 **Last Updated: 2026-07-11

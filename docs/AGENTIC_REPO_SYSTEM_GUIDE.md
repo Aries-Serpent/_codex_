@@ -4,15 +4,15 @@
 
 > **Canonical Operating Reference** | Aries-Serpent/_codex_
 >
-> **Version**: 1.1.0  
-> **Generated**: 2026-06-22  
-> **Status**:  ACTIVE — All Phases 0–6 GROUNDED  
-> **Readiness Score**: 100/100 (broad 100-point audit) | **E→D Gate**: 5/5 conditions 
+> **Version**: 1.1.0
+> **Generated**: 2026-06-22
+> **Status**: ACTIVE — All Phases 0–6 GROUNDED
+> **Readiness Score**: 100/100 (broad 100-point audit) | **ED Gate**: 5/5 conditions
 
 ---
 
-> **Score note**: Readiness score of 100/100 is from the completed Soft→GROUNDED audit
-> (`READINESS_AUDIT_ANALYSIS.md`) covering all 7 phases (0–6). The 5/5 E→D Gate score
+> **Score note**: Readiness score of 100/100 is from the completed SoftGROUNDED audit
+> (`READINESS_AUDIT_ANALYSIS.md`) covering all 7 phases (0–6). The 5/5 ED Gate score
 > reflects all 5 FSM conditions (C1–C5) satisfied: registry present, manifest fresh,
 > SOFT tier ≤ 2, handoff gate deployed, and ≥ 8 GROUNDED Tier-1 gates active.
 
@@ -26,7 +26,7 @@
 4. [Enforcement Tier System](#4-enforcement-tier-system)
 5. [Manifest & Discovery](#5-manifest--discovery)
 6. [Agent Handoff Protocol](#6-agent-handoff-protocol)
-7. [E→D Transition Gates](#7-ed-transition-gates)
+7. [ED Transition Gates](#7-ed-transition-gates)
 8. [Agent Memory Corpus (Phase 3)](#8-agent-memory-corpus-phase-3)
 9. [CI Workflows Reference](#9-ci-workflows-reference)
 10. [Security & Injection Hardening](#10-security--injection-hardening)
@@ -37,7 +37,7 @@
 
 ## 1. Overview
 
-The `_codex_` repository uses a **Soft→GROUNDED agentic architecture** where
+The `_codex_` repository uses a **SoftGROUNDED agentic architecture** where
 152 AI agents operate under tiered enforcement policies, structured handoff
 protocols, and a 5-condition FSM gate controlling the transition from
 **E (Executor)** to **D (Director)** operating model.
@@ -73,28 +73,28 @@ operating_model:
 ```
 
 Check transition readiness by running the
-[E→D Transition Readiness Gate](../.github/workflows/e-to-d-transition-gate.yml)
+[ED Transition Readiness Gate](../.github/workflows/e-to-d-transition-gate.yml)
 workflow.
 
 ---
 
 ## 3. Agent Registry
 
-**File**: `.github/agents/AGENT_REGISTRY.yaml`  
-**Version**: 1.9.0  
+**File**: `.github/agents/AGENT_REGISTRY.yaml`
+**Version**: 1.9.0
 **Total agents**: 152
 
 ### Schema Fields (v0.2.1+)
 
 | Field | Type | Required | Description |
 |-------|------|:--------:|-------------|
-| `id` | string |  | Unique kebab-case agent identifier |
-| `name` | string |  | Human-readable name |
-| `status` | `active\|inactive\|archived` |  | Operational state |
-| `enforcement_tier` | `GROUNDED\|PARTIAL\|SOFT` |  | Policy enforcement level |
-| `autonomy_model` | `E\|D_CAPABLE\|D` |  | Current autonomy level |
-| `handoff_protocol` | `structured\|soft\|none` |  | Handoff capability |
-| `accepts_handoff_from` | `string[]` |  | Allowed delegating agents/roles |
+| `id` | string | | Unique kebab-case agent identifier |
+| `name` | string | | Human-readable name |
+| `status` | `active\|inactive\|archived` | | Operational state |
+| `enforcement_tier` | `GROUNDED\|PARTIAL\|SOFT` | | Policy enforcement level |
+| `autonomy_model` | `E\|D_CAPABLE\|D` | | Current autonomy level |
+| `handoff_protocol` | `structured\|soft\|none` | | Handoff capability |
+| `accepts_handoff_from` | `string[]` | | Allowed delegating agents/roles |
 | `consolidation_priority` | boolean | — | `true` = top-20 by activation frequency |
 | `activation_frequency_rank` | integer | — | Rank from Phase 0 frequency audit |
 
@@ -162,7 +162,7 @@ ARCHIVED  ──  Deprecated agent, skip all enforcement
 
 ## 5. Manifest & Discovery
 
-**File**: `CODEX_MANIFEST.json`  
+**File**: `CODEX_MANIFEST.json`
 **Schema**: `.codex/schemas/CodexManifestSchema.json`
 
 The manifest is the **single root discovery index** for all agents, workflows,
@@ -212,13 +212,13 @@ by `.github/workflows/agent-handoff-gate.yml`.
 ```markdown
 AGENT_HANDOFF: ```json
 {
-  "schema_version": "1.1",
-  "handoff_id": "550e8400-e29b-41d4-a716-446655440000",
-  "delegating_agent": "orchestrator-agent",
-  "receiving_agent": "ci-testing-agent",
-  "task_id": "PR-3447",
-  "handoff_timestamp": "2026-03-02T06:00:00Z",
-  "operating_model": "E"
+ "schema_version": "1.1",
+ "handoff_id": "550e8400-e29b-41d4-a716-446655440000",
+ "delegating_agent": "orchestrator-agent",
+ "receiving_agent": "ci-testing-agent",
+ "task_id": "PR-3447",
+ "handoff_timestamp": "2026-03-02T06:00:00Z",
+ "operating_model": "E"
 }
 ```
 ```
@@ -229,26 +229,26 @@ The `agent-handoff-gate.yml` workflow will validate and post a summary.
 
 ---
 
-## 7. E→D Transition Gates
+## 7. ED Transition Gates
 
 **Workflow**: `.github/workflows/e-to-d-transition-gate.yml`
 
 | ID | Condition | Status |
 |----|-----------|:------:|
-| C1 | `AGENT_REGISTRY.yaml` present |  |
-| C2 | `CODEX_MANIFEST.json` valid + current (<24h) |  |
-| C3 | Tier-3 (SOFT) count ≤ 2 |  (0 SOFT in registry; 2 agents marked ️ SOFT in `GROUNDED_VS_SOFT_ENFORCEMENT.md` — gate regex matches that doc, not registry field) |
-| C4 | `agent-handoff-gate.yml` deployed |  |
-| C5 | Tier-1 (GROUNDED) count ≥ 8 |  (8 grounded) |
+| C1 | `AGENT_REGISTRY.yaml` present | |
+| C2 | `CODEX_MANIFEST.json` valid + current (<24h) | |
+| C3 | Tier-3 (SOFT) count ≤ 2 | (0 SOFT in registry; 2 agents marked SOFT in `GROUNDED_VS_SOFT_ENFORCEMENT.md` — gate regex matches that doc, not registry field) |
+| C4 | `agent-handoff-gate.yml` deployed | |
+| C5 | Tier-1 (GROUNDED) count ≥ 8 | (8 grounded) |
 
-**Current score**: 5/5  — all conditions satisfied; human activation required for D promotion
+**Current score**: 5/5 — all conditions satisfied; human activation required for D promotion
 
 ---
 
 ## 8. Agent Memory Corpus (Phase 3)
 
-**Builder**: `scripts/ci/build_embeddings.py`  
-**Searcher**: `scripts/ci/query_corpus.py`  
+**Builder**: `scripts/ci/build_embeddings.py`
+**Searcher**: `scripts/ci/query_corpus.py`
 **Nightly rebuild**: `.github/workflows/embedding-index-rebuild.yml`
 
 The corpus indexes `.codex/docs/`, `.github/agents/`, `src/codex/cognitive/`,
@@ -296,16 +296,16 @@ Check with: `python scripts/ci/workflow_compliance_scan.py`
 Per Domain 8 findings (CVE-2025-55319, CVE-2025-61260):
 
 1. **Manifest integrity**: `CODEX_MANIFEST.json` always has `integrity_sha256`
-   (SHA-256 over canonical JSON). Verify with `generate_manifest.py --verify-integrity`.
+ (SHA-256 over canonical JSON). Verify with `generate_manifest.py --verify-integrity`.
 
 2. **Field allowlist**: Only `SAFE_INJECTION_FIELDS` enter `agent_context.json`.
-   Patterns like `<script`, `eval(`, `__import__` are blocked.
+ Patterns like `<script`, `eval(`, `__import__` are blocked.
 
 3. **CODEOWNERS**: `AGENT_REGISTRY.yaml`, `CODEX_MANIFEST.json`, `.codex/schemas/`
-   require `@mbaetiong` review.
+ require `@mbaetiong` review.
 
 4. **Handoff payload size guard**: `agent-handoff-gate.yml` rejects payloads >10KB
-   before `json.loads`.
+ before `json.loads`.
 
 ---
 
@@ -327,18 +327,18 @@ python scripts/ci/auto_append_accountability.py --dry-run --session-id <uuid>
 
 | Phase | Status | Key Artifacts |
 |-------|:------:|---------------|
-| Phase 0 — Baseline Audit |  Complete | `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` |
-| Phase 1 — Registry Migration |  Complete | `AGENT_REGISTRY.yaml` v0.2.1, `CODEX_MANIFEST.json` |
-| Phase 2 — Handoff Gate |  Complete (Tier-1) | `agent-handoff-gate.yml`, `agent-registry-validation.yml` |
-| Phase 3 — Memory Corpus |  Complete | `build_embeddings.py`, `query_corpus.py`, `embedding-index-rebuild.yml` |
-| Phase 4 — E→D Gate |  Complete (Tier-1, 5/5) | `e-to-d-transition-gate.yml`, `orchestrator-agent.md` |
-| Phase 5 — Self-Healing CI |  Complete | `auto_promote_tier.py`, `enforcement_kpi_dashboard.py`, chatops |
-| Phase 6 — Governance |  Complete | `actionlint-audit.yml`, semgrep rules, CODEOWNERS, this guide |
+| Phase 0 — Baseline Audit | Complete | `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` |
+| Phase 1 — Registry Migration | Complete | `AGENT_REGISTRY.yaml` v0.2.1, `CODEX_MANIFEST.json` |
+| Phase 2 — Handoff Gate | Complete (Tier-1) | `agent-handoff-gate.yml`, `agent-registry-validation.yml` |
+| Phase 3 — Memory Corpus | Complete | `build_embeddings.py`, `query_corpus.py`, `embedding-index-rebuild.yml` |
+| Phase 4 — ED Gate | Complete (Tier-1, 5/5) | `e-to-d-transition-gate.yml`, `orchestrator-agent.md` |
+| Phase 5 — Self-Healing CI | Complete | `auto_promote_tier.py`, `enforcement_kpi_dashboard.py`, chatops |
+| Phase 6 — Governance | Complete | `actionlint-audit.yml`, semgrep rules, CODEOWNERS, this guide |
 
 **Current KPIs** (v0.2.1):
 - **152 agents** — GROUNDED: 8 | PARTIAL: 142 | SOFT: 2
 - **5 Tier-1 gates** — `agent-registry-validation`, `agent-handoff-gate`, `actionlint-audit`, `e-to-d-transition-gate`, `embedding-index-rebuild`
-- **E→D score**: 5/5  — all conditions satisfied; human activation required for D promotion
+- **ED score**: 5/5 — all conditions satisfied; human activation required for D promotion
 
 **Next milestones** (post-merge):
 - Trigger `embedding-index-rebuild.yml` manually to seed FAISS index in CI
@@ -347,5 +347,5 @@ python scripts/ci/auto_append_accountability.py --dry-run --session-id <uuid>
 
 ---
 
-*This document is auto-updated by `scripts/ci/generate_manifest.py --update-enforcement-doc`.*  
+*This document is auto-updated by `scripts/ci/generate_manifest.py --update-enforcement-doc`.*
 *Source: `docs/plans/Agentic_AI_System/soft_to_GROUNDED.md`*

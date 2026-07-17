@@ -5,7 +5,7 @@
 
 **Last Updated: 2026-06-22
 
-**Ref:** branch `<branch>`  commit `<short-sha>`  •  **Artifacts:** `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/`
+**Ref:** branch `<branch>` commit `<short-sha>` • **Artifacts:** `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/`
 
 ---
 

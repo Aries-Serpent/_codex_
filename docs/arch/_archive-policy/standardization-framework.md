@@ -12,7 +12,7 @@ The standardization framework elevates the _codex_ archive system from baseline 
 
 ## Standardization Pillars
 
-### 1. Schema Versioning (v1 → v2)
+### 1. Schema Versioning (v1 v2)
 
 **Objective**: Enable schema evolution without breaking existing deployments
 
@@ -77,7 +77,7 @@ Transparency Log Entry
 
 1. **On Write**: Record validated against target schema before appending to JSONL
 2. **On Read**: Record validated before use (cached validators for performance)
-3. **On Migrate**: Both source and target schemas validated during v1→v2 migration
+3. **On Migrate**: Both source and target schemas validated during v1v2 migration
 
 **Tool**: `EvidenceSchemaValidator` class
 
@@ -149,20 +149,20 @@ steps:
 
 | SLSA Requirement | _codex_ Implementation | Evidence |
 |---|---|---|
-| **Provenance exists** |  Evidence records created | `.codex/evidence/archive_ops.jsonl` |
-| **Provenance signed** |  Sigstore keyless signature | `standardizationMetadata.signature` |
-| **Signed by service account** |  GitHub OIDC identity | `standardizationMetadata.issuer` |
-| **Ephemeral credentials** |  Short-lived Fulcio cert | Certificate chain in Rekor |
-| **Tamper protection** |  Append-only + immutable | JSONL format + git history |
+| **Provenance exists** | Evidence records created | `.codex/evidence/archive_ops.jsonl` |
+| **Provenance signed** | Sigstore keyless signature | `standardizationMetadata.signature` |
+| **Signed by service account** | GitHub OIDC identity | `standardizationMetadata.issuer` |
+| **Ephemeral credentials** | Short-lived Fulcio cert | Certificate chain in Rekor |
+| **Tamper protection** | Append-only + immutable | JSONL format + git history |
 
 ### in-toto Framework Readiness
 
 | in-toto Component | _codex_ Support | Status |
 |---|---|---|
-| **Layout** | Canonically defined in policy doc |  Phase 2 |
-| **Link Metadata** | Structure compatible |  Phase 2 (optional field) |
-| **Step Authorization** | Via OIDC claims + CODEOWNERS |  Phase 2 |
-| **Verification** | Automated checklist |  Phase 2 |
+| **Layout** | Canonically defined in policy doc | Phase 2 |
+| **Link Metadata** | Structure compatible | Phase 2 (optional field) |
+| **Step Authorization** | Via OIDC claims + CODEOWNERS | Phase 2 |
+| **Verification** | Automated checklist | Phase 2 |
 
 ## Migration & Deployment
 
@@ -191,18 +191,18 @@ If issues arise:
 1. **Disable standardization**:
    ```bash
    export CODEX_STANDARDIZATION_ENABLED=false
-   ```
+ ```
 
 2. **Revert database migrations** (if applied):
    ```bash
    # SQLite: No explicit rollback needed (columns optional)
    # Postgres/MariaDB: Use `ALTER TABLE DROP COLUMN` if necessary
-   ```
+ ```
 
 3. **Restore from backup**:
    ```bash
    cp .codex/evidence/archive_ops.jsonl.backup .codex/evidence/archive_ops.jsonl
-   ```
+ ```
 
 ## Validation & Testing
 
@@ -285,22 +285,22 @@ python -m codex.cli archive migrate-evidence-to-v2
 
 ## FAQ
 
-**Q: Will v1 records break?**  
+**Q: Will v1 records break?**
 A: No. v1 records remain fully supported and valid.
 
-**Q: Can I disable signing?**  
+**Q: Can I disable signing?**
 A: Yes, via `CODEX_ENABLE_SIGNING=false`, but SLSA L3 requires signing.
 
-**Q: What if Sigstore is unavailable?**  
+**Q: What if Sigstore is unavailable?**
 A: Archives will fail if signing enabled but Sigstore unreachable. Fallback to `CODEX_ENABLE_SIGNING=false` for continuity.
 
-**Q: Can I verify signatures offline?**  
+**Q: Can I verify signatures offline?**
 A: No—signature verification requires Rekor transparency log access.
 
-**Q: Will standardization impact performance?**  
+**Q: Will standardization impact performance?**
 A: Minor overhead (~5-10%) for signing operations, negligible for reads.
 
-**Q: How do I verify backward compatibility?**  
+**Q: How do I verify backward compatibility?**
 A: Run the test suite: `pytest tests/archive/test_standardization.py::TestBackwardCompatibility`
 
 ## References

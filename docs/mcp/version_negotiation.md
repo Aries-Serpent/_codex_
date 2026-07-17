@@ -10,14 +10,15 @@ The server prefers MCP protocol version **1.0** and negotiates via `mcp.negotiat
 
 | Version | Status | Features | Breaking Changes |
 |---------|--------|----------|------------------|
-| **1.0** |  Current | Tool registry, JSON-RPC, HTTP endpoints | Initial release |
-| **0.9** | ️ Deprecated | Basic JSON-RPC only | Limited tool support |
-| **2.0** | 🔮 Future | Streaming, WebSockets, enhanced security | TBD |
+| **1.0** | Current | Tool registry, JSON-RPC, HTTP endpoints | Initial release |
+| **0.9** | Deprecated | Basic JSON-RPC only | Limited tool support |
+| **2.0** | Future | Streaming, WebSockets, enhanced security | TBD |
 
 ## Version Negotiation Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing "0.9", "1.0"'}}%%
+
 sequenceDiagram
     participant Client
     participant Server
@@ -26,9 +27,11 @@ sequenceDiagram
     Server->>Server: Check overlapping versions
 
     alt Match Found
+
         Server-->>Client: version: "1.0"
         Client->>Server: Use protocol v1.0
     else No Match
+
         Server-->>Client: JSON-RPC Error -32602
         Client->>Client: Unable to communicate
     end
@@ -426,11 +429,11 @@ if FeatureDetector.has_feature("1.0", "rate_limiting"):
 ### Upgrading from 0.9 to 1.0
 
 **Changes:**
--  Tool registry support added
--  HTTP endpoints available
--  Authentication required (API keys)
--  Rate limiting enforced
-- ️ Breaking: Some JSON-RPC methods renamed
+- Tool registry support added
+- HTTP endpoints available
+- Authentication required (API keys)
+- Rate limiting enforced
+- Breaking: Some JSON-RPC methods renamed
 
 **Migration Steps:**
 1. Update client to support version "1.0"
@@ -566,15 +569,15 @@ When deprecating a version:
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Ensure seamless protocol version negotiation between MCP clients and servers, enabling backward compatibility and graceful upgrades.
 
 **Energy Level:** 3/5 (Medium Priority - Compatibility Layer)
 
-**Operational Status:**  **ACTIVE** - Production-ready with v1.0 and v0.9 support
+**Operational Status:** **ACTIVE** - Production-ready with v1.0 and v0.9 support
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] Server supports versions 1.0 and 0.9
 - [x] Version negotiation algorithm implemented
@@ -583,7 +586,7 @@ When deprecating a version:
 - [x] Client implementations (Python, JavaScript)
 - [x] Error handling for no version overlap
 - [x] Feature detection based on version
-- [x] Migration guide for 0.9 → 1.0
+- [x] Migration guide for 0.9 1.0
 - [x] Version info API
 - [x] Unit tests for all scenarios
 - [x] Integration tests for negotiation flow
@@ -595,43 +598,43 @@ When deprecating a version:
 - Feature detection system
 - Client SDK updates
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Negotiation Success Rate** | >99% | 99.5% |  |
-| **Negotiation Latency** | <50ms | 20-30ms |  |
-| **Version 1.0 Adoption** | >80% | 85% |  |
-| **Version 0.9 Usage** | <20% | 15% |  |
-| **Failed Negotiations** | <1% | 0.5% |  |
-| **Test Coverage** | >90% | 95% |  |
-| **Client Compatibility** | All official SDKs | Python, JS, Go |  |
+| **Negotiation Success Rate** | >99% | 99.5% | |
+| **Negotiation Latency** | <50ms | 20-30ms | |
+| **Version 1.0 Adoption** | >80% | 85% | |
+| **Version 0.9 Usage** | <20% | 15% | |
+| **Failed Negotiations** | <1% | 0.5% | |
+| **Test Coverage** | >90% | 95% | |
+| **Client Compatibility** | All official SDKs | Python, JS, Go | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Negotiation Flow:**
-1. Client connects → Sends supported versions
-2. Server receives → Checks overlap with server versions
-3. Server selects → First matching version from preference order
-4. Response sent → Client acknowledges and uses version
-5. Session established → All subsequent calls use negotiated version
+1. Client connects Sends supported versions
+2. Server receives Checks overlap with server versions
+3. Server selects First matching version from preference order
+4. Response sent Client acknowledges and uses version
+5. Session established All subsequent calls use negotiated version
 
 **Sequential Dependencies:**
-- Connection → Negotiation → Authentication → API calls
+- Connection Negotiation Authentication API calls
 - Failed negotiation = No API access
 
-### Fields 
+### Fields
 **State Management:**
 - **Server state**: Supported versions list (static)
 - **Session state**: Negotiated version (per-connection)
 - **Feature state**: Available features based on version
 
 **State Transitions:**
-- Unconnected → Negotiating → Negotiated → Active session
+- Unconnected Negotiating Negotiated Active session
 - Version change requires new negotiation
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Log all negotiation attempts (success/failure)
 - Track version distribution (clients using 1.0 vs 0.9)
@@ -644,30 +647,30 @@ When deprecating a version:
 - Semantic versioning (major.minor.patch)
 - Backward compatibility window
 
-### Redundancy 
+### Redundancy
 **Failure Modes:**
-1. **No version overlap** → Error -32602, connection refused
-2. **Missing supported field** → Error, require parameter
-3. **Invalid version format** → Validation error
-4. **Server version removed** → Graceful fallback to older
+1. **No version overlap** Error -32602, connection refused
+2. **Missing supported field** Error, require parameter
+3. **Invalid version format** Validation error
+4. **Server version removed** Graceful fallback to older
 
 **Recovery:**
 - Client upgrades to supported version
 - Server maintains backward compatibility
 - Deprecation with grace period (6 months)
 
-### Balance ️
+### Balance
 **Compatibility vs Innovation:**
--  Support 2 versions simultaneously
-- ️ Trade-off: Maintenance burden vs user stability
--  Clear deprecation timeline
+- Support 2 versions simultaneously
+- Trade-off: Maintenance burden vs user stability
+- Clear deprecation timeline
 
 **Simplicity vs Features:**
 - Simple negotiation protocol vs complex capability exchange
 - Static version list vs dynamic feature detection
 - Server-driven selection vs client-driven negotiation
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -677,7 +680,7 @@ When deprecating a version:
 | **P1** | Migration tooling | 10% | Upgrade assistance |
 | **P2** | Version info API | 5% | Operational visibility |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

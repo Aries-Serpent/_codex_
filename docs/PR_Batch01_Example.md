@@ -52,10 +52,10 @@ Tests Summary
 (paste pytest output here)
 - validation: <PASS/FAIL>
 
-Legacy Import Counts (before → after)
+Legacy Import Counts (before after)
 -------------------------------------
 - Before (rows): <count_before>
-- After  (rows): <count_after>
+- After (rows): <count_after>
 - Reduction: <delta_pct %>
 
 Artifacts & SHAs

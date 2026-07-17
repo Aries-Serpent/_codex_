@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Document**: `docs/ops/secrets_rotation_runbook.md`  
-> **Version**: 1.0 (P10-06 — S96 2026-06-22)  
-> **Owner**: @mbaetiong  
-> **Status**: Production Readiness — Phase 10  
+> **Document**: `docs/ops/secrets_rotation_runbook.md`
+> **Version**: 1.0 (P10-06 — S96 2026-06-22)
+> **Owner**: @mbaetiong
+> **Status**: Production Readiness — Phase 10
 > **Classification**: Internal — do not commit key material to source control
 
 ---
@@ -43,7 +43,7 @@ Before rotating either key, verify:
 - [ ] Last successful backup of encrypted artifacts (`audit_artifacts/` snapshot)
 - [ ] Replacement key is generated **offline** using a CSPRNG (see Generation step)
 - [ ] New key is securely stored in password manager / KMS **before** GitHub update
-- [ ] Pair rotation: BACKUP_KEY → old MASTER_KEY, MASTER_KEY → new key
+- [ ] Pair rotation: BACKUP_KEY old MASTER_KEY, MASTER_KEY new key
 
 ---
 
@@ -132,7 +132,7 @@ gh secret set CODEX_BACKUP_KEY \
 If a key is suspected compromised:
 
 1. **Immediately** rotate MASTER_KEY (skip BACKUP_KEY grace window — set both
-   simultaneously with the new key).
+ simultaneously with the new key).
 2. Invalidate all artifacts signed/encrypted with the old key.
 3. File an incident in GitHub Issues with label `[SECURITY-INCIDENT]`.
 4. Notify @mbaetiong within 1 hour.
@@ -180,9 +180,9 @@ def _get_active_key() -> bytes:
 
 | Rotation | Due Date | Status |
 |----------|----------|--------|
-| Initial provisioning | 2026-02-28 |  Keys set |
-| Rotation 1 | 2026-05-28 |  Scheduled |
-| Rotation 2 | 2026-08-26 |  Scheduled |
+| Initial provisioning | 2026-02-28 | Keys set |
+| Rotation 1 | 2026-05-28 | Scheduled |
+| Rotation 2 | 2026-08-26 | Scheduled |
 
 ---
 

@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Document:** Custom Agent Selection & Decision Framework  
-> **Version:** 1.0.0  
-> **Generated:** 2026-06-26  
-> **Purpose:** Provide systematic methodology for selecting and activating appropriate custom agents for specific tasks  
+> **Document:** Custom Agent Selection & Decision Framework
+> **Version:** 1.0.0
+> **Generated:** 2026-06-26
+> **Purpose:** Provide systematic methodology for selecting and activating appropriate custom agents for specific tasks
 
 ---
 
@@ -61,12 +61,12 @@ This framework enables systematic selection of the most appropriate custom agent
 - **workflow-ci-fixer** — Fix GitHub Actions syntax and job failures
 
 **Selection Logic:**
-- Syntax/YAML error → `workflow-ci-fixer`
-- Test/build failure with known patterns → `ci-auto-healer-agent`
-- Blocking incident requiring rapid response → `ci-emergency-response-agent`
-- Complex multi-failure scenario → `ci-testing-agent` first (diagnosis), then specialists
+- Syntax/YAML error `workflow-ci-fixer`
+- Test/build failure with known patterns `ci-auto-healer-agent`
+- Blocking incident requiring rapid response `ci-emergency-response-agent`
+- Complex multi-failure scenario `ci-testing-agent` first (diagnosis), then specialists
 
-**Parallel Potential:**  HIGH (delegate 2-3 agents per category)
+**Parallel Potential:** HIGH (delegate 2-3 agents per category)
 
 ---
 
@@ -81,13 +81,13 @@ This framework enables systematic selection of the most appropriate custom agent
 - **mutation-testing-agent** — Assess test suite effectiveness
 
 **Selection Logic:**
-- Failing tests → `autonomous-test-healer-agent` (parallel with coverage analysis)
-- Flaky/intermittent tests → `fragile-test-guardian`
-- Coverage gap → `unified-coverage-agent`
-- Post-API-change alignment → `test-alignment-fixer`
-- Test quality improvement → `test-enhancement-agent`
+- Failing tests `autonomous-test-healer-agent` (parallel with coverage analysis)
+- Flaky/intermittent tests `fragile-test-guardian`
+- Coverage gap `unified-coverage-agent`
+- Post-API-change alignment `test-alignment-fixer`
+- Test quality improvement `test-enhancement-agent`
 
-**Parallel Potential:**  VERY HIGH (delegate 3-5 agents per cycle)
+**Parallel Potential:** VERY HIGH (delegate 3-5 agents per cycle)
 
 ---
 
@@ -101,13 +101,13 @@ This framework enables systematic selection of the most appropriate custom agent
 - **post-merge-doc-alignment-agent** — Align GitHub Pages with codebase after merges
 
 **Selection Logic:**
-- Consolidation/structural work → `unified-doc-agent`
-- Freshness/accuracy validation → `doc-freshness-checker`
-- Link validation → `link-validator-agent`
-- Terminology audit → `terminology-consistency-agent`
-- Post-merge alignment → `post-merge-doc-alignment-agent`
+- Consolidation/structural work `unified-doc-agent`
+- Freshness/accuracy validation `doc-freshness-checker`
+- Link validation `link-validator-agent`
+- Terminology audit `terminology-consistency-agent`
+- Post-merge alignment `post-merge-doc-alignment-agent`
 
-**Parallel Potential:**  MODERATE (2-3 agents for comprehensive doc audit)
+**Parallel Potential:** MODERATE (2-3 agents for comprehensive doc audit)
 
 ---
 
@@ -122,13 +122,13 @@ This framework enables systematic selection of the most appropriate custom agent
 - **secret-detection-agent** — Find accidentally committed secrets
 
 **Selection Logic:**
-- Comprehensive security audit → `unified-security-scanner`
-- Specific CodeQL alert → `codeql-alert-resolution-agent`
-- Dependency vulnerability → `dependency-vulnerability-scanner`
-- Secret detection → `secret-detection-agent`
-- Code scanning findings → `code-scanning-remediation-agent`
+- Comprehensive security audit `unified-security-scanner`
+- Specific CodeQL alert `codeql-alert-resolution-agent`
+- Dependency vulnerability `dependency-vulnerability-scanner`
+- Secret detection `secret-detection-agent`
+- Code scanning findings `code-scanning-remediation-agent`
 
-**Parallel Potential:**  HIGH (delegate all 3-4 for full audit)
+**Parallel Potential:** HIGH (delegate all 3-4 for full audit)
 
 ---
 
@@ -142,12 +142,12 @@ This framework enables systematic selection of the most appropriate custom agent
 - **rust-config-validator** — Validate Cargo configuration
 
 **Selection Logic:**
-- Config file validation → `config-validator`
-- Legacy → modern migration → `config-migration-assistant`
-- PyTorch model issues → `meta-tensor-validator`
-- Filename cross-platform check → `cross-platform-filename-validator`
+- Config file validation `config-validator`
+- Legacy modern migration `config-migration-assistant`
+- PyTorch model issues `meta-tensor-validator`
+- Filename cross-platform check `cross-platform-filename-validator`
 
-**Parallel Potential:**  MODERATE (2-3 per platform update cycle)
+**Parallel Potential:** MODERATE (2-3 per platform update cycle)
 
 ---
 
@@ -160,12 +160,12 @@ This framework enables systematic selection of the most appropriate custom agent
 - **session-log-retrieval-agent** — Recover prior sessions
 
 **Selection Logic:**
-- Multi-agent coordination needed → `agent-orchestrator`
-- Skill maintenance/scoring → `skills-master-agent`
-- Session post-mortem → `session-analysis-agent`
-- Context recovery → `session-log-retrieval-agent`
+- Multi-agent coordination needed `agent-orchestrator`
+- Skill maintenance/scoring `skills-master-agent`
+- Session post-mortem `session-analysis-agent`
+- Context recovery `session-log-retrieval-agent`
 
-**Parallel Potential:** ️ LOW (orchestration requires sequential coordination)
+**Parallel Potential:** LOW (orchestration requires sequential coordination)
 
 ---
 
@@ -278,7 +278,7 @@ NO  → Try next candidate
 
 ## Anti-Patterns & Pitfalls
 
-###  Pitfall 1: Using Generalist When Specialist Available
+### Pitfall 1: Using Generalist When Specialist Available
 
 ```
 WRONG:
@@ -296,7 +296,7 @@ Result: Direct, authoritative remediation
 
 ---
 
-###  Pitfall 2: Sequential When Parallel Viable
+### Pitfall 2: Sequential When Parallel Viable
 
 ```
 WRONG:
@@ -317,7 +317,7 @@ Use case: Multi-aspect testing audit
 
 ---
 
-###  Pitfall 3: Missing Prerequisite Checks
+### Pitfall 3: Missing Prerequisite Checks
 
 ```
 WRONG:
@@ -338,7 +338,7 @@ Selection: autonomous-test-healer-agent
 
 ---
 
-###  Pitfall 4: Overloading Single Agent
+### Pitfall 4: Overloading Single Agent
 
 ```
 WRONG:
@@ -365,14 +365,14 @@ CORRECT:
 
 | Domain | Primary | Specialist | Readiness |
 |--------|---------|------------|-----------|
-| CI/CD | ci-auto-healer-agent | 5 available |  Production |
-| Testing | unified-coverage-agent | 8 available |  Production |
-| Docs | unified-doc-agent | 5 available |  Production |
-| Security | unified-security-scanner | 7 available |  Production |
-| Config | config-validator | 5 available |  Production |
-| RAG | rag-index-manager | 6 available |  Production |
-| Platform | cross-platform-filename-validator | 3 available | ️ Partial |
-| Session | agent-orchestrator | 4 available |  Production |
+| CI/CD | ci-auto-healer-agent | 5 available | Production |
+| Testing | unified-coverage-agent | 8 available | Production |
+| Docs | unified-doc-agent | 5 available | Production |
+| Security | unified-security-scanner | 7 available | Production |
+| Config | config-validator | 5 available | Production |
+| RAG | rag-index-manager | 6 available | Production |
+| Platform | cross-platform-filename-validator | 3 available | Partial |
+| Session | agent-orchestrator | 4 available | Production |
 
 ### Delegation Patterns
 
@@ -439,7 +439,7 @@ All agents referenced here are defined in `.github/agents/AGENT_REGISTRY.yaml` w
 - **id**: Unique identifier
 - **name**: Human-readable name
 - **capability_tags**: List of specialized capabilities
-- **autonomy_model**: (E)Advisory → (D)Capable → (C)Approval → (B)Escalation → (A)Autonomous
+- **autonomy_model**: (E)Advisory (D)Capable (C)Approval (B)Escalation (A)Autonomous
 - **maturity**: development | testing | production
 - **description**: What the agent does
 

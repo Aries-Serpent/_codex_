@@ -4,9 +4,9 @@
 
 **Last Updated: 2026-06-22
 
-> **Version:** 1.0.0  
-> **Created:** 2026-03-31  
-> **Status:**  Authoritative — reflects current state of `0D_base_` after S259 changes  
+> **Version:** 1.0.0
+> **Created:** 2026-03-31
+> **Status:** Authoritative — reflects current state of `0D_base_` after S259 changes
 > **Scope:** All automated comments, WEC wiring, gate interactions, overlap analysis, and consolidation recommendations
 
 ---
@@ -44,7 +44,7 @@ Every push to a PR branch on `0D_base_` triggers a cascade of automated comment-
 | 4 | 4163910428 | github-actions[bot] | `<!-- PR_STATUS_DASHBOARD_v1 -->` | **Update in-place** | Every push |
 | 5 | 4163918162 | github-actions[bot] | `<!-- pr-followup-prompt-generated -->` | **Post once** | PR open |
 | 6 | 4163920994 | mbaetiong (bot) | `<!-- ci-rescue:3835:c981c3090ce1 -->` | **New per commit** | Gate failure |
-| 7 | 4163937524 | mbaetiong (bot) | `<!-- ci-rescue:3835 -->` | **Append  sections** | CI failure |
+| 7 | 4163937524 | mbaetiong (bot) | `<!-- ci-rescue:3835 -->` | **Append sections** | CI failure |
 | 8 | 4163939436 | mbaetiong (bot) | `<!-- ci-rescue-rca:fc3dbc13cf96 -->` | **New per SHA** | ci_rescue.py RCA |
 | 9 | 4163969408 | github-actions[bot] | `<!-- root-org-validation-v1 -->` | **Update in-place** | Every push |
 | 10 | 4163984395 | Copilot | _(reply, no marker)_ | **Reply thread** | Agent response |
@@ -54,7 +54,7 @@ Every push to a PR branch on `0D_base_` triggers a cascade of automated comment-
 | 14 | 4164436067 | mbaetiong (bot) | `<!-- copilot-escalation:3835 -->` | **Update in-place** | Self-healing exhausted |
 | 15 | 4164438333 | mbaetiong (bot) | `<!-- ci-rescue:3835:f39376a3d393 -->` | **New per commit** | Gate failure |
 | 16 | 4164723247 | Copilot | _(reply, no marker)_ | **Reply thread** | Agent response |
-| 17 | 4164732123 | github-actions[bot] | ️ **NONE** | **New (no dedup)** | agent-file-size-gate |
+| 17 | 4164732123 | github-actions[bot] | **NONE** | **New (no dedup)** | agent-file-size-gate |
 | 18 | 4164732217 | github-actions[bot] | `<!-- BRANCH_REBASE_RESOLVED -->` | **Post once** | Rebase complete |
 | 19 | 4164733818 | mbaetiong (bot) | `<!-- ci-rescue:3835:4165e99e2b65 -->` | **New per commit** | Gate failure |
 | 20 | 4164735380 | mbaetiong (bot) | `<!-- ci-rescue:3835:fb16ec416f1c -->` | **New per commit** | Gate failure |
@@ -69,41 +69,63 @@ Every push to a PR branch on `0D_base_` triggers a cascade of automated comment-
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing  Git Push to 0D_base_, comment-review-gate.yml\nUpdates #4163909231 in-place\nScans for unaddressed blocking comments'}}%%
+
 flowchart TD
+
     PUSH[ Git Push to 0D_base_] --> TRIGGERS
 
     TRIGGERS --> CRG[comment-review-gate.yml\nUpdates #4163909231 in-place\nScans for unaddressed blocking comments]
+
     TRIGGERS --> CPF[cognitive-preflight.yml\nPosts NEW comment per SHA\n#4163909656]
+
     TRIGGERS --> DASH[PR Status Dashboard\nUpdates #4163910428 in-place]
+
     TRIGGERS --> ROOT[root-org-validation.yml\nUpdates #4163969408 in-place]
+
     TRIGGERS --> AAD[agent-auth-delegation.yml\nInjects WEC block if missing]
 
     CRG --> |"Finds unaddressed blocking comment"| CRFAIL[ CI Rescue Comment Review Gate Failed\nNEW comment per commit SHA\n<!-- ci-rescue:PR:SHA -->]
+
     CRG --> |"All addressed"| CRPASS[ Gate passes — no new comment]
 
     CRFAIL --> |"Copilot replies to all blocking items"| CRPASS
+
     CRFAIL --> |"No reply after N minutes"| ESCALATE[ Self-Healing Escalation\nUpdates #4164436067 in-place\n<!-- copilot-escalation:PR -->]
 
     WORKFLOW_RUN[Workflow Run Completes] --> VMATCH{Pattern matched?}
+
     VMATCH --> |"Known pattern"| CIRESCUE[CI Rescue @copilot Fix Required\nAppends  section to #4163937524\n<!-- ci-rescue:PR -->]
+
     VMATCH --> |"Unknown pattern / RCA"| RCA[RCA comment NEW per SHA\n<!-- ci-rescue-rca:SHA -->]
+
     VMATCH --> |"coverage-timeout"| ESCALATE
 
     AGENT_SESSION[Copilot Agent Session Completes] --> SESDONE[copilot-agent-session-done.yml]
+
     SESDONE --> PREFLIGHT[preflight-autofix job\nRuns session_wrapup_autofix.py --fix-all\nREQ-4/5/6 + WEC]
+
     PREFLIGHT --> AUTOPOST{Auto-Post checkbox\nchecked?}
+
     AUTOPOST --> |"Yes"| REVIEW[@copilot+claude-sonnet-4.6 review]
+
     AUTOPOST --> |"No"| RETRIGGER{Unanswered rescue\ncomment?}
+
     RETRIGGER --> |"Yes"| REPOST[Re-post rescue trigger\n<!-- session-done-retrigger -->]
+
     RETRIGGER --> |"No"| SKIP[Skip — no comment posted]
 
     SESDONE --> AUTOAPPROVE{auto-approve-workflows\nchecked in WEC?}
+
     AUTOAPPROVE --> |"Yes"| APPROVEAPI[GET pending runs for HEAD SHA\nPOST /approve for each\nStatus to GITHUB_STEP_SUMMARY]
+
     APPROVEAPI --> QUEUEHYGIENE[PR-targeted queue hygiene\nRemove stale Copilot 👀 reactions\nwhen elevated token permits]
+
     AUTOAPPROVE --> |"No"| NOAPPROVE[Skip approval]
 
     AGENTFILESIZE[agent-file-size-gate.yml\nNo HTML marker ️] --> FSGATE{File > 30,000 chars?}
+
     FSGATE --> |"Yes"| FSFAIL[ Agent File Size Gate FAILED\nNEW comment — no dedup marker]
+
     FSGATE --> |"No"| FSPASS[ Pass — no comment]
 
     PREMERGE[pre-merge-validation.yml] --> PMSUM[Updates #4164144682 in-place\n<!-- pre-merge-validation-summary -->]
@@ -117,6 +139,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "WEC Block Sources (writes)", ".github/PULL_REQUEST_TEMPLATE.md\n.github/pull_request_template.md\nInitial block on PR creation"'}}%%
+
 flowchart LR
     subgraph WEC_SOURCES["WEC Block Sources (writes)"]
         TEMPLATE[".github/PULL_REQUEST_TEMPLATE.md\n.github/pull_request_template.md\nInitial block on PR creation"]
@@ -136,12 +159,19 @@ flowchart LR
     end
 
     TEMPLATE -->|"PR creation"| WEC_BLOCK[(WEC Block in PR Body)]
+
     AAD_INJ -->|"On push if absent"| WEC_BLOCK
+
     WRAPUP -->|"Post-session restore"| WEC_BLOCK
+
     WEC_BLOCK -->|"Read"| EXECGATE
+
     WEC_BLOCK -->|"Read"| SESDONE_R
+
     WEC_BLOCK -->|"Read"| COSTGATE
+
     RPTPROG -->|"Overwrites PR body"| STRIP[WEC Stripped ️]
+
     STRIP -->|"Triggers AAD re-inject\nor next wrapup restore"| WEC_BLOCK
 ```
 
@@ -149,19 +179,21 @@ flowchart LR
 
 ## Per-Comment Analysis
 
-### ️ Issue 1: Comment Review Gate — New Comment per Commit (vs Update-in-Place)
+### Issue 1: Comment Review Gate — New Comment per Commit (vs Update-in-Place)
 
-**Affected comments:** 4163920994, 4164037611, 4164438333, 4164733818, 4164735380, 4164738447, 4164877140  
+**Affected comments:** 4163920994, 4164037611, 4164438333, 4164733818, 4164735380, 4164738447, 4164877140
 **HTML marker pattern:** `<!-- ci-rescue:PR:COMMIT_SHA -->` — **unique per commit SHA**
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: ci'}}%%
+
 sequenceDiagram
     participant P as Push (commit SHA-N)
     participant CRG as comment-review-gate.yml
     participant GH as GitHub PR
 
     P->>CRG: Trigger
+
     CRG->>GH: Search for comment with marker <!-- ci-rescue:3835:SHA-N -->
     Note over CRG,GH: SHA is new → no existing comment found
     CRG->>GH: POST new comment (comment spam!)
@@ -174,19 +206,26 @@ sequenceDiagram
 
 ---
 
-### ️ Issue 2: Agent File Size Gate — No HTML Dedup Marker
+### Issue 2: Agent File Size Gate — No HTML Dedup Marker
 
-**Affected comment:** 4164732123  
-**HTML marker:**  **NONE**
+**Affected comment:** 4164732123
+**HTML marker:** **NONE**
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing agent-file-size-gate.yml, POST new comment\nno dedup marker'}}%%
+
 flowchart LR
+
     PUSH --> FSGATE[agent-file-size-gate.yml]
+
     FSGATE --> |"> 30,000 chars"| POST_NEW[POST new comment\nno dedup marker]
+
     POST_NEW --> |"Next push still fails"| POST_NEW2[POST another new comment]
+
     POST_NEW2 --> SPAM[Comment spam]
+
     POST_NEW --> CRG_BLOCK[Comment Review Gate\nfinds unaddressed comment\nbut cannot match by marker]
+
     CRG_BLOCK --> CRFAIL[ Gate fails\nCopilot must reply manually]
 ```
 
@@ -194,17 +233,22 @@ flowchart LR
 
 ---
 
-### ️ Issue 3: Cognitive Pre-flight — New Comment per SHA
+### Issue 3: Cognitive Pre-flight — New Comment per SHA
 
-**Affected comment:** 4163909656  
+**Affected comment:** 4163909656
 **HTML marker:** `<!-- cognitive-preflight-checklist -->` (same marker every time)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Push SHA-1, POST comment with marker'}}%%
+
 flowchart TD
+
     PUSH1[Push SHA-1] --> CPF1[POST comment with marker]
+
     PUSH2[Push SHA-2] --> CPF2{Find existing comment\nwith same marker?}
+
     CPF2 --> |"Yes → update"| UPDATE[ Updates in-place - correct]
+
     CPF2 --> |"But SHA in title changes"| CONFUSION[Checklist shows OLD SHA]
 ```
 
@@ -212,18 +256,18 @@ flowchart TD
 
 ---
 
-###  Consistent Patterns (no issues)
+### Consistent Patterns (no issues)
 
 | Comment | Update Strategy | Assessment |
 |---------|----------------|------------|
-| PR Status Dashboard | Update in-place |  Correct |
-| Cost Check | Update in-place |  Correct |
-| Pre-Merge Validation Summary | Update in-place |  Correct |
-| Self-Healing Escalation | Update in-place (per PR) |  Correct |
-| CI Rescue @copilot Fix | Append  sections |  Correct |
-| Session Gate Queued | Update in-place |  Correct |
-| Branch Rebase Resolved | Post once (idempotent) |  Correct |
-| Follow-up Prompt Generated | Post once |  Correct |
+| PR Status Dashboard | Update in-place | Correct |
+| Cost Check | Update in-place | Correct |
+| Pre-Merge Validation Summary | Update in-place | Correct |
+| Self-Healing Escalation | Update in-place (per PR) | Correct |
+| CI Rescue @copilot Fix | Append sections | Correct |
+| Session Gate Queued | Update in-place | Correct |
+| Branch Rebase Resolved | Post once (idempotent) | Correct |
+| Follow-up Prompt Generated | Post once | Correct |
 
 ---
 
@@ -231,6 +275,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " OVERLAP 1: Three separate CI rescue channels", "ci-rescue:3835 — @copilot Fix Required\nAppends  sections per failure"'}}%%
+
 flowchart TD
     subgraph OVERLAP_1[" OVERLAP 1: Three separate CI rescue channels"]
         CR1["ci-rescue:3835 — @copilot Fix Required\nAppends  sections per failure"]
@@ -240,6 +285,7 @@ flowchart TD
     end
 
     subgraph CONSOLIDATE_1[" PROPOSED: Single CI Rescue Dashboard"]
+
         UNIFIED["<!-- ci-rescue:PR --> (single comment)\n§1 @copilot Fix Required (auto-append)\n§2 Comment Review Gate status (update)\n§3 RCA section (update when available)\n§4 Self-Healing Escalation (update)"]
     end
 
@@ -286,13 +332,13 @@ flowchart TD
 
 | Overlap | Severity | Action | Effort |
 |---------|----------|--------|--------|
-| 3× CI rescue comment channels |  High | Unify into single `<!-- ci-rescue:PR -->` comment with sections | Medium |
-| REQ-4/5 detection in 3 workflows |  High | Route all through `session_wrapup_autofix.py --check` composite action | Medium |
-| Agent File Size Gate has no marker |  High | Add `<!-- agent-file-size-gate -->` marker + update-in-place | Low |
-| Comment Review Gate creates per-SHA comments |  Medium | Change marker to PR-scoped, update-in-place | Low |
-| Cognitive Pre-flight SHA staleness |  Low | Add "last updated SHA" field to in-place update | Low |
-| WEC injection in 3 places |  By Design | Keep — defense-in-depth against report_progress stripping | None |
-| Cost governance dual-presence |  By Design | Keep both — different purposes | None |
+| 3× CI rescue comment channels | High | Unify into single `<!-- ci-rescue:PR -->` comment with sections | Medium |
+| REQ-4/5 detection in 3 workflows | High | Route all through `session_wrapup_autofix.py --check` composite action | Medium |
+| Agent File Size Gate has no marker | High | Add `<!-- agent-file-size-gate -->` marker + update-in-place | Low |
+| Comment Review Gate creates per-SHA comments | Medium | Change marker to PR-scoped, update-in-place | Low |
+| Cognitive Pre-flight SHA staleness | Low | Add "last updated SHA" field to in-place update | Low |
+| WEC injection in 3 places | By Design | Keep — defense-in-depth against report_progress stripping | None |
+| Cost governance dual-presence | By Design | Keep both — different purposes | None |
 
 ---
 
@@ -300,6 +346,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Current WEC Block (S259)", " Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"'}}%%
+
 flowchart TD
     subgraph CURRENT_WEC["Current WEC Block (S259)"]
         V[" Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"]
@@ -322,12 +369,12 @@ flowchart TD
 
 | Workflow | Add to WEC? | Reason |
 |---------|------------|--------|
-| `cognitive-preflight.yml` |  Consider | Pre-flight checks map to REQ-4/5 — Copilot should confirm they ran |
-| `root-org-validation.yml` |  Consider | Fires every push — could be gated for PRs that don't touch root |
-| `copilot-iterative-self-healing.yml` |  Yes | Controls self-healing loop — Copilot should be able to disable it per session |
-| `workflow-execution-gate.yml` |  Yes | The gate itself should be self-describing in the WEC |
-| `comment-review-gate.yml` |  Already present | — |
-| `agent-file-size-gate.yml` |  Consider | Could allow Copilot to acknowledge the fix was applied |
+| `cognitive-preflight.yml` | Consider | Pre-flight checks map to REQ-4/5 — Copilot should confirm they ran |
+| `root-org-validation.yml` | Consider | Fires every push — could be gated for PRs that don't touch root |
+| `copilot-iterative-self-healing.yml` | Yes | Controls self-healing loop — Copilot should be able to disable it per session |
+| `workflow-execution-gate.yml` | Yes | The gate itself should be self-describing in the WEC |
+| `comment-review-gate.yml` | Already present | — |
+| `agent-file-size-gate.yml` | Consider | Could allow Copilot to acknowledge the fix was applied |
 
 ---
 
@@ -335,6 +382,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing x, x'}}%%
+
 sequenceDiagram
     participant M as Maintainer
     participant PR as PR Body (WEC)
@@ -346,6 +394,7 @@ sequenceDiagram
     M->>PR: Check [x] auto-approve-workflows in WEC
     CA->>CA: Completes work, pushes commits
     Note over CA: "Copilot finished work on behalf of mbaetiong"
+
     CA-->>SD: workflow_run completed trigger fires
     SD->>SD: preflight-autofix job → --fix-all
     SWA->>SWA: fix_accountability_report (REQ-4)
@@ -353,11 +402,14 @@ sequenceDiagram
     SWA->>SWA: fix_manifest_baseline (REQ-6)
     SWA->>SWA: fix_pr_body_checkboxes (WEC restore)
     SD->>PR: Read PR body → check auto-approve-workflows checkbox
+
     PR-->>SD: [x] auto-approve-workflows = TRUE
     SD->>GH: GET /actions/runs?head_sha=HEAD&status=action_required
+
     GH-->>SD: [run_id_1, run_id_2, ...]
     SD->>GH: POST /actions/runs/run_id_1/approve
     SD->>GH: POST /actions/runs/run_id_2/approve
+
     GH-->>SD: 204 No Content (approved)
     SD->>SD: Write approval summary to GITHUB_STEP_SUMMARY
 ```
@@ -368,6 +420,7 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Triggers → session_wrapup_autofix.py --fix-all", "copilot-agent-session-done.yml\npreflight-autofix job (always)"'}}%%
+
 flowchart TD
     subgraph TRIGGERS["Triggers → session_wrapup_autofix.py --fix-all"]
         T1["copilot-agent-session-done.yml\npreflight-autofix job (always)"]
@@ -390,8 +443,11 @@ flowchart TD
     end
 
     TRIGGERS --> FIXES
+
     FIXES --> GUARDS
+
     GUARDS --> COMMIT["git add + git commit [skip ci]\ngit push HEAD:branch"]
+
     COMMIT --> RESULT[" All compliance gates satisfied\nPR body WEC restored\nNext CI scan passes"]
 ```
 
@@ -472,6 +528,7 @@ pre-commit run --all-files
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title CI Failure Distribution (PR #3835 / 0D_base_)
     "PR Comment Review Gate" : 20
     "Agent Token Delegation (REQ-4/5)" : 14
@@ -488,13 +545,13 @@ pie title CI Failure Distribution (PR #3835 / 0D_base_)
 
 | Hook | Status | Cause | Fix Applied |
 |------|--------|-------|-------------|
-| `📏 Agent file size limit` |  FAIL (commit `4165e99e`) | `cognitive-brain-manager.md` = 31,983 chars |  S258 trimmed to 29,516 chars |
-| ` Sync tracked files` |  FAIL (commit `4165e99e`) | `.secrets.baseline` hash `7db0ecdcebb...` stale; manifest changed to `ab893648...` |  S259 `fix_manifest_baseline()` + baseline patched |
-| Both above |  PASS (current HEAD) | S258+S259 fixes applied |  Verified locally |
+| ` Agent file size limit` | FAIL (commit `4165e99e`) | `cognitive-brain-manager.md` = 31,983 chars | S258 trimmed to 29,516 chars |
+| ` Sync tracked files` | FAIL (commit `4165e99e`) | `.secrets.baseline` hash `7db0ecdcebb...` stale; manifest changed to `ab893648...` | S259 `fix_manifest_baseline()` + baseline patched |
+| Both above | PASS (current HEAD) | S258+S259 fixes applied | Verified locally |
 
 ### Agent Token Delegation Root Causes (14 failures)
 
-All failures are ` Cognitive Pre-flight Check → Verify Accountability Report updated in last commit`.
+All failures are ` Cognitive Pre-flight Check Verify Accountability Report updated in last commit`.
 **Pattern:** `session_wrapup_autofix.py --fix-all` now runs on EVERY session completion (not just when
 Auto-Post checkbox is checked), covering REQ-4/5/6 + WEC in a single call.
 

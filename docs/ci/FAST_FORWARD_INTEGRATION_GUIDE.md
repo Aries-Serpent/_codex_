@@ -6,15 +6,15 @@
 
 ## Overview
 
-This document explains how to use **fast-forward-safe-files.yml** and **auto-approve-workflows.yml** together to enable **immediate deployment of discussion-posting workflows** from PR → main, without waiting for full PR merge.
+This document explains how to use **fast-forward-safe-files.yml** and **auto-approve-workflows.yml** together to enable **immediate deployment of discussion-posting workflows** from PR main, without waiting for full PR merge.
 
 ## The Problem It Solves
 
 GitHub Actions workflows only take effect **from the default branch (main)**. When you define a new workflow (like `post-phase-4-5-to-discussion.yml`) in a PR:
 
--  The `workflow_dispatch` button is **inactive** on the PR branch
--  Schedule triggers are **inert** until the file lands on main
--  The workflow can only run **after the PR is fully merged**
+- The `workflow_dispatch` button is **inactive** on the PR branch
+- Schedule triggers are **inert** until the file lands on main
+- The workflow can only run **after the PR is fully merged**
 
 **Result**: Discussion posts are delayed until PR merge, slowing down communication.
 
@@ -78,9 +78,9 @@ Once the PR is ready, manually trigger the fast-forward:
 1. Go to: https://github.com/Aries-Serpent/_codex_/actions/workflows/fast-forward-safe-files.yml
 2. Click **"Run workflow"** button
 3. Fill in:
-   - **PR number**: `3856` (or your PR number)
-   - **dry_run**: `false` (to apply for real)
-   - **merge_mode**: `create-pr` (default — safe)
+ - **PR number**: `3856` (or your PR number)
+ - **dry_run**: `false` (to apply for real)
+ - **merge_mode**: `create-pr` (default — safe)
 4. Click the green **"Run workflow"** button
 
 **Via GitHub CLI:**
@@ -236,7 +236,7 @@ gh workflow run fast-forward-safe-files.yml \
   -f dry_run=false
 ```
 
-️ **Use with caution** — Commits directly to main, bypassing PR review.
+ **Use with caution** — Commits directly to main, bypassing PR review.
 
 ## References
 

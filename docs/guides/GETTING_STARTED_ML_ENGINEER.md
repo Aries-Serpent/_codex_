@@ -3,10 +3,10 @@
 **Version:** v0.2.1
 
 **Last Updated: 2026-07-08
-**Target Audience:** ML engineers, MLOps professionals, production ML specialists  
+**Target Audience:** ML engineers, MLOps professionals, production ML specialists
 **Estimated Time:** 20-25 minutes to production deployment
 
-##  Your Goal
+## Your Goal
 
 Deploy, monitor, and scale ML models in production with Production reliability, versioning, and observability. This guide covers the full ML lifecycle from model registration to canary deployment.
 
@@ -569,7 +569,7 @@ kubectl get hpa  # Monitor
 
 ---
 
-##  Next Steps
+## Next Steps
 
 - **CI/CD Pipeline**: [GitHub Actions Setup](./CI_CD_SETUP.md)
 - **Kubernetes Guide**: [K8s Deployment](../admin/KUBERNETES_DEPLOYMENT.md)

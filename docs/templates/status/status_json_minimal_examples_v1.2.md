@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Schema Example Curator], [Secondary: Reviewer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Schema Example Curator], [Secondary: Reviewer] Energy: 5
 
 Purpose
 - Provide minimal but valid JSON snippets for common authoring scenarios.

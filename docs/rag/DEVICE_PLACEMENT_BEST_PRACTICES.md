@@ -1,9 +1,9 @@
 # RAG Module Device Placement Best Practices
 **Version:** v0.2.1
 
-**Module**: `src/codex/rag/`  
-**Last Updated**: 2026-06-22  
-**Status**: Production Guidelines  
+**Module**: `src/codex/rag/`
+**Last Updated**: 2026-06-22
+**Status**: Production Guidelines
 
 ---
 
@@ -13,7 +13,7 @@ This document provides best practices for device placement in RAG (Retrieval-Aug
 
 ---
 
-## ️ Critical: Meta Tensor Compatibility
+## Critical: Meta Tensor Compatibility
 
 ### The Problem
 
@@ -31,8 +31,8 @@ For complete documentation, see: `.codex/CODING_STANDARDS_ML_DEVICE_PLACEMENT.md
 
 ---
 
-**Enforcement**: MANDATORY for all RAG modules  
-**Linter**: `scripts/lint/check_device_placement.py`  
+**Enforcement**: MANDATORY for all RAG modules
+**Linter**: `scripts/lint/check_device_placement.py`
 **Tests**: `tests/rag/test_device_placement.py`
 
 Last updated: 2026-06-22

@@ -1,19 +1,19 @@
-# [How-to]: Tokenizer Migration & Deprecation Shim  
+# [How-to]: Tokenizer Migration & Deprecation Shim
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Context
 - Consolidate legacy tokenizer entry points under a stable API while warning on legacy access.
 
 Behavior
 - src/tokenization/api.py re-exports:
-  - HFTokenizerAdapter
-  - SentencePieceTokenizer
+ - HFTokenizerAdapter
+ - SentencePieceTokenizer
 - Legacy alias:
-  - legacy_tokenizer → emits DeprecationWarning on use.
+ - legacy_tokenizer emits DeprecationWarning on use.
 
 Usage
 ```python

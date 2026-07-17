@@ -10,12 +10,12 @@ This guide documents the entry-point based plugin system for Codex ML. The syste
 
 ## Features
 
- **Entry-point based discovery** - Automatic plugin detection via setuptools entry points  
- **Plugin validation** - Version compatibility and dependency checking  
- **Multiple plugin types** - Support for tokenizers, models, datasets, metrics, trainers, and more  
- **Lifecycle management** - Initialize, execute, and cleanup hooks  
- **CLI management tool** - Discover, list, validate, and inspect plugins  
- **Graceful error handling** - Failed plugins don't break the system  
+ **Entry-point based discovery** - Automatic plugin detection via setuptools entry points
+ **Plugin validation** - Version compatibility and dependency checking
+ **Multiple plugin types** - Support for tokenizers, models, datasets, metrics, trainers, and more
+ **Lifecycle management** - Initialize, execute, and cleanup hooks
+ **CLI management tool** - Discover, list, validate, and inspect plugins
+ **Graceful error handling** - Failed plugins don't break the system
 
 ## Quickstart
 
@@ -453,27 +453,27 @@ plugin.initialize()
 2026-07-13
 
 ### Deliverables Completed
- Entry-point plugin system (`src/codex_ml/plugins/entry_points.py`)  
- Plugin discovery and validation  
- CLI management tool (`scripts/manage_plugins.py`)  
- Comprehensive tests (`tests/plugins/test_entry_points.py`)  
- Documentation (this file)  
- Example plugin implementations  
+ Entry-point plugin system (`src/codex_ml/plugins/entry_points.py`)
+ Plugin discovery and validation
+ CLI management tool (`scripts/manage_plugins.py`)
+ Comprehensive tests (`tests/plugins/test_entry_points.py`)
+ Documentation (this file)
+ Example plugin implementations
 
 ### Features Implemented
- Automatic plugin discovery via entry points  
- Version compatibility checking  
- Dependency validation  
- Multiple plugin types (8 groups)  
- Lifecycle management (initialize, execute, cleanup)  
- Error handling and graceful degradation  
- CLI tools for management  
+ Automatic plugin discovery via entry points
+ Version compatibility checking
+ Dependency validation
+ Multiple plugin types (8 groups)
+ Lifecycle management (initialize, execute, cleanup)
+ Error handling and graceful degradation
+ CLI tools for management
 
 ### Integration Points
- Works with existing plugin infrastructure  
- Compatible with programmatic plugin registry  
- Supports multiple entry point groups  
- Extensible for future plugin types  
+ Works with existing plugin infrastructure
+ Compatible with programmatic plugin registry
+ Supports multiple entry point groups
+ Extensible for future plugin types
 
 ### Next Steps
 All 4 deferred items complete! (D4, D3, D1, D2)

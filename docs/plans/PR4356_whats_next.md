@@ -5,57 +5,57 @@
 ## Table of Contents
 
 - [ Completed This Session (S867)](#-completed-this-session-s867)
-  - [Problem-Statement Diffs Applied](#problem-statement-diffs-applied)
-  - [Code Review Fixes (all 7 across 2 parallel_validation rounds)](#code-review-fixes-all-7-across-2-parallel_validation-rounds)
-  - [Infrastructure & Docs Added](#infrastructure--docs-added)
+ - [Problem-Statement Diffs Applied](#problem-statement-diffs-applied)
+ - [Code Review Fixes (all 7 across 2 parallel_validation rounds)](#code-review-fixes-all-7-across-2-parallel_validation-rounds)
+ - [Infrastructure & Docs Added](#infrastructure--docs-added)
 - [ CI Results (HEAD `047bf03b` — S873)](#-ci-results-head-047bf03b--s873)
 - [ Pending (Post-Merge / Next Session)](#-pending-post-merge--next-session)
-  - [Variables — Post PR comment once merged](#variables--post-pr-comment-once-merged)
-  - [Webhooks — Post PR comment once merged](#webhooks--post-pr-comment-once-merged)
-  - [Admin-Only Gaps](#admin-only-gaps)
+ - [Variables — Post PR comment once merged](#variables--post-pr-comment-once-merged)
+ - [Webhooks — Post PR comment once merged](#webhooks--post-pr-comment-once-merged)
+ - [Admin-Only Gaps](#admin-only-gaps)
 - [ Session Metrics](#-session-metrics)
-  - [Infrastructure & Docs Added](#infrastructure--docs-added)
-  - [Security / Token Fixes](#security--token-fixes)
-  - [Code Review Fixes (post-parallel_validation)](#code-review-fixes-post-parallel_validation)
+ - [Infrastructure & Docs Added](#infrastructure--docs-added)
+ - [Security / Token Fixes](#security--token-fixes)
+ - [Code Review Fixes (post-parallel_validation)](#code-review-fixes-post-parallel_validation)
 - [ In-Flight (CI Running Now)](#-in-flight-ci-running-now)
 - [ Pending (Next Session or Post-Merge)](#-pending-next-session-or-post-merge)
-  - [Variables — Trigger with PR comment](#variables--trigger-with-pr-comment)
-  - [Webhooks — Trigger with PR comment](#webhooks--trigger-with-pr-comment)
-  - [Admin-Only Gaps (require token scope changes — T-02, T-03)](#admin-only-gaps-require-token-scope-changes--t-02-t-03)
+ - [Variables — Trigger with PR comment](#variables--trigger-with-pr-comment)
+ - [Webhooks — Trigger with PR comment](#webhooks--trigger-with-pr-comment)
+ - [Admin-Only Gaps (require token scope changes — T-02, T-03)](#admin-only-gaps-require-token-scope-changes--t-02-t-03)
 - [ Session Metrics](#-session-metrics)
 - [ Completed This Session (S868)](#-completed-this-session-s868)
-  - [Self-Healing CI Response](#self-healing-ci-response)
-  - [Documentation Sweep](#documentation-sweep)
+ - [Self-Healing CI Response](#self-healing-ci-response)
+ - [Documentation Sweep](#documentation-sweep)
 - [�� CI Results (Latest HEAD `95c55bd`)](#-ci-results-latest-head-95c55bd)
-  - [CodeQL / Security Alerts](#codeql--security-alerts)
+ - [CodeQL / Security Alerts](#codeql--security-alerts)
 - [ Pending (Next Session or Post-Merge)](#-pending-next-session-or-post-merge)
-  - [Variables — Trigger with PR comment](#variables--trigger-with-pr-comment)
-  - [Webhooks — Trigger with PR comment](#webhooks--trigger-with-pr-comment)
-  - [Docs Consolidation (planned — next session)](#docs-consolidation-planned--next-session)
-  - [Admin-Only Gaps](#admin-only-gaps)
+ - [Variables — Trigger with PR comment](#variables--trigger-with-pr-comment)
+ - [Webhooks — Trigger with PR comment](#webhooks--trigger-with-pr-comment)
+ - [Docs Consolidation (planned — next session)](#docs-consolidation-planned--next-session)
+ - [Admin-Only Gaps](#admin-only-gaps)
 - [ Session Metrics (S867 + S868)](#-session-metrics-s867--s868)
 - [ Completed This Session (S870 — Issue #4360 Triage)](#-completed-this-session-s870--issue-4360-triage)
-  - [Issue #4360 CI Failure Patterns Resolved](#issue-4360-ci-failure-patterns-resolved)
-  - [Docs Archive](#docs-archive)
-  - [Updated Files](#updated-files)
-- [ Final Session Metrics (S867 → S870)](#-final-session-metrics-s867--s870)
+ - [Issue #4360 CI Failure Patterns Resolved](#issue-4360-ci-failure-patterns-resolved)
+ - [Docs Archive](#docs-archive)
+ - [Updated Files](#updated-files)
+- [ Final Session Metrics (S867 S870)](#-final-session-metrics-s867--s870)
 - [S871 Final — 2026-05-08T08:19Z](#s871-final--2026-05-08t0819z)
 - [S872 Final Status — 2026-05-08T08:21Z](#s872-final-status--2026-05-08t0821z)
-  - [Ruff E501 Fix](#ruff-e501-fix)
-  - [8/8 Review Threads Replied](#88-review-threads-replied)
-  - [Remaining CI on HEAD `91763033f`](#remaining-ci-on-head-91763033f)
-  - [Post-Merge Checklist](#post-merge-checklist)
+ - [Ruff E501 Fix](#ruff-e501-fix)
+ - [8/8 Review Threads Replied](#88-review-threads-replied)
+ - [Remaining CI on HEAD `91763033f`](#remaining-ci-on-head-91763033f)
+ - [Post-Merge Checklist](#post-merge-checklist)
 
 **Last Updated: 2026-06-22
 
 > **PR:** [#4356 — Clarify webhook receiver URL format + autonomous privilege architecture](https://github.com/Aries-Serpent/_codex_/pull/4356)
-> **Session:** S867→S873 | **Date:2026-07-13
-> **Status:**  CI passing (core gates) · **99/100 merge readiness** · 39/40 checks passing
-> **HEAD:** `047bf03b` · **Review comments:** 8/8 resolved  · **CodeQL:** 0 alerts 
+> **Session:** S867S873 | **Date:2026-07-13
+> **Status:** CI passing (core gates) · **99/100 merge readiness** · 39/40 checks passing
+> **HEAD:** `047bf03b` · **Review comments:** 8/8 resolved · **CodeQL:** 0 alerts
 
 ---
 
-##  Completed This Session (S867)
+## Completed This Session (S867)
 
 ### Problem-Statement Diffs Applied
 | File | Fix |
@@ -82,33 +82,33 @@
 | `docs/plans/PR4356_whats_next.md` | This file — living status tracker |
 | `docs/plans/PR4356_session_diagram.md` | Full session mermaid flow |
 | `scripts/ci/rate_limit_orchestrator.py` | Rate-limit aware dedup + cap + backoff; no dry-run default |
-| `.codex/pending_var_updates.json` | 10 variables in flat format → `@agent-var-writer apply` |
+| `.codex/pending_var_updates.json` | 10 variables in flat format `@agent-var-writer apply` |
 | `.codex/webhook_config.json` | 4 hooks `active=true`, `status=ready-to-deploy` |
 | `.github/workflows/agent-var-writer.yml` | `ALLOWED_VAR_NAMES` +3 new variables |
 | `.github/workflows/workflow-link-validation.yml` | T-01: canonical token chain |
 
 ---
 
-##  CI Results (HEAD `047bf03b` — S873)
+## CI Results (HEAD `047bf03b` — S873)
 
 | Workflow | Result |
 |----------|--------|
-| Resilient Validation Suite |  success |
-| Reference Integrity + Agent Size Gate |  success |
-| Deferral Language Gate |  success |
-| PR Comment Review Gate |  success |
-| Workflow Execution Gate |  success |
-| Auto-Approve Pending Workflow Runs |  success |
-| Validation Pipeline |  success |
-| Security Scanning Suite |  success |
-| CodeQL Analysis |  success (0 alerts) |
-| Auto-Fix PR Check |  success |
-| E→D Transition Readiness |  success (5/5) |
-| QA Walkthrough |  success |
-| Branch Rebase Gate |  up-to-date |
-| Rust-Python Hybrid Swarm CI/CD | ️ startup_failure (pre-existing — requires Rust runner) |
-| Progressive Validation Suite | ️ startup_failure (pre-existing — runner infra) |
-| Data Quality & Determinism Suite | ️ startup_failure (pre-existing — runner infra) |
+| Resilient Validation Suite | success |
+| Reference Integrity + Agent Size Gate | success |
+| Deferral Language Gate | success |
+| PR Comment Review Gate | success |
+| Workflow Execution Gate | success |
+| Auto-Approve Pending Workflow Runs | success |
+| Validation Pipeline | success |
+| Security Scanning Suite | success |
+| CodeQL Analysis | success (0 alerts) |
+| Auto-Fix PR Check | success |
+| ED Transition Readiness | success (5/5) |
+| QA Walkthrough | success |
+| Branch Rebase Gate | up-to-date |
+| Rust-Python Hybrid Swarm CI/CD | startup_failure (pre-existing — requires Rust runner) |
+| Progressive Validation Suite | startup_failure (pre-existing — runner infra) |
+| Data Quality & Determinism Suite | startup_failure (pre-existing — runner infra) |
 
 > **99/100 merge readiness** · 39/40 checks passing.
 > The 3 `startup_failure` items are pre-existing infrastructure issues unrelated to this PR.
@@ -117,7 +117,7 @@
 
 ---
 
-##  Pending (Post-Merge / Next Session)
+## Pending (Post-Merge / Next Session)
 
 ### Variables — Post PR comment once merged
 ```
@@ -132,28 +132,28 @@
 ### Admin-Only Gaps
 | Gap | Action |
 |-----|--------|
-| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope → enables inline CodeQL in-session |
+| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope enables inline CodeQL in-session |
 | T-02: Set `CODEX_MASTER_KEY_EXPIRY_DATE` | After next token rotation |
 
 ---
 
-##  Session Metrics
+## Session Metrics
 
 | Metric | Value |
 |--------|-------|
 | Sessions | S867–S873 |
-| Diffs applied | 12 / 12  |
+| Diffs applied | 12 / 12 |
 | Code review rounds | 4 |
-| Code review comments resolved | 8 / 8  |
+| Code review comments resolved | 8 / 8 |
 | New files created | 5 |
-| Docs archived | 31 (PHASE0/1/2 → archive/) |
+| Docs archived | 31 (PHASE0/1/2 archive/) |
 | Variables queued | 10 |
 | Webhooks ready-to-deploy | 4 |
-| T-01 gap closed |  |
+| T-01 gap closed | |
 | WEC items armed | 9 |
-| CodeQL alerts | 0 new  |
-| Merge readiness | 99/100  |
-| CI gates passing | 39/40  |
+| CodeQL alerts | 0 new |
+| Merge readiness | 99/100 |
+| CI gates passing | 39/40 |
 
 
 ### Infrastructure & Docs Added
@@ -169,7 +169,7 @@
 ### Security / Token Fixes
 | Fix | Gap Closed |
 |-----|------------|
-| T-01: `workflow-link-validation.yml` checkout token → canonical `CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY \|\| github.token` | Missing `CODEX_BACKUP_KEY` in fallback chain |
+| T-01: `workflow-link-validation.yml` checkout token canonical `CODEX_MASTER_KEY \|\| CODEX_BACKUP_KEY \|\| github.token` | Missing `CODEX_BACKUP_KEY` in fallback chain |
 | Autonomy decision tree rewritten — `COPILOT_AGENT_AUTH_ENABLED=true` is permanent | Removes all human-gate language from docs |
 
 ### Code Review Fixes (post-parallel_validation)
@@ -178,26 +178,26 @@
 | `tests/serving/test_inference_enhanced.py:231` | `isinstance(data["request_count"], int) and >= 0` |
 | `scripts/ci/rate_limit_orchestrator.py:72,74` | `int()` wrapped in try/except with clear error messages |
 | `scripts/ci/rate_limit_orchestrator.py:160` | Backoff exponent capped: `2 ** min(attempt, 6)` |
-| `scripts/ci/rate_limit_orchestrator.py:266,323` | `run_number` fallback `"?"` → `0` (consistent int type) |
+| `scripts/ci/rate_limit_orchestrator.py:266,323` | `run_number` fallback `"?"` `0` (consistent int type) |
 
 ---
 
-##  In-Flight (CI Running Now)
+## In-Flight (CI Running Now)
 
 | Workflow | Status |
 |----------|--------|
-| Validation Pipeline (`validate.yml`) |  in_progress |
-| Resilient Validation Suite |  in_progress |
-| Nox quality gates |  queued |
-| CodeQL SAST analysis |  queued |
-| PR Checks |  in_progress |
-| Agent Registry Validation |  in_progress |
-| Root Organization Validation |  pending |
-| Security Scanning Suite |  in_progress |
+| Validation Pipeline (`validate.yml`) | in_progress |
+| Resilient Validation Suite | in_progress |
+| Nox quality gates | queued |
+| CodeQL SAST analysis | queued |
+| PR Checks | in_progress |
+| Agent Registry Validation | in_progress |
+| Root Organization Validation | pending |
+| Security Scanning Suite | in_progress |
 
 ---
 
-##  Pending (Next Session or Post-Merge)
+## Pending (Next Session or Post-Merge)
 
 ### Variables — Trigger with PR comment
 ```
@@ -218,12 +218,12 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 ### Admin-Only Gaps (require token scope changes — T-02, T-03)
 | Gap | Action |
 |-----|--------|
-| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope in [GitHub PAT settings](https://github.com/settings/tokens) → enables inline CodeQL fetching |
+| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope in [GitHub PAT settings](https://github.com/settings/tokens) enables inline CodeQL fetching |
 | T-02: Set `CODEX_MASTER_KEY_EXPIRY_DATE` variable | Set after next token rotation — `token-expiry-monitor.yml` reads it |
 
 ---
 
-##  Session Metrics
+## Session Metrics
 
 | Metric | Value |
 |--------|-------|
@@ -232,14 +232,14 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 | New docs created | 3 |
 | Variables queued | 10 |
 | Webhooks ready-to-deploy | 4 |
-| T-01 gap closed |  |
+| T-01 gap closed | |
 | WEC items armed | 9 (from 3) |
 | CodeQL alerts | 0 new |
 | Merge readiness | ~90% |
 
 ---
 
-##  Completed This Session (S868)
+## Completed This Session (S868)
 
 ### Self-Healing CI Response
 | Item | Action |
@@ -265,19 +265,19 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 
 | Workflow | Result | Notes |
 |----------|--------|-------|
-| Resilient Validation Suite |  success | Full pytest 4 shards |
-| Reference Integrity + Agent Size Gate |  success | |
-| Deferral Language Gate |  success | |
-| PR Comment Review Gate |  success | 0 unaddressed |
-| Workflow Compliance Audit (actionlint) |  success | |
-| Workflow Execution Gate |  success | WEC parsed & dispatched |
-| Auto-Approve Pending Workflow Runs |  success | |
-| Documentation Link Checker |  success | |
-| Trigger validations on approval |  success | |
-|  PR Cost Check |  success | |
-| `Agent Token Delegation` |  action_required | Pending maintainer approval — not a failure |
-| `Automatic Dependency Submission` | ️ infra-failure | GitHub-managed workflow; transient HTTP 503 — `dependency-submission.yml` already resilient |
-| Rust/Progressive/Data-Quality Suites | ️ startup_failure | Pre-existing — Rust/GPU runner infra; unrelated to this PR |
+| Resilient Validation Suite | success | Full pytest 4 shards |
+| Reference Integrity + Agent Size Gate | success | |
+| Deferral Language Gate | success | |
+| PR Comment Review Gate | success | 0 unaddressed |
+| Workflow Compliance Audit (actionlint) | success | |
+| Workflow Execution Gate | success | WEC parsed & dispatched |
+| Auto-Approve Pending Workflow Runs | success | |
+| Documentation Link Checker | success | |
+| Trigger validations on approval | success | |
+| PR Cost Check | success | |
+| `Agent Token Delegation` | action_required | Pending maintainer approval — not a failure |
+| `Automatic Dependency Submission` | infra-failure | GitHub-managed workflow; transient HTTP 503 — `dependency-submission.yml` already resilient |
+| Rust/Progressive/Data-Quality Suites | startup_failure | Pre-existing — Rust/GPU runner infra; unrelated to this PR |
 
 ### CodeQL / Security Alerts
 | Status | Notes |
@@ -289,7 +289,7 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 
 ---
 
-##  Pending (Next Session or Post-Merge)
+## Pending (Next Session or Post-Merge)
 
 ### Variables — Trigger with PR comment
 ```
@@ -315,12 +315,12 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 ### Admin-Only Gaps
 | Gap | Action |
 |-----|--------|
-| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope → enables inline CodeQL fetching |
+| T-03: `security_events` scope on `CODEX_MASTER_KEY` | Add scope enables inline CodeQL fetching |
 | T-02: Set `CODEX_MASTER_KEY_EXPIRY_DATE` variable | After next token rotation |
 
 ---
 
-##  Session Metrics (S867 + S868)
+## Session Metrics (S867 + S868)
 
 | Metric | Value |
 |--------|-------|
@@ -330,34 +330,34 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 | New docs created | 5 (AUTONOMOUS_PRIVILEGE_ARCHITECTURE, COPILOT_SESSION_HANDOFF_DESIGN, PR4356_*, DOCS_CONSOLIDATION_MAP) |
 | Variables queued | 10 |
 | Webhooks ready-to-deploy | 4 |
-| Token gaps closed | T-01  |
+| Token gaps closed | T-01 |
 | WEC items armed | 9 |
 | CodeQL alerts new | 0 |
 | Merge readiness | 96 / 100 |
 
 ---
 
-##  Completed This Session (S870 — Issue #4360 Triage)
+## Completed This Session (S870 — Issue #4360 Triage)
 
 ### Issue #4360 CI Failure Patterns Resolved
 
 | Pattern (from #4360) | Root Cause | Resolution |
 |----------------------|-----------|------------|
-|  Secrets Baseline Enforcer (5 failures) | `.codex/webhook_config.json` lines 7 & 85 — "Secret Keyword" FP (JSON key names `secret_env`, `WEBHOOK_SECRET`, not actual credentials) |  Classified `is_secret=false` in `.secrets.baseline` |
-| Validation Pipeline Fast Validation | `hook_failures.json` artifact confirms pre-commit failure on OLD commit `f25996a7`; current HEAD is clean | ℹ️ Not a current-HEAD problem |
-| Automatic Dependency Submission (5 failures) | GitHub-managed workflow HTTP 503 infra failure | ℹ️ `dependency-submission.yml` already resilient |
-| Agent Token Delegation cancelled/action_required | Normal gating on new push — not a code failure | ℹ️ Approved by maintainer |
-| `finding-autofix-faa8614c` branch failures | Separate bot-managed branch; unrelated | ℹ️ Different branch |
+| Secrets Baseline Enforcer (5 failures) | `.codex/webhook_config.json` lines 7 & 85 — "Secret Keyword" FP (JSON key names `secret_env`, `WEBHOOK_SECRET`, not actual credentials) | Classified `is_secret=false` in `.secrets.baseline` |
+| Validation Pipeline Fast Validation | `hook_failures.json` artifact confirms pre-commit failure on OLD commit `f25996a7`; current HEAD is clean | ℹ Not a current-HEAD problem |
+| Automatic Dependency Submission (5 failures) | GitHub-managed workflow HTTP 503 infra failure | ℹ `dependency-submission.yml` already resilient |
+| Agent Token Delegation cancelled/action_required | Normal gating on new push — not a code failure | ℹ Approved by maintainer |
+| `finding-autofix-faa8614c` branch failures | Separate bot-managed branch; unrelated | ℹ Different branch |
 
 ### Docs Archive
 - 31 stale PHASE0/1/2 completion reports moved to `docs/plans/archive/`
 - `docs/plans/archive/README.md` created
-- Active plan count: **81 → 50**
+- Active plan count: **81 50**
 
 ### Updated Files
 | File | Change |
 |------|--------|
-| `.secrets.baseline` | `webhook_config.json` lines 7 & 85 → `is_secret=false` |
+| `.secrets.baseline` | `webhook_config.json` lines 7 & 85 `is_secret=false` |
 | `docs/plans/archive/` (31 files) | Phase 0/1/2 historical reports archived |
 | `docs/plans/archive/README.md` | New — archive policy and file catalogue |
 | `CHANGELOG.md` | S870 section |
@@ -366,7 +366,7 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 
 ---
 
-##  Final Session Metrics (S867 → S870)
+## Final Session Metrics (S867 S870)
 
 | Metric | Value |
 |--------|-------|
@@ -378,9 +378,9 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 | Active plan files | 50 (was 81) |
 | Variables queued | 10 |
 | Webhooks ready-to-deploy | 4 |
-| Token gaps closed | T-01  |
+| Token gaps closed | T-01 |
 | CodeQL alerts introduced | 0 |
-| Secrets baseline clean |  |
+| Secrets baseline clean | |
 | Merge readiness | 96–100 / 100 |
 
 ---

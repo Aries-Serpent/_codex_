@@ -12,51 +12,81 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🔔 Trigger Event", "@copilot continue\ncomment posted"'}}%%
+
 flowchart TD
     subgraph TRIGGER["🔔 Trigger Event"]
+
         T1["@copilot continue\ncomment posted"] --> T2[agent-auth-delegation.yml\nfires run]
+
         T2 --> T3[D-00: session_bootstrap.py\n--offline --skip-triage]
+
         T3 --> T4[New SWE agent run\ncreated — in_progress]
     end
 
     subgraph DAEMON[" Concurrent Monitor Daemon  (non-blocking)"]
+
         T4 --> D1["python monitor_run.py\n--run-id RUN_ID\n--daemon --cherry-pick --triage"]
+
         D1 --> D2[launch_daemon\nfork + start_new_session]
+
         D2 --> D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
+
         D2 --> D4[(State file\n.codex/monitor/RUN_ID/state.json\nupdated each poll)]
+
         D2 --> D5[(Log file\n.codex/monitor/RUN_ID/daemon.log)]
+
         D2 --> D6[" Returns PID\nimmediately"]
     end
 
     subgraph PARALLEL["🛠️  Parallel Agent Work  (Loop B — unblocked)"]
+
         D6 --> P1[Edit files\nwrite tests\nupdate docs]
+
         P1 --> P2["python monitor_run.py\n--status RUN_ID\n(non-blocking check)"]
+
         P2 -->|"exit 0\nin_progress"| P1
+
         P2 -->|"exit 5\nsuccess"| INT
+
         P2 -->|"exit 1\nfailure"| FIX
     end
 
     subgraph POLL[" Background Poll Loop  (Loop A — daemon)"]
+
         D4 --> PL1[_poll_loop\nevery 300s]
+
         PL1 -->|in_progress| PL1
+
         PL1 -->|completed| PL2[cherry_pick_delta\nfilter _SKIP_PATTERNS]
+
         PL2 --> PL3[run_triage\nci_triage_repro.sh --json]
+
         PL3 --> PL4[Write final state.json\nremove daemon.pid]
     end
 
     subgraph INT[" Integration  (Loop C)"]
+
         PL4 --> I1["python monitor_run.py\n--wait RUN_ID\n(re-attach + tail log)"]
+
         I1 --> I2[git diff --stat HEAD\norigin/BRANCH]
+
         I2 -->|"no delta"| I4
+
         I2 -->|"delta"| I3[git checkout\norigin/BRANCH -- FILE]
+
         I3 --> I4[bash ci_triage_repro.sh\n7 checks]
+
         I4 --> I5[pre-commit run\n--files CHANGED]
+
         I5 --> I6[report_progress\ncommit + push]
     end
 
     subgraph FIX[" Failure Handling"]
+
         F1[get failed job logs\ngh api .../jobs] --> F2[diagnose root cause]
+
         F2 --> F3[apply fix locally]
+
         F3 --> I4
     end
 ```
@@ -203,10 +233,10 @@ gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}" \
 
 | Output | Meaning | Next step |
 |--------|---------|-----------|
-| `in_progress    null    <timestamp>` | Still running | Wait 5 min, re-poll |
-| `completed    success    <timestamp>` |  Run succeeded — may have pushed commits | → Step 4 |
-| `completed    failure    <timestamp>` |  Run failed | → Step 3 |
-| `completed    skipped    <timestamp>` | Run skipped (no matching trigger) | → Step 4 (no new commits expected) |
+| `in_progress null <timestamp>` | Still running | Wait 5 min, re-poll |
+| `completed success <timestamp>` | Run succeeded — may have pushed commits | Step 4 |
+| `completed failure <timestamp>` | Run failed | Step 3 |
+| `completed skipped <timestamp>` | Run skipped (no matching trigger) | Step 4 (no new commits expected) |
 
 ## Poll loop (bash)
 
@@ -263,9 +293,9 @@ git log --oneline HEAD..origin/${BRANCH}
 
 | Output | Meaning | Next step |
 |--------|---------|-----------|
-| *(empty)* | Run pushed no substantive commits (or only `[skip ci]`) | → Step 5 (validate existing state) |
-| `abc1234 fix: some change` | New substantive commits | → Step 4a (cherry-pick) |
-| `abc1234 chore(auth): write provenance session token [skip ci]` | Auth-only commit | → Inspect then skip or apply |
+| *(empty)* | Run pushed no substantive commits (or only `[skip ci]`) | Step 5 (validate existing state) |
+| `abc1234 fix: some change` | New substantive commits | Step 4a (cherry-pick) |
+| `abc1234 chore(auth): write provenance session token [skip ci]` | Auth-only commit | Inspect then skip or apply |
 
 ## Step 4a — Cherry-pick new substantive commits
 
@@ -496,13 +526,13 @@ parallel because they do not conflict with the agent run's expected output:
 
 | Task | Safe? | Reason |
 |------|-------|--------|
-| Add unit tests for existing functions |  | New file; no conflict |
-| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |  | Append-only; merge trivially |
-| Create new docs (this file) |  | New file; no conflict |
-| Wire new CI step in a workflow |  | Agent run does not touch workflows |
-| Modify files the agent run is likely editing | ️ | Risk of conflict on integration |
-| Modify `.mypy_baseline` | ️ | Agent may also modify; check diff carefully |
-| Merge / rebase |  | Wait until run completes |
+| Add unit tests for existing functions | | New file; no conflict |
+| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | | Append-only; merge trivially |
+| Create new docs (this file) | | New file; no conflict |
+| Wire new CI step in a workflow | | Agent run does not touch workflows |
+| Modify files the agent run is likely editing | | Risk of conflict on integration |
+| Modify `.mypy_baseline` | | Agent may also modify; check diff carefully |
+| Merge / rebase | | Wait until run completes |
 
 ---
 

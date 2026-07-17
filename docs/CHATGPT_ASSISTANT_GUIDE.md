@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Date:2026-07-13
 **Purpose:** Enable ChatGPT Codex Assistant to effectively leverage the repository
 
@@ -43,26 +43,26 @@ Security: 0 vulnerabilities
 ### Core Components
 
 1. **Kubernetes Orchestration** (`manifests/k8s/`)
-   - Base manifests: deployment, service, HPA, resource quotas
-   - Environment overlays: dev, production
-   - Deployment script: `scripts/k8s_deploy.sh`
+ - Base manifests: deployment, service, HPA, resource quotas
+ - Environment overlays: dev, production
+ - Deployment script: `scripts/k8s_deploy.sh`
 
 2. **Feature Store** (`src/codex_ml/features/`)
-   - Core: `feature_store.py` - versioning, caching, materialization
-   - Monitoring: `monitoring.py` - health, freshness tracking
-   - CLI: `src/codex_ml/cli/features.py`
+ - Core: `feature_store.py` - versioning, caching, materialization
+ - Monitoring: `monitoring.py` - health, freshness tracking
+ - CLI: `src/codex_ml/cli/features.py`
 
 3. **Cloud Events** (`src/codex_ml/events/`)
-   - Base: `base.py` - EventType, Event, EventBus
-   - Azure: `azure_events.py` - Event Grid integration
-   - AWS: `aws_events.py` - EventBridge integration
-   - Training: `training/event_integration.py` - lifecycle events
+ - Base: `base.py` - EventType, Event, EventBus
+ - Azure: `azure_events.py` - Event Grid integration
+ - AWS: `aws_events.py` - EventBridge integration
+ - Training: `training/event_integration.py` - lifecycle events
 
 4. **Monitoring** (`src/codex_ml/monitoring/`)
-   - Health: `health.py` - /health, /ready, /healthz, /readyz
-   - Metrics: `prometheus_metrics.py` - /metrics endpoint
-   - Drift: `drift_detection.py` - data drift monitoring
-   - Freshness: `feature_freshness_drift.py` - feature monitoring
+ - Health: `health.py` - /health, /ready, /healthz, /readyz
+ - Metrics: `prometheus_metrics.py` - /metrics endpoint
+ - Drift: `drift_detection.py` - data drift monitoring
+ - Freshness: `feature_freshness_drift.py` - feature monitoring
 
 ---
 
@@ -405,5 +405,5 @@ export TRANSFORMERS_OFFLINE="1"
 ---
 
 **Last Updated:2026-07-13
-**Status:** Production Ready   
-**Capabilities:** 71/71 (100%) 
+**Status:** Production Ready
+**Capabilities:** 71/71 (100%)

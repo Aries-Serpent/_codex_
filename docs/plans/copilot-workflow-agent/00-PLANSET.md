@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> Generated: 2026-06-22 | Version: 1.0.0  
+> Generated: 2026-06-22 | Version: 1.0.0
 > Purpose: Master implementation roadmap with phases, milestones, and success criteria
 
 ## Executive Summary
@@ -22,11 +22,11 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 
 | Phase | Name | Duration | Status |
 |-------|------|----------|--------|
-| 0 | Foundation & Planning | 1 phase |  IN PROGRESS |
-| 1 | Core Components | 2 phases | 🔜 PENDING |
-| 2 | Self-Healing Engine | 2 phases | 🔜 PENDING |
-| 3 | User Experience | 1 phase | 🔜 PENDING |
-| 4 | Production Hardening | 1 phase | 🔜 PENDING |
+| 0 | Foundation & Planning | 1 phase | IN PROGRESS |
+| 1 | Core Components | 2 phases | PENDING |
+| 2 | Self-Healing Engine | 2 phases | PENDING |
+| 3 | User Experience | 1 phase | PENDING |
+| 4 | Production Hardening | 1 phase | PENDING |
 
 ---
 
@@ -42,12 +42,12 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 
 | Deliverable | File | Status |
 |-------------|------|--------|
-| Plan directory structure | `docs/plans/copilot-workflow-agent/` |  DONE |
-| Master planset | `00-PLANSET.md` |  DONE |
-| Work batches | `01-BATCHSET.md` |  IN PROGRESS |
-| Patch prompts | `02-PATCHSET.md` |  IN PROGRESS |
-| Architecture doc | `03-ARCHITECTURE.md` |  IN PROGRESS |
-| Checkpoint system | `08-CHECKPOINTS.md` |  IN PROGRESS |
+| Plan directory structure | `docs/plans/copilot-workflow-agent/` | DONE |
+| Master planset | `00-PLANSET.md` | DONE |
+| Work batches | `01-BATCHSET.md` | IN PROGRESS |
+| Patch prompts | `02-PATCHSET.md` | IN PROGRESS |
+| Architecture doc | `03-ARCHITECTURE.md` | IN PROGRESS |
+| Checkpoint system | `08-CHECKPOINTS.md` | IN PROGRESS |
 
 ### Acceptance Criteria
 - [ ] All plan documents created
@@ -119,12 +119,12 @@ class SessionState:
 
 | Deliverable | File | Status |
 |-------------|------|--------|
-| GitHub API client | `src/services/github/client.py` | 🔜 PENDING |
-| GitHub API types | `src/services/github/types.py` | 🔜 PENDING |
-| Workflow inventory | `src/services/workflow/inventory.py` | 🔜 PENDING |
-| Workflow parser | `src/services/workflow/parser.py` | 🔜 PENDING |
-| Session state | `src/services/session/state.py` | 🔜 PENDING |
-| State persistence | `src/services/session/storage.py` | 🔜 PENDING |
+| GitHub API client | `src/services/github/client.py` | PENDING |
+| GitHub API types | `src/services/github/types.py` | PENDING |
+| Workflow inventory | `src/services/workflow/inventory.py` | PENDING |
+| Workflow parser | `src/services/workflow/parser.py` | PENDING |
+| Session state | `src/services/session/state.py` | PENDING |
+| State persistence | `src/services/session/storage.py` | PENDING |
 
 ### Acceptance Criteria
 - [ ] GitHub client can trigger workflows
@@ -178,12 +178,12 @@ class AutoRemediator:
 
 | Category | Auto-Remediation | Example |
 |----------|-----------------|---------|
-| Dependency Missing |  Yes | Add missing pip package |
-| Timeout |  Yes | Increase timeout value |
-| YAML Syntax |  Yes | Fix YAML formatting |
-| Test Flaky | ️ Partial | Add retry or skip |
-| API Deprecated |  Yes | Upgrade action version |
-| Permission |  No | Requires manual review |
+| Dependency Missing | Yes | Add missing pip package |
+| Timeout | Yes | Increase timeout value |
+| YAML Syntax | Yes | Fix YAML formatting |
+| Test Flaky | Partial | Add retry or skip |
+| API Deprecated | Yes | Upgrade action version |
+| Permission | No | Requires manual review |
 
 ### Acceptance Criteria
 - [ ] Detector identifies 90%+ of common failures
@@ -254,10 +254,10 @@ class ApprovalEngine:
 
 | Area | Deliverable | Status |
 |------|-------------|--------|
-| Telemetry | OTEL integration | 🔜 PENDING |
-| Rate Limiting | Token bucket limiter | 🔜 PENDING |
-| Security | Scoped token usage | 🔜 PENDING |
-| Performance | Caching layer | 🔜 PENDING |
+| Telemetry | OTEL integration | PENDING |
+| Rate Limiting | Token bucket limiter | PENDING |
+| Security | Scoped token usage | PENDING |
+| Performance | Caching layer | PENDING |
 
 ### Acceptance Criteria
 - [ ] All operations traced

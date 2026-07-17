@@ -75,7 +75,7 @@ Promotion toward `main` requires:
 2. `metadata.rollout_ring` declared in the training config and matching the target pod ring.
 3. `codex deploy --dry-run` to succeed, which enforces the ring match between training output and `configs/deploy/reasoning_pod.yaml`.
 
-Reviewers preparing a `0D_base_` → `main` merge should walk the dedicated checklist in [`docs/ops/promotion_checklist.md`](ops/promotion_checklist.md).
+Reviewers preparing a `0D_base_` `main` merge should walk the dedicated checklist in [`docs/ops/promotion_checklist.md`](ops/promotion_checklist.md).
 It also requires attaching the outputs of:
 
 - `codex_ml.cli.codex_cli status-report`
@@ -90,19 +90,19 @@ Mermaid source (`architecture.mmd`) when proposing changes so reviewers can diff
 Key flows:
 
 1. **Authoring** — Hydra configuration layers resolve reasoning templates from `configs/training/reasoning/*` before model
-   instantiation.
+ instantiation.
 2. **Training** — Training is orchestrated by:
-   - `src/codex_ml/training/unified_training.py`
-     (deterministic seeding, checkpoint / resume plumbing,
-      continual replay strategy hooks),
-   - `src/codex_ml/train_loop.py`
-     (per-run executor that injects the reasoning harness,
-      logs traces, and rotates checkpoints).
-   These modules together are "the trainer".
-   They replace older references to a standalone
-   `codex_ml.trainer.ReasoningTrainer`.
+ - `src/codex_ml/training/unified_training.py`
+ (deterministic seeding, checkpoint / resume plumbing,
+ continual replay strategy hooks),
+ - `src/codex_ml/train_loop.py`
+ (per-run executor that injects the reasoning harness,
+ logs traces, and rotates checkpoints).
+ These modules together are "the trainer".
+ They replace older references to a standalone
+ `codex_ml.trainer.ReasoningTrainer`.
 3. **Deployment** — Bespoke models are packaged with manifest digests
-   and signed hooks for downstream registries.
+ and signed hooks for downstream registries.
 
 When modifying the topology, update both the diagram and `docs/guides/serving_reproducibility.md`.
 
@@ -113,19 +113,19 @@ When modifying the topology, update both the diagram and `docs/guides/serving_re
    uv sync --extra reasoning --extra cli --frozen
    source .venv/bin/activate
    codex repo-map --reasoning
-   ```
+ ```
 2. **Select a template** using `codex reasoning-templates list` (see `codex_cli` module). Templates
-   live under `configs/training/reasoning/` and ship default datasets plus evaluator bindings.
+ live under `configs/training/reasoning/` and ship default datasets plus evaluator bindings.
 3. **Materialise runtime overlays**
    ```bash
    codex-train +reasoning=baseline curriculum.phase_schedule=starter
-   ```
-   This composes reasoning overrides on top of the legacy defaults so classical experiments keep working.
+ ```
+ This composes reasoning overrides on top of the legacy defaults so classical experiments keep working.
 4. **Register the artifact** with deterministic metadata before handoff:
    ```bash
    codex register --bundle artifacts/runs/reasoning-baseline \
      --expect manifest.sha256 --tag reasoning/m0/bespoke
-   ```
+ ```
 
 For service integrations, adopt the PodSpec defined in
 [`docs/deployment/reasoning_pod.md`](deployment/reasoning_pod.md).

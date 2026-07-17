@@ -80,16 +80,27 @@ H_sa^q = (C_aΘΦΩ_o)/(κ + Λ_q + Σ_s) − μF − Ξ_b(1 − Γ_r)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Access superposition, Policy measurement'}}%%
+
 flowchart TD
+
     Psi[Access superposition] --> Measure[Policy measurement]
+
     Measure --> Context[Context tensor]
+
     Context --> Entangle[Identity x Device x Resource x Network x Behavior]
+
     Entangle --> HSA[Compute H_sa]
+
     HSA --> Threshold[Compare to Lambda_q]
+
     Threshold -->|above| Allow[Collapse to allow]
+
     Threshold -->|near| Step[Collapse to step-up]
+
     Threshold -->|below| Deny[Collapse to deny]
+
     Step --> Project[Apply Pi_l least-privilege projection]
+
     Project --> Scoped[Scoped temporary access]
 ```
 

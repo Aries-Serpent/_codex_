@@ -4,8 +4,8 @@
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
- Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5  
-⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
+ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
+ Physics: Path Fields Patterns Redundancy Balance
 
 ---
 
@@ -23,25 +23,25 @@
 
 ### Discovery (v0.2.1 Post-Refactor Analysis)
 
-During v0.2.1 refactoring (99 → 42 legacy imports, 57.6% reduction), code review identified:
+During v0.2.1 refactoring (99 42 legacy imports, 57.6% reduction), code review identified:
 
 1. **Root `training/` contains**:
-   - `engine_hf_trainer.py` 
-   - `functional_training.py` 
-   - `checkpoint_manager.py` 
-   - `data_utils.py` 
-   - `config.py` 
-   - Other actual implementation modules
+ - `engine_hf_trainer.py`
+ - `functional_training.py`
+ - `checkpoint_manager.py`
+ - `data_utils.py`
+ - `config.py`
+ - Other actual implementation modules
 
 2. **`src/training/` contains**:
-   - `trainer.py` 
-   - `simple_trainer.py` 
-   - `checkpointing.py` 
-   - DIFFERENT set of modules
+ - `trainer.py`
+ - `simple_trainer.py`
+ - `checkpointing.py`
+ - DIFFERENT set of modules
 
 3. **Root `training/__init__.py`**:
-   - Compatibility shim importing FROM `src.training.trainer`
-   - Only covers a subset of modules
+ - Compatibility shim importing FROM `src.training.trainer`
+ - Only covers a subset of modules
 
 ### Problem
 
@@ -53,7 +53,7 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 
 | Option | Description | Risk | Path to 99% | Status |
 |--------|-------------|------|-------------|--------|
-| **A (Recommended)** | Keep `src.*` as canonical; add shims forwarding to legacy modules now; subsequently move legacy modules into `src/` | Low | After shim validation, move files and remove shims |  **CHOSEN** |
+| **A (Recommended)** | Keep `src.*` as canonical; add shims forwarding to legacy modules now; subsequently move legacy modules into `src/` | Low | After shim validation, move files and remove shims | **CHOSEN** |
 | B | Expand legacy root shims to re-export from `src.*` forever | Medium (technical debt) | Accept debt; codify policy in docs | Deferred |
 | C | Revert refactors; keep root as canonical | Medium/High (rework) | Contradicts convergence plan | Rejected |
 
@@ -72,14 +72,14 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 Created forwarding modules in `src/training/` and `src/tokenization/`:
 
 **Training Shims**:
-- `src/training/engine_hf_trainer.py` → `training.engine_hf_trainer`
-- `src/training/functional_training.py` → `training.functional_training`
-- `src/training/data_utils.py` → `training.data_utils`
-- `src/training/checkpoint_manager.py` → `training.checkpoint_manager`
-- `src/training/config.py` → `training.config`
+- `src/training/engine_hf_trainer.py` `training.engine_hf_trainer`
+- `src/training/functional_training.py` `training.functional_training`
+- `src/training/data_utils.py` `training.data_utils`
+- `src/training/checkpoint_manager.py` `training.checkpoint_manager`
+- `src/training/config.py` `training.config`
 
 **Tokenization Shims**:
-- `src/tokenization/train_tokenizer.py` → `tokenization.train_tokenizer`
+- `src/tokenization/train_tokenizer.py` `tokenization.train_tokenizer`
 
 ### Shim Pattern
 
@@ -159,7 +159,7 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 
 ### Pipeline Validation
 - [ ] S1-S7 audit pipeline completes successfully
-- [ ] Determinism PASS (2 runs → identical normalized output)
+- [ ] Determinism PASS (2 runs identical normalized output)
 - [ ] `verify_conflicts.py` shows no hydra/yaml shadowing
 - [ ] Split-brain warning acknowledged (informative, not blocking)
 
@@ -287,16 +287,16 @@ from src.training.engine_hf_trainer import run_hf_trainer
 ## Conclusion
 
 Wave 3 successfully resolves the split-brain architecture issue identified in v0.2.1 through canonical `src.*` import shims. This approach:
--  Preserves all v0.2.1 refactoring work
--  Eliminates runtime import failures
--  Maintains clear path to full consolidation
--  Raises production readiness to ≥85%
+- Preserves all v0.2.1 refactoring work
+- Eliminates runtime import failures
+- Maintains clear path to full consolidation
+- Raises production readiness to ≥85%
 
 The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v0.2.1.
 
 ---
 
-**Document Version**: 1.0  
-**Status**: Active  
-**Next Review**: After v0.2.1 file consolidation  
+**Document Version**: 1.0
+**Status**: Active
+**Next Review**: After v0.2.1 file consolidation
 **Maintainer**: @mbaetiong

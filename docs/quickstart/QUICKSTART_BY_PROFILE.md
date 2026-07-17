@@ -16,7 +16,7 @@ python -m pip install --upgrade pip
 
 ---
 
-##  Core Profile: Lightweight & Offline-First (8-15 MB)
+## Core Profile: Lightweight & Offline-First (8-15 MB)
 
 **Use when:** Building edge devices, offline environments, or minimal deployments with zero external dependencies beyond stdlib.
 
@@ -72,7 +72,7 @@ python -c "from codex_ml.config import Config; print('Core profile OK')"
 
 ---
 
-##  Runtime Profile: Production Inference & APIs (20-35 MB)
+## Runtime Profile: Production Inference & APIs (20-35 MB)
 
 **Use when:** Deploying to production, building APIs, running inference at scale, or pattern-learning systems.
 
@@ -248,7 +248,7 @@ mkdocs build
 
 ## Profile Migration
 
-### From Core → Runtime
+### From Core Runtime
 
 ```bash
 # Upgrade existing installation
@@ -258,7 +258,7 @@ pip install 'codex-ml[runtime]'
 from cognitive_brain import Planner
 ```
 
-### From Runtime → Full
+### From Runtime Full
 
 ```bash
 # Upgrade for development
@@ -268,7 +268,7 @@ pip install 'codex-ml[full]'
 pytest tests/
 ```
 
-### Downgrade (Runtime → Core)
+### Downgrade (Runtime Core)
 
 ```bash
 # Uninstall and reinstall core only

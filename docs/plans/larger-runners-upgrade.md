@@ -6,7 +6,7 @@
 
 **Ref:** [GitHub Docs — Upgrading to larger GitHub-hosted GitHub Actions runners][gh-docs]
 **Date:2026-07-13
-**Status:**  LIVE — runner `ubuntu-latest-m` active in group `AS Larger Runners`
+**Status:** LIVE — runner `ubuntu-latest-m` active in group `AS Larger Runners`
 
 [gh-docs]: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment#upgrading-to-larger-github-hosted-github-actions-runners
 
@@ -26,7 +26,7 @@
 | **Public IP** | Disabled |
 | **Network Configuration** | Disabled |
 | **Image source** | GitHub-owned |
-| **Custom image generation** |  **Enabled (Preview)** |
+| **Custom image generation** | **Enabled (Preview)** |
 | **Provisioned** | 2026-03-05 by @mbaetiong |
 
 ---
@@ -40,7 +40,7 @@
 5. [Custom Image Generation (Preview)](#5-custom-image-generation-preview)
 6. [AAIS Alignment](#6-aais-alignment)
 7. [Cognitive Brain Integration](#7-cognitive-brain-integration)
-8. [Recent Changes Context (W-119 → W-122)](#8-recent-changes-context-w-119--w-122)
+8. [Recent Changes Context (W-119 W-122)](#8-recent-changes-context-w-119--w-122)
 9. [Implementation Checklist](#9-implementation-checklist)
 10. [Rollback Plan](#10-rollback-plan)
 11. [Expected Outcomes](#11-expected-outcomes)
@@ -49,10 +49,11 @@
 
 ## 1. Architecture Overview
 
-### 1a. Copilot Agent ↔ Runner ↔ Cognitive Brain
+### 1a. Copilot Agent Runner Cognitive Brain
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "GitHub Platform", "Copilot Coding Agent"'}}%%
+
 graph TB
     subgraph GitHub["GitHub Platform"]
         direction TB
@@ -76,11 +77,16 @@ graph TB
     end
 
     RV -->|"${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"| CW
+
     CW -->|provisions| RM
     CW -.fallback.-> R0
+
     RM -->|executes| AG
+
     AG -->|"proxy_request()"| BC
+
     BC -->|"CODEX_MASTER_KEY"| VM
+
     VM -->|"PUT /repos/vars/COPILOT_RUNNER_PROFILE"| RV
 
     style RM fill:#10b981,color:#fff
@@ -93,6 +99,7 @@ graph TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing dev, dev'}}%%
+
 gantt
     title Setup Phase Wall-Clock (standard env, cold cache)
     dateFormat mm:ss
@@ -127,10 +134,10 @@ gantt
 
 | Symptom | Root Cause | Status |
 |---------|-----------|--------|
-| `ml-heavy` setup times out near 30-min cap | PyTorch CPU + `pip install -e ".[dev,ml]"` on 2 cores takes 25–30 min |  Fixed |
-| Cold venv rebuild blocks agent start by 10+ min | 2-core pip resolution is CPU-bound |  Fixed |
-| `cargo build --release` stalls | Single-core equivalent throughput |  Fixed |
-| AAIS Pillar 3 "Scalability" sub-score below target | Runner couldn't handle concurrent heavy tasks |  Fixed |
+| `ml-heavy` setup times out near 30-min cap | PyTorch CPU + `pip install -e ".[dev,ml]"` on 2 cores takes 25–30 min | Fixed |
+| Cold venv rebuild blocks agent start by 10+ min | 2-core pip resolution is CPU-bound | Fixed |
+| `cargo build --release` stalls | Single-core equivalent throughput | Fixed |
+| AAIS Pillar 3 "Scalability" sub-score below target | Runner couldn't handle concurrent heavy tasks | Fixed |
 
 ---
 
@@ -138,7 +145,7 @@ gantt
 
 | Label | Group | vCPU | RAM | SSD | Default for | Status |
 |-------|-------|------|-----|-----|-------------|--------|
-| `ubuntu-latest-m` | AS Larger Runners | 4 | 16 GB | 150 GB | All sessions |  **ACTIVE** |
+| `ubuntu-latest-m` | AS Larger Runners | 4 | 16 GB | 150 GB | All sessions | **ACTIVE** |
 | `ubuntu-latest` | Standard | 2 | 7 GB | 14 GB | Fallback only | Legacy |
 | `ubuntu-8-core` | AS Larger Runners | 8 | 32 GB | 300 GB | ml-heavy | Provision if needed |
 | `ubuntu-16-core` | AS Larger Runners | 16 | 64 GB | 600 GB | Security+Rust release | Provision if needed |
@@ -170,6 +177,7 @@ sequenceDiagram
     Note over CB: Pre-flight: detect ml/rag branch → needs 8-core
     CB->>VM: set_variable("COPILOT_RUNNER_PROFILE", "ubuntu-8-core")
     VM->>GH: PUT /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_RUNNER_PROFILE
+
     GH-->>VM: 204 No Content
 
     Note over WF: Agent session starts — runs-on resolves from variable
@@ -177,6 +185,7 @@ sequenceDiagram
     WF->>Runner: provision runner
 
     Runner->>WF:  AAIS Runner Adequacy Check
+
     WF-->>Owner:  ADEQUATE — runner meets requirements for ml-heavy
 
     Note over Owner: After heavy session completes — reset to default
@@ -188,25 +197,41 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Cognitive Brain\ndetects new task, "set COPILOT_RUNNER_PROFILE\n= ubuntu-8-core\n(if provisioned)"'}}%%
+
 flowchart TD
+
     A[Cognitive Brain\ndetects new task] --> B{Branch / label\ncontains ml or rag?}
+
     B -->|Yes| C["set COPILOT_RUNNER_PROFILE\n= ubuntu-8-core\n(if provisioned)"]
+
     B -->|No| D{Contains security\nor sec?}
+
     D -->|Yes| E["set COPILOT_RUNNER_PROFILE\n= ubuntu-latest-m"]
+
     D -->|No| F{Contains docs /\ndocumentation?}
+
     F -->|Yes| G["COPILOT_RUNNER_PROFILE\n= ubuntu-latest-m\n(default — no change)"]
+
     F -->|No| H["set COPILOT_RUNNER_PROFILE\n= ubuntu-latest-m\n(default — no change)"]
 
     C --> I[Agent session dispatched]
+
     E --> I
+
     G --> I
+
     H --> I
 
     I --> J["runs-on resolves:\n${{ vars.COPILOT_RUNNER_PROFILE\n|| 'ubuntu-latest-m' }}"]
+
     J --> L[copilot-setup-steps job\nprovisions runner]
+
     L --> M[ AAIS Runner\nAdequacy Check step]
+
     M --> N{runner_cpus ≥\nENV_TYPE.min_cpus?}
+
     N -->| Yes| O[runner_adequate=true\nContinue setup]
+
     N -->|️ No| P["runner_adequate=false\nLog recommendation\nContinue anyway"]
 
     style C fill:#3b82f6,color:#fff
@@ -258,15 +283,22 @@ reducing cold-start time to near zero.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Today — Standard Boot", Runner starts\nclean Ubuntu 24.04'}}%%
+
 graph LR
     subgraph Today["Today — Standard Boot"]
+
         A1[Runner starts\nclean Ubuntu 24.04] --> A2[Checkout repo]
+
         A2 --> A3[Install Python deps\n~2 min]
+
         A3 --> A4[Install system deps\n~45 sec]
+
         A4 --> A5[Agent starts\n~4 min total]
     end
     subgraph Future["Future — Custom Image Boot"]
+
         B1[Runner starts from\ncustom snapshot] --> B2[Checkout repo\n~20 sec]
+
         B2 --> B3[Agent starts\n~30 sec total]
     end
 
@@ -281,20 +313,20 @@ graph LR
 To build a custom image that pre-bakes the `_codex_` dependency stack:
 
 1. **Trigger**: `workflow_dispatch` on `copilot-setup-steps.yml` with
-   `environment_type=standard` — confirms the current setup steps succeed cleanly
-   on `ubuntu-latest-m`.
+ `environment_type=standard` — confirms the current setup steps succeed cleanly
+ on `ubuntu-latest-m`.
 
 2. **Custom image definition** (future PR): Create
-   `.github/runner-images/codex-agent.yml` that snapshots the runner state after:
-   - Python 3.12 + all deps from `pyproject.toml [dev]` installed into `.venv_ci`
-   - System packages (`build-essential`, `sqlite3`, `ripgrep`, etc.)
-   - Node 20 + Rust stable toolchain
+ `.github/runner-images/codex-agent.yml` that snapshots the runner state after:
+ - Python 3.12 + all deps from `pyproject.toml [dev]` installed into `.venv_ci`
+ - System packages (`build-essential`, `sqlite3`, `ripgrep`, etc.)
+ - Node 20 + Rust stable toolchain
 
 3. **Reference the custom image**: Once published to the `AS Larger Runners` group,
-   update `COPILOT_RUNNER_PROFILE` to the custom image label.
+ update `COPILOT_RUNNER_PROFILE` to the custom image label.
 
-4. **AAIS benefit**: Setup phase drops from ~4 min → ~30 sec, adding another
-   +2 to AAIS Pillar 3 "Reliability" sub-dimension.
+4. **AAIS benefit**: Setup phase drops from ~4 min ~30 sec, adding another
+ +2 to AAIS Pillar 3 "Reliability" sub-dimension.
 
 > **Note:** Custom image generation is currently in **Preview**. The API and
 > configuration format may change before GA. Monitor the
@@ -321,6 +353,7 @@ To build a custom image that pre-bakes the `_codex_` dependency stack:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Cognitive Brain (Pre-flight)", Pre-flight\nPREFLIGHT_001'}}%%
+
 graph LR
     subgraph CB["Cognitive Brain (Pre-flight)"]
         PP[Pre-flight\nPREFLIGHT_001]
@@ -352,10 +385,11 @@ Token priority for variable updates (from `docs/agent/COPILOT_TOKEN_GUIDE.md`):
 
 ---
 
-## 8. Recent Changes Context (W-119 → W-122)
+## 8. Recent Changes Context (W-119 W-122)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 timeline
     title PR #3499 Change Timeline
     section W-119 (Documentation clarity)
@@ -378,14 +412,20 @@ timeline
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "W-119b \nYAML parse fix\n(sessions unblocked)", "W-121 \nAutonomous switch\nMermaid diagrams\nAAIS check step"'}}%%
+
 graph TD
+
     W119B["W-119b \nYAML parse fix\n(sessions unblocked)"] --> W121
+
     W121["W-121 \nAutonomous switch\nMermaid diagrams\nAAIS check step"] --> W122
     W122["W-122 \nRunner provisioned\nubuntu-latest-m\nAS Larger Runners\nCustom Image: Preview"]
 
     W121 --> RO["runs-on:\n${{ vars.COPILOT_RUNNER_PROFILE\n|| 'ubuntu-latest-m' }}"]
+
     W121 --> AC[" AAIS Runner\nAdequacy Check"]
+
     W122 --> LIVE[" Agent sessions\nnow run on 4-core\nUbuntu 24.04 runner"]
+
     W122 --> CI["🔮 Custom Image\n(Preview — future)\n~30 sec cold-start"]
 
     style W119B fill:#10b981,color:#fff
@@ -447,13 +487,13 @@ queue or fall back gracefully.
 
 | Metric | Before (ubuntu-latest) | Now (ubuntu-latest-m) | Future (custom image) |
 |--------|------------------------|----------------------|----------------------|
-| Setup wall-clock (standard) | ~8 min | ~4 min  | ~30 sec |
-| Setup wall-clock (ml-heavy) | ~25 min ️ | ~12 min  | ~2 min |
-| Timeout risk | High | None  | None |
-| Agent start latency | ~10 min | ~5 min  | ~1 min |
-| `cargo build --release` | ~3 min | ~90 sec  | ~90 sec |
-| AAIS Pillar 3 Reliability | 75/100 | 86/100  | ~90/100 |
-| Ubuntu version | 22.04 | **24.04**  | 24.04 |
+| Setup wall-clock (standard) | ~8 min | ~4 min | ~30 sec |
+| Setup wall-clock (ml-heavy) | ~25 min | ~12 min | ~2 min |
+| Timeout risk | High | None | None |
+| Agent start latency | ~10 min | ~5 min | ~1 min |
+| `cargo build --release` | ~3 min | ~90 sec | ~90 sec |
+| AAIS Pillar 3 Reliability | 75/100 | 86/100 | ~90/100 |
+| Ubuntu version | 22.04 | **24.04** | 24.04 |
 
 ---
 

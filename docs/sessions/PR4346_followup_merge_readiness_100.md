@@ -1,15 +1,15 @@
-# PR #4346 — Follow-up Prompt: Merge Readiness → 100%
+# PR #4346 — Follow-up Prompt: Merge Readiness 100%
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 > **Generated:** 2026-05-08 · S860-FINAL
 > **Branch:** `finding-autofix-faa8614c` · **PR:** #4346
-> **Current Score:** 88/100 → targeting 100/100
+> **Current Score:** 88/100 targeting 100/100
 > **Primary gaps:** `sync_tracked_files` (12 pts) + CodeQL/security alerts + review comments
 
 ---
 
-##  Ideal Follow-up Prompt (copy-paste ready)
+## Ideal Follow-up Prompt (copy-paste ready)
 
 ```
 @copilot CTEP Mode: ON
@@ -126,9 +126,9 @@ python -m ruff check src/ tests/ --fix
 python scripts/ci/mypy_baseline.py --require-baseline
 python scripts/ci/sync_tracked_files.py --fix
 python scripts/ci/auto_fix_common_issues.py --check-only
-actionlint .github/workflows/*.yml 2>&1 | grep -c error   # → 0
-git diff --name-only --diff-filter=U                       # → EMPTY
-detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD) 2>&1; echo "exit: $?"  # → exit: 0
+actionlint .github/workflows/*.yml 2>&1 | grep -c error # 0
+git diff --name-only --diff-filter=U # EMPTY
+detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD) 2>&1; echo "exit: $?" # exit: 0
 ```
 
 ---

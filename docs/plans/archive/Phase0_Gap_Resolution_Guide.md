@@ -1,4 +1,4 @@
-#  Phase 0: Gap Resolution Implementation Guide
+# Phase 0: Gap Resolution Implementation Guide
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -6,8 +6,8 @@
 
 - [ Executive Summary](#-executive-summary)
 - [ Section 1: Dependency Resolution (Days 1-3)](#-section-1-dependency-resolution-days-1-3)
-  - [1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies](#11-task-block-dep-001-add-libcst-to-core-dependencies)
-    - [1.1.1 Implementation Steps](#111-implementation-steps)
+ - [1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies](#11-task-block-dep-001-add-libcst-to-core-dependencies)
+ - [1.1.1 Implementation Steps](#111-implementation-steps)
 - [List current dependencies](#list-current-dependencies)
 - [Check if libcst installed](#check-if-libcst-installed)
 - [List all AST-related imports in codebase](#list-all-ast-related-imports-in-codebase)
@@ -16,12 +16,12 @@
 - [Verify imports](#verify-imports)
 - [Check for dependency conflicts](#check-for-dependency-conflicts)
 - [1.1.2 Acceptance Criteria](#112-acceptance-criteria)
-  - [1.1.3 Rollback Procedure](#113-rollback-procedure)
+ - [1.1.3 Rollback Procedure](#113-rollback-procedure)
 - [If dependency conflicts discovered:](#if-dependency-conflicts-discovered)
 - [1.1.4 Validation Command](#114-validation-command)
 - [Run this to verify task complete](#run-this-to-verify-task-complete)
 - [1.2 Task BLOCK-DEP-002: Install Language Parser Binaries](#12-task-block-dep-002-install-language-parser-binaries)
-  - [1.2.1 Implementation Steps](#121-implementation-steps)
+ - [1.2.1 Implementation Steps](#121-implementation-steps)
 - [Install tree-sitter core](#install-tree-sitter-core)
 - [Install language-specific parsers](#install-language-specific-parsers)
 - [For SQL support (optional, deferred if conflicts)](#for-sql-support-optional-deferred-if-conflicts)
@@ -33,51 +33,51 @@
 - [Build](#build)
 - [File: src/codex_ml/ast/language_registry.py](#file-srccodex_mlastlanguage_registrypy)
 - [1.2.2 Acceptance Criteria](#122-acceptance-criteria)
-  - [1.2.3 Validation Command](#123-validation-command)
-  - [1.3 Task BLOCK-DEP-003: Add radon for Metrics](#13-task-block-dep-003-add-radon-for-metrics)
-    - [1.3.1 Implementation Steps](#131-implementation-steps)
+ - [1.2.3 Validation Command](#123-validation-command)
+ - [1.3 Task BLOCK-DEP-003: Add radon for Metrics](#13-task-block-dep-003-add-radon-for-metrics)
+ - [1.3.1 Implementation Steps](#131-implementation-steps)
 - [Already added to pyproject.toml in 1.1.2, just verify](#already-added-to-pyprojecttoml-in-112-just-verify)
 - [Test radon functionality](#test-radon-functionality)
 - [Compute cyclomatic complexity](#compute-cyclomatic-complexity)
 - [Compute maintainability index](#compute-maintainability-index)
 - [1.3.2 Acceptance Criteria](#132-acceptance-criteria)
-  - [1.4 Task BLOCK-DEP-004: Move parso to Core Dependencies](#14-task-block-dep-004-move-parso-to-core-dependencies)
-    - [1.4.1 Implementation](#141-implementation)
-    - [1.4.2 Acceptance Criteria](#142-acceptance-criteria)
-  - [1.5 Task BLOCK-DEP-005: Configure SQLite Storage Layer](#15-task-block-dep-005-configure-sqlite-storage-layer)
-    - [1.5.1 Implementation Steps](#151-implementation-steps)
+ - [1.4 Task BLOCK-DEP-004: Move parso to Core Dependencies](#14-task-block-dep-004-move-parso-to-core-dependencies)
+ - [1.4.1 Implementation](#141-implementation)
+ - [1.4.2 Acceptance Criteria](#142-acceptance-criteria)
+ - [1.5 Task BLOCK-DEP-005: Configure SQLite Storage Layer](#15-task-block-dep-005-configure-sqlite-storage-layer)
+ - [1.5.1 Implementation Steps](#151-implementation-steps)
 - [File: src/codex_ml/ast/storage/schema.py](#file-srccodex_mlaststorageschemapy)
 - [File: src/codex_ml/ast/storage/manager.py](#file-srccodex_mlaststoragemanagerpy)
 - [tests/ast/test_storage.py](#testsasttest_storagepy)
 - [1.5.2 Acceptance Criteria](#152-acceptance-criteria)
-  - [1.5.3 Validation Command](#153-validation-command)
-- [🏗️ Section 2: Architecture Foundation (Days 4-10)](#-section-2-architecture-foundation-days-4-10)
-  - [2.1 Task BLOCK-ARCH-001: Design StandardizedASTNode](#21-task-block-arch-001-design-standardizedastnode)
-    - [2.1.1 Implementation](#211-implementation)
+ - [1.5.3 Validation Command](#153-validation-command)
+- [ Section 2: Architecture Foundation (Days 4-10)](#-section-2-architecture-foundation-days-4-10)
+ - [2.1 Task BLOCK-ARCH-001: Design StandardizedASTNode](#21-task-block-arch-001-design-standardizedastnode)
+ - [2.1.1 Implementation](#211-implementation)
 - [File: src/codex_ml/ast/nodes.py](#file-srccodex_mlastnodespy)
 - [2.1.2 Acceptance Criteria](#212-acceptance-criteria)
-  - [2.2 Task BLOCK-ARCH-002: Design Dependency Graph](#22-task-block-arch-002-design-dependency-graph)
-    - [2.2.1 Implementation](#221-implementation)
+ - [2.2 Task BLOCK-ARCH-002: Design Dependency Graph](#22-task-block-arch-002-design-dependency-graph)
+ - [2.2.1 Implementation](#221-implementation)
 - [File: src/codex_ml/ast/graph.py](#file-srccodex_mlastgraphpy)
 - [2.2.2 Acceptance Criteria](#222-acceptance-criteria)
-  - [2.3 Task BLOCK-ARCH-003: Metrics Aggregation Layer](#23-task-block-arch-003-metrics-aggregation-layer)
-    - [2.3.1 Implementation](#231-implementation)
+ - [2.3 Task BLOCK-ARCH-003: Metrics Aggregation Layer](#23-task-block-arch-003-metrics-aggregation-layer)
+ - [2.3.1 Implementation](#231-implementation)
 - [File: src/codex_ml/ast/metrics_aggregator.py](#file-srccodex_mlastmetrics_aggregatorpy)
 - [2.3.2 Acceptance Criteria](#232-acceptance-criteria)
-  - [2.4 Task BLOCK-ARCH-004: Incremental Analysis Framework](#24-task-block-arch-004-incremental-analysis-framework)
+ - [2.4 Task BLOCK-ARCH-004: Incremental Analysis Framework](#24-task-block-arch-004-incremental-analysis-framework)
 - [File: src/codex_ml/ast/incremental.py](#file-srccodex_mlastincrementalpy)
 - [2.4.2 Acceptance Criteria](#242-acceptance-criteria)
-  - [2.5 Task BLOCK-ARCH-005: Plugin Architecture](#25-task-block-arch-005-plugin-architecture)
+ - [2.5 Task BLOCK-ARCH-005: Plugin Architecture](#25-task-block-arch-005-plugin-architecture)
 - [File: src/codex_ml/ast/plugins.py](#file-srccodex_mlastpluginspy)
 - [2.5.2 Acceptance Criteria](#252-acceptance-criteria)
 - [ Section 3: Performance Baseline (Days 11-14)](#-section-3-performance-baseline-days-11-14)
-  - [3.1 Create Benchmark Suite](#31-create-benchmark-suite)
+ - [3.1 Create Benchmark Suite](#31-create-benchmark-suite)
 - [File: tests/ast/benchmarks.py](#file-testsastbenchmarkspy)
 - [3.2 Profile Memory Usage](#32-profile-memory-usage)
 - [Create memory profiling script](#create-memory-profiling-script)
 - [Parse large codebase](#parse-large-codebase)
 - [ Section 4: Existing AST Usage Refactoring (Phased)](#-section-4-existing-ast-usage-refactoring-phased)
-  - [4.1 Audit Existing Usage](#41-audit-existing-usage)
+ - [4.1 Audit Existing Usage](#41-audit-existing-usage)
 - [Find all existing AST usage](#find-all-existing-ast-usage)
 - [Count files](#count-files)
 - [Example output:](#example-output)
@@ -86,32 +86,32 @@
 - [... (10+ files)](#-10-files)
 - [4.2 Create Migration Layer](#42-create-migration-layer)
 - [File: src/codex_ml/ast/compat.py](#file-srccodex_mlastcompatpy)
-- [Old API → New API mapping](#old-api--new-api-mapping)
+- [Old API New API mapping](#old-api--new-api-mapping)
 - [4.3 Phase 1 Refactoring (High Priority Files)](#43-phase-1-refactoring-high-priority-files)
 - [ Section 5: Testing Infrastructure Setup](#-section-5-testing-infrastructure-setup)
-  - [5.1 Create Test Fixtures](#51-create-test-fixtures)
+ - [5.1 Create Test Fixtures](#51-create-test-fixtures)
 - [File: tests/ast/fixtures.py](#file-testsastfixturespy)
 - [ Go/No-Go Decision Framework](#-gono-go-decision-framework)
-  - [Pre-Conditions for Sprint 1 Start](#pre-conditions-for-sprint-1-start)
-  - [Sign-Off Required From](#sign-off-required-from)
-  - [Decision Gate: 2025-11-23 14:00 UTC](#decision-gate-2025-11-23-1400-utc)
+ - [Pre-Conditions for Sprint 1 Start](#pre-conditions-for-sprint-1-start)
+ - [Sign-Off Required From](#sign-off-required-from)
+ - [Decision Gate: 2025-11-23 14:00 UTC](#decision-gate-2025-11-23-1400-utc)
 - [ Success Metrics](#-success-metrics)
 - [ Phase 0 Timeline](#-phase-0-timeline)
 - [ Phase 0: Validation & Risk Mitigation Guide](#-phase-0-validation--risk-mitigation-guide)
 - [ Executive Summary](#-executive-summary)
 - [Section 1: Dependency Validation](#section-1-dependency-validation)
-  - [1.1 Conflict Detection](#11-conflict-detection)
+ - [1.1 Conflict Detection](#11-conflict-detection)
 - [File: .github/scripts/validate_dependencies.py](#file-githubscriptsvalidate_dependenciespy)
 - [1.2 Version Compatibility Matrix](#12-version-compatibility-matrix)
 - [Section 2: Architecture Validation](#section-2-architecture-validation)
-  - [2.1 Design Review Checklist](#21-design-review-checklist)
-  - [2.2 Architecture Tests](#22-architecture-tests)
+ - [2.1 Design Review Checklist](#21-design-review-checklist)
+ - [2.2 Architecture Tests](#22-architecture-tests)
 - [tests/ast/test_architecture.py](#testsasttest_architecturepy)
 - [Section 3: Performance Validation](#section-3-performance-validation)
-  - [3.1 Performance Targets vs. Baselines](#31-performance-targets-vs-baselines)
+ - [3.1 Performance Targets vs. Baselines](#31-performance-targets-vs-baselines)
 - [tests/ast/test_performance.py](#testsasttest_performancepy)
 - [Section 4: Test Infrastructure Validation](#section-4-test-infrastructure-validation)
-  - [4.1 Fixture Verification](#41-fixture-verification)
+ - [4.1 Fixture Verification](#41-fixture-verification)
 - [Verify all fixtures available](#verify-all-fixtures-available)
 - [Expected output:](#expected-output)
 - [sample_python_file](#sample_python_file)
@@ -122,7 +122,7 @@
 - [4.2 Coverage Verification](#42-coverage-verification)
 - [Ensure >80% coverage before Phase 1](#ensure-80-coverage-before-phase-1)
 - [Section 5: Risk Mitigation Deployment](#section-5-risk-mitigation-deployment)
-  - [5.1 Offline-First Validation](#51-offline-first-validation)
+ - [5.1 Offline-First Validation](#51-offline-first-validation)
 - [Disable network access and verify functionality](#disable-network-access-and-verify-functionality)
 - [Install offline](#install-offline)
 - [Verify parsers work offline](#verify-parsers-work-offline)
@@ -130,10 +130,10 @@
 - [.github/workflows/phase0_validation.yml](#githubworkflowsphase0_validationyml)
 - [5.3 Scope Creep Prevention](#53-scope-creep-prevention)
 - [Section 6: Sign-Off Process](#section-6-sign-off-process)
-  - [6.1 Technical Sign-Off Checklist](#61-technical-sign-off-checklist)
-  - [6.2 Sign-Off Meeting (2025-11-23 14:00 UTC)](#62-sign-off-meeting-2025-11-23-1400-utc)
+ - [6.1 Technical Sign-Off Checklist](#61-technical-sign-off-checklist)
+ - [6.2 Sign-Off Meeting (2025-11-23 14:00 UTC)](#62-sign-off-meeting-2025-11-23-1400-utc)
 - [Section 7: Rollback Procedures](#section-7-rollback-procedures)
-  - [7.1 If Dependency Conflicts Detected](#71-if-dependency-conflicts-detected)
+ - [7.1 If Dependency Conflicts Detected](#71-if-dependency-conflicts-detected)
 - [Immediate rollback](#immediate-rollback)
 - [Investigation](#investigation)
 - [Manual resolution of conflicting versions](#manual-resolution-of-conflicting-versions)
@@ -142,28 +142,28 @@
 - [7.3 If Architecture Design Not Approved](#73-if-architecture-design-not-approved)
 - [Section 8: Success Metrics Dashboard](#section-8-success-metrics-dashboard)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] |  Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Linear dependency chain] | Fields [Modular resolution] | Patterns️ [DRY principles] | Redundancy [Fallback strategies] | Balance️ [Speed vs. stability]
+ **Physics:** Path [Linear dependency chain] | Fields [Modular resolution] | Patterns [DRY principles] | Redundancy [Fallback strategies] | Balance [Speed vs. stability]
 
 ---
 
-##  Executive Summary
+## Executive Summary
 
 **Phase 0** resolves **5 critical blockers**, **4 implementation issues**, and **3 architectural challenges** before AST Standardization can proceed to Sprint 1.
 
-**Timeline:** 2025-11-09 → 2025-11-23 (14 days)
+**Timeline:** 2025-11-09 2025-11-23 (14 days)
 **Effort:** 4-6 person-weeks
 **Go/No-Go Gate:** 2025-11-23 14:00 UTC
-**Critical Path:** Dependencies → Architecture → Performance → Testing
+**Critical Path:** Dependencies Architecture Performance Testing
 
 ---
 
-##  Section 1: Dependency Resolution (Days 1-3)
+## Section 1: Dependency Resolution (Days 1-3)
 
 ### 1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies
 
@@ -736,7 +736,7 @@ python .github/scripts/validate_dependencies.py --check-storage
 
 ---
 
-## 🏗️ Section 2: Architecture Foundation (Days 4-10)
+## Section 2: Architecture Foundation (Days 4-10)
 
 ### 2.1 Task BLOCK-ARCH-001: Design StandardizedASTNode
 
@@ -1220,7 +1220,7 @@ class PluginRegistry:
 
 ---
 
-##  Section 3: Performance Baseline (Days 11-14)
+## Section 3: Performance Baseline (Days 11-14)
 
 ### 3.1 Create Benchmark Suite
 
@@ -1311,7 +1311,7 @@ EOF
 
 ---
 
-##  Section 4: Existing AST Usage Refactoring (Phased)
+## Section 4: Existing AST Usage Refactoring (Phased)
 
 ### 4.1 Audit Existing Usage
 
@@ -1358,14 +1358,14 @@ def parse_code(source: str, filename: str = "<string>") -> Any:
 
 ## 4.3 Phase 1 Refactoring (High Priority Files)
 
-- [ ] cli/ast_upgrade.py → use new layer
-- [ ] scripts/analysis/ast_signature_similarity.py → refactor
+- [ ] cli/ast_upgrade.py use new layer
+- [ ] scripts/analysis/ast_signature_similarity.py refactor
 
 **Full refactoring (remaining 8+ files) deferred to post-Sprint 1**
 
 ---
 
-##  Section 5: Testing Infrastructure Setup
+## Section 5: Testing Infrastructure Setup
 
 ### 5.1 Create Test Fixtures
 
@@ -1418,7 +1418,7 @@ def decorated_class_code():
 
 ---
 
-##  Go/No-Go Decision Framework
+## Go/No-Go Decision Framework
 
 ### Pre-Conditions for Sprint 1 Start
 
@@ -1441,24 +1441,24 @@ def decorated_class_code():
 
 ### Decision Gate: 2025-11-23 14:00 UTC
 
-**If ALL conditions met**:  **PROCEED TO SPRINT 1**
-**If ANY condition not met**: 🚫 **DEFER; REASSESS IN 2 phaseS**
+**If ALL conditions met**: **PROCEED TO SPRINT 1**
+**If ANY condition not met**: **DEFER; REASSESS IN 2 phaseS**
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | After Phase 0 |
 |--------|--------|---------|---------------|
-| Dependency conflicts | 0 | TBD | 0  |
-| Architecture approved | 100% | 0% | 100%  |
-| Performance baseline | Established | None | <5s/1000 LOC  |
-| Test infrastructure | Complete | Partial | 100%  |
-| Security issues | 0 critical | TBD | 0  |
+| Dependency conflicts | 0 | TBD | 0 |
+| Architecture approved | 100% | 0% | 100% |
+| Performance baseline | Established | None | <5s/1000 LOC |
+| Test infrastructure | Complete | Partial | 100% |
+| Security issues | 0 critical | TBD | 0 |
 
 ---
 
-##  Phase 0 Timeline
+## Phase 0 Timeline
 
 ```text
 2025-11-10 → 2025-11-11: Dependency Resolution (BLOCK-DEP-001 to 005)
@@ -1482,25 +1482,25 @@ def decorated_class_code():
 Now creating the detailed validation and risk mitigation guide:
 
 ```markdown name=Phase0_Validation_Copilot.md
-#  Phase 0: Validation & Risk Mitigation Guide
+# Phase 0: Validation & Risk Mitigation Guide
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: QA Lead], [Secondary: Risk Manager] |  Energy: 5/5
+** Roles:** [Primary: QA Lead], [Secondary: Risk Manager] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Validation gates] | Fields [Risk mitigation] | Patterns️ [Regression prevention] | Redundancy [Fallback testing] | Balance️ [Quality vs. speed]
+ **Physics:** Path [Validation gates] | Fields [Risk mitigation] | Patterns [Regression prevention] | Redundancy [Fallback testing] | Balance [Quality vs. speed]
 
 ---
 
-##  Executive Summary
+## Executive Summary
 
 **Phase 0 Validation** ensures **zero regressions** and **all blockers resolved** before Sprint 1 proceeds.
 
 **Validation Strategy:**
--  Dependency conflict detection
--  Architecture design review
--  Performance validation
--  Test infrastructure verification
--  Risk mitigation deployment
+- Dependency conflict detection
+- Architecture design review
+- Performance validation
+- Test infrastructure verification
+- Risk mitigation deployment
 
 ---
 
@@ -1603,11 +1603,11 @@ python .github/scripts/validate_dependencies.py
 
 | Dependency | Minimum | Tested | Maximum | Status |
 |-----------|---------|--------|---------|--------|
-| libcst | 1.0.0 | 1.0.4 | 1.1.0 |  OK |
-| radon | 6.0.0 | 6.0.1 | 6.1.0 |  OK |
-| parso | 0.8.0 | 0.8.3 | 0.9.0 |  OK |
-| tree-sitter | 0.20.0 | 0.20.3 | 0.21.0 |  OK |
-| torch | 2.0.0 | 2.1.0 | 2.2.0 |  OK |
+| libcst | 1.0.0 | 1.0.4 | 1.1.0 | OK |
+| radon | 6.0.0 | 6.0.1 | 6.1.0 | OK |
+| parso | 0.8.0 | 0.8.3 | 0.9.0 | OK |
+| tree-sitter | 0.20.0 | 0.20.3 | 0.21.0 | OK |
+| torch | 2.0.0 | 2.1.0 | 2.2.0 | OK |
 
 ---
 
@@ -1798,10 +1798,10 @@ steps:
 
 | Item | Owner | Status |
 |------|-------|--------|
-| Phase 0 features locked | Project Manager |  Locked |
-| No new requirements | Tech Lead |  Frozen |
-| Existing PRs only | QA Lead |  Approved |
-| Timeline immutable | Project Manager |  Fixed |
+| Phase 0 features locked | Project Manager | Locked |
+| No new requirements | Tech Lead | Frozen |
+| Existing PRs only | QA Lead | Approved |
+| Timeline immutable | Project Manager | Fixed |
 
 ---
 
@@ -1837,20 +1837,20 @@ steps:
 **Agenda:**
 
 1. **Review Phase 0 completion** (15 min)
-   - All blockers resolved?
-   - All validations passed?
+ - All blockers resolved?
+ - All validations passed?
 
 2. **Risk assessment** (10 min)
-   - Any new risks identified?
-   - Mitigation strategies adequate?
+ - Any new risks identified?
+ - Mitigation strategies adequate?
 
 3. **Go/No-Go decision** (10 min)
-   - Vote by all sign-off parties
-   - Document rationale
+ - Vote by all sign-off parties
+ - Document rationale
 
 4. **Sprint 1 kickoff (if GO)** (15 min)
-   - Resource allocation
-   - First sprint planning
+ - Resource allocation
+ - First sprint planning
 
 **Decision Criteria:**
 

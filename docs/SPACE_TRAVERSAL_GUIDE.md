@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 | Author: Codex Audit System  
-> Roles: [Audit Orchestrator], [Capability Cartographer]  
+> Generated: 2026-06-22 | Author: Codex Audit System
+> Roles: [Audit Orchestrator], [Capability Cartographer]
 > Energy: 5/5
 
 ---
@@ -11,13 +11,13 @@
 ## 1. Purpose
 
 **Deterministic audit pipeline** for the **_codex_** ML platform that:
-- **Harvests** → repo structure (depth-gated traversal)
-- **Facets** → domain clustering (ML-specific patterns)
-- **Extracts** → capability detection (static + dynamic detectors)
-- **Scores** → maturity assessment (5-component weighting + external metrics)
-- **Gaps** → threshold analysis (low < 0.70 flagging)
-- **Renders** → markdown matrix (Jinja2 templates)
-- **Manifests** → integrity chain (SHA256 provenance + warnings aggregation)
+- **Harvests** repo structure (depth-gated traversal)
+- **Facets** domain clustering (ML-specific patterns)
+- **Extracts** capability detection (static + dynamic detectors)
+- **Scores** maturity assessment (5-component weighting + external metrics)
+- **Gaps** threshold analysis (low < 0.70 flagging)
+- **Renders** markdown matrix (Jinja2 templates)
+- **Manifests** integrity chain (SHA256 provenance + warnings aggregation)
 
 ---
 
@@ -122,7 +122,7 @@ safeguards = base_safeguards * sev_factor          # P5: severity-influenced (ad
 
 | Command | Function | Example |
 |---------|----------|---------|
-| **Full run** | S1→S7 pipeline | `python scripts/space_traversal/audit_runner.py run` |
+| **Full run** | S1S7 pipeline | `python scripts/space_traversal/audit_runner.py run` |
 | **Single stage** | Run one stage | `python scripts/space_traversal/audit_runner.py stage S4` |
 | **Explain score** | Component breakdown | `python scripts/space_traversal/audit_runner.py explain logging-tracking` |
 | **Diff reports** | Compare two runs | `python scripts/space_traversal/audit_runner.py diff --old A.md --new B.md` |
@@ -215,12 +215,12 @@ def detect(file_index: dict) -> dict:
      dynamic: true
      overrides:
        ml-serving: ["serve", "predict", "api"]
-   ```
+ ```
 
 3. **Run Pipeline**
    ```bash
    python scripts/space_traversal/audit_runner.py run
-   ```
+ ```
 
 4. **Verify** in `audit_artifacts/capabilities_raw.json` and final matrix.
 
@@ -257,7 +257,7 @@ def detect(file_index: dict) -> dict:
 |---------|-------|------------|-------------|
 | **Missing capability** | S3 | Detector not loaded / syntax error | Enable `dynamic: true`; check Python traceback |
 | **Zero safeguards** | S4 | Keywords not found in evidence | Expand `SAFEGUARD_KEYWORDS` list |
-| **High duplication** | S4 | Over-broad facet regex | Narrow patterns (e.g., `r"serve"` → `r"serve\.py$"`) |
+| **High duplication** | S4 | Over-broad facet regex | Narrow patterns (e.g., `r"serve"` `r"serve\.py$"`) |
 | **Template hash mismatch** | S7 | Template edited post-run | Re-run full pipeline |
 | **Low consistency** | S4 | Duplicate file stems | Refactor code or accept penalty |
 | **Zero tests** | S4 | No test files linked | Add tests or enable `COVERAGE_ENABLE=1` |
@@ -351,14 +351,14 @@ python scripts/space_traversal/audit_runner.py validate
    mv audit_run_manifest.json audit_run_manifest_A.json
    python scripts/space_traversal/audit_runner.py run
    mv audit_run_manifest.json audit_run_manifest_B.json
-   ```
+ ```
 
 2. Compare (ignoring timestamp):
    ```bash
    jq 'del(.timestamp)' audit_run_manifest_A.json > A_norm.json
    jq 'del(.timestamp)' audit_run_manifest_B.json > B_norm.json
    diff A_norm.json B_norm.json
-   ```
+ ```
 
 3. **Expected**: No diff except `generated` timestamps in artifacts.
 

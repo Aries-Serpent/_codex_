@@ -364,28 +364,28 @@ cleanup_old_bundles()
 ### Bundling Strategy
 
 1. **Include Essential Artifacts**
-   - Model files and weights
-   - Training configurations
-   - Preprocessing code
-   - Environment specifications
-   - Validation metrics
+ - Model files and weights
+ - Training configurations
+ - Preprocessing code
+ - Environment specifications
+ - Validation metrics
 
 2. **Metadata Capture**
-   - Git commit hash for code version
-   - Dataset versions and checksums
-   - Training timestamps
-   - Hardware specifications
-   - Hyperparameters used
+ - Git commit hash for code version
+ - Dataset versions and checksums
+ - Training timestamps
+ - Hardware specifications
+ - Hyperparameters used
 
 3. **Deduplication**
-   - Enable for large datasets
-   - Use block-level dedup for efficiency
-   - Store only deltas between versions
+ - Enable for large datasets
+ - Use block-level dedup for efficiency
+ - Store only deltas between versions
 
 4. **Compression Balance**
-   - Higher compression for archival
-   - Lower compression for frequent access
-   - Consider trade-offs (time vs space)
+ - Higher compression for archival
+ - Lower compression for frequent access
+ - Consider trade-offs (time vs space)
 
 ### Version Management
 
@@ -395,34 +395,34 @@ cleanup_old_bundles()
    v0.2.1 - Initial model
    v0.2.1 - Added feature
    v0.2.1 - Architecture change
-   ```
+ ```
 
 2. **Tagging Bundles**
-   - Tag important milestones
-   - Mark production deployments
-   - Label baseline models
+ - Tag important milestones
+ - Mark production deployments
+ - Label baseline models
 
 3. **Retention Policies**
-   - Keep latest N versions
-   - Archive after time period
-   - Never delete production bundles
+ - Keep latest N versions
+ - Archive after time period
+ - Never delete production bundles
 
 ### Security & Compliance
 
 1. **Access Control**
-   - Restrict bundle access by role
-   - Audit bundle access logs
-   - Encrypt sensitive bundles
+ - Restrict bundle access by role
+ - Audit bundle access logs
+ - Encrypt sensitive bundles
 
 2. **Data Privacy**
-   - Remove PII before bundling
-   - Comply with data retention policies
-   - Document data lineage
+ - Remove PII before bundling
+ - Comply with data retention policies
+ - Document data lineage
 
 3. **Integrity Verification**
-   - Always verify checksums
-   - Sign bundles for authenticity
-   - Detect tampering
+ - Always verify checksums
+ - Sign bundles for authenticity
+ - Detect tampering
 
 ---
 

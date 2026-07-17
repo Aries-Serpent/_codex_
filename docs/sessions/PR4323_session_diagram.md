@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Last updated: 2026-07-11
-> **Sessions: S1→…→S34→S35→S36→S37 — HEAD `6c239f07`**
+> **Sessions: S1…S34S35S36S37 — HEAD `6c239f07`**
 
 ## Session Flow
 
@@ -262,55 +262,55 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
    └─ Pattern 25 satisfied · all tracked files consistent 
 ```
 
-## CI Status (2026-05-07T16:10Z — HEAD `c481f105` S32 · **22  / 0  · zero conflicts  · readiness ≥90/100**)
+## CI Status (2026-05-07T16:10Z — HEAD `c481f105` S32 · **22 / 0 · zero conflicts · readiness ≥90/100**)
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| Pre-merge validation |  | |
-| Comment review gate |  | S32 reply to #4398627386 |
-| Deferral language gate |  | |
-| Agent token delegation |  | |
-| mypy Baseline |  | |
-| Workflow compliance audit (actionlint) |  | |
-| Secrets Baseline Enforcer |  | |
-| Reference Integrity + Agent Size Gate |  | |
-| CI Checkpoint Validation |  | |
-| Pre-Flight CI Validation |  | |
-| Resilient Validation Suite |  | Fixed S25 |
-| Fast Validation |  | Fixed S24 |
-| Auto-Fix Common CI Issues |  | RP-006 + Pattern 25 |
-| sync_tracked_files |  | S32 fix applied |
-| ruff src/ tests/ tools/ |  | 0 violations |
-| Pattern 30 (Merge Readiness) |  | ≥90/100 |
-| Branch Rebase Gate |  | |
-| Duplicate Detection |  | |
-| Dependabot alerts #239–#246 |  | All 7 resolved |
-| Required Actions Version Enforcer |  | 0 violations |
-| E→D Transition Readiness Gate |  | |
-| Documentation Link Checker |  | |
-| RAG Module Tests |  | In-progress |
-| Security Scanning Suite |  | In-progress |
-| CodeQL py/empty-except (55) |  | Fixed → 0 (S2) |
-| CodeQL py/catch-base-exception (1) |  | Fixed (S2) |
-| CodeQL py/print-during-import (3) |  | Fixed (S2) |
-| CodeQL py/mixed-tuple-returns (partial) |  | init_mlflow() split (S6) |
-| CodeQL py/call-to-non-callable (1) |  | callable() guard (S6) |
-| GAS: _rl_state uninitialized (1) |  | explicit init (S8) |
-| WEC CodeQL alert fetcher |  | codeql-alert-fetcher.yml (S9) |
+| Pre-merge validation | | |
+| Comment review gate | | S32 reply to #4398627386 |
+| Deferral language gate | | |
+| Agent token delegation | | |
+| mypy Baseline | | |
+| Workflow compliance audit (actionlint) | | |
+| Secrets Baseline Enforcer | | |
+| Reference Integrity + Agent Size Gate | | |
+| CI Checkpoint Validation | | |
+| Pre-Flight CI Validation | | |
+| Resilient Validation Suite | | Fixed S25 |
+| Fast Validation | | Fixed S24 |
+| Auto-Fix Common CI Issues | | RP-006 + Pattern 25 |
+| sync_tracked_files | | S32 fix applied |
+| ruff src/ tests/ tools/ | | 0 violations |
+| Pattern 30 (Merge Readiness) | | ≥90/100 |
+| Branch Rebase Gate | | |
+| Duplicate Detection | | |
+| Dependabot alerts #239–#246 | | All 7 resolved |
+| Required Actions Version Enforcer | | 0 violations |
+| ED Transition Readiness Gate | | |
+| Documentation Link Checker | | |
+| RAG Module Tests | | In-progress |
+| Security Scanning Suite | | In-progress |
+| CodeQL py/empty-except (55) | | Fixed 0 (S2) |
+| CodeQL py/catch-base-exception (1) | | Fixed (S2) |
+| CodeQL py/print-during-import (3) | | Fixed (S2) |
+| CodeQL py/mixed-tuple-returns (partial) | | init_mlflow() split (S6) |
+| CodeQL py/call-to-non-callable (1) | | callable() guard (S6) |
+| GAS: _rl_state uninitialized (1) | | explicit init (S8) |
+| WEC CodeQL alert fetcher | | codeql-alert-fetcher.yml (S9) |
 | **Overall HEAD c481f105** | ** 22/0** | **Readiness ≥90/100** |
 | **S33 — RP-006 + comment gate** | **** | **EOF newlines, gate unblocked** |
 | **Overall HEAD 96d8744a** | ** 15/0** | **Readiness 100/100 — all critical ** |
 | **S34 — RP-004 sync drift + RP-006 EOF** | **** | **sync_tracked_files clean, 3 JSON EOF fixed** |
 | **Overall HEAD S34** | **** | **sync_tracked_files , ruff , P-045 gate ** |
-| CodeQL 46 remaining alerts (6 rules) |  | Blocked — sandbox lacks `security_events` |
-| Build & Push Preview Image | ️ | startup_failure — needs second manual approval |
-| Data Quality & Determinism Suite | ️ | startup_failure — needs second manual approval |
-| Progressive Validation Suite | ️ | startup_failure — needs second manual approval |
-| Rust-Python Hybrid Swarm CI/CD | ️ | startup_failure — needs second manual approval |
+| CodeQL 46 remaining alerts (6 rules) | | Blocked — sandbox lacks `security_events` |
+| Build & Push Preview Image | | startup_failure — needs second manual approval |
+| Data Quality & Determinism Suite | | startup_failure — needs second manual approval |
+| Progressive Validation Suite | | startup_failure — needs second manual approval |
+| Rust-Python Hybrid Swarm CI/CD | | startup_failure — needs second manual approval |
 
 ## Statistics
 
-- **Sessions**: 34 (S1→S34; S15–S17 intermediate CI iterations)
+- **Sessions**: 34 (S1S34; S15–S17 intermediate CI iterations)
 - **Files changed total**: 186+
 - **Dependabot alerts resolved**: 7 (#239–#246)
 - **CodeQL alerts fixed**: 66 (empty-except×55, catch-base-exception×1, print-during-import×3, unexpected-raise×1, mixed-tuple-returns partial×1, call-to-non-callable×1, GAS uninitialized-var×1, fetch_codeql_alerts py/mixed-returns×1, broken-cross-refs×1)

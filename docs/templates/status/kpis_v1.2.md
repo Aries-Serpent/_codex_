@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: KPI Curator], [Secondary: Reviewer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: KPI Curator], [Secondary: Reviewer] Energy: 5
 
 Purpose
 - Track high-level health signals across per-iteration reports.
@@ -16,4 +16,4 @@ KPIs
 | Schema Drift Rate | FAIL validations / total validations | schema_validation_results.json | 0 |
 | Security Findings (high/critical) | Count by severity | pip-audit/bandit | 0 |
 | Perf Throughput Δ | Steps/s Δ day-over-day | perf_snapshot.json | ≥ 0 |
-| Repro Controls Coverage | Implemented/Total | snapshot.repro.core_controls | ↑ trend |
+| Repro Controls Coverage | Implemented/Total | snapshot.repro.core_controls | trend |

@@ -155,7 +155,7 @@ pytest tests/test_tokenization.py -v
 ```
 
 **PyCharm:**
-- Enable Ruff in Settings → Tools → External Tools
+- Enable Ruff in Settings Tools External Tools
 - Set test runner to pytest
 - Enable type checking with mypy
 
@@ -520,10 +520,10 @@ git commit -m "docs: Update documentation for feature"
 1. Check existing documentation first
 2. Search closed issues/PRs
 3. Open new issue with:
-   - Clear problem description
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Environment details
+ - Clear problem description
+ - Steps to reproduce
+ - Expected vs actual behavior
+ - Environment details
 
 ### Debugging Tips
 

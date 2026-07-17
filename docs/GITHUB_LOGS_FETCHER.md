@@ -15,25 +15,25 @@ This implementation provides three interfaces for fetching logs from GitHub Acti
 
 ## Features
 
--  Fetch check run logs by ID
--  Fetch workflow job logs by ID
--  List check runs for a git reference (commit, branch, tag)
--  Multiple output formats (text, JSON)
--  Comprehensive error handling
--  Rate limit handling
--  Authentication support via `GITHUB_TOKEN`
+- Fetch check run logs by ID
+- Fetch workflow job logs by ID
+- List check runs for a git reference (commit, branch, tag)
+- Multiple output formats (text, JSON)
+- Comprehensive error handling
+- Rate limit handling
+- Authentication support via `GITHUB_TOKEN`
 
 ## Prerequisites
 
 1. **GitHub Token**: Set the `GITHUB_TOKEN` environment variable:
    ```bash
    export GITHUB_TOKEN="ghp_your_token_here"
-   ```
+ ```
 
 2. **Dependencies**: Ensure required packages are installed:
    ```bash
    pip install httpx pydantic fastapi
-   ```
+ ```
 
 ## Usage
 
@@ -198,21 +198,21 @@ for tool_name, tool_config in GITHUB_LOGS_TOOLS.items():
 ### Files Created/Modified
 
 1. **GitHub Client Extensions** (`src/services/github/`)
-   - `types.py` - Added `CheckRun`, `CheckRunStatus`, `CheckRunConclusion` types
-   - `client.py` - Added `get_check_run`, `list_check_runs_for_ref`, `get_check_run_logs` methods
+ - `types.py` - Added `CheckRun`, `CheckRunStatus`, `CheckRunConclusion` types
+ - `client.py` - Added `get_check_run`, `list_check_runs_for_ref`, `get_check_run_logs` methods
 
 2. **CLI Implementation** (`src/codex/`)
-   - `cli_github_logs.py` - Complete CLI with check-run, job, and list-check-runs commands
-   - `cli.py` - Registered github-logs command group
+ - `cli_github_logs.py` - Complete CLI with check-run, job, and list-check-runs commands
+ - `cli.py` - Registered github-logs command group
 
 3. **API Implementation** (`src/codex/api/`)
-   - `github_logs.py` - FastAPI router with 3 endpoints
+ - `github_logs.py` - FastAPI router with 3 endpoints
 
 4. **MCP Implementation** (`src/mcp/tools/`)
-   - `github_logs.py` - MCP tool functions and schemas
+ - `github_logs.py` - MCP tool functions and schemas
 
 5. **Documentation** (`docs/`)
-   - `GITHUB_LOGS_FETCHER.md` - This file
+ - `GITHUB_LOGS_FETCHER.md` - This file
 
 ### Error Handling
 
@@ -231,8 +231,8 @@ The GitHub client automatically tracks rate limits and includes retry logic with
 
 To fetch logs from the specific commit mentioned in the requirements:
 
-**Commit**: `b6b52590b9551c4d29b90ea122d885ef83cd0d8d`  
-**Check Run ID**: `59990656344`  
+**Commit**: `b6b52590b9551c4d29b90ea122d885ef83cd0d8d`
+**Check Run ID**: `59990656344`
 **Repository**: `Aries-Serpent/_codex_`
 
 ### CLI Method
@@ -305,8 +305,8 @@ codex github-logs list-check-runs Aries-Serpent _codex_ b6b52590b9551c4d29b90ea1
 
 1. **Token Storage**: Never commit `GITHUB_TOKEN` to version control
 2. **Token Permissions**: Use fine-grained tokens with minimal required scopes:
-   - `actions:read` - Read workflow runs and logs
-   - `checks:read` - Read check runs
+ - `actions:read` - Read workflow runs and logs
+ - `checks:read` - Read check runs
 3. **Rate Limiting**: Implement caching to avoid excessive API calls
 4. **Error Messages**: Avoid exposing sensitive information in error messages
 
@@ -324,16 +324,16 @@ codex github-logs list-check-runs Aries-Serpent _codex_ b6b52590b9551c4d29b90ea1
 
 ### Common Issues
 
-**Problem**: `GitHub authentication failed`  
+**Problem**: `GitHub authentication failed`
 **Solution**: Ensure `GITHUB_TOKEN` is set and valid
 
-**Problem**: `check run logs not found`  
+**Problem**: `check run logs not found`
 **Solution**: Check runs may not have associated logs if they haven't run yet or logs have expired
 
-**Problem**: `Rate limit exceeded`  
+**Problem**: `Rate limit exceeded`
 **Solution**: Wait for rate limit reset or use authenticated requests (higher limit)
 
-**Problem**: `Module not found: httpx`  
+**Problem**: `Module not found: httpx`
 **Solution**: Install dependencies: `pip install httpx pydantic`
 
 ## Support

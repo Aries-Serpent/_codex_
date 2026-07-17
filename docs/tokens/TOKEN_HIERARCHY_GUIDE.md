@@ -22,20 +22,20 @@
 
 ---
 
-##  Token Scope Comparison
+## Token Scope Comparison
 
 ### Operations Matrix: Which Token for Each Operation?
 
 | Operation | GitHub_TOKEN | CODEX_BACKUP_TOKEN | CODEX_MASTER_KEY | Recommended |
 |-----------|:---:|:---:|:---:|---|
-| **Read Organization Variables** |  |  |  | Level 2+ |
-| **Create Organization Variables** |  |  |  | Level 3 |
-| **Read Repository Variables** |  |  |  | Level 1 |
-| **Create Repository Variables** |  |  |  | Level 1 |
-| **Update Workflow Files** |  |  |  | Level 2+ |
-| **Dispatch Workflow Run** |  |  |  | Level 3 |
-| **Read Public Secrets List** |  |  |  | Level 1 |
-| **Access Repository Secrets** |  |  |  | Level 1 |
+| **Read Organization Variables** | | | | Level 2+ |
+| **Create Organization Variables** | | | | Level 3 |
+| **Read Repository Variables** | | | | Level 1 |
+| **Create Repository Variables** | | | | Level 1 |
+| **Update Workflow Files** | | | | Level 2+ |
+| **Dispatch Workflow Run** | | | | Level 3 |
+| **Read Public Secrets List** | | | | Level 1 |
+| **Access Repository Secrets** | | | | Level 1 |
 
 ### Scope Details for Each Token
 
@@ -68,7 +68,7 @@ Best For: Organization variables, token rotation, emergency dispatch
 
 ---
 
-##  Decision Tree: Choosing Your Token
+## Decision Tree: Choosing Your Token
 
 ```
 START: I need to perform an operation
@@ -103,7 +103,7 @@ REPOSITORY OPERATIONS:
 
 ---
 
-##  Common Use Cases & Examples
+## Common Use Cases & Examples
 
 ### Use Case 1: Developer Reading Repository Variables
 
@@ -316,7 +316,7 @@ def update_workflow_with_retry():
 
 ---
 
-## ️ Error Handling & Recovery
+## Error Handling & Recovery
 
 ### Error 1: "Token scope insufficient for this request" (403)
 
@@ -438,7 +438,7 @@ def api_call_with_retry(url, token, max_retries=3):
 
 ---
 
-##  Security Best Practices
+## Security Best Practices
 
 ### 1. Token Environment Variables
 
@@ -502,7 +502,7 @@ raise Exception(f"API failed with token {token}: {response.text}")
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - How to implement token resolution in scripts
 - **WORKFLOW_TOKEN_PATTERNS_UPDATE.md** - Token patterns for GitHub Actions workflows
@@ -512,7 +512,7 @@ raise Exception(f"API failed with token {token}: {response.text}")
 
 ---
 
-##  Quick Reference Checklist
+## Quick Reference Checklist
 
 Use this checklist when choosing a token:
 
@@ -527,7 +527,7 @@ Use this checklist when choosing a token:
 
 ---
 
-## 📞 Getting Help
+## Getting Help
 
 **For token selection questions**:
 1. Check the Decision Tree (above)

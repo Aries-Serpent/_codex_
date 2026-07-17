@@ -104,7 +104,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 | AC-01 | Offline mode compliance | High | HIGH | Ensure all parsers work offline, no network calls | Architecture approval | 3 iterations |
 | AC-02 | Performance with large codebases | High | HIGH | Implement caching, lazy parsing, streaming | Performance testing | 5 iterations |
 | AC-03 | Multi-language support scope | Medium | MEDIUM | Start with Python, design for extensibility | Product decision | 2 iterations |
-| AC-04 | Parser selection strategy | High | MEDIUM | Fallback chain: libcst → ast → parso | Architecture approval | 2 iterations |
+| AC-04 | Parser selection strategy | High | MEDIUM | Fallback chain: libcst ast parso | Architecture approval | 2 iterations |
 | AC-05 | Memory usage with deep ASTs | Medium | HIGH | Implement memory limits, streaming | Performance testing | 4 iterations |
 | AC-06 | Compatibility with existing code | High | HIGH | Maintain backward compatibility, gradual migration | Migration planning | 3 iterations |
 | AC-07 | Plugin system security | Medium | MEDIUM | Sandboxed execution, permission model | Security review | 3 iterations |
@@ -121,7 +121,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 | ID | Deferral Reason | Category | Impact on Maturity Work | Rationale | Alternative Taken |
 |----|-----------------|----------|------------------------|-----------|-------------------|
 | DR-01 | Requires 11-13 phases dedicated effort | Resource Constraint | Would delay core maturity work | Maturity work targets 15 phases total; AST would consume 73% | Created comprehensive planning docs |
-| DR-02 | Not directly related to test coverage improvement | Scope Misalignment | Diverts from primary goal | Primary goal: improve test coverage 0.00-0.31 → 0.70+ | Focused on test creation (98 tests) |
+| DR-02 | Not directly related to test coverage improvement | Scope Misalignment | Diverts from primary goal | Primary goal: improve test coverage 0.00-0.31 0.70+ | Focused on test creation (98 tests) |
 | DR-03 | Requires specialized AST expertise | Skill Gap | Quality risk without expertise | AST standardization requires deep compiler/parser knowledge | Documented requirements for experts |
 | DR-04 | 46 blockers identified | Complexity | Too many unknowns to estimate accurately | High uncertainty in estimates and approach | Detailed blocker analysis |
 | DR-05 | Architectural changes required | Risk | Could destabilize existing code | 10+ files need refactoring, backward compatibility concerns | Maintained stability with deferred approach |
@@ -295,19 +295,19 @@ This document provides comprehensive guidance for engineering a dedicated projec
 ### Immediate Actions (Pre-commit -1-0)
 
 1. **Stakeholder Alignment**
-   - Present `PHASE0_READINESS_REPORT.md` to stakeholders
-   - Get architecture approval (RC-34)
-   - Allocate budget and resources
+ - Present `PHASE0_READINESS_REPORT.md` to stakeholders
+ - Get architecture approval (RC-34)
+ - Allocate budget and resources
 
 2. **Team Formation**
-   - Hire/assign senior Python engineer with AST expertise
-   - Identify supporting engineers and QA
-   - Engage tech writer for documentation
+ - Hire/assign senior Python engineer with AST expertise
+ - Identify supporting engineers and QA
+ - Engage tech writer for documentation
 
 3. **Infrastructure Setup**
-   - Prepare CI/CD environment
-   - Set up performance benchmarking infrastructure
-   - Configure code coverage reporting
+ - Prepare CI/CD environment
+ - Set up performance benchmarking infrastructure
+ - Configure code coverage reporting
 
 ### Phase 1: Foundation (Pre-commit 1-4)
 
@@ -389,7 +389,7 @@ dependencies = [
 ## Appendix A: Quick Reference
 
 ### Critical Path
-P1 → P2 → P3 → P7 → P8 → P10 → P11
+P1 P2 P3 P7 P8 P10 P11
 
 ### Parallel Opportunities
 - P3, P4, P5, P6 can partially overlap (after P2)
@@ -399,18 +399,18 @@ P1 → P2 → P3 → P7 → P8 → P10 → P11
 ### Go/No-Go Decision Points
 
 **Go Decision Criteria**:
-1.  Stakeholder approval received (RC-34)
-2.  Resources allocated (1 senior engineer + support)
-3.  13 phase timeline accepted
-4.  Budget approved (~6.4 person-months effort)
-5.  Infrastructure ready
+1. Stakeholder approval received (RC-34)
+2. Resources allocated (1 senior engineer + support)
+3. 13 phase timeline accepted
+4. Budget approved (~6.4 person-months effort)
+5. Infrastructure ready
 
 **No-Go Indicators**:
-1.  Cannot allocate senior engineer with AST expertise
-2.  Timeline cannot accommodate 13 phases
-3.  Cannot accept dependency changes
-4.  Performance requirements too strict
-5.  Business value unclear
+1. Cannot allocate senior engineer with AST expertise
+2. Timeline cannot accommodate 13 phases
+3. Cannot accept dependency changes
+4. Performance requirements too strict
+5. Business value unclear
 
 ### Current Status: NO-GO (Deferred)
 
@@ -451,10 +451,10 @@ P1 → P2 → P3 → P7 → P8 → P10 → P11
 - **Tech Writer**: TBD
 
 ### Escalation Path
-1. Technical issues → Technical Lead
-2. Resource issues → Project Sponsor
-3. Architectural decisions → Architect
-4. Timeline issues → Project Sponsor
+1. Technical issues Technical Lead
+2. Resource issues Project Sponsor
+3. Architectural decisions Architect
+4. Timeline issues Project Sponsor
 
 ### Communication
 - **Status Updates**: per-phase

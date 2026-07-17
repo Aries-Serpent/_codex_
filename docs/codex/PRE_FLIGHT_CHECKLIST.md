@@ -4,8 +4,8 @@
 
 **Last Updated: 2026-06-22
 
-> **Purpose**: Address CODEX-005 (planning deficit). Reduces rework from 50% → 15%.  
-> **Usage**: Copy, fill, commit before complex operations.  
+> **Purpose**: Address CODEX-005 (planning deficit). Reduces rework from 50% 15%.
+> **Usage**: Copy, fill, commit before complex operations.
 > **Status**: Mandatory for patch applications; recommended for all operations.
 
 ## Pre-flight Checklist Template
@@ -130,5 +130,5 @@
 ```text
 ---
 
-**Last Updated**: 2026-07-13  
+**Last Updated**: 2026-07-13
 **Status**: Reference template for CODEX-005 mitigation

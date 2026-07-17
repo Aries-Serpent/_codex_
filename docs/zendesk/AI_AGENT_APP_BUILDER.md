@@ -275,7 +275,7 @@ $$
 
 ### 3. Location Capacity Values
 
-Normalized from empirical "block" measurements (k blocks → k/10):
+Normalized from empirical "block" measurements (k blocks k/10):
 
 $$
 \begin{aligned}
@@ -354,9 +354,9 @@ $$
 ### 4. Potential Well Interpretation
 
 Interpret $\phi_d$ as a **potential well**:
-- **High $\phi_d$** → Low "action cost" to realize capability
-- **Low $\phi_d$** → High friction, may not be feasible
-- $\phi_d = 0$ → Forbidden/impossible
+- **High $\phi_d$** Low "action cost" to realize capability
+- **Low $\phi_d$** High friction, may not be feasible
+- $\phi_d = 0$ Forbidden/impossible
 
 ## Security Boundary Constraints
 
@@ -669,7 +669,7 @@ $$
 2.9 \times 8 - (1.0 \times 7 + 0.5 \times 1.0 + 0.3 \times 0.2) = 23.2 - 7.56 \approx 15.6 > \tau
 $$
 
-**Verdict**:  **YES — Build in Navbar** (sweet spot: high value, manageable complexity, location match)
+**Verdict**: **YES — Build in Navbar** (sweet spot: high value, manageable complexity, location match)
 
 ---
 
@@ -705,7 +705,7 @@ $$
 
 Borderline, but $\phi_{\text{Realtime}}$ is critically low.
 
-**Verdict**:  **NO — Don't build in Navbar** → Move to **Sidebar** or use **external polling service**
+**Verdict**: **NO — Don't build in Navbar** Move to **Sidebar** or use **external polling service**
 
 ---
 
@@ -727,14 +727,14 @@ $$
 **Latency Concern**:
 - Bulk operations trigger multiple external API calls
 - $\mathbb{E}[\mathcal{L}] \approx 1.6 \text{ s per call} \times N$ calls
-- For $N=50$ records → ~80s total (unacceptable UX)
+- For $N=50$ records ~80s total (unacceptable UX)
 
 **Decision**:
 $$
 \text{Latency penalty} = \mu \cdot 80 \gg v_C
 $$
 
-**Verdict**:  **NO — Don't build in Navbar** → Use **async job queue** or **external service** with status polling
+**Verdict**: **NO — Don't build in Navbar** Use **async job queue** or **external service** with status polling
 
 ---
 
@@ -763,7 +763,7 @@ $$
 (0.8 + 0.5 + 0.6) \times 5 - (1.0 \times 3 + 0.5 \times 1.6) = 9.5 - 3.8 = 5.7
 $$
 
-**Verdict**:  **YES — Build with care** (low complexity makes it viable despite moderate $\Psi$)
+**Verdict**: **YES — Build with care** (low complexity makes it viable despite moderate $\Psi$)
 
 ## Implementation Guidance
 
@@ -920,7 +920,7 @@ If migrating from traditional ZAF apps:
 
 | ZAF Pattern | App Builder Equivalent |
 |-------------|----------------------|
-| Custom backend |  Not supported → Use Zendesk APIs + external webhook targets |
+| Custom backend | Not supported Use Zendesk APIs + external webhook targets |
 | Direct API calls | Proxy-mediated calls via Zendesk API |
 | iFrame embedding | Native UI components |
 | Custom OAuth | Zendesk-managed OAuth flows |
@@ -1135,11 +1135,11 @@ This documentation was created with assistance from AI language models. Understa
 **Approach for This Output**:
 - Applied constraints for app locations (Navbar, Sidebar, Topbar) and associated UI/UX limits
 - Drew from general patterns in:
-  - Web application architecture
-  - Client-side JavaScript frameworks (e.g., React)
-  - API integration (REST, OAuth, proxies)
-  - Browser security models (CSP, CORS, sandboxing)
-  - Common SaaS marketplace constraints
+ - Web application architecture
+ - Client-side JavaScript frameworks (e.g., React)
+ - API integration (REST, OAuth, proxies)
+ - Browser security models (CSP, CORS, sandboxing)
+ - Common SaaS marketplace constraints
 
 ### Limitations & Validation
 

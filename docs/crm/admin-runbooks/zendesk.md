@@ -23,7 +23,7 @@ python -m codex.cli zendesk env-check --env dev
 python -m codex.cli zendesk deps-check
 ```text
 
-## Dry-run → Plan → Apply
+## Dry-run Plan Apply
 
 ```bash
 # Diff & plan (resource example: triggers)

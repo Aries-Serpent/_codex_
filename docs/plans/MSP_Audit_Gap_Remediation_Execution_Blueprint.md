@@ -40,9 +40,9 @@ This blueprint documents the implementation of gap surfacing, policy gates, enha
 
 ### Validators Module (validators.py)
 New reusable module with:
-- `check_low_threshold(gaps_path)` → (count, low_list)
-- `check_missing_detectors(scored_path, overrides)` → missing_ids
-- `emit_summary(low_list, missing_ids, thresholds)` → markdown text
+- `check_low_threshold(gaps_path)` (count, low_list)
+- `check_missing_detectors(scored_path, overrides)` missing_ids
+- `emit_summary(low_list, missing_ids, thresholds)` markdown text
 
 ### Template Updates (capability_matrix.md.j2)
 - Show `Missing Patterns` column in low maturity table

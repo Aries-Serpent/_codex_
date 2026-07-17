@@ -124,13 +124,21 @@ triggers:
 **Implementation**:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing GitHub Trigger, Agent Controller'}}%%
+
 graph LR
+
     A[GitHub Trigger] --> B[Agent Controller]
+
     B --> C[RAG Indexer]
+
     B --> D[Query Processor]
+
     C --> E[FAISS Index]
+
     D --> E
+
     E --> F[Result Formatter]
+
     F --> G[GitHub Comment]
 ```
 

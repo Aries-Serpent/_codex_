@@ -37,6 +37,7 @@ This document provides comprehensive specifications for production-ready GitHub 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Pull Request, Issue'}}%%
+
 graph TB
     subgraph "GitHub Events"
         PR[Pull Request]
@@ -73,31 +74,51 @@ graph TB
     end
 
     PR --> Dispatcher
+
     Issue --> Dispatcher
+
     Push --> Dispatcher
+
     Schedule --> Dispatcher
 
     Dispatcher --> Queue
+
     Queue --> Priority
 
     Priority --> Auth
+
     Priority --> Security
+
     Priority --> Workflow
+
     Priority --> Test
+
     Priority --> Deploy
+
     Priority --> CodeReview
+
     Priority --> Architect
+
     Priority --> Perf
+
     Priority --> Predict
 
     Auth --> Metrics
+
     Security --> Logs
+
     Workflow --> State
+
     Test --> Metrics
+
     Deploy --> Logs
+
     CodeReview --> Metrics
+
     Architect --> State
+
     Perf --> Metrics
+
     Predict --> Logs
 ```
 
@@ -172,16 +193,27 @@ graph TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Cron: Monthly, Auth Manager'}}%%
+
 graph LR
+
     Schedule[Cron: Monthly] --> Agent[Auth Manager]
+
     Manual[Manual Trigger] --> Agent
+
     Agent --> CheckMFA[Check MFA Status]
+
     Agent --> RotateTokens[Rotate JWT Secrets]
+
     Agent --> SyncSecrets[Sync GitHub Secrets]
+
     CheckMFA --> Report[Generate Report]
+
     RotateTokens --> Report
+
     SyncSecrets --> Report
+
     Report --> Issue[Create GitHub Issue]
+
     Report --> Metrics[Update Metrics]
 ```
 
@@ -254,21 +286,37 @@ python .github/agents/github-auth-manager/agent.py --action rotate-tokens
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR/Push Event, Security Enforcer'}}%%
+
 graph TD
+
     Trigger[PR/Push Event] --> Agent[Security Enforcer]
+
     Schedule[Daily Scan] --> Agent
+
     Agent --> ScanRepo[Scan Repository]
+
     ScanRepo --> CheckMFA[Verify MFA]
+
     ScanRepo --> CheckBranch[Check Branch Protection]
+
     ScanRepo --> CheckSecrets[Scan for Secrets]
+
     CheckMFA --> Remediate{Auto-Remediate?}
+
     CheckBranch --> Remediate
+
     CheckSecrets --> Remediate
+
     Remediate -->|Yes| Fix[Apply Fix]
+
     Remediate -->|No| Alert[Create Alert]
+
     Fix --> Report[Generate Report]
+
     Alert --> Report
+
     Report --> Issue[GitHub Issue]
+
     Report --> Status[Security Badge]
 ```
 
@@ -347,21 +395,37 @@ python .github/agents/github-security-enforcer/agent.py --auto-remediate
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Workflow Completion, Workflow Optimizer'}}%%
+
 graph TD
+
     Trigger[Workflow Completion] --> Agent[Workflow Optimizer]
+
     Schedule[Weekly Analysis] --> Agent
+
     Agent --> Analyze[Analyze Performance]
+
     Analyze --> CacheOpt[Cache Optimization]
+
     Analyze --> SecretOpt[Secret Management]
+
     Analyze --> RateLimit[Rate Limit Check]
+
     CacheOpt --> Recommend[Generate Recommendations]
+
     SecretOpt --> Recommend
+
     RateLimit --> Recommend
+
     Recommend --> AutoApply{Auto-Apply?}
+
     AutoApply -->|Yes| Implement[Apply Changes]
+
     AutoApply -->|No| Report[Create Report]
+
     Implement --> Report
+
     Report --> PR[Create PR]
+
     Report --> Metrics[Update Metrics]
 ```
 
@@ -430,18 +494,31 @@ python .github/agents/github-workflow-optimizer/agent.py --optimize --create-pr
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Pull Request, Code Reviewer'}}%%
+
 graph TD
+
     PR[Pull Request] --> Agent[Code Reviewer]
+
     Agent --> Parse[Parse Code Changes]
+
     Parse --> Copilot[Copilot API]
+
     Copilot --> Security[Security Check]
+
     Copilot --> Style[Style Check]
+
     Copilot --> Performance[Performance Check]
+
     Security --> Suggest[Generate Suggestions]
+
     Style --> Suggest
+
     Performance --> Suggest
+
     Suggest --> Review[Post Review]
+
     Review --> Comment[PR Comments]
+
     Review --> Status[Status Check]
 ```
 
@@ -506,22 +583,39 @@ outputs:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Push/PR Event, Test Orchestrator'}}%%
+
 graph TD
+
     Push[Push/PR Event] --> Agent[Test Orchestrator]
+
     Agent --> Detect[Detect Changes]
+
     Detect --> Select[Select Tests]
+
     Select --> Parallel[Parallel Execution]
+
     Parallel --> Unit[Unit Tests]
+
     Parallel --> Integration[Integration Tests]
+
     Parallel --> E2E[E2E Tests]
+
     Unit --> Aggregate[Aggregate Results]
+
     Integration --> Aggregate
+
     E2E --> Aggregate
+
     Aggregate --> Flaky[Detect Flaky Tests]
+
     Aggregate --> Coverage[Coverage Analysis]
+
     Flaky --> Report[Generate Report]
+
     Coverage --> Report
+
     Report --> Status[Status Check]
+
     Report --> Issue[Create Issue]
 ```
 
@@ -591,22 +685,39 @@ outputs:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Deployment Request, Deployment Gatekeeper'}}%%
+
 graph TD
+
     Deploy[Deployment Request] --> Agent[Deployment Gatekeeper]
+
     Agent --> Security[Security Gate]
+
     Agent --> Quality[Quality Gate]
+
     Agent --> Performance[Performance Gate]
+
     Security --> Check{All Gates Pass?}
+
     Quality --> Check
+
     Performance --> Check
+
     Check -->|Yes| Approve[Approve Deployment]
+
     Check -->|No| Reject[Reject Deployment]
+
     Approve --> Monitor[Monitor Deployment]
+
     Reject --> Notify[Notify Team]
+
     Monitor --> Health{Health Check}
+
     Health -->|Fail| Rollback[Auto Rollback]
+
     Health -->|Pass| Success[Mark Success]
+
     Rollback --> Notify
+
     Success --> Metrics[Update Metrics]
 ```
 
@@ -692,7 +803,7 @@ outputs:
    gh secret set GITHUB_TOKEN --body "$YOUR_TOKEN"
    gh secret set CODEX_MASTER_KEY --body "$YOUR_KEY"
    gh secret set TOKEN_SECRET_KEY --body "$YOUR_SECRET"
-   ```
+ ```
 
 2. **Deploy Agent Code**:
    ```bash
@@ -701,13 +812,13 @@ outputs:
    git add .github/agents/
    git commit -m "Deploy GitHub Copilot agents"
    git push
-   ```
+ ```
 
 3. **Enable Workflows**:
    ```bash
    # Workflows in .github/workflows/ are auto-enabled
    # Verify in repository Settings → Actions
-   ```
+ ```
 
 4. **Test Agent**:
    ```bash
@@ -716,7 +827,7 @@ outputs:
 
    # Or via CLI:
    gh workflow run auth-token-rotation.yml
-   ```
+ ```
 
 5. **Monitor Execution**:
    ```bash
@@ -725,7 +836,7 @@ outputs:
 
    # View logs:
    gh run view <run_id> --log
-   ```
+ ```
 
 ---
 
@@ -1023,12 +1134,12 @@ gh auth status
 
 | Agent | Tier | Status | Workflow | Docs |
 |-------|------|--------|----------|------|
-| Auth Manager | 1 |  Active | `auth-token-rotation.yml` | README |
-| Security Enforcer | 1 |  Active | `auth-security-audit.yml` | README |
-| Workflow Optimizer | 1 |  Active | (manual) | README |
-| Code Reviewer | 2 |  Proposed | N/A | TBD |
-| Test Orchestrator | 1 |  Proposed | N/A | TBD |
-| Deployment Gatekeeper | 1 |  Proposed | N/A | TBD |
+| Auth Manager | 1 | Active | `auth-token-rotation.yml` | README |
+| Security Enforcer | 1 | Active | `auth-security-audit.yml` | README |
+| Workflow Optimizer | 1 | Active | (manual) | README |
+| Code Reviewer | 2 | Proposed | N/A | TBD |
+| Test Orchestrator | 1 | Proposed | N/A | TBD |
+| Deployment Gatekeeper | 1 | Proposed | N/A | TBD |
 
 ### Version History
 
@@ -1048,5 +1159,5 @@ gh auth status
 
 **Document Owner**: Codex Team
 **Last Updated**: 2024-01-16
-**Status**:  Production Ready
+**Status**: Production Ready
 **Next Review**: 2024-02-16

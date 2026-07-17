@@ -2,14 +2,14 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0.0  
-> **Date:** 2026-06-29  
-> **API Version:** 2026-03-10  
+> **Version:** 1.0.0
+> **Date:** 2026-06-29
+> **API Version:** 2026-03-10
 > **Generated:** Comprehensive scope-to-operation mapping for CODEX_MASTER_KEY
 
 ---
 
-##  Scope Hierarchy
+## Scope Hierarchy
 
 GitHub API scopes follow a hierarchy from broad to narrow access:
 

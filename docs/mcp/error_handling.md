@@ -300,51 +300,77 @@ async def query_endpoint(
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Request Received, Parse JSON-RPC'}}%%
+
 graph TD
+
     A[Request Received] --> B{Request Type?}
+
     B -->|JSON-RPC| C[Parse JSON-RPC]
+
     B -->|HTTP| D[Parse HTTP Request]
 
     C --> E{Valid JSON-RPC?}
+
     E -->|No| F[JsonRpcError -32600]
+
     E -->|Yes| G{Method Exists?}
+
     G -->|No| H[JsonRpcError -32601]
+
     G -->|Yes| I{Valid Params?}
+
     I -->|No| J[JsonRpcError -32602]
+
     I -->|Yes| K[Execute Method]
 
     D --> L{Authenticated?}
+
     L -->|No| M[HTTPException 401]
+
     L -->|Yes| N{Rate Limited?}
+
     N -->|Yes| O[HTTPException 429]
+
     N -->|No| P{Valid Request?}
+
     P -->|No| Q[HTTPException 422]
+
     P -->|Yes| R[Execute Handler]
 
     K --> S{Success?}
+
     S -->|No| T[JsonRpcError -32603]
+
     S -->|Yes| U[Return Result]
 
     R --> V{Success?}
+
     V -->|No| W[HTTPException 500]
+
     V -->|Yes| X[Return Response]
 
     F --> Y[JSON-RPC Error Response]
+
     H --> Y
+
     J --> Y
+
     T --> Y
 
     M --> Z[HTTP Error Response]
+
     O --> Z
+
     Q --> Z
+
     W --> Z
 ```
 
 ## JSON-RPC behavior
-- Invalid request → `-32600`
-- Method not found → `-32601`
-- Invalid params → `-32602`
-- Internal error → `-32603`
+- Invalid request `-32600`
+- Method not found `-32601`
+- Invalid params `-32602`
+- Internal error `-32603`
 
 Handlers return structured errors via `JsonRpcError` (`src/mcp/server/__init__.py`) and raise `HTTPException` for HTTP endpoints (`src/mcp/server/http.py`).
 
@@ -595,15 +621,15 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Provide comprehensive, structured error handling for MCP servers with JSON-RPC and HTTP protocols, ensuring clear error messages and actionable responses.
 
 **Energy Level:** 5/5 (Critical - Error handling affects all operations)
 
-**Operational Status:**  **ACTIVE** - Production-ready with structured responses
+**Operational Status:** **ACTIVE** - Production-ready with structured responses
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] JSON-RPC 2.0 standard error codes implemented
 - [x] MCP-specific error codes defined
@@ -623,44 +649,44 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
 - Logging infrastructure
 - Metrics collection (optional)
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Error Response Time** | <50ms | 25-35ms |  |
-| **Error Classification Accuracy** | 100% | 100% |  |
-| **Client Retry Success Rate** | >80% | 85% |  |
-| **Error Log Completeness** | 100% | 100% |  |
-| **Documentation Coverage** | 100% error codes | 100% |  |
-| **Test Coverage (Error Paths)** | >95% | 98% |  |
-| **Mean Time to Error Resolution** | <5 minutes | 3 minutes |  |
+| **Error Response Time** | <50ms | 25-35ms | |
+| **Error Classification Accuracy** | 100% | 100% | |
+| **Client Retry Success Rate** | >80% | 85% | |
+| **Error Log Completeness** | 100% | 100% | |
+| **Documentation Coverage** | 100% error codes | 100% | |
+| **Test Coverage (Error Paths)** | >95% | 98% | |
+| **Mean Time to Error Resolution** | <5 minutes | 3 minutes | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Error Handling Flow:**
-1. Exception raised → Global handler catches
-2. Error classified → Appropriate code assigned
-3. Response structured → JSON format
-4. Logging/metrics → Observability data recorded
-5. Client receives → Actionable error message
+1. Exception raised Global handler catches
+2. Error classified Appropriate code assigned
+3. Response structured JSON format
+4. Logging/metrics Observability data recorded
+5. Client receives Actionable error message
 
 **Recovery Paths:**
-- Transient errors (429, 504) → Retry with backoff
-- Client errors (400, 422) → Fix request and retry
-- Server errors (500, 502) → Escalate to monitoring
+- Transient errors (429, 504) Retry with backoff
+- Client errors (400, 422) Fix request and retry
+- Server errors (500, 502) Escalate to monitoring
 
-### Fields 
+### Fields
 **Error State Management:**
 - **Request Context:** Request ID, timestamp, path
 - **Error Context:** Code, message, details, stack trace
 - **Client Context:** API key, rate limit status, retry count
 
 **Error Propagation:**
-- Exception → Handler → Logger → Metrics → Response
+- Exception Handler Logger Metrics Response
 - Structured data flows through entire pipeline
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Structured JSON logging for all errors
 - Prometheus metrics for error rates
@@ -673,7 +699,7 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
 - Structured error responses (client-friendly)
 - Retry with exponential backoff (resilience)
 
-### Redundancy 
+### Redundancy
 **Error Handling Redundancy:**
 1. **Primary:** Specific exception handlers
 2. **Secondary:** Category-based handlers (HTTPException)
@@ -681,23 +707,23 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
 4. **Fallback:** Framework default (500)
 
 **Recovery Mechanisms:**
-- Rate limit → Retry after delay
-- Timeout → Retry with increased timeout
-- Upstream error → Circuit breaker pattern
-- Internal error → Fallback to cached data
+- Rate limit Retry after delay
+- Timeout Retry with increased timeout
+- Upstream error Circuit breaker pattern
+- Internal error Fallback to cached data
 
-### Balance ️
+### Balance
 **Detail vs Security:**
--  Detailed errors in development
-- ️ Sanitized errors in production (no stack traces)
--  Documentation URLs for all error codes
+- Detailed errors in development
+- Sanitized errors in production (no stack traces)
+- Documentation URLs for all error codes
 
 **Performance vs Logging:**
 - Fast error responses (25-35ms)
 - Async logging (non-blocking)
 - Sampling for high-volume errors
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -707,7 +733,7 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
 | **P1** | Error metrics | 10% | Operational visibility |
 | **P2** | Client retry logic | 10% | Resilience patterns |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

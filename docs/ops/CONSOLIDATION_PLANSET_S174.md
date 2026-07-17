@@ -7,12 +7,12 @@
 > **Created:** 2026-03-21 (S173 / PR #3661)
 > **Scope:** GitHub Actions workflows (128 active) + Custom Agents (203 files)
 > **Goal:** Reduce operational surface, eliminate redundancy, lower CI-minutes cost
-> **Next session:** Execute consolidations in priority order (P0 → P1 → P2)
+> **Next session:** Execute consolidations in priority order (P0 P1 P2)
 > **Owner:** @copilot (next session) + @mbaetiong (approval)
 
 ---
 
-##  Current State
+## Current State
 
 | Category | Count | Target | Reduction |
 |----------|-------|--------|-----------|
@@ -24,9 +24,9 @@
 
 ---
 
-##  P0 — Must consolidate (duplicate triggers / race conditions)
+## P0 — Must consolidate (duplicate triggers / race conditions)
 
-### P0-1: Self-Healing CI Triad → Single canonical workflow
+### P0-1: Self-Healing CI Triad Single canonical workflow
 
 | File | Name | Trigger |
 |------|------|---------|
@@ -48,7 +48,7 @@ is the current canonical one (S172 cascade fix applied here). The other two are 
 
 ---
 
-### P0-2: Validation Suite Explosion → Unified Validation Pipeline
+### P0-2: Validation Suite Explosion Unified Validation Pipeline
 
 | File | Name | Trigger |
 |------|------|---------|
@@ -67,9 +67,9 @@ is the current canonical one (S172 cascade fix applied here). The other two are 
 1. Inventory what each workflow uniquely tests (next session: read each file fully)
 2. Identify the superset of tests across all 6
 3. Consolidate into `unified-validation.yml` with job matrix:
-   - `pre-flight` (fast, required) — runs on every PR push
-   - `full-suite` (comprehensive, required) — runs on PR ready_for_review + merge to main
-   - `post-merge` (smoke, required) — runs after merge to main
+ - `pre-flight` (fast, required) — runs on every PR push
+ - `full-suite` (comprehensive, required) — runs on PR ready_for_review + merge to main
+ - `post-merge` (smoke, required) — runs after merge to main
 4. Archive the 6 source files to `.github/workflow-archive/`
 5. Update any workflow that `needs:` these by name
 
@@ -80,7 +80,7 @@ is the current canonical one (S172 cascade fix applied here). The other two are 
 ### P0-3: `pr3178-pytest-execution.yml` — Stale PR-specific workflow
 
 **Problem:** Workflow name contains a specific PR number (`pr3178`). PR #3178 is long
-merged. This is dead code that still fires on `0D_base_ → main` PRs.
+merged. This is dead code that still fires on `0D_base_ main` PRs.
 
 **Action:** Archive to `.github/workflow-archive/pr3178-pytest-execution.yml`
 
@@ -88,9 +88,9 @@ merged. This is dead code that still fires on `0D_base_ → main` PRs.
 
 ---
 
-##  P1 — Should consolidate (redundant coverage / CI minutes waste)
+## P1 — Should consolidate (redundant coverage / CI minutes waste)
 
-### P1-1: Documentation Health → Unified Docs Monitor
+### P1-1: Documentation Health Unified Docs Monitor
 
 | File | Purpose |
 |------|---------|
@@ -207,16 +207,16 @@ capabilities are fully covered. Keep specialized ones (Docker, ImportError, Log 
 
 ---
 
-##  P2 — Nice to consolidate (reduce noise)
+## P2 — Nice to consolidate (reduce noise)
 
 ### P2-1: `Art_`-prefixed workflow renaming
 
 These 6 workflows have `Art_` prefix in their `name:` field (legacy naming convention):
-- `self-healing.yml` → delete (P0-1)
-- `post-merge-validation-optimized.yml` → consolidate (P0-2)
-- `validate.yml` → consolidate (P0-2)
-- `agent-orchestration-unified.yml` → rename to remove `Art_`
-- `audit-qa-suite.yml` → rename to remove `Art_`
+- `self-healing.yml` delete (P0-1)
+- `post-merge-validation-optimized.yml` consolidate (P0-2)
+- `validate.yml` consolidate (P0-2)
+- `agent-orchestration-unified.yml` rename to remove `Art_`
+- `audit-qa-suite.yml` rename to remove `Art_`
 - Others as found
 
 **Action:** Remove `Art_` prefix from `name:` field in all surviving workflows
@@ -226,14 +226,14 @@ These 6 workflows have `Art_` prefix in their `name:` field (legacy naming conve
 ### P2-2: Stale archive docs in `.github/agents/`
 
 **Files to tombstone or delete** (status docs, not agent definitions):
-- `SESSION_SUMMARY_PHASE_8_7_COMPLETE.md` → move to `archive/sessions/`
-- `AGENT_ECOSYSTEM_MAP.md` → verify if superseded by `AGENT_REGISTRY.yaml`
-- `AI_AGENT_INTUITIVENESS_SCORE.md` → archive (snapshot, not an agent)
-- `COGNITIVE_BRAIN_*` status docs → move to `.codex/docs/`
-- `BATCH_SCAN_PROTOCOL.md` → move to `docs/ops/`
-- `S101_CONTINUATION_PROMPT.md`, `S97_CONTINUATION_PROMPT.md` → move to `archive/`
-- `QUANTUM_DETERMINISTIC_PLANNING.md` → validate still relevant or archive
-- `SECRETS_CONFIGURATION.md` → move to `docs/admin/` (sensitive location)
+- `SESSION_SUMMARY_PHASE_8_7_COMPLETE.md` move to `archive/sessions/`
+- `AGENT_ECOSYSTEM_MAP.md` verify if superseded by `AGENT_REGISTRY.yaml`
+- `AI_AGENT_INTUITIVENESS_SCORE.md` archive (snapshot, not an agent)
+- `COGNITIVE_BRAIN_*` status docs move to `.codex/docs/`
+- `BATCH_SCAN_PROTOCOL.md` move to `docs/ops/`
+- `S101_CONTINUATION_PROMPT.md`, `S97_CONTINUATION_PROMPT.md` move to `archive/`
+- `QUANTUM_DETERMINISTIC_PLANNING.md` validate still relevant or archive
+- `SECRETS_CONFIGURATION.md` move to `docs/admin/` (sensitive location)
 
 **Action:** Move non-agent files out of `.github/agents/` to appropriate locations
 
@@ -255,7 +255,7 @@ a unified OODA loop workflow if they form a chain.
 
 ---
 
-##  Execution Checklist (Next Session: S174)
+## Execution Checklist (Next Session: S174)
 
 ```
 Pre-session requirements:
@@ -293,7 +293,7 @@ Post-consolidation:
 
 ---
 
-##  Success Criteria
+## Success Criteria
 
 | Metric | Before | Target | Verification |
 |--------|--------|--------|-------------|
@@ -306,7 +306,7 @@ Post-consolidation:
 
 ---
 
-##  References
+## References
 
 - `.github/workflow-archive/PARITY_CHECKLIST.md` — existing parity record
 - `.github/workflow-archive/ARTIFACT_CATALOG.md` — artifact catalog

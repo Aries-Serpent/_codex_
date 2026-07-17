@@ -516,9 +516,9 @@ class SecurityValidator:
 
  vulnerabilities = []
 
- # Check for hardcoded secrets  # pragma: allowlist secret
- secrets = await self._detect_secrets(context.diff)  # pragma: allowlist secret
- vulnerabilities.extend(secrets)  # pragma: allowlist secret
+ # Check for hardcoded secrets # pragma: allowlist secret
+ secrets = await self._detect_secrets(context.diff) # pragma: allowlist secret
+ vulnerabilities.extend(secrets) # pragma: allowlist secret
 
  # Check for SQL injection
  sql_injection = await self._check_sql_injection(context.files_changed)
@@ -534,31 +534,31 @@ class SecurityValidator:
 
  return vulnerabilities
 
- async def _detect_secrets(self, diff: str) -> List[Dict]:  # pragma: allowlist secret
- """Detect hardcoded secrets in diff"""  # pragma: allowlist secret
- secrets = []  # pragma: allowlist secret
+ async def _detect_secrets(self, diff: str) -> List[Dict]: # pragma: allowlist secret
+ """Detect hardcoded secrets in diff""" # pragma: allowlist secret
+ secrets = [] # pragma: allowlist secret
 
- # Use regex patterns to detect common secret patterns  # pragma: allowlist secret
+ # Use regex patterns to detect common secret patterns # pragma: allowlist secret
  import re
 
  patterns = {
- "api_key": r'api[_-]?key["\']?\s*[:=]\s*["\']([^"\']+)["\']',  # pragma: allowlist secret
- "password": r'password["\']?\s*[:=]\s*["\']([^"\']+)["\']',  # pragma: allowlist secret
- "token": r'token["\']?\s*[:=]\s*["\']([^"\']+)["\']',  # pragma: allowlist secret
+ "api_key": r'api[_-]?key["\']?\s*[:=]\s*["\']([^"\']+)["\']', # pragma: allowlist secret
+ "password": r'password["\']?\s*[:=]\s*["\']([^"\']+)["\']', # pragma: allowlist secret
+ "token": r'token["\']?\s*[:=]\s*["\']([^"\']+)["\']', # pragma: allowlist secret
  }
 
- for secret_type, pattern in patterns.items():  # pragma: allowlist secret
+ for secret_type, pattern in patterns.items(): # pragma: allowlist secret
  matches = re.finditer(pattern, diff, re.IGNORECASE)
  for match in matches:
- secrets.append({  # pragma: allowlist secret
- "type": "hardcoded_secret",  # pragma: allowlist secret
- "secret_type": secret_type,  # pragma: allowlist secret
+ secrets.append({ # pragma: allowlist secret
+ "type": "hardcoded_secret", # pragma: allowlist secret
+ "secret_type": secret_type, # pragma: allowlist secret
  "severity": "critical",
  "line": self._get_line_number(diff, match.start()),
- "suggestion": f"Remove hardcoded {secret_type} and use environment variables"  # pragma: allowlist secret
+ "suggestion": f"Remove hardcoded {secret_type} and use environment variables" # pragma: allowlist secret
  })
 
- return secrets  # pragma: allowlist secret
+ return secrets # pragma: allowlist secret
 
 
 class WorkflowOrchestrator:
@@ -700,7 +700,7 @@ class CodexReviewerApp:
  def __init__(self):
  self.app_id = os.environ.get("CODEX_APP_ID")
  self.private_key = os.environ.get("CODEX_PRIVATE_KEY")
- self.webhook_secret = os.environ.get("CODEX_WEBHOOK_SECRET")  # pragma: allowlist secret
+ self.webhook_secret = os.environ.get("CODEX_WEBHOOK_SECRET") # pragma: allowlist secret
  self.app = Flask(__name__)
  self._setup_routes()
  self.reviewer = CodexQuantumReviewer()
@@ -740,7 +740,7 @@ class CodexReviewerApp:
  return False
 
  expected = "sha256=" + hmac.new(
- self.webhook_secret.encode(),  # pragma: allowlist secret
+ self.webhook_secret.encode(), # pragma: allowlist secret
  request.data,
  hashlib.sha256
  ).hexdigest()
@@ -788,27 +788,27 @@ class CodexReviewerApp:
 
  return jwt.encode(payload, self.private_key, algorithm="RS256")
 
- async def _get_installation_token(self, installation_id: int) -> str:  # pragma: allowlist secret
- """Get installation access token"""  # pragma: allowlist secret
+ async def _get_installation_token(self, installation_id: int) -> str: # pragma: allowlist secret
+ """Get installation access token""" # pragma: allowlist secret
 
- jwt_token = self._generate_jwt()  # pragma: allowlist secret
+ jwt_token = self._generate_jwt() # pragma: allowlist secret
 
  response = requests.post(
- f"https://api.github.com/app/installations/{installation_id}/access_tokens",  # pragma: allowlist secret
+ f"https://api.github.com/app/installations/{installation_id}/access_tokens", # pragma: allowlist secret
  headers={
- "Authorization": f"Bearer {jwt_token}",  # pragma: allowlist secret
+ "Authorization": f"Bearer {jwt_token}", # pragma: allowlist secret
  "Accept": "application/vnd.github.v3+json"
  }
  )
 
- return response.json()["token"]  # pragma: allowlist secret
+ return response.json()["token"] # pragma: allowlist secret
 
  async def _post_review_as_app(self, context: ReviewContext, result: ReviewResult):
  """Post review using GitHub App identity"""
 
- # Get installation token  # pragma: allowlist secret
+ # Get installation token # pragma: allowlist secret
  installation_id = await self._get_installation_id(context.repo)
- token = await self._get_installation_token(installation_id)  # pragma: allowlist secret
+ token = await self._get_installation_token(installation_id) # pragma: allowlist secret
 
  # Format review
  review_body = self.reviewer._format_review_body(result)
@@ -825,7 +825,7 @@ class CodexReviewerApp:
  response = requests.post(
  f"https://api.github.com/repos/{context.repo}/pulls/{context.pr_number}/reviews",
  headers={
- "Authorization": f"token {token}",  # pragma: allowlist secret
+ "Authorization": f"token {token}", # pragma: allowlist secret
  "Accept": "application/vnd.github.v3+json"
  },
  json={
@@ -1096,14 +1096,14 @@ class TestGitHubAppFallback:
  """Test GitHub App fallback functionality"""
 
  def test_jwt_generation(self):
- """Test JWT token generation"""  # pragma: allowlist secret
+ """Test JWT token generation""" # pragma: allowlist secret
  app = CodexReviewerApp()
 
  with patch.dict(os.environ, {"CODEX_APP_ID": "12345", "CODEX_PRIVATE_KEY": "test_key"}):
- jwt_token = app._generate_jwt()  # pragma: allowlist secret
+ jwt_token = app._generate_jwt() # pragma: allowlist secret
 
- assert jwt_token is not None  # pragma: allowlist secret
- assert isinstance(jwt_token, str)  # pragma: allowlist secret
+ assert jwt_token is not None # pragma: allowlist secret
+ assert isinstance(jwt_token, str) # pragma: allowlist secret
 
  def test_signature_verification(self):
  """Test webhook signature verification"""
@@ -1219,12 +1219,12 @@ configuration:
 
 ## Review Workflow
 
-1. **PR Opened/Updated** → Agent triggered automatically
-2. **Initial Analysis** → Comprehensive multi-aspect review (2-5 minutes)
-3. **Results Posted** → Suggestions, orchestration plan, next steps
-4. **Human Interaction** → Address suggestions or teach agent
-5. **Re-review** → Agent validates fixes and updates status
-6. **Approval/Changes** → Based on confidence and findings
+1. **PR Opened/Updated** Agent triggered automatically
+2. **Initial Analysis** Comprehensive multi-aspect review (2-5 minutes)
+3. **Results Posted** Suggestions, orchestration plan, next steps
+4. **Human Interaction** Address suggestions or teach agent
+5. **Re-review** Agent validates fixes and updates status
+6. **Approval/Changes** Based on confidence and findings
 
 ## Knowledge Feeding
 

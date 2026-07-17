@@ -10,10 +10,10 @@ materials here replace the prior scattering of notes across audit artifacts and 
 
 ## Canonical Policy
 
-- 📄 [Canonical Archiving Policy](./canonical-archiving-policy.md)
-  - Covers governance, cadence, evidence logging, PR checklist expectations, hygiene passes, repository archival, and retention
-    practices.
-  - References required evidence artifacts such as `.codex/evidence/archive_ops.jsonl` and ADRs in `docs/arch/`.
+- [Canonical Archiving Policy](./canonical-archiving-policy.md)
+ - Covers governance, cadence, evidence logging, PR checklist expectations, hygiene passes, repository archival, and retention
+ practices.
+ - References required evidence artifacts such as `.codex/evidence/archive_ops.jsonl` and ADRs in `docs/arch/`.
 
 ## Deprecated Summaries
 

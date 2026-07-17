@@ -19,8 +19,8 @@ The rest of this document is a full, implementation-grade guide for Ubuntu 24.x,
 
 * An official **GitHub CLI extension** (`github/gh-copilot`) that adds a chat-like Copilot experience in your terminal. The two core commands are:
 
-  * `gh copilot explain "<cmd>"` → explains a command.
-  * `gh copilot suggest "<task>"` → suggests a shell/git/gh command for your task, with an interactive flow to refine/execute. ([GitHub][3])
+ * `gh copilot explain "<cmd>"` explains a command.
+ * `gh copilot suggest "<task>"` suggests a shell/git/gh command for your task, with an interactive flow to refine/execute. ([GitHub][3])
 * Optional **aliases** (`ghcs`, `ghce`) to speed up usage and allow (opt-in) execution of suggested commands. ([The GitHub Blog][4])
 
 **What it isn’t**
@@ -86,9 +86,9 @@ echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc && source ~/.zshrc
 ```text
 After this, you can use:
 
-* `ghce "what does 'iptables -L' do?"`  (explain)
+* `ghce "what does 'iptables -L' do?"` (explain)
 * `ghcs "find 10 largest files under /var/log, human-readable"` (suggest/execute)
-  Official docs describe these aliases and why you should use the generator (not hand-written shell aliases) if you want **execution** to work. ([GitHub Docs][10])
+ Official docs describe these aliases and why you should use the generator (not hand-written shell aliases) if you want **execution** to work. ([GitHub Docs][10])
 
 ## 4.4 Configure behavior (confirmation & analytics)
 
@@ -120,21 +120,21 @@ From here, you can set the **default execution confirmation** (so `ghcs` won’t
 
 * **No programmatic Copilot inference API.** That’s unchanged. You cannot “wire Codex to call Copilot” via HTTP. ([Stack Overflow][1])
 * **The CLI is designed for humans**: interactive prompts (choose target: shell/git/gh; choose copy/execute/etc.). Users have requested **non-interactive/STDOUT** modes, but they’re not general features today. You’ll find open issues requesting just that. ([GitHub][5])
-* If you need a **bridge** so Codex and Copilot have *shared context*, do it the supported way: expose your retrieval/tools via HTTP, point **Codex** directly at them, and expose those same tools to **Copilot Chat** via **Copilot Extensions** or **MCP** (so **Copilot → your services**, not **Codex → Copilot**). ([Microsoft Learn][14])
+* If you need a **bridge** so Codex and Copilot have *shared context*, do it the supported way: expose your retrieval/tools via HTTP, point **Codex** directly at them, and expose those same tools to **Copilot Chat** via **Copilot Extensions** or **MCP** (so **Copilot your services**, not **Codex Copilot**). ([Microsoft Learn][14])
 
 ---
 
 # 7) Troubleshooting (field issues + fixes)
 
-| Symptom                                   | Likely cause                      | What to check / fix                                                                                                       |
+| Symptom | Likely cause | What to check / fix |
 | ----------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `gh copilot` says feature disabled        | Org policy forbids CLI            | Ask org owner to enable Copilot in CLI / grant access. ([GitHub Docs][6])                                                 |
-| `gh copilot` installed but auth fails     | Using PAT env vars / not OAuth    | Clear `GH_TOKEN`/`GITHUB_TOKEN` and login with `gh auth login` OAuth. Extension docs note PATs unsupported. ([GitHub][3]) |
-| No suggestions / network errors           | Firewall/proxy blocking endpoints | Allowlist Copilot domains for your plan; confirm outbound TLS works. ([GitHub Docs][9])                                   |
-| Aliases `ghcs`/`ghce` don’t work          | Aliases not generated correctly   | Use `gh copilot alias -- bash | zsh | pwsh` per docs; don’t hand-craft if you want execution. ([GitHub Docs][11]) |
-| Want headless output to script            | CLI is interactive                | Not supported; see open feature requests. Consider alternative flows/tools. ([GitHub][5])                                 |
-| TUI copy-to-clipboard weird in automation | Interactive design                | Users try `expect`; it’s finicky because the TUI isn’t built for scripting. ([Stack Overflow][15])                        |
-| “What are the actual commands?”           | Command reference                 | Core verbs are `explain`, `suggest`, plus `config` and `alias`. ([DEV Community][16])                                     |
+| `gh copilot` says feature disabled | Org policy forbids CLI | Ask org owner to enable Copilot in CLI / grant access. ([GitHub Docs][6]) |
+| `gh copilot` installed but auth fails | Using PAT env vars / not OAuth | Clear `GH_TOKEN`/`GITHUB_TOKEN` and login with `gh auth login` OAuth. Extension docs note PATs unsupported. ([GitHub][3]) |
+| No suggestions / network errors | Firewall/proxy blocking endpoints | Allowlist Copilot domains for your plan; confirm outbound TLS works. ([GitHub Docs][9]) |
+| Aliases `ghcs`/`ghce` don’t work | Aliases not generated correctly | Use `gh copilot alias -- bash | zsh | pwsh` per docs; don’t hand-craft if you want execution. ([GitHub Docs][11]) |
+| Want headless output to script | CLI is interactive | Not supported; see open feature requests. Consider alternative flows/tools. ([GitHub][5]) |
+| TUI copy-to-clipboard weird in automation | Interactive design | Users try `expect`; it’s finicky because the TUI isn’t built for scripting. ([Stack Overflow][15]) |
+| “What are the actual commands?” | Command reference | Core verbs are `explain`, `suggest`, plus `config` and `alias`. ([DEV Community][16]) |
 
 ---
 
@@ -192,19 +192,19 @@ gh copilot config    # set default execution confirmation; toggle analytics
 
 # 11) Frequently asked (with precise answers)
 
-**Q:** Can I call Copilot from Codex (or any other agent) to get suggestions programmatically?  
+**Q:** Can I call Copilot from Codex (or any other agent) to get suggestions programmatically?
 **A:** **No.** There is no public inference API. Use the `gh copilot` **interactive** client, or integrate Copilot **Chat** in supported IDEs, or build a bridge where *both* Copilot and Codex call **your** services (Extensions/MCP for Copilot; HTTP for Codex). ([Stack Overflow][1])
 
-**Q:** Can `gh copilot suggest` run non-interactively and print only the command to STDOUT?  
+**Q:** Can `gh copilot suggest` run non-interactively and print only the command to STDOUT?
 **A:** Not today; there are open issues requesting this. The designed path is interactive selection and (optionally) execution via alias. ([GitHub][5])
 
-**Q:** What commands exist in the CLI?  
+**Q:** What commands exist in the CLI?
 **A:** `explain`, `suggest`, `config`, and `alias`. Examples are in GitHub’s docs and README. ([DEV Community][16])
 
-**Q:** Does this work on Ubuntu 24.x terminals?  
+**Q:** Does this work on Ubuntu 24.x terminals?
 **A:** Yes. Install `gh` from APT (or GitHub’s packages), auth, install the extension, and you’re good. ([GitHub][7])
 
-**Q:** Our enterprise blocks traffic. What exactly must be allowed?  
+**Q:** Our enterprise blocks traffic. What exactly must be allowed?
 **A:** Allow `*.githubcopilot.com` generically, and specifically **Business**: `*.business.githubcopilot.com`, **Enterprise**: `*.enterprise.githubcopilot.com`. See GitHub’s allowlist and network routing notes. ([GitHub Docs][18])
 
 ---

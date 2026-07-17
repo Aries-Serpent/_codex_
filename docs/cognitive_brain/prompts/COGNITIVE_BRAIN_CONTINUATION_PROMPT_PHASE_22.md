@@ -13,18 +13,18 @@
 
 ## Current State Summary
 
-### Phase 1 Complete (Accuracy: 81.8% → 100.0%)
+### Phase 1 Complete (Accuracy: 81.8% 100.0%)
 - Fixed 20 failures across 5 patterns (A, B, C, E, F, H) in scoring functions
 - Fixed 6 pre-existing entanglement test failures (CorrelationMeasurement API)
 - All 110 scenarios correct with seed=42
 - File: `src/cognitive_brain/integrations/compliance_integration.py`
 
-### Phase 2A Complete (Coherence: 0.501 → 0.791)
+### Phase 2A Complete (Coherence: 0.501 0.791)
 - Temperature-scaled softmax (T=0.15) in `SuperpositionEngine.evaluate_parallel()`
 - Gap-based coherence approximation in lightweight fast path
 - File: `src/cognitive_brain/quantum/superposition.py`
 
-### Phase 2B Complete (k₁: 1,573 → 0.32)
+### Phase 2B Complete (k₁: 1,573 0.32)
 - Quality-adjusted Rayleigh criterion: `(1+coherence)×(1-quantum_error)×(1+classical_error)`
 - Sequential evaluation in lightweight mode (no ThreadPoolExecutor for ≤8 decisions)
 - Realistic 5-pass classical baseline with PII/violation checks
@@ -167,11 +167,11 @@ python -m pytest tests/cognitive_brain/quantum/test_ab_testing.py \
 |---------|---------------|----------------------|
 | A | score ≥0.75, risk=high, cost <15000 | CONDITIONAL |
 | B | score 0.40-0.60, impact >0.85, cost ≥1500 | MONITOR |
-| C | score >0.65 AND impact >0.6 → MONITOR, else REJECT | Mixed |
+| C | score >0.65 AND impact >0.6 MONITOR, else REJECT | Mixed |
 | D | score 0.68-0.91, risk=high/medium, cost ~2000 | MONITOR |
-| E | pii ≥3 OR risk=high → REJECT | REJECT |
+| E | pii ≥3 OR risk=high REJECT | REJECT |
 | F | violation_count ≥5, impact >0.70, cost ≥3000 | CONDITIONAL |
-| G | score ≥0.88, risk=low → APPROVE | APPROVE |
+| G | score ≥0.88, risk=low APPROVE | APPROVE |
 | H | score ≥0.95 always MONITOR, cost ≥15000 boundary | Mixed |
 
 ---

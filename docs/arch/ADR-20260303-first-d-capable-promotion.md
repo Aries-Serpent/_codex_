@@ -8,20 +8,20 @@
 
 ## 1. Context
 
-The E→D Transition Readiness Gate (`e-to-d-transition-gate.yml`) has held
-a 5/5 score since PR #3447 merged the Soft→GROUNDED infrastructure.
+The ED Transition Readiness Gate (`e-to-d-transition-gate.yml`) has held
+a 5/5 score since PR #3447 merged the SoftGROUNDED infrastructure.
 All prerequisite conditions for D_CAPABLE promotion have been met:
 
 | Condition | Status |
 |-----------|--------|
-| C1: AGENT_REGISTRY.yaml schema-valid |  |
-| C2: CODEX_MANIFEST.json valid < 24h |  |
-| C3: SOFT policy count ≤ 2 (current: 2) |  |
-| C4: agent-handoff-gate.yml deployed |  |
-| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) |  |
+| C1: AGENT_REGISTRY.yaml schema-valid | |
+| C2: CODEX_MANIFEST.json valid < 24h | |
+| C3: SOFT policy count ≤ 2 (current: 2) | |
+| C4: agent-handoff-gate.yml deployed | |
+| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) | |
 
 The follow-up prompt for PR #3492 (`.codex/docs/FOLLOWUP_PROMPT_PR3492.md`)
-identifies Priority 2 as: *First D_CAPABLE Promotion*.  This ADR documents
+identifies Priority 2 as: *First D_CAPABLE Promotion*. This ADR documents
 the criteria, candidate selection, and decision for that initial promotion.
 
 ## 2. D_CAPABLE Criteria
@@ -46,10 +46,10 @@ operating model matures.
 
 | Agent | Tier | Maturity | Handoff | Tests | Docs | Rank | Decision |
 |-------|------|----------|---------|-------|------|------|----------|
-| `ci-testing-agent` | GROUNDED | production | structured |  |  | 1 | **PROMOTE** |
-| `workflow-ci-fixer` | GROUNDED | production | structured |  |  | 3 | Future |
-| `doc-freshness-checker` | GROUNDED | production | structured |  |  | 14 | Future |
-| `dependency-vulnerability-scanner` | GROUNDED | production | structured |  |  | 15 | Future |
+| `ci-testing-agent` | GROUNDED | production | structured | | | 1 | **PROMOTE** |
+| `workflow-ci-fixer` | GROUNDED | production | structured | | | 3 | Future |
+| `doc-freshness-checker` | GROUNDED | production | structured | | | 14 | Future |
+| `dependency-vulnerability-scanner` | GROUNDED | production | structured | | | 15 | Future |
 
 `ci-testing-agent` is the clear first candidate: it holds activation rank 1
 (most frequently invoked agent in the system), is the only agent with
@@ -75,7 +75,7 @@ The `enforcement_tier` remains `GROUNDED` and `handoff_protocol` remains
 
 | Driver | Notes |
 |--------|-------|
-| Infrastructure readiness | E→D gate 5/5  — prerequisites fully met |
+| Infrastructure readiness | ED gate 5/5 — prerequisites fully met |
 | Highest frequency agent | Rank 1 — most exposure, most CI validation coverage |
 | GROUNDED enforcement | CI enforces its behaviour; violations block PRs |
 | Structured handoff | Machine-verifiable inter-agent protocol |
@@ -105,17 +105,17 @@ The `enforcement_tier` remains `GROUNDED` and `handoff_protocol` remains
 
 ### Risks & Mitigations
 - **Risk**: D_CAPABLE status allows autonomous execution that bypasses advisory review.
-  **Mitigation**: `enforcement_tier: GROUNDED` means all actions are CI-gated; the
-  `e-to-d-transition-gate.yml` demotion-annotation step catches any future compliance gap.
+ **Mitigation**: `enforcement_tier: GROUNDED` means all actions are CI-gated; the
+ `e-to-d-transition-gate.yml` demotion-annotation step catches any future compliance gap.
 - **Risk**: Premature promotion before full D_CAPABLE semantics are implemented in orchestrator.
-  **Mitigation**: `orchestrator_routing.py` already differentiates E vs D_CAPABLE routing;
-  the promotion only changes the registry label, not the agent's code.
+ **Mitigation**: `orchestrator_routing.py` already differentiates E vs D_CAPABLE routing;
+ the promotion only changes the registry label, not the agent's code.
 - **Risk**: Other agents promoted prematurely by following this precedent.
-  **Mitigation**: This ADR documents explicit criteria; future promotions must reference these criteria.
+ **Mitigation**: This ADR documents explicit criteria; future promotions must reference these criteria.
 
 ## 8. Provenance & Compliance
 - **Gate**: `e-to-d-transition-gate.yml` — score 5/5 at time of promotion
 - **Follow-up**: `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` — Priority 2
-- **Registry version**: v0.2.1 → v0.2.1 (patch increment for D_CAPABLE field change)
+- **Registry version**: v0.2.1 v0.2.1 (patch increment for D_CAPABLE field change)
 - **Change log**: PR #3494 (this PR)
 - **Next review**: Promote second D_CAPABLE agent after 2-sprint observation period

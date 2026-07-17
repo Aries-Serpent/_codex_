@@ -4,11 +4,11 @@
 
 **Last Updated: 2026-06-22
 
-> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [ PEFT Techniques](peft_hooks.md) | [ Code Quality](code_quality_tooling.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [ Checkpointing](checkpointing.md) | [ PEFT Techniques](peft_hooks.md) | [ Code Quality](code_quality_tooling.md)
 
 ## Overview
 
-**Status**:  Complete - Full training loop patterns and best practices documented
+**Status**: Complete - Full training loop patterns and best practices documented
 
 > **Note**: Code examples throughout this document include imports at the beginning of each snippet for clarity and standalone usage. This is intentional to make each example self-contained and easy to copy.
 
@@ -280,9 +280,9 @@ except KeyboardInterrupt:
 ```
 
 2. **Progress Tracking**: Use tqdm for visual progress bars and logging
-   - Display current loss in progress bar
-   - Log metrics to tensorboard/wandb/mlflow
-   - Save training curves for analysis
+ - Display current loss in progress bar
+ - Log metrics to tensorboard/wandb/mlflow
+ - Save training curves for analysis
 
 3. **Gradient Clipping**: Prevent exploding gradients
 ```python

@@ -2,13 +2,13 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-13  
-**Context**: Phase 20 Complete + Phase 21 Planning  
+**Last Updated**: 2026-07-13
+**Context**: Phase 20 Complete + Phase 21 Planning
 **Purpose**: Updated architecture diagrams reflecting Phase 20 completion and Phase 21 planning
 
 ---
 
-##  Overview
+## Overview
 
 This document updates all key architecture diagrams to reflect:
 1. Phase 20 completion (420 new tests across monitoring, automation, self-healing, integration)
@@ -22,12 +22,13 @@ This document updates all key architecture diagrams to reflect:
 
 ---
 
-##  Diagram 1: Complete CI/CD & Testing Architecture
+## Diagram 1: Complete CI/CD & Testing Architecture
 
 ### Current State After Fixes
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing test-comprehensive.yml<br/> pytest-rerunfailures<br/> No duplicate timeouts, test-rag.yml<br/> No duplicate timeouts<br/> Uses pytest.ini'}}%%
+
 graph TB
     subgraph "CI/CD Pipeline - Fixed Configuration"
         TC[test-comprehensive.yml<br/> pytest-rerunfailures<br/> No duplicate timeouts]
@@ -57,6 +58,7 @@ graph TB
 
     %% Configuration flows
     PI --> TC
+
     PI --> TR
     CONV -.guides.-> TC
     CONV -.guides.-> TR
@@ -68,11 +70,17 @@ graph TB
 
     %% Doc-Test-Scribe workflow
     MODE --> ANALYZE
+
     ANALYZE --> GENDOC
+
     ANALYZE --> GENTEST
+
     GENDOC --> HTML
+
     GENTEST --> SECURITY
+
     SECURITY --> HTML
+
     HTML --> PR
 
     %% Integration points
@@ -89,12 +97,13 @@ graph TB
 
 ---
 
-##  Diagram 2: Doc-Test-Scribe Action Architecture
+## Diagram 2: Doc-Test-Scribe Action Architecture
 
 ### Component-Level Design
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Target Path<br/>src/codex/rag/, Mode Selection<br/>document/test/both/<br/>security/full/index'}}%%
+
 graph TB
     subgraph "Input Layer"
         TARGET[Target Path<br/>src/codex/rag/]
@@ -132,37 +141,51 @@ graph TB
 
     %% Flow connections
     TARGET --> TFIDF
+
     MODE --> TFIDF
+
     CONFIG --> TFIDF
 
     TFIDF --> SCRIBE
+
     QUANTUM --> SCRIBE
 
     SCRIBE --> DOCGEN
+
     SCRIBE --> TESTGEN
 
     DOCGEN --> DOCS
+
     TESTGEN --> TESTS
 
     DOCS --> INDEXGEN
+
     TESTS --> INDEXGEN
 
     TESTGEN --> BANDIT
+
     TESTGEN --> SAFETY
+
     TESTGEN --> SEMGREP
 
     BANDIT --> REPORTS
+
     SAFETY --> REPORTS
+
     SEMGREP --> REPORTS
 
     REPORTS --> SECDIR
+
     SECDIR --> INDEXGEN
 
     INDEXGEN --> INDEX
 
     DOCS --> BRANCH
+
     TESTS --> BRANCH
+
     INDEX --> BRANCH
+
     SECDIR --> BRANCH
 
     BRANCH --> PR_OUT
@@ -174,12 +197,13 @@ graph TB
 
 ---
 
-##  Diagram 3: HTML Index System Architecture
+## Diagram 3: HTML Index System Architecture
 
 ### Interactive Documentation Hub
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Landing Page<br/>index.html<br/>Search + Stats + Nav, Real-time Search<br/>Filter by type/module/content'}}%%
+
 graph TB
     subgraph "HTML Index Components"
         LANDING[Landing Page<br/>index.html<br/>Search + Stats + Nav]
@@ -218,16 +242,23 @@ graph TB
 
     %% Connections
     LANDING --> SEARCH
+
     LANDING --> NAV
+
     LANDING --> STATS
 
     SEARCH --> FILTER
+
     NAV --> SIDEBAR
+
     NAV --> BREADCRUMB
 
     LANDING --> MODULES
+
     LANDING --> TESTS
+
     LANDING --> DOCS
+
     LANDING --> SECURITY
 
     APIDOCS -.indexed by.-> DOCS
@@ -243,12 +274,13 @@ graph TB
 
 ---
 
-##  Diagram 4: Security Scanning Integration
+## Diagram 4: Security Scanning Integration
 
 ### Multi-Tool Security Pipeline
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
+
 sequenceDiagram
     participant Action as Doc-Test-Scribe Action
     participant Code as Source Code
@@ -290,13 +322,15 @@ sequenceDiagram
 
 ---
 
-##  Diagram 5: Custom Action Dependency Flow
+## Diagram 5: Custom Action Dependency Flow
 
 ### Correct Setup Pattern (Fixed)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Workflow Start, Checkout Code'}}%%
+
 flowchart TD
+
     START[Workflow Start] --> CHECKOUT[Checkout Code]
 
     CHECKOUT --> SETUP_PY[Setup Python<br/>actions/setup-python@v5]
@@ -326,12 +360,13 @@ flowchart TD
 
 ---
 
-##  Diagram 6: Testing Conventions Hierarchy
+## Diagram 6: Testing Conventions Hierarchy
 
 ### Centralized Configuration Strategy
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing --timeout=300<br/>--timeout-method=thread, Test Markers<br/>smoke, slow, integration, etc.'}}%%
+
 graph TB
     subgraph "Global Configuration - pytest.ini"
         TIMEOUT[--timeout=300<br/>--timeout-method=thread]
@@ -368,9 +403,11 @@ graph TB
 
     %% Workflow-specific customization
     COV --> TC
+
     COV --> TR
 
     PARALLEL --> TC
+
     PARALLEL --> TR
 
     RETRY --> TC
@@ -392,12 +429,13 @@ graph TB
 
 ---
 
-##  Diagram 7: Agent Ecosystem (Updated)
+## Diagram 7: Agent Ecosystem (Updated)
 
 ### Including Doc-Test-Scribe Action
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing doc-test-scribe-action<br/>🆕 GitHub Action<br/>Composite workflow, setup-python-cached<br/>Custom cache action<br/> Fixed dependencies'}}%%
+
 graph TB
     subgraph "GitHub Actions Layer"
         DTS_ACTION[doc-test-scribe-action<br/>🆕 GitHub Action<br/>Composite workflow]
@@ -430,25 +468,37 @@ graph TB
 
     %% Action to Agent connections
     DTS_ACTION --> DTS_AGENT
+
     DTS_ACTION --> CI_AGENT
+
     FIX_ACTION --> CI_AGENT
 
     %% Agent to Tool connections
     DTS_AGENT --> ANALYZER
+
     DTS_AGENT --> TOKENIZER
+
     DTS_ACTION --> BANDIT
+
     DTS_ACTION --> SAFETY
+
     DTS_ACTION --> SEMGREP
 
     %% Tool to Output connections
     ANALYZER --> DOCS
+
     TOKENIZER --> TESTS
+
     BANDIT --> REPORTS
+
     SAFETY --> REPORTS
+
     SEMGREP --> REPORTS
 
     DOCS --> INDEX
+
     TESTS --> INDEX
+
     REPORTS --> INDEX
 
     INDEX --> PRS
@@ -461,12 +511,13 @@ graph TB
 
 ---
 
-##  Diagram 8: CI/CD Fix Implementation Timeline
+## Diagram 8: CI/CD Fix Implementation Timeline
 
-### Problem → Solution Flow
+### Problem Solution Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 gantt
     title CI/CD Fixes Implementation Timeline
     dateFormat YYYY-MM-DD HH:mm
@@ -498,12 +549,13 @@ gantt
 
 ---
 
-##  Diagram 9: Repository State (Current)
+## Diagram 9: Repository State (Current)
 
 ### Complete System Map
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
+
 mindmap
   root((Codex Repository<br/>2026-01-17))
     CI/CD Infrastructure
@@ -580,9 +632,9 @@ mindmap
 
 ---
 
-##  Summary of Changes
+## Summary of Changes
 
-### Fixed Issues 
+### Fixed Issues
 1. **test-comprehensive.yml**: Correct pytest plugin name (`pytest-rerunfailures`)
 2. **test-comprehensive.yml & test-rag.yml**: Removed duplicate timeout arguments
 3. **self-healing.yml**: Fixed PyYAML dependency order (2 jobs)
@@ -595,7 +647,7 @@ mindmap
 4. **Security Integration**: Bandit + Safety + Semgrep in one workflow
 5. **Auto PR Creation**: @copilot tagged PRs with comprehensive summaries
 
-### Documentation Updates 
+### Documentation Updates
 1. **setup-python-cached/README.md**: Added PyYAML prerequisites
 2. **doc-test-scribe-action/README.md**: Complete usage guide
 3. **Workflow diagrams**: Updated to reflect current state
@@ -603,7 +655,7 @@ mindmap
 
 ---
 
-##  Related Files
+## Related Files
 
 - **Workflow Fixes**: `.github/workflows/test-comprehensive.yml`, `test-rag.yml`, `self-healing.yml`
 - **Configuration**: `pytest.ini`, `TESTING_CONVENTIONS.md`
@@ -613,18 +665,19 @@ mindmap
 
 ---
 
-**Status**:  All diagrams updated to current state  
-**Next**: Perform final CodeQL security scan  
+**Status**: All diagrams updated to current state
+**Next**: Perform final CodeQL security scan
 **Generated**: 2026-01-17T07:10:00Z
 
 ---
 
-##  Diagram 7: Phase 20 Complete Test Architecture
+## Diagram 7: Phase 20 Complete Test Architecture
 
 ### Phase 20 Test Ecosystem (420 New Tests)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Phase 20.1<br/>Production Monitoring<br/>137 tests , Phase 20.2<br/>Advanced Automation<br/>104 tests '}}%%
+
 graph TB
     subgraph "Phase 20 Test Architecture - COMPLETE"
         P201[Phase 20.1<br/>Production Monitoring<br/>137 tests ]
@@ -660,21 +713,31 @@ graph TB
     end
 
     P201 --> MON1
+
     P201 --> MON2
+
     P201 --> MON3
+
     P201 --> MON4
 
     P202 --> AUTO1
+
     P202 --> AUTO2
+
     P202 --> AUTO3
+
     P202 --> AUTO4
 
     P203 --> HEAL1
+
     P203 --> HEAL2
+
     P203 --> HEAL3
+
     P203 --> HEAL4
 
     P204 --> INT1
+
     P204 --> INT2
 
     style P201 fill:#3b82f6
@@ -685,12 +748,13 @@ graph TB
 
 ---
 
-##  Diagram 8: Phase Evolution & Test Growth
+## Diagram 8: Phase Evolution & Test Growth
 
 ### Test Count Growth Across Phases
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Phase 14-19<br/>Foundation<br/>1817 tests, Phase 20<br/>Production Ready<br/>+420 tests<br/>Total: 2237'}}%%
+
 graph LR
     P14[Phase 14-19<br/>Foundation<br/>1817 tests]
     P20[Phase 20<br/>Production Ready<br/>+420 tests<br/>Total: 2237]
@@ -698,13 +762,21 @@ graph LR
     PROD[Production<br/>Deployment<br/>2500+ tests]
 
     P14 -->|137 monitoring| P20
+
     P20 -->|104 automation| P20
+
     P20 -->|119 self-healing| P20
+
     P20 -->|60 integration| P20
+
     P20 -->|Performance| P21
+
     P21 -->|Security| P21
+
     P21 -->|ML Pipeline| P21
+
     P21 -->|Certification| P21
+
     P21 --> PROD
 
     style P14 fill:#64748b
@@ -715,12 +787,13 @@ graph LR
 
 ---
 
-##  Diagram 9: Phase 21 Planned Architecture
+## Diagram 9: Phase 21 Planned Architecture
 
 ### Phase 21 Test Categories (260+ Tests Planned)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Phase 21.0<br/>Performance Testing<br/>65+ tests planned, Phase 21.1<br/>Security Testing<br/>65+ tests planned'}}%%
+
 graph TB
     subgraph "Phase 21: Advanced Testing & Production Readiness"
         P210[Phase 21.0<br/>Performance Testing<br/>65+ tests planned]
@@ -758,30 +831,47 @@ graph TB
     end
 
     P210 --> LOAD
+
     P210 --> STRESS
+
     P210 --> REGR
+
     P210 --> LAT
 
     P211 --> HARD
+
     P211 --> PEN
+
     P211 --> VULN
+
     P211 --> COMP
 
     P212 --> TRAIN
+
     P212 --> INFER
+
     P212 --> PIPE
+
     P212 --> VER
 
     P213 --> VAL
+
     P213 --> DR
+
     P213 --> CERT
+
     P213 --> REL
 
     LOAD --> VAL
+
     STRESS --> VAL
+
     HARD --> CERT
+
     PEN --> CERT
+
     TRAIN --> VAL
+
     INFER --> VAL
 
     style P210 fill:#3b82f6
@@ -793,12 +883,13 @@ graph TB
 
 ---
 
-##  Diagram 10: Complete Cognitive Brain Test Ecosystem
+## Diagram 10: Complete Cognitive Brain Test Ecosystem
 
 ### Full Test Coverage Map (Phases 14-21)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Test Coverage Foundation<br/>545 tests, Advanced Testing & Quality<br/>220 tests'}}%%
+
 graph TB
     subgraph "Foundation (Phases 14-19) - 1817 tests"
         F1[Test Coverage Foundation<br/>545 tests]
@@ -828,20 +919,31 @@ graph TB
     end
 
     F1 --> P20M
+
     F2 --> P20M
+
     F3 --> P20A
+
     F4 --> P20H
+
     F5 --> P20I
+
     F6 --> P20I
 
     P20M --> P21P
+
     P20A --> P21P
+
     P20H --> P21S
+
     P20I --> P21C
 
     P21P --> DEPLOY
+
     P21S --> DEPLOY
+
     P21M --> DEPLOY
+
     P21C --> DEPLOY
 
     style F1 fill:#64748b
@@ -866,11 +968,11 @@ graph TB
 ## Summary
 
 This architecture documentation now reflects:
--  Phase 20 complete (420 tests across 16 files)
--  Total test count: 2,410+
--  Phase 21 planned (260+ tests across 4 sub-phases)
--  Production readiness target: 2,670+ tests
--  Complete cognitive brain test ecosystem
+- Phase 20 complete (420 tests across 16 files)
+- Total test count: 2,410+
+- Phase 21 planned (260+ tests across 4 sub-phases)
+- Production readiness target: 2,670+ tests
+- Complete cognitive brain test ecosystem
 
 **Last Updated**: 2026-01-19T06:45:00Z
 **Status**: Phase 20 Complete, Phase 21 Ready

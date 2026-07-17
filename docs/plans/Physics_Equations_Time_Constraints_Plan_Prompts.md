@@ -3,7 +3,7 @@
 
 ## Table of Contents
 
-  - [Format per item:](#format-per-item)
+ - [Format per item:](#format-per-item)
 
 ## Each entry includes: Equation (canonical), Brief description, Unique "Agent" use case addressing “Due to complexity/time constraints…”, and a clear path toward Future evolution.
 
@@ -23,10 +23,10 @@
 - PROMPT.Goal: “Simulate 2–3 minimal evolution steps to confirm Σρ≈1, v<c, |j|≤c.”
 - PROMPT.Inputs: {dt: 0.05, steps: 3, tasks: 5, Ĥ_model: T̂+V̂(simplified)}
 - PROMPT.Actions_Minimal:
-  - Import orchestrator; init small system; add 3–5 tasks.
-  - Apply Euler update for steps ∈ {1..3}.
+ - Import orchestrator; init small system; add 3–5 tasks.
+ - Apply Euler update for steps ∈ {1..3}.
 - PROMPT.Checks_Fast_Invariants: assert Σρ≈1; v_max<c; j_max≤c; R≈0 (spot).
-- PROMPT.Decision: if all pass → accept simplified tests; else → add 1–2 targeted checks.
+- PROMPT.Decision: if all pass accept simplified tests; else add 1–2 targeted checks.
 - PROMPT.FollowUps_FutureEvolution: upgrade integrator (RK4); GPU acceleration; stochastic dynamics.
 
 2) Energy–Momentum: E² = p²c² + m²c⁴
@@ -35,10 +35,10 @@
 - PROMPT.Goal: “Validate energy bounds for representative tasks under time limits.”
 - PROMPT.Inputs: {m_set: [1..5], p_est: ∇ψ_coarse, c_eff: 1.0}
 - PROMPT.Actions_Minimal:
-  - Estimate momentum on 2 tasks via coarse gradient.
-  - Compute E_est; compare against permissible budget.
+ - Estimate momentum on 2 tasks via coarse gradient.
+ - Compute E_est; compare against permissible budget.
 - PROMPT.Checks_Fast_Invariants: E_est within budget; no anomalous spikes.
-- PROMPT.Decision: pass → proceed minimal suite; fail → expand checks for outliers.
+- PROMPT.Decision: pass proceed minimal suite; fail expand checks for outliers.
 - PROMPT.FollowUps_FutureEvolution: constraint solver integrating latency; learnable cost models.
 
 3) Lorentz factor: γ = 1/√(1 - v²/c²)
@@ -48,7 +48,7 @@
 - PROMPT.Inputs: {v_max_snapshot, c_eff: 1.0}
 - PROMPT.Actions_Minimal: capture speed metrics after 1 step; compute γ.
 - PROMPT.Checks_Fast_Invariants: v_max < c; γ ≥ 1; no instability flags.
-- PROMPT.Decision: unstable → reduce dt and run extra 1–2 checks; stable → proceed.
+- PROMPT.Decision: unstable reduce dt and run extra 1–2 checks; stable proceed.
 - PROMPT.FollowUps_FutureEvolution: adaptive dt controller; γ-aware global scheduler.
 
 4) Continuity: ∂ρ/∂t + ∇·j = 0
@@ -58,7 +58,7 @@
 - PROMPT.Inputs: {ρ, j, dt, tolerance: 1e-3}
 - PROMPT.Actions_Minimal: compute R for 2 tasks; report max|R|.
 - PROMPT.Checks_Fast_Invariants: max|R| ≤ tolerance.
-- PROMPT.Decision: pass → accept simplification; fail → apply normalization repair, retest.
+- PROMPT.Decision: pass accept simplification; fail apply normalization repair, retest.
 - PROMPT.FollowUps_FutureEvolution: real-time enforcer; auto-normalization pipeline.
 
 5) Noether current: j = (ħ/2mi)(ψ*∇ψ - ψ∇ψ*)
@@ -68,7 +68,7 @@
 - PROMPT.Inputs: {task_set_small, ∇ψ_coarse}
 - PROMPT.Actions_Minimal: compute j for 3 tasks; rank; keep top-1/2 for checks.
 - PROMPT.Checks_Fast_Invariants: top tasks meet |j|≤c; continuity residual OK.
-- PROMPT.Decision: if any |j|>c → add specific current-bound test; else continue.
+- PROMPT.Decision: if any |j|>c add specific current-bound test; else continue.
 - PROMPT.FollowUps_FutureEvolution: richer diagnostics; auto-repair routines.
 
 6) Operators: p̂ = -iħ∇; Ê = iħ∂/∂t
@@ -78,7 +78,7 @@
 - PROMPT.Inputs: {Δ: coarse, dt: small}
 - PROMPT.Actions_Minimal: compute ||p|| and energy proxies; flag extremes.
 - PROMPT.Checks_Fast_Invariants: values within bound ranges; no spikes.
-- PROMPT.Decision: spikes → add operator-specific tests; else proceed.
+- PROMPT.Decision: spikes add operator-specific tests; else proceed.
 - PROMPT.FollowUps_FutureEvolution: vectorization; KD-tree neighborhood sampling.
 
 7) Hamiltonian: Ĥ = T̂ + V̂
@@ -88,7 +88,7 @@
 - PROMPT.Inputs: {T̂_model: kinetic, V̂_model: simple potential}
 - PROMPT.Actions_Minimal: compute impact score per task; select top-K=2.
 - PROMPT.Checks_Fast_Invariants: fast invariants on selected tasks only.
-- PROMPT.Decision: if selected fail → expand K; else accept minimal suite.
+- PROMPT.Decision: if selected fail expand K; else accept minimal suite.
 - PROMPT.FollowUps_FutureEvolution: learnable potentials; adaptive objectives.
 
 8) Dirac equation: iħ ∂ψ/∂t = -iħ α·∇ψ + βmc²ψ
@@ -98,7 +98,7 @@
 - PROMPT.Inputs: {spinor_state_sample, mode: dominant}
 - PROMPT.Actions_Minimal: check Σ|ψ|²=1; compute helicity; observe ζ.
 - PROMPT.Checks_Fast_Invariants: normalization OK; |ζ| below threshold.
-- PROMPT.Decision: high ζ → reduce dt/run extra spinor check; else proceed.
+- PROMPT.Decision: high ζ reduce dt/run extra spinor check; else proceed.
 - PROMPT.FollowUps_FutureEvolution: entanglement-aware constraints; multi-component schedulers.
 
 9) Bell states: |Φ±⟩, |Ψ±⟩
@@ -108,7 +108,7 @@
 - PROMPT.Inputs: {groups: [{A,B}], state: φ_plus|ψ_minus}
 - PROMPT.Actions_Minimal: compute correlation E(A,B); assert pattern (corr/anti-corr).
 - PROMPT.Checks_Fast_Invariants: CHSH proxy within expected band; transactional behavior OK.
-- PROMPT.Decision: anomaly → add second representative; else proceed.
+- PROMPT.Decision: anomaly add second representative; else proceed.
 - PROMPT.FollowUps_FutureEvolution: statistical monitors; distributed entanglement.
 
 10) Second quantization: {â, â†}
@@ -118,7 +118,7 @@
 - PROMPT.Inputs: {count: 3, species: {boson, fermion}}
 - PROMPT.Actions_Minimal: apply â† rules; verify fermion exclusion; cleanup with â.
 - PROMPT.Checks_Fast_Invariants: population counts legal; no rule violations.
-- PROMPT.Decision: violations → add species-specific tests; else continue.
+- PROMPT.Decision: violations add species-specific tests; else continue.
 - PROMPT.FollowUps_FutureEvolution: typed pools; dynamic quotas.
 
 11) Path Integral: S = ∫L dt
@@ -128,7 +128,7 @@
 - PROMPT.Inputs: {paths: 5, dt: 0.05, L_model: coverage/runtime}
 - PROMPT.Actions_Minimal: sample paths; compute S; rank; pick best.
 - PROMPT.Checks_Fast_Invariants: invariants pass on chosen path.
-- PROMPT.Decision: if chosen fails → pick next-best; else proceed.
+- PROMPT.Decision: if chosen fails pick next-best; else proceed.
 - PROMPT.FollowUps_FutureEvolution: importance sampling; GPU annealing.
 
 12) Annealing: T_{k+1}=αT_k
@@ -138,17 +138,17 @@
 - PROMPT.Inputs: {T0:1.0, α:0.85, K:3}
 - PROMPT.Actions_Minimal: iterate schedule; evaluate candidate sets.
 - PROMPT.Checks_Fast_Invariants: pick set satisfying fast invariants.
-- PROMPT.Decision: none pass → widen K; else finalize.
+- PROMPT.Decision: none pass widen K; else finalize.
 - PROMPT.FollowUps_FutureEvolution: adaptive α via telemetry.
 
 13) Zitterbewegung ζ
 - Description: Spinor oscillation instability signal.
 - Agent Use Case: Reduce dt; run tiny window to decide simplification.
 - PROMPT.Goal: “Measure ζ; if high, shrink dt and recheck.”
-- PROMPT.Inputs: {spinor_sample, dt:0.05→0.02}
+- PROMPT.Inputs: {spinor_sample, dt:0.050.02}
 - PROMPT.Actions_Minimal: compute ζ; adjust dt; retest invariants.
 - PROMPT.Checks_Fast_Invariants: normalization; v<c; |j|≤c.
-- PROMPT.Decision: persistent high ζ → add targeted spinor tests.
+- PROMPT.Decision: persistent high ζ add targeted spinor tests.
 - PROMPT.FollowUps_FutureEvolution: damping models; adaptive thresholds.
 
 14) Helicity h = (S·p)/|p|
@@ -158,8 +158,8 @@
 - PROMPT.Inputs: {tasks:3, p_est, S}
 - PROMPT.Actions_Minimal: compute h; tag risky; run invariants.
 - PROMPT.Checks_Fast_Invariants: invariants pass on risky subset.
-- PROMPT.Decision: misalignment absent → proceed with minimal set.
-- PROMPT.FollowUps_FutureEvolution: helicity→priority mapping.
+- PROMPT.Decision: misalignment absent proceed with minimal set.
+- PROMPT.FollowUps_FutureEvolution: helicitypriority mapping.
 
 15) Coherence (ρ variance)
 - Description: System consistency measure.
@@ -168,7 +168,7 @@
 - PROMPT.Inputs: {ρ_snapshot}
 - PROMPT.Actions_Minimal: compute variance; select worst-case task.
 - PROMPT.Checks_Fast_Invariants: invariants on selected task(s).
-- PROMPT.Decision: high incoherence → add one extra check.
+- PROMPT.Decision: high incoherence add one extra check.
 - PROMPT.FollowUps_FutureEvolution: multi-scale coherence across nodes.
 
 16) Continuity residual R
@@ -178,7 +178,7 @@
 - PROMPT.Inputs: {ρ, j, tol:1e-3}
 - PROMPT.Actions_Minimal: spot-check 2 tasks; report max|R|.
 - PROMPT.Checks_Fast_Invariants: max|R| ≤ tol.
-- PROMPT.Decision: fail → normalize and recheck.
+- PROMPT.Decision: fail normalize and recheck.
 - PROMPT.FollowUps_FutureEvolution: auto-logging repair loop.
 
 17) Momentum norm ||p||
@@ -188,7 +188,7 @@
 - PROMPT.Inputs: {Δ: coarse}
 - PROMPT.Actions_Minimal: compute ||p||; flag extremes.
 - PROMPT.Checks_Fast_Invariants: values within safe band.
-- PROMPT.Decision: extremes → add momentum-specific test.
+- PROMPT.Decision: extremes add momentum-specific test.
 - PROMPT.FollowUps_FutureEvolution: vectorized gradients; KD-tree.
 
 18) Energy proxy Ê
@@ -198,7 +198,7 @@
 - PROMPT.Inputs: {dt: small}
 - PROMPT.Actions_Minimal: measure energy; check budget.
 - PROMPT.Checks_Fast_Invariants: budget respected.
-- PROMPT.Decision: over-budget → add energy constraint test.
+- PROMPT.Decision: over-budget add energy constraint test.
 - PROMPT.FollowUps_FutureEvolution: cached approximations.
 
 19) Hamiltonian split Ĥ
@@ -208,7 +208,7 @@
 - PROMPT.Inputs: {T̂_model, V̂_model}
 - PROMPT.Actions_Minimal: compute scores; select K.
 - PROMPT.Checks_Fast_Invariants: run invariants on selection.
-- PROMPT.Decision: failure → increase K.
+- PROMPT.Decision: failure increase K.
 - PROMPT.FollowUps_FutureEvolution: learnable potentials.
 
 20) Euler update
@@ -218,7 +218,7 @@
 - PROMPT.Inputs: {steps:2, dt:0.05}
 - PROMPT.Actions_Minimal: step evolution; capture metrics.
 - PROMPT.Checks_Fast_Invariants: Σρ≈1; v<c; |j|≤c; R≈0.
-- PROMPT.Decision: pass → accept; fail → add guard tests.
+- PROMPT.Decision: pass accept; fail add guard tests.
 - PROMPT.FollowUps_FutureEvolution: RK4; symplectic integrators.
 
 21) Bell states definitions
@@ -228,7 +228,7 @@
 - PROMPT.Inputs: {pair: (A,B), state: psi_minus|phi_plus}
 - PROMPT.Actions_Minimal: compute E(A,B); assert expected correlation.
 - PROMPT.Checks_Fast_Invariants: transactional semantics OK.
-- PROMPT.Decision: mismatch → run alternative Bell state.
+- PROMPT.Decision: mismatch run alternative Bell state.
 - PROMPT.FollowUps_FutureEvolution: CHSH monitors; distributed tests.
 
 22) Dirac current bound |j| ≤ c
@@ -238,17 +238,17 @@
 - PROMPT.Inputs: {current_magnitude}
 - PROMPT.Actions_Minimal: capture snapshot; compare to c.
 - PROMPT.Checks_Fast_Invariants: bound satisfied.
-- PROMPT.Decision: violation → add focused current tests.
+- PROMPT.Decision: violation add focused current tests.
 - PROMPT.FollowUps_FutureEvolution: network-aware c_eff.
 
 23) v < c via γ
 - Description: Speed limit enforced via Lorentz factor.
-- Agent Use Case: v-check gate → minimal suite if safe.
+- Agent Use Case: v-check gate minimal suite if safe.
 - PROMPT.Goal: “Compute v_max, γ; decide.”
 - PROMPT.Inputs: {v_max, c_eff}
 - PROMPT.Actions_Minimal: snapshot; compute γ.
 - PROMPT.Checks_Fast_Invariants: v_max<c; γ≥1.
-- PROMPT.Decision: if fail → reduce dt and retest.
+- PROMPT.Decision: if fail reduce dt and retest.
 - PROMPT.FollowUps_FutureEvolution: latency-aware guards.
 
 24) Normalization ∫ρ dx = 1
@@ -258,7 +258,7 @@
 - PROMPT.Inputs: {ρ_snapshot}
 - PROMPT.Actions_Minimal: compute Σρ; compare.
 - PROMPT.Checks_Fast_Invariants: within tolerance.
-- PROMPT.Decision: fail → renormalize and retest.
+- PROMPT.Decision: fail renormalize and retest.
 - PROMPT.FollowUps_FutureEvolution: adaptive normalization budgets.
 
 25) Coherence decay e^{-t/τ}
@@ -268,7 +268,7 @@
 - PROMPT.Inputs: {coherence_series}
 - PROMPT.Actions_Minimal: fit simple τ; set window T_small.
 - PROMPT.Checks_Fast_Invariants: within band; invariants OK.
-- PROMPT.Decision: rapid decay → add 1 extra check.
+- PROMPT.Decision: rapid decay add 1 extra check.
 - PROMPT.FollowUps_FutureEvolution: learned τ from telemetry.
 
 26) KD-tree R selection
@@ -278,7 +278,7 @@
 - PROMPT.Inputs: {R: small}
 - PROMPT.Actions_Minimal: set R; compute momentum coupling.
 - PROMPT.Checks_Fast_Invariants: bounds satisfied.
-- PROMPT.Decision: anomalies → adjust R and retest.
+- PROMPT.Decision: anomalies adjust R and retest.
 - PROMPT.FollowUps_FutureEvolution: auto-tuned R.
 
 27) Σ ρ_i metric (Prometheus)
@@ -288,7 +288,7 @@
 - PROMPT.Inputs: {metrics_endpoint}
 - PROMPT.Actions_Minimal: read metric; compare tolerance.
 - PROMPT.Checks_Fast_Invariants: pass snapshot check.
-- PROMPT.Decision: fail → run in-process check.
+- PROMPT.Decision: fail run in-process check.
 - PROMPT.FollowUps_FutureEvolution: sharded aggregation.
 
 28) ζ threshold (instability gate)
@@ -298,7 +298,7 @@
 - PROMPT.Inputs: {spinor_sample}
 - PROMPT.Actions_Minimal: compute ζ; decide.
 - PROMPT.Checks_Fast_Invariants: normalization & bounds pass.
-- PROMPT.Decision: high ζ → reduce dt + extra spinor check.
+- PROMPT.Decision: high ζ reduce dt + extra spinor check.
 - PROMPT.FollowUps_FutureEvolution: feedback-learned thresholds.
 
 29) V̂ constraints (domain potential)
@@ -308,7 +308,7 @@
 - PROMPT.Inputs: {V̂_model_simple}
 - PROMPT.Actions_Minimal: compute score; select; run invariants.
 - PROMPT.Checks_Fast_Invariants: pass selected cases.
-- PROMPT.Decision: failures → expand K.
+- PROMPT.Decision: failures expand K.
 - PROMPT.FollowUps_FutureEvolution: data-calibrated potentials.
 
 30) Entanglement correlation E(a,b)
@@ -318,7 +318,7 @@
 - PROMPT.Inputs: {pair (A,B), state}
 - PROMPT.Actions_Minimal: measure E; compare threshold.
 - PROMPT.Checks_Fast_Invariants: entanglement semantics OK.
-- PROMPT.Decision: mismatch → second pair test.
+- PROMPT.Decision: mismatch second pair test.
 - PROMPT.FollowUps_FutureEvolution: distributed statistical validation.
 
 31) Euler local error O(dt²)
@@ -328,7 +328,7 @@
 - PROMPT.Inputs: {dt:0.05, steps:2}
 - PROMPT.Actions_Minimal: compute expected local/global error.
 - PROMPT.Checks_Fast_Invariants: invariants pass.
-- PROMPT.Decision: high error → add RK4 check.
+- PROMPT.Decision: high error add RK4 check.
 - PROMPT.FollowUps_FutureEvolution: switchable integrators.
 
 32) Momentum conservation Σ p_i constant
@@ -338,7 +338,7 @@
 - PROMPT.Inputs: {closed_subset}
 - PROMPT.Actions_Minimal: compute Σp(t0), Σp(t1).
 - PROMPT.Checks_Fast_Invariants: equality within tol.
-- PROMPT.Decision: fail → add repair or extended check.
+- PROMPT.Decision: fail add repair or extended check.
 - PROMPT.FollowUps_FutureEvolution: open-system variants.
 
 33) Energy conservation Σ E_i constant
@@ -348,7 +348,7 @@
 - PROMPT.Inputs: {closed_subset}
 - PROMPT.Actions_Minimal: compute ΣE(t0), ΣE(t1).
 - PROMPT.Checks_Fast_Invariants: equality within tol.
-- PROMPT.Decision: fail → run normalization repair; retest.
+- PROMPT.Decision: fail run normalization repair; retest.
 - PROMPT.FollowUps_FutureEvolution: leak detection monitors.
 
 34) Subluminal bound v<c via γ
@@ -357,8 +357,8 @@
 - PROMPT.Goal: “Snapshot v_max; assert v<c.”
 - PROMPT.Inputs: {v_max, c_eff}
 - PROMPT.Actions_Minimal: compute γ; check.
-- PROMPT.Checks_Fast_Invariants: pass → proceed.
-- PROMPT.Decision: fail → reduce dt; targeted speed test.
+- PROMPT.Checks_Fast_Invariants: pass proceed.
+- PROMPT.Decision: fail reduce dt; targeted speed test.
 - PROMPT.FollowUps_FutureEvolution: distributed latency guard.
 
 35) Σ_i ρ_i = 1 (normalization total)
@@ -368,7 +368,7 @@
 - PROMPT.Inputs: {ρ_snapshot}
 - PROMPT.Actions_Minimal: sum; compare.
 - PROMPT.Checks_Fast_Invariants: within tol.
-- PROMPT.Decision: fail → renormalize & recheck.
+- PROMPT.Decision: fail renormalize & recheck.
 - PROMPT.FollowUps_FutureEvolution: streaming normalization.
 
 36) |j| ≤ c_eff (distributed bound)
@@ -378,7 +378,7 @@
 - PROMPT.Inputs: {latency_ms, j_max}
 - PROMPT.Actions_Minimal: compute c_eff; compare.
 - PROMPT.Checks_Fast_Invariants: pass bound.
-- PROMPT.Decision: fail → add distributed current tests.
+- PROMPT.Decision: fail add distributed current tests.
 - PROMPT.FollowUps_FutureEvolution: telemetry-adaptive c_eff.
 
 37) Helicity ranges
@@ -388,7 +388,7 @@
 - PROMPT.Inputs: {S, p}
 - PROMPT.Actions_Minimal: classify; run invariants.
 - PROMPT.Checks_Fast_Invariants: pass on chosen cases.
-- PROMPT.Decision: none misaligned → proceed with generic checks.
+- PROMPT.Decision: none misaligned proceed with generic checks.
 - PROMPT.FollowUps_FutureEvolution: learned mapping.
 
 38) Spinor normalization Σ|ψ|² = 1
@@ -398,7 +398,7 @@
 - PROMPT.Inputs: {spinor}
 - PROMPT.Actions_Minimal: sum components; compare.
 - PROMPT.Checks_Fast_Invariants: within tolerance.
-- PROMPT.Decision: fail → renormalize; retest.
+- PROMPT.Decision: fail renormalize; retest.
 - PROMPT.FollowUps_FutureEvolution: adaptive normalization.
 
 39) Action ΔS comparisons
@@ -408,7 +408,7 @@
 - PROMPT.Inputs: {paths:3}
 - PROMPT.Actions_Minimal: sample; compute; rank.
 - PROMPT.Checks_Fast_Invariants: invariants on selected plan.
-- PROMPT.Decision: fail → select next-best.
+- PROMPT.Decision: fail select next-best.
 - PROMPT.FollowUps_FutureEvolution: multi-objective L.
 
 40) Noether currents (ρ, j, g)
@@ -417,8 +417,8 @@
 - PROMPT.Goal: “Run current checks on changed files.”
 - PROMPT.Inputs: {changed_modules}
 - PROMPT.Actions_Minimal: compute currents; assert invariants.
-- PROMPT.Checks_Fast_Invariants: pass → proceed.
-- PROMPT.Decision: fail → add module-specific tests.
+- PROMPT.Checks_Fast_Invariants: pass proceed.
+- PROMPT.Decision: fail add module-specific tests.
 - PROMPT.FollowUps_FutureEvolution: domain potentials.
 
 41) Operator commutation heuristics
@@ -428,7 +428,7 @@
 - PROMPT.Inputs: {Ĥ, p̂, Ê (simplified)}
 - PROMPT.Actions_Minimal: run toy compositions; compare outputs.
 - PROMPT.Checks_Fast_Invariants: no wild deviations.
-- PROMPT.Decision: anomalies → add operator tests.
+- PROMPT.Decision: anomalies add operator tests.
 - PROMPT.FollowUps_FutureEvolution: formal commutators.
 
 42) Coherence decay bands
@@ -438,7 +438,7 @@
 - PROMPT.Inputs: {coherence_snapshot}
 - PROMPT.Actions_Minimal: band classification; set T_small.
 - PROMPT.Checks_Fast_Invariants: invariants pass inside band.
-- PROMPT.Decision: out-of-band → add extra check.
+- PROMPT.Decision: out-of-band add extra check.
 - PROMPT.FollowUps_FutureEvolution: learned bands.
 
 43) KD-tree R vs coupling
@@ -448,7 +448,7 @@
 - PROMPT.Inputs: {R_small}
 - PROMPT.Actions_Minimal: compute; compare baseline.
 - PROMPT.Checks_Fast_Invariants: bounds OK.
-- PROMPT.Decision: large deviation → adjust R.
+- PROMPT.Decision: large deviation adjust R.
 - PROMPT.FollowUps_FutureEvolution: auto-tune.
 
 44) Euler global error ~ O(T·dt)
@@ -458,7 +458,7 @@
 - PROMPT.Inputs: {T_small, dt}
 - PROMPT.Actions_Minimal: compute O(T·dt).
 - PROMPT.Checks_Fast_Invariants: invariants pass.
-- PROMPT.Decision: high error → add RK4 step.
+- PROMPT.Decision: high error add RK4 step.
 - PROMPT.FollowUps_FutureEvolution: integrator switching.
 
 45) ∇ψ finite-difference
@@ -468,7 +468,7 @@
 - PROMPT.Inputs: {Δ_coarse}
 - PROMPT.Actions_Minimal: gradient; magnitude; compare.
 - PROMPT.Checks_Fast_Invariants: within bands.
-- PROMPT.Decision: outlier → add precise stencil.
+- PROMPT.Decision: outlier add precise stencil.
 - PROMPT.FollowUps_FutureEvolution: higher-order stencils.
 
 46) ∇·j finite-difference
@@ -478,7 +478,7 @@
 - PROMPT.Inputs: {j_est}
 - PROMPT.Actions_Minimal: divergence; compare tol.
 - PROMPT.Checks_Fast_Invariants: within tolerance.
-- PROMPT.Decision: fail → normalization repair.
+- PROMPT.Decision: fail normalization repair.
 - PROMPT.FollowUps_FutureEvolution: sparse divergence.
 
 47) Health function H = f(ρ,j,v,γ)
@@ -488,7 +488,7 @@
 - PROMPT.Inputs: {health_snapshot}
 - PROMPT.Actions_Minimal: evaluate; thresholds.
 - PROMPT.Checks_Fast_Invariants: healthy/degraded acceptable.
-- PROMPT.Decision: unhealthy → add checks before merge.
+- PROMPT.Decision: unhealthy add checks before merge.
 - PROMPT.FollowUps_FutureEvolution: ML-derived f(.).
 
 48) Concurrency bound via spinor coupling
@@ -497,8 +497,8 @@
 - PROMPT.Goal: “Run representative coupling; assert safe.”
 - PROMPT.Inputs: {coupling_case}
 - PROMPT.Actions_Minimal: simulate; check invariants.
-- PROMPT.Checks_Fast_Invariants: pass → proceed.
-- PROMPT.Decision: fail → add concurrency tests.
+- PROMPT.Checks_Fast_Invariants: pass proceed.
+- PROMPT.Decision: fail add concurrency tests.
 - PROMPT.FollowUps_FutureEvolution: multi-component schedulers.
 
 49) J = Coverage/Runtime
@@ -508,17 +508,17 @@
 - PROMPT.Inputs: {candidate_checks, runtime_estimates}
 - PROMPT.Actions_Minimal: compute J; select K.
 - PROMPT.Checks_Fast_Invariants: apply on selected.
-- PROMPT.Decision: low J → revisit selection.
+- PROMPT.Decision: low J revisit selection.
 - PROMPT.FollowUps_FutureEvolution: multi-objective weighting.
 
-50) ρ ← ρ/Σρ (repair)
+50) ρ ρ/Σρ (repair)
 - Description: Simple renormalization step.
 - Agent Use Case: Apply repair; proceed minimally.
 - PROMPT.Goal: “Normalize ρ; rerun invariants.”
 - PROMPT.Inputs: {ρ}
 - PROMPT.Actions_Minimal: renormalize; recheck.
 - PROMPT.Checks_Fast_Invariants: Σρ≈1; bounds pass.
-- PROMPT.Decision: persistent drift → log follow-up.
+- PROMPT.Decision: persistent drift log follow-up.
 - PROMPT.FollowUps_FutureEvolution: audit trail + bounds.
 
 51) Σ_i metric_i aggregation
@@ -528,7 +528,7 @@
 - PROMPT.Inputs: {metrics_source}
 - PROMPT.Actions_Minimal: fetch; compare thresholds.
 - PROMPT.Checks_Fast_Invariants: Σρ≈1; coherence within band.
-- PROMPT.Decision: mismatch → in-process validation.
+- PROMPT.Decision: mismatch in-process validation.
 - PROMPT.FollowUps_FutureEvolution: streaming/sharded metrics.
 
 52) Euler error (local/global) reference
@@ -538,7 +538,7 @@
 - PROMPT.Inputs: {dt, T_small}
 - PROMPT.Actions_Minimal: local O(dt²); global O(T·dt).
 - PROMPT.Checks_Fast_Invariants: pass invariants.
-- PROMPT.Decision: high error → add RK4 sample.
+- PROMPT.Decision: high error add RK4 sample.
 - PROMPT.FollowUps_FutureEvolution: integrator selection policy.
 
 53) Entanglement transactional rule
@@ -548,7 +548,7 @@
 - PROMPT.Inputs: {group: [A,B,C]}
 - PROMPT.Actions_Minimal: simulate toggle; assert group outcome.
 - PROMPT.Checks_Fast_Invariants: correlation semantics OK.
-- PROMPT.Decision: fail → add second group test.
+- PROMPT.Decision: fail add second group test.
 - PROMPT.FollowUps_FutureEvolution: rollout monitors.
 
 54) Coherence threshold bands (ops)
@@ -557,8 +557,8 @@
 - PROMPT.Goal: “Compute band; choose minimal path.”
 - PROMPT.Inputs: {coherence_snapshot}
 - PROMPT.Actions_Minimal: band assignment; apply fast invariants.
-- PROMPT.Checks_Fast_Invariants: pass → proceed.
-- PROMPT.Decision: red band → add 1 extra check.
+- PROMPT.Checks_Fast_Invariants: pass proceed.
+- PROMPT.Decision: red band add 1 extra check.
 - PROMPT.FollowUps_FutureEvolution: learned thresholds.
 
 55) Glossary (ħ, γ, ρ, j, Ĥ, p̂, Ê)
@@ -578,17 +578,17 @@
 - PROMPT.Inputs: {ρ,j,v,dt,tol}
 - PROMPT.Actions_Minimal: compute; assert; log summary.
 - PROMPT.Checks_Fast_Invariants: pass thresholds.
-- PROMPT.Decision: fail → targeted tests.
+- PROMPT.Decision: fail targeted tests.
 - PROMPT.FollowUps_FutureEvolution: auto-enforcer integration.
 
-57) Ĥ → J(task) mapping
+57) Ĥ J(task) mapping
 - Description: Bridge physics objective to scheduler.
 - Agent Use Case: Rank tasks; pick top-K tests.
 - PROMPT.Goal: “Compute J via simplified Ĥ; select tests.”
 - PROMPT.Inputs: {Ĥ_params, runtime_estimate}
 - PROMPT.Actions_Minimal: score; choose K.
 - PROMPT.Checks_Fast_Invariants: invariants on selection.
-- PROMPT.Decision: low J → adjust selection.
+- PROMPT.Decision: low J adjust selection.
 - PROMPT.FollowUps_FutureEvolution: adaptive objectives.
 
 58) Dirac current detailed bound
@@ -597,8 +597,8 @@
 - PROMPT.Goal: “Measure j_max; compare to c.”
 - PROMPT.Inputs: {j_max, c}
 - PROMPT.Actions_Minimal: snapshot; assert j_max≤c.
-- PROMPT.Checks_Fast_Invariants: pass → accept.
-- PROMPT.Decision: fail → add current-focused check.
+- PROMPT.Checks_Fast_Invariants: pass accept.
+- PROMPT.Decision: fail add current-focused check.
 - PROMPT.FollowUps_FutureEvolution: c_eff variants.
 
 59) Annealing schedules & cooling curves
@@ -608,17 +608,17 @@
 - PROMPT.Inputs: {T0, α, K}
 - PROMPT.Actions_Minimal: iterate; evaluate; select.
 - PROMPT.Checks_Fast_Invariants: pass on chosen subset.
-- PROMPT.Decision: fail → expand K or adjust α.
+- PROMPT.Decision: fail expand K or adjust α.
 - PROMPT.FollowUps_FutureEvolution: telemetry-adaptive cooling.
 
-60) Validation matrix module↔invariant
+60) Validation matrix moduleinvariant
 - Description: Map modules to required invariant checks.
 - Agent Use Case: Select tests per changed modules only.
 - PROMPT.Goal: “Identify changed modules; run mapped checks.”
 - PROMPT.Inputs: {diff_context}
 - PROMPT.Actions_Minimal: lookup matrix; execute checks.
 - PROMPT.Checks_Fast_Invariants: pass mapped checks.
-- PROMPT.Decision: fail → add module-specific tests.
+- PROMPT.Decision: fail add module-specific tests.
 - PROMPT.FollowUps_FutureEvolution: automated matrix executor.
 
 61) Error bounds summary (Euler/FD)
@@ -628,7 +628,7 @@
 - PROMPT.Inputs: {dt, Δ}
 - PROMPT.Actions_Minimal: derive bounds; log in decision.
 - PROMPT.Checks_Fast_Invariants: pass invariants.
-- PROMPT.Decision: high bounds → add RK4 step.
+- PROMPT.Decision: high bounds add RK4 step.
 - PROMPT.FollowUps_FutureEvolution: integrator policy.
 
 62) Transactional entanglement rule (Bell)
@@ -638,5 +638,5 @@
 - PROMPT.Inputs: {group}
 - PROMPT.Actions_Minimal: simulate; assert all-or-nothing.
 - PROMPT.Checks_Fast_Invariants: entanglement semantics OK.
-- PROMPT.Decision: fail → add second case.
+- PROMPT.Decision: fail add second case.
 - PROMPT.FollowUps_FutureEvolution: distributed monitors.

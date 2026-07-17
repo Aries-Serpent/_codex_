@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Maintainer**: Performance Engineering  
-**SLA Target**: Response time p95 < 200ms, p99 < 500ms  
+**Version**: 1.0
+**Last Updated**: 2026-06-22
+**Maintainer**: Performance Engineering
+**SLA Target**: Response time p95 < 200ms, p99 < 500ms
 
 ---
 
@@ -488,29 +488,29 @@ ab -n 500000 -c 500 http://${API_ENDPOINT}/...
 **Key Dashboard Panels**:
 
 1. **Response Time Dashboard**
-   - p50, p95, p99 latency
-   - Latency by endpoint
-   - Latency trend (24h, 7d)
+ - p50, p95, p99 latency
+ - Latency by endpoint
+ - Latency trend (24h, 7d)
 
 2. **Error Rate Dashboard**
-   - Overall error rate
-   - Error rate by endpoint
-   - Error types breakdown
+ - Overall error rate
+ - Error rate by endpoint
+ - Error types breakdown
 
 3. **Resource Utilization Dashboard**
-   - CPU usage by pod
-   - Memory usage by pod
-   - Network I/O
+ - CPU usage by pod
+ - Memory usage by pod
+ - Network I/O
 
 4. **Database Dashboard**
-   - Query execution time
-   - Connection pool utilization
-   - Slow queries log
+ - Query execution time
+ - Connection pool utilization
+ - Slow queries log
 
 5. **Cache Dashboard**
-   - Hit/miss ratio
-   - Eviction rate
-   - Redis memory usage
+ - Hit/miss ratio
+ - Eviction rate
+ - Redis memory usage
 
 ---
 
@@ -526,6 +526,6 @@ ab -n 500000 -c 500 http://${API_ENDPOINT}/...
 
 ---
 
-**Document Version**: 1.0  
-**Last Reviewed**: 2024-01-15  
+**Document Version**: 1.0
+**Last Reviewed**: 2024-01-15
 **Next Review Date**: 2024-02-15

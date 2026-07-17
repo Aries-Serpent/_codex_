@@ -8,20 +8,20 @@
 - [Strategy Categories](#strategy-categories)
 - [Concise table with mapping to capabilities and alternative agent-focused use cases](#concise-table-with-mapping-to-capabilities-and-alternative-agent-focused-use-cases)
 - [Coverage Uplift Roadmap (Aligned to Requested Targets)](#coverage-uplift-roadmap-aligned-to-requested-targets)
-  - [Deep Coverage for physics_orchestrator Patterns](#deep-coverage-for-physics_orchestrator-patterns)
-  - [Complete quantum_game_theory Engines](#complete-quantum_game_theory-engines)
-  - [Full mental_mapping Graph Operations](#full-mental_mapping-graph-operations)
-  - [Codex_client Comprehensive Coverage](#codex_client-comprehensive-coverage)
+ - [Deep Coverage for physics_orchestrator Patterns](#deep-coverage-for-physics_orchestrator-patterns)
+ - [Complete quantum_game_theory Engines](#complete-quantum_game_theory-engines)
+ - [Full mental_mapping Graph Operations](#full-mental_mapping-graph-operations)
+ - [Codex_client Comprehensive Coverage](#codex_client-comprehensive-coverage)
 - [Test Pattern Templates](#test-pattern-templates)
-  - [Pattern 1: Initialization Test (Eq #1, #6, #20)](#pattern-1-initialization-test-eq-1-6-20)
-  - [Pattern 2: Enum Validation (Eq #2, #7, #29)](#pattern-2-enum-validation-eq-2-7-29)
-  - [Pattern 3: Property Coverage (Eq #3, #5, #17)](#pattern-3-property-coverage-eq-3-5-17)
-  - [Pattern 4: Deep Module Coverage (Eq #4, #8, #19)](#pattern-4-deep-module-coverage-eq-4-8-19)
+ - [Pattern 1: Initialization Test (Eq #1, #6, #20)](#pattern-1-initialization-test-eq-1-6-20)
+ - [Pattern 2: Enum Validation (Eq #2, #7, #29)](#pattern-2-enum-validation-eq-2-7-29)
+ - [Pattern 3: Property Coverage (Eq #3, #5, #17)](#pattern-3-property-coverage-eq-3-5-17)
+ - [Pattern 4: Deep Module Coverage (Eq #4, #8, #19)](#pattern-4-deep-module-coverage-eq-4-8-19)
 - [Usage Guidelines](#usage-guidelines)
-  - [For reaching 30% coverage (Phase 1 completion)](#for-reaching-30-coverage-phase-1-completion)
-  - [For reaching 50% coverage (Phase 2)](#for-reaching-50-coverage-phase-2)
-  - [For reaching 70% coverage (Phase 3)](#for-reaching-70-coverage-phase-3)
-  - [For reaching 95% coverage (Phases 4-5)](#for-reaching-95-coverage-phases-4-5)
+ - [For reaching 30% coverage (Phase 1 completion)](#for-reaching-30-coverage-phase-1-completion)
+ - [For reaching 50% coverage (Phase 2)](#for-reaching-50-coverage-phase-2)
+ - [For reaching 70% coverage (Phase 3)](#for-reaching-70-coverage-phase-3)
+ - [For reaching 95% coverage (Phases 4-5)](#for-reaching-95-coverage-phases-4-5)
 - [Validation Checklist](#validation-checklist)
 - [See Also](#see-also)
 
@@ -90,14 +90,14 @@ This table provides actionable coverage improvement strategies based on physics 
 | 40 | (ρ, j, g) currents | gauge_symmetry.md | Noether currents | Symmetry verification | Domain-specific currents | Property tests for currents; enum validation for symmetry type; init tests for gauge checker. |
 | 41 | [Ĥ, p̂], [Ĥ, Ê] heuristics | operators.md | Operator composition sanity | Composition checks | Formal commutators | Add lightweight composition tests; enum validation for operator modes; property coverage for config. |
 | 42 | e^{-t/τ} bands | coherence.md | Alert banding | CI thresholds | Learned bands | Property tests for bands; enum validation for alert policy; init tests for coherence monitor wiring. |
-| 43 | KD-tree R → coupling | benchmarks.md | Performance vs accuracy | Tunable R impact | Auto-tuning by telemetry | Property tests for R-coupling map; enum validation for tuning policy; init tests for benchmark harness. |
+| 43 | KD-tree R coupling | benchmarks.md | Performance vs accuracy | Tunable R impact | Auto-tuning by telemetry | Property tests for R-coupling map; enum validation for tuning policy; init tests for benchmark harness. |
 | 44 | Global error ~ O(T·dt) | operators.md, evolution docs | Cumulative error | Validation planning | RK switch | Document error budget in tests; getter for accumulated error; enum validation for planning mode. |
 | 45 | ∇ψ FD stencil | discrete_methods.md, momentum.py | Gradient approximation | Momentum coupling | Higher-order stencils | Property tests for Δ; enum validation for stencil type; init tests for momentum operator config. |
 | 46 | ∇·j FD | quick_checks.md, probability_current.py | Divergence approximation | Continuity residual | Vectorized/sparse ops | Property tests for divergence; enum validation for mode; init tests for continuity checker CLI. |
 | 47 | H = f(ρ, j, v, γ) | observability_playbook.md, mlops_bridge.py | Composite health | Health snapshots | ML-based f(.) | Property and enum coverage for health outputs; init tests for exporter wiring. |
 | 48 | Spinor concurrency bounds | concurrency_constraints.md | Coupling limits | Concurrency safety | Multi-component schedulers | Deep coverage for concurrency guard paths; enum validation for coupling model; init tests for scheduler. |
 | 49 | J = Coverage/Runtime | testing_strategy.md | Coverage-time objective | Test selection | Risk-weighted multi-objectives | Property tests for J; enum validation for selection policy; init tests for selector pipeline. |
-| 50 | ρ ← ρ/Σρ | safety_guards.md | Renormalization repair | Self-healing | Error-bounded repairs | Property tests for repair; enum validation for repair policy; init tests for conservation enforcer. |
+| 50 | ρ ρ/Σρ | safety_guards.md | Renormalization repair | Self-healing | Error-bounded repairs | Property tests for repair; enum validation for repair policy; init tests for conservation enforcer. |
 | 51 | Σ_i metric_i | observability_playbook.md | Metrics aggregation | Telemetry assertions | Streaming/sharded agg | Property tests for agg; enum validation for exporter; initialization tests for metrics CLI. |
 | 52 | Euler local/global O(dt) | discrete_methods.md | Error accounting | Minimal-step evidence | RK upgrades | Document bounds via tests; property coverage; enum validation for integrator switches. |
 | 53 | Transactional entanglement | concurrency_constraints.md, entanglement.py | All-or-nothing outcomes | Coordinated deploys | Distributed entanglement | Property tests for transactional groups; enum validation for policies; init tests for the entanglement manager. |
@@ -108,7 +108,7 @@ This table provides actionable coverage improvement strategies based on physics 
 
 ### Deep Coverage for physics_orchestrator Patterns
 
-**Target**: 24.05% → 50%+ (1264 statements)
+**Target**: 24.05% 50%+ (1264 statements)
 
 **Strategies**:
 - Add branch-focused tests in dynamics/evolution, hamiltonian, probability_current, and self_healing modules
@@ -119,7 +119,7 @@ This table provides actionable coverage improvement strategies based on physics 
 
 ### Complete quantum_game_theory Engines
 
-**Target**: 24.18% → 65%+ (375 statements)
+**Target**: 24.18% 65%+ (375 statements)
 
 **Strategies**:
 - Introduce initialization tests + property/enum coverage for strategy spaces, payoff matrices, and entanglement-influenced game states
@@ -130,7 +130,7 @@ This table provides actionable coverage improvement strategies based on physics 
 
 ### Full mental_mapping Graph Operations
 
-**Target**: 22.70% → 60%+ (347 statements)
+**Target**: 22.70% 60%+ (347 statements)
 
 **Strategies**:
 - Cover initialization + getter/property tests for graph nodes/edges
@@ -142,7 +142,7 @@ This table provides actionable coverage improvement strategies based on physics 
 
 ### Codex_client Comprehensive Coverage
 
-**Target**: 8.5% → 80%+ (149 statements)
+**Target**: 8.5% 80%+ (149 statements)
 
 **Strategies**:
 - Increase coverage via CLI and client adapters

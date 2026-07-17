@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Maintainer**: Incident Commander  
-**Escalation**: SRE Lead → Engineering Director → VP Engineering  
+**Version**: 1.0
+**Last Updated**: 2026-06-22
+**Maintainer**: Incident Commander
+**Escalation**: SRE Lead Engineering Director VP Engineering
 
 ---
 
@@ -468,26 +468,26 @@ Engineering Team
 **Review Agenda**:
 
 1. **Timeline reconstruction** (15 min):
-   - When was issue first detected?
-   - When was mitigation started?
-   - When was issue resolved?
-   - Identify gaps between detection and response
+ - When was issue first detected?
+ - When was mitigation started?
+ - When was issue resolved?
+ - Identify gaps between detection and response
 
 2. **Root cause deep dive** (20 min):
-   - What was the root cause?
-   - Why wasn't it caught earlier?
-   - What tests or monitoring would have caught it?
+ - What was the root cause?
+ - Why wasn't it caught earlier?
+ - What tests or monitoring would have caught it?
 
 3. **Action items** (15 min):
-   - What can we do to prevent this?
-   - What can we do to detect faster?
-   - What can we do to resolve faster?
-   - Who owns each action item?
+ - What can we do to prevent this?
+ - What can we do to detect faster?
+ - What can we do to resolve faster?
+ - Who owns each action item?
 
 4. **Documentation** (10 min):
-   - Update runbooks with learnings
-   - Add new alert if needed
-   - Update post-mortem document
+ - Update runbooks with learnings
+ - Add new alert if needed
+ - Update post-mortem document
 
 **Post-Incident Report Template**:
 
@@ -635,6 +635,6 @@ kubectl port-forward -n production svc/codex-api 8080:8080
 
 ---
 
-**Document Version**: 1.0  
-**Last Reviewed**: 2024-01-15  
+**Document Version**: 1.0
+**Last Reviewed**: 2024-01-15
 **Next Review Date**: 2024-02-15

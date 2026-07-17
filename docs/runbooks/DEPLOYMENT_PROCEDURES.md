@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Last Updated: 2026-07-10
-**Audience:** DevOps, Deployment Engineers  
-**SLA:** Deployment should complete in 30-60 minutes  
+**Audience:** DevOps, Deployment Engineers
+**SLA:** Deployment should complete in 30-60 minutes
 
 ---
 
@@ -606,6 +606,6 @@ tar -czf deployment_logs_$(date +%Y%m%d_%H%M%S).tar.gz \
 
 ---
 
-**Maintained by:** @mbaetiong  
-**Last tested:** 2026-07-10  
+**Maintained by:** @mbaetiong
+**Last tested:** 2026-07-10
 **Next review:** 2026-08-10

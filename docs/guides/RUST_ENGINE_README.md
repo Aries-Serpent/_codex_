@@ -140,14 +140,14 @@ cargo doc --open
 
 ## Compliance
 
--  AI Agent Policy v0.2.1
--  Cognitive Brain Integration (Phase 11)
--  Zero additional cost (GitHub Team + Copilot Pro+)
--  Production-ready architecture
+- AI Agent Policy v0.2.1
+- Cognitive Brain Integration (Phase 11)
+- Zero additional cost (GitHub Team + Copilot Pro+)
+- Production-ready architecture
 
 ## Roadmap
 
-- [x] **Milestone 1.1**: Project Scaffolding 
+- [x] **Milestone 1.1**: Project Scaffolding
 - [ ] **Milestone 1.2**: SwarmState Bridge
 - [ ] **Milestone 1.3**: Tokio Runtime Integration
 - [ ] **Milestone 2.1**: Async Task Queue

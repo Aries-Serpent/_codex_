@@ -495,23 +495,23 @@ def generate_reproducibility_report(output_dir: str) -> str:
     config_file = out_path / "config.yaml"
     if config_file.exists():
         report.append("\n## Configuration\n")
-        report.append("```yaml")
-        report.append(config_file.read_text())
+ report.append("```yaml")
+ report.append(config_file.read_text())
         report.append("```")
 
     # Instructions to reproduce
     report.append("\n## How to Reproduce\n")
-    report.append("```bash")
-    report.append("# Clone repository at specific commit")
-    if env_file.exists():
-        env = json.loads(env_file.read_text())
-        report.append(f"git checkout {env.get('git_hash', 'main')}")
-    report.append("")
-    report.append("# Install dependencies")
-    report.append("pip install -r requirements.txt")
-    report.append("")
-    report.append("# Run training with same seed")
-    report.append("python train.py --seed 42 --config config.yaml")
+ report.append("```bash")
+ report.append("# Clone repository at specific commit")
+ if env_file.exists():
+ env = json.loads(env_file.read_text())
+ report.append(f"git checkout {env.get('git_hash', 'main')}")
+ report.append("")
+ report.append("# Install dependencies")
+ report.append("pip install -r requirements.txt")
+ report.append("")
+ report.append("# Run training with same seed")
+ report.append("python train.py --seed 42 --config config.yaml")
     report.append("```")
 
     return "\n".join(report)

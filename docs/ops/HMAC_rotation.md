@@ -28,7 +28,7 @@ injected at runtime via a secrets manager.
 |----------|-------------|---------|
 | `CODEX_AUDIT_HMAC_KEY` | HMAC-SHA256 key for audit chain | `""` (SHA-256 fallback) |
 
-> ️ When `CODEX_AUDIT_HMAC_KEY` is empty, entries are chained via SHA-256 only
+> When `CODEX_AUDIT_HMAC_KEY` is empty, entries are chained via SHA-256 only
 > (no secret key — not cryptographically tamper-proof). Always set this in
 > production.
 
@@ -99,9 +99,9 @@ os.environ["CODEX_AUDIT_HMAC_KEY"] = load_hmac_key()
 
 | Environment | Rotation Frequency | Method |
 |-------------|-------------------|--------|
-| Production  | Every 90 days     | Automatic via KMS rotation policy |
-| Staging     | Every 180 days    | Manual or automatic |
-| Development | Not required      | SHA-256 fallback acceptable |
+| Production | Every 90 days | Automatic via KMS rotation policy |
+| Staging | Every 180 days | Manual or automatic |
+| Development | Not required | SHA-256 fallback acceptable |
 
 ### Enable automatic rotation in KMS
 
@@ -188,7 +188,7 @@ If the HMAC key is compromised:
 1. **Immediately** revoke in KMS:
    ```bash
    aws kms disable-key --key-id "alias/codex-audit-hmac"
-   ```
+ ```
 
 2. Generate emergency replacement key and update Secrets Manager.
 
@@ -197,7 +197,7 @@ If the HMAC key is compromised:
    python scripts/audit/mark_compromised_window.py \
      --from "2026-02-18T12:00:00Z" \
      --reason "Key compromise — chain integrity unverified"
-   ```
+ ```
 
 4. Notify Compliance and Legal teams within 72 hours (GDPR Art. 33).
 

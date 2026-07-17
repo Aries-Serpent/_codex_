@@ -13,9 +13,9 @@ Contributors need a one-command way to run local gates and tests without CI. We 
 ## Decision
 - Add `requirements-dev.txt` listing core local tools (`pre-commit`, `nox`, `pytest`, `jsonschema`).
 - Add `noxfile.py` with sessions:
-  - `gates`: fences → evaluator → (optional) schema checks → selection guard (non-fatal).
-  - `tests`: pytest with `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`.
-  - `precommit`: run all hooks locally.
+ - `gates`: fences evaluator (optional) schema checks selection guard (non-fatal).
+ - `tests`: pytest with `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`.
+ - `precommit`: run all hooks locally.
 - Document usage in `docs/ops/local_gates.md`.
 
 ## Consequences

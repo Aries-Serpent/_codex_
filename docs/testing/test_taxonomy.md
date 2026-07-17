@@ -28,38 +28,38 @@ All markers are registered in `pytest.ini`. Use these consistently:
 #### Core Markers
 
 - **`smoke`**: Quick smoke tests for basic functionality
-  - Runtime: < 1 second each
-  - Run frequently during development
-  - Usage: `@pytest.mark.smoke`
+ - Runtime: < 1 second each
+ - Run frequently during development
+ - Usage: `@pytest.mark.smoke`
 
 - **`slow`**: Long-running or resource-intensive tests
-  - Runtime: > 10 seconds
-  - Skip during quick checks
-  - Usage: `@pytest.mark.slow`
+ - Runtime: > 10 seconds
+ - Skip during quick checks
+ - Usage: `@pytest.mark.slow`
 
 #### Environment Markers
 
 - **`requires_torch`**: Tests requiring PyTorch installation
-  - Automatically skipped if torch unavailable
-  - Usage: `@pytest.mark.requires_torch`
+ - Automatically skipped if torch unavailable
+ - Usage: `@pytest.mark.requires_torch`
 
 - **`cpu_only`**: Tests that should only run on CPU
-  - Prevents GPU resource usage
-  - Usage: `@pytest.mark.cpu_only`
+ - Prevents GPU resource usage
+ - Usage: `@pytest.mark.cpu_only`
 
 - **`distributed`**: Distributed/accelerate tests
-  - Opt-in via `ACCELERATE_TEST=1`
-  - Usage: `@pytest.mark.distributed`
+ - Opt-in via `ACCELERATE_TEST=1`
+ - Usage: `@pytest.mark.distributed`
 
 #### Feature Markers
 
 - **`lora`**: LoRA-specific tests
-  - Opt-in via `RUN_LORA_TESTS=1`
-  - Usage: `@pytest.mark.lora`
+ - Opt-in via `RUN_LORA_TESTS=1`
+ - Usage: `@pytest.mark.lora`
 
 - **`perf_smoke`**: Performance smoke tests
-  - Opt-in via `RUN_PERF_SMOKE=1`
-  - Usage: `@pytest.mark.perf_smoke`
+ - Opt-in via `RUN_PERF_SMOKE=1`
+ - Usage: `@pytest.mark.perf_smoke`
 
 ### Running Tests by Category
 

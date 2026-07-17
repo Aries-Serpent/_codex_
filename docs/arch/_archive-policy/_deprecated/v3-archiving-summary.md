@@ -18,7 +18,7 @@ Historical context preserved here:
 
 1. Archive candidates require CODEOWNERS review and ADR coverage before removal.
 2. Tombstones must embed stable IDs that correspond to append-only evidence records.
-3. Batch hygiene efforts should execute planner → apply → summarize → vacuum loops.
+3. Batch hygiene efforts should execute planner apply summarize vacuum loops.
 4. CHANGELOG entries classify removals under "Deprecated" or "Removed" headings.
 
 Please rely on the canonical document for policy details and future updates.

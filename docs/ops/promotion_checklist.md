@@ -1,20 +1,20 @@
-# Ops: Promotion Checklist (0D_base_ → main)
+# Ops: Promotion Checklist (0D_base_ main)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Release Manager], [Secondary: Auditor]  Energy: 5/5  
-⚛️ Physics: Path️ [Ring → Verify → Promote] Fields [nox, artifacts] Patterns️ [Determinism, Offline] Redundancy [Hash chain] Balance️ [Safety vs. velocity]
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Release Manager], [Secondary: Auditor] Energy: 5/5
+ Physics: Path [Ring Verify Promote] Fields [nox, artifacts] Patterns [Determinism, Offline] Redundancy [Hash chain] Balance [Safety vs. velocity]
 
 ## Preconditions
 - nox -s tests lint typecheck docs_build validate-configs security
 - Evaluate with `codex-eval run` and produce NDJSON + JSON summary.
 - Audit traversal updated; artifacts committed:
-  - audit_artifacts/capabilities_raw.json
-  - audit_artifacts/capabilities_scored.json
-  - audit_artifacts/context_index.json
-  - audit_run_manifest.json
-  - artifacts/security_report.json
+ - audit_artifacts/capabilities_raw.json
+ - audit_artifacts/capabilities_scored.json
+ - audit_artifacts/context_index.json
+ - audit_run_manifest.json
+ - artifacts/security_report.json
 
 ## Scope & Risk
 - Additive changes; offline-first maintained.

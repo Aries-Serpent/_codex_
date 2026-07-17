@@ -3,25 +3,25 @@
 **Version:** v0.2.1
 
 > **Created:** 2026-05-08 S868 | **Updated: 2026-07-11
-> **Purpose:** Catalogue all `docs/plans/` files (81 total at creation → 50 active after S870 archive sweep).
+> **Purpose:** Catalogue all `docs/plans/` files (81 total at creation 50 active after S870 archive sweep).
 > identify stale/duplicate/merge candidates, and protect active living docs.
 > **Policy:** Stale docs move to `docs/plans/archive/` — never deleted, always findable.
 
 ---
 
-##  Summary
+## Summary
 
 | Category | Count | Action | Status |
 |----------|-------|--------|--------|
-| Active living docs | 18 | Keep — update regularly |  Current |
-| PR what's-next docs | 8 | Keep — one per active/recent PR |  Current |
-| Archive candidates (PHASE0/1/2 completion reports) | 28 originally · **31 moved** | `docs/plans/archive/` |  **Done S870** (3 more identified at execution) |
-| Merge candidates (near-duplicate CI/ops docs) | 5 | Merge → single canonical doc |  Next session |
-| Retain as-is (design docs, guides, runbooks) | 19 | Keep — still relevant |  Current |
+| Active living docs | 18 | Keep — update regularly | Current |
+| PR what's-next docs | 8 | Keep — one per active/recent PR | Current |
+| Archive candidates (PHASE0/1/2 completion reports) | 28 originally · **31 moved** | `docs/plans/archive/` | **Done S870** (3 more identified at execution) |
+| Merge candidates (near-duplicate CI/ops docs) | 5 | Merge single canonical doc | Next session |
+| Retain as-is (design docs, guides, runbooks) | 19 | Keep — still relevant | Current |
 
 ---
 
-##  Active Living Docs (DO NOT ARCHIVE)
+## Active Living Docs (DO NOT ARCHIVE)
 
 | File | Owner | Last Updated |
 |------|-------|-------------|
@@ -46,7 +46,7 @@
 
 ---
 
-## 🗄️ Archive Candidates (PHASE0/1/2 completion docs)
+## Archive Candidates (PHASE0/1/2 completion docs)
 
 > These are historical completion reports. Completed work is permanent — these docs are
 > preserved for audit purposes in `docs/plans/archive/`.
@@ -100,17 +100,17 @@ git mv docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md docs/plans/archive/
 
 ---
 
-##  Merge Candidates (near-duplicates)
+## Merge Candidates (near-duplicates)
 
 | Files to Merge | Target | Overlap |
 |----------------|--------|---------|
 | `batchset.md` + `patchset.md` | `copilot-workflow-agent/01-BATCHSET.md` | Batch/patch tracking |
-| `ci_failures_resolution_plan.md` + `fix_falied_workflows_2025-12-22.md` | Merge → `CI_FAILURES_RESOLUTION.md` | CI failure history |
+| `ci_failures_resolution_plan.md` + `fix_falied_workflows_2025-12-22.md` | Merge `CI_FAILURES_RESOLUTION.md` | CI failure history |
 | `Agentic_AI_System/soft_to_GROUNDED.md` + `Agentic_AI_System/READINESS_AUDIT_ANALYSIS.md` | Keep in sub-dir, add to INDEX | Agentic system readiness |
 
 ---
 
-## 🗂️ Retain As-Is (Design docs, guides, runbooks)
+## Retain As-Is (Design docs, guides, runbooks)
 
 | File | Purpose |
 |------|---------|
@@ -135,10 +135,11 @@ git mv docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md docs/plans/archive/
 
 ---
 
-##  Mermaid: Docs Lifecycle
+## Mermaid: Docs Lifecycle
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " New Doc Created\n(agent session)", "📌 Active Living Doc\n(updated each session)"'}}%%
+
 flowchart TD
     NEW[" New Doc Created\n(agent session)"]
     ACTIVE["📌 Active Living Doc\n(updated each session)"]
@@ -147,9 +148,13 @@ flowchart TD
     INDEX[" INDEX.md\nCentral catalogue"]
 
     NEW -->|"still relevant"| ACTIVE
+
     NEW -->|"completion report"| STALE
+
     ACTIVE -->|"session updates"| INDEX
+
     STALE -->|"next consolidation session"| ARCHIVE
+
     ARCHIVE --> INDEX
 
     style ACTIVE fill:#2d9c2d,color:#fff

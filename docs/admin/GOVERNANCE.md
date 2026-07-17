@@ -13,51 +13,51 @@ This document defines the governance structure, roles, and decision-making proce
 ### Maintainers (@Aries-Serpent/architects)
 - **Scope**: Overall technical direction, architecture decisions, security coordination
 - **Responsibilities**:
-  - Final approval on major architectural changes
-  - Release planning and versioning
-  - Security vulnerability coordination
-  - ADR (Architecture Decision Record) approval
-  - Breaking change decisions
+ - Final approval on major architectural changes
+ - Release planning and versioning
+ - Security vulnerability coordination
+ - ADR (Architecture Decision Record) approval
+ - Breaking change decisions
 
 ### Core Teams
 
 #### @Aries-Serpent/ml-core
 - **Scope**: ML training, evaluation, model serving components
 - **Responsibilities**:
-  - Feature development and ownership in `src/codex_ml/`
-  - Code reviews for ML-related changes
-  - Performance optimization and benchmarking
+ - Feature development and ownership in `src/codex_ml/`
+ - Code reviews for ML-related changes
+ - Performance optimization and benchmarking
 
 #### @Aries-Serpent/app-core
 - **Scope**: Core application logic, CLI, utilities
 - **Responsibilities**:
-  - Feature ownership in `src/codex/`
-  - Code reviews for core functionality
-  - API stability and backward compatibility
+ - Feature ownership in `src/codex/`
+ - Code reviews for core functionality
+ - API stability and backward compatibility
 
 #### @Aries-Serpent/ops-team
 - **Scope**: DevOps, CI/CD, infrastructure, deployment
 - **Responsibilities**:
-  - CI/CD pipeline maintenance
-  - Docker and deployment configurations
-  - Monitoring and observability setup
-  - Release automation
+ - CI/CD pipeline maintenance
+ - Docker and deployment configurations
+ - Monitoring and observability setup
+ - Release automation
 
 #### @Aries-Serpent/docs-team
 - **Scope**: Documentation, guides, examples
 - **Responsibilities**:
-  - Documentation standards and quality
-  - Maintaining guides and tutorials
-  - Example code and quickstarts
-  - Search recipes and navigation aids
+ - Documentation standards and quality
+ - Maintaining guides and tutorials
+ - Example code and quickstarts
+ - Search recipes and navigation aids
 
 #### @Aries-Serpent/security
 - **Scope**: Security posture, vulnerability response, threat modeling
 - **Responsibilities**:
-  - Security vulnerability triage and response
-  - Dependency risk assessment
-  - Security policy enforcement
-  - Coordinated disclosure management
+ - Security vulnerability triage and response
+ - Dependency risk assessment
+ - Security policy enforcement
+ - Coordinated disclosure management
 
 ### Contributors
 - Anyone who submits PRs, issues, or participates in discussions
@@ -69,35 +69,35 @@ This document defines the governance structure, roles, and decision-making proce
 ### Small Changes (Documentation, Bug Fixes, Minor Features)
 - **Process**: Lazy consensus after 48 hours
 - **Requirements**:
-  - One approving review from relevant CODEOWNERS
-  - CI/tests passing
-  - No objections from maintainers
+ - One approving review from relevant CODEOWNERS
+ - CI/tests passing
+ - No objections from maintainers
 
 ### Medium Changes (New Features, Refactoring)
 - **Process**: Standard review
 - **Requirements**:
-  - Two approving reviews from relevant CODEOWNERS
-  - CI/tests passing
-  - Documentation updated
-  - CHANGELOG entry
-  - 5 business days for review
+ - Two approving reviews from relevant CODEOWNERS
+ - CI/tests passing
+ - Documentation updated
+ - CHANGELOG entry
+ - 5 business days for review
 
 ### Major Changes (Breaking Changes, Architecture, Security)
 - **Process**: RFC (Request for Comments) via ADR
 - **Requirements**:
-  - ADR document in `docs/decision_records/`
-  - 5 business days + 2 weekend days for review
-  - Approval from @Aries-Serpent/architects
-  - Approval from affected team(s)
-  - Migration guide (if breaking change)
-  - CHANGELOG entry with upgrade notes
+ - ADR document in `docs/decision_records/`
+ - 5 business days + 2 weekend days for review
+ - Approval from @Aries-Serpent/architects
+ - Approval from affected team(s)
+ - Migration guide (if breaking change)
+ - CHANGELOG entry with upgrade notes
 
 ### Emergency Changes (Critical Security, Production Incidents)
 - **Process**: Fast-track with post-hoc review
 - **Requirements**:
-  - One maintainer approval
-  - Document in incident retrospective
-  - Follow-up ADR if architectural impact
+ - One maintainer approval
+ - Document in incident retrospective
+ - Follow-up ADR if architectural impact
 
 ## Release Process
 
@@ -171,38 +171,38 @@ This governance document may be updated through the Major Changes process (ADR +
 
 ---
 
-**Version**: 1.1.0  
-**Last Updated**: 2026-01-23T11:00:00Z  
+**Version**: 1.1.0
+**Last Updated**: 2026-01-23T11:00:00Z
 **Contact**: @Aries-Serpent/architects
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
-**Objective:** Establish transparent decision-making framework and role-based collaboration model  
-**Energy Level:**  (4/5 - Operational Framework)  
-**Status:**  Framework Defined |  Active Enforcement  
+**Objective:** Establish transparent decision-making framework and role-based collaboration model
+**Energy Level:** (4/5 - Operational Framework)
+**Status:** Framework Defined | Active Enforcement
 
 This governance document defines the authority structure, decision protocols, and conflict resolution mechanisms for the _codex_ project. It ensures efficient collaboration while maintaining technical quality and security standards. The framework adapts to project maturity while preserving core principles of transparency and meritocracy.
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 | Governance Area | Checkpoint | Validation Criteria | Status |
 |----------------|-----------|---------------------|--------|
-| **Roles** | Teams Defined | All 5 core teams have assigned members |  |
-| **Permissions** | CODEOWNERS Setup | CODEOWNERS file reflects team structure |  |
-| **Decision Process** | PR Templates | Templates include decision framework guidance |  |
-| **Conflict Resolution** | Escalation Path | Clear escalation hierarchy documented |  |
-| **Release Process** | Checklist Active | Release checklist followed for all releases |  |
-| **Team Membership** | Onboarding Process | New member process validated |  |
-| **Communication** | Channels Active | All communication channels operational |  |
-| **Code of Conduct** | Enforcement | CoC violations handled per guidelines |  |
+| **Roles** | Teams Defined | All 5 core teams have assigned members | |
+| **Permissions** | CODEOWNERS Setup | CODEOWNERS file reflects team structure | |
+| **Decision Process** | PR Templates | Templates include decision framework guidance | |
+| **Conflict Resolution** | Escalation Path | Clear escalation hierarchy documented | |
+| **Release Process** | Checklist Active | Release checklist followed for all releases | |
+| **Team Membership** | Onboarding Process | New member process validated | |
+| **Communication** | Channels Active | All communication channels operational | |
+| **Code of Conduct** | Enforcement | CoC violations handled per guidelines | |
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | KPI | Target | Measurement Method | Current |
 |-----|--------|-------------------|---------|
@@ -217,9 +217,9 @@ This governance document defines the authority structure, decision protocols, an
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ - Decision Flow
+### Path - Decision Flow
 ```
 Contributor → Code Owner → Team Lead → Architect → Resolution
      ↓            ↓            ↓           ↓           ↓
@@ -228,25 +228,25 @@ Contributor → Code Owner → Team Lead → Architect → Resolution
 ```
 **Alignment:** Progressive authority increase with technical rigor at each gate
 
-### Fields  - Authority Gradients
+### Fields - Authority Gradients
 - **Contributor Field:** Proposal power, implementation responsibility
 - **Code Owner Field:** Review authority, approval power for small/medium changes
 - **Team Lead Field:** Architectural guidance, medium/major change approval
 - **Architect Field:** Final authority, breaking change decisions, security coordination
 
-### Patterns ️ - Governance Signatures
-- **Lazy Consensus Pattern:** 48 iterations (Small changes) → implicit approval if no objections
+### Patterns - Governance Signatures
+- **Lazy Consensus Pattern:** 48 iterations (Small changes) implicit approval if no objections
 - **Standard Review Pattern:** 2 approvals + 5 iterations (Medium changes)
 - **RFC/ADR Pattern:** 10 iterations + 2 rest periods (Major changes)
 - **Emergency Pattern:** 1 maintainer approval + post-hoc review (Critical fixes)
 
-### Redundancy  - Decision Safeguards
+### Redundancy - Decision Safeguards
 - **Primary:** CODEOWNERS automatic review assignment
 - **Backup:** Manual escalation path via GitHub issues
 - **Safety Net:** Architect veto power for all changes
 - **Audit:** All decisions logged in PR comments and ADRs
 
-### Balance ️ - Efficiency vs Quality
+### Balance - Efficiency vs Quality
 ```
 Small Changes: Speed 90% | Rigor 10%  (Fast iteration)
 Medium Changes: Speed 60% | Rigor 40%  (Balanced review)
@@ -257,7 +257,7 @@ Emergency: Speed 95% | Rigor 5% → 70% (Fast action + post-hoc review)
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 ### Priority Breakdown by Change Type
 - **P0 (Emergency - 10%):** Critical security, production incidents (Fast-track)
@@ -280,7 +280,7 @@ Community Contributors:      █ 5% (External contributions)
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Conflict Resolution Rollback
 
@@ -316,6 +316,6 @@ Community Contributors:      █ 5% (External contributions)
 
 ---
 
-**Template Version:** 1.0.0  
-**Applied:** 2026-01-23T11:00:00Z  
+**Template Version:** 1.0.0
+**Applied:** 2026-01-23T11:00:00Z
 **Next Review:** After next governance update

@@ -39,11 +39,11 @@
  - [Option D: Self-Hosted Runner](#option-d-self-hosted-runner)
  - [4.2 GitHub Actions Runner Configuration](#42-github-actions-runner-configuration)
 - [On your server:](#on-your-server)
-- [Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)](#download-runner-get-url-from-settings--actions--runners--new-self-hosted-runner)
+- [Download runner (get URL from Settings Actions Runners New self-hosted runner)](#download-runner-get-url-from-settings--actions--runners--new-self-hosted-runner)
 - [Extract](#extract)
 - [Configure (token from GitHub Settings)](#configure-token-from-github-settings)
 - [Run](#run)
-- [️ Section 5: Security & Compliance](#-section-5-security--compliance)
+- [ Section 5: Security & Compliance](#-section-5-security--compliance)
  - [5.1 Security Settings Verification](#51-security-settings-verification)
  - [5.2 Branch Protection Rules](#52-branch-protection-rules)
  - [5.3 CODEOWNERS File](#53-codeowners-file)
@@ -133,8 +133,8 @@ You need to:
 |--------|---------------|----------------------|----------|
 | Copilot Agent | Not Configured | 5 actions | **CRITICAL** |
 | PR Reviewer | App Not Created | 8 actions | **HIGH** |
-| Security Scanning | ️ Partial | 3 actions | **HIGH** |
-| Workflows | ️ Failing | 4 actions | **MEDIUM** |
+| Security Scanning | Partial | 3 actions | **HIGH** |
+| Workflows | Failing | 4 actions | **MEDIUM** |
 | Evolution System | Not Deployed | 6 actions | **MEDIUM** |
 
 ---
@@ -147,7 +147,7 @@ You need to:
 
 **Required Actions:**
 
-1. Navigate to: **Settings → Copilot → Policies**
+1. Navigate to: **Settings Copilot Policies**
 2. Enable: **"Allow Copilot"**
 3. Set: **"Organization members can use Copilot"**
 4. Enable: **"Copilot Agents"** (if available in your plan)
@@ -176,15 +176,15 @@ organization_settings:
 
 | Setting | Location | Required Value |
 |---------|----------|---------------|
-| Actions | Settings → Actions → General | Enabled |
-| Workflow Permissions | Settings → Actions → General | Read and write permissions |
-| Allow PR approval | Settings → Actions → General | Allow GitHub Actions to create and approve pull requests |
-| Dependency Graph | Settings → Security → Code security | Enabled |
-| Dependabot Alerts | Settings → Security → Code security | Enabled |
-| Dependabot Security Updates | Settings → Security → Code security | Enabled |
-| Secret Scanning | Settings → Security → Code security | Enabled | <!-- pragma: allowlist secret -->
-| Push Protection | Settings → Security → Code security | Enabled |
-| GitHub Pages | Settings → Pages | Enabled (Deploy from Actions) |
+| Actions | Settings Actions General | Enabled |
+| Workflow Permissions | Settings Actions General | Read and write permissions |
+| Allow PR approval | Settings Actions General | Allow GitHub Actions to create and approve pull requests |
+| Dependency Graph | Settings Security Code security | Enabled |
+| Dependabot Alerts | Settings Security Code security | Enabled |
+| Dependabot Security Updates | Settings Security Code security | Enabled |
+| Secret Scanning | Settings Security Code security | Enabled | <!-- pragma: allowlist secret -->
+| Push Protection | Settings Security Code security | Enabled |
+| GitHub Pages | Settings Pages | Enabled (Deploy from Actions) |
 
 **Step-by-Step for Actions Permissions:**
 
@@ -204,7 +204,7 @@ organization_settings:
 
 **Portal:** `https://github.com/organizations/Aries-Serpent/settings/apps/new`
 
-> ️ **IMPORTANT:** You must be an Organization Owner or Admin to create a GitHub App.
+> **IMPORTANT:** You must be an Organization Owner or Admin to create a GitHub App.
 
 **Step-by-Step Instructions:**
 
@@ -363,8 +363,8 @@ Create these secrets **exactly as named**:
 |------------|---------------|--------------|
 | `OPENAI_API_KEY` | https://platform.openai.com/api-keys | AI-powered features | <!-- pragma: allowlist secret -->
 | `PINECONE_API_KEY` | https://app.pinecone.io/ | Vector search features | <!-- pragma: allowlist secret -->
-| `AWS_ACCESS_KEY_ID` | AWS Console → IAM | Cloud deployment |
-| `AWS_SECRET_ACCESS_KEY` | AWS Console → IAM | Cloud deployment | <!-- pragma: allowlist secret -->
+| `AWS_ACCESS_KEY_ID` | AWS Console IAM | Cloud deployment |
+| `AWS_SECRET_ACCESS_KEY` | AWS Console IAM | Cloud deployment | <!-- pragma: allowlist secret -->
 | `AZURE_CREDENTIALS` | Azure Portal | Azure deployment |
 | `ENABLE_LIVE_TESTS` | Set to `true` | Integration testing |
 
@@ -397,7 +397,7 @@ If any workflow requires a PAT:
 3. Configure:
  - **Token name:** `codex-automation`
  - **Expiration:** 90 days (recommended) or no expiration
- - **Repository access:** Only select repositories → `Aries-Serpent/_codex_`
+ - **Repository access:** Only select repositories `Aries-Serpent/_codex_`
  - **Permissions:**
  - Repository permissions:
  - Contents: Read and write
@@ -540,7 +540,7 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 ---
 
-## ️ Section 5: Security & Compliance
+## Section 5: Security & Compliance
 
 ### 5.1 Security Settings Verification
 
@@ -550,12 +550,12 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 | Feature | Status Required | How to Enable |
 |---------|----------------|---------------|
-| Dependency graph | Enabled | Settings → Security → Enable |
-| Dependabot alerts | Enabled | Settings → Security → Enable |
-| Dependabot security updates | Enabled | Settings → Security → Enable |
-| Secret scanning | Enabled | Settings → Security → Enable | <!-- pragma: allowlist secret -->
-| Push protection | Enabled | Settings → Security → Enable |
-| Code scanning | ️ Optional | Configure in workflow |
+| Dependency graph | Enabled | Settings Security Enable |
+| Dependabot alerts | Enabled | Settings Security Enable |
+| Dependabot security updates | Enabled | Settings Security Enable |
+| Secret scanning | Enabled | Settings Security Enable | <!-- pragma: allowlist secret -->
+| Push protection | Enabled | Settings Security Enable |
+| Code scanning | Optional | Configure in workflow |
 
 ### 5.2 Branch Protection Rules
 
@@ -572,13 +572,13 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 | Require a pull request before merging | |
 | Require approvals | 1 |
 | Dismiss stale pull request approvals | |
-| Require review from Code Owners | ️ Optional |
+| Require review from Code Owners | Optional |
 | Require status checks to pass | |
 | Require branches to be up to date | |
 | **Required status checks:** | See list below |
 | Require conversation resolution | |
-| Do not allow bypassing | ️ Optional |
-| Restrict who can push | ️ Optional |
+| Do not allow bypassing | Optional |
+| Restrict who can push | Optional |
 
 **Required Status Checks (add these):**
 
@@ -790,7 +790,7 @@ notes: |
 **Solution:**
 1. Verify webhook URL is publicly accessible (if using external endpoint)
 2. Check webhook secret matches in both GitHub App settings and repository secret
-3. View delivery history: GitHub App Settings → Advanced → Recent Deliveries
+3. View delivery history: GitHub App Settings Advanced Recent Deliveries
 4. Check for failed deliveries and error messages
 
 ---
@@ -816,7 +816,7 @@ notes: |
 
 **Solution:**
 1. Trigger workflows manually first to register job names
-2. Go to Actions tab → Select workflow → Run workflow
+2. Go to Actions tab Select workflow Run workflow
 3. After completion, status check names become available
 4. Update branch protection with correct names
 

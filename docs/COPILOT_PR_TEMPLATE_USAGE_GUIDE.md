@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0.0 
-> **Generated:** 2025-11-17 
+> **Version:** 1.0.0
+> **Generated:** 2025-11-17
 > **Purpose:** Guide for Copilot agents on using PR_TEMPLATE_COMPREHENSIVE.md when creating/updating PR descriptions
 
 ---
@@ -489,10 +489,10 @@ All acceptance criteria met across all phases:
 ## QUESTIONS?
 
 If unsure about:
-- **Which sections to include** → Include sections for work you actually did
-- **How to mark partial completion** → Use sub-bullets: `[x]` parent, `[ ]` child
-- **Whether to update PR description** → When in doubt, update it
-- **Template is too long** → Omit irrelevant sections; only keep what applies
+- **Which sections to include** Include sections for work you actually did
+- **How to mark partial completion** Use sub-bullets: `[x]` parent, `[ ]` child
+- **Whether to update PR description** When in doubt, update it
+- **Template is too long** Omit irrelevant sections; only keep what applies
 
 ---
 
@@ -502,4 +502,4 @@ If unsure about:
 
 ---
 
-**Remember:** The template exists to help Copilot agents communicate state and efficiently. Use it well, and future sessions will thank you! 
+**Remember:** The template exists to help Copilot agents communicate state and efficiently. Use it well, and future sessions will thank you!

@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05  
-> **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)  
+> **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05
+> **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)
 > **Wired for:** GitHub Copilot Coding agent, Cognitive Brain CB connector, `wec_enforcer.py`, `agent-auth-delegation.yml`
 
 ---
@@ -12,18 +12,18 @@
 
 | Scope | Variables | Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| **repository** |  |  |  |  |
-| **Organization** |  |  |  |  |
-| **Environment** |  |  |  |  |
-| **User (Codespaces)** |  |  |  |  |
+| **repository** | | | | |
+| **Organization** | | | | |
+| **Environment** | | | | |
+| **User (Codespaces)** | | | | |
 
 ---
 
 ## 1. REST API
 
-> Requires PAT with `repo`, `admin:org`, or `codespace` scopes as appropriate.  
-> **Secrets** require sodium-sealed encryption before PUT — fetch the public key first:  
-> `GET /repos/{owner}/{repo}/actions/secrets/public-key`  
+> Requires PAT with `repo`, `admin:org`, or `codespace` scopes as appropriate.
+> **Secrets** require sodium-sealed encryption before PUT — fetch the public key first:
+> `GET /repos/{owner}/{repo}/actions/secrets/public-key`
 > **API version header:** `X-GitHub-Api-Version: 2026-03-10`
 
 ### 1a. repository Scope
@@ -126,7 +126,7 @@
 
 ### 1c. Environment Scope
 
-> Uses `repository_id` (numeric), not `owner/repo`.  
+> Uses `repository_id` (numeric), not `owner/repo`.
 > Get `repository_id`: `gh repo view OWNER/REPO --json databaseId --jq '.databaseId'`
 
 #### Variables
@@ -195,8 +195,8 @@ curl -L \
 
 ## 2. GitHub CLI (`gh`)
 
-> Docs: `gh secret set --help` / `gh variable set --help`  
-> Install: <https://cli.github.com>  
+> Docs: `gh secret set --help` / `gh variable set --help`
+> Install: <https://cli.github.com>
 > Auth: `gh auth login` or set `GITHUB_TOKEN` / `GH_TOKEN` env var
 
 ### 2a. Secrets
@@ -260,7 +260,7 @@ gh variable list --env ENVIRONMENT_NAME --repo OWNER/REPO
 gh variable delete VAR_NAME --repo OWNER/REPO
 ```
 
-> ️ **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
+> **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
 
 ## 2c. Patterns Used in This repository
 
@@ -291,45 +291,45 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 
 ## 3. GitHub MCP Server
 
-> Official image: `ghcr.io/github/github-mcp-server`  
-> Remote endpoint: `https://api.githubcopilot.com/mcp/`  
-> Source: <https://github.com/github/github-mcp-server>  
+> Official image: `ghcr.io/github/github-mcp-server`
+> Remote endpoint: `https://api.githubcopilot.com/mcp/`
+> Source: <https://github.com/github/github-mcp-server>
 > Config guide: <https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md>
 
 ### 3a. Available Toolsets
 
 | Toolset | Covers | Default? |
 |---|---|---|
-| `context` | `get_me`, repo context |  |
-| `issues` | Create/update/read issues |  |
-| `pull_requests` | Create/update/read PRs, reviews, comments |  |
-| `repos` | File content, branches, commits, releases |  |
-| `users` | User lookup |  |
-| `actions` | workflow runs, jobs, artifacts |  opt-in |
-| `secret_protection` | Secret scanning alerts (GHAS, read-only) |  opt-in |
-| `dependabot` | Dependabot alerts (read-only) |  opt-in |
-| `code_security` | Code scanning alerts (read-only) |  opt-in |
-| `discussions` | GitHub Discussions read/write |  opt-in |
-| `notifications` | Notification management |  opt-in |
+| `context` | `get_me`, repo context | |
+| `issues` | Create/update/read issues | |
+| `pull_requests` | Create/update/read PRs, reviews, comments | |
+| `repos` | File content, branches, commits, releases | |
+| `users` | User lookup | |
+| `actions` | workflow runs, jobs, artifacts | opt-in |
+| `secret_protection` | Secret scanning alerts (GHAS, read-only) | opt-in |
+| `dependabot` | Dependabot alerts (read-only) | opt-in |
+| `code_security` | Code scanning alerts (read-only) | opt-in |
+| `discussions` | GitHub Discussions read/write | opt-in |
+| `notifications` | Notification management | opt-in |
 
-### 3b. ️ Critical Gap — Secrets/Variables CRUD not available via MCP
+### 3b. Critical Gap — Secrets/Variables CRUD not available via MCP
 
 As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, update, or delete Actions variables, Actions secrets, Dependabot secrets, or Codespaces secrets. Use the REST API or `gh` CLI for write operations on secrets and variables.
 
 | Operation | REST API | CLI (`gh`) | MCP Server |
 |---|---|---|---|
-| Repo Actions variable (CRUD) |  Full |  Full |  Not supported |
-| Repo Actions secret (CRUD) |  Full |  Full |  Not supported |
-| Org Actions variable (CRUD) |  Full |  Full |  Not supported |
-| Org Actions secret (CRUD) |  Full |  Full |  Not supported |
-| Environment variable (CRUD) |  Full |  Full |  Not supported |
-| Environment secret (CRUD) |  Full |  Full |  Not supported |
-| Dependabot secret (CRUD) |  Full |  Full |  Not supported |
-| Codespaces secret (CRUD) |  Full |  Full |  Not supported |
-| Secret scanning alerts (read) |  |  |  (`secret_protection`) |
-| Dependabot alerts (read) |  |  |  (`dependabot`) |
-| workflow runs/jobs (read) |  |  |  (`actions`) |
-| PR comments (write) |  |  |  (`pull_requests`) |
+| Repo Actions variable (CRUD) | Full | Full | Not supported |
+| Repo Actions secret (CRUD) | Full | Full | Not supported |
+| Org Actions variable (CRUD) | Full | Full | Not supported |
+| Org Actions secret (CRUD) | Full | Full | Not supported |
+| Environment variable (CRUD) | Full | Full | Not supported |
+| Environment secret (CRUD) | Full | Full | Not supported |
+| Dependabot secret (CRUD) | Full | Full | Not supported |
+| Codespaces secret (CRUD) | Full | Full | Not supported |
+| Secret scanning alerts (read) | | | (`secret_protection`) |
+| Dependabot alerts (read) | | | (`dependabot`) |
+| workflow runs/jobs (read) | | | (`actions`) |
+| PR comments (write) | | | (`pull_requests`) |
 
 ### 3c. MCP Server Configuration — Remote (VS Code / Copilot)
 
@@ -390,8 +390,8 @@ MCP aggregator :2301
   └─ github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) → 28 tools
 ```
 
-> **Note:** The repo's live MCP connection uses the `/mcp/readonly` endpoint.  
-> Write operations (posting comments, dispatching workflows, updating variables) must use  
+> **Note:** The repo's live MCP connection uses the `/mcp/readonly` endpoint.
+> Write operations (posting comments, dispatching workflows, updating variables) must use
 > `CODEX_MASTER_KEY || CODEX_BACKUP_KEY` via direct REST API calls or `gh` CLI.
 
 ---

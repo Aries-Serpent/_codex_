@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Status**: Production-Ready
 
 ---
@@ -12,6 +12,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Monitoring Architecture<br/>Metrics Logs Traces Alerts'}, 'theme': 'base'}}%%
+
 graph TB
     subgraph "Data Sources"
         ML[" ML Operations<br/>• Training metrics<br/>• Evaluation results<br/>• Inference latency"]
@@ -45,23 +46,33 @@ graph TB
 
     %% Data flow
     ML --> MetricsCollector
+
     App --> MetricsCollector
+
     App --> LogCollector
+
     Logs --> LogCollector
+
     Infra --> MetricsCollector
 
     App --> TraceCollector
     
     LogCollector --> LogStorage
+
     MetricsCollector --> MetricsDB
+
     TraceCollector --> TraceDB
 
     LogStorage --> Query
+
     MetricsDB --> Query
+
     TraceDB --> Query
 
     Query --> Analysis
+
     Analysis --> Dashboard
+
     Analysis --> Alert
 
     Alert --> Notify
@@ -95,7 +106,7 @@ graph TB
 
 ### 1. Metrics (Time Series Data)
 
-**What**: Quantitative measurements over time  
+**What**: Quantitative measurements over time
 **Tools**: Prometheus, InfluxDB, CloudWatch
 
 **Key Metrics**:
@@ -131,7 +142,7 @@ rate(http_errors_total[5m]) / rate(http_request_count[5m])
 
 ### 2. Logging (Event Streams)
 
-**What**: Detailed event records with context  
+**What**: Detailed event records with context
 **Tools**: Elasticsearch, CloudWatch Logs, Loki
 
 **Log Levels**:
@@ -171,7 +182,7 @@ logger.critical("Database unavailable", service="postgres")
 
 ### 3. Tracing (Execution Flows)
 
-**What**: Distributed request tracing across services  
+**What**: Distributed request tracing across services
 **Tools**: Jaeger, Zipkin, Datadog
 
 **Trace Example**:
@@ -194,7 +205,7 @@ Total Latency: 160ms
 
 ### 4. Events (Discrete Occurrences)
 
-**What**: Important events and state changes  
+**What**: Important events and state changes
 **Tools**: Event streaming, audit logs
 
 **Event Types**:

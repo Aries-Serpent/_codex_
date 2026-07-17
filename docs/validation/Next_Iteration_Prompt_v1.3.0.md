@@ -2,17 +2,17 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Generated**: 2026-06-22  
-> **Current Branch**: `copilot/sub-pr-2390`  
+> **Generated**: 2026-06-22
+> **Current Branch**: `copilot/sub-pr-2390`
 > **Scope**: Complete remaining validation tasks and legacy import refactoring
 
 ## Context
 
 Part B validation and hardening tasks have been substantially completed. Core quality gates are in place and passing:
--  Shadowing prevention (yaml, hydra)
--  Template integrity validation
--  CI workflow production-ready
--  Documentation comprehensive
+- Shadowing prevention (yaml, hydra)
+- Template integrity validation
+- CI workflow production-ready
+- Documentation comprehensive
 
 **Remaining work** focuses on runtime-intensive validations and code refactoring.
 
@@ -276,25 +276,25 @@ pytest tests/validation/test_audit_pipeline.py -v
 
 For this iteration to be considered **complete and ready for merge**:
 
-### Validation 
+### Validation
 - [x] Shadowing prevention verified
 - [x] Template integrity verified
 - [ ] Determinism validation passed
 - [ ] CI pipeline tested end-to-end
 
-### Code Quality 
+### Code Quality
 - [x] Documentation complete
 - [ ] Code review passed
 - [ ] Security scan clean
 - [ ] Linters passing
 
-### Functionality 
+### Functionality
 - [ ] Legacy imports analyzed
 - [ ] High-priority imports refactored
 - [ ] Tests covering changes
 - [ ] No regressions introduced
 
-### CI/CD 
+### CI/CD
 - [x] Workflow operational
 - [x] Baseline established
 - [x] Quality gates enforced
@@ -307,19 +307,19 @@ For this iteration to be considered **complete and ready for merge**:
 If critical issues arise:
 
 1. **Determinism Failures**:
-   - Identify non-deterministic source
-   - Fix sorting/ordering
-   - Re-validate
+ - Identify non-deterministic source
+ - Fix sorting/ordering
+ - Re-validate
 
 2. **Import Refactoring Issues**:
-   - Revert specific commits: `git revert <commit-sha>`
-   - Restore working import paths
-   - Add to known issues list
+ - Revert specific commits: `git revert <commit-sha>`
+ - Restore working import paths
+ - Add to known issues list
 
 3. **CI Workflow Issues**:
-   - Revert workflow changes: `git checkout HEAD~1 .github/workflows/space-audit.yml`
-   - Test locally before pushing
-   - Gradual re-introduction of changes
+ - Revert workflow changes: `git checkout HEAD~1 .github/workflows/space-audit.yml`
+ - Test locally before pushing
+ - Gradual re-introduction of changes
 
 ---
 
@@ -335,7 +335,7 @@ If critical issues arise:
 | C.5: Integration testing | 20 min | High |
 | **Total** | **3-4 hrs** | - |
 
-**Critical Path**: C.1 → C.4 → C.5 (must complete)  
+**Critical Path**: C.1 C.4 C.5 (must complete)
 **Optional**: C.2 (refactoring), C.3 (monitoring)
 
 ---
@@ -370,11 +370,11 @@ When applying this prompt:
 
 This iteration completes the audit remediation system validation. Key deliverables:
 
--  Production-ready CI workflow
--  Comprehensive documentation
--  Quality gates enforced
--  Determinism validation (pending)
--  Legacy import strategy (in progress)
+- Production-ready CI workflow
+- Comprehensive documentation
+- Quality gates enforced
+- Determinism validation (pending)
+- Legacy import strategy (in progress)
 
 **Recommended Approval Path**:
 1. Review validation summaries (PartB_Validation_Summary.md)

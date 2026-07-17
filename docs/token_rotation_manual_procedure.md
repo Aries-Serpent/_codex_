@@ -8,7 +8,7 @@
 
 This document provides step-by-step instructions for manually rotating authentication tokens and secrets in the _codex_ repository.
 
-**️ IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.
+** IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.
 
 ---
 
@@ -17,9 +17,9 @@ This document provides step-by-step instructions for manually rotating authentic
 ### 1. Required Access
 - Repository admin access
 - GitHub Personal Access Token with scopes:
-  - `repo` (full repository access)
-  - `workflow` (update GitHub Actions workflows)
-  - `admin:repo_hook` (if webhook secrets are used)
+ - `repo` (full repository access)
+ - `workflow` (update GitHub Actions workflows)
+ - `admin:repo_hook` (if webhook secrets are used)
 
 ### 2. Required Environment Variables
 ```bash
@@ -353,8 +353,8 @@ cat .codex/secrets/backups/*.log
 1. Go to: https://github.com/settings/tokens
 2. Edit your token
 3. Ensure these scopes are checked:
-   - `repo` (full control)
-   - `workflow` (update workflows)
+ - `repo` (full control)
+ - `workflow` (update workflows)
 4. Regenerate token
 5. Update `GITHUB_TOKEN` environment variable
 
@@ -363,34 +363,34 @@ cat .codex/secrets/backups/*.log
 ## Security Best Practices
 
 ### 1. Secure Key Storage
--  Store `CODEX_MASTER_KEY` in password manager (1Password, LastPass)
--  Never commit `CODEX_MASTER_KEY` to version control
--  Rotate `CODEX_MASTER_KEY` annually
--  Use different master keys for dev/staging/production
+- Store `CODEX_MASTER_KEY` in password manager (1Password, LastPass)
+- Never commit `CODEX_MASTER_KEY` to version control
+- Rotate `CODEX_MASTER_KEY` annually
+- Use different master keys for dev/staging/production
 
 ### 2. GitHub Token Hygiene
--  Use fine-grained PATs with minimal scopes
--  Set expiration dates (30-90 days recommended)
--  Rotate tokens regularly
--  Revoke unused tokens immediately
+- Use fine-grained PATs with minimal scopes
+- Set expiration dates (30-90 days recommended)
+- Rotate tokens regularly
+- Revoke unused tokens immediately
 
 ### 3. Backup Management
--  Verify `.codex/secrets/backups/` in `.gitignore`
--  Keep backups encrypted
--  Store off-site backup of `CODEX_MASTER_KEY`
--  Test backup restoration quarterly
+- Verify `.codex/secrets/backups/` in `.gitignore`
+- Keep backups encrypted
+- Store off-site backup of `CODEX_MASTER_KEY`
+- Test backup restoration quarterly
 
 ### 4. Audit Logging
--  Review rotation logs after each operation
--  Monitor GitHub audit log for secret access
--  Set up alerts for unexpected secret changes
--  Keep rotation logs for compliance (1+ year)
+- Review rotation logs after each operation
+- Monitor GitHub audit log for secret access
+- Set up alerts for unexpected secret changes
+- Keep rotation logs for compliance (1+ year)
 
 ### 5. Emergency Procedures
--  Document rollback steps (see above)
--  Have backup contact for emergencies
--  Test rollback procedure quarterly
--  Keep offline copy of recovery procedures
+- Document rollback steps (see above)
+- Have backup contact for emergencies
+- Test rollback procedure quarterly
+- Keep offline copy of recovery procedures
 
 ---
 
@@ -479,6 +479,6 @@ python3 scripts/phase10/automated_secrets_manager.py --action verify --name SECR
 
 ---
 
-**Last Updated**: 2026-01-17  
-**Version**: 1.0  
+**Last Updated**: 2026-01-17
+**Version**: 1.0
 **Status**: Approved for Production Use

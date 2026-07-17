@@ -57,6 +57,7 @@ Each entry maps the event to the workflows that listen for it:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "GitHub Webhook Events fired to this repo", "issue_comment"'}}%%
+
 graph LR
     subgraph Events["GitHub Webhook Events fired to this repo"]
         E1["issue_comment"]
@@ -82,9 +83,13 @@ graph LR
     end
 
     E1 --> W1 & W3 & W4 & W6 & W7 & W8
+
     E4 --> W5
+
     E9 --> W2
+
     E2 --> W2 & W7 & W8
+
     E6 --> W9["agent_infrastructure_manager.yml"]
 
     style W1 fill:#10b981,color:#fff
@@ -92,7 +97,7 @@ graph LR
     style W5 fill:#8b5cf6,color:#fff
 ```
 
-### Event → Workflow Count
+### Event Workflow Count
 
 | GitHub Event | Workflows subscribed | Notes |
 |-------------|----------------------|-------|
@@ -105,7 +110,7 @@ graph LR
 | `repository_dispatch` | 3 | External trigger via API |
 | `pull_request_review` | 1 | Agent auth delegation gate |
 | `status` | 1 | Batch CI triage |
-| `label` | 1 | E→D transition gate |
+| `label` | 1 | ED transition gate |
 
 ---
 
@@ -208,7 +213,7 @@ Notifies an external Cognitive Brain API server of CI outcomes in real-time.
 | **Content type** | `application/json` |
 | **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256 validation) |
 | **Events** | `workflow_run`, `pull_request`, `issue_comment` |
-| **Status** |  Pending — URL not yet deployed |
+| **Status** | Pending — URL not yet deployed |
 
 ### 5b. Runner Health Notification (New — W-123)
 
@@ -221,7 +226,7 @@ Notify Cognitive Brain when `copilot-setup-steps` completes so it can:
 | **Payload URL** | Same as 5a — Cognitive Brain endpoint |
 | **Events** | `workflow_run` (filter: `copilot-setup-steps`) |
 | **AAIS benefit** | Closes the autonomous runner-selection feedback loop |
-| **Status** |  Pending — depends on Cognitive Brain server deployment |
+| **Status** | Pending — depends on Cognitive Brain server deployment |
 
 ---
 
@@ -231,16 +236,25 @@ The following documentation gaps need to be filled in a follow-up PR:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "W-123: Webhook Audit", "Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"'}}%%
+
 flowchart TD
+
     A["W-123: Webhook Audit"] --> B["Run: @agent-infra list-webhooks\nCapture live hook IDs + URLs"]
+
     A --> C["Audit webhook_config.json\nIs it populated? Are URLs live?"]
+
     A --> D["Document each active webhook\nin docs/ops/WEBHOOK_REGISTRY.md"]
+
     A --> E["Verify HMAC signatures\nare validated on all receivers"]
+
     A --> F["Add webhook_configurator.py\nto docs/agent/COPILOT_TOKEN_GUIDE.md\npermission matrix"]
 
     B --> G["Create / update\n.codex/webhook_registry.json"]
+
     C --> H["Populate .codex/webhook_config.json\nfor idempotent apply"]
+
     D --> I["Link from ADMIN_MANUAL_SETUP_GUIDE.md §5"]
+
     E --> J["Update AGENTIC_AGENCY_TIPS.md\nwebhook signature validation row"]
 
     style A fill:#3b82f6,color:#fff

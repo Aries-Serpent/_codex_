@@ -1,10 +1,10 @@
-# Guide: Codex ↔ Zendesk Integration Deep Dive
+# Guide: Codex Zendesk Integration Deep Dive
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 16:17:26 | Author: mbaetiong
 
- Roles: [Primary] Educator, [Secondary] Navigator   Energy: 5/5
+ Roles: [Primary] Educator, [Secondary] Navigator Energy: 5/5
 
 Note on scope: Some references below were discovered via code search and may be incomplete due to platform limits. For a broader view, browse the code search results: https://github.com/search?q=repo%3AAries-Serpent%2F_codex_+Zendesk&type=code and the repo tree: https://github.com/Aries-Serpent/_codex_/tree/main
 
@@ -14,7 +14,7 @@ Note on scope: Some references below were discovered via code search and may be 
 
 Codex includes an “offline-first” administrative toolkit for Zendesk. It focuses on safe configuration management and documentation curation rather than ticket handling at runtime. The core themes:
 
-- Snapshot → Diff → Plan → Apply: Treat Zendesk configuration (e.g., triggers, fields, forms, views, macros, routing) as versioned infrastructure.
+- Snapshot Diff Plan Apply: Treat Zendesk configuration (e.g., triggers, fields, forms, views, macros, routing) as versioned infrastructure.
 - Evidence and metrics: Every dry-run/apply writes JSONL evidence and emits metrics to support auditability and operations.
 - Offline docs capture: Curate Zendesk developer docs snapshots locally to support air‑gapped learning, review, or model fine-tuning.
 
@@ -68,7 +68,7 @@ Notes:
 
 ---
 
-## 4) The IaC-style flow: Snapshot → Diff → Plan → Apply
+## 4) The IaC-style flow: Snapshot Diff Plan Apply
 
 | Step | Command | What it does | Output |
 |---|---|---|---|
@@ -127,7 +127,7 @@ How to use:
 
 ---
 
-## 8) Command cheat sheet (CLI → intent)
+## 8) Command cheat sheet (CLI intent)
 
 | Command | Intent | Notes |
 |---|---|---|

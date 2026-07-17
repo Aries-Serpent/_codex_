@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2026-06-22  
-> **Status**: Active  
-> **Audience**: Developers, Contributors, Data Scientists  
+> **Version**: 1.0.0
+> **Last Updated**: 2026-06-22
+> **Status**: Active
+> **Audience**: Developers, Contributors, Data Scientists
 
 ---
 
@@ -463,24 +463,24 @@ curl http://localhost:8000/metrics
 ### PyCharm Professional
 
 1. **Open Project**:
-   - File → Open → Select `_codex_` directory
+ - File Open Select `_codex_` directory
 
 2. **Configure Python Interpreter**:
-   - Settings → Project → Python Interpreter
-   - Click  → Add...
-   - Select Existing Environment
-   - Browse to `venv/bin/python`
+ - Settings Project Python Interpreter
+ - Click Add...
+ - Select Existing Environment
+ - Browse to `venv/bin/python`
 
 3. **Enable Debug Mode**:
-   - Run → Edit Configurations
-   - Create new Python configuration
-   - Set Script Path to module name
-   - Enable "Reload changed modules"
+ - Run Edit Configurations
+ - Create new Python configuration
+ - Set Script Path to module name
+ - Enable "Reload changed modules"
 
 4. **Code Style Settings**:
-   - Settings → Editor → Code Style → Python
-   - Set line length to 100
-   - Enable Black formatter
+ - Settings Editor Code Style Python
+ - Set line length to 100
+ - Enable Black formatter
 
 ### Vim/Neovim
 

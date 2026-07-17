@@ -12,7 +12,7 @@
 
 ---
 
-##  Objective
+## Objective
 
 Execute the complete pytest test suite with branch coverage measurement to:
 1. Establish accurate baseline coverage metrics
@@ -24,7 +24,7 @@ Execute the complete pytest test suite with branch coverage measurement to:
 
 ---
 
-##  Prerequisites Checklist
+## Prerequisites Checklist
 
 Before execution, verify:
 - [ ] Python 3.8+ installed (`python --version`)
@@ -42,7 +42,7 @@ pip install pytest pytest-cov pytest-timeout pytest-rerunfailures
 
 ---
 
-##  Configuration Files
+## Configuration Files
 
 ### 1. pytest.ini
 Location: `/home/runner/work/_codex_/_codex_/pytest.ini`
@@ -64,7 +64,7 @@ Key settings:
 
 ---
 
-##  Execution Plan
+## Execution Plan
 
 ### Step 1: Baseline Coverage Measurement (Pre-Phase 4)
 
@@ -103,9 +103,9 @@ pytest tests/ \
 5. Note any test failures (should be none)
 
 **Success Criteria**:
--  All baseline tests pass
--  Coverage ~17-18%
--  JSON and HTML reports generated
+- All baseline tests pass
+- Coverage ~17-18%
+- JSON and HTML reports generated
 
 ---
 
@@ -145,9 +145,9 @@ pytest tests/ \
 5. Note any test failures
 
 **Success Criteria**:
--  All 560 tests pass
--  Coverage improvement visible
--  JSON and HTML reports generated
+- All 560 tests pass
+- Coverage improvement visible
+- JSON and HTML reports generated
 
 ---
 
@@ -187,9 +187,9 @@ pytest tests/branch_coverage/ \
 5. Compare with baseline
 
 **Success Criteria**:
--  All 390 Phase 4 tests pass
--  Coverage metrics captured
--  Reports generated
+- All 390 Phase 4 tests pass
+- Coverage metrics captured
+- Reports generated
 
 ---
 
@@ -219,9 +219,9 @@ echo "Phase 4 Branch Coverage: ${PHASE4_BRANCH}%"
 ```
 
 **Expected Results**:
-- Phase 4.1 target: +2.7-4.7% improvement (→ 20-22% total)
-- Phase 4.1-4.2: +5-8% improvement (→ 22-25% total)
-- Phase 4.1-4.3: +8-12% improvement (→ 25-30% total)
+- Phase 4.1 target: +2.7-4.7% improvement ( 20-22% total)
+- Phase 4.1-4.2: +5-8% improvement ( 22-25% total)
+- Phase 4.1-4.3: +8-12% improvement ( 25-30% total)
 
 **Actions**:
 1. Execute coverage extraction
@@ -230,9 +230,9 @@ echo "Phase 4 Branch Coverage: ${PHASE4_BRANCH}%"
 4. Document results
 
 **Success Criteria**:
--  Coverage improvement measured
--  Targets validated
--  Branch coverage tracked
+- Coverage improvement measured
+- Targets validated
+- Branch coverage tracked
 
 ---
 
@@ -288,9 +288,9 @@ EOF
 4. Prioritize for Phase 4.2+
 
 **Success Criteria**:
--  Gap list generated
--  Modules categorized
--  Priorities identified
+- Gap list generated
+- Modules categorized
+- Priorities identified
 
 ---
 
@@ -354,13 +354,13 @@ echo "Report generated: coverage_validation_report.md"
 4. Archive for reference
 
 **Success Criteria**:
--  Report generated
--  All metrics included
--  Actionable insights provided
+- Report generated
+- All metrics included
+- Actionable insights provided
 
 ---
 
-## 🎨 HTML Report Analysis
+## HTML Report Analysis
 
 **Purpose**: Visual exploration of coverage gaps.
 
@@ -368,15 +368,15 @@ echo "Report generated: coverage_validation_report.md"
 1. Open `htmlcov/phase4_complete/index.html` in browser
 2. Sort by coverage percentage (ascending)
 3. Identify patterns in low-coverage files:
-   - By module (src/, agents/, training/)
-   - By file type (.py, test files)
-   - By complexity (large vs small files)
+ - By module (src/, agents/, training/)
+ - By file type (.py, test files)
+ - By complexity (large vs small files)
 4. Click through files to see line-by-line coverage
 5. Note common missing patterns:
-   - Error handling branches
-   - Edge cases
-   - Integration points
-   - Configuration options
+ - Error handling branches
+ - Edge cases
+ - Integration points
+ - Configuration options
 
 **Key Metrics to Review**:
 - Files with 0% coverage
@@ -386,29 +386,29 @@ echo "Report generated: coverage_validation_report.md"
 
 ---
 
-##  Success Validation Criteria
+## Success Validation Criteria
 
 ### Phase 4.1 Target (167 tests)
--  Coverage increase: +2.7-4.7%
--  Total coverage: 20-22%
--  All tests passing: 337+ tests
--  No new failures introduced
+- Coverage increase: +2.7-4.7%
+- Total coverage: 20-22%
+- All tests passing: 337+ tests
+- No new failures introduced
 
 ### Phase 4.1-4.2 Target (276 tests)
--  Coverage increase: +5-8%
--  Total coverage: 22-25%
--  All tests passing: 446+ tests
--  RAG/model coverage improved
+- Coverage increase: +5-8%
+- Total coverage: 22-25%
+- All tests passing: 446+ tests
+- RAG/model coverage improved
 
 ### Phase 4.1-4.3 Target (390 tests)
--  Coverage increase: +8-12%
--  Total coverage: 25-30%
--  All tests passing: 560 tests
--  Edge cases covered
+- Coverage increase: +8-12%
+- Total coverage: 25-30%
+- All tests passing: 560 tests
+- Edge cases covered
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Issue: Tests Fail
 **Symptoms**: Exit code != 0, failures in output
@@ -444,7 +444,7 @@ echo "Report generated: coverage_validation_report.md"
 
 ---
 
-##  Documentation Updates Required
+## Documentation Updates Required
 
 After execution, update:
 1. `docs/testing/phase_4_1_validation_report.md` - Add actual coverage results
@@ -454,18 +454,18 @@ After execution, update:
 
 ---
 
-##  Iteration & Improvement
+## Iteration & Improvement
 
 ### If Target Not Met (<20% for Phase 4.1)
 1. **Analyze Gap**: Review coverage_gaps.txt for patterns
 2. **Identify Issues**:
-   - Tests not exercising production code?
-   - Pattern tests vs integration tests?
-   - Missing module imports?
+ - Tests not exercising production code?
+ - Pattern tests vs integration tests?
+ - Missing module imports?
 3. **Adjust Strategy**:
-   - Add integration tests (Phase 4.3 Part 2)
-   - Add real module imports
-   - Focus on high-impact modules
+ - Add integration tests (Phase 4.3 Part 2)
+ - Add real module imports
+ - Focus on high-impact modules
 4. **Re-execute**: Run validation again after adjustments
 
 ### If Target Exceeded (>22% for Phase 4.1)
@@ -476,41 +476,41 @@ After execution, update:
 
 ---
 
-##  Final Deliverables
+## Final Deliverables
 
 After completing all steps, provide:
 
 1. **Coverage Metrics**:
-   - Baseline: X.XX%
-   - Phase 4 Complete: X.XX%
-   - Improvement: +X.XX%
-   - Target Status:  Met / ️ Partial /  Missed
+ - Baseline: X.XX%
+ - Phase 4 Complete: X.XX%
+ - Improvement: +X.XX%
+ - Target Status: Met / Partial / Missed
 
 2. **Test Execution**:
-   - Total tests: 560
-   - Passed: XXX
-   - Failed: XXX
-   - Skipped: XXX
+ - Total tests: 560
+ - Passed: XXX
+ - Failed: XXX
+ - Skipped: XXX
 
 3. **Reports Generated**:
-   -  coverage_validation_report.md
-   -  htmlcov/phase4_complete/index.html
-   -  coverage_phase4.json
-   -  coverage_gaps.txt
+ - coverage_validation_report.md
+ - htmlcov/phase4_complete/index.html
+ - coverage_phase4.json
+ - coverage_gaps.txt
 
 4. **Gap Analysis**:
-   - Low-coverage modules identified
-   - Prioritization complete
-   - Phase 4.2+ recommendations ready
+ - Low-coverage modules identified
+ - Prioritization complete
+ - Phase 4.2+ recommendations ready
 
 5. **Next Steps**:
-   - Phase 4.2 focus areas
-   - Phase 4.3 adjustments
-   - Timeline estimates
+ - Phase 4.2 focus areas
+ - Phase 4.3 adjustments
+ - Timeline estimates
 
 ---
 
-##  AI Agent Execution Checklist
+## AI Agent Execution Checklist
 
 For autonomous execution by AI agents (ChatGPT, Codex, etc.):
 
@@ -544,7 +544,7 @@ For autonomous execution by AI agents (ChatGPT, Codex, etc.):
 
 ---
 
-## 📞 Support & References
+## Support & References
 
 **Configuration Files**:
 - `pytest.ini` - Pytest configuration
@@ -568,17 +568,17 @@ For autonomous execution by AI agents (ChatGPT, Codex, etc.):
 
 ---
 
-##  Completion Criteria
+## Completion Criteria
 
 Phase 4 validation is complete when:
-1.  All baseline metrics captured
-2.  All 560 tests executed successfully
-3.  Coverage improvement measured and documented
-4.  HTML/JSON/text reports generated
-5.  Coverage gaps identified and prioritized
-6.  Validation report created
-7.  Documentation updated
-8.  Next steps defined
+1. All baseline metrics captured
+2. All 560 tests executed successfully
+3. Coverage improvement measured and documented
+4. HTML/JSON/text reports generated
+5. Coverage gaps identified and prioritized
+6. Validation report created
+7. Documentation updated
+8. Next steps defined
 
 **Estimated Time**: 30-60 minutes for full execution and analysis
 

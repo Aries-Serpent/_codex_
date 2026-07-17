@@ -377,16 +377,16 @@ cp .codex/pre_cleanup_backups/*.backup .
 
 **Cleanup is considered successful when**:
 
--  All Phase 1 configuration tests pass
--  All Phase 2 tool integration tests pass
--  All Phase 3 import path tests pass
--  All Phase 4 workflow simulation tests pass
--  All Phase 5 artifact verification tests pass
--  All integration safety tests pass
--  Pre-cleanup and post-cleanup validation scripts return 0
--  Zero breaking changes verified
--  CI/CD pipeline functions correctly
--  All tools can find their configurations
+- All Phase 1 configuration tests pass
+- All Phase 2 tool integration tests pass
+- All Phase 3 import path tests pass
+- All Phase 4 workflow simulation tests pass
+- All Phase 5 artifact verification tests pass
+- All integration safety tests pass
+- Pre-cleanup and post-cleanup validation scripts return 0
+- Zero breaking changes verified
+- CI/CD pipeline functions correctly
+- All tools can find their configurations
 
 ## Running All Validation Tests
 
@@ -569,5 +569,5 @@ For validation issues or questions:
 ---
 
 **Last Updated**: 2024
-**Validation Status**:  Ready for use
-**Zero Breaking Changes**:  Guaranteed by validation
+**Validation Status**: Ready for use
+**Zero Breaking Changes**: Guaranteed by validation

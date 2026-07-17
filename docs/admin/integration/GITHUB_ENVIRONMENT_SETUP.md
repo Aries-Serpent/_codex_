@@ -6,24 +6,24 @@
 
 - [ Table of Contents](#-table-of-contents)
 - [Overview](#overview)
-  - [Prerequisites](#prerequisites)
+ - [Prerequisites](#prerequisites)
 - [Required Environment Variables](#required-environment-variables)
-  - [Organization-Level Variables](#organization-level-variables)
-  - [Repository-Level Variables](#repository-level-variables)
+ - [Organization-Level Variables](#organization-level-variables)
+ - [Repository-Level Variables](#repository-level-variables)
 - [Required Secrets](#required-secrets)
-  - [Organization-Level Secrets](#organization-level-secrets)
-  - [Repository-Level Secrets](#repository-level-secrets)
+ - [Organization-Level Secrets](#organization-level-secrets)
+ - [Repository-Level Secrets](#repository-level-secrets)
 - [Configuration Instructions](#configuration-instructions)
-  - [Step 1: Generate Secrets Using Python Script](#step-1-generate-secrets-using-python-script)
-  - [Step 2: Configure Organization-Level Variables](#step-2-configure-organization-level-variables)
-  - [Step 3: Configure Organization-Level Secrets](#step-3-configure-organization-level-secrets)
-  - [Step 4: Configure Repository-Level Variables](#step-4-configure-repository-level-variables)
-  - [Step 5: Configure Repository-Level Secrets](#step-5-configure-repository-level-secrets)
+ - [Step 1: Generate Secrets Using Python Script](#step-1-generate-secrets-using-python-script)
+ - [Step 2: Configure Organization-Level Variables](#step-2-configure-organization-level-variables)
+ - [Step 3: Configure Organization-Level Secrets](#step-3-configure-organization-level-secrets)
+ - [Step 4: Configure Repository-Level Variables](#step-4-configure-repository-level-variables)
+ - [Step 5: Configure Repository-Level Secrets](#step-5-configure-repository-level-secrets)
 - [Python Helper Script](#python-helper-script)
-  - [Script: `generate_mcp_secrets.py`](#script-generate_mcp_secretspy)
-  - [Installation Instructions](#installation-instructions)
+ - [Script: `generate_mcp_secrets.py`](#script-generate_mcp_secretspy)
+ - [Installation Instructions](#installation-instructions)
 - [Verification Steps](#verification-steps)
-  - [1. Verify Variables Are Set](#1-verify-variables-are-set)
+ - [1. Verify Variables Are Set](#1-verify-variables-are-set)
 - [In a GitHub Actions workflow, add this step:](#in-a-github-actions-workflow-add-this-step)
 - [2. Verify Secrets Are Accessible](#2-verify-secrets-are-accessible)
 - [In a GitHub Actions workflow, add this step:](#in-a-github-actions-workflow-add-this-step)
@@ -32,20 +32,20 @@
 - [4. Test MCP Service Connection](#4-test-mcp-service-connection)
 - [In a workflow with MCP service container:](#in-a-workflow-with-mcp-service-container)
 - [Troubleshooting](#troubleshooting)
-  - [Issue: Secret Not Found in Workflow](#issue-secret-not-found-in-workflow)
-  - [Issue: Token Decryption Fails](#issue-token-decryption-fails)
-  - [Issue: MCP Service Won't Start](#issue-mcp-service-wont-start)
-  - [Issue: Rate Limit Errors](#issue-rate-limit-errors)
+ - [Issue: Secret Not Found in Workflow](#issue-secret-not-found-in-workflow)
+ - [Issue: Token Decryption Fails](#issue-token-decryption-fails)
+ - [Issue: MCP Service Won't Start](#issue-mcp-service-wont-start)
+ - [Issue: Rate Limit Errors](#issue-rate-limit-errors)
 - [Additional Resources](#additional-resources)
 - [ Mission Overview](#-mission-overview)
-- [️ Verification Checklist](#-verification-checklist)
+- [ Verification Checklist](#-verification-checklist)
 - [ Success Metrics](#-success-metrics)
-- [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path ️ (Shortest Setup Route)](#path--shortest-setup-route)
-  - [Fields  (Configuration Flow)](#fields--configuration-flow)
-  - [Patterns ️ (Configuration Recognition)](#patterns--configuration-recognition)
-  - [Redundancy  (Backup Mechanisms)](#redundancy--backup-mechanisms)
-  - [Balance ️ (Security vs Usability)](#balance--security-vs-usability)
+- [ Physics Alignment](#-physics-alignment)
+ - [Path (Shortest Setup Route)](#path--shortest-setup-route)
+ - [Fields (Configuration Flow)](#fields--configuration-flow)
+ - [Patterns (Configuration Recognition)](#patterns--configuration-recognition)
+ - [Redundancy (Backup Mechanisms)](#redundancy--backup-mechanisms)
+ - [Balance (Security vs Usability)](#balance--security-vs-usability)
 - [ Energy Distribution](#-energy-distribution)
 - [ Redundancy Patterns](#-redundancy-patterns)
 
@@ -55,7 +55,7 @@
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Required Environment Variables](#required-environment-variables)
@@ -153,38 +153,38 @@ Configure at: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 1. Navigate to: https://github.com/organizations/Aries-Serpent/settings/variables/actions
 2. Click **"New organization variable"**
 3. For each variable in the "Organization-Level Variables" table:
-   - **Name**: Enter variable name exactly as shown (case-sensitive)
-   - **Value**: Enter value from table or script output
-   - **Repository access**: Select **"All repositories"** or specific repositories
-   - Click **"Add variable"**
+ - **Name**: Enter variable name exactly as shown (case-sensitive)
+ - **Value**: Enter value from table or script output
+ - **Repository access**: Select **"All repositories"** or specific repositories
+ - Click **"Add variable"**
 
 ### Step 3: Configure Organization-Level Secrets
 
 1. Navigate to: https://github.com/organizations/Aries-Serpent/settings/secrets/actions
 2. Click **"New organization secret"**
 3. For each secret in the "Organization-Level Secrets" table:
-   - **Name**: Enter secret name exactly as shown (case-sensitive)
-   - **Secret**: Paste value from Python script output
-   - **Repository access**: Select **"All repositories"** or specific repositories
-   - Click **"Add secret"**
+ - **Name**: Enter secret name exactly as shown (case-sensitive)
+ - **Secret**: Paste value from Python script output
+ - **Repository access**: Select **"All repositories"** or specific repositories
+ - Click **"Add secret"**
 
 ### Step 4: Configure Repository-Level Variables
 
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
 2. Click **"New repository variable"**
 3. For each variable in the "Repository-Level Variables" table:
-   - **Name**: Enter variable name
-   - **Value**: Enter value from table
-   - Click **"Add variable"**
+ - **Name**: Enter variable name
+ - **Value**: Enter value from table
+ - Click **"Add variable"**
 
 ### Step 5: Configure Repository-Level Secrets
 
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 2. Click **"New repository secret"**
 3. For each secret in the "Repository-Level Secrets" table:
-   - **Name**: Enter secret name
-   - **Secret**: Paste value from Python script or external source
-   - Click **"Add secret"**
+ - **Name**: Enter secret name
+ - **Secret**: Paste value from Python script or external source
+ - Click **"Add secret"**
 
 ---
 
@@ -470,11 +470,11 @@ if __name__ == "__main__":
 2. Install dependencies:
    ```bash
    pip install cryptography
-   ```
+ ```
 3. Run the script:
    ```bash
    python3 generate_mcp_secrets.py
-   ```
+ ```
 4. Follow the interactive prompts
 5. Copy-paste the generated values into GitHub settings
 
@@ -601,20 +601,20 @@ if __name__ == "__main__":
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Enable secure MCP integration by configuring GitHub environment variables and secrets for the _codex_ repository, providing human administrators with comprehensive setup guidance and automated secret generation tools.
 
-**Energy Level**:  (4/5) - Setup Critical
+**Energy Level**: (4/5) - Setup Critical
 - High impact: Enables advanced Copilot Agent capabilities
 - Moderate complexity: Requires organization admin access
 - Time-sensitive: Blocks MCP workflow execution
 
-**Status**:  Documentation Complete | ⏸️ Awaiting Human Setup
+**Status**: Documentation Complete | Awaiting Human Setup
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 **Environment Variables (13 total)**:
 - [ ] All 8 organization-level variables configured
@@ -638,7 +638,7 @@ if __name__ == "__main__":
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -657,33 +657,33 @@ if __name__ == "__main__":
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Shortest Setup Route)
-- **Direct Path**: Python script → GitHub UI → Validation workflow
+### Path (Shortest Setup Route)
+- **Direct Path**: Python script GitHub UI Validation workflow
 - **Optimization**: Single script generates all required values
 - **Efficiency**: Tabular format minimizes lookup time
 - **Friction Reduction**: Copy-paste friendly output eliminates transcription errors
 
-### Fields  (Configuration Flow)
-- **Force Vector**: Secret generation (automated) → GitHub injection (manual) → Workflow consumption (automated)
-- **Energy Flow**: Human admin → Repository settings → GitHub Actions → MCP service
-- **Feedback Loop**: Validation failures → Configuration review → Correction → Re-validation
+### Fields (Configuration Flow)
+- **Force Vector**: Secret generation (automated) GitHub injection (manual) Workflow consumption (automated)
+- **Energy Flow**: Human admin Repository settings GitHub Actions MCP service
+- **Feedback Loop**: Validation failures Configuration review Correction Re-validation
 - **Equilibrium State**: All secrets accessible, no rotation warnings, workflows passing
 
-### Patterns ️ (Configuration Recognition)
+### Patterns (Configuration Recognition)
 - **Organization vs Repository Scope**: Clear table-based differentiation prevents misconfiguration
 - **Rotation Schedule Pattern**: 90 iteration security cycle for sensitive credentials
-- **Fallback Pattern**: GitHub App (production) ↔ Personal Access Token (development)
-- **Validation Pattern**: Health check → Token test → Service connection → Full workflow
+- **Fallback Pattern**: GitHub App (production) Personal Access Token (development)
+- **Validation Pattern**: Health check Token test Service connection Full workflow
 
-### Redundancy  (Backup Mechanisms)
+### Redundancy (Backup Mechanisms)
 - **Secret Recovery**: Python script re-runnable for regeneration
 - **Authentication Fallback**: PAT backup when GitHub App unavailable
 - **Documentation Redundancy**: README + inline comments + troubleshooting guide
 - **Validation Redundancy**: Manual verification steps + automated workflow checks
 
-### Balance ️ (Security vs Usability)
+### Balance (Security vs Usability)
 - **Security Weight**: Encrypted storage + rotation schedules + minimal scopes
 - **Usability Weight**: Automated generation + clear instructions + validation scripts
 - **Trade-off Resolution**: Helper script automates complexity without compromising security
@@ -691,7 +691,7 @@ if __name__ == "__main__":
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 **P0 - Critical (Must Complete First)**:
 - CODEX_MASTER_KEY generation and injection (blocks encrypted operations)
@@ -709,14 +709,14 @@ if __name__ == "__main__":
 - Webhook URL configuration (notification integration)
 
 **Energy Allocation**:
-- 60% → Secret generation and validation (security-critical)
-- 25% → Variable configuration (functionality enablement)
-- 10% → Documentation and troubleshooting (user support)
-- 5% → Optional enhancements (future extensibility)
+- 60% Secret generation and validation (security-critical)
+- 25% Variable configuration (functionality enablement)
+- 10% Documentation and troubleshooting (user support)
+- 5% Optional enhancements (future extensibility)
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Configuration Rollback Strategy**:
 
@@ -724,18 +724,18 @@ if __name__ == "__main__":
    ```bash
    gh secret list --repo Aries-Serpent/_codex_ > secrets-backup-$(date +%Y%m%d).txt
    gh variable list --repo Aries-Serpent/_codex_ > variables-backup-$(date +%Y%m%d).txt
-   ```
+ ```
 
-2. **Setup Checkpoint**: After each category (variables → secrets → validation)
-   - Run test workflow to verify functionality
-   - Document any errors before proceeding
-   - Keep Python script output for reference
+2. **Setup Checkpoint**: After each category (variables secrets validation)
+ - Run test workflow to verify functionality
+ - Document any errors before proceeding
+ - Keep Python script output for reference
 
 3. **Rollback Triggers**:
-   - Token decryption fails → Regenerate CODEX_MASTER_KEY
-   - MCP service unreachable → Verify MCP_SERVICE_TOKEN
-   - Workflow authentication fails → Check PAT scopes and expiration
-   - Secrets not accessible → Verify repository access permissions
+ - Token decryption fails Regenerate CODEX_MASTER_KEY
+ - MCP service unreachable Verify MCP_SERVICE_TOKEN
+ - Workflow authentication fails Check PAT scopes and expiration
+ - Secrets not accessible Verify repository access permissions
 
 4. **Recovery Procedure**:
    ```bash
@@ -750,12 +750,12 @@ if __name__ == "__main__":
 
    # Validate
    gh workflow run mcp-validation-test.yml
-   ```
+ ```
 
 5. **Validation Points**:
-   - After each secret injection: Check workflow logs for accessibility
-   - After variable configuration: Verify values in workflow environment
-   - After full setup: Run end-to-end MCP integration test
+ - After each secret injection: Check workflow logs for accessibility
+ - After variable configuration: Verify values in workflow environment
+ - After full setup: Run end-to-end MCP integration test
 
 **Failure Mode Protection**:
 - **Secret Expiration**: Documented rotation schedule with 7-day warning period

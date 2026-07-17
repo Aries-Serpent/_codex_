@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-08
-**Authority:** Phase 12 WS3 Documentation Lane 8  
-**Audience:** Developers, DevOps Engineers, API Consumers  
+**Authority:** Phase 12 WS3 Documentation Lane 8
+**Audience:** Developers, DevOps Engineers, API Consumers
 **Status:** Production Reference
 
 ---
@@ -25,11 +25,11 @@
 
 ### Overview
 
-**Base URL**: `https://api.codex.local` (or cloud provider endpoint)  
-**API Version**: v1  
-**Authentication**: ****** (JWT) or API key  
-**Rate Limits**: 1000 req/s per API key  
-**Response Format**: JSON  
+**Base URL**: `https://api.codex.local` (or cloud provider endpoint)
+**API Version**: v1
+**Authentication**: ****** (JWT) or API key
+**Rate Limits**: 1000 req/s per API key
+**Response Format**: JSON
 **Timeout**: 30s for sync, 60s for async
 
 ### Authentication

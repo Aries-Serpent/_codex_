@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0  
+> **Version:** 1.0
 > **Last Updated: 2026-06-29
-> **Audience:** Developers, QA, Site Reliability Engineers  
+> **Audience:** Developers, QA, Site Reliability Engineers
 > **Scope:** Complete testing framework for CODEX_MASTER_KEY (23 scopes, 10 processes)
 
 ## Quickstart
@@ -47,10 +47,10 @@ pytest tests/integration/test_codex_master_key_integration.py -v
 - `tests/github/test_codex_master_key_scopes.py` — Scope validation
 
 **What It Tests:**
--  All 23 token scopes present
--  Token fallback hierarchy (MASTER → BACKUP → GH_TOKEN)
--  API version header validation
--  Rate limit header parsing
+- All 23 token scopes present
+- Token fallback hierarchy (MASTER BACKUP GH_TOKEN)
+- API version header validation
+- Rate limit header parsing
 
 **Running Phase 1:**
 ```bash
@@ -69,10 +69,10 @@ pytest tests/github/test_codex_master_key_scopes.py -v
 - `tests/github/test_pr_issue_operations.py` (Process 7)
 
 **What It Tests:**
--  CRUD operations (Create, Read, Update, Delete)
--  Batch operations
--  Error scenarios (401, 403, 404, 409, 422, 429)
--  State synchronization
+- CRUD operations (Create, Read, Update, Delete)
+- Batch operations
+- Error scenarios (401, 403, 404, 409, 422, 429)
+- State synchronization
 
 **Running Phase 2:**
 ```bash
@@ -91,12 +91,12 @@ pytest tests/github/test_repo_variables_comprehensive.py::TestRepositoryScopeCRU
 - `tests/github/test_agent_autonomy_framework.py` (Process 10)
 
 **What It Tests:**
--  CodeQL alert management
--  Secret scanning
--  Token scope verification
--  Token rotation
--  Token delegation
--  Agent autonomy framework
+- CodeQL alert management
+- Secret scanning
+- Token scope verification
+- Token rotation
+- Token delegation
+- Agent autonomy framework
 
 **Running Phase 3:**
 ```bash
@@ -113,11 +113,11 @@ pytest tests/github/test_agent_autonomy_framework.py -v
 - `tests/integration/test_rate_limiting_strategy.py` — Rate limit handling
 
 **What It Tests:**
--  Complete end-to-end workflows
--  Multi-agent coordination
--  Error recovery scenarios
--  State consistency
--  Concurrent operations
+- Complete end-to-end workflows
+- Multi-agent coordination
+- Error recovery scenarios
+- State consistency
+- Concurrent operations
 
 **Running Phase 4:**
 ```bash
@@ -388,11 +388,11 @@ Hints:
 
 | Component | Target | Current |
 |-----------|--------|---------|
-| All 23 scopes | 100% |  100% |
-| All 10 processes | 100% |  100% |
-| API operations | 50+ |  60+ |
-| Error codes | 100% |  100% (401, 403, 404, 409, 422, 429) |
-| Integration scenarios | 20+ |  25+ |
+| All 23 scopes | 100% | 100% |
+| All 10 processes | 100% | 100% |
+| API operations | 50+ | 60+ |
+| Error codes | 100% | 100% (401, 403, 404, 409, 422, 429) |
+| Integration scenarios | 20+ | 25+ |
 
 ### Generating Coverage Report
 
@@ -409,24 +409,24 @@ open htmlcov/index.html
 ## Best Practices
 
 1. **Test Isolation:**
-   - Use timestamped test data
-   - Clean up resources after tests
-   - Don't rely on external test data
+ - Use timestamped test data
+ - Clean up resources after tests
+ - Don't rely on external test data
 
 2. **Mock Usage:**
-   - Mock external API calls
-   - Test error paths without hitting rate limits
-   - Use realistic response structures
+ - Mock external API calls
+ - Test error paths without hitting rate limits
+ - Use realistic response structures
 
 3. **Assertions:**
-   - Assert on response status codes
-   - Verify response body structure
-   - Check error messages
+ - Assert on response status codes
+ - Verify response body structure
+ - Check error messages
 
 4. **Performance:**
-   - Run tests in parallel when possible
-   - Minimize actual API calls
-   - Use integration tests for cross-process scenarios
+ - Run tests in parallel when possible
+ - Minimize actual API calls
+ - Use integration tests for cross-process scenarios
 
 ---
 

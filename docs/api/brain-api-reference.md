@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Module Path**: `src/codex/brain/`  
-**Version**: Phase 10+  
+**Module Path**: `src/codex/brain/`
+**Version**: Phase 10+
 **Purpose**: Cognitive brain orchestration, session management, checkpoints, memory consolidation
 
 ---
@@ -554,7 +554,7 @@ except ConsolidationFailed as e:
 
 ---
 
-**Last Updated**: 2026-07-08  
-**Status**: Phase 10+ (Active)  
+**Last Updated**: 2026-07-08
+**Status**: Phase 10+ (Active)
 **Author**: Codex Brain Team
 

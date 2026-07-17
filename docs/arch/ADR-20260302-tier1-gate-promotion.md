@@ -8,13 +8,13 @@
 
 ## 1. Context
 
-Phase 2 of the Soft→GROUNDED conversion introduced two CI validation
+Phase 2 of the SoftGROUNDED conversion introduced two CI validation
 workflows as Tier-2 canary gates:
 
 - `agent-registry-validation.yml` — validates AGENT_REGISTRY.yaml against
-  the JSON Schema and checks integrity via CODEX_MANIFEST.json.
+ the JSON Schema and checks integrity via CODEX_MANIFEST.json.
 - `agent-handoff-gate.yml` — validates AgentHandoffManifest documents
-  against `.codex/schemas/AgentHandoffManifest_v1.1.json`.
+ against `.codex/schemas/AgentHandoffManifest_v1.1.json`.
 
 Both workflows initially used `core.warning()` (annotations only) so that
 false positives during the observation period would not block PRs. After a
@@ -46,7 +46,7 @@ The promotion criteria were:
 | Driver | Notes |
 |--------|-------|
 | Regression prevention | Soft gates allowed schema violations to merge undetected |
-| E→D FSM condition C2 | Requires at least 2 Tier-1 gates active |
+| ED FSM condition C2 | Requires at least 2 Tier-1 gates active |
 | Confidence threshold | 2-sprint observation with zero false positives |
 | Developer experience | Clear, immediate feedback on invalid registry changes |
 
@@ -54,7 +54,7 @@ The promotion criteria were:
 
 | Alternative | Rejected Because |
 |-------------|------------------|
-| Keep Tier-2 indefinitely | Schema violations could merge; E→D gate blocked |
+| Keep Tier-2 indefinitely | Schema violations could merge; ED gate blocked |
 | Promote after 1 sprint only | Insufficient observation period for edge cases |
 | Promote only registry, not handoff | Partial coverage; handoff validation equally critical |
 | Use branch protection rules instead of workflow gates | Less granular; cannot validate YAML schema content |
@@ -64,7 +64,7 @@ The promotion criteria were:
 ### Positive
 - PRs with invalid AGENT_REGISTRY.yaml are now blocked before merge.
 - PRs with malformed AgentHandoffManifest documents are blocked.
-- E→D FSM condition C2 (≥2 Tier-1 gates) is satisfied.
+- ED FSM condition C2 (≥2 Tier-1 gates) is satisfied.
 - Developers get immediate, actionable CI feedback.
 
 ### Negative
@@ -73,15 +73,15 @@ The promotion criteria were:
 
 ### Risks & Mitigations
 - **Risk**: Schema too strict for edge cases.
-  **Mitigation**: JSON Schema uses `additionalProperties: true` for agent entries;
-  only the 4 enforcement fields are required.
+ **Mitigation**: JSON Schema uses `additionalProperties: true` for agent entries;
+ only the 4 enforcement fields are required.
 - **Risk**: CODEX_MANIFEST.json stale after manual registry edit.
-  **Mitigation**: CI step regenerates manifest and compares; clear error message
-  instructs running `python scripts/ci/generate_manifest.py`.
+ **Mitigation**: CI step regenerates manifest and compares; clear error message
+ instructs running `python scripts/ci/generate_manifest.py`.
 
 ## 7. Provenance & Compliance
 - **Observation period**: 2 sprints (no false positives recorded)
 - **CI gates**: `.github/workflows/agent-registry-validation.yml`,
-  `.github/workflows/agent-handoff-gate.yml`
-- **E→D FSM**: Condition C2 satisfied (2 Tier-1 gates active)
+ `.github/workflows/agent-handoff-gate.yml`
+- **ED FSM**: Condition C2 satisfied (2 Tier-1 gates active)
 - **Change log**: PR #3447 merged to main

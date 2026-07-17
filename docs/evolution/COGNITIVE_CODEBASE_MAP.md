@@ -2,17 +2,18 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-06-22  
-**Version**: 1.0.0  
-**Purpose**: Component-level cognitive mapping of the _codex_ codebase for AI intuitiveness, enabling agents to navigate, understand, and operate autonomously.  
+**Last Updated**: 2026-06-22
+**Version**: 1.0.0
+**Purpose**: Component-level cognitive mapping of the _codex_ codebase for AI intuitiveness, enabling agents to navigate, understand, and operate autonomously.
 **Methodology**: ACE-aligned scoring per component, cross-referenced with [AAIS V3.0](AI_AGENCY_INTUITIVENESS_SCORE_V3.md)
 
 ---
 
-##  Cognitive Architecture Overview
+## Cognitive Architecture Overview
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "L1: Aspirational (Ethics & Mission)", ".codex/guardrails.md"'}}%%
+
 graph TD
     subgraph L1["L1: Aspirational (Ethics & Mission)"]
         E1[".codex/guardrails.md"]
@@ -51,10 +52,15 @@ graph TD
     end
 
     L1 -->|"Ethics flow down"| L2
+
     L2 -->|"Strategy→Plans"| L3
+
     L3 -->|"Self-model→Actions"| L4
+
     L4 -->|"Plans→Control"| L5
+
     L5 -->|"Decisions→Tasks"| L6
+
     L6 -->|"Feedback up"| L3
 
     style L1 fill:#8b5cf6,color:#fff
@@ -67,7 +73,7 @@ graph TD
 
 ---
 
-##  Component Intuitiveness Scores
+## Component Intuitiveness Scores
 
 ### Source Code (`src/`)
 
@@ -138,7 +144,7 @@ graph TD
 
 ---
 
-##  Intuitiveness Heatmap
+## Intuitiveness Heatmap
 
 ```text
 Component Intuitiveness Distribution (N=35 components scored)
@@ -160,20 +166,20 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 
 ---
 
-## 🗺️ Navigation Guide for AI Agents
+## Navigation Guide for AI Agents
 
 ### "I need to..." Quick Reference
 
 | Goal | Start Here | ACE Layer |
 |------|-----------|-----------|
-| Understand the codebase | `docs/evolution/INDEX.md` → `docs/ROADMAP.md` | L2 |
-| Run tests | `tests/` → `nox -s tests` | L5 |
-| Fix CI failures | `scripts/ci/auto_fix_common_issues.py` → `scripts/validate_*.py` | L5 |
-| Understand architecture | `docs/architecture/` → `docs/ARCHITECTURE_BLUEPRINT.md` | L2 |
+| Understand the codebase | `docs/evolution/INDEX.md` `docs/ROADMAP.md` | L2 |
+| Run tests | `tests/` `nox -s tests` | L5 |
+| Fix CI failures | `scripts/ci/auto_fix_common_issues.py` `scripts/validate_*.py` | L5 |
+| Understand architecture | `docs/architecture/` `docs/ARCHITECTURE_BLUEPRINT.md` | L2 |
 | Work with RAG | `src/codex/rag/` (device='cpu' initialization, no safe_model_to_device needed) | L3 |
-| Manage agents | `.github/agents/` → `.codex/archive/deprecated/AGENTS.md` | L4 |
-| Update documentation | `docs/` → `mkdocs.yml` → `scripts/validate_docs_links.py` | L2 |
-| Check security | `SECURITY.md` → `.codex/guardrails.md` | L1 |
+| Manage agents | `.github/agents/` `.codex/archive/deprecated/AGENTS.md` | L4 |
+| Update documentation | `docs/` `mkdocs.yml` `scripts/validate_docs_links.py` | L2 |
+| Check security | `SECURITY.md` `.codex/guardrails.md` | L1 |
 | Track evolution | `docs/evolution/EVOLUTION_TIMELINE.md` | L2 |
 | Score AI intuitiveness | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` | L3 |
 | Create a planset | `.codex/cognitive_brain/ps01_status.md` (template) | L4 |
@@ -193,18 +199,18 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 
 ---
 
-##  Score Aggregation
+## Score Aggregation
 
 ### By ACE Layer
 
 | Layer | Components | Avg Score | Status |
 |-------|:----------:|:---------:|--------|
-| L1: Aspirational | 3 | 90.7 |  Solid |
-| L2: Global Strategy | 6 | 94.5 |  Excellent |
-| L3: Agent Model | 9 | 93.2 |  Excellent |
-| L4: Executive Function | 5 | 91.4 |  Solid |
-| L5: Cognitive Control | 8 | 92.4 |  Solid |
-| L6: Task Prosecution | 5 | 91.8 |  Solid |
+| L1: Aspirational | 3 | 90.7 | Solid |
+| L2: Global Strategy | 6 | 94.5 | Excellent |
+| L3: Agent Model | 9 | 93.2 | Excellent |
+| L4: Executive Function | 5 | 91.4 | Solid |
+| L5: Cognitive Control | 8 | 92.4 | Solid |
+| L6: Task Prosecution | 5 | 91.8 | Solid |
 
 ### By Domain
 
@@ -219,7 +225,7 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 
 ---
 
-##  Cross-References
+## Cross-References
 
 - [AAIS V3.0](AI_AGENCY_INTUITIVENESS_SCORE_V3.md) — Composite scoring methodology
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history

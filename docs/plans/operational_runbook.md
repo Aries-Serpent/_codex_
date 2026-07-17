@@ -3,7 +3,7 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 | Author: mbaetiong
@@ -115,9 +115,9 @@ python -m codex.cli transform 20251217-abc123 --tier A --auto --no-dry-run
 
 | Tier | Name | Auto-Apply | Examples |
 |------|------|------------|----------|
-| A | Safe Auto-Apply |  Yes | Black formatting, isort, pathlib migration |
-| B | Apply with Tests |  With tests | Type hints, function extraction |
-| C | Suggest Only |  No | Async conversion, API redesign |
+| A | Safe Auto-Apply | Yes | Black formatting, isort, pathlib migration |
+| B | Apply with Tests | With tests | Type hints, function extraction |
+| C | Suggest Only | No | Async conversion, API redesign |
 
 ## Step 4: Verify
 

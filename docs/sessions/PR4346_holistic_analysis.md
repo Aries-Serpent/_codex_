@@ -23,8 +23,8 @@
 | Actionlint errors | 7 | 0 | **−7** |
 | Workflows with rate-limit guards | 3 | 10 | **+7** |
 | PR template completeness (agent usability) | 40% | 95% | **+55 pp** |
-| Tracked-file sync drift |  |  | resolved |
-| Token expiry monitoring gap (T-02) |  |  | closed |
+| Tracked-file sync drift | | | resolved |
+| Token expiry monitoring gap (T-02) | | | closed |
 | Variable governance intent files | 0 | 13 | **+13** |
 
 ---
@@ -160,10 +160,11 @@ $$
 
 ---
 
-## 3. Change Graph — S855 → S860
+## 3. Change Graph — S855 S860
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Root Cause (S855)", CodeQL: py/call-to-non-callable'}}%%
+
 graph TD
     subgraph S855_ROOT[" Root Cause (S855)"]
         A[CodeQL: py/call-to-non-callable]
@@ -198,18 +199,31 @@ graph TD
     end
 
     A --> F
+
     B --> G
+
     B --> I
+
     C --> L
+
     D --> O
+
     E --> T
+
     F --> S860
+
     G --> M
+
     L --> M
+
     L --> R
+
     J --> N
+
     K --> O
+
     K --> P
+
     I --> S860
 ```
 
@@ -219,9 +233,11 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "wec-gate", "auto-approve", "promote-branch", "session-done", "cache-pruning", "batch-triage", "checkin", "batch-ci", 0, 17, 0, 0, 0, 0, 0, 0'}}%%
+
 xychart-beta
     title "API Calls vs Rate-Limit Guards (Pre/Post S860)"
     x-axis ["wec-gate", "auto-approve", "promote-branch", "session-done", "cache-pruning", "batch-triage", "checkin", "batch-ci"]
+
     y-axis "Guard Coverage (%)" 0 --> 100
     bar [0, 17, 0, 0, 0, 0, 0, 0]
     bar [100, 100, 100, 100, 80, 90, 75, 85]
@@ -246,9 +262,12 @@ xychart-beta
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing 0.85, 0.90, pre S860 partial_token_leak, 0.25, 0.35'}}%%
+
 quadrantChart
     title Security vs Observability (Pre/Post S860)
+
     x-axis "Low Observability" --> "High Observability"
+
     y-axis "Low Security" --> "High Security"
     quadrant-1 Secure & Observable
     quadrant-2 Secure but Blind
@@ -262,10 +281,10 @@ quadrantChart
 
 | Security Finding | Severity | Fix Applied |
 |-----------------|----------|------------|
-| `post_rotation_verify.sh` printed `val[:20]` of token |  High | Removed — print name only |
-| `wec_enforcer.py` approved "completed" runs (false positive) |  Medium | Check only `queued`/`in_progress` |
-| `token-expiry-monitor.yml` missing (T-02 gap) |  Medium | Created — daily cron + issue creation |
-| `wec_enforcer.py` approval counter overcounted |  Low | Split into 4 distinct outcome types |
+| `post_rotation_verify.sh` printed `val[:20]` of token | High | Removed — print name only |
+| `wec_enforcer.py` approved "completed" runs (false positive) | Medium | Check only `queued`/`in_progress` |
+| `token-expiry-monitor.yml` missing (T-02 gap) | Medium | Created — daily cron + issue creation |
+| `wec_enforcer.py` approval counter overcounted | Low | Split into 4 distinct outcome types |
 
 ---
 
@@ -273,11 +292,17 @@ quadrantChart
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing ".codex/pending_ops/\nvariable_set_*.json\n(13 files)", "process-variable-intents.yml\n(mailbox workflow)"'}}%%
+
 flowchart LR
+
     A[".codex/pending_ops/\nvariable_set_*.json\n(13 files)"] --> B["process-variable-intents.yml\n(mailbox workflow)"]
+
     B --> C["GitHub REST API\nPATCH /repos/.../actions/variables"]
+
     C --> D["Repository Variables\n(CODEX_* + COPILOT_*)"]
+
     D --> E["AAIS Scorer\naais_v4_scorer.py"]
+
     E --> F["AAIS Score: 100/100"]
 ```
 
@@ -299,6 +324,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 timeline
     title PR Template Version History
     v1.0 : 2025-Q3 : Basic checklist — commit format + safety confirmations
@@ -317,14 +343,14 @@ timeline
 
 | Feature | v2.1 | v3.0 |
 |---------|:----:|:----:|
-| Session ID / SHA auto-fields |  |  (9 `<!-- AUTO -->` fields) |
-| Agent pre-load checklist |  |  (6-step mandatory sequence) |
-| P-045 wrap-up gate block |  |  (copy-paste ready) |
-| Rate-limit awareness section |  |  (polite-sleep table + JS circuit-breaker) |
-| Token chain documented | partial |  (full chain + GITHUB_ENV export) |
-| CI triage as collapsed table |  |  (`<details>` with 11-row table) |
-| `token-expiry-monitor.yml` in WEC |  |  |
-| Hardened WEC instruction | partial |  (generate via CLI instruction) |
+| Session ID / SHA auto-fields | | (9 `<!-- AUTO -->` fields) |
+| Agent pre-load checklist | | (6-step mandatory sequence) |
+| P-045 wrap-up gate block | | (copy-paste ready) |
+| Rate-limit awareness section | | (polite-sleep table + JS circuit-breaker) |
+| Token chain documented | partial | (full chain + GITHUB_ENV export) |
+| CI triage as collapsed table | | (`<details>` with 11-row table) |
+| `token-expiry-monitor.yml` in WEC | | |
+| Hardened WEC instruction | partial | (generate via CLI instruction) |
 
 ---
 
@@ -345,7 +371,7 @@ $$
 | S856 | 8 | 45 min | 0.178 |
 | S858 | 12 | 60 min | 0.200 |
 | S859 | 6 | 25 min | 0.240 |
-| **S860** | **19** | **32 min** | **0.594** ← highest |
+| **S860** | **19** | **32 min** | **0.594** highest |
 
 ### 8.2 Defect Density After Review
 
@@ -376,7 +402,7 @@ $$
 
 By closing T-02 (token expiry), adding 22 rate-limit guards, and writing 13 variable intent
 files, $K(\mathcal{S})$ increases while $U$ decreases — a **net positive entropy trade-off**
-(more structured knowledge → less operational uncertainty).
+(more structured knowledge less operational uncertainty).
 
 ---
 
@@ -387,29 +413,39 @@ pending operations remain in indeterminate states until GitHub Actions processes
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
+
     [*] --> PendingIntentFiles : 13 variable_set_*.json committed
+
     PendingIntentFiles --> VariablesSet : process-variable-intents.yml runs
+
     VariablesSet --> AAISVerified : aais_v4_scorer.py re-runs
+
     AAISVerified --> [*] : AAIS = 100/100 confirmed
 
     [*] --> TokenExpiryMonitorActive : token-expiry-monitor.yml merged to main
+
     TokenExpiryMonitorActive --> DailyCronRunning : schedule trigger fires
+
     DailyCronRunning --> ExpiryIssueCreated : if expiry < 14d
+
     ExpiryIssueCreated --> [*]
 
     [*] --> RateLimitTelemetryActive : CODEX_RL_* vars set
+
     RateLimitTelemetryActive --> TrickleStatusExport : --write-env used in workflows
+
     TrickleStatusExport --> [*]
 ```
 
 | Gap | State | Priority | ETA |
 |-----|-------|----------|-----|
-| `process-variable-intents.yml` processes 13 files |  pending | P1 | Next push |
-| `token-expiry-monitor.yml` merged to `main` for cron |  pending | P1 | Post-merge |
-| RL-2 gaps (5 remaining workflows) |  planned | P2 | S861 |
-| `mypy-baseline.yml` clean run |  opt-in | P2 | S861 |
-| Phase F: clean-up intent files after processing |  planned | P3 | S862 |
+| `process-variable-intents.yml` processes 13 files | pending | P1 | Next push |
+| `token-expiry-monitor.yml` merged to `main` for cron | pending | P1 | Post-merge |
+| RL-2 gaps (5 remaining workflows) | planned | P2 | S861 |
+| `mypy-baseline.yml` clean run | opt-in | P2 | S861 |
+| Phase F: clean-up intent files after processing | planned | P3 | S862 |
 
 ---
 

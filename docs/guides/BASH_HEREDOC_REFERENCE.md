@@ -5,24 +5,24 @@
 
 **Last Updated: 2026-06-22
 
-> **Purpose**: Resolve escape sequence confusion (CODEX-002, CODEX-009).  
+> **Purpose**: Resolve escape sequence confusion (CODEX-002, CODEX-009).
 > **References**: Bash reference manual §3.1.7, POSIX Shell Command Language
 
 ## Quick Reference Table
 
 | Syntax | Variable Expansion | Command Substitution | Backslash Meaning | Recommended Use |
 |--------|--------------------|----------------------|-------------------|-----------------|
-| `<<EOF` |  Yes |  Yes |  Special | Dynamic content, templating |
-| `<<'EOF'` |  No |  No |  Literal | Configuration files, scripts |
-| `<<"EOF"` |  Yes |  Yes |  Literal except `\$` | Rare; when you need expansion but literal quotes |
+| `<<EOF` | Yes | Yes | Special | Dynamic content, templating |
+| `<<'EOF'` | No | No | Literal | Configuration files, scripts |
+| `<<"EOF"` | Yes | Yes | Literal except `\$` | Rare; when you need expansion but literal quotes |
 | `<<-EOF` | Depends on quoting | Depends | Tabs stripped | Indented heredocs |
 
 ### Decision Checklist
 
-1. **Need literal `$`, `` ` `` or `\`?** → Use `<<'EOF'`.
-2. **Need environment variables substituted?** → Use `<<EOF` (unquoted).
-3. **Need indentation removal?** → Use `<<-EOF` with tabs for indent.
-4. **Need ANSI-C escapes (`\x`, `\u`)?** → Use `$'string'` or `printf` instead.
+1. **Need literal `$`, `` ` `` or `\`?** Use `<<'EOF'`.
+2. **Need environment variables substituted?** Use `<<EOF` (unquoted).
+3. **Need indentation removal?** Use `<<-EOF` with tabs for indent.
+4. **Need ANSI-C escapes (`\x`, `\u`)?** Use `$'string'` or `printf` instead.
 
 ## Behavior Examples
 
@@ -197,6 +197,6 @@ Output shows trailing spaces as `^I` or `$` markers.
 
 ---
 
-**Last Updated**: 2025-10-30  
-**Author**: Codex Optimization Team  
+**Last Updated**: 2025-10-30
+**Author**: Codex Optimization Team
 **Status**: Companion reference for CODEX-002 and CODEX-009

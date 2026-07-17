@@ -4,10 +4,10 @@
 
 **Last Updated: 2026-06-22
 
-> **Status:**  NEW (PR #3503 W-126, 2026-03-05)  
-> **Session:** S114  
-> **Audience:** Copilot Coding Agents, repository maintainers  
-> **Related:** `.devcontainer/devcontainer.json`, `copilot-setup-steps.yml`,  
+> **Status:** NEW (PR #3503 W-126, 2026-03-05)
+> **Session:** S114
+> **Audience:** Copilot Coding Agents, repository maintainers
+> **Related:** `.devcontainer/devcontainer.json`, `copilot-setup-steps.yml`,
 > `docs/agent/COPILOT_TOKEN_GUIDE.md`, `docs/agent/GITHUB_APP_CLI_MAPPING.md`
 
 ---
@@ -50,7 +50,7 @@ copilot-setup-steps.yml              .devcontainer/devcontainer.json
 ## Prerequisites — Admin Setup
 
 Before any Copilot agent can use the Codespace, an org admin must configure
-these **Codespace secrets** (Settings → Codespaces → Secrets):
+these **Codespace secrets** (Settings Codespaces Secrets):
 
 | Secret | Required | Purpose |
 |--------|----------|---------|
@@ -63,7 +63,7 @@ these **Codespace secrets** (Settings → Codespaces → Secrets):
 | `WEBHOOK_SECRET` | For webhook verify | Shared HMAC secret set on the GitHub webhook. |
 | `WEBHOOK_RECEIVER_URL` | For activation | Public URL for webhook delivery. |
 
-> Secrets set at the **org level** (Settings → Codespaces → Secrets → select
+> Secrets set at the **org level** (Settings Codespaces Secrets select
 > `Aries-Serpent/_codex_`) are automatically available to all Codespaces in the
 > repository without per-user configuration.
 
@@ -118,8 +118,8 @@ Container pulled / built
 
 ## Environment Variables — Full Reference
 
-These are set in `devcontainer.json → containerEnv` (static) and
-`post-create.sh → ~/.codex_env` (dynamic). They match `copilot-setup-steps.yml`
+These are set in `devcontainer.json containerEnv` (static) and
+`post-create.sh ~/.codex_env` (dynamic). They match `copilot-setup-steps.yml`
 exactly.
 
 ### Core Codex Variables
@@ -288,7 +288,7 @@ result = brain.ooda_process(
 | `8766` | GitHub App webhook receiver | `silent` |
 | `3000` | React frontend (cognitive_app) | `openPreview` |
 
-All ports are defined in `devcontainer.json → forwardPorts` and are accessible
+All ports are defined in `devcontainer.json forwardPorts` and are accessible
 from the Codespace public URL when forwarded.
 
 ---
@@ -345,18 +345,18 @@ echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE 
 
 | copilot-setup-steps.yml step | devcontainer equivalent | Status |
 |------------------------------|------------------------|--------|
-| Phase 1: checkout + git lfs | `on-create.sh` |  |
-| Phase 2: system deps (apt) | `on-create.sh` |  |
-| Phase 3: Python venv + pip | `update-content.sh` |  |
-| Phase 4: Node + Rust | `update-content.sh` |  |
-| Phase 5: Rust build | `update-content.sh` |  |
-| Phase 6: Set Codex env vars | `post-create.sh` → `~/.codex_env` |  |
-| Phase 6: Export auth tokens | Codespace secrets → env vars |  |
-| Phase 6: Load agent config | `post-create.sh` |  |
-| Phase 7: Start CLI server | `post-start.sh` |  |
-| Phase 7: Health-check retry | `post-start.sh` |  |
-| Phase 7: Auth token banner | `post-attach.sh` |  |
-| `COPILOT_RUNNER_PROFILE` | `hostRequirements` (4 CPU / 8 GB) |  |
+| Phase 1: checkout + git lfs | `on-create.sh` | |
+| Phase 2: system deps (apt) | `on-create.sh` | |
+| Phase 3: Python venv + pip | `update-content.sh` | |
+| Phase 4: Node + Rust | `update-content.sh` | |
+| Phase 5: Rust build | `update-content.sh` | |
+| Phase 6: Set Codex env vars | `post-create.sh` `~/.codex_env` | |
+| Phase 6: Export auth tokens | Codespace secrets env vars | |
+| Phase 6: Load agent config | `post-create.sh` | |
+| Phase 7: Start CLI server | `post-start.sh` | |
+| Phase 7: Health-check retry | `post-start.sh` | |
+| Phase 7: Auth token banner | `post-attach.sh` | |
+| `COPILOT_RUNNER_PROFILE` | `hostRequirements` (4 CPU / 8 GB) | |
 
 ---
 
@@ -366,7 +366,7 @@ echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE 
 - `.devcontainer/scripts/` — lifecycle scripts
 - `.github/workflows/copilot-setup-steps.yml` — Actions equivalent
 - `docs/agent/COPILOT_TOKEN_GUIDE.md` — full token reference
-- `docs/agent/GITHUB_APP_CLI_MAPPING.md` — GitHub App ↔ CLI mapping
+- `docs/agent/GITHUB_APP_CLI_MAPPING.md` — GitHub App CLI mapping
 - `docs/plans/custom-preview-image.md` — GHCR preview image plan
 - `src/codex/auth/github_app.py` — GitHub App package
 - `src/codex/agents/brain_client.py` — CLI API client

@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0.0 
-> **Status:** Active 
+> **Version:** 1.0.0
+> **Status:** Active
 > **Last Updated: 2026-07-11
 > **Cognitive Brain Plan:** Plan 1 of Short-term Planset (CB-ST-2026-02-05)
 
@@ -88,7 +88,7 @@ python scripts/hooks/pre_commit_verify.py --action-log /path/to/action_log.ndjso
 
 ## Sample Output
 
-### All Files Staged 
+### All Files Staged
 
 ```
 ============================================================
@@ -110,7 +110,7 @@ Missing from staging: 0
 INFO: All expected files are staged 
 ```
 
-### Missing Files ️
+### Missing Files
 
 ```
 ============================================================
@@ -217,7 +217,7 @@ The hook is configured in `.pre-commit-config.yaml`:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Run the test suite:
 
@@ -255,7 +255,7 @@ The hook helps maintain the 98%+ commit verification rate identified in the sess
 
 ---
 
-## ️ Safety Features
+## Safety Features
 
 1. **Check-only Mode:** Won't block commits by default
 2. **Quiet Mode:** Minimal output for clean git experience
@@ -273,5 +273,5 @@ For issues or enhancements:
 
 ---
 
-**Document Version:** 1.0.0 
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-11

@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Owner**: `unified-security-scanner` (primary), `security-audit-agent` (backup)  
-**Last updated**: 2026-05-27  
-**Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)  
+**Owner**: `unified-security-scanner` (primary), `security-audit-agent` (backup)
+**Last updated**: 2026-05-27
+**Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)
 **Tracking workflow**: [`.github/workflows/nightly-codeql-alert-triage.yml`](../.github/workflows/nightly-codeql-alert-triage.yml)
 
 ---
@@ -12,7 +12,7 @@
 ## Purpose
 
 This document defines the mean-time-to-remediation (MTTR) SLA for all security findings
-in the Codex platform.  Findings are discovered via CodeQL, Semgrep, Gitleaks, and
+in the Codex platform. Findings are discovered via CodeQL, Semgrep, Gitleaks, and
 Dependabot. The nightly `nightly-codeql-alert-triage.yml` workflow computes and reports overdue findings,
 and escalation/blocking is handled by the security notification/gating workflows.
 
@@ -22,6 +22,7 @@ and escalation/blocking is handled by the security notification/gating workflows
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)", "Severity Triage\ncritical / high / medium / low"'}}%%
+
 flowchart LR
     FIND[" Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)"]
     TRIAGE["Severity Triage\ncritical / high / medium / low"]
@@ -48,13 +49,21 @@ flowchart LR
     CLOSE[" Remediated\nPR merged + finding closed"]
 
     FIND --> TRIAGE
+
     TRIAGE -->|critical| CRITICAL
+
     TRIAGE -->|high| HIGH
+
     TRIAGE -->|medium| MEDIUM
+
     TRIAGE -->|low / info| LOW
+
     CRITICAL --> MTTR
+
     HIGH --> MTTR
+
     MTTR -->|within SLA| CLOSE
+
     MTTR -->|SLA breached| C_D3
 ```
 
@@ -64,10 +73,10 @@ flowchart LR
 
 | Severity | SLA | Block release if overdue? |
 |----------|-----|--------------------------|
-| **Critical** | ≤ 3 business days |  Yes |
-| **High** | ≤ 10 business days |  Yes |
-| **Medium** | ≤ 30 calendar days | ️ Warning only |
-| **Low / Info** | ≤ 90 calendar days |  No |
+| **Critical** | ≤ 3 business days | Yes |
+| **High** | ≤ 10 business days | Yes |
+| **Medium** | ≤ 30 calendar days | Warning only |
+| **Low / Info** | ≤ 90 calendar days | No |
 
 Business days exclude weekends and public holidays (UTC calendar).
 
@@ -81,7 +90,7 @@ MTTR is calculated as:
 MTTR = mean( dismissal_date - created_date )
 ```
 
-Measured separately per severity tier.  Reported weekly in `reports/security/mttr_report.json`.
+Measured separately per severity tier. Reported weekly in `reports/security/mttr_report.json`.
 
 ---
 
@@ -90,7 +99,7 @@ Measured separately per severity tier.  Reported weekly in `reports/security/mtt
 1. **Day 1**: Alert auto-created in GitHub Issues (label: `security:critical`) by `security-alert-notification.yml`.
 2. **Day 2**: Slack/email escalation to domain owner (`@mbaetiong`) if unassigned.
 3. **Day 3 (critical) / Day 10 (high)**: Automated release block via `security-alert-notification.yml`
-   — sets `RELEASE_BLOCKED=true` in repo variable.
+ — sets `RELEASE_BLOCKED=true` in repo variable.
 
 ---
 
@@ -112,7 +121,7 @@ All direct dependencies must be pinned to a specific version or range in:
 
 Unpinned transitive deps are reviewed weekly via Dependabot.
 
-CI gate: `security-scanning-suite.yml` → `dependency-review` job rejects PRs that
+CI gate: `security-scanning-suite.yml` `dependency-review` job rejects PRs that
 introduce new unpinned high-severity dependencies.
 
 ---

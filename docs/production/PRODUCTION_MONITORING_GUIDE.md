@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Maintainer**: SRE Team  
-**Primary Tools**: Prometheus, Grafana, Elasticsearch, PagerDuty  
+**Version**: 1.0
+**Last Updated**: 2026-06-22
+**Maintainer**: SRE Team
+**Primary Tools**: Prometheus, Grafana, Elasticsearch, PagerDuty
 
 ---
 
@@ -764,6 +764,6 @@ kubectl port-forward -n logging svc/kibana 5601:5601 &
 
 ---
 
-**Document Version**: 1.0  
-**Last Reviewed**: 2024-01-15  
+**Document Version**: 1.0
+**Last Reviewed**: 2024-01-15
 **Next Review Date**: 2024-02-15

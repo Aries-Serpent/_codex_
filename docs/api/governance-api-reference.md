@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Production Ready  
-**Version:** 1.0.0  
+**Status:** Production Ready
+**Version:** 1.0.0
 **Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
@@ -366,26 +366,41 @@ tokens.revoke_all_user_tokens(user_id="user123")
 
 ```mermaid
 graph TD
+
     A[Agent Deployment Request] --> B{Target Environment?}
+
     B -->|Development| C[Auto-Approve for agent_operator]
+
     B -->|Staging| D{Change Type?}
+
     B -->|Production| E{Risk Level?}
     
     D -->|Security| F[Require security_reviewer approval]
+
     D -->|Non-Security| G[Require agent_operator approval]
     
     E -->|Low| H[Require agent_operator + 1 reviewer]
+
     E -->|Medium| I[Require agent_operator + security_reviewer]
+
     E -->|High| J[Require agent_operator + security_reviewer + system_admin]
     
     C --> K[Deploy Agent]
+
     F --> L[Start Approval Workflow]
+
     G --> L
+
     H --> L
+
     I --> L
+
     J --> L
+
     L --> M{Approved?}
+
     M -->|Yes| K
+
     M -->|No| N[Reject Deployment]
 ```
 
@@ -393,18 +408,27 @@ graph TD
 
 ```mermaid
 graph TD
+
     A[Secret Rotation Request] --> B{Emergency?}
+
     B -->|Yes| C[Incident Mode: 30-min SLA]
+
     B -->|No| D[Standard Mode: 2-hour SLA]
     
     C --> E[Require system_admin approval]
+
     D --> F[Require security_reviewer + system_admin]
     
     E --> G{Approved?}
+
     F --> G
+
     G -->|Yes| H[Rotate Secret]
+
     G -->|No| I[Reject Rotation]
+
     H --> J[Update All Services]
+
     J --> K[Complete]
 ```
 
@@ -412,30 +436,47 @@ graph TD
 
 ```mermaid
 graph TD
+
     A[Approval Request Submitted] --> B[Start 4-hour SLA]
+
     B --> C{L1 Approver Responds?}
+
     C -->|Yes| D{Approved?}
+
     C -->|No| E[L1 SLA Elapsed]
     
     D -->|Approved| F[Complete: APPROVED]
+
     D -->|Rejected| G[Complete: REJECTED]
     
     E --> H[Escalate to L2]
+
     H --> I[Start 4-hour L2 SLA]
+
     I --> J{L2 Approver Responds?}
+
     J -->|Yes| K{Approved?}
+
     J -->|No| L[L2 SLA Elapsed]
     
     K -->|Approved| F
+
     K -->|Rejected| G
+
     L --> M[Escalate to L3]
+
     M --> N[Start 4-hour L3 SLA]
+
     N --> O{L3 Approver Responds?}
+
     O -->|Yes| P{Approved?}
+
     O -->|No| Q[Auto-Approve: Quorum Unavailable]
     
     P -->|Approved| F
+
     P -->|Rejected| G
+
     Q --> F
 ```
 
@@ -646,5 +687,5 @@ else:
 ---
 
 **Last Updated: 2026-07-08
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Status:** Production Ready

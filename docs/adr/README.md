@@ -18,7 +18,7 @@ with the following required sections: **Status**, **Date**, **Context**, **Decis
 | [ADR-0001](ADR-0001-distributed-tracing.md) | Distributed Tracing Strategy | Deferred | 2026-06-05 |
 | [ADR-001](ADR-001-drift-monitoring-approach.md) | Use PSI + KL-Divergence for Data Drift, JSD for Model Drift | Accepted | 2025-01-15 |
 | [ADR-002](ADR-002-resilience-pattern.md) | Three-Layer Resilience: Circuit Breaker + Retry + Graceful Degradation | Accepted | 2025-01-15 |
-| [ADR-003](ADR-003-continuous-learning-architecture.md) | Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote | Accepted | 2025-01-15 |
+| [ADR-003](ADR-003-continuous-learning-architecture.md) | Event-Driven Continuous Learning via Drift Trigger EvalGate Promote | Accepted | 2025-01-15 |
 | [ADR-004](ADR-004-testing-strategy.md) | Multi-Layer Testing: Unit + Integration + Regression + Property + Fuzz + Chaos | Accepted | 2025-01-15 |
 
 ## Status Definitions

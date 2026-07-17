@@ -2,14 +2,14 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 2.0.0  
-> **Last Updated**: 2026-06-20  
-> **Scope**: Unified security documentation for _codex_ platform  
+> **Version**: 2.0.0
+> **Last Updated**: 2026-06-20
+> **Scope**: Unified security documentation for _codex_ platform
 > **Audience**: Security engineers, operators, developers
 
 ---
 
-##  Quick Navigation
+## Quick Navigation
 
 | Topic | Purpose | Audience | Location |
 |-------|---------|----------|----------|
@@ -23,7 +23,7 @@
 
 ---
 
-##  Security Policy
+## Security Policy
 
 **Document:** `/SECURITY.md` (Root)
 
@@ -34,13 +34,13 @@ This is the primary security policy document covering:
 - CVE management process
 
 **Key Points:**
--  Report security issues to security@example.com
--  72-hour response SLA for critical findings
--  Coordinated disclosure policy enforced
+- Report security issues to security@example.com
+- 72-hour response SLA for critical findings
+- Coordinated disclosure policy enforced
 
 ---
 
-## 🛡️ Best Practices
+## Best Practices
 
 **Document:** `/docs/SECURITY_BEST_PRACTICES.md`
 
@@ -55,28 +55,28 @@ user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 **Key Guidelines:**
 1. **Input Validation**
-   - Validate all external inputs
-   - Use allowlists, not blocklists
-   - Sanitize for context (HTML, SQL, shell, etc.)
+ - Validate all external inputs
+ - Use allowlists, not blocklists
+ - Sanitize for context (HTML, SQL, shell, etc.)
 
 2. **Secrets Management**
-   - Never commit secrets to repo
-   - Use environment variables or secret manager
-   - Rotate credentials regularly
+ - Never commit secrets to repo
+ - Use environment variables or secret manager
+ - Rotate credentials regularly
 
 3. **Dependency Management**
-   - Keep dependencies up-to-date
-   - Use `pip-audit` and dependency scanning
-   - Pin versions in production
+ - Keep dependencies up-to-date
+ - Use `pip-audit` and dependency scanning
+ - Pin versions in production
 
 4. **Authentication & Authorization**
-   - Use JWT tokens with short expiration
-   - Implement rate limiting (5-10 requests/second)
-   - Use MFA for critical operations
+ - Use JWT tokens with short expiration
+ - Implement rate limiting (5-10 requests/second)
+ - Use MFA for critical operations
 
 ---
 
-##  Access Control
+## Access Control
 
 **Document:** `/docs/admin/REPOSITORY_SECURITY_SETUP.md`
 
@@ -102,7 +102,7 @@ user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 ---
 
-##  Incident Response
+## Incident Response
 
 **Document:** `/docs/operations/SECURITY_INCIDENT_PLAYBOOK.md`
 
@@ -146,7 +146,7 @@ user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 ---
 
-##  Data Protection
+## Data Protection
 
 **Encryption in Transit:**
 ```python
@@ -178,7 +178,7 @@ pre-commit install
 
 ---
 
-##  Compliance
+## Compliance
 
 **Document:** `/docs/SECURITY_GATING_CHECKLIST.md`
 
@@ -199,7 +199,7 @@ pre-commit install
 
 ---
 
-## 🐛 Vulnerability Management
+## Vulnerability Management
 
 **Document:** `/docs/COMPLETE_SECURITY_REMEDIATION_REPORT.md`
 
@@ -236,7 +236,7 @@ Verify Fix
 
 ---
 
-##  Related Security Guides
+## Related Security Guides
 
 ### MCP Security
 **Document:** `/docs/mcp/MCP_SECURITY_GUIDE.md`
@@ -264,7 +264,7 @@ Verify Fix
 
 ---
 
-## 🛠️ Security Tools
+## Security Tools
 
 **Integration with _codex_:**
 
@@ -278,7 +278,7 @@ Verify Fix
 
 ---
 
-##  Security Checklist for PRs
+## Security Checklist for PRs
 
 Before merging any code:
 
@@ -294,10 +294,10 @@ Before merging any code:
 
 ---
 
-##  Security Incident?
+## Security Incident?
 
-**Report to:** security@example.com  
-**Response Time:** <1 hour  
+**Report to:** security@example.com
+**Response Time:** <1 hour
 **Confidentiality:** All reports handled confidentially
 
 **What to Include:**
@@ -309,7 +309,7 @@ Before merging any code:
 
 ---
 
-##  Recommended Reading
+## Recommended Reading
 
 1. **OWASP Top 10** - Most critical security risks
 2. **CWE Top 25** - Common weakness enumeration
@@ -318,7 +318,7 @@ Before merging any code:
 
 ---
 
-##  Security Update Frequency
+## Security Update Frequency
 
 - **Daily:** Automated scans (code, dependencies, secrets)
 - **Weekly:** Dependency updates available
@@ -328,7 +328,7 @@ Before merging any code:
 
 ---
 
-## ✍️ Contact & Support
+## Contact & Support
 
 - **Security Questions:** security@example.com
 - **Report Vulnerability:** Use SECURITY.md template

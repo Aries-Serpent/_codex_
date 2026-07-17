@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-Practical, hands-on guides for using the `_codex_` ML platform.  Each tutorial
+Practical, hands-on guides for using the `_codex_` ML platform. Each tutorial
 walks through a concrete use-case with working Python code you can paste
 straight into a script or Jupyter notebook.
 

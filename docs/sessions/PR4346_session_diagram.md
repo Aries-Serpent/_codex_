@@ -5,7 +5,7 @@
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
 > **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern), S862 (review threads resolved, final wrap-up), S863 (Scan PR comments gate), S864 (Fast Validation 3 hook fixes)
-> **Current AAIS:** 100.0/100  · **actionlint:** 0 · **ruff:** 
+> **Current AAIS:** 100.0/100 · **actionlint:** 0 · **ruff:**
 
 ---
 
@@ -13,7 +13,9 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " S864 · 2026-05-08T04:45Z", " Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"'}}%%
+
 flowchart TD
+
     START([" S864 · 2026-05-08T04:45Z"]) --> DIAG
 
     DIAG[" Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"] --> FIX
@@ -39,7 +41,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " S862 · 2026-05-08T04:10Z", " Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"'}}%%
+
 flowchart TD
+
     START([" S862 · 2026-05-08T04:10Z"]) --> REVIEW
 
     REVIEW[" Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"] --> DOCS
@@ -62,7 +66,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " S861-cont · 2026-05-08T03:20Z", " Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"'}}%%
+
 flowchart TD
+
     START2([" S861-cont · 2026-05-08T03:20Z"]) --> MERGE
 
     MERGE[" Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"] --> SEC
@@ -90,7 +96,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🔓 PR workflows approved\nauto-approve-workflows.yml completes\nOR trigger-on-approval.yml completes", "admin-action-t03.yml\n(caller — gap-specific)\non: workflow_run completed"'}}%%
+
 flowchart TD
+
     APPROVE["🔓 PR workflows approved\nauto-approve-workflows.yml completes\nOR trigger-on-approval.yml completes"] --> T03
 
     T03["admin-action-t03.yml\n(caller — gap-specific)\non: workflow_run completed"] --> ENGINE
@@ -100,8 +108,11 @@ flowchart TD
     PROBE["Probe step\nGET /code-scanning/alerts?per_page=1\nCODEX_MASTER_KEY"] --> CHECK
 
     CHECK{HTTP status?}
+
     CHECK -- "200 " --> CLOSE
+
     CHECK -- "403 ️" --> ISSUE
+
     CHECK -- "other ℹ️" --> SKIP
 
     ISSUE["Create / update GitHub issue\n[T-03] CODEX_MASTER_KEY missing\nsecurity_events scope\nassign @mbaetiong"] --> WAIT
@@ -125,7 +136,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To", "1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"'}}%%
+
 flowchart LR
+
     DOC[" .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
 
     STEP1["1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"] --> STEP2
@@ -148,7 +161,7 @@ flowchart LR
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
 > **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern)
-> **Current AAIS:** 100.0/100  · **actionlint:** 0 · **ruff:** 
+> **Current AAIS:** 100.0/100 · **actionlint:** 0 · **ruff:**
 
 ---
 
@@ -156,7 +169,9 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " S861-cont · 2026-05-08T03:20Z", " Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"'}}%%
+
 flowchart TD
+
     START([" S861-cont · 2026-05-08T03:20Z"]) --> MERGE
 
     MERGE[" Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"] --> SEC
@@ -192,7 +207,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🔓 PR workflows approved\nauto-approve-workflows.yml completes\nOR trigger-on-approval.yml completes", "admin-action-t03.yml\n(caller — gap-specific)\non: workflow_run completed"'}}%%
+
 flowchart TD
+
     APPROVE["🔓 PR workflows approved\nauto-approve-workflows.yml completes\nOR trigger-on-approval.yml completes"] --> T03
 
     T03["admin-action-t03.yml\n(caller — gap-specific)\non: workflow_run completed"] --> ENGINE
@@ -202,8 +219,11 @@ flowchart TD
     PROBE["Probe step\nGET /code-scanning/alerts?per_page=1\nCODEX_MASTER_KEY"] --> CHECK
 
     CHECK{HTTP status?}
+
     CHECK -- "200 " --> CLOSE
+
     CHECK -- "403 ️" --> ISSUE
+
     CHECK -- "other ℹ️" --> SKIP
 
     ISSUE["Create / update GitHub issue\n[T-03] CODEX_MASTER_KEY missing\nsecurity_events scope\nassign @mbaetiong\nlabel: admin-action-required"] --> WAIT
@@ -227,7 +247,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To", "1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"'}}%%
+
 flowchart LR
+
     DOC[" .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
 
     STEP1["1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"] --> STEP2
@@ -250,9 +272,13 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "S859\nAAIS 97.34→99.9\nCodeQL callable fix\ndoc-link 4 fixes\nToken Review doc", "S860\nPR review fixes\nwec_enforcer.py\npost_rotation_verify.sh\nRL-2 Phase 1\ntoken-expiry-monitor.yml"'}}%%
+
 flowchart LR
+
     S859(["S859\nAAIS 97.34→99.9\nCodeQL callable fix\ndoc-link 4 fixes\nToken Review doc"]) --> S860
+
     S860(["S860\nPR review fixes\nwec_enforcer.py\npost_rotation_verify.sh\nRL-2 Phase 1\ntoken-expiry-monitor.yml"]) --> S861
+
     S861(["S861\nRL-2 Phase 2\ncodebase-health-sweep.yml\ncopilot-iterative-self-healing.yml\nComment gate replies"]) --> S861C
     S861C(["S861-cont\nMerge conflict \nRL-2c codeql stagger \nRL-3b artifact-monitoring \nAdmin action pattern \nSecurity fix "])
 
@@ -268,6 +294,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Pattern A pre-check\nGH_TRICKLE_POLITE_SLEEP: 0.5\nsparse checkout for trickle.py\nbefore bulk PR-list API call", "Pattern D page-guard\nremaining<20 break\nboth Active-PR guard calls\n(main + 0D_base_)"'}}%%
+
 flowchart TB
     subgraph "RL-2a — copilot-iterative-self-healing.yml "
         direction LR
@@ -291,10 +318,11 @@ flowchart TB
     style DONE fill:#27ae60,color:#fff
 ```
 
-## 2. WEC Checkbox → Artifact Pipeline (Full Map)
+## 2. WEC Checkbox Artifact Pipeline (Full Map)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing x, codeql-alert-fetcher.yml'}}%%
+
 sequenceDiagram
     actor Dev as 🧑 Developer / Agent
     participant PR as  PR Body WEC Block
@@ -311,15 +339,18 @@ sequenceDiagram
     WEG->>WE: --dispatch-checked\nNEWLY_CHECKED=[codeql-alert-fetcher.yml]\nGH_TOKEN=CODEX_MASTER_KEY
 
     WE->>GHA: POST /workflows/codeql-alert-fetcher.yml/dispatches\nref=finding-autofix-faa8614c
+
     GHA-->>WE: HTTP 204 (dispatched)
     Note over WE: _find_and_approve_dispatched_run()\npoll every 5s, timeout 45s
 
     loop Poll up to 45s
         WE->>GHA: GET /workflows/codeql-alert-fetcher.yml/runs\n?status=action_required&branch=...
+
         GHA-->>WE: run_id=XXXXX status=action_required
     end
 
     WE->>GHA: POST /actions/runs/XXXXX/approve\nCODEX_MASTER_KEY (actions:write)
+
     GHA-->>WE: HTTP 204 (approved)
     Note over WE:  Run unblocked immediately
 
@@ -336,6 +367,7 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "self-healing.yml\non:\n  workflow_run: ['*', "trigger-on-approval.yml\nsteps:\n  - run: |\n      PR_REF='${{github.event\n        .pull_request.head.ref}}'\n      ← ERROR: untrusted value\n        in inline run script\n        (script injection risk)"'}}%%
+
 flowchart LR
     subgraph " BEFORE — 2 actionlint errors"
         direction TB
@@ -350,6 +382,7 @@ flowchart LR
     end
 
     SH_OLD -->|restructure| SH_NEW
+
     TA_OLD -->|env routing| TA_NEW
 
     style SH_OLD fill:#c0392b,color:#fff
@@ -364,6 +397,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n workflow dispatch\n run approve/cancel\n CodeQL alert fetch\n variable CRUD\n secret CRUD", "🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n\n workflow dispatch\n run approve\n security_events\n variable CRUD"'}}%%
+
 flowchart TD
     subgraph "Token Tier Map — PR #4346"
         T1["🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n workflow dispatch\n run approve/cancel\n CodeQL alert fetch\n variable CRUD\n secret CRUD"]
@@ -383,8 +417,11 @@ flowchart TD
     end
 
     T1 --> U1
+
     T1 --> U2
+
     T1 --> U3
+
     T1 --> U4
 
     style T1 fill:#27ae60,color:#fff
@@ -399,6 +436,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title Files Changed by Category (PR #4346 cumulative)
     "GitHub Actions Workflows" : 54
     "Python Scripts (CI)" : 3
@@ -413,6 +451,7 @@ pie title Files Changed by Category (PR #4346 cumulative)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title CI Checks — Latest Push (finding-autofix-faa8614c)
     " Passing" : 31
     " In Progress" : 4
@@ -425,9 +464,11 @@ pie title CI Checks — Latest Push (finding-autofix-faa8614c)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "CI/CD Maturity", "Security", "Reliability", "Autonomy", "Observability", "Documentation", 100, 100, 98.4, 96, 99, 99'}}%%
+
 xychart-beta
     title "AAIS Sub-Dimension Scores — PR #4346 Final"
     x-axis ["CI/CD Maturity", "Security", "Reliability", "Autonomy", "Observability", "Documentation"]
+
     y-axis "Score" 80 --> 100
     bar [100, 100, 98.4, 96, 99, 99]
     line [100, 100, 98.4, 96, 99, 99]
@@ -439,7 +480,9 @@ xychart-beta
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, x'}}%%
+
 stateDiagram-v2
+
     [*] --> Unchecked : WEC block rendered
 
     Unchecked --> Dispatching : Agent/Owner checks [x]
@@ -450,24 +493,33 @@ stateDiagram-v2
     end note
 
     Dispatching --> Polling : HTTP 204 (dispatch accepted)
+
     Dispatching --> DispatchFailed : HTTP 4xx/5xx
 
     Polling --> ActionRequired : run found, status=action_required
+
     Polling --> AlreadyRunning : run found, status=queued/in_progress
+
     Polling --> Timeout : 45s elapsed, no run found
 
     ActionRequired --> Approved : POST /runs/{id}/approve → HTTP 204
+
     ActionRequired --> ApproveFailed : HTTP 4xx/5xx
 
     Approved --> Running : GitHub unblocks run
+
     AlreadyRunning --> Running : no action needed
+
     Timeout --> FallbackSchedule : auto-approve-workflows cron */5
+
     ApproveFailed --> FallbackSchedule
 
     FallbackSchedule --> Running : approved within ≤5 min
 
     Running --> ArtifactUploaded : workflow completes
+
     ArtifactUploaded --> [*] : artifact available for download
+
     DispatchFailed --> [*] : logged, non-fatal
 
     Approved :  IMMEDIATE\n(< 60s total)
@@ -480,6 +532,7 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " auto_fix — 0 auto-fixable issues", " sync_tracked_files — consistent"'}}%%
+
 flowchart LR
     subgraph "Scorecard — PR #4346 End of S859"
         direction TB
@@ -512,6 +565,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "workflow-execution-gate.yml\n5 API calls, 0 guards", "auto-approve-workflows.yml\n6 API calls, 1 guard"'}}%%
+
 flowchart TD
     subgraph "P1 Workflows — Before ( 0 guards)"
         A1["workflow-execution-gate.yml\n5 API calls, 0 guards"]
@@ -528,8 +582,11 @@ flowchart TD
     end
 
     A1 -->|hardened| B1
+
     A2 -->|hardened| B2
+
     A3 -->|hardened| B3
+
     A4 -->|hardened| B4
 
     style A1 fill:#e74c3c,color:#fff
@@ -546,14 +603,23 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "⏰ token-expiry-monitor.yml\ncron 0 9 * * * (09:00 UTC daily)\nor workflow_dispatch", "Read vars:\nCODEX_MASTER_KEY_EXPIRY_DATE\nCODEX_BACKUP_KEY_EXPIRY_DATE"'}}%%
+
 flowchart TD
+
     A["⏰ token-expiry-monitor.yml\ncron 0 9 * * * (09:00 UTC daily)\nor workflow_dispatch"] --> B["Read vars:\nCODEX_MASTER_KEY_EXPIRY_DATE\nCODEX_BACKUP_KEY_EXPIRY_DATE"]
+
     B --> C{days_left?}
+
     C -- "> 14 days" --> D[" Print healthy\nno action"]
+
     C -- "≤ 14 days" --> E["️ Warn in\njob summary"]
+
     C -- "≤ 7 days\nor expired" --> F[" Warn +\ncreate/update\nGitHub Issue"]
+
     F --> G["Issue assigned to @mbaetiong\nLabel: security\n7-step rotation guide linked"]
+
     G --> H[" Fail job\n(not dry-run)"]
+
     E --> I[" Job passes\n(early warning only)"]
 
     style A fill:#4a90d9,color:#fff
@@ -566,10 +632,15 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "13 intent files\n.codex/pending_ops/", "process-variable-intents.yml\nautomatically on next push"'}}%%
+
 flowchart LR
+
     A["13 intent files\n.codex/pending_ops/"] --> B["process-variable-intents.yml\nautomatically on next push"]
+
     B --> C["GitHub Variables API\nCODEX_MASTER_KEY auth"]
+
     C --> D["7 governance vars\n+ COPILOT_MAX_CONCURRENT_SESSIONS"]
+
     C --> E["6 CODEX_RL_* vars\nrate-limit monitoring"]
 
     style A fill:#4a90d9,color:#fff
@@ -581,12 +652,19 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "variable_set_c4b.json\ngit SHA value\n(40-char hex)", " Secrets Baseline Enforcer\nFAIL"'}}%%
+
 flowchart LR
+
     A["variable_set_c4b.json\ngit SHA value\n(40-char hex)"] -->|"HexHighEntropyString\ntrigger"| B[" Secrets Baseline Enforcer\nFAIL"]
+
     C["variable_set_c6.json\nsha256 hash value\n(64-char hex)"] -->|"HexHighEntropyString\ntrigger"| B
+
     B --> D["Programmatic FP injection\npython3 — hashlib.sha1(val)\nis_secret: false"]
+
     D --> E[".secrets.baseline updated\n2 new FP entries"]
+
     E --> F["detect-secrets-hook\n--baseline .secrets.baseline\nexit: 0 "]
+
     F --> G["sync_tracked_files.py --fix\n consistent"]
 
     style B fill:#e74c3c,color:#fff
@@ -598,11 +676,17 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "/tmp/ audit\nat session end", "Agent-generated\nPR body snapshots\n(ephemeral only)"'}}%%
+
 flowchart TD
+
     A["/tmp/ audit\nat session end"] --> B{Useful tools?}
+
     B -->|"pr_body.txt\npr_body_updated.txt"| C["Agent-generated\nPR body snapshots\n(ephemeral only)"]
+
     B -->|"No scripts\nNo .py/.sh/.md\ntools found"| D[" Nothing to migrate\nAll session tools\nalready in codebase"]
+
     C --> E["Not migrated\n(runtime artifacts,\nnot reproducible tools)"]
+
     D --> F["scripts/ci/build_expiry_issue_body.py\nscripts/ci/github_api_trickle.py (enhanced)\nscripts/ci/wec_enforcer.py (hardened)\nAlready committed "]
 
     style D fill:#27ae60,color:#fff
@@ -613,6 +697,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 gantt
     title S860 Session Timeline (CTEP Mode: ON) — PR #4346
     dateFormat HH:mm
@@ -659,9 +744,11 @@ gantt
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "S855 start", "S856 CodeQL fix", "S857 WEC fix", "S858 actionlint", "S859 docs plan", "S860 impl", 78, 83, 86, 91, 92, 100'}}%%
+
 xychart-beta
     title "AAIS Score Trajectory — PR #4346"
     x-axis ["S855 start", "S856 CodeQL fix", "S857 WEC fix", "S858 actionlint", "S859 docs plan", "S860 impl"]
+
     y-axis "AAIS Score" 70 --> 100
     line [78, 83, 86, 91, 92, 100]
 ```
@@ -670,6 +757,7 @@ xychart-beta
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
+
 gantt
     title S861 — 2026-05-08 (PR #4346 merge-readiness)
     dateFormat HH:mm

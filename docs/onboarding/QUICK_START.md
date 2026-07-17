@@ -2,14 +2,14 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 2.0.0  
-> **Last Updated**: 2026-06-20  
-> **Audience**: New contributors, AI agents, developers  
-> **⏱️ Setup Time:** 5-15 minutes (30 min with Docker)
+> **Version**: 2.0.0
+> **Last Updated**: 2026-06-20
+> **Audience**: New contributors, AI agents, developers
+> ** Setup Time:** 5-15 minutes (30 min with Docker)
 
 ---
 
-##  CHOOSE YOUR SETUP PATH
+## CHOOSE YOUR SETUP PATH
 
 ### Path A: Local Development (Recommended for Development) — 5-10 minutes
 
@@ -25,13 +25,13 @@ Best for: Testing examples, simple scripts, learning
 
 ---
 
-##  Prerequisites
+## Prerequisites
 
 | Requirement | Linux | macOS | Windows | Notes |
 |-------------|-------|-------|---------|-------|
-| **Python 3.10+** |  apt/dnf |  Homebrew |  winget/Chocolatey | `python --version` |
-| **Git 2.30+** |  apt/dnf |  Homebrew |  winget | `git --version` |
-| **C/C++ compiler** |  gcc/g++ |  Xcode CLT | ️ MSVC | For PyTorch compilation |
+| **Python 3.10+** | apt/dnf | Homebrew | winget/Chocolatey | `python --version` |
+| **Git 2.30+** | apt/dnf | Homebrew | winget | `git --version` |
+| **C/C++ compiler** | gcc/g++ | Xcode CLT | MSVC | For PyTorch compilation |
 | **~2 GB free disk** | Required | Required | Required | Source + dependencies |
 
 **Check prerequisites:**
@@ -203,7 +203,7 @@ python -c "from transformers import AutoTokenizer; print(' Ready for examples')"
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 _codex_/
@@ -241,7 +241,7 @@ _codex_/
 
 ---
 
-##  Development Workflow
+## Development Workflow
 
 ### 1. Create a Branch
 
@@ -290,7 +290,7 @@ Use the PR template and ensure:
 
 ---
 
-##  AI Agent Integration
+## AI Agent Integration
 
 ### Using Agent Memory
 
@@ -339,7 +339,7 @@ for issue in report.issues:
 
 ---
 
-##  Key Documentation
+## Key Documentation
 
 | Document | Purpose |
 |----------|---------|
@@ -351,7 +351,7 @@ for issue in report.issues:
 
 ---
 
-##  Common Tasks
+## Common Tasks
 
 ### Adding a New Feature
 
@@ -390,7 +390,7 @@ detect-secrets scan
 
 ---
 
-##  Checklist for First PR
+## Checklist for First PR
 
 - [ ] Forked and cloned repository
 - [ ] Installed dependencies
@@ -404,4 +404,4 @@ detect-secrets scan
 
 ---
 
-Welcome to the _codex_ project! 🎉
+Welcome to the _codex_ project!

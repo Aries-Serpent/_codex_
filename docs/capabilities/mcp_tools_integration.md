@@ -144,7 +144,7 @@ async def custom_analysis(data: list, analysis_type: str):
 
 ---
 
-**Version**: 1.0  
-**Keywords**: mcp, tools, integration, registry, discovery, invocation, plugins, tooling, api, validation, safeguards  
-**Test Coverage**: Comprehensive integration tests  
+**Version**: 1.0
+**Keywords**: mcp, tools, integration, registry, discovery, invocation, plugins, tooling, api, validation, safeguards
+**Test Coverage**: Comprehensive integration tests
 **Status**: Production-ready

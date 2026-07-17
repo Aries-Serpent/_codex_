@@ -3,10 +3,10 @@
 **Version:** v0.2.1
 
 **Last Updated: 2026-07-08
-**Target Audience:** Data scientists, ML researchers, model developers  
+**Target Audience:** Data scientists, ML researchers, model developers
 **Estimated Time:** 15-20 minutes to first model
 
-##  Your Goal
+## Your Goal
 
 Transform raw data into trained ML models using Codex ML's integrated training pipeline. This guide covers data loading, model training, evaluation, and experimentation tracking.
 
@@ -371,7 +371,7 @@ for text, pred in zip(texts, results):
 
 ---
 
-##  Next Steps
+## Next Steps
 
 - **Explore Fine-tuning**: Check [Fine-tuning Guide](./FINE_TUNING_GUIDE.md)
 - **Build Ensemble**: See [Ensemble Methods](./ENSEMBLE_GUIDE.md)

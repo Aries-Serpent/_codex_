@@ -69,7 +69,7 @@ python docs/examples/ab_test_demo.py
 **Modules:** `codex_ml.continuous_learning`, `codex_ml.feedback`
 
 Demonstrates:
-- Full `ContinuousLearningPipeline` cycle: drift → trigger → eval gate → promote
+- Full `ContinuousLearningPipeline` cycle: drift trigger eval gate promote
 - `FeedbackLoop` ingesting monitoring alerts and drift signals
 - `should_adapt()` decision predicate
 - `EvalGate` standalone threshold evaluation
@@ -88,7 +88,7 @@ python docs/examples/continuous_learning_demo.py
 **Module:** `codex.resilience`
 
 Demonstrates:
-- `CircuitBreaker`: CLOSED → OPEN on failures → HALF_OPEN → CLOSED recovery
+- `CircuitBreaker`: CLOSED OPEN on failures HALF_OPEN CLOSED recovery
 - `retry_with_backoff`: exponential backoff with jitter, flaky call recovery, and exhaustion
 - `GracefulDegradation`: decorator and context-manager fallback patterns, no-fallback `DegradationError`
 

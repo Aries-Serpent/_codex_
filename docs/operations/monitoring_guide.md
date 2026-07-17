@@ -32,10 +32,10 @@ Alert routing is defined in `configs/alertmanager/alertmanager.yml`.
 
 ### Severity Routing
 
-- **Critical** → PagerDuty (immediate page)
-- **High** → Slack #ml-ops-critical
-- **Medium** → Slack #ml-ops-warnings
-- **Low** → Email
+- **Critical** PagerDuty (immediate page)
+- **High** Slack #ml-ops-critical
+- **Medium** Slack #ml-ops-warnings
+- **Low** Email
 
 ### Custom Alerts
 

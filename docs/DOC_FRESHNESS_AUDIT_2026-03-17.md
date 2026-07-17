@@ -3,9 +3,9 @@
 **Version:** v0.2.1
 
 > **Audit Date:2026-07-16
-> **Auditor:** Copilot Agent S142 
-> **Repository:** Aries-Serpent/_codex_ 
-> **Total docs audited:** 1,381 markdown files 
+> **Auditor:** Copilot Agent S142
+> **Repository:** Aries-Serpent/_codex_
+> **Total docs audited:** 1,381 markdown files
 > **Stale docs found:** 533 (38.6%) — contain date 2026-07-16
 
 ---
@@ -15,13 +15,13 @@
 | Priority | Count | Status | Action |
 |----------|-------|--------|--------|
 | **P0** — CI/Admin-critical | 15 | Updated 2026-07-16
-| **P1** — Developer how-to & ops | 46 | ️ Partial (9 updated) | Remainder: systematic script |
+| **P1** — Developer how-to & ops | 46 | Partial (9 updated) | Remainder: systematic script |
 | **P2** — Plans & specs | 62 | Planned | Content review required |
-| **P3** — Archive | 410 | ️ Low priority | Add archive notice headers |
+| **P3** — Archive | 410 | Low priority | Add archive notice headers |
 
 ---
 
-## P0 — Updated in S142 
+## P0 — Updated in S142
 
 These docs were updated 2026-07-16
 
@@ -95,7 +95,7 @@ python3 scripts/ci/update_doc_freshness.py \
 
 **`docs/mcp/MCP_SECURITY_GUIDE.md`**
 - [ ] Update secret scanning guidance to reflect GitHub Advanced Security status
-- [ ] Add CODEX_MASTER_KEY rotation reference → `docs/admin/TOKEN_ROTATION_GUIDE.md`
+- [ ] Add CODEX_MASTER_KEY rotation reference `docs/admin/TOKEN_ROTATION_GUIDE.md`
 
 ---
 
@@ -125,7 +125,7 @@ python3 scripts/ci/update_doc_freshness.py \
 ### Content Review Items (P2)
 
 **`docs/plans/DEAD_CODE_IMPROVEMENT_PLAN.md`** — Phase 4 items are marked pending but S133 completed them
-- [ ] Mark Phase 4 as COMPLETE 
+- [ ] Mark Phase 4 as COMPLETE
 - [ ] Update Phase 5/6 status from S140–S142
 
 ---

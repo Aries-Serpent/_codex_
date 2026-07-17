@@ -2,11 +2,11 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Owner**: `rag-freshness-loop-agent` (primary), `rag-index-manager` (backup)  
-**Last updated**: 2026-05-27  
-**Dashboard**: [Completion Dashboard](../.codex/COMPLETION_DASHBOARD.md)  
-**Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](../.github/workflows/rag-freshness-scheduler.yml)  
-**Quality gate**: [`.github/workflows/test-rag.yml`](../.github/workflows/test-rag.yml)  
+**Owner**: `rag-freshness-loop-agent` (primary), `rag-index-manager` (backup)
+**Last updated**: 2026-05-27
+**Dashboard**: [Completion Dashboard](../.codex/COMPLETION_DASHBOARD.md)
+**Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](../.github/workflows/rag-freshness-scheduler.yml)
+**Quality gate**: [`.github/workflows/test-rag.yml`](../.github/workflows/test-rag.yml)
 **Drift config**: [`.codex/config/rag_quality.yaml`](../.codex/config/rag_quality.yaml)
 
 ---
@@ -14,7 +14,7 @@
 ## Purpose
 
 This document defines the service-level agreement (SLA) for the RAG index freshness
-and retrieval quality.  The SLA is enforced automatically by the workflows listed above.
+and retrieval quality. The SLA is enforced automatically by the workflows listed above.
 
 ---
 
@@ -22,6 +22,7 @@ and retrieval quality.  The SLA is enforced automatically by the workflows liste
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "rag-freshness-scheduler.yml\nRuns: nightly 02:00 UTC\n+ every 6 hours on miss", "embedding-index-rebuild.yml\nFAISS index rebuilt from source"'}}%%
+
 flowchart TD
     SCHED["rag-freshness-scheduler.yml\nRuns: nightly 02:00 UTC\n+ every 6 hours on miss"]
     AGE{"Index Age\n> 24 hours?"}
@@ -41,18 +42,31 @@ flowchart TD
     DRIFT_ALERT["📉 DRIFT ALERT\nrag-index-manager auto-retrain\nReport to COMPLETION_DASHBOARD.md"]
 
     SCHED --> AGE
+
     AGE -->|No| FRESHCHECK
+
     AGE -->|Yes| REBUILD
+
     REBUILD --> FRESHCHECK
+
     FRESHCHECK --> FRESH_OK
+
     FRESH_OK -->|Yes| QUALITY
+
     FRESH_OK -->|No| STALE_ALERT
+
     QUALITY --> QUALITY_OK
+
     QUALITY_OK -->|Yes| DRIFT
+
     QUALITY_OK -->|No| QUALITY_ALERT
+
     DRIFT --> DRIFT_OK
+
     DRIFT_OK -->|Yes| DEPLOY
+
     DRIFT_OK -->|No| DRIFT_ALERT
+
     DRIFT_ALERT --> DEPLOY
 ```
 

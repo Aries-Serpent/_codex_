@@ -4,86 +4,86 @@
 
 ## Table of Contents
 
-- [📡 Approval-Aware Monitoring Update 2026-07-13](#-approval-aware-monitoring-update-s1020--2026-05-14t1434z)
-  - [Latest Head Snapshot](#latest-head-snapshot)
-  - [Next Immediate Actions](#next-immediate-actions)
+- [ Approval-Aware Monitoring Update 2026-07-13](#-approval-aware-monitoring-update-s1020--2026-05-14t1434z)
+ - [Latest Head Snapshot](#latest-head-snapshot)
+ - [Next Immediate Actions](#next-immediate-actions)
 - [ Manageable-Set Update 2026-07-13](#-manageable-set-update-s1018--2026-05-14t1407z)
-  - [Set 2 First-Stop Resolution](#set-2-first-stop-resolution)
-  - [Next Immediate Actions](#next-immediate-actions)
+ - [Set 2 First-Stop Resolution](#set-2-first-stop-resolution)
+ - [Next Immediate Actions](#next-immediate-actions)
 - [ Manageable-Set Execution Update 2026-07-13](#-manageable-set-execution-update-s1017--2026-05-14t1342z)
-  - [Current Head Status](#current-head-status)
-  - [Next Immediate Actions](#next-immediate-actions)
+ - [Current Head Status](#current-head-status)
+ - [Next Immediate Actions](#next-immediate-actions)
 - [ CI Rescue / Review-Thread Follow-up (S1014 — 2026-05-14T11:09Z)](#-ci-rescue--review-thread-follow-up-s1014--2026-05-14t1109z)
-  - [Current Continuation Focus](#current-continuation-focus)
+ - [Current Continuation Focus](#current-continuation-focus)
 - [ Stabilization + Workflow Monitoring Update 2026-07-13](#-stabilization--workflow-monitoring-update-s1015--2026-05-14t1154z)
-  - [Next Immediate Focus](#next-immediate-focus)
-- [📡 Workflow Monitoring Refresh (S1016 — 2026-05-14T11:54Z)](#-workflow-monitoring-refresh-s1016--2026-05-14t1154z)
-  - [Next Immediate Focus](#next-immediate-focus)
+ - [Next Immediate Focus](#next-immediate-focus)
+- [ Workflow Monitoring Refresh (S1016 — 2026-05-14T11:54Z)](#-workflow-monitoring-refresh-s1016--2026-05-14t1154z)
+ - [Next Immediate Focus](#next-immediate-focus)
 - [ CTEP Task Status (S1009-ctep — 2026-05-14T03:49Z)](#-ctep-task-status-s1009-ctep--2026-05-14t0349z)
-  - [Phase 8a Deliverables Completed](#phase-8a-deliverables-completed)
+ - [Phase 8a Deliverables Completed](#phase-8a-deliverables-completed)
 - [ CTEP Task Status (S1008-ctep — 2026-05-14T03:30Z)](#-ctep-task-status-s1008-ctep--2026-05-14t0330z)
-  - [Coverage Results (Phase 6 Source Files)](#coverage-results-phase-6-source-files)
+ - [Coverage Results (Phase 6 Source Files)](#coverage-results-phase-6-source-files)
 - [ Post-merge sprint: `main` · Cognitive Brain Phase 7 + Batch 6 Security Rescan](#-post-merge-sprint-main--cognitive-brain-phase-7--batch-6-security-rescan)
-  - [Context](#context)
-  - [STEP 1 — Pre-merge gate on main (post-merge verification)](#step-1--pre-merge-gate-on-main-post-merge-verification)
-  - [STEP 2 — Security Batch 6: fresh post-merge rescan](#step-2--security-batch-6-fresh-post-merge-rescan)
-  - [STEP 3 — Cognitive Brain Phase 7: testing & validation](#step-3--cognitive-brain-phase-7-testing--validation)
-  - [STEP 4 — CodeQL alert count (recount post-merge)](#step-4--codeql-alert-count-recount-post-merge)
-  - [STEP 5 — PDA entry + session wrap-up](#step-5--pda-entry--session-wrap-up)
-  - [Load before starting](#load-before-starting)
-  - [Success criteria](#success-criteria)
-  - [CI Monitor Snapshot (post-approval, commit `2e40004`)](#ci-monitor-snapshot-post-approval-commit-2e40004)
-  - [Pattern leverage from Issue #4444](#pattern-leverage-from-issue-4444)
+ - [Context](#context)
+ - [STEP 1 — Pre-merge gate on main (post-merge verification)](#step-1--pre-merge-gate-on-main-post-merge-verification)
+ - [STEP 2 — Security Batch 6: fresh post-merge rescan](#step-2--security-batch-6-fresh-post-merge-rescan)
+ - [STEP 3 — Cognitive Brain Phase 7: testing & validation](#step-3--cognitive-brain-phase-7-testing--validation)
+ - [STEP 4 — CodeQL alert count (recount post-merge)](#step-4--codeql-alert-count-recount-post-merge)
+ - [STEP 5 — PDA entry + session wrap-up](#step-5--pda-entry--session-wrap-up)
+ - [Load before starting](#load-before-starting)
+ - [Success criteria](#success-criteria)
+ - [CI Monitor Snapshot (post-approval, commit `2e40004`)](#ci-monitor-snapshot-post-approval-commit-2e40004)
+ - [Pattern leverage from Issue #4444](#pattern-leverage-from-issue-4444)
 - [ CTEP Task Status (S1004-ctep — 2026-05-14T01:54Z)](#-ctep-task-status-s1004-ctep--2026-05-14t0154z)
-  - [Artifacts (run 25836734078)](#artifacts-run-25836734078)
-  - [CVE Status (Batch 5)](#cve-status-batch-5)
-  - [CI on `bc9d402` — 2026-05-14T00:50Z](#ci-on-bc9d402--2026-05-14t0050z)
+ - [Artifacts (run 25836734078)](#artifacts-run-25836734078)
+ - [CVE Status (Batch 5)](#cve-status-batch-5)
+ - [CI on `bc9d402` — 2026-05-14T00:50Z](#ci-on-bc9d402--2026-05-14t0050z)
 - [ Merge-Readiness Scorecard (S1003-ctep2 — 2026-05-14T00:50Z)](#-merge-readiness-scorecard-s1003-ctep2--2026-05-14t0050z)
-  - [Next Session Prompt](#next-session-prompt)
-  - [Code-Review Threads](#code-review-threads)
-  - [CI on Latest Commit (`674432d`)](#ci-on-latest-commit-674432d)
-  - [Local Validation](#local-validation)
-  - [Remaining CodeQL Residuals](#remaining-codeql-residuals)
-  - [Merge Gate](#merge-gate)
+ - [Next Session Prompt](#next-session-prompt)
+ - [Code-Review Threads](#code-review-threads)
+ - [CI on Latest Commit (`674432d`)](#ci-on-latest-commit-674432d)
+ - [Local Validation](#local-validation)
+ - [Remaining CodeQL Residuals](#remaining-codeql-residuals)
+ - [Merge Gate](#merge-gate)
 - [ Session S1003-cont-followup CI Results (commit `c2feb64`)](#-session-s1003-cont-followup-ci-results-commit-c2feb64)
-- [ Session S1003-cont CI Results (commit `ad5b904` → new push)](#-session-s1003-cont-ci-results-commit-ad5b904--new-push)
+- [ Session S1003-cont CI Results (commit `ad5b904` new push)](#-session-s1003-cont-ci-results-commit-ad5b904--new-push)
 - [ Session S1003 CI Results (commit `78bbaae7`)](#-session-s1003-ci-results-commit-78bbaae7)
 - [ Completed This Session (S1003)](#-completed-this-session-s1003)
 - [ Session S1003-wrap CI Status (commit `591eb66` — 2026-05-13T23:25Z)](#-session-s1003-wrap-ci-status-commit-591eb66--2026-05-13t2325z)
 - [ Tailored Continuation Prompt (aligned with PR title)](#-tailored-continuation-prompt-aligned-with-pr-title)
-- [ Goal: Get PR #4450 CodeQL alert count from ~55 → < 25 → then → 0](#-goal-get-pr-4450-codeql-alert-count-from-55---25--then--0)
-  - [Context](#context)
-  - [Phase 1: Confirm current alert count (< 25 gate)](#phase-1-confirm-current-alert-count--25-gate)
-  - [Phase 2: Fix remaining known alert types (if count ≥ 25)](#phase-2-fix-remaining-known-alert-types-if-count--25)
-  - [Phase 3: Pre-merge validation](#phase-3-pre-merge-validation)
-  - [Phase 4: Continue to 0 alerts (post-merge sprint)](#phase-4-continue-to-0-alerts-post-merge-sprint)
+- [ Goal: Get PR #4450 CodeQL alert count from ~55 < 25 then 0](#-goal-get-pr-4450-codeql-alert-count-from-55---25--then--0)
+ - [Context](#context)
+ - [Phase 1: Confirm current alert count (< 25 gate)](#phase-1-confirm-current-alert-count--25-gate)
+ - [Phase 2: Fix remaining known alert types (if count ≥ 25)](#phase-2-fix-remaining-known-alert-types-if-count--25)
+ - [Phase 3: Pre-merge validation](#phase-3-pre-merge-validation)
+ - [Phase 4: Continue to 0 alerts (post-merge sprint)](#phase-4-continue-to-0-alerts-post-merge-sprint)
 - [ Alert Count Trajectory](#-alert-count-trajectory)
 - [ Merge Readiness Score (S1003-ctep · 2026-05-14T00:20Z)](#-merge-readiness-score-s1003-ctep--2026-05-14t0020z)
-- [ Tailored Continuation Prompt — "< 25 alerts → merge → then → 0"](#-tailored-continuation-prompt---25-alerts--merge--then--0)
-- [ PR #4450: Drive CodeQL alerts ~55 → <25 → MERGE → then → 0](#-pr-4450-drive-codeql-alerts-55--25--merge--then--0)
-  - [Context](#context)
-  - [PHASE 1 — Confirm current alert count](#phase-1--confirm-current-alert-count)
-  - [PHASE 2 — Fix residuals to get below 25](#phase-2--fix-residuals-to-get-below-25)
-  - [PHASE 3 — Pre-merge validation (required before every merge attempt)](#phase-3--pre-merge-validation-required-before-every-merge-attempt)
-  - [PHASE 4 — Post-merge: drive to 0 alerts](#phase-4--post-merge-drive-to-0-alerts)
+- [ Tailored Continuation Prompt — "< 25 alerts merge then 0"](#-tailored-continuation-prompt---25-alerts--merge--then--0)
+- [ PR #4450: Drive CodeQL alerts ~55 <25 MERGE then 0](#-pr-4450-drive-codeql-alerts-55--25--merge--then--0)
+ - [Context](#context)
+ - [PHASE 1 — Confirm current alert count](#phase-1--confirm-current-alert-count)
+ - [PHASE 2 — Fix residuals to get below 25](#phase-2--fix-residuals-to-get-below-25)
+ - [PHASE 3 — Pre-merge validation (required before every merge attempt)](#phase-3--pre-merge-validation-required-before-every-merge-attempt)
+ - [PHASE 4 — Post-merge: drive to 0 alerts](#phase-4--post-merge-drive-to-0-alerts)
 
 **Last Updated: 2026-06-22
 
-## 📡 Approval-Aware Monitoring Update 2026-07-13
+## Approval-Aware Monitoring Update 2026-07-13
 
 | Objective | Status |
 |-----------|--------|
-| Resolve merge-conflict pressure vs `main` |  Complete (`75099be` + `a2f9801`) |
-| Re-run required gates (`ruff`, `mypy`, `auto_fix_common_issues`) |  Complete |
-| Keep Pattern 25/30 green in latest commit |  Complete |
-| Monitor post-approval workflow fanout |  Active monitoring in progress |
+| Resolve merge-conflict pressure vs `main` | Complete (`75099be` + `a2f9801`) |
+| Re-run required gates (`ruff`, `mypy`, `auto_fix_common_issues`) | Complete |
+| Keep Pattern 25/30 green in latest commit | Complete |
+| Monitor post-approval workflow fanout | Active monitoring in progress |
 
 ### Latest Head Snapshot
 - Head SHA: `a2f9801`
 - Completed outcomes observed for this head:
-  - success: key gates now green (`E→D Transition`, `workflow gate`, `comment gate`, `deferral gate`, `mypy-baseline`)
-  - action_required: approval-driven governance fanout continues (cost/workflow/delegation/follow-up)
-  - startup_failure: `Rust-Python Hybrid Swarm CI/CD`, `Data Quality & Determinism Suite`, `Progressive Validation Suite`
+ - success: key gates now green (`ED Transition`, `workflow gate`, `comment gate`, `deferral gate`, `mypy-baseline`)
+ - action_required: approval-driven governance fanout continues (cost/workflow/delegation/follow-up)
+ - startup_failure: `Rust-Python Hybrid Swarm CI/CD`, `Data Quality & Determinism Suite`, `Progressive Validation Suite`
 - In-progress after maintainer approvals: 28 runs currently active, including security, docs, validation, and CodeQL tracks.
 
 ### Next Immediate Actions
@@ -93,21 +93,21 @@
 
 ---
 
-##  Manageable-Set Update 2026-07-13
+## Manageable-Set Update 2026-07-13
 
 | Set | Scope | Status |
 |-----|-------|--------|
-| Set 1 | CI unblockers (secrets baseline + manifest/sync drift) |  Complete |
-| Set 2 | Single first-stop stabilization loop (`pytest -x`) |  Complete (`db84d03`) |
-| Set 3 | Required gates (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) |  Complete (Pattern 25 docs freshness only) |
-| Set 4 | Status docs + changelog + accountability sync |  Complete (this update set) |
-| Set 5 | Final validation + workflow re-check + comment responses |  In progress |
+| Set 1 | CI unblockers (secrets baseline + manifest/sync drift) | Complete |
+| Set 2 | Single first-stop stabilization loop (`pytest -x`) | Complete (`db84d03`) |
+| Set 3 | Required gates (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | Complete (Pattern 25 docs freshness only) |
+| Set 4 | Status docs + changelog + accountability sync | Complete (this update set) |
+| Set 5 | Final validation + workflow re-check + comment responses | In progress |
 
 ### Set 2 First-Stop Resolution
 - First-stop captured:
-  - `tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow`
+ - `tests/utils/test_codex_utils_offline.py::test_mlflow_offline_session_with_mlflow`
 - Minimal fix applied in `codex_utils/mlflow_offline.py`:
-  - normalize malformed `file:` local tracking URIs to canonical absolute `file://` form before `mlflow.set_tracking_uri(...)`.
+ - normalize malformed `file:` local tracking URIs to canonical absolute `file://` form before `mlflow.set_tracking_uri(...)`.
 - Targeted regression test passed on fix commit `db84d03`.
 
 ### Next Immediate Actions
@@ -118,21 +118,21 @@
 
 ---
 
-##  Manageable-Set Execution Update 2026-07-13
+## Manageable-Set Execution Update 2026-07-13
 
 | Set | Scope | Status |
 |-----|-------|--------|
-| Set 1 | CI unblockers (secrets baseline + manifest/sync drift) |  Complete |
-| Set 2 | Single first-stop stabilization loop (`pytest -x`) |  Deferred within session window (large suite runtime; resume next loop) |
-| Set 3 | Required gates (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) |  Completed with Pattern 25 docs-only remainder |
-| Set 4 | Living docs + changelog + accountability updates |  In progress (this update set) |
-| Set 5 | Final validation + MCP re-check + comment replies |  Next |
+| Set 1 | CI unblockers (secrets baseline + manifest/sync drift) | Complete |
+| Set 2 | Single first-stop stabilization loop (`pytest -x`) | Deferred within session window (large suite runtime; resume next loop) |
+| Set 3 | Required gates (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | Completed with Pattern 25 docs-only remainder |
+| Set 4 | Living docs + changelog + accountability updates | In progress (this update set) |
+| Set 5 | Final validation + MCP re-check + comment replies | Next |
 
 ### Current Head Status
 - Head SHA: `83e59ee`
 - CI monitor via MCP:
-  - in-progress runs observed: 6
-  - ongoing action-required gate fanout on workflow-execution/token-delegation/cost/follow-up workflows
+ - in-progress runs observed: 6
+ - ongoing action-required gate fanout on workflow-execution/token-delegation/cost/follow-up workflows
 
 ### Next Immediate Actions
 1. Complete Set 4 commit (living docs + changelog + accountability).
@@ -142,26 +142,26 @@
 
 ---
 
-**Branch:** `copilot/cognitive-brain-phase-7-tasks`  
-**Session:** S1009-ctep · 2026-05-14T03:49Z  
+**Branch:** `copilot/cognitive-brain-phase-7-tasks`
+**Session:** S1009-ctep · 2026-05-14T03:49Z
 **Objective:** Phase 8a implementation (YAML thresholds + hot reload) + status sync
 
 ---
 
-##  CI Rescue / Review-Thread Follow-up (S1014 — 2026-05-14T11:09Z)
+## CI Rescue / Review-Thread Follow-up (S1014 — 2026-05-14T11:09Z)
 
 | Task | Status |
 |------|--------|
-| Triage failing checks on `d9b2928` (`Auto-Fix Common CI Issues`, `PR Auto-Fix Check`) |  Done via MCP logs |
-| Apply review-thread fixes from `pullrequestreview-4289416168` |  Done |
-| Repair `.codex/aftermath/pda_iterations.jsonl` malformed line and placeholder tail entries |  Done |
-| Debounce YAML reload warn-loop by recording attempted mtime on load failure (sensor/actions) |  Done |
-| Strengthen `execute_action()` exception-path tests to assert real `status == failed` behavior |  Done |
-| Keep error fallback persistence rotation-safe in `CodexErrorHandler` |  Done |
-| Run required CI local checks (`ruff --fix`, `mypy_baseline`, `auto_fix_common_issues --check-only`) |  Done |
-| Fix Pattern 30 tracked-sync drift (`sync_tracked_files --fix`) |  Done |
-| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs |  Done |
-| Re-run `pytest -x` stabilization loop |  In progress (latest stop moved to optional-dep test path; patch applied to skip when `psutil` missing) |
+| Triage failing checks on `d9b2928` (`Auto-Fix Common CI Issues`, `PR Auto-Fix Check`) | Done via MCP logs |
+| Apply review-thread fixes from `pullrequestreview-4289416168` | Done |
+| Repair `.codex/aftermath/pda_iterations.jsonl` malformed line and placeholder tail entries | Done |
+| Debounce YAML reload warn-loop by recording attempted mtime on load failure (sensor/actions) | Done |
+| Strengthen `execute_action()` exception-path tests to assert real `status == failed` behavior | Done |
+| Keep error fallback persistence rotation-safe in `CodexErrorHandler` | Done |
+| Run required CI local checks (`ruff --fix`, `mypy_baseline`, `auto_fix_common_issues --check-only`) | Done |
+| Fix Pattern 30 tracked-sync drift (`sync_tracked_files --fix`) | Done |
+| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT + living docs | Done |
+| Re-run `pytest -x` stabilization loop | In progress (latest stop moved to optional-dep test path; patch applied to skip when `psutil` missing) |
 
 ### Current Continuation Focus
 - Continue full-suite `pytest -x` stabilization until next first-stop is resolved.
@@ -170,33 +170,33 @@
 
 ---
 
-##  Stabilization + Workflow Monitoring Update 2026-07-13
+## Stabilization + Workflow Monitoring Update 2026-07-13
 
 | Task | Status |
 |------|--------|
-| Re-run full `python3 -m pytest -x` from `a47388e` | ️ Incomplete in-session (`exit 137` before new first-stop surfaced) |
-| Monitor approved workflows on current head via MCP |  Monitored (30 completed runs: 9 success / 4 action_required / 17 cancelled) |
-| Update living docs + CHANGELOG + accountability |  Done |
-| Keep Pattern 25/30 clean |  Maintained (re-validated during continuation cycle) |
+| Re-run full `python3 -m pytest -x` from `a47388e` | Incomplete in-session (`exit 137` before new first-stop surfaced) |
+| Monitor approved workflows on current head via MCP | Monitored (30 completed runs: 9 success / 4 action_required / 17 cancelled) |
+| Update living docs + CHANGELOG + accountability | Done |
+| Keep Pattern 25/30 clean | Maintained (re-validated during continuation cycle) |
 
 ### Next Immediate Focus
 - Re-run `python3 -m pytest -x` in a fresh cycle and capture the next deterministic first-stop.
 - Apply minimal fix for that first-stop, then run required gates:
-  - `python -m ruff check src/ tests/ --fix`
-  - `python scripts/ci/mypy_baseline.py --require-baseline`
-  - `python scripts/ci/auto_fix_common_issues.py --check-only`
+ - `python -m ruff check src/ tests/ --fix`
+ - `python scripts/ci/mypy_baseline.py --require-baseline`
+ - `python scripts/ci/auto_fix_common_issues.py --check-only`
 - Keep accountability/changelog + tracked-sync aligned on the fixing commit.
 
 ---
 
-## 📡 Workflow Monitoring Refresh (S1016 — 2026-05-14T11:54Z)
+## Workflow Monitoring Refresh (S1016 — 2026-05-14T11:54Z)
 
 | Task | Status |
 |------|--------|
-| Monitor approved workflows on latest head (`e2d8d96`) |  Done via MCP |
-| Capture outcome distribution for completed runs |  30 total (20 success / 4 action_required / 2 cancelled / 3 startup_failure / 1 skipped) |
-| Re-verify Pattern 25/30 gate state |  `auto_fix_common_issues --check-only` clean |
-| Refresh living docs + changelog + accountability |  Done |
+| Monitor approved workflows on latest head (`e2d8d96`) | Done via MCP |
+| Capture outcome distribution for completed runs | 30 total (20 success / 4 action_required / 2 cancelled / 3 startup_failure / 1 skipped) |
+| Re-verify Pattern 25/30 gate state | `auto_fix_common_issues --check-only` clean |
+| Refresh living docs + changelog + accountability | Done |
 
 ### Next Immediate Focus
 - Continue the `pytest -x` stabilization loop and capture the next deterministic first-stop.
@@ -204,68 +204,68 @@
 
 ---
 
-##  CTEP Task Status (S1009-ctep — 2026-05-14T03:49Z)
+## CTEP Task Status (S1009-ctep — 2026-05-14T03:49Z)
 
 | Task | Status |
 |------|--------|
-| STEP 1: Pre-change gate — `sync_tracked_files`, `ruff`, `mypy_baseline`, cognitive tests |  All pass |
-| STEP 2: Implement Phase 8a threshold config in actions/sensor modules |  Done |
-| STEP 3: Add `tests/cognitive/test_threshold_config.py` |  Done |
-| STEP 4: Run impacted validation (`ruff` + `pytest`) |  Pass |
-| STEP 5: Living docs + CHANGELOG + ACCOUNTABILITY update |  Done |
-| STEP 6: Session wrap-up autofix |  Pending |
+| STEP 1: Pre-change gate — `sync_tracked_files`, `ruff`, `mypy_baseline`, cognitive tests | All pass |
+| STEP 2: Implement Phase 8a threshold config in actions/sensor modules | Done |
+| STEP 3: Add `tests/cognitive/test_threshold_config.py` | Done |
+| STEP 4: Run impacted validation (`ruff` + `pytest`) | Pass |
+| STEP 5: Living docs + CHANGELOG + ACCOUNTABILITY update | Done |
+| STEP 6: Session wrap-up autofix | Pending |
 
 ### Phase 8a Deliverables Completed
--  `.codex/config/monitoring.yaml` now contains `cognitive_brain.thresholds` defaults:
-  - `severity_threshold: 0.8`
-  - `consecutive_threshold: 3`
-  - `confidence_threshold: 0.8`
-  - `per_workflow_overrides: {}`
--  `scripts/cognitive/actions/monitoring_actions.py`:
-  - Loads thresholds from YAML
-  - Applies per-workflow overrides
-  - Hot-reloads config on mtime change (no restart)
--  `scripts/cognitive/sensors/monitoring_sensor.py`:
-  - Loads thresholds from YAML
-  - Applies per-workflow overrides in `should_propose_action()`
-  - Hot-reloads config on mtime change (no restart)
--  `tests/cognitive/test_threshold_config.py`:
-  - Defaults fallback
-  - Global threshold load
-  - Per-workflow override behavior
-  - Hot-reload behavior
-  - Sensor decision impact
+- `.codex/config/monitoring.yaml` now contains `cognitive_brain.thresholds` defaults:
+ - `severity_threshold: 0.8`
+ - `consecutive_threshold: 3`
+ - `confidence_threshold: 0.8`
+ - `per_workflow_overrides: {}`
+- `scripts/cognitive/actions/monitoring_actions.py`:
+ - Loads thresholds from YAML
+ - Applies per-workflow overrides
+ - Hot-reloads config on mtime change (no restart)
+- `scripts/cognitive/sensors/monitoring_sensor.py`:
+ - Loads thresholds from YAML
+ - Applies per-workflow overrides in `should_propose_action()`
+ - Hot-reloads config on mtime change (no restart)
+- `tests/cognitive/test_threshold_config.py`:
+ - Defaults fallback
+ - Global threshold load
+ - Per-workflow override behavior
+ - Hot-reload behavior
+ - Sensor decision impact
 
 ---
 
-**Branch:** `0D_base_` → `main`  
-**Session:** S1008-ctep · 2026-05-14T03:30Z  
+**Branch:** `0D_base_` `main`
+**Session:** S1008-ctep · 2026-05-14T03:30Z
 **Objective:** Coverage gap-fill (≥80% Phase 6 files) + Phase 8 scope + living-doc sync
 
 ---
 
-##  CTEP Task Status (S1008-ctep — 2026-05-14T03:30Z)
+## CTEP Task Status (S1008-ctep — 2026-05-14T03:30Z)
 
 | Task | Status |
 |------|--------|
-| STEP 1: Pre-merge gate — `sync_tracked_files`, `ruff`, `mypy_baseline` |  All pass |
-| STEP 2a: Coverage measured — sensor 62%, actions 60%, shv (importlib) |  Gap identified |
-| STEP 2b: `test_monitoring_coverage_gaps.py` — gap-fill tests added |  Done |
-| STEP 2c: Final coverage — sensor **96.33%**, actions **94.74%**, combined **95.59%** |  ≥80%  |
-| STEP 4: CodeQL recount — API 403; test-only adds = 0 new surface |  Confirmed |
-| STEP 5: Phase 8 scope written in `cognitive_brain_phase_implementation.md` |  Done |
-| STEP 6: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated |  Done |
-| Living docs: `PR4448_whats_next.md` + `PR4448_session_diagram.mmd` synced |  Done |
-| `session_wrapup_autofix.py` wrap-up |  Pending |
+| STEP 1: Pre-merge gate — `sync_tracked_files`, `ruff`, `mypy_baseline` | All pass |
+| STEP 2a: Coverage measured — sensor 62%, actions 60%, shv (importlib) | Gap identified |
+| STEP 2b: `test_monitoring_coverage_gaps.py` — gap-fill tests added | Done |
+| STEP 2c: Final coverage — sensor **96.33%**, actions **94.74%**, combined **95.59%** | ≥80% |
+| STEP 4: CodeQL recount — API 403; test-only adds = 0 new surface | Confirmed |
+| STEP 5: Phase 8 scope written in `cognitive_brain_phase_implementation.md` | Done |
+| STEP 6: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated | Done |
+| Living docs: `PR4448_whats_next.md` + `PR4448_session_diagram.mmd` synced | Done |
+| `session_wrapup_autofix.py` wrap-up | Pending |
 
 ### Coverage Results (Phase 6 Source Files)
 
 | File | Stmts | Miss | Cover | Status |
 |------|------:|-----:|------:|--------|
-| `scripts/cognitive/sensors/monitoring_sensor.py` | 87 | 2 | **96.33%** |  |
-| `scripts/cognitive/actions/monitoring_actions.py` | 67 | 4 | **94.74%** |  |
-| `scripts/cognitive/self_healing_validation.py` | 72 | — | **behavioural** (25 unit tests) |  |
-| **TOTAL** | 154 | 6 | **95.59%** |  |
+| `scripts/cognitive/sensors/monitoring_sensor.py` | 87 | 2 | **96.33%** | |
+| `scripts/cognitive/actions/monitoring_actions.py` | 67 | 4 | **94.74%** | |
+| `scripts/cognitive/self_healing_validation.py` | 72 | — | **behavioural** (25 unit tests) | |
+| **TOTAL** | 154 | 6 | **95.59%** | |
 
 > `self_healing_validation.py` is loaded via `importlib.spec_from_file_location` — pytest-cov
 > cannot trace it via `--cov` module path. 25 dedicated unit tests in
@@ -274,10 +274,10 @@
 ---
 
 
-| STEP 4: CodeQL recount (API 403 — test-only changes, 0 new surface) |  No new alerts |
-| STEP 5: Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT |  Done |
-| Update living docs (whats_next + session_diagram) |  Done |
-| `session_wrapup_autofix.py` wrap-up |  Pending (next step) |
+| STEP 4: CodeQL recount (API 403 — test-only changes, 0 new surface) | No new alerts |
+| STEP 5: Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT | Done |
+| Update living docs (whats_next + session_diagram) | Done |
+| `session_wrapup_autofix.py` wrap-up | Pending (next step) |
 
 ---
 
@@ -359,61 +359,61 @@
 
 | Task | Status |
 |------|--------|
-| Count open CodeQL alerts |  Used artifact path (no live API calls) |
-| Fetch CodeQL alert fetcher artifact |  `codeql-alerts-open-codeql-25778513533` (artifact id `6961696607`) |
-| Residual `actions/unpinned-tag` sweep |  Example workflows pinned to SHA (`checkout`, `setup-python`, `cache`, `upload-artifact`) |
-| Batch 5 accepted-risk documentation |  Updated in `docs/ops/SAR_METHODOLOGY.md` + planset Master Tracking |
-| Batch 6 post-merge bandit rescan |  `bandit --configfile .bandit` = 0; raw = 328 (`B101=226`,`B603=48`,`B404=36`,`B607=18`) |
-| Pre-merge validation commands |  `sync_tracked_files --check`, `ruff check src/ tests/`, `mypy_baseline --require-baseline` |
-| Session wrap-up autofix |  `python scripts/ci/session_wrapup_autofix.py --pr-number 4455` |
-| CI monitor after maintainer approvals |  Latest commit has active runs; non-success currently limited to `startup_failure`/`skipped` workflow-level states (no failed jobs reported) |
+| Count open CodeQL alerts | Used artifact path (no live API calls) |
+| Fetch CodeQL alert fetcher artifact | `codeql-alerts-open-codeql-25778513533` (artifact id `6961696607`) |
+| Residual `actions/unpinned-tag` sweep | Example workflows pinned to SHA (`checkout`, `setup-python`, `cache`, `upload-artifact`) |
+| Batch 5 accepted-risk documentation | Updated in `docs/ops/SAR_METHODOLOGY.md` + planset Master Tracking |
+| Batch 6 post-merge bandit rescan | `bandit --configfile .bandit` = 0; raw = 328 (`B101=226`,`B603=48`,`B404=36`,`B607=18`) |
+| Pre-merge validation commands | `sync_tracked_files --check`, `ruff check src/ tests/`, `mypy_baseline --require-baseline` |
+| Session wrap-up autofix | `python scripts/ci/session_wrapup_autofix.py --pr-number 4455` |
+| CI monitor after maintainer approvals | Latest commit has active runs; non-success currently limited to `startup_failure`/`skipped` workflow-level states (no failed jobs reported) |
 
 ### CI Monitor Snapshot (post-approval, commit `2e40004`)
 | Workflow | Status |
 |----------|--------|
-| Generate PR Follow-Up Prompt |  success |
-| Progressive Validation Suite | ️ startup_failure (no failed jobs emitted) |
-| Rust-Python Hybrid Swarm CI/CD | ️ startup_failure (no failed jobs emitted) |
-| CodeQL / Coverage / Root Org / QA |  in progress |
-| Pre-Merge Validation | ⏭️ skipped |
+| Generate PR Follow-Up Prompt | success |
+| Progressive Validation Suite | startup_failure (no failed jobs emitted) |
+| Rust-Python Hybrid Swarm CI/CD | startup_failure (no failed jobs emitted) |
+| CodeQL / Coverage / Root Org / QA | in progress |
+| Pre-Merge Validation | skipped |
 
 ### Pattern leverage from Issue #4444
 - Reference: https://github.com/Aries-Serpent/_codex_/issues/4444#issue-4436846700
 - Applied failure-pattern triage directly from the issue’s recurring sections:
-  - `Pre-Merge Validation` recurring fail step: **Fail if critical checks failed**
-  - `Agent Token Delegation` recurring fail step: **Verify CHANGELOG.md updated in last commit**
-  - `Workflow Compliance Audit` recurring fail step: **Run actionlint on all workflows**
+ - `Pre-Merge Validation` recurring fail step: **Fail if critical checks failed**
+ - `Agent Token Delegation` recurring fail step: **Verify CHANGELOG.md updated in last commit**
+ - `Workflow Compliance Audit` recurring fail step: **Run actionlint on all workflows**
 - Session response aligned to those patterns:
-  - kept CHANGELOG + ACCOUNTABILITY in the same update cycle (Pattern 25),
-  - validated `sync_tracked_files` and `ruff`/`mypy_baseline` gates locally,
-  - treated current `startup_failure` (0 jobs emitted) as startup-layer/transient classification pending reruns, not code-regression evidence.
+ - kept CHANGELOG + ACCOUNTABILITY in the same update cycle (Pattern 25),
+ - validated `sync_tracked_files` and `ruff`/`mypy_baseline` gates locally,
+ - treated current `startup_failure` (0 jobs emitted) as startup-layer/transient classification pending reruns, not code-regression evidence.
 
 ---
 
-##  CTEP Task Status (S1004-ctep — 2026-05-14T01:54Z)
+## CTEP Task Status (S1004-ctep — 2026-05-14T01:54Z)
 
 | Task | Status |
 |------|--------|
-| PR #4454 confirmed merged |  Merged 2026-05-14T01:32Z |
-| Ingest artifacts (run 25836734078) |  pip-audit 325 pkgs · 2 CVEs (diskcache, sqlitedict — no fix) |
-| Apply ROADMAP.md fixes (×5) |  Done — Cycle→Q4, timeline, stale date, W-142, timestamp |
-| Fix double file-read in session_wrapup_autofix.py |  Done — existing_content reused properly |
-| Deduplicate pragma comments (×2 test files) |  Done |
-| Add test_invalid_python_syntax |  Done |
-| Strengthen test_nonexistent_file assertions |  Done |
-| Add SHA256 hash assertion to test_checksum_mismatch |  Done |
-| Fix validators.py missing-file returns all-False |  Done (root-cause fix) |
-| All 13 test_validators.py tests pass |  13/13 pass |
-| ruff check (changed files) |  0 issues |
-| session_wrapup_autofix.py --pr-number 4454 |  ACCOUNTABILITY updated |
-| Update living docs (whats_next + session_diagram) |  Done |
-| CHANGELOG update |  Pending this commit |
+| PR #4454 confirmed merged | Merged 2026-05-14T01:32Z |
+| Ingest artifacts (run 25836734078) | pip-audit 325 pkgs · 2 CVEs (diskcache, sqlitedict — no fix) |
+| Apply ROADMAP.md fixes (×5) | Done — CycleQ4, timeline, stale date, W-142, timestamp |
+| Fix double file-read in session_wrapup_autofix.py | Done — existing_content reused properly |
+| Deduplicate pragma comments (×2 test files) | Done |
+| Add test_invalid_python_syntax | Done |
+| Strengthen test_nonexistent_file assertions | Done |
+| Add SHA256 hash assertion to test_checksum_mismatch | Done |
+| Fix validators.py missing-file returns all-False | Done (root-cause fix) |
+| All 13 test_validators.py tests pass | 13/13 pass |
+| ruff check (changed files) | 0 issues |
+| session_wrapup_autofix.py --pr-number 4454 | ACCOUNTABILITY updated |
+| Update living docs (whats_next + session_diagram) | Done |
+| CHANGELOG update | Pending this commit |
 
 ### Artifacts (run 25836734078)
 | Artifact | Digest | Status |
 |----------|--------|--------|
-| dependency-scan-results | sha256:fc26198e… |  Ingested — 325 pkgs, 2 CVEs |
-| sbom-reports | sha256:5167e5c2… | ️ Download expired — size confirmed 76.4 KB |
+| dependency-scan-results | sha256:fc26198e… | Ingested — 325 pkgs, 2 CVEs |
+| sbom-reports | sha256:5167e5c2… | Download expired — size confirmed 76.4 KB |
 
 ### CVE Status (Batch 5)
 | Package | Version | CVE | Fix Version | Action |
@@ -425,46 +425,46 @@
 
 | Task | Status |
 |------|--------|
-| PHASE 1: Confirm alert count |  CodeQL API rate-limited; est. ~54 open (30 workflows running) |
-| PHASE 2a: Pin github-script@v9 in mcp-cache-warm.yml:142 |  Done (SHA `3a2844b…`) |
-| PHASE 2b: RUF059 sweep tests/ |  Clean — all checks passed |
-| REQ-PDA: Harden sync jobs for each session |  Done — `fix_pda_entry_today()` added, wired into `auto_fix_all_missing()` |
-| CI failure (Pattern 30) fixed |  Done — PDA entry + accountability report for 2026-05-14 |
-| Fix double file-read in `fix_pda_entry_today()` |  Done — code-review fix `bc9d402` |
-| Deduplicate triple `# pragma: allowlist secret` |  Done — 2 test files fixed `bc9d402` |
-| WEC items correctly checked/unchecked |  Done — 14 items updated, 30 workflows triggered |
-| Mermaid mapping docs updated |  Done — architecture.mmd, ci_self_healing_flow.mmd, mindmap v2.1 |
-| Planset/promptset full review |  Done — PLANSET_STATUS_REVIEW_2026_05_14.md (Tier 1/2/3) |
-| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT |  Done |
-| Update living docs (whats_next, session_diagram) |  Done |
-| PHASE 3: Pre-merge gate CI |  16 success · 0 failures · 3 pre-existing startup_failures |
+| PHASE 1: Confirm alert count | CodeQL API rate-limited; est. ~54 open (30 workflows running) |
+| PHASE 2a: Pin github-script@v9 in mcp-cache-warm.yml:142 | Done (SHA `3a2844b…`) |
+| PHASE 2b: RUF059 sweep tests/ | Clean — all checks passed |
+| REQ-PDA: Harden sync jobs for each session | Done — `fix_pda_entry_today()` added, wired into `auto_fix_all_missing()` |
+| CI failure (Pattern 30) fixed | Done — PDA entry + accountability report for 2026-05-14 |
+| Fix double file-read in `fix_pda_entry_today()` | Done — code-review fix `bc9d402` |
+| Deduplicate triple `# pragma: allowlist secret` | Done — 2 test files fixed `bc9d402` |
+| WEC items correctly checked/unchecked | Done — 14 items updated, 30 workflows triggered |
+| Mermaid mapping docs updated | Done — architecture.mmd, ci_self_healing_flow.mmd, mindmap v2.1 |
+| Planset/promptset full review | Done — PLANSET_STATUS_REVIEW_2026_05_14.md (Tier 1/2/3) |
+| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT | Done |
+| Update living docs (whats_next, session_diagram) | Done |
+| PHASE 3: Pre-merge gate CI | 16 success · 0 failures · 3 pre-existing startup_failures |
 
 ### CI on `bc9d402` — 2026-05-14T00:50Z
 | Status | Count | Details |
 |--------|------:|---------|
-|  success | 16 | All required gates green |
-|  failure | 0 | No actual failures |
-| ️ startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
-| ⏭️ skipped | 2 | Dependabot, Pre-merge-validation (docs-only commit) |
-| 🔲 in_progress | ~8 | CodeQL, Security Suite, Validation Pipeline, others still running |
+| success | 16 | All required gates green |
+| failure | 0 | No actual failures |
+| startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
+| skipped | 2 | Dependabot, Pre-merge-validation (docs-only commit) |
+| in_progress | ~8 | CodeQL, Security Suite, Validation Pipeline, others still running |
 
-##  Merge-Readiness Scorecard (S1003-ctep2 — 2026-05-14T00:50Z)
+## Merge-Readiness Scorecard (S1003-ctep2 — 2026-05-14T00:50Z)
 
 | Dimension | Score | Notes |
 |-----------|------:|-------|
-| auto_fix (0 auto-fixable) | 15/15 |  0 auto-fixable |
-| sync_tracked_files | 12/12 |  all consistent |
-| action_versions (all approved) | 12/12 |  all approved |
-| ruff (src/ clean) | 10/10 |  0 issues |
-| github-script ≥ v8 | 8/8 |  mcp-cache-warm.yml pinned |
-| Pattern 27 registered | 7/7 |  registered |
-| download-artifact min v5 | 7/7 |  v5 |
-| PDA entry today | 8/8 |  2026-05-14 |
-| accountability report today | 8/8 |  today |
-| AAIS composite | 13/13 |  99.9/100 |
-| **Total** | **100/100** |  **MERGE READY (CI gate)** |
+| auto_fix (0 auto-fixable) | 15/15 | 0 auto-fixable |
+| sync_tracked_files | 12/12 | all consistent |
+| action_versions (all approved) | 12/12 | all approved |
+| ruff (src/ clean) | 10/10 | 0 issues |
+| github-script ≥ v8 | 8/8 | mcp-cache-warm.yml pinned |
+| Pattern 27 registered | 7/7 | registered |
+| download-artifact min v5 | 7/7 | v5 |
+| PDA entry today | 8/8 | 2026-05-14 |
+| accountability report today | 8/8 | today |
+| AAIS composite | 13/13 | 99.9/100 |
+| **Total** | **100/100** | **MERGE READY (CI gate)** |
 
-> ️ **Alert gate:** CodeQL API rate-limited this session. Est. ~54 open after all fixes.
+> **Alert gate:** CodeQL API rate-limited this session. Est. ~54 open after all fixes.
 > Target < 25 for merge. Recount in next session once CodeQL scan completes.
 
 ### Next Session Prompt
@@ -484,79 +484,79 @@
 ### Code-Review Threads
 | Thread | Status |
 |--------|--------|
-| `accelerate_init_guard.py:88` — unused global `_ACCELERATE_SPEC_AVAILABLE` |  Resolved |
-| `accelerate_init_guard.py:95` — unused global `_ACCELERATOR_AVAILABLE` |  Resolved |
-| `accelerate_init_guard.py:92` — CodeQL 13580 unused global |  Resolved |
-| `tests/test_sqlite_pool_close.py:11-15` — missing `try/finally` cleanup |  Resolved |
-| `CODEX_MANIFEST.json:2112-2114` — `.secrets.baseline` drift |  Resolved |
+| `accelerate_init_guard.py:88` — unused global `_ACCELERATE_SPEC_AVAILABLE` | Resolved |
+| `accelerate_init_guard.py:95` — unused global `_ACCELERATOR_AVAILABLE` | Resolved |
+| `accelerate_init_guard.py:92` — CodeQL 13580 unused global | Resolved |
+| `tests/test_sqlite_pool_close.py:11-15` — missing `try/finally` cleanup | Resolved |
+| `CODEX_MANIFEST.json:2112-2114` — `.secrets.baseline` drift | Resolved |
 
 ### CI on Latest Commit (`674432d`)
 | Status | Count | Details |
 |--------|------:|---------|
-|  success | 22 | All required gates green |
-|  failure | 0 | No actual failures |
-| ️ startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
-|  in_progress | 4 | Resilient Validation, Code Quality, Root Org, Copilot Agent |
+| success | 22 | All required gates green |
+| failure | 0 | No actual failures |
+| startup_failure | 3 | Pre-existing: Data Quality, Rust Swarm CI, Progressive Validation |
+| in_progress | 4 | Resilient Validation, Code Quality, Root Org, Copilot Agent |
 
 ### Local Validation
 | Check | Result |
 |-------|--------|
-| `ruff check src/ tests/` |  0 issues |
-| `mypy_baseline --require-baseline` |  120 ≤ 122 (↓2 vs baseline) |
-| `sync_tracked_files --check` |  all consistent |
-| `actionlint` (via CI) |  Workflow Compliance Audit passed |
+| `ruff check src/ tests/` | 0 issues |
+| `mypy_baseline --require-baseline` | 120 ≤ 122 (2 vs baseline) |
+| `sync_tracked_files --check` | all consistent |
+| `actionlint` (via CI) | Workflow Compliance Audit passed |
 
 ### Remaining CodeQL Residuals
 | File | Alert | Action |
 |------|-------|--------|
 | `.github/workflows/examples/mcp-cache-warm.yml:142` | `actions/github-script@v9` unpinned | Fix: pin to SHA `3a2844b7e9c422d3c10d287c895573f7108da1b3` |
-| `doc-test-scribe-action/action.yml` | Reported syntax error |  YAML valid (re-verified) |
-| `forward-sync-autogen.yml` | Reported untrusted-checkout |  Not applicable (push trigger, not pull_request_target) |
-| `consolidated-pr-status.yml:15` | `github-script@v9` |  Commented out (not live code) |
+| `doc-test-scribe-action/action.yml` | Reported syntax error | YAML valid (re-verified) |
+| `forward-sync-autogen.yml` | Reported untrusted-checkout | Not applicable (push trigger, not pull_request_target) |
+| `consolidated-pr-status.yml:15` | `github-script@v9` | Commented out (not live code) |
 
 ### Merge Gate
 | Gate | Status |
 |------|--------|
-| Merge Readiness Score | **99/100**  |
-| PR title alert gate (< 25 open) | ️ ~55 estimated (CodeQL scan in-progress) |
+| Merge Readiness Score | **99/100** |
+| PR title alert gate (< 25 open) | ~55 estimated (CodeQL scan in-progress) |
 
 ---
 
-##  Session S1003-cont-followup CI Results (commit `c2feb64`)
+## Session S1003-cont-followup CI Results (commit `c2feb64`)
 
 | Metric | Value |
 |--------|-------|
-|  actionlint — Workflow Compliance | Passed (run `25831467223`) |
-|  Secrets Baseline Enforcer | Passed after rerun (run `25831467219`) |
-|  Fixed this sub-session | `codeql-alert-fetcher.yml`: moved inline `# pragma` out of `if:` expression to fix actionlint lexer error |
-|  Fixed this sub-session | `resilient_validation.yml`: corrected `actions/cache/save` SHA to valid pinned commit (`5a3ec84...`) |
-| 📦 Latest artifacts ingested | run `25830909557` → SBOM: 326 components / 0 vulns, pip-audit: 2 CVEs (`diskcache`, `sqlitedict`) |
+| actionlint — Workflow Compliance | Passed (run `25831467223`) |
+| Secrets Baseline Enforcer | Passed after rerun (run `25831467219`) |
+| Fixed this sub-session | `codeql-alert-fetcher.yml`: moved inline `# pragma` out of `if:` expression to fix actionlint lexer error |
+| Fixed this sub-session | `resilient_validation.yml`: corrected `actions/cache/save` SHA to valid pinned commit (`5a3ec84...`) |
+| Latest artifacts ingested | run `25830909557` SBOM: 326 components / 0 vulns, pip-audit: 2 CVEs (`diskcache`, `sqlitedict`) |
 
 ---
 
-##  Session S1003-cont CI Results (commit `ad5b904` → new push)
+## Session S1003-cont CI Results (commit `ad5b904` new push)
 
 | Metric | Value |
 |--------|-------|
-|  Passing | All workflows pending re-run after latest push |
-|  Fixed this sub-session | SHA-pin `create-github-app-token@v3` (4 workflows) |
-|  Fixed this sub-session | Protocol body `...` → docstring only in `embeddings.py` (CodeQL py/ineffectual-statement ×2) |
-|  Fixed this sub-session | Unused tuple unpacks → `_, _` in test_mental_mapping_core_flows.py + test_sentencepiece_adapter.py |
+| Passing | All workflows pending re-run after latest push |
+| Fixed this sub-session | SHA-pin `create-github-app-token@v3` (4 workflows) |
+| Fixed this sub-session | Protocol body `...` docstring only in `embeddings.py` (CodeQL py/ineffectual-statement ×2) |
+| Fixed this sub-session | Unused tuple unpacks `_, _` in test_mental_mapping_core_flows.py + test_sentencepiece_adapter.py |
 
 ---
 
-##  Session S1003 CI Results (commit `78bbaae7`)
+## Session S1003 CI Results (commit `78bbaae7`)
 
 | Metric | Value |
 |--------|-------|
-|  Passing | 21+ workflows |
-|  Failing | 1 → **fixed** (actionlint SC1039 heredoc) |
-|  Still running | Resilient Validation, Code Quality, Security Scan, RAG |
-| ️ Pre-existing startup_failure | Data Quality, Progressive Validation, Rust Swarm CI |
+| Passing | 21+ workflows |
+| Failing | 1 **fixed** (actionlint SC1039 heredoc) |
+| Still running | Resilient Validation, Code Quality, Security Scan, RAG |
+| Pre-existing startup_failure | Data Quality, Progressive Validation, Rust Swarm CI |
 
 ---
 
-##  Completed This Session (S1003)
+## Completed This Session (S1003)
 
 | # | Task | Commit |
 |---|------|--------|
@@ -569,32 +569,32 @@
 | 7 | `labeler.yml` YAML syntax fix | `0d78bc5` |
 | 8 | Hotfix: reverted bad SHA for `create-github-app-token@v3` (4 files) | `78bbaae` |
 | 9 | actionlint SC1039: replaced heredocs in `codeql-alert-fetcher.yml` | `4cf0a76` |
-| 10 | SHA-pin `create-github-app-token@v3` → `1b10c78c` (4 workflows, correct SHA) | `this` |
+| 10 | SHA-pin `create-github-app-token@v3` `1b10c78c` (4 workflows, correct SHA) | `this` |
 | 11 | `py/ineffectual-statement` ×2 — removed `...` from Protocol bodies in `embeddings.py` (lines 47, 51) | `this` |
-| 12 | `py/unused-local-variable` — `_calls, _sp_stub` → `_, _` in `test_sentencepiece_adapter.py:506` | `this` |
-| 13 | `py/unused-local-variable` — `_problem_node, _reasoning_steps` → `_, _` in `test_mental_mapping_core_flows.py:100` | `this` |
+| 12 | `py/unused-local-variable` — `_calls, _sp_stub` `_, _` in `test_sentencepiece_adapter.py:506` | `this` |
+| 13 | `py/unused-local-variable` — `_problem_node, _reasoning_steps` `_, _` in `test_mental_mapping_core_flows.py:100` | `this` |
 
-**Est. alerts fixed: ~72** (from ~127 → ~55 estimated open; target < 25)
+**Est. alerts fixed: ~72** (from ~127 ~55 estimated open; target < 25)
 
 ---
 
-##  Session S1003-wrap CI Status (commit `591eb66` — 2026-05-13T23:25Z)
+## Session S1003-wrap CI Status (commit `591eb66` — 2026-05-13T23:25Z)
 
 | Metric | Value |
 |--------|-------|
-|  Merge Readiness | **99/100** — Merge-ready |
-|  CI checks passing | 56/57 |
-|  `ruff check src/ tests/` | 0 issues |
-|  `mypy_baseline` | 120 ≤ 122 (improved by 2) |
-|  `sync_tracked_files --check` | All tracked files consistent |
-|  `auto_fix_common_issues --check-only` | No issues found |
-| ️ Secrets Baseline Enforcer | Transient failure (local scan clean; re-runs pass) |
-| ️ Resilient Validation shards 1-4 | `continue-on-error: true` — non-blocking informational |
-| 📦 Latest artifacts (run `25830909557`) | SBOM: 326 components / 0 vulns · pip-audit: 2 CVEs (no fix versions) |
+| Merge Readiness | **99/100** — Merge-ready |
+| CI checks passing | 56/57 |
+| `ruff check src/ tests/` | 0 issues |
+| `mypy_baseline` | 120 ≤ 122 (improved by 2) |
+| `sync_tracked_files --check` | All tracked files consistent |
+| `auto_fix_common_issues --check-only` | No issues found |
+| Secrets Baseline Enforcer | Transient failure (local scan clean; re-runs pass) |
+| Resilient Validation shards 1-4 | `continue-on-error: true` — non-blocking informational |
+| Latest artifacts (run `25830909557`) | SBOM: 326 components / 0 vulns · pip-audit: 2 CVEs (no fix versions) |
 
 ---
 
-##  Tailored Continuation Prompt (aligned with PR title)
+## Tailored Continuation Prompt (aligned with PR title)
 
 > **PR Title:** _"Merge 0D_base_ to main once Security and Quality Alerts are less than 25 total with Prompt to continue to 0"_
 
@@ -642,7 +642,7 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
 
 ---
 
-##  Alert Count Trajectory
+## Alert Count Trajectory
 
 | Date | Session | Inventory | Δ | Key Work |
 |------|---------|:---------:|---|---------|
@@ -660,29 +660,29 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
 
 ---
 
-##  Merge Readiness Score (S1003-ctep · 2026-05-14T00:20Z)
+## Merge Readiness Score (S1003-ctep · 2026-05-14T00:20Z)
 
 | Dimension | Wt | Status |
 |-----------|----:|--------|
-| auto_fix (0 auto-fixable) | 15 |  confirmed clean |
-| sync_tracked_files | 12 |  all consistent |
-| action_versions (all approved) | 12 |  all approved |
-| ruff (src/ clean) | 10 |  0 issues |
-| github-script ≥ v8 | 8 |  mcp-cache-warm.yml:142 pinned to SHA |
-| PDA entry today | 8 |  entry written for 2026-05-14 |
-| accountability report today | 8 |  S1003-ctep entry today |
-| AAIS composite | 13 |  99.9/100 |
-| Pattern 27 registered | 7 |  registered |
-| download-artifact min v5 | 7 |  v5 |
+| auto_fix (0 auto-fixable) | 15 | confirmed clean |
+| sync_tracked_files | 12 | all consistent |
+| action_versions (all approved) | 12 | all approved |
+| ruff (src/ clean) | 10 | 0 issues |
+| github-script ≥ v8 | 8 | mcp-cache-warm.yml:142 pinned to SHA |
+| PDA entry today | 8 | entry written for 2026-05-14 |
+| accountability report today | 8 | S1003-ctep entry today |
+| AAIS composite | 13 | 99.9/100 |
+| Pattern 27 registered | 7 | registered |
+| download-artifact min v5 | 7 | v5 |
 
-**Score: 100/100 —  MERGE-READY (CI dimensions)** · _2026-05-14T00:20Z_
+**Score: 100/100 — MERGE-READY (CI dimensions)** · _2026-05-14T00:20Z_
 
-> ️ **PR-title gate:** Merge requires CodeQL alerts < 25.
+> **PR-title gate:** Merge requires CodeQL alerts < 25.
 > mcp-cache-warm.yml pin applied (−1 alert). CodeQL API rate-limited; confirm count once reset.
 
 ---
 
-##  Tailored Continuation Prompt — "< 25 alerts → merge → then → 0"
+## Tailored Continuation Prompt — "< 25 alerts merge then 0"
 
 ```
 @copilot CTEP Mode: ON

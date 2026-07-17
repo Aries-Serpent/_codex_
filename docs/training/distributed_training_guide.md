@@ -154,7 +154,7 @@ metric_reduced = (metric_tensor / world_size).item()
 ### 1. Batch Size Scaling
 
 - Increase batch size proportionally with GPU count
-- Example: 4 GPUs → 4× batch size
+- Example: 4 GPUs 4× batch size
 
 ```yaml
 # configs/train/distributed.yaml

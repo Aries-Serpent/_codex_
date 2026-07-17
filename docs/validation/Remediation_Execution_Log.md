@@ -8,7 +8,7 @@
 
 This log tracks the application of remediation scripts to address "Split Brain" and "Shadowing" findings identified during the audit remediation and verification phase.
 
-**PR**: #2389  
+**PR**: #2389
 **Commits**: deede7c, e47f7e5, 3022ccc, 7e72b8c, a9284a1
 
 ### Scripts Applied:
@@ -22,7 +22,7 @@ This log tracks the application of remediation scripts to address "Split Brain" 
 
 ### 2.1 Root Sanitation (cleanup_root.py --dry-run)
 
-**Status**:  DRY-RUN EXECUTED
+**Status**: DRY-RUN EXECUTED
 
 **Command**:
 ```bash
@@ -68,10 +68,10 @@ python scripts/remediation/cleanup_root.py --dry-run
 ```
 
 **Analysis**:
--  30 report files identified for archival
--  Idempotent operation (no file modifications during dry-run)
--  Deterministic ordering (alphabetically sorted)
--  Safety confirmed: requires `--yes` flag for execution
+- 30 report files identified for archival
+- Idempotent operation (no file modifications during dry-run)
+- Deterministic ordering (alphabetically sorted)
+- Safety confirmed: requires `--yes` flag for execution
 
 **Recommendation**: Execute with `--yes` flag during post-merge cleanup.
 
@@ -79,7 +79,7 @@ python scripts/remediation/cleanup_root.py --dry-run
 
 ### 2.2 Conflict Verification (verify_conflicts.py)
 
-**Status**:  EXECUTED - RISKS DETECTED
+**Status**: EXECUTED - RISKS DETECTED
 
 **Command**:
 ```bash
@@ -125,16 +125,16 @@ Recommendation: Execute 'Codebase_Convergence_Validation' plan.
 
 | Check | Risk Level | Status | Details |
 |-------|:----------:|:------:|---------|
-| Hydra Shadowing | **CRITICAL** | ️ DETECTED | Local `hydra/` shadows PyPI `hydra-core` |
-| Training Split-Brain | **HIGH** | ️ DETECTED | Both `training/` and `src.training/` importable |
-| Tokenization Split-Brain | **HIGH** | ️ DETECTED | Both `tokenization/` and `src.tokenization/` importable |
-| Models Split | **MEDIUM** | ℹ️ NOTED | `models/` vs `src.modeling` (different names) |
+| Hydra Shadowing | **CRITICAL** | DETECTED | Local `hydra/` shadows PyPI `hydra-core` |
+| Training Split-Brain | **HIGH** | DETECTED | Both `training/` and `src.training/` importable |
+| Tokenization Split-Brain | **HIGH** | DETECTED | Both `tokenization/` and `src.tokenization/` importable |
+| Models Split | **MEDIUM** | ℹ NOTED | `models/` vs `src.modeling` (different names) |
 
 ---
 
 ### 2.3 Legacy Import Analysis (analyze_legacy_usage.py)
 
-**Status**:  EXECUTED - REPORT GENERATED
+**Status**: EXECUTED - REPORT GENERATED
 
 **Command**:
 ```bash
@@ -158,7 +158,7 @@ python scripts/remediation/analyze_legacy_usage.py
 
 **CSV Report**: `reports/legacy_import_usage.csv`
 
-**Header Validation**:  PASS
+**Header Validation**: PASS
 ```csv
 module,full_import,file,line
 hydra,hydra,src/cli.py,13
@@ -171,7 +171,7 @@ tokenization,tokenization.loader,src/codex/api/app.py,13
 
 | Module | Count | Risk Level | Action Required |
 |--------|------:|:----------:|-----------------|
-| hydra | 29 | **CRITICAL** | Rename `hydra/` → `config_legacy/` + update all refs |
+| hydra | 29 | **CRITICAL** | Rename `hydra/` `config_legacy/` + update all refs |
 | training | 53 | **HIGH** | Refactor to use `src.training` |
 | tokenization | 13 | **HIGH** | Refactor to use `src.tokenization` |
 | models | 4 | **MEDIUM** | Refactor to use `src.modeling` |
@@ -186,12 +186,12 @@ tokenization,tokenization.loader,src/codex/api/app.py,13
 1. **Rename hydra/ directory**:
    ```bash
    git mv hydra config_legacy
-   ```
+ ```
 
 2. **Update 29 hydra import references**:
-   - Use `reports/legacy_import_usage.csv` as guide
-   - Replace `import hydra` → `import config_legacy`
-   - Replace `from hydra` → `from config_legacy`
+ - Use `reports/legacy_import_usage.csv` as guide
+ - Replace `import hydra` `import config_legacy`
+ - Replace `from hydra` `from config_legacy`
 
 ### Phase 2: Split-Brain Resolution (Priority: HIGH)
 1. **Mark root modules as deprecated**:
@@ -206,9 +206,9 @@ warnings.warn(
 ```
 
 2. **Refactor imports** (53 training + 13 tokenization):
-   - Bulk find/replace guided by CSV
-   - Update test fixtures
-   - Update example scripts
+ - Bulk find/replace guided by CSV
+ - Update test fixtures
+ - Update example scripts
 
 ### Phase 3: YAML Shadowing (Priority: HIGH)
 1. **Rename or remove yaml/ directory**:
@@ -216,7 +216,7 @@ warnings.warn(
    git mv yaml yaml_legacy
    # OR
    git rm -r yaml  # if unused stub
-   ```
+ ```
 
 2. **Verify audit pipeline runs** after yaml/ resolution
 
@@ -224,33 +224,33 @@ warnings.warn(
 1. **Run determinism check**:
    ```bash
    python scripts/space_traversal/verify_determinism.py --runs 2
-   ```
+ ```
 
 2. **Re-run conflict verification**:
    ```bash
    python scripts/remediation/verify_conflicts.py --expect-site-packages
    # Should PASS after hydra renamed
-   ```
+ ```
 
 3. **Run full audit pipeline**:
    ```bash
    python scripts/space_traversal/audit_runner.py run
    # Should complete all S1-S7 stages after yaml/ resolved
-   ```
+ ```
 
 ---
 
 ## 4. Signed Sign-off
 
-**Engineer**: @copilot (autonomous agent)  
-**Date**: 2025-12-04 22:44:41 UTC  
-**Pass/Fail**: ️ **PARTIAL** - Remediation scripts validated; architectural issues detected and documented
+**Engineer**: @copilot (autonomous agent)
+**Date**: 2025-12-04 22:44:41 UTC
+**Pass/Fail**: **PARTIAL** - Remediation scripts validated; architectural issues detected and documented
 
 **Status**:
--  All remediation scripts functional and tested
-- ️ Architectural issues detected (expected)
--  Remediation plans documented
-- ⏭️ Post-merge execution required
+- All remediation scripts functional and tested
+- Architectural issues detected (expected)
+- Remediation plans documented
+- Post-merge execution required
 
 **Next Action**: Execute convergence plan post-merge to resolve shadowing and split-brain issues.
 

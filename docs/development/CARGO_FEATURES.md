@@ -81,7 +81,7 @@ maturin develop
 
 ## Common Pitfalls
 
-###  Pitfall 1: Using `cargo build` for Python Extensions
+### Pitfall 1: Using `cargo build` for Python Extensions
 **Problem**: `cargo build` does NOT add `extension-module` feature automatically.
 
 ```bash
@@ -92,7 +92,7 @@ cargo build --features python
 maturin build --features python
 ```
 
-##  Pitfall 2: Missing Feature Declaration
+## Pitfall 2: Missing Feature Declaration
 **Problem**: Code uses `#[cfg(feature = "xyz")]` but `xyz` not in Cargo.toml.
 
 **Symptoms**:
@@ -102,7 +102,7 @@ error: unexpected `cfg` condition value: `xyz`
 
 **Solution**: Always declare features in `[features]` section before using them.
 
-###  Pitfall 3: Dependabot Regression
+### Pitfall 3: Dependabot Regression
 **Problem**: Dependabot PRs can accidentally remove or modify feature declarations.
 
 **Prevention**:
@@ -110,7 +110,7 @@ error: unexpected `cfg` condition value: `xyz`
 2. Protected feature declarations in `.github/dependabot.yml`
 3. Manual review of all Dependabot merges
 
-###  Pitfall 4: Rust Version Upgrades
+### Pitfall 4: Rust Version Upgrades
 **Problem**: Newer Rust versions (1.92.0+) have stricter `cfg` validation.
 
 **Solution**: Always test with `--all-features` in CI:
@@ -123,10 +123,10 @@ cargo clippy --all-features --locked -- -D warnings
 ### Automated Validation
 The repository includes `scripts/ci/validate_cargo_features.py` that checks:
 
-1.  `[features]` section exists
-2.  Required features (`python`, `extension-module`) declared
-3.  Features match usage in `src/lib.rs`
-4.  Proper dependency chain (`python` → `extension-module` → `pyo3/extension-module`)
+1. `[features]` section exists
+2. Required features (`python`, `extension-module`) declared
+3. Features match usage in `src/lib.rs`
+4. Proper dependency chain (`python` `extension-module` `pyo3/extension-module`)
 
 Run manually:
 ```bash
@@ -164,22 +164,22 @@ See: `.codex/incident_reports/ci_failure_batch_2026_01_19.md`
 ## Best Practices
 
 ### For Developers
-1.  Always run `cargo clippy --all-features` before committing Cargo.toml changes
-2.  Test both Rust-only and Python extension builds locally
-3.  Review Dependabot PRs carefully for Cargo.toml modifications
-4.  Run validation script after any feature changes
+1. Always run `cargo clippy --all-features` before committing Cargo.toml changes
+2. Test both Rust-only and Python extension builds locally
+3. Review Dependabot PRs carefully for Cargo.toml modifications
+4. Run validation script after any feature changes
 
 ### For CI/CD
-1.  Validate features before building (done via validation script)
-2.  Test with `--all-features` flag
-3.  Use `--locked` to ensure Cargo.lock consistency
-4.  Fail fast on feature validation errors
+1. Validate features before building (done via validation script)
+2. Test with `--all-features` flag
+3. Use `--locked` to ensure Cargo.lock consistency
+4. Fail fast on feature validation errors
 
 ### For Dependabot
-1.  Review generated Cargo.toml carefully
-2.  Ensure [features] section unchanged
-3.  Run validation script on Dependabot branch before merge
-4.  Consider `.github/dependabot.yml` ignore patterns for feature-related files
+1. Review generated Cargo.toml carefully
+2. Ensure [features] section unchanged
+3. Run validation script on Dependabot branch before merge
+4. Consider `.github/dependabot.yml` ignore patterns for feature-related files
 
 ## Troubleshooting
 

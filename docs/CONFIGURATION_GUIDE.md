@@ -667,7 +667,7 @@ overrides = [
 
 ## Best Practices
 
-### DO 
+### DO
 
 1. **Use ConfigLoader for all config loading**
 ```python
@@ -702,7 +702,7 @@ except MissingConfigException:
  # Handle missing config
 ```
 
-### DON'T 
+### DON'T
 
 1. **Don't hardcode config paths**
 ```python
@@ -872,5 +872,5 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
 
 ---
 
-**Maintained By:** PS-01 Configuration Consolidation 
+**Maintained By:** PS-01 Configuration Consolidation
 **Questions:** File an issue with "configuration" label

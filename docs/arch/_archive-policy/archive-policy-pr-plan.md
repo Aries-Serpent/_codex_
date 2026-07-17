@@ -9,18 +9,18 @@
 
 | Dimension | Status | Notes |
 | --- | --- | --- |
-| Execution |  Complete | Commit `cfba4786` is present on the `work` branch.
-| Pre-commit validation |  Passed | Local hooks finished successfully; no outstanding lint/test actions.
-| Evidence trail |  Recorded | `.codex/evidence/archive_ops.jsonl` contains the consolidation record (line 30).
-| Backward compatibility |  Maintained | Stub left at the historical policy location; branch protection checklist already references the new path.
-| Branch status |  Ready for PR | Branch is clean, rebased, and conventional-commit compliant.
-| PR creation | 🔲 Pending | Awaiting formal pull request submission.
+| Execution | Complete | Commit `cfba4786` is present on the `work` branch.
+| Pre-commit validation | Passed | Local hooks finished successfully; no outstanding lint/test actions.
+| Evidence trail | Recorded | `.codex/evidence/archive_ops.jsonl` contains the consolidation record (line 30).
+| Backward compatibility | Maintained | Stub left at the historical policy location; branch protection checklist already references the new path.
+| Branch status | Ready for PR | Branch is clean, rebased, and conventional-commit compliant.
+| PR creation | Pending | Awaiting formal pull request submission.
 
 ## Phase Breakdown
 
 ### Phase 1 — Create Pull Request (≈ 5 min)
 
-1. Open a PR from `work` → `main` with title `docs(archive): consolidate archive policy guidance`.
+1. Open a PR from `work` `main` with title `docs(archive): consolidate archive policy guidance`.
 2. Use the prepared description:
    ```bash
    gh pr create \
@@ -54,18 +54,18 @@
    )" \
      --head work \
      --base main
-   ```
+ ```
 3. Apply labels such as `documentation`, `archive`, and `governance` if your workflow uses them.
 
 ### Phase 2 — CI & Code Review (≈ 5–30 min)
 
 | Check | Expected Result | Contingency |
 | --- | --- | --- |
-| Link checker |  Pass | Fix any outdated references under `docs/` and amend the commit. |
-| Markdown lint |  Pass | Re-run pre-commit and adjust formatting if necessary. |
-| Pre-commit (server) |  Pass | Should mirror local results; investigate environmental differences if it fails. |
-| CODEOWNERS review |  Pending | Manually request reviewers if auto-assignment does not trigger. |
-| Security scans |  Pass | Docs-only change; issues are unlikely. |
+| Link checker | Pass | Fix any outdated references under `docs/` and amend the commit. |
+| Markdown lint | Pass | Re-run pre-commit and adjust formatting if necessary. |
+| Pre-commit (server) | Pass | Should mirror local results; investigate environmental differences if it fails. |
+| CODEOWNERS review | Pending | Manually request reviewers if auto-assignment does not trigger. |
+| Security scans | Pass | Docs-only change; issues are unlikely. |
 
 ### Phase 3 — Merge & Cleanup (≈ 2–5 min)
 
@@ -80,14 +80,14 @@
    git checkout main
    git pull origin main
    pytest -q
-   ```
+ ```
 2. Validate archive operations:
-   - Ensure `.codex/evidence/archive_ops.jsonl` logs subsequent entries as expected.
-   - Spot-check a tombstone workflow against the canonical policy.
+ - Ensure `.codex/evidence/archive_ops.jsonl` logs subsequent entries as expected.
+ - Spot-check a tombstone workflow against the canonical policy.
 3. Verify no stale references remain to `docs/policies/archive-policy.md` beyond the stub by running:
    ```bash
    rg "docs/policies/archive-policy" --type md
-   ```
+ ```
 
 ### Phase 5 — Optional Enhancements (≈ 15–30 min)
 
@@ -100,9 +100,9 @@
 
 | Option | When to Choose | Actions |
 | --- | --- | --- |
-| **A. Quick Path** | Low-risk, docs-only change | Phase 1 → Phase 3. |
-| **B. Comprehensive Path** | Desire extra documentation polish | Phase 1 → Phase 5 (selected items). |
-| **C. Extended Validation** | Need exhaustive assurance | Phase 1 → Phase 5 with full test suites and tooling checks. |
+| **A. Quick Path** | Low-risk, docs-only change | Phase 1 Phase 3. |
+| **B. Comprehensive Path** | Desire extra documentation polish | Phase 1 Phase 5 (selected items). |
+| **C. Extended Validation** | Need exhaustive assurance | Phase 1 Phase 5 with full test suites and tooling checks. |
 
 ## Next Action
 

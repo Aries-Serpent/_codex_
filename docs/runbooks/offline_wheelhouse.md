@@ -25,10 +25,10 @@ Refs: `pip download` produces a directory suitable for later `pip install --find
 ## Fast paths vs isolation
 
 **Fastest loop (not isolated):**
-- `nox --no-venv -s tests_sys` → run in the current interpreter; no env creation. Shortcut for `--force-venv-backend none`. :contentReference[oaicite:2]{index=2}
+- `nox --no-venv -s tests_sys` run in the current interpreter; no env creation. Shortcut for `--force-venv-backend none`. :contentReference[oaicite:2]{index=2}
 
 **Balanced speed & isolation:**
-- `nox -r -s tests` → reuse virtualenvs and skip reinstalls; `tests` delegates to the `coverage` gate. :contentReference[oaicite:3]{index=3}
+- `nox -r -s tests` reuse virtualenvs and skip reinstalls; `tests` delegates to the `coverage` gate. :contentReference[oaicite:3]{index=3}
 
 **Most isolated / fully offline:**
 - Install strictly from `./wheelhouse` using `--no-index --find-links`. :contentReference[oaicite:4]{index=4}
@@ -52,15 +52,15 @@ Notes:
 ## Install strategy in sessions
 
 1) Prefer `uv`:
-   - `uv pip sync <lock-or-reqs.txt>` (idempotent sync to a file) or
-   - `uv pip install -r requirements/base.txt`
-   :contentReference[oaicite:7]{index=7}
+ - `uv pip sync <lock-or-reqs.txt>` (idempotent sync to a file) or
+ - `uv pip install -r requirements/base.txt`
+ :contentReference[oaicite:7]{index=7}
 
 2) Fallback to `pip` with cache:
-   - respect `PIP_CACHE_DIR` (e.g., `./.cache/pip`) for warm wheels. :contentReference[oaicite:8]{index=8}
+ - respect `PIP_CACHE_DIR` (e.g., `./.cache/pip`) for warm wheels. :contentReference[oaicite:8]{index=8}
 
 3) Fully offline:
-   - `python -m pip install --no-index --find-links ./wheelhouse -r requirements/base.txt` (all deps must be present). :contentReference[oaicite:9]{index=9}
+ - `python -m pip install --no-index --find-links ./wheelhouse -r requirements/base.txt` (all deps must be present). :contentReference[oaicite:9]{index=9}
 
 ---
 

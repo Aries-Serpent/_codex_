@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Consolidated Master Document** for Codex Performance  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Performance
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Consolidated from** 4 source files:
 - docs/PERFORMANCE_OPTIMIZATION_GUIDE.md
@@ -33,11 +33,11 @@
 
 | Metric | Target | Current | Trend |
 |--------|--------|---------|-------|
-| **API Latency (p95)** | < 100ms | 87ms |  Stable |
-| **Agent Response Time** | < 5s | 3.2s |  Improving |
-| **Cache Hit Rate** | > 90% | 92% |  Stable |
-| **Error Rate** | < 0.5% | 0.2% |  Stable |
-| **Availability** | > 99.9% | 99.95% |  Exceeding |
+| **API Latency (p95)** | < 100ms | 87ms | Stable |
+| **Agent Response Time** | < 5s | 3.2s | Improving |
+| **Cache Hit Rate** | > 90% | 92% | Stable |
+| **Error Rate** | < 0.5% | 0.2% | Stable |
+| **Availability** | > 99.9% | 99.95% | Exceeding |
 
 ### Performance Domains
 
@@ -69,7 +69,7 @@
 
 ### Inference Performance
 
-**Model**: Claude Sonnet 4.5  
+**Model**: Claude Sonnet 4.5
 **Tested**: 2026-07-08
 
 ```
@@ -90,8 +90,8 @@ Input Tokens      Output Tokens     Total Latency    Tokens/Sec
 
 ### API Performance
 
-**Endpoint**: `/api/v1/analyze`  
-**Method**: POST  
+**Endpoint**: `/api/v1/analyze`
+**Method**: POST
 **Payload**: 1KB JSON
 
 ```
@@ -130,8 +130,8 @@ L4: Remote Cache (if configured)
 
 ### Database Performance
 
-**Database**: SQLite  
-**Size**: 2GB  
+**Database**: SQLite
+**Size**: 2GB
 **Connection Pool**: 10 workers
 
 ```
@@ -576,4 +576,4 @@ Auto-Scaling:
 **This document is the authoritative performance and reliability guide for Codex.**
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (4 files merged)*
+*Consolidation Status: Complete (4 files merged)*

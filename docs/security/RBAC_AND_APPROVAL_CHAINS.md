@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0.0  
-**Generated**: 2026-07-08 (Phase 12 WS3 Track E Validation)  
-**Classification**: Internal — Security Sensitive  
-**Owner**: Security & Governance Team  
+**Version**: 1.0.0
+**Generated**: 2026-07-08 (Phase 12 WS3 Track E Validation)
+**Classification**: Internal — Security Sensitive
+**Owner**: Security & Governance Team
 
 ---
 
@@ -138,26 +138,26 @@ This document describes the complete Role-Based Access Control (RBAC) system and
 | Capability | Owner | Admin | Editor | Reviewer | Operator | Viewer | Service |
 |------------|-------|-------|--------|----------|----------|--------|---------|
 | **Repo Management** |
-| Create/delete repos |  |  |  |  |  |  |  |
-| Manage settings |  |  |  |  |  |  |  |
+| Create/delete repos | | | | | | | |
+| Manage settings | | | | | | | |
 | **Code Management** |
-| Push commits |  |  |  |  |  |  |  |
-| Create PRs |  |  |  |  |  |  |  |
-| Approve PRs |  |  |  |  |  |  |  |
-| Merge PRs |  |  |  |  |  |  |  |
+| Push commits | | | | | | | |
+| Create PRs | | | | | | | |
+| Approve PRs | | | | | | | |
+| Merge PRs | | | | | | | |
 | **Deployment** |
-| Deploy to dev |  |  |  |  |  |  |  |
-| Deploy to staging |  |  |  |  |  |  |  |
-| Deploy to prod |  |  |  |  |  |  |  |
+| Deploy to dev | | | | | | | |
+| Deploy to staging | | | | | | | |
+| Deploy to prod | | | | | | | |
 | **Secrets & Config** |
-| View secrets |  |  |  |  |  |  |  |
-| Manage secrets |  |  |  |  |  |  |  |
-| Rotate CODEX_MASTER_KEY |  |  |  |  |  |  |  |
-| Manage variables |  |  |  |  |  |  |  |
+| View secrets | | | | | | | |
+| Manage secrets | | | | | | | |
+| Rotate CODEX_MASTER_KEY | | | | | | | |
+| Manage variables | | | | | | | |
 | **Security & Audit** |
-| Access audit logs |  |  |  |  |  |  |  |
-| Approve releases |  |  |  |  |  |  |  |
-| Update RBAC |  |  |  |  |  |  |  |
+| Access audit logs | | | | | | | |
+| Approve releases | | | | | | | |
+| Update RBAC | | | | | | | |
 
 ---
 
@@ -167,37 +167,53 @@ This document describes the complete Role-Based Access Control (RBAC) system and
 
 ```mermaid
 graph TD
+
     A["👤 Developer Creates PR"] --> B[" PR Submitted with WEC"]
+
     B --> C[" GitHub Actions Check Suite"]
+
     C --> D{All checks pass?}
     
     D -->| Failed| E["🚫 Require fixes"]
+
     E --> A
     
     D -->| Passed| F[" Awaiting Review"]
+
     F --> G["👨‍ Maintainer Reviews Code"]
+
     G --> H{Approve?}
     
     H -->| Request Changes| I[" Developer addresses feedback"]
+
     I --> A
     
     H -->| Approved| J["🔑 trigger-on-approval.yml"]
+
     J --> K[" Token Chain Check"]
+
     K --> L{Token Valid?}
     
     L -->| No| M["️ Token Fallback"]
+
     M --> N[" Use github.token or CODEX_BACKUP_KEY"]
     
     L -->| Yes| O[" Dispatch validation suite"]
+
     O --> P["auto-approve-workflows.yml"]
+
     P --> Q[" All gates pass"]
+
     Q --> R[" PR Approved"]
+
     R --> S{Merge target?}
     
     S -->|main| T["📦 Merge to main"]
+
     T --> U[" Trigger release workflow"]
     
     S -->|develop| V["📦 Merge to develop"]
+
     V --> W["🧪 Trigger integration tests"]
     
     style A fill:#e1f5ff
@@ -607,6 +623,7 @@ Configuration:
 
 ```mermaid
 graph TD
+
     subgraph "Branch Strategy"
         main[" main"]
         develop[" develop"]
@@ -627,12 +644,15 @@ graph TD
     end
     
     main -->|PR merge event| merge_main
+
     merge_main -->|release-to-pypi.yml| prod
     
     develop -->|Push event| merge_dev
+
     merge_dev -->|integration-tests.yml| staging
     
     feature -->|PR create event| pr_open
+
     pr_open -->|CI checks| dev
     
     hotfix -->|Fast-forward to main| merge_main
@@ -650,11 +670,11 @@ graph TD
 
 | Operation | Environment | Reviewer | Token | Timeout | Auto-Approve |
 |-----------|-------------|----------|-------|---------|--------------|
-| **Merge PR** | any |  Required | github.token | N/A |  No |
-| **Deploy to staging** | staging | Optional | CODEX_BACKUP_KEY | 1 hour |  Yes |
-| **Deploy to prod** | production |  Required | CODEX_MASTER_KEY | 30 min |  No |
-| **Rotate secrets** | org |  Required | CODEX_MASTER_KEY | 5 min |  No |
-| **Release to PyPI** | release |  Required | CODEX_MASTER_KEY | 2 hours |  No |
+| **Merge PR** | any | Required | github.token | N/A | No |
+| **Deploy to staging** | staging | Optional | CODEX_BACKUP_KEY | 1 hour | Yes |
+| **Deploy to prod** | production | Required | CODEX_MASTER_KEY | 30 min | No |
+| **Rotate secrets** | org | Required | CODEX_MASTER_KEY | 5 min | No |
+| **Release to PyPI** | release | Required | CODEX_MASTER_KEY | 2 hours | No |
 
 ### Branch Protection Rules
 
@@ -727,11 +747,11 @@ Every approval event MUST be logged:
 ### Emergency Token Rotation
 
 **Trigger Conditions**:
--  Token compromise detected
--  Unauthorized access attempt
--  Employee separation
--  Security audit failure
--  Policy violation
+- Token compromise detected
+- Unauthorized access attempt
+- Employee separation
+- Security audit failure
+- Policy violation
 
 **Immediate Response (within 1 hour)**:
 
@@ -803,6 +823,6 @@ echo " Emergency token rotation initiated" | \
 
 ---
 
-**Generated**: 2026-07-08 (Phase 12 WS3 Track E)  
-**Version**: 1.0.0  
-**Status**: Production Ready 
+**Generated**: 2026-07-08 (Phase 12 WS3 Track E)
+**Version**: 1.0.0
+**Status**: Production Ready

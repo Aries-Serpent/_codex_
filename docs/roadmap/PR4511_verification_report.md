@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Generated:** 2026-05-20T00:20Z  
-**Branch:** `copilot/fix-kwargs-naming-convention`  
+**Generated:** 2026-05-20T00:20Z
+**Branch:** `copilot/fix-kwargs-naming-convention`
 **Files Changed:** `tests/services/audio/test_transcription_workflow.py`, `tools/workflow_merge.py`, `tests/tools/test_workflow_merge_replacements.py` (new)
 
 ---
@@ -23,14 +23,14 @@
 
 | Location | Type | Action Taken |
 |----------|------|--------------|
-| `tools/workflow_merge.py:62` — `def _run(…, allow_failure: bool = True)` | **Definition (default changed)** | Changed default `True` → `False`. Enforces fail-fast by default. |
+| `tools/workflow_merge.py:62` — `def _run(…, allow_failure: bool = True)` | **Definition (default changed)** | Changed default `True` `False`. Enforces fail-fast by default. |
 | `tools/workflow_merge.py:66` — `check=not allow_failure` | **Usage site** | No change; logic is correct (`check=True` when `allow_failure=False`). |
 | All callers of `_run()` within the same file | **3 internal calls** — `count_references`, `run_checks` | None explicitly pass `allow_failure`. With old default `True` these were silent-failure calls. With new default `False` they will raise on non-zero exit, which is the correct fail-fast posture for a merge/consolidation tool. |
 | External callers outside `tools/workflow_merge.py` | **None found** | `_run` is module-private (leading underscore). No cross-module exposure. |
 
 **Rationale:** The old default `True` meant that `rg`, `mypy`, `ruff`, and `pytest` subprocess failures were silently swallowed during `count_references` and `run_checks`. Changing to `False` makes failures visible. The `run_checks` function already wraps each call in a `try/except Exception` that logs errors, so no unhandled exceptions are introduced.
 
-**Rollback:** Revert `allow_failure: bool = False` → `allow_failure: bool = True` in `_run` signature.
+**Rollback:** Revert `allow_failure: bool = False` `allow_failure: bool = True` in `_run` signature.
 
 ---
 
@@ -107,7 +107,7 @@ python -m ruff check tests/services/audio/test_transcription_workflow.py
 
 | Change | Rollback |
 |--------|---------|
-| `**kwargs` rename | Change `**kwargs` → `**_kwargs` in `stub_process_file_method` |
+| `**kwargs` rename | Change `**kwargs` `**_kwargs` in `stub_process_file_method` |
 | `_FakePyannoteSegment` moved | Move class back to module scope above test functions |
 | `_FakeSegment`/`_FakeWhisperModel` promoted | Move classes back inside `test_faster_whisper_backend_runs_real_inference_when_dependency_present` |
 | ChatGPT @codex | Change back to `ChatGPT-5` |

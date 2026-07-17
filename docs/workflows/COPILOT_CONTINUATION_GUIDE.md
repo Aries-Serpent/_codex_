@@ -154,7 +154,7 @@ Posts Status Comment
 ```
 
 **Workflow**:
-1. PR opened → prompt generated
+1. PR opened prompt generated
 2. Comment `@copilot continue`
 3. Copilot executes all tasks
 4. Marks complete, closes PR
@@ -407,7 +407,7 @@ MANDATORY 5 passes before concluding:
 ### 4. Prompt Maintenance
 
 - Update after every session
-- Mark completed tasks with 
+- Mark completed tasks with
 - Document blockers/issues
 - Add new tasks as discovered
 - Commit frequently

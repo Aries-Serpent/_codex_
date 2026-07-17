@@ -188,18 +188,31 @@ Useful adaptive energy is capacity times context-sensitive intensity, corrected 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Scenario input, Map observed variables'}}%%
+
 flowchart TD
+
     Scenario[Scenario input] --> Variables[Map observed variables]
+
     Variables --> Supply[P_in / P_incident]
+
     Variables --> Demand[P_load]
+
     Variables --> Reserve[S_d / SOC / storage]
+
     Variables --> Context[Phi_d / trust / alignment]
+
     Variables --> Risk[R_d / blast radius]
+
     Supply --> Decision[Adaptive response]
+
     Demand --> Decision
+
     Reserve --> Decision
+
     Context --> Decision
+
     Risk --> Decision
+
     Decision --> Actions[harvest / store / shift / scope / shed]
 ```
 

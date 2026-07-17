@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Last Updated: 2026-07-16
-> **Status:** Phase 3 - Documentation Enhancement Campaign 
+> **Status:** Phase 3 - Documentation Enhancement Campaign
 > **Reading Level:** 8th Grade (Flesch-Kincaid)
 
 ---
@@ -532,7 +532,7 @@ logger.error("Error message")
  ```
 
 **Report it:**
-Go to [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) → Click "New Issue"
+Go to [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) Click "New Issue"
 
 ---
 
@@ -702,7 +702,7 @@ python train.py > output.log 2>&1
 
 ### Common Workflows
 
-**Train → Evaluate → Deploy**
+**Train Evaluate Deploy**
 ```bash
 # 1. Train
 python train.py --output runs/my_experiment
@@ -722,7 +722,7 @@ python -m codex_ml.serving.cli serve \
 ## Key Learning Points
 
 | Concept | Why It Matters | Learn More |
-|---------|---------------|-----------| 
+|---------|---------------|-----------|
 | **Hydra** | Manage configurations without code changes | [Hydra Guide](./configuration/hydra_quickstart.md) |
 | **Training** | Core ML workflow - how to prepare & train models | [Training Guide](./training/README.md) |
 | **Evaluation** | Measure model quality - know if it's good | [Evaluation Guide](./evaluation/README.md) |
@@ -765,7 +765,7 @@ python -m codex_ml.serving.cli serve \
 ### Examples
 - [Code Examples](../examples/)
 - [Jupyter Notebooks](../notebooks/)
-- 🧪 [Test Cases](../tests/)
+- [Test Cases](../tests/)
 
 ---
 

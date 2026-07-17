@@ -4,9 +4,9 @@
 
 **Last Updated: 2026-06-22
 
-> **Status:**  Active  
-> **Created:** S174 (2026-03-21)  
-> **Owner:** @mbaetiong  
+> **Status:** Active
+> **Created:** S174 (2026-03-21)
+> **Owner:** @mbaetiong
 > **Tracking PR:** `copilot/update-ci-failure-rate-and-confirm-transition`
 
 ---
@@ -35,7 +35,7 @@ No method exists to:
 - Open a pull request (`POST /repos/{owner}/{repo}/pulls`)
 - List/filter pull requests (`GET /repos/{owner}/{repo}/pulls`)
 - Merge a branch (`POST /repos/{owner}/{repo}/merges`)
-- Push a commit (via Git Data API: blobs → trees → commits → refs)
+- Push a commit (via Git Data API: blobs trees commits refs)
 
 This gap was encountered during S174 when the agent needed to push `0D_base_` to GitHub.
 The only available mechanism was `report_progress`, which is hardcoded to the PR branch.
@@ -138,7 +138,7 @@ def merge_branch(
 **IMP-002 — Git Data API for autonomous commits**
 
 Add `commit_files()` method that uses the Git Data API
-(`POST /repos/{owner}/{repo}/git/blobs` → trees → commits → PATCH refs)
+(`POST /repos/{owner}/{repo}/git/blobs` trees commits PATCH refs)
 to push file changes without a local `git push`. This closes the
 "agent can only push via `report_progress`" constraint.
 
@@ -482,9 +482,9 @@ replaced. No health-check or fallback server defined.
 
 ### Current State
 - `src/mcp/metrics/mcp_metrics.py` — `MetricCollector` exists but not wired to any
-  workflow or CI gate
-- No integration test for the full `agent-auth-delegation` → `@copilot continue`
-  pipeline
+ workflow or CI gate
+- No integration test for the full `agent-auth-delegation` `@copilot continue`
+ pipeline
 - `playwright-results.json` generated but not uploaded to GitHub Actions artifacts
 
 ### Improvement — IMP-015: MCP metrics CI gate
@@ -547,26 +547,26 @@ def test_create_ref_and_pr_roundtrip(respx_mock):
 
 | IMP-ID | Description | Effort | Priority |
 |--------|-------------|--------|----------|
-| IMP-001 | `GitHubMCPPoster` write methods (`create_ref`, `create_pull_request`, etc.) | S |  DONE S175 |
-| IMP-004 | MCP real-mode JSON-RPC transport | M |  DONE S175 |
-| IMP-010 | CLI `create-branch`, `create-pr`, `merge-branch` commands | S |  DONE S175 |
-| IMP-003 | Retry + rate-limit back-off | S |  DONE S175 |
-| IMP-006 | Playwright storage-state auth | S |  DONE S175 |
-| IMP-012 | Cognitive brain branch/PR lifecycle hooks | M |  DONE S175 |
-| IMP-013 | Cognitive-brain context in `@copilot continue` | S |  DONE S175 |
-| IMP-007 | HAR replay for offline CI | M |  DONE S177 |
-| IMP-009 | Resilient selector strategy in scraper | S |  DONE S176 |
-| IMP-011 | `actions_server.py` POST endpoints | M |  DONE S176 |
-| IMP-014 | Multi-target MCP config with health checks | L |  DONE S177 |
-| IMP-015 | MCP metrics CI gate | S |  DONE S177 |
-| IMP-016 | Upload Playwright results as CI artifacts | S |  DONE S177 |
-| IMP-017 | End-to-end delegation test fixture | M |  DONE S176 |
-| IMP-008 | Playwright CDP cookie injection | M |  DONE S178 |
-| IMP-005 | Capability schema validation | L |  DONE S178 |
-| IMP-002 | Git Data API autonomous commits | L |  DONE S178 |
+| IMP-001 | `GitHubMCPPoster` write methods (`create_ref`, `create_pull_request`, etc.) | S | DONE S175 |
+| IMP-004 | MCP real-mode JSON-RPC transport | M | DONE S175 |
+| IMP-010 | CLI `create-branch`, `create-pr`, `merge-branch` commands | S | DONE S175 |
+| IMP-003 | Retry + rate-limit back-off | S | DONE S175 |
+| IMP-006 | Playwright storage-state auth | S | DONE S175 |
+| IMP-012 | Cognitive brain branch/PR lifecycle hooks | M | DONE S175 |
+| IMP-013 | Cognitive-brain context in `@copilot continue` | S | DONE S175 |
+| IMP-007 | HAR replay for offline CI | M | DONE S177 |
+| IMP-009 | Resilient selector strategy in scraper | S | DONE S176 |
+| IMP-011 | `actions_server.py` POST endpoints | M | DONE S176 |
+| IMP-014 | Multi-target MCP config with health checks | L | DONE S177 |
+| IMP-015 | MCP metrics CI gate | S | DONE S177 |
+| IMP-016 | Upload Playwright results as CI artifacts | S | DONE S177 |
+| IMP-017 | End-to-end delegation test fixture | M | DONE S176 |
+| IMP-008 | Playwright CDP cookie injection | M | DONE S178 |
+| IMP-005 | Capability schema validation | L | DONE S178 |
+| IMP-002 | Git Data API autonomous commits | L | DONE S178 |
 
 **Effort key:** S = < 1 hour | M = 1–4 hours | L = 4–8 hours
-**All IMP items complete as of S178.  IMP backlog is fully closed.**
+**All IMP items complete as of S178. IMP backlog is fully closed.**
 
 ---
 

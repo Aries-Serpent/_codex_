@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version:** 1.0.0  
-**Status:** FINAL  
-**Audience:** All contributors (human & AI)  
+**Version:** 1.0.0
+**Status:** FINAL
+**Audience:** All contributors (human & AI)
 **Last Updated: 2026-07-11
 
 ---
@@ -14,8 +14,8 @@
 This checklist must be completed BEFORE submitting a pull request. It enforces the **CODEBASE_AGENCY_POLICY.md (v0.2.1)** and ensures compliance with all governance gates.
 
 **Policy Reference:**
--  Full policy: `.codex/CODEBASE_AGENCY_POLICY.md`
-- 🛡️ Governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md`
+- Full policy: `.codex/CODEBASE_AGENCY_POLICY.md`
+- Governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md`
 
 ---
 
@@ -23,13 +23,13 @@ This checklist must be completed BEFORE submitting a pull request. It enforces t
 
 This must be completed within the first 5 minutes of your session. Skipping this results in automatic PR rejection.
 
-### Step 1: Review All Bot Comments 
+### Step 1: Review All Bot Comments
 
 **Action:** Go to the PR and read every comment from:
--  `copilot-pull-request-reviewer[bot]` — Code review feedback
--  `github-advanced-security[bot]` — Security alerts (CodeQL, secret scanning)
--  `github-actions[bot]` — CI/CD status and gate failures
--  **@mbaetiong** — Maintainer comments (BLOCKING — must reply to each one)
+- `copilot-pull-request-reviewer[bot]` — Code review feedback
+- `github-advanced-security[bot]` — Security alerts (CodeQL, secret scanning)
+- `github-actions[bot]` — CI/CD status and gate failures
+- **@mbaetiong** — Maintainer comments (BLOCKING — must reply to each one)
 
 **Evidence Required:**
 ```
@@ -43,7 +43,7 @@ This must be completed within the first 5 minutes of your session. Skipping this
 
 ---
 
-### Step 2: Review Failing CI Checks 
+### Step 2: Review Failing CI Checks
 
 **Action:** Fetch all failing workflows and identify each failure:
 
@@ -56,10 +56,10 @@ gh run view <RUN_ID> --log | grep -A 5 "FAILED"
 ```
 
 **For Each Failure, Identify:**
-- ☐ Is it code-fixable? (Yes → FIX IT NOW; No → DOCUMENT IT)
-- ☐ Root cause (import error, test failure, lint error, etc.)
-- ☐ Which file/line caused it
-- ☐ Whether it's pre-existing or new
+- Is it code-fixable? (Yes FIX IT NOW; No DOCUMENT IT)
+- Root cause (import error, test failure, lint error, etc.)
+- Which file/line caused it
+- Whether it's pre-existing or new
 
 **Evidence Required:**
 ```
@@ -71,7 +71,7 @@ gh run view <RUN_ID> --log | grep -A 5 "FAILED"
 
 ---
 
-## Step 3: Load Required Documents 
+## Step 3: Load Required Documents
 
 **Action:** Read the following files IN FULL (document mentions, not just skimming):
 
@@ -92,7 +92,7 @@ cat .codex/BATCH_2_GOVERNANCE_FRAMEWORK.md
 
 ---
 
-### Step 4: Check Merge Conflicts 
+### Step 4: Check Merge Conflicts
 
 **Action:** Verify PR is mergeable without conflicts:
 
@@ -119,7 +119,7 @@ git push --force-with-lease
 
 ## Work Execution Checklist
 
-### Phase A: Deferral Language Policy Compliance 
+### Phase A: Deferral Language Policy Compliance
 
 **MANDATORY: The following phrases are FORBIDDEN in your PR body, commit messages, and comments:**
 
@@ -166,17 +166,17 @@ OVERRIDE: Owner approval required (@mbaetiong)
 
 ---
 
-### Phase B: Comprehensive Issue Resolution 
+### Phase B: Comprehensive Issue Resolution
 
 **MANDATE: You must fix ALL encountered issues, not just your assigned work.**
 
 **What counts as an "issue"?**
--  Test failure in any module
--  Linting error (`pylint`, `flake8`, `mypy`)
--  Type checking error
--  Documentation broken link
--  Security vulnerability
--  Coverage regression
+- Test failure in any module
+- Linting error (`pylint`, `flake8`, `mypy`)
+- Type checking error
+- Documentation broken link
+- Security vulnerability
+- Coverage regression
 
 **Evidence Required:**
 
@@ -216,17 +216,17 @@ Examples:
 
 ---
 
-## Phase C: Code Quality & Improvement 
+## Phase C: Code Quality & Improvement
 
 **MANDATE: Leave codebase better than you found it.**
 
 **What counts as "improvement"?**
--  Add type hints to untyped functions
--  Refactor duplicated code
--  Improve variable names (clarity)
--  Add docstrings to undocumented functions
--  Increase test coverage
--  Optimize performance bottlenecks
+- Add type hints to untyped functions
+- Refactor duplicated code
+- Improve variable names (clarity)
+- Add docstrings to undocumented functions
+- Increase test coverage
+- Optimize performance bottlenecks
 
 **Evidence Required:**
 ```
@@ -252,18 +252,18 @@ Examples:
 
 ---
 
-### Phase D: Documentation Updates 
+### Phase D: Documentation Updates
 
 **REQUIRED Documentation Updates (by change type):**
 
 | Change Type | Documentation Required | Status |
 |-----------|------------------------|--------|
-| User-facing feature | Update README.md + docs/ | ☐ |
-| API change | Update CHANGELOG.md + API docs | ☐ |
-| Configuration option | Update configuration guide | ☐ |
-| New module | Add module docstring + README | ☐ |
-| Bug fix | Update CHANGELOG.md | ☐ |
-| Internal refactor | Update code comments | ☐ |
+| User-facing feature | Update README.md + docs/ | |
+| API change | Update CHANGELOG.md + API docs | |
+| Configuration option | Update configuration guide | |
+| New module | Add module docstring + README | |
+| Bug fix | Update CHANGELOG.md | |
+| Internal refactor | Update code comments | |
 
 **CHANGELOG.md Format:**
 
@@ -297,7 +297,7 @@ Examples:
 
 ---
 
-### Phase E: Security & Privacy Review 
+### Phase E: Security & Privacy Review
 
 **MANDATORY Checks:**
 
@@ -376,11 +376,11 @@ Final CI Status:
 
 | Gate | Trigger | Enforcement | Override |
 |------|---------|------------|----------|
-| Deferral Language | PR body/commits |  HARD BLOCK | Owner approval |
-| Pre-Session Review | Bot comments unaddressed |  HARD BLOCK | N/A |
-| Test Coverage | Coverage < 80% |  HARD BLOCK | N/A |
-| Security Scan | High/critical issues |  HARD BLOCK | Owner approval |
-| Policy Compliance | Gate failures |  HARD BLOCK | Owner approval |
+| Deferral Language | PR body/commits | HARD BLOCK | Owner approval |
+| Pre-Session Review | Bot comments unaddressed | HARD BLOCK | N/A |
+| Test Coverage | Coverage < 80% | HARD BLOCK | N/A |
+| Security Scan | High/critical issues | HARD BLOCK | Owner approval |
+| Policy Compliance | Gate failures | HARD BLOCK | Owner approval |
 
 ### Accountability Tracking
 
@@ -428,6 +428,6 @@ python scripts/ci/generate_accountability_report.py --session-id $SESSION_ID
 
 ---
 
-**STATUS:  POLICY COMPLIANCE CHECKLIST COMPLETE AND OPERATIONAL**
+**STATUS: POLICY COMPLIANCE CHECKLIST COMPLETE AND OPERATIONAL**
 
 All governance requirements from CODEBASE_AGENCY_POLICY.md (v0.2.1) are now enforceable via this checklist and CI/CD gates.

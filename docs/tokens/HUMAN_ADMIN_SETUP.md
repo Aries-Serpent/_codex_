@@ -12,15 +12,15 @@
 
 ---
 
-## ️ CRITICAL: Missing Tokens & Configuration
+## CRITICAL: Missing Tokens & Configuration
 
 The comprehensive audit has identified that while the codebase has **NO restrictions** on token usage, the following tokens are **NOT YET CONFIGURED** and must be set up before AI Agent can proceed with advanced operations.
 
 ---
 
-## 🔑 Required Token Setup (BLOCKING)
+## Required Token Setup (BLOCKING)
 
-### Token 1: CODEX_MASTER_KEY  NOT CONFIGURED
+### Token 1: CODEX_MASTER_KEY NOT CONFIGURED
 
 **Status:** Missing - Must be created and injected
 **Purpose:** Master encryption key for repository-level operations
@@ -54,7 +54,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 
 ---
 
-### Token 2: ORG_MASTER_KEY  NOT CONFIGURED
+### Token 2: ORG_MASTER_KEY NOT CONFIGURED
 
 **Status:** Missing - Must be created and injected
 **Purpose:** Organization-wide admin access for cross-repository operations
@@ -65,16 +65,16 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 
 **Option A: Create GitHub Personal Access Token (Classic)**
 1. Navigate to: https://github.com/settings/tokens
-2. Click "Generate new token" → "Generate new token (classic)"
+2. Click "Generate new token" "Generate new token (classic)"
 3. Token name: `ORG_MASTER_KEY - Codex Automation`
 4. Expiration: 90 days (set up rotation reminder)
 5. Select scopes:
-   -  `repo` (Full control of private repositories)
-   -  `workflow` (Update GitHub Action workflows)
-   -  `write:packages` (Upload packages)
-   -  `delete:packages` (Delete packages)
-   -  `admin:org` (Full control of orgs)
-   -  `admin:repo_hook` (Full control of repository hooks)
+ - `repo` (Full control of private repositories)
+ - `workflow` (Update GitHub Action workflows)
+ - `write:packages` (Upload packages)
+ - `delete:packages` (Delete packages)
+ - `admin:org` (Full control of orgs)
+ - `admin:repo_hook` (Full control of repository hooks)
 6. Click "Generate token"
 7. **IMPORTANT:** Copy token immediately (won't be shown again)
 
@@ -84,15 +84,15 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 3. Homepage URL: `https://github.com/Aries-Serpent/_codex_`
 4. Webhook: Disable (not needed)
 5. Repository permissions:
-   - Actions: Read & Write
-   - Administration: Read & Write
-   - Contents: Read & Write
-   - Metadata: Read-only
-   - Secrets: Read & Write
-   - Workflows: Read & Write
+ - Actions: Read & Write
+ - Administration: Read & Write
+ - Contents: Read & Write
+ - Metadata: Read-only
+ - Secrets: Read & Write
+ - Workflows: Read & Write
 6. Organization permissions:
-   - Administration: Read & Write
-   - Members: Read
+ - Administration: Read & Write
+ - Members: Read
 7. Create app and generate private key
 8. Install app on Aries-Serpent organization
 
@@ -137,7 +137,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep ORG_MASTER_KEY
 
 ---
 
-### Token 3: GITHUB_TOKEN  AVAILABLE
+### Token 3: GITHUB_TOKEN AVAILABLE
 
 **Status:** Available for programmatic use in workflows and code
 **Purpose:** Standard GitHub Actions authentication
@@ -145,10 +145,10 @@ gh secret list --repo Aries-Serpent/_codex_ | grep ORG_MASTER_KEY
 **Type:** Automatic token
 
 **Token Usage Capabilities:**
--  **Workflows:** Agents CAN write workflows using `${{ secrets.GITHUB_TOKEN }}`
--  **Scripts:** Agents CAN create scripts that use GITHUB_TOKEN via env variables
--  **API Operations:** Workflows execute with full token permissions
-- ️ **Interactive Chat:** Token value not readable in chat (security only)
+- **Workflows:** Agents CAN write workflows using `${{ secrets.GITHUB_TOKEN }}`
+- **Scripts:** Agents CAN create scripts that use GITHUB_TOKEN via env variables
+- **API Operations:** Workflows execute with full token permissions
+- **Interactive Chat:** Token value not readable in chat (security only)
 
 **Corrected Understanding:**
 The "by design" limitation means token values cannot be READ in interactive chat sessions (security measure). However, agents CAN and SHOULD write code/workflows that USE tokens programmatically. This is a critical distinction - interactive access vs. programmatic utilization.
@@ -167,7 +167,7 @@ The "by design" limitation means token values cannot be READ in interactive chat
 
 ---
 
-##  Additional Configuration (RECOMMENDED)
+## Additional Configuration (RECOMMENDED)
 
 ### Configuration 1: Larger Runners
 
@@ -176,10 +176,10 @@ The "by design" limitation means token values cannot be READ in interactive chat
 
 **Steps:**
 1. Navigate to: https://github.com/organizations/Aries-Serpent/settings/actions/runners
-2. Click "New runner" → "New GitHub-hosted runner"
+2. Click "New runner" "New GitHub-hosted runner"
 3. Select runner size:
-   - **Recommended:** `ubuntu-latest-8-cores` (8 CPU, 32GB RAM)
-   - **Alternative:** `ubuntu-latest-16-cores` (16 CPU, 64GB RAM)
+ - **Recommended:** `ubuntu-latest-8-cores` (8 CPU, 32GB RAM)
+ - **Alternative:** `ubuntu-latest-16-cores` (16 CPU, 64GB RAM)
 4. Set usage limits and cost controls
 5. Add runner group: "codex-intensive-operations"
 6. Assign to repository: Aries-Serpent/_codex_
@@ -217,10 +217,10 @@ gh api /orgs/Aries-Serpent/audit-log?per_page=1
 **Steps:**
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/security_analysis
 2. Verify enabled:
-   -  Dependency graph
-   -  Dependabot alerts  
-   -  Dependabot security updates
-   -  Dependabot version updates
+ - Dependency graph
+ - Dependabot alerts
+ - Dependabot security updates
+ - Dependabot version updates
 3. Check `.github/dependabot.yml` configuration
 
 **Verification:**
@@ -231,7 +231,7 @@ gh api /repos/Aries-Serpent/_codex_/vulnerability-alerts
 
 ---
 
-##  Post-Configuration Checklist
+## Post-Configuration Checklist
 
 After completing the above configurations, verify each item:
 
@@ -260,7 +260,7 @@ gh run list --limit 5
 
 ---
 
-##  Token Rotation Schedule
+## Token Rotation Schedule
 
 **IMPORTANT:** Set up token rotation reminders
 
@@ -272,11 +272,11 @@ gh run list --limit 5
 ### ORG_MASTER_KEY Rotation:
 - **Frequency:** Every 90 iterations (manual)
 - **Process:**
-  1. Generate new PAT with same scopes
-  2. Update ORG_MASTER_KEY secret
-  3. Test access with sample workflow
-  4. Revoke old PAT
-  5. Document in `.codex/key-archive/rotation-log.txt`
+ 1. Generate new PAT with same scopes
+ 2. Update ORG_MASTER_KEY secret
+ 3. Test access with sample workflow
+ 4. Revoke old PAT
+ 5. Document in `.codex/key-archive/rotation-log.txt`
 
 **Set Calendar Reminder:**
 - [ ] Reminder for 2025-03-27: Rotate ORG_MASTER_KEY
@@ -285,7 +285,7 @@ gh run list --limit 5
 
 ---
 
-##  Expected Timeline
+## Expected Timeline
 
 | Task | Estimated Time | Complexity |
 |------|----------------|------------|
@@ -300,7 +300,7 @@ gh run list --limit 5
 
 ---
 
-##  Common Issues & Solutions
+## Common Issues & Solutions
 
 ### Issue 1: "Secret not found" in workflow
 **Cause:** Secret name mismatch or incorrect scope
@@ -331,7 +331,7 @@ gh api \
 
 ---
 
-## 📞 Support & Documentation
+## Support & Documentation
 
 **Reference Documents:**
 - Comprehensive Audit: `.codex/TOKEN_USAGE_AUDIT_COMPREHENSIVE.md`
@@ -346,7 +346,7 @@ gh api \
 
 ---
 
-##  Completion Confirmation
+## Completion Confirmation
 
 Once all configurations are complete, confirm by running:
 

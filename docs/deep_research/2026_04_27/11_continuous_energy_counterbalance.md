@@ -75,18 +75,31 @@ E_cont(t) ≥ E_min_margin for all critical time windows
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing P_in, Positive side'}}%%
+
 flowchart LR
+
     In[P_in] --> Positive[Positive side]
+
     Storage[P_storage] --> Positive
+
     Recovery[P_recovery] --> Positive
+
     Load[P_load] --> Negative[Negative side]
+
     Loss[P_loss] --> Negative
+
     Safety[P_safety] --> Negative
+
     Degradation[P_degradation] --> Negative
+
     Positive --> Balance[E_cont]
+
     Negative --> Balance
+
     Balance --> Margin{E_cont >= E_min_margin?}
+
     Margin -->|yes| Continue[continuous useful energy]
+
     Margin -->|no| Correct[shape demand / switch source / shed load]
 ```
 
@@ -243,25 +256,41 @@ This control law applies to batteries, RF sensors, microgrids, thermal systems, 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Supply: generation / field / access context, Continuity balance'}}%%
+
 flowchart TD
+
     Supply[Supply: generation / field / access context] --> Balance[Continuity balance]
+
     Storage[Storage and reserve] --> Balance
+
     Recovery[Recovery and regeneration] --> Balance
+
     Demand[Demand and critical load] --> Balance
+
     Loss[Losses and friction] --> Balance
+
     Safety[Safety and risk margin] --> Balance
+
     Degradation[Drift and degradation] --> Balance
+
     Feedback[Sensing and feedback] --> Balance
 
     Balance --> Decision{Reserve margin?}
+
     Decision -->|positive and safe| Sustain[Sustain continuous energy]
+
     Decision -->|low reserve| Shape[Shape demand and discharge storage]
+
     Decision -->|unsafe| Throttle[Throttle, dissipate, or isolate]
+
     Decision -->|drifting| Maintain[Recalibrate, repair, review]
 
     Sustain --> Feedback
+
     Shape --> Feedback
+
     Throttle --> Feedback
+
     Maintain --> Feedback
 ```
 

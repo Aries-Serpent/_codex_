@@ -6,7 +6,7 @@
 
 ---
 
-##  Quick Navigation
+## Quick Navigation
 
 - **Infrastructure Architecture** - System architecture and design
 - **Provisioning Guides** - Infrastructure provisioning steps
@@ -16,7 +16,7 @@
 
 ---
 
-## 🗂️ Directory Structure
+## Directory Structure
 
 ```
 docs/infrastructure/
@@ -30,7 +30,7 @@ docs/infrastructure/
 
 ---
 
-##  Contents
+## Contents
 
 ### Infrastructure Architecture
 - **System Overview** - High-level architecture
@@ -66,14 +66,14 @@ docs/infrastructure/
 
 ## Quick Start
 
-1. **Getting Started?** → Read System Overview first
-2. **Setting Up Infrastructure?** → Follow Provisioning Guides
-3. **Network Issues?** → Check Network Configuration
-4. **Disaster Recovery?** → See Backup & Recovery
+1. **Getting Started?** Read System Overview first
+2. **Setting Up Infrastructure?** Follow Provisioning Guides
+3. **Network Issues?** Check Network Configuration
+4. **Disaster Recovery?** See Backup & Recovery
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **[docs/deployment/](../deployment/)** - Deployment procedures
 - **[docs/operations/](../operations/)** - Operational procedures
@@ -82,7 +82,7 @@ docs/infrastructure/
 
 ---
 
-##  Key Components
+## Key Components
 
 | Component | Type | Owner | Docs |
 |-----------|------|-------|------|
@@ -93,7 +93,7 @@ docs/infrastructure/
 
 ---
 
-##  Best Practices
+## Best Practices
 
 - Infrastructure as Code (IaC) - Use Terraform/CloudFormation
 - Automated provisioning - Use automation tools
@@ -103,7 +103,7 @@ docs/infrastructure/
 
 ---
 
-##  Security Considerations
+## Security Considerations
 
 - Network isolation and segmentation
 - Encryption at rest and in transit
@@ -113,6 +113,6 @@ docs/infrastructure/
 
 ---
 
-**Last Updated**: 2026-06-22  
-**Category**: Infrastructure & Operations  
-**Status**:  Active
+**Last Updated**: 2026-06-22
+**Category**: Infrastructure & Operations
+**Status**: Active

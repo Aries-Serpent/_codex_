@@ -3,8 +3,8 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-**Module Path**: `src/codex/skills/`  
-**Version**: Phase 10+  
+**Module Path**: `src/codex/skills/`
+**Version**: Phase 10+
 **Purpose**: Skill registry, execution, discovery, and lifecycle management
 
 ---
@@ -229,7 +229,7 @@ class AAISScorer:
 
 **Key Methods**:
 
-#### `score(skill_info)` 
+#### `score(skill_info)`
 
 Generate AAIS score for a skill.
 
@@ -533,7 +533,7 @@ def unsafe_skill_execution(skill_name, inputs):
 
 ---
 
-**Last Updated**: 2026-07-08  
-**Status**: Phase 10+ (Active)  
+**Last Updated**: 2026-07-08
+**Status**: Phase 10+ (Active)
 **Author**: Codex Skills Team
 

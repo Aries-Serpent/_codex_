@@ -2,11 +2,11 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
-> **Source**: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)  
-> **Generated**: 2026-06-22  
+> **Source**: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)
+> **Generated**: 2026-06-22
 > **Purpose**: Executable implementation roadmap for AST standardization based on comprehensive blocker research
 
 ---
@@ -22,13 +22,13 @@
 - **Phase 1 (Quick Wins)**: 5 iterations, can implement immediately
 - **Phase 2-3**: Require stakeholder approval and dedicated resources
 
-**Recommendation**:  **Implement Phase 1 Quick Wins ONLY** (5 iterations, low risk, high value)
+**Recommendation**: **Implement Phase 1 Quick Wins ONLY** (5 iterations, low risk, high value)
 
 ---
 
 ## Implementation Assessment Matrix
 
-###  CAN IMPLEMENT NOW (Phase 1: Quick Wins)
+### CAN IMPLEMENT NOW (Phase 1: Quick Wins)
 
 | # | Item | Effort | Risk | Value | Blocker(s) Resolved |
 |---|------|--------|------|-------|---------------------|
@@ -41,14 +41,14 @@
 | 7 | Create minimal CLI interface | 0.5d | LOW | MED | BLOCK-CLI-001 |
 | 8 | Add pre-commit hook skeleton | 0.25d | LOW | LOW | BLOCK-INT-001 |
 
-**Total Phase 1**: 5.25 person-days  
-**Blockers Resolved**: 8 of 46 (17%)  
-**Risk**: LOW (no architectural changes, reversible)  
+**Total Phase 1**: 5.25 person-days
+**Blockers Resolved**: 8 of 46 (17%)
+**Risk**: LOW (no architectural changes, reversible)
 **Value**: HIGH (foundation for future work)
 
 ---
 
-### ️ REQUIRES STAKEHOLDER APPROVAL (Phase 2: Medium Scope)
+### REQUIRES STAKEHOLDER APPROVAL (Phase 2: Medium Scope)
 
 | # | Item | Effort | Risk | Value | Prerequisites |
 |---|------|--------|------|-------|---------------|
@@ -63,14 +63,14 @@
 | 17 | Enhanced CLI tools | 2d | MED | MED | Phase 1 complete |
 | 18 | Code smell detector | 1.5d | MED | MED | Phase 1 complete |
 
-**Total Phase 2**: 19.5 person-days  
-**Blockers Resolved**: +15 of 46 (total 50%)  
-**Risk**: MEDIUM (requires approval, testing, review)  
+**Total Phase 2**: 19.5 person-days
+**Blockers Resolved**: +15 of 46 (total 50%)
+**Risk**: MEDIUM (requires approval, testing, review)
 **Value**: HIGH (production-ready features)
 
 ---
 
-###  REQUIRES DEDICATED PROJECT (Phase 3: Full Implementation)
+### REQUIRES DEDICATED PROJECT (Phase 3: Full Implementation)
 
 | Category | Items | Effort | Prerequisites |
 |----------|-------|--------|---------------|
@@ -83,9 +83,9 @@
 | Security audit | 2 items | 4d | Phases 1-2, security review |
 | Full documentation | 3 items | 6d | Phases 1-2, content complete |
 
-**Total Phase 3**: 57 person-days  
-**Blockers Resolved**: +23 of 46 (total 100%)  
-**Risk**: HIGH (major project, resources, timeline)  
+**Total Phase 3**: 57 person-days
+**Blockers Resolved**: +23 of 46 (total 100%)
+**Risk**: HIGH (major project, resources, timeline)
 **Value**: VERY HIGH (complete AST standardization)
 
 ---
@@ -442,33 +442,33 @@ Minimal implementations to complete Phase 1 foundation.
 
 ## Go/No-Go Decision Framework
 
-###  GO Criteria for Phase 1
+### GO Criteria for Phase 1
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| Effort < 1 phase |  YES | 5.25 iterations |
-| No architectural approval needed |  YES | Additive only, no changes |
-| No external dependencies (license issues) |  YES | All MIT licensed |
-| Aligns with maturity goals |  YES | Improves code quality |
-| Provides immediate value |  YES | Foundation + 8 blockers resolved |
-| Reversible if needed |  YES | Can be removed easily |
-| Does not disrupt current work |  YES | 75% maturity complete, no conflict |
+| Effort < 1 phase | YES | 5.25 iterations |
+| No architectural approval needed | YES | Additive only, no changes |
+| No external dependencies (license issues) | YES | All MIT licensed |
+| Aligns with maturity goals | YES | Improves code quality |
+| Provides immediate value | YES | Foundation + 8 blockers resolved |
+| Reversible if needed | YES | Can be removed easily |
+| Does not disrupt current work | YES | 75% maturity complete, no conflict |
 
-**Decision**:  **RECOMMEND GO FOR PHASE 1**
+**Decision**: **RECOMMEND GO FOR PHASE 1**
 
 ---
 
-###  NO-GO Criteria for Phase 2-3
+### NO-GO Criteria for Phase 2-3
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| Requires stakeholder approval |  BLOCK | Need architecture review |
-| Needs dedicated engineering |  BLOCK | 19.5 - 57 iterations effort |
-| Performance impact assessment |  BLOCK | Benchmarking required |
-| Security review required |  BLOCK | SQLite, input validation |
-| Beyond current scope |  BLOCK | 75% maturity work complete |
+| Requires stakeholder approval | BLOCK | Need architecture review |
+| Needs dedicated engineering | BLOCK | 19.5 - 57 iterations effort |
+| Performance impact assessment | BLOCK | Benchmarking required |
+| Security review required | BLOCK | SQLite, input validation |
+| Beyond current scope | BLOCK | 75% maturity work complete |
 
-**Decision**:  **DEFER PHASE 2-3 TO DEDICATED PROJECT**
+**Decision**: **DEFER PHASE 2-3 TO DEDICATED PROJECT**
 
 ---
 
@@ -512,15 +512,15 @@ Minimal implementations to complete Phase 1 foundation.
 ### Immediate (Pre-commit -1-0)
 
 1. ** APPROVE Phase 1 Quick Wins** (5 iterations, low risk, high value)
-   - Add dependencies to pyproject.toml
-   - Create basic AST infrastructure (node, graph, metrics)
-   - Add 20+ tests
-   - Update documentation
+ - Add dependencies to pyproject.toml
+ - Create basic AST infrastructure (node, graph, metrics)
+ - Add 20+ tests
+ - Update documentation
 
-2. **⏸️ HOLD Phase 2-3** for future dedicated project
-   - Requires stakeholder alignment
-   - Needs dedicated resources (3-8 phases)
-   - Performance and security review required
+2. ** HOLD Phase 2-3** for future dedicated project
+ - Requires stakeholder alignment
+ - Needs dedicated resources (3-8 phases)
+ - Performance and security review required
 
 ### Short-term (Pre-commit 1-4)
 
@@ -541,10 +541,10 @@ Minimal implementations to complete Phase 1 foundation.
 ## Conclusion
 
 **Phase 1 Quick Wins** represents the **optimal balance** of:
--  Low effort (5 iterations)
--  Low risk (reversible, additive)
--  High value (foundation, 8 blockers resolved)
--  Aligned with current goals (maturity improvement)
+- Low effort (5 iterations)
+- Low risk (reversible, additive)
+- High value (foundation, 8 blockers resolved)
+- Aligned with current goals (maturity improvement)
 
 **Recommendation**: Execute Phase 1 immediately, defer Phase 2-3 to dedicated project.
 

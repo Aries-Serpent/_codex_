@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-08
-**Authority:** Phase 12 WS3 Documentation Lane 8  
-**Audience:** DevOps Engineers, Platform Architects, SREs  
+**Authority:** Phase 12 WS3 Documentation Lane 8
+**Audience:** DevOps Engineers, Platform Architects, SREs
 **Status:** Production Reference
 
 ---
@@ -44,6 +44,7 @@ The Codex ML Framework infrastructure is designed as a distributed, cloud-native
 
 ```mermaid
 graph TB
+
     subgraph Users["User Layer"]
         API["REST API Gateway<br/>(nginx/envoy)"]
         CLI["CLI Clients"]
@@ -83,15 +84,25 @@ graph TB
     end
     
     Users -->|Route| API
+
     API --> K8S
+
     K8S --> Workers
+
     Workers --> Services
+
     Services --> CloudStorage
+
     Services --> Cache
+
     Workers --> Prometheus
+
     Prometheus --> Grafana
+
     Prometheus --> AlertMgr
+
     K8S -->|GitOps| ArgoCD
+
     Workers -->|Pull| Registry
 
     style Control fill:#e1f5ff
@@ -122,6 +133,7 @@ graph TB
 
 ```mermaid
 graph LR
+
     subgraph External["External"]
         Client["Client Requests"]
     end
@@ -138,9 +150,13 @@ graph LR
     end
     
     Client -->|HTTPS| LB
+
     LB -->|Route| NGINX
+
     NGINX -->|HTTP| APIV1
+
     NGINX -->|HTTP| APIV2
+
     NGINX -->|HTTP| Inference
 ```
 
@@ -201,6 +217,7 @@ Features:
 
 ```mermaid
 graph TB
+
     subgraph ApplicationData["Application Data"]
         PG["PostgreSQL<br/>(Metadata)"]
         Redis["Redis<br/>(Cache/Queue)"]
@@ -220,11 +237,17 @@ graph TB
     end
     
     Models["Model Serving"] -->|Cache| LocalCache
+
     Models -->|Fetch| SharedStorage
+
     SharedStorage -->|Registry| Registry
+
     Pipeline["Training"] -->|Read| TrainingData
+
     Pipeline -->|Checkpoint| SharedStorage
+
     Pipeline -->|Metadata| PG
+
     Pipeline -->|Queue| Redis
 ```
 
@@ -242,6 +265,7 @@ graph TB
 
 ```mermaid
 graph TB
+
     subgraph Internet["Public Internet"]
         Users["External Users"]
     end
@@ -272,12 +296,19 @@ graph TB
     end
     
     Users -->|HTTPS| IGW
+
     IGW --> Ingress
+
     Ingress --> VirtualSvc
+
     VirtualSvc --> K8sA
+
     VirtualSvc --> K8sB
+
     VirtualSvc --> K8sC
+
     K8sA -->|DNS| DBAZ
+
     NAT -->|Egress| Users
 
     style VPC fill:#e3f2fd
@@ -367,6 +398,7 @@ Pod Limits:
 
 ```mermaid
 graph TB
+
     subgraph Region1["Primary Region"]
         AZ1A["Availability Zone 1A"]
         AZ1B["Availability Zone 1B"]
@@ -385,13 +417,16 @@ graph TB
     end
     
     AZ1A -->|Zone 1| Services
+
     AZ1B -->|Zone 2| Services
+
     AZ1C -->|Zone 3| Services
     
     Data -.->|Cross-region replication| AZ2A
     Cache -.->|Async replication| AZ2B
     
     LB["Global Load Balancer<br/>(Route53/Cloud LB)"] --> AZ1A
+
     LB -->|Failover| AZ2A
 ```
 
@@ -457,6 +492,7 @@ Recovery Procedures:
 
 ```mermaid
 graph TB
+
     subgraph Applications["Applications"]
         APIMetrics["API Metrics<br/>(prometheus client)"]
         ModelMetrics["Model Server Metrics<br/>(prometheus client)"]
@@ -479,15 +515,21 @@ graph TB
     end
     
     APIMetrics -->|Push| Prometheus
+
     ModelMetrics -->|Push| Prometheus
+
     TrainingMetrics -->|Push| Prometheus
     
     Prometheus -->|Remote write| RemoteWrite
+
     RemoteWrite -->|Store| RemoteTS
+
     Prometheus -->|Store| LocalTS
     
     LocalTS -->|Query| Grafana
+
     RemoteTS -->|Query| Grafana
+
     Prometheus -->|Evaluate| Alerts
 ```
 

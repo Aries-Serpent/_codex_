@@ -1,150 +1,150 @@
-#  AST Standardization: Codebase Analysis Architecture
+# AST Standardization: Codebase Analysis Architecture
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 ## Table of Contents
 
 - [ Executive Summary](#-executive-summary)
-- [🗺️ Phase 1: Requirements Definition](#-phase-1-requirements-definition)
-  - [1.1 Functional Requirements (FR)](#11-functional-requirements-fr)
-  - [1.2 Non-Functional Requirements (NFR)](#12-non-functional-requirements-nfr)
-  - [1.3 Constraints & Assumptions](#13-constraints--assumptions)
-- [🏗️ Phase 2: Architecture Design](#-phase-2-architecture-design)
-  - [2.1 System Architecture](#21-system-architecture)
-  - [2.2 Core Components](#22-core-components)
-    - [**Component 1: Universal AST Parser**](#component-1-universal-ast-parser)
+- [ Phase 1: Requirements Definition](#-phase-1-requirements-definition)
+ - [1.1 Functional Requirements (FR)](#11-functional-requirements-fr)
+ - [1.2 Non-Functional Requirements (NFR)](#12-non-functional-requirements-nfr)
+ - [1.3 Constraints & Assumptions](#13-constraints--assumptions)
+- [ Phase 2: Architecture Design](#-phase-2-architecture-design)
+ - [2.1 System Architecture](#21-system-architecture)
+ - [2.2 Core Components](#22-core-components)
+ - [**Component 1: Universal AST Parser**](#component-1-universal-ast-parser)
 - [Pseudo-code architecture](#pseudo-code-architecture)
 - [**Component 2: Metrics Analyzer**](#component-2-metrics-analyzer)
-  - [**Component 3: Dependency Graph Builder**](#component-3-dependency-graph-builder)
-    - [**Component 4: Code Smell Detector**](#component-4-code-smell-detector)
-    - [**Component 5: Knowledge Graph Builder**](#component-5-knowledge-graph-builder)
-  - [2.3 Data Flow Diagram](#23-data-flow-diagram)
+ - [**Component 3: Dependency Graph Builder**](#component-3-dependency-graph-builder)
+ - [**Component 4: Code Smell Detector**](#component-4-code-smell-detector)
+ - [**Component 5: Knowledge Graph Builder**](#component-5-knowledge-graph-builder)
+ - [2.3 Data Flow Diagram](#23-data-flow-diagram)
 - [ Phase 3: Implementation Roadmap](#-phase-3-implementation-roadmap)
-  - [3.1 Sprint Planning (2-3 phases)](#31-sprint-planning-2-3-phases)
-  - [3.2 Detailed Implementation Tasks](#32-detailed-implementation-tasks)
-    - [**Task 1: Parser & Standardization (Sprint 1)**](#task-1-parser--standardization-sprint-1)
-    - [**Task 2: Metrics Analysis (Sprint 2)**](#task-2-metrics-analysis-sprint-2)
-    - [**Task 3: Dependency Analysis (Sprint 3)**](#task-3-dependency-analysis-sprint-3)
-    - [**Task 4: Code Smells & Knowledge Graph (Sprint 4)**](#task-4-code-smells--knowledge-graph-sprint-4)
-    - [**Task 5: CLI Tools (Sprint 5)**](#task-5-cli-tools-sprint-5)
+ - [3.1 Sprint Planning (2-3 phases)](#31-sprint-planning-2-3-phases)
+ - [3.2 Detailed Implementation Tasks](#32-detailed-implementation-tasks)
+ - [**Task 1: Parser & Standardization (Sprint 1)**](#task-1-parser--standardization-sprint-1)
+ - [**Task 2: Metrics Analysis (Sprint 2)**](#task-2-metrics-analysis-sprint-2)
+ - [**Task 3: Dependency Analysis (Sprint 3)**](#task-3-dependency-analysis-sprint-3)
+ - [**Task 4: Code Smells & Knowledge Graph (Sprint 4)**](#task-4-code-smells--knowledge-graph-sprint-4)
+ - [**Task 5: CLI Tools (Sprint 5)**](#task-5-cli-tools-sprint-5)
 - [Analyze single file](#analyze-single-file)
 - [Audit entire codebase](#audit-entire-codebase)
 - [Compare two commits](#compare-two-commits)
 - [Export to SQLite](#export-to-sqlite)
 - [**Task 6: Testing & Documentation (Sprint 6)**](#task-6-testing--documentation-sprint-6)
 - [ Phase 4: Integration with MATURITY_REMAINING_WORK.md](#-phase-4-integration-with-maturity_remaining_workmd)
-  - [4.1 Mapping AST Findings to Maturity Tasks](#41-mapping-ast-findings-to-maturity-tasks)
+ - [4.1 Mapping AST Findings to Maturity Tasks](#41-mapping-ast-findings-to-maturity-tasks)
 - [pseudo-code: auto-update_maturity_checklist.py](#pseudo-code-auto-update_maturity_checklistpy)
 - [4.2 Sample Integration Output](#42-sample-integration-output)
 - [AST Analysis Findings (Auto-Generated: 2026-06-22)](#ast-analysis-findings-auto-generated-2026-06-22)
-  - [High Priority Issues](#high-priority-issues)
-  - [Medium Priority Issues](#medium-priority-issues)
-  - [Low Priority Issues](#low-priority-issues)
+ - [High Priority Issues](#high-priority-issues)
+ - [Medium Priority Issues](#medium-priority-issues)
+ - [Low Priority Issues](#low-priority-issues)
 - [ Phase 5: Metrics & Validation Framework](#-phase-5-metrics--validation-framework)
-  - [5.1 AST Analysis Quality Metrics](#51-ast-analysis-quality-metrics)
-  - [5.2 Validation Test Suite](#52-validation-test-suite)
-- [🛠️ Phase 6: Tooling & CLI Integration](#-phase-6-tooling--cli-integration)
-  - [6.1 Entry Points](#61-entry-points)
-  - [6.2 Sample CLI Workflows](#62-sample-cli-workflows)
+ - [5.1 AST Analysis Quality Metrics](#51-ast-analysis-quality-metrics)
+ - [5.2 Validation Test Suite](#52-validation-test-suite)
+- [ Phase 6: Tooling & CLI Integration](#-phase-6-tooling--cli-integration)
+ - [6.1 Entry Points](#61-entry-points)
+ - [6.2 Sample CLI Workflows](#62-sample-cli-workflows)
 - [ Phase 7: Knowledge Transfer & Documentation](#-phase-7-knowledge-transfer--documentation)
-  - [7.1 API Reference Structure](#71-api-reference-structure)
+ - [7.1 API Reference Structure](#71-api-reference-structure)
 - [AST Analysis Framework - API Reference](#ast-analysis-framework---api-reference)
 - [Core Classes](#core-classes)
-  - [`UniversalParser`](#universalparser)
-  - [`MetricsAnalyzer`](#metricsanalyzer)
+ - [`UniversalParser`](#universalparser)
+ - [`MetricsAnalyzer`](#metricsanalyzer)
 - [Usage Examples](#usage-examples)
-  - [Example 1: Analyze Single File](#example-1-analyze-single-file)
-  - [Example 2: Build Dependency Graph](#example-2-build-dependency-graph)
+ - [Example 1: Analyze Single File](#example-1-analyze-single-file)
+ - [Example 2: Build Dependency Graph](#example-2-build-dependency-graph)
 - [Find cycles](#find-cycles)
 - [Example 3: Export to SQLite](#example-3-export-to-sqlite)
 - [Query using sqlite3](#query-using-sqlite3)
 - [ Phase 8: Deployment & Adoption](#-phase-8-deployment--adoption)
-  - [8.1 Installation](#81-installation)
-  - [8.2 CI/CD Integration](#82-cicd-integration)
-  - [8.3 Team Adoption Strategy](#83-team-adoption-strategy)
-- [️ Phase 9: Risk Mitigation & Rollback](#-phase-9-risk-mitigation--rollback)
-  - [9.1 Identified Risks](#91-identified-risks)
-  - [9.2 Rollback Procedures](#92-rollback-procedures)
+ - [8.1 Installation](#81-installation)
+ - [8.2 CI/CD Integration](#82-cicd-integration)
+ - [8.3 Team Adoption Strategy](#83-team-adoption-strategy)
+- [ Phase 9: Risk Mitigation & Rollback](#-phase-9-risk-mitigation--rollback)
+ - [9.1 Identified Risks](#91-identified-risks)
+ - [9.2 Rollback Procedures](#92-rollback-procedures)
 - [Disable AST parsing; fall back to regex-based analysis](#disable-ast-parsing-fall-back-to-regex-based-analysis)
 - [Reduce analysis scope](#reduce-analysis-scope)
 - [Update configuration to reduce sensitivity](#update-configuration-to-reduce-sensitivity)
 - [ Phase 10: Success Criteria & Acceptance](#-phase-10-success-criteria--acceptance)
-  - [10.1 Definition of Done](#101-definition-of-done)
-  - [10.2 Acceptance Criteria](#102-acceptance-criteria)
+ - [10.1 Definition of Done](#101-definition-of-done)
+ - [10.2 Acceptance Criteria](#102-acceptance-criteria)
 - [ Conclusion](#-conclusion)
 - [ Deep Codebase Analysis: Requirements Specification](#-deep-codebase-analysis-requirements-specification)
 - [1. Scope Definition](#1-scope-definition)
-  - [1.1 What is "Deep Codebase Analysis"?](#11-what-is-deep-codebase-analysis)
-  - [1.2 Scope Boundaries](#12-scope-boundaries)
+ - [1.1 What is "Deep Codebase Analysis"?](#11-what-is-deep-codebase-analysis)
+ - [1.2 Scope Boundaries](#12-scope-boundaries)
 - [2. Requirements Categories](#2-requirements-categories)
-  - [2.1 Functional Requirements (Detailed)](#21-functional-requirements-detailed)
-    - [**FR-ANALYSIS-001: Universal AST Parsing**](#fr-analysis-001-universal-ast-parsing)
-    - [**FR-ANALYSIS-002: Complexity Metrics Extraction**](#fr-analysis-002-complexity-metrics-extraction)
-    - [**FR-ANALYSIS-003: Dependency Graph Construction**](#fr-analysis-003-dependency-graph-construction)
-    - [**FR-ANALYSIS-004: Code Smell Detection**](#fr-analysis-004-code-smell-detection)
-    - [**FR-ANALYSIS-005: Type Hint Analysis**](#fr-analysis-005-type-hint-analysis)
-    - [**FR-ANALYSIS-006: Documentation Coverage**](#fr-analysis-006-documentation-coverage)
-    - [**FR-ANALYSIS-007: Testing Coverage Integration**](#fr-analysis-007-testing-coverage-integration)
-    - [**FR-ANALYSIS-008: Knowledge Graph Export**](#fr-analysis-008-knowledge-graph-export)
-    - [**FR-ANALYSIS-009: Incremental Analysis**](#fr-analysis-009-incremental-analysis)
-    - [**FR-ANALYSIS-010: CLI Interface**](#fr-analysis-010-cli-interface)
-  - [2.2 Non-Functional Requirements](#22-non-functional-requirements)
-    - [**Performance (NFR-P)**](#performance-nfr-p)
-    - [**Accuracy (NFR-A)**](#accuracy-nfr-a)
-    - [**Reliability (NFR-R)**](#reliability-nfr-r)
-    - [**Maintainability (NFR-M)**](#maintainability-nfr-m)
-    - [**Usability (NFR-U)**](#usability-nfr-u)
-  - [2.3 Constraint Requirements (CR)](#23-constraint-requirements-cr)
+ - [2.1 Functional Requirements (Detailed)](#21-functional-requirements-detailed)
+ - [**FR-ANALYSIS-001: Universal AST Parsing**](#fr-analysis-001-universal-ast-parsing)
+ - [**FR-ANALYSIS-002: Complexity Metrics Extraction**](#fr-analysis-002-complexity-metrics-extraction)
+ - [**FR-ANALYSIS-003: Dependency Graph Construction**](#fr-analysis-003-dependency-graph-construction)
+ - [**FR-ANALYSIS-004: Code Smell Detection**](#fr-analysis-004-code-smell-detection)
+ - [**FR-ANALYSIS-005: Type Hint Analysis**](#fr-analysis-005-type-hint-analysis)
+ - [**FR-ANALYSIS-006: Documentation Coverage**](#fr-analysis-006-documentation-coverage)
+ - [**FR-ANALYSIS-007: Testing Coverage Integration**](#fr-analysis-007-testing-coverage-integration)
+ - [**FR-ANALYSIS-008: Knowledge Graph Export**](#fr-analysis-008-knowledge-graph-export)
+ - [**FR-ANALYSIS-009: Incremental Analysis**](#fr-analysis-009-incremental-analysis)
+ - [**FR-ANALYSIS-010: CLI Interface**](#fr-analysis-010-cli-interface)
+ - [2.2 Non-Functional Requirements](#22-non-functional-requirements)
+ - [**Performance (NFR-P)**](#performance-nfr-p)
+ - [**Accuracy (NFR-A)**](#accuracy-nfr-a)
+ - [**Reliability (NFR-R)**](#reliability-nfr-r)
+ - [**Maintainability (NFR-M)**](#maintainability-nfr-m)
+ - [**Usability (NFR-U)**](#usability-nfr-u)
+ - [2.3 Constraint Requirements (CR)](#23-constraint-requirements-cr)
 - [3. Quality Attributes](#3-quality-attributes)
-  - [3.1 Quality Model (ISO/IEC 25010)](#31-quality-model-isoiec-25010)
-  - [3.2 Testing Strategy](#32-testing-strategy)
+ - [3.1 Quality Model (ISO/IEC 25010)](#31-quality-model-isoiec-25010)
+ - [3.2 Testing Strategy](#32-testing-strategy)
 - [tests/regression/](#testsregression)
 - [4. Data Model & Schemas](#4-data-model--schemas)
-  - [4.1 Core Data Model](#41-core-data-model)
+ - [4.1 Core Data Model](#41-core-data-model)
 - [Standardized AST Node](#standardized-ast-node)
 - [Analysis Result](#analysis-result)
 - [Code Metrics](#code-metrics)
 - [Code Smell](#code-smell)
 - [4.2 Knowledge Graph Schema](#42-knowledge-graph-schema)
 - [5. Integration Points](#5-integration-points)
-  - [5.1 CI/CD Integration](#51-cicd-integration)
-  - [5.2 IDE Integration](#52-ide-integration)
-  - [5.3 MATURITY_REMAINING_WORK.md Integration](#53-maturity_remaining_workmd-integration)
+ - [5.1 CI/CD Integration](#51-cicd-integration)
+ - [5.2 IDE Integration](#52-ide-integration)
+ - [5.3 MATURITY_REMAINING_WORK.md Integration](#53-maturity_remaining_workmd-integration)
 - [After each analysis run:](#after-each-analysis-run)
 - [Output: Updated checklist with findings](#output-updated-checklist-with-findings)
 - [6. Error Handling & Edge Cases](#6-error-handling--edge-cases)
-  - [6.1 Error Categories](#61-error-categories)
-  - [6.2 Edge Cases](#62-edge-cases)
+ - [6.1 Error Categories](#61-error-categories)
+ - [6.2 Edge Cases](#62-edge-cases)
 - [7. Acceptance & Validation](#7-acceptance--validation)
-  - [7.1 Validation Checkpoints](#71-validation-checkpoints)
-  - [7.2 Sign-Off Criteria](#72-sign-off-criteria)
+ - [7.1 Validation Checkpoints](#71-validation-checkpoints)
+ - [7.2 Sign-Off Criteria](#72-sign-off-criteria)
 - [8. Traceability Matrix](#8-traceability-matrix)
 - [Conclusion](#conclusion)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] |  Energy: 5/5
+** Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] | Energy: 5/5
 
 ---
 
-##  Executive Summary
+## Executive Summary
 
 This document provides **requirements, architecture, and standardization strategy** for a dedicated AST (Abstract Syntax Tree) analysis project to enable **deep codebase analysis beyond test scope**. It bridges the gap between MATURITY_REMAINING_WORK.md findings and systematic, automated codebase intelligence.
 
 **Key Objectives:**
-1.  Standardize AST parsing across Python/YAML/JSON/SQL codebases
-2.  Enable automated codebase metrics extraction (complexity, coverage, dependencies)
-3.  Create knowledge graphs for semantic codebase understanding
-4.  Integrate maturity tracking with objective AST-derived findings
-5.  Provide CLI tools for continuous codebase auditing
+1. Standardize AST parsing across Python/YAML/JSON/SQL codebases
+2. Enable automated codebase metrics extraction (complexity, coverage, dependencies)
+3. Create knowledge graphs for semantic codebase understanding
+4. Integrate maturity tracking with objective AST-derived findings
+5. Provide CLI tools for continuous codebase auditing
 
-**Scope:** Beyond unit tests → structural, semantic, and quality analysis
+**Scope:** Beyond unit tests structural, semantic, and quality analysis
 
 ---
 
-## 🗺️ Phase 1: Requirements Definition
+## Phase 1: Requirements Definition
 
 ### 1.1 Functional Requirements (FR)
 
@@ -181,7 +181,7 @@ This document provides **requirements, architecture, and standardization strateg
 
 ---
 
-## 🏗️ Phase 2: Architecture Design
+## Phase 2: Architecture Design
 
 ### 2.1 System Architecture
 
@@ -475,7 +475,7 @@ Source Code Files
 
 ---
 
-##  Phase 3: Implementation Roadmap
+## Phase 3: Implementation Roadmap
 
 ### 3.1 Sprint Planning (2-3 phases)
 
@@ -687,7 +687,7 @@ docs/
 
 ---
 
-##  Phase 4: Integration with MATURITY_REMAINING_WORK.md
+## Phase 4: Integration with MATURITY_REMAINING_WORK.md
 
 ### 4.1 Mapping AST Findings to Maturity Tasks
 
@@ -756,17 +756,17 @@ def analyze_and_update_maturity():
 
 ---
 
-##  Phase 5: Metrics & Validation Framework
+## Phase 5: Metrics & Validation Framework
 
 ### 5.1 AST Analysis Quality Metrics
 
 | Metric | Target | Baseline | After |
 |--------|--------|----------|-------|
-| **Parser Accuracy** | >95% | TBD | >95%  |
-| **Analysis Speed** | <5s/1000 LOC | TBD | <3s/1000 LOC  |
-| **Code Smell Detection** | Zero false positives | TBD | <5% false positive  |
-| **Dependency Cycle Detection** | 100% recall | TBD | 100%  |
-| **Type Hint Inference** | >80% accuracy | TBD | >85%  |
+| **Parser Accuracy** | >95% | TBD | >95% |
+| **Analysis Speed** | <5s/1000 LOC | TBD | <3s/1000 LOC |
+| **Code Smell Detection** | Zero false positives | TBD | <5% false positive |
+| **Dependency Cycle Detection** | 100% recall | TBD | 100% |
+| **Type Hint Inference** | >80% accuracy | TBD | >85% |
 
 ### 5.2 Validation Test Suite
 
@@ -819,7 +819,7 @@ def test_dependency_cycle_detection():
 
 ---
 
-## 🛠️ Phase 6: Tooling & CLI Integration
+## Phase 6: Tooling & CLI Integration
 
 ### 6.1 Entry Points
 
@@ -886,7 +886,7 @@ $ codex-diff HEAD~5 HEAD --metric complexity
 
 ---
 
-##  Phase 7: Knowledge Transfer & Documentation
+## Phase 7: Knowledge Transfer & Documentation
 
 ### 7.1 API Reference Structure
 
@@ -936,7 +936,7 @@ parser = UniversalParser()
 analyzer = MetricsAnalyzer()
 
 with open("example.py") as f:
-    source = f.read()
+ source = f.read()
 
 ast = parser.parse(source, "python")
 metrics = analyzer.analyze(ast)
@@ -961,7 +961,7 @@ cycles = builder.detect_cycles(graph)
 print(f"Found {len(cycles)} circular dependencies")
 
 for cycle in cycles:
-    print(f"  Cycle: {' → '.join(cycle)}")
+ print(f" Cycle: {' '.join(cycle)}")
 ```text
 
 ## Example 3: Export to SQLite
@@ -982,13 +982,13 @@ import sqlite3
 conn = sqlite3.connect("codebase.db")
 cursor = conn.cursor()
 cursor.execute("""
-    SELECT name, cyclomatic_complexity
-    FROM functions
-    WHERE cyclomatic_complexity > 10
-    ORDER BY cyclomatic_complexity DESC
+ SELECT name, cyclomatic_complexity
+ FROM functions
+ WHERE cyclomatic_complexity > 10
+ ORDER BY cyclomatic_complexity DESC
 """)
 for row in cursor:
-    print(f"{row[0]}: CC={row[1]}")
+ print(f"{row[0]}: CC={row[1]}")
 ```text
 
 ---
@@ -1017,55 +1017,55 @@ pip install -e ".[ast]"
 name: AST Codebase Analysis
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
+ push:
+ branches: [main, develop]
+ pull_request:
 
 jobs:
-  analyze:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Full history for diff analysis
+ analyze:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ with:
+ fetch-depth: 0 # Full history for diff analysis
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
+ - uses: actions/setup-python@v4
+ with:
+ python-version: "3.9"
 
-      - name: Install dependencies
-        run: pip install -e ".[ast]"
+ - name: Install dependencies
+ run: pip install -e ".[ast]"
 
-      - name: Run codebase audit
-        run: codex-audit src/ --output audit_report.html --format html
+ - name: Run codebase audit
+ run: codex-audit src/ --output audit_report.html --format html
 
-      - name: Compare with baseline
-        if: github.event_name == 'pull_request'
-        run: |
-          codex-diff origin/main HEAD \
-            --metric complexity \
-            --output complexity_diff.txt
-          cat complexity_diff.txt
+ - name: Compare with baseline
+ if: github.event_name == 'pull_request'
+ run: |
+ codex-diff origin/main HEAD \
+ --metric complexity \
+ --output complexity_diff.txt
+ cat complexity_diff.txt
 
-      - name: Upload results
-        uses: actions/upload-artifact@v3
-        with:
-          name: ast-analysis-report
-          path: audit_report.html
+ - name: Upload results
+ uses: actions/upload-artifact@v3
+ with:
+ name: ast-analysis-report
+ path: audit_report.html
 
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const diff = fs.readFileSync('complexity_diff.txt', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## AST Analysis Report\n\n${diff}`
-            });
+ - name: Comment on PR
+ if: github.event_name == 'pull_request'
+ uses: actions/github-script@v6
+ with:
+ script: |
+ const fs = require('fs');
+ const diff = fs.readFileSync('complexity_diff.txt', 'utf8');
+ github.rest.issues.createComment({
+ issue_number: context.issue.number,
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ body: `## AST Analysis Report\n\n${diff}`
+ });
 ```text
 
 ### 8.3 Team Adoption Strategy
@@ -1270,10 +1270,10 @@ test_parse_nested_structures()
 
 **Test Cases:**
 ```python
-test_complexity_linear_function()  # CC = 1
-test_complexity_if_else()          # CC = 2
-test_complexity_nested_loops()     # CC = 4
-test_complexity_exception_handling()  # CC = N + 1
+test_complexity_linear_function() # CC = 1
+test_complexity_if_else() # CC = 2
+test_complexity_nested_loops() # CC = 4
+test_complexity_exception_handling() # CC = N + 1
 ```text
 
 **Reference:**
@@ -1300,8 +1300,8 @@ test_complexity_exception_handling()  # CC = N + 1
 test_extract_simple_import()
 test_extract_relative_import()
 test_extract_star_import()
-test_detect_cycle_simple()    # A → B → A
-test_detect_cycle_complex()   # A → B → C → D → A
+test_detect_cycle_simple() # A B A
+test_detect_cycle_complex() # A B C D A
 test_transitive_dependencies()
 ```text
 
@@ -1435,24 +1435,24 @@ test_detect_type_mismatch()
 **CLI Tools:**
 
 ```bash
-codex-analyze <path>              # Analyze single file/directory
-  --metric <metric>               # Filter by metric
-  --output <format>               # JSON, Markdown, HTML, SQLite
-  --threshold <value>             # Filter by value
-  --exclude <pattern>             # Exclude files
+codex-analyze <path> # Analyze single file/directory
+ --metric <metric> # Filter by metric
+ --output <format> # JSON, Markdown, HTML, SQLite
+ --threshold <value> # Filter by value
+ --exclude <pattern> # Exclude files
 
-codex-audit .                     # Full codebase audit
-  --output <report.html>          # Report path
-  --format <html|markdown>        # Report format
-  --baseline <ref>                # Compare to baseline
+codex-audit . # Full codebase audit
+ --output <report.html> # Report path
+ --format <html|markdown> # Report format
+ --baseline <ref> # Compare to baseline
 
-codex-diff <ref1> <ref2>          # Compare two commits
-  --metric <metric>               # Which metrics to compare
-  --threshold <delta>             # Report only changes > threshold
+codex-diff <ref1> <ref2> # Compare two commits
+ --metric <metric> # Which metrics to compare
+ --threshold <delta> # Report only changes > threshold
 
-codex-export <path> <format>      # Export to specific format
-  --include-metrics               # Include computed metrics
-  --include-graph                 # Include dependency graph
+codex-export <path> <format> # Export to specific format
+ --include-metrics # Include computed metrics
+ --include-graph # Include dependency graph
 ```text
 
 **Acceptance Criteria:**
@@ -1479,13 +1479,13 @@ codex-export <path> <format>      # Export to specific format
 ```python
 @pytest.mark.benchmark
 def test_parse_speed_benchmark(benchmark):
-    result = benchmark(parser.parse, large_file, "python")
-    assert result is not None
+ result = benchmark(parser.parse, large_file, "python")
+ assert result is not None
 
 @pytest.mark.benchmark
 def test_analyze_speed_benchmark(benchmark):
-    result = benchmark(analyzer.analyze, large_codebase)
-    assert result is not None
+ result = benchmark(analyzer.analyze, large_codebase)
+ assert result is not None
 ```text
 
 ---
@@ -1565,15 +1565,15 @@ def test_analyze_speed_benchmark(benchmark):
 **Test Pyramid:**
 
 ```text
-        ┌─────────────────┐
-        │  E2E Tests (5%) │  - Full pipeline tests
-        ├─────────────────┤
-        │  Integration    │  - Component interaction tests
-        │  Tests (25%)    │
-        ├─────────────────┤
-        │  Unit Tests     │  - Individual function tests
-        │  (70%)          │
-        └─────────────────┘
+
+ E2E Tests (5%) - Full pipeline tests
+
+ Integration - Component interaction tests
+ Tests (25%)
+
+ Unit Tests - Individual function tests
+ (70%)
+
 ```text
 
 **Test Coverage by Component:**
@@ -1589,9 +1589,9 @@ def test_analyze_speed_benchmark(benchmark):
 **Regression Test Suite:**
 ```python
 # tests/regression/
-test_parser_regression.py       # Ensure parser doesn't break on known files
-test_metrics_regression.py       # Ensure metrics consistent over time
-test_cycle_detection_regression.py  # Ensure cycles detected correctly
+test_parser_regression.py # Ensure parser doesn't break on known files
+test_metrics_regression.py # Ensure metrics consistent over time
+test_cycle_detection_regression.py # Ensure cycles detected correctly
 ```text
 
 ---
@@ -1604,46 +1604,46 @@ test_cycle_detection_regression.py  # Ensure cycles detected correctly
 # Standardized AST Node
 @dataclass
 class ASTNode:
-    type: str                           # "module", "function", "class", etc.
-    name: str
-    parent: Optional[ASTNode]
-    children: List[ASTNode]
-    source_location: SourceLocation    # file, line, column
-    metadata: Dict[str, Any]           # language-specific
-    docstring: Optional[str]
-    type_hints: Dict[str, str]
-    decorators: List[str]
+ type: str # "module", "function", "class", etc.
+ name: str
+ parent: Optional[ASTNode]
+ children: List[ASTNode]
+ source_location: SourceLocation # file, line, column
+ metadata: Dict[str, Any] # language-specific
+ docstring: Optional[str]
+ type_hints: Dict[str, str]
+ decorators: List[str]
 
 # Analysis Result
 @dataclass
 class AnalysisResult:
-    file_path: Path
-    ast: ASTNode
-    metrics: CodeMetrics
-    smells: List[CodeSmell]
-    dependencies: List[Dependency]
-    coverage_data: Optional[CoverageData]
-    timestamp: datetime
+ file_path: Path
+ ast: ASTNode
+ metrics: CodeMetrics
+ smells: List[CodeSmell]
+ dependencies: List[Dependency]
+ coverage_data: Optional[CoverageData]
+ timestamp: datetime
 
 # Code Metrics
 @dataclass
 class CodeMetrics:
-    lines_of_code: int
-    cyclomatic_complexity: int
-    cognitive_complexity: float
-    halstead_volume: float
-    maintainability_index: float
-    test_coverage_percent: Optional[float]
-    type_hint_coverage: float
+ lines_of_code: int
+ cyclomatic_complexity: int
+ cognitive_complexity: float
+ halstead_volume: float
+ maintainability_index: float
+ test_coverage_percent: Optional[float]
+ type_hint_coverage: float
 
 # Code Smell
 @dataclass
 class CodeSmell:
-    type: str                           # "long_function", etc.
-    severity: str                       # "low", "medium", "high", "critical"
-    location: SourceLocation
-    message: str
-    suggested_fix: Optional[str]
+ type: str # "long_function", etc.
+ severity: str # "low", "medium", "high", "critical"
+ location: SourceLocation
+ message: str
+ suggested_fix: Optional[str]
 ```text
 
 ## 4.2 Knowledge Graph Schema
@@ -1678,24 +1678,24 @@ class CodeSmell:
 ```yaml
 - Trigger: Push to main, PR creation
 - Steps:
-  1. Run codex-audit on changed files
-  2. Compare metrics to baseline
-  3. Fail if critical quality gates breached
-  4. Comment on PR with findings
-  5. Upload report as artifact
+ 1. Run codex-audit on changed files
+ 2. Compare metrics to baseline
+ 3. Fail if critical quality gates breached
+ 4. Comment on PR with findings
+ 5. Upload report as artifact
 ```text
 
 **Quality Gates:**
 ```text
 PASS if:
-  - No new circular dependencies introduced
-  - Average complexity not increased >10%
-  - Code smell count not increased
-  - Type hint coverage not decreased
-  - Test coverage not decreased
+ - No new circular dependencies introduced
+ - Average complexity not increased >10%
+ - Code smell count not increased
+ - Type hint coverage not decreased
+ - Test coverage not decreased
 
 FAIL if:
-  - Any of above violated
+ - Any of above violated
 ```text
 
 ---

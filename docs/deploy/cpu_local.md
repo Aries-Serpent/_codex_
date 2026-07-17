@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Doc Author], [Secondary: Verifier]  Energy: 5/5  
-⚛️ Physics: Path️ [Build → Cache → Run] Fields [Docker, Python] Patterns️ [Slim base, non-root] Redundancy [Multi-stage (opt)] Balance️ [Parity vs. size]
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Doc Author], [Secondary: Verifier] Energy: 5/5
+ Physics: Path [Build Cache Run] Fields [Docker, Python] Patterns [Slim base, non-root] Redundancy [Multi-stage (opt)] Balance [Parity vs. size]
 
 ## Build Image
 ```bash

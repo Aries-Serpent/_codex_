@@ -725,8 +725,8 @@ if __name__ == "__main__":
 
 ## How to Enforce
 1. Run tests with coverage:
-   ```bash
-   pytest --cov=src/codex_ml --cov=src/codex --cov-report=xml:artifacts/coverage.xml --cov-report=term-missing --cov-fail-under=95
+ ```bash
+ pytest --cov=src/codex_ml --cov=src/codex --cov-report=xml:artifacts/coverage.xml --cov-report=term-missing --cov-fail-under=95
    ```
 2. Optionally run `tools/check_coverage.py` to validate per-file thresholds by parsing `artifacts/coverage.xml`.
 

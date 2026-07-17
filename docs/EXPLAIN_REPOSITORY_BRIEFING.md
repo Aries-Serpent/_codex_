@@ -28,34 +28,34 @@ It is designed as both an engineering platform and an agent-operated repository.
 
 ## 2) Major Subsystems (Core Map)
 
-- **`src/`**  
-  Core platform code: ingestion pipeline, RAG, verification, MCP adapters, tooling, and service/runtime modules.
+- **`src/`**
+ Core platform code: ingestion pipeline, RAG, verification, MCP adapters, tooling, and service/runtime modules.
 
-- **`agents/`**  
-  Autonomous agent logic and orchestration primitives (workflow routing, optimization, context/state handling).
+- **`agents/`**
+ Autonomous agent logic and orchestration primitives (workflow routing, optimization, context/state handling).
 
-- **`scripts/`**  
-  Operational automation: CI helpers, validation scripts, package tooling, audits, and maintenance utilities.
+- **`scripts/`**
+ Operational automation: CI helpers, validation scripts, package tooling, audits, and maintenance utilities.
 
-- **`tests/`**  
-  Large mirrored test surface spanning platform, integrations, security, workflows, and regression paths.
+- **`tests/`**
+ Large mirrored test surface spanning platform, integrations, security, workflows, and regression paths.
 
-- **`docs/`**  
-  Canonical architecture, operations, runbooks, policy, and contributor guidance.
+- **`docs/`**
+ Canonical architecture, operations, runbooks, policy, and contributor guidance.
 
-- **`.github/workflows/`**  
-  CI/CD, governance gates, validation, security scanning, and self-healing automation.
+- **`.github/workflows/`**
+ CI/CD, governance gates, validation, security scanning, and self-healing automation.
 
 ---
 
 ## 3) Developer Entry Points (Start Here)
 
 - **Package/runtime contract**: `pyproject.toml`
-  - Python requirement: `>=3.12`
-  - Packaging metadata and tool configuration (ruff, coverage, mypy, entry points)
+ - Python requirement: `>=3.12`
+ - Packaging metadata and tool configuration (ruff, coverage, mypy, entry points)
 
-- **CLI layer**: `cli/`  
-  Plus documented CLI surfaces in `docs/CLI.md`.
+- **CLI layer**: `cli/`
+ Plus documented CLI surfaces in `docs/CLI.md`.
 
 - **Task runners / quality entry points**:
 - `Makefile`
@@ -106,7 +106,7 @@ Recommended operating guidance for contributors:
 2. Keep tracked work outputs inside repository paths (not temporary scratch paths).
 3. Start sessions from Cognitive Map + Dashboard + Mermaid Maps before edits.
 4. When updating architecture docs, update both prose and diagrams in one pass.
-5. For large tasks, use: discovery → map update → validation → final summary.
+5. For large tasks, use: discovery map update validation final summary.
 
 ---
 

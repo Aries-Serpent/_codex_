@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Updated: 2026-06-22
- Roles: [Primary: Audit Lead], [Secondary: CI Maintainer]  Energy: 5
+ Roles: [Primary: Audit Lead], [Secondary: CI Maintainer] Energy: 5
 
 ## Purpose
 
@@ -15,7 +15,7 @@ End-to-end operational guide for running, validating, and interpreting the capab
 
 | Command | Purpose |
 |---------|---------|
-| `make space-audit` | Full audit pipeline (S1→S7) |
+| `make space-audit` | Full audit pipeline (S1S7) |
 | `make space-audit-fast` | Quick audit (S1,S3,S4,S6) |
 | `make space-validate` | Validate quality gates |
 | `make space-explain cap=<id>` | Explain capability score |

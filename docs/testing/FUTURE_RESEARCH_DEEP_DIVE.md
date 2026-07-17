@@ -6,79 +6,79 @@
 
 - [ Overview](#-overview)
 - [1. Automated Test Generation from Uncovered Code Paths](#1-automated-test-generation-from-uncovered-code-paths)
-  - [Research Topic Classification](#research-topic-classification)
-  - [Problem Statement](#problem-statement)
-  - [Research Keywords & Technologies](#research-keywords--technologies)
-    - [AI/ML Approaches](#aiml-approaches)
-    - [Code Analysis Technologies](#code-analysis-technologies)
-    - [Testing Frameworks](#testing-frameworks)
-  - [Potential Approaches](#potential-approaches)
-    - [Approach 1: LLM-Based Test Generator (Recommended)](#approach-1-llm-based-test-generator-recommended)
+ - [Research Topic Classification](#research-topic-classification)
+ - [Problem Statement](#problem-statement)
+ - [Research Keywords & Technologies](#research-keywords--technologies)
+ - [AI/ML Approaches](#aiml-approaches)
+ - [Code Analysis Technologies](#code-analysis-technologies)
+ - [Testing Frameworks](#testing-frameworks)
+ - [Potential Approaches](#potential-approaches)
+ - [Approach 1: LLM-Based Test Generator (Recommended)](#approach-1-llm-based-test-generator-recommended)
 - [scripts/testing/auto_test_generator.py](#scriptstestingauto_test_generatorpy)
 - [Approach 2: Template-Based Generation](#approach-2-template-based-generation)
-  - [Approach 3: Hybrid Approach](#approach-3-hybrid-approach)
-  - [Dependencies](#dependencies)
-  - [Implementation Roadmap](#implementation-roadmap)
-  - [Success Metrics](#success-metrics)
-  - [Research Questions](#research-questions)
+ - [Approach 3: Hybrid Approach](#approach-3-hybrid-approach)
+ - [Dependencies](#dependencies)
+ - [Implementation Roadmap](#implementation-roadmap)
+ - [Success Metrics](#success-metrics)
+ - [Research Questions](#research-questions)
 - [2. Test Quality Metrics and Mutation Testing](#2-test-quality-metrics-and-mutation-testing)
-  - [Research Topic Classification](#research-topic-classification)
-  - [Problem Statement](#problem-statement)
+ - [Research Topic Classification](#research-topic-classification)
+ - [Problem Statement](#problem-statement)
 - [Test 1: Achieves coverage but doesn't validate behavior](#test-1-achieves-coverage-but-doesnt-validate-behavior)
 - [Test 2: Too generic assertion](#test-2-too-generic-assertion)
 - [Test 3: Doesn't test edge cases](#test-3-doesnt-test-edge-cases)
 - [Research Keywords & Technologies](#research-keywords--technologies)
-  - [Mutation Testing](#mutation-testing)
-    - [Test Quality Metrics](#test-quality-metrics)
-    - [Advanced Analysis](#advanced-analysis)
-  - [Potential Approaches](#potential-approaches)
-    - [Approach 1: Mutation Testing Pipeline (Recommended)](#approach-1-mutation-testing-pipeline-recommended)
+ - [Mutation Testing](#mutation-testing)
+ - [Test Quality Metrics](#test-quality-metrics)
+ - [Advanced Analysis](#advanced-analysis)
+ - [Potential Approaches](#potential-approaches)
+ - [Approach 1: Mutation Testing Pipeline (Recommended)](#approach-1-mutation-testing-pipeline-recommended)
 - [scripts/testing/run_mutation_tests.py](#scriptstestingrun_mutation_testspy)
 - [.github/workflows/mutation-testing.yml](#githubworkflowsmutation-testingyml)
 - [Approach 2: Test Quality Dashboard](#approach-2-test-quality-dashboard)
 - [docs/testing/QUALITY_DASHBOARD.md](#docstestingquality_dashboardmd)
 - [Test Quality Dashboard](#test-quality-dashboard)
-  - [Dependencies](#dependencies)
-  - [Implementation Roadmap](#implementation-roadmap)
-  - [Success Metrics](#success-metrics)
+ - [Dependencies](#dependencies)
+ - [Implementation Roadmap](#implementation-roadmap)
+ - [Success Metrics](#success-metrics)
 - [3. Property-Based Testing Expansion with Hypothesis](#3-property-based-testing-expansion-with-hypothesis)
-  - [Research Topic Classification](#research-topic-classification)
-  - [Problem Statement](#problem-statement)
+ - [Research Topic Classification](#research-topic-classification)
+ - [Problem Statement](#problem-statement)
 - [Example-based: Tests specific inputs](#example-based-tests-specific-inputs)
 - [Property-based: Tests invariants across many inputs](#property-based-tests-invariants-across-many-inputs)
 - [Research Keywords & Technologies](#research-keywords--technologies)
-  - [Property-Based Testing](#property-based-testing)
-    - [Testing Properties](#testing-properties)
-    - [Advanced Techniques](#advanced-techniques)
-  - [Potential Approaches](#potential-approaches)
-    - [Approach 1: Systematic Hypothesis Expansion](#approach-1-systematic-hypothesis-expansion)
+ - [Property-Based Testing](#property-based-testing)
+ - [Testing Properties](#testing-properties)
+ - [Advanced Techniques](#advanced-techniques)
+ - [Potential Approaches](#potential-approaches)
+ - [Approach 1: Systematic Hypothesis Expansion](#approach-1-systematic-hypothesis-expansion)
 - [tests/property_based/test_string_processing.py](#testsproperty_basedtest_string_processingpy)
 - [Strategy for valid filesystem paths](#strategy-for-valid-filesystem-paths)
 - [Approach 2: Stateful Testing for Complex Systems](#approach-2-stateful-testing-for-complex-systems)
-  - [Dependencies](#dependencies)
-  - [Implementation Roadmap](#implementation-roadmap)
-  - [Success Metrics](#success-metrics)
-  - [Example Properties by Domain](#example-properties-by-domain)
+ - [Dependencies](#dependencies)
+ - [Implementation Roadmap](#implementation-roadmap)
+ - [Success Metrics](#success-metrics)
+ - [Example Properties by Domain](#example-properties-by-domain)
 - [ Cross-Topic Synergies](#-cross-topic-synergies)
-  - [Automated Test Generation + Mutation Testing](#automated-test-generation--mutation-testing)
-  - [Property-Based + Automated Generation](#property-based--automated-generation)
-  - [All Three Together: Ultimate Test Suite](#all-three-together-ultimate-test-suite)
-- [🔖 Bookmark & Search Keywords](#-bookmark--search-keywords)
+ - [Automated Test Generation + Mutation Testing](#automated-test-generation--mutation-testing)
+ - [Property-Based + Automated Generation](#property-based--automated-generation)
+ - [All Three Together: Ultimate Test Suite](#all-three-together-ultimate-test-suite)
+- [ Bookmark & Search Keywords](#-bookmark--search-keywords)
 - [ Recommended Reading](#-recommended-reading)
-  - [Papers](#papers)
-  - [Books](#books)
-  - [Tutorials](#tutorials)
+ - [Papers](#papers)
+ - [Books](#books)
+ - [Tutorials](#tutorials)
 
 **Last Updated: 2026-06-22
 
-**Version**: 1.0.0  
-**Created**: 2025-12-31  
-**Purpose**: Deep research keywords, approaches, and implementation guidance for future test enhancement initiatives  
-**Status**: 🔬 Research Phase
+**Version**: 1.0.0
+**Created**: 2025-12-31
+**Purpose**: Deep research keywords, approaches, and implementation guidance for future test enhancement initiatives
+**Status**: Research Phase
 
 ---
 
-##  Overview
+## Overview
 
 This document provides comprehensive research context, keywords, methodologies, and implementation guidance for three future research initiatives aimed at dramatically improving test coverage and quality in the `_codex_` repository.
 
@@ -87,9 +87,9 @@ This document provides comprehensive research context, keywords, methodologies, 
 ## 1. Automated Test Generation from Uncovered Code Paths
 
 ### Research Topic Classification
-**Category**: AI/ML for Software Testing  
-**Complexity**: High  
-**Timeline**: Phase 3 (Current Cycle)  
+**Category**: AI/ML for Software Testing
+**Complexity**: High
+**Timeline**: Phase 3 (Current Cycle)
 **Expected ROI**: 5-10x faster test creation
 
 ### Problem Statement
@@ -100,7 +100,7 @@ Manual test writing for achieving 100% coverage is time-intensive, requiring:
 - Repetitive boilerplate for similar test structures
 - Manual identification of edge cases
 
-**Current State**: 72-75% coverage, manual test creation (~56 tests in 36 minutes = ~1.5 tests per minute)  
+**Current State**: 72-75% coverage, manual test creation (~56 tests in 36 minutes = ~1.5 tests per minute)
 **Target State**: Automated generation of 80-90% of coverage gap tests
 
 ### Research Keywords & Technologies
@@ -272,24 +272,24 @@ Output only the test code, no explanations."""
 3. Fill template with function-specific details
 4. Generate test file
 
-**Pros**: Faster, more predictable, no API costs  
+**Pros**: Faster, more predictable, no API costs
 **Cons**: Less flexible, may miss complex edge cases
 
 ### Approach 3: Hybrid Approach
 **Method**: Template-based for simple cases, LLM for complex cases
 
 **Decision Tree**:
-- Uncovered code is simple getter/setter → Template
-- Uncovered code has complex logic/branches → LLM
-- Uncovered code is error handling → Error path template
-- Uncovered code is integration point → Integration test template
+- Uncovered code is simple getter/setter Template
+- Uncovered code has complex logic/branches LLM
+- Uncovered code is error handling Error path template
+- Uncovered code is integration point Integration test template
 
 ### Dependencies
 
 **Required**:
-- `coverage.py` (installed) 
-- `pytest`, `pytest-cov` (installed) 
-- `ast` module (stdlib) 
+- `coverage.py` (installed)
+- `pytest`, `pytest-cov` (installed)
+- `ast` module (stdlib)
 - LLM API access (OpenAI / Anthropic / local LLM)
 
 **Optional**:
@@ -340,33 +340,33 @@ Output only the test code, no explanations."""
 ### Research Questions
 
 1. **How to ensure generated tests are high quality, not just coverage-boosting?**
-   - Use mutation testing to validate effectiveness
-   - Require manual review of generated tests
-   - Implement quality scoring (readability, edge cases, assertions)
+ - Use mutation testing to validate effectiveness
+ - Require manual review of generated tests
+ - Implement quality scoring (readability, edge cases, assertions)
 
 2. **How to handle flaky tests generated by AI?**
-   - Run generated tests multiple times before accepting
-   - Use deterministic fixtures (mental_mapping.set_clock)
-   - Static analysis to detect non-deterministic patterns
+ - Run generated tests multiple times before accepting
+ - Use deterministic fixtures (mental_mapping.set_clock)
+ - Static analysis to detect non-deterministic patterns
 
 3. **How to incorporate domain knowledge into generated tests?**
-   - Few-shot prompting with domain-specific examples
-   - Fine-tune LLM on repository-specific test patterns
-   - Human-in-the-loop refinement for complex cases
+ - Few-shot prompting with domain-specific examples
+ - Fine-tune LLM on repository-specific test patterns
+ - Human-in-the-loop refinement for complex cases
 
 4. **How to maintain generated tests over time?**
-   - Version generated tests with metadata (generator version, date)
-   - Regenerate tests when source code changes significantly
-   - Allow manual edits with "do not regenerate" marker
+ - Version generated tests with metadata (generator version, date)
+ - Regenerate tests when source code changes significantly
+ - Allow manual edits with "do not regenerate" marker
 
 ---
 
 ## 2. Test Quality Metrics and Mutation Testing
 
 ### Research Topic Classification
-**Category**: Software Testing Quality Assurance  
-**Complexity**: Medium  
-**Timeline**: Phase 2 (Current Cycle)  
+**Category**: Software Testing Quality Assurance
+**Complexity**: Medium
+**Timeline**: Phase 2 (Current Cycle)
 **Expected ROI**: Identify 20-30% weak tests
 
 ### Problem Statement
@@ -420,9 +420,9 @@ def test_happy_path_only():
 
 **Pipeline**:
 1. **Select Mutation Tool**
-   - `mutpy` (Python-specific, actively maintained)
-   - `cosmic-ray` (parallelized, faster)
-   - `mutmut` (simple, good for CI)
+ - `mutpy` (Python-specific, actively maintained)
+ - `cosmic-ray` (parallelized, faster)
+ - `mutmut` (simple, good for CI)
 
 2. **Configure Mutation Operators**
    ```text
@@ -435,14 +435,14 @@ def test_happy_path_only():
        'CRP',  # Constant Replacement (5 → 6)
        'ROR',  # Relational Operator Replacement (< → <=)
    ]
-   ```
+ ```
 
 3. **Run Mutation Testing**
    ```bash
    # Run mutpy on specific module
    mut.py --target src/module.py --unit-test tests/test_module.py \
           --report-html mutation_report
-   ```
+ ```
 
 4. **Analyze Results**
 ```python
@@ -626,7 +626,7 @@ jobs:
 
 ### Success Metrics
 
-- **Mutation score improvement**: 60% → 80%+ average across codebase
+- **Mutation score improvement**: 60% 80%+ average across codebase
 - **Weak tests identified**: 20-30% of tests flagged for improvement
 - **Test effectiveness**: 95%+ of tests have ≥2 meaningful assertions
 - **CI integration**: Mutation testing runs on every PR
@@ -636,9 +636,9 @@ jobs:
 ## 3. Property-Based Testing Expansion with Hypothesis
 
 ### Research Topic Classification
-**Category**: Advanced Testing Methodologies  
-**Complexity**: Low  
-**Timeline**: Phase 1 (Current Cycle)  
+**Category**: Advanced Testing Methodologies
+**Complexity**: Low
+**Timeline**: Phase 1 (Current Cycle)
 **Expected ROI**: Discover 20-30% more edge case bugs
 
 ### Problem Statement
@@ -846,8 +846,8 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 ### Dependencies
 
 **Required**:
-- `hypothesis` (already available) 
-- `pytest` (installed) 
+- `hypothesis` (already available)
+- `pytest` (installed)
 
 **Optional**:
 - `hypothesis[cli]` for command-line tools
@@ -878,7 +878,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ### Success Metrics
 
-- **Property-based test coverage**: 10% → 30% of all tests
+- **Property-based test coverage**: 10% 30% of all tests
 - **Bugs discovered**: 20-30 new edge case bugs found
 - **Test robustness**: Property tests run 100-1000 cases each
 - **Developer adoption**: 80%+ of new tests include properties
@@ -886,9 +886,9 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 ### Example Properties by Domain
 
 **String Processing**:
-- Round-trip (encode → decode)
+- Round-trip (encode decode)
 - Idempotence (normalize twice == normalize once)
-- Reversibility (compress → decompress)
+- Reversibility (compress decompress)
 
 **Collections**:
 - Length preservation (map, filter)
@@ -907,11 +907,11 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-##  Cross-Topic Synergies
+## Cross-Topic Synergies
 
 ### Automated Test Generation + Mutation Testing
 - Generate tests, then validate with mutation testing
-- Iterate: generate → mutate → refine → validate
+- Iterate: generate mutate refine validate
 - Measure: "mutation score per generated test"
 
 ### Property-Based + Automated Generation
@@ -927,7 +927,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-## 🔖 Bookmark & Search Keywords
+## Bookmark & Search Keywords
 
 **For Literature Search**:
 - "neural program synthesis"
@@ -953,7 +953,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-##  Recommended Reading
+## Recommended Reading
 
 ### Papers
 1. "An Empirical Evaluation of Mutation Testing" (IEEE TSE, 2014)
@@ -972,7 +972,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ---
 
-**Document Maintenance**: Update per phase as research progresses  
-**Owner**: Test Infrastructure Team  
-**Last Review**: 2025-12-31  
+**Document Maintenance**: Update per phase as research progresses
+**Owner**: Test Infrastructure Team
+**Last Review**: 2025-12-31
 **Next Review**: 2026-04-01

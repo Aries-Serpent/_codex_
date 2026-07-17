@@ -2,11 +2,11 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-06-22  
-**Purpose**: Document all intentionally left as-is code with security scan findings  
+**Last Updated**: 2026-06-22
+**Purpose**: Document all intentionally left as-is code with security scan findings
 **Policy**: ALL security findings must be justified or fixed - no exceptions without documented rationale
 
-##  Nosec Suppressions Status (Phase 3-4 Update)
+## Nosec Suppressions Status (Phase 3-4 Update)
 
 **Current Statistics** (as of 2026-01-30):
 - **Total nosec comments**: 210
@@ -23,9 +23,9 @@
 ## Security Policy
 
 **CRITICAL RULE**: Any code flagged by security scans (Bandit, CodeQL, Semgrep, safety, pip-audit, Gitleaks, TruffleHog) MUST be either:
-1.  **FIXED** - Vulnerability remediated
-2.  **DOCUMENTED** - Explicit reason why left as-is with risk acceptance and mitigation
-3.  **NEVER IGNORED** - Without documented justification
+1. **FIXED** - Vulnerability remediated
+2. **DOCUMENTED** - Explicit reason why left as-is with risk acceptance and mitigation
+3. **NEVER IGNORED** - Without documented justification
 
 ### Nosec Suppression Standards
 
@@ -171,10 +171,10 @@ ignore-vulnerabilities:
 
 ### Category: Test Fixtures
 
-**Files**: `tests/fixtures/*.py`  
-**Reason**: Contains intentionally vulnerable code for testing security scanners  
-**Security Impact**: None - never executed in production, isolated test environment  
-**Justification**: Required to validate security tooling works correctly  
+**Files**: `tests/fixtures/*.py`
+**Reason**: Contains intentionally vulnerable code for testing security scanners
+**Security Impact**: None - never executed in production, isolated test environment
+**Justification**: Required to validate security tooling works correctly
 **Mitigation**:
 - Files marked with `# SECURITY TEST FIXTURE - DO NOT USE IN PRODUCTION`
 - Excluded from Bandit scans via `.bandit` configuration
@@ -182,10 +182,10 @@ ignore-vulnerabilities:
 
 ### Category: Example/Demo Code
 
-**Files**: `examples/*.py`  
-**Reason**: Simplified examples may not follow all security best practices  
-**Security Impact**: Low - examples are not production code  
-**Justification**: Examples prioritize clarity over security for educational purposes  
+**Files**: `examples/*.py`
+**Reason**: Simplified examples may not follow all security best practices
+**Security Impact**: Low - examples are not production code
+**Justification**: Examples prioritize clarity over security for educational purposes
 **Mitigation**:
 - All examples include security warning comments
 - Examples never deployed to production
@@ -193,10 +193,10 @@ ignore-vulnerabilities:
 
 ### Category: Third-Party Code (If Any)
 
-**Files**: [None currently]  
-**Reason**: N/A  
-**Security Impact**: N/A  
-**Justification**: N/A  
+**Files**: [None currently]
+**Reason**: N/A
+**Security Impact**: N/A
+**Justification**: N/A
 **Mitigation**: N/A
 
 ---
@@ -222,7 +222,7 @@ Pre-existing condition not introduced by current work. Fixing requires sustained
 **Mitigation Plan**:
 1. Documented in `GAP_ANALYSIS.md`
 2. Created improvement roadmap (to be implemented)
-3. Phased approach: 15% → 30% → 60% → 90%
+3. Phased approach: 15% 30% 60% 90%
 4. per-phase progress tracking
 5. Module-by-module coverage increases
 
@@ -246,30 +246,45 @@ Pre-existing condition not introduced by current work. Fixing requires sustained
 ### per-phase Security Exception Review
 AI Assistant will automatically review this registry per-phase:
 
-1.  Check if exceptions are still valid
-2.  Verify mitigations are in place
-3.  Check for expired exceptions
-4.  Attempt to resolve exceptions
-5.  Update status
+1. Check if exceptions are still valid
+2. Verify mitigations are in place
+3. Check for expired exceptions
+4. Attempt to resolve exceptions
+5. Update status
 
 ### Exception Lifecycle
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Security Finding, Fix Immediately'}}%%
+
 graph LR
+
     A[Security Finding] --> B{Can Fix?}
+
     B -->|Yes| C[Fix Immediately]
+
     B -->|No| D[Document Exception]
+
     D --> E[Implement Mitigations]
+
     E --> F[Risk Acceptance]
+
     F --> G[per-phase Review]
+
     G --> H{Still Valid?}
+
     H -->|No| I[Resolve Exception]
+
     H -->|Yes| J{Expired?}
+
     J -->|Yes| K[Re-evaluate]
+
     J -->|No| G
+
     C --> L[Remove from Registry]
+
     I --> L
+
     K --> B
 ```
 
@@ -294,17 +309,17 @@ graph LR
 
 If a security finding MUST be temporarily accepted during an incident:
 
-1.  Create emergency exception with SEC-EMERGENCY-YYYY-MM-DD-NNN ID
-2.  Document minimum required information immediately
-3. ⏱️ Set 7-day expiration (maximum)
-4.  Full documentation required within 24 hours
-5.  Remediation plan required within 48 hours
+1. Create emergency exception with SEC-EMERGENCY-YYYY-MM-DD-NNN ID
+2. Document minimum required information immediately
+3. Set 7-day expiration (maximum)
+4. Full documentation required within 24 hours
+5. Remediation plan required within 48 hours
 
 **Emergency exceptions auto-expire and trigger alerts.**
 
 ---
 
-**Maintained by**: AI Assistant Security System  
-**Review Frequency**: per-phase  
-**Last Security Scan**: Pending (after PR merge)  
+**Maintained by**: AI Assistant Security System
+**Review Frequency**: per-phase
+**Last Security Scan**: Pending (after PR merge)
 **Next Scheduled Review**: 2026-07-13

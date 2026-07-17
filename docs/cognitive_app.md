@@ -181,7 +181,7 @@ VITE_CODEX_KEY=demo-key # API key
 - Component documentation
 - Build and deployment configuration
 
-️ **In Progress:**
+ **In Progress:**
 - Backend API implementation (0%)
 - Enhanced code pipeline (30%)
 - WebSocket real-time updates (0%)

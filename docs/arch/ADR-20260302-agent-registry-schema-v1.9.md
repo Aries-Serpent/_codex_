@@ -10,9 +10,9 @@
 
 The AGENT_REGISTRY.yaml (v0.2.1) tracked 128 agents with basic metadata
 (name, description, location, status) but lacked enforcement semantics.
-The Soft→GROUNDED conversion plan (docs/plans/Agentic_AI_System/soft_to_GROUNDED.md)
+The SoftGROUNDED conversion plan (docs/plans/Agentic_AI_System/soft_to_GROUNDED.md)
 required every agent to declare its enforcement posture so that CI gates,
-orchestrator routing, and the E→D transition FSM could query tier and
+orchestrator routing, and the ED transition FSM could query tier and
 handoff capabilities programmatically.
 
 Without structured enforcement metadata, the system could not distinguish
@@ -50,7 +50,7 @@ registered agents discovered during the frequency-sorted audit).
 |--------|-------|
 | Enforcement queryability | Gates need machine-readable tier data |
 | Orchestrator routing | `orchestrator_routing.py` selects agents by capability tags |
-| E→D FSM prerequisite | Condition C1 requires schema-validated registry |
+| ED FSM prerequisite | Condition C1 requires schema-validated registry |
 | Backward compatibility | Existing agent .md files remain unchanged |
 | Integrity guarantee | CODEX_MANIFEST.json prevents silent registry corruption |
 
@@ -79,9 +79,9 @@ registered agents discovered during the frequency-sorted audit).
 
 ### Risks & Mitigations
 - **Risk**: Schema drift between registry and JSON Schema.
-  **Mitigation**: `agent-registry-validation.yml` runs on every PR touching `.github/agents/`.
+ **Mitigation**: `agent-registry-validation.yml` runs on every PR touching `.github/agents/`.
 - **Risk**: Manual edits to large YAML introduce errors.
-  **Mitigation**: Convention to edit via Python scripts; `generate_manifest.py` regenerates integrity hashes.
+ **Mitigation**: Convention to edit via Python scripts; `generate_manifest.py` regenerates integrity hashes.
 
 ## 7. Provenance & Compliance
 - **Schema**: `.codex/schemas/AgentRegistrySchema.json` (draft-07)

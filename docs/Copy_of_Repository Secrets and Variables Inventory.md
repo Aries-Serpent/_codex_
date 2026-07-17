@@ -5,12 +5,12 @@
 > Generated: 2026-06-03T22:09:48Z | Author: mbaetiong
 ## Table of Contents
 
-- [️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)](#-consolidated-todo-list-all-open-items--moved-to-top-per-convention)
+- [ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)](#-consolidated-todo-list-all-open-items--moved-to-top-per-convention)
  - [ BLOCKING — Secrets Pass (Must complete before full agent operation)](#-blocking--secrets-pass-must-complete-before-full-agent-operation)
  - [ HIGH — Post-Variables Verification](#-high--post-variables-verification)
  - [ COMPLETED](#-completed)
  - [ DEFERRED / BLOCKED](#-deferred--blocked)
-- [ Blocker Status: API `403` → Secrets pending manual entry only](#-blocker-status-api-403--secrets-pending-manual-entry-only)
+- [ Blocker Status: API `403` Secrets pending manual entry only](#-blocker-status-api-403--secrets-pending-manual-entry-only)
 - [ TABLE OF CONTENTS](#-table-of-contents)
 - [ copilot-setup-steps.yml Verification](#-copilot-setup-stepsyml-verification)
  - [Variables Used by copilot-setup-steps.yml](#variables-used-by-copilot-setup-stepsyml)
@@ -86,7 +86,7 @@
  - [Organization Settings (requires org owner/admin)](#organization-settings-requires-org-owneradmin)
  - [Workflow & Validation](#workflow--validation)
  - [External Services (for secret/token generation)](#external-services-for-secrettoken-generation)
-- [▶️ What's Next (Post Variables-Only Pass)](#-whats-next-post-variables-only-pass)
+- [ What's Next (Post Variables-Only Pass)](#-whats-next-post-variables-only-pass)
 - [ Maintainer Execution Checklist](#-maintainer-execution-checklist)
  - [Phase 1: Critical Repository Setup COMPLETE](#phase-1-critical-repository-setup--complete)
  - [Phase 2: Environment Configuration COMPLETE (variables); Secrets pending](#phase-2-environment-configuration--complete-variables-secrets-pending)
@@ -105,7 +105,7 @@
 
 ---
 
-## ️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)
+## CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)
 
 > **Status as of 2026-06-04T17:43Z**: All repository variables (Actions, Agents, Environment) have been set by the maintainer. **Secrets have NOT yet been entered** — pending maintainer confirmation that all variables are visible before secrets pass begins.
 
@@ -163,7 +163,7 @@
 - [x] All 18 Agents Variables set
 - [x] All 13 environment variables in `Aries_Serpent_codex_` set
 - [x] JSON/complex variables provided with concrete initial values (see Copy/Paste Pack F)
-- [x] starlette bumped 0.50.0 → 1.0.1 in requirements/lock.txt (PR #4750)
+- [x] starlette bumped 0.50.0 1.0.1 in requirements/lock.txt (PR #4750)
 - [x] copilot-setup-steps.yml canonical `run: |` block restored (PR #4750)
 - [x] test_layer_boundaries.py aligned with canonical preload block form (PR #4750)
 
@@ -176,7 +176,7 @@
 
 ---
 
-## Blocker Status: API `403` → Secrets pending manual entry only
+## Blocker Status: API `403` Secrets pending manual entry only
 
 All variables have been implemented. The remaining blocker affects **secrets only** (not variables) — GitHub Actions secrets APIs return `403 Resource not accessible by integration`. Complete secrets in GitHub UI using the exact steps below.
 
@@ -228,16 +228,16 @@ The Copilot agent environment setup workflow (`.github/workflows/copilot-setup-s
 
 The following variables were previously missing from the inventory and have now been created by the maintainer:
 
-1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3` 
+1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3`
  - Rate limit for autonomous CI healer to prevent runaway healing loops
 
-2. **`CODEX_SWEEP_SKIP_MAIN`** = `true` 
+2. **`CODEX_SWEEP_SKIP_MAIN`** = `true`
  - Boolean flag to skip main branch in automated sweep operations
 
-3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true` 
+3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true`
  - Boolean flag to skip commits marked `[skip ci]` in healer operations
 
-4. **`COPILOT_AGENT_STATE`** = `idle` 
+4. **`COPILOT_AGENT_STATE`** = `idle`
  - Current agent state tracking (idle/active/blocked)
 
 ---
@@ -312,7 +312,7 @@ EMBEDDING_INDEX_AUTO_REBUILD=true
 WEBHOOK_RECEIVER_URL=https://bootstrap-pending-8765.app.github.dev/webhook/github
 ```
 
-> ️ **Action required**: Update `WEBHOOK_RECEIVER_URL` with the actual active Codespace name before running webhook-dependent workflows.
+> **Action required**: Update `WEBHOOK_RECEIVER_URL` with the actual active Codespace name before running webhook-dependent workflows.
 
 #### C) Copy/Paste block — Repository Secrets (Actions)
 
@@ -410,16 +410,16 @@ OPENAI_API_KEY=<link-repo-secret>
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
 
-Click path: **Settings** → **Secrets and variables** → **Actions** → **Variables** → **New repository variable**.
+Click path: **Settings** **Secrets and variables** **Actions** **Variables** **New repository variable**.
 
 ### Previously Missing Variables — Now Implemented
 
 All 4 previously-missing variables required by `copilot-setup-steps.yml` have been created:
 
-1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3` 
-2. **`CODEX_SWEEP_SKIP_MAIN`** = `true` 
-3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true` 
-4. **`COPILOT_AGENT_STATE`** = `idle` 
+1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3`
+2. **`CODEX_SWEEP_SKIP_MAIN`** = `true`
+3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true`
+4. **`COPILOT_AGENT_STATE`** = `idle`
 
 #### Update/Verify Existing Variables
 
@@ -443,7 +443,7 @@ All variables below are set. Review periodically for freshness (automated vars a
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 
-Click path: **Settings** → **Secrets and variables** → **Actions** → **Secrets** → **New repository secret**.
+Click path: **Settings** **Secrets and variables** **Actions** **Secrets** **New repository secret**.
 
 #### Step-by-Step Instructions
 
@@ -521,7 +521,7 @@ Click path: **Settings** → **Secrets and variables** → **Actions** → **Sec
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/environments
 
-Click path: **Settings** → **Environments** → **Aries_Serpent_codex_** (or create environment first if it doesn't exist).
+Click path: **Settings** **Environments** **Aries_Serpent_codex_** (or create environment first if it doesn't exist).
 
 #### Create Environment (if not exists)
 
@@ -652,9 +652,9 @@ Scroll to **Environment secrets** section:
 
 **Direct URL**: https://github.com/organizations/Aries-Serpent/settings/variables/actions
 
-Click path: **Org Settings** → **Secrets and variables** → **Actions** → **Variables** → **New organization variable**.
+Click path: **Org Settings** **Secrets and variables** **Actions** **Variables** **New organization variable**.
 
-️ **Note**: This section requires **organization owner** or **admin** privileges.
+ **Note**: This section requires **organization owner** or **admin** privileges.
 
 #### Step-by-Step Instructions
 
@@ -670,7 +670,7 @@ If you need to convert repository variables to organization-wide variables (to s
 1. Click **New organization variable**
 2. Name: *(copy from repository variable)*
 3. Value: *(copy from repository variable)*
-4. Repository access: Select **Selected repositories** → Search `_codex_` → Select → **Add**
+4. Repository access: Select **Selected repositories** Search `_codex_` Select **Add**
 5. Click **Add variable**
 6. Then delete the duplicate repository variable after confirming workflow compatibility
 
@@ -682,9 +682,9 @@ If you need to convert repository variables to organization-wide variables (to s
 
 **Direct URL**: https://github.com/organizations/Aries-Serpent/settings/secrets/actions
 
-Click path: **Org Settings** → **Secrets and variables** → **Actions** → **Secrets** → **New organization secret**.
+Click path: **Org Settings** **Secrets and variables** **Actions** **Secrets** **New organization secret**.
 
-️ **Note**: This section requires **organization owner** or **admin** privileges.
+ **Note**: This section requires **organization owner** or **admin** privileges.
 
 #### Step-by-Step Instructions
 
@@ -698,7 +698,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `CODEX_MASTER_KEY`
  - Secret: *(GitHub App installation token or PAT with `repo`, `workflow`, `admin:org`, `read:packages`, `write:packages` scopes)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Primary authentication token for all critical operations - used in token fallback chain
 
@@ -706,7 +706,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `CODEX_BACKUP_KEY`
  - Secret: *(Secondary GitHub App installation token or PAT with same scopes as CODEX_MASTER_KEY)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Fallback authentication token when CODEX_MASTER_KEY fails
 
@@ -714,7 +714,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `CODEX_ADMIN_KEY`
  - Secret: *(GitHub PAT with admin-level scopes for sensitive operations)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Administrative token for elevated privilege operations
 
@@ -724,7 +724,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `_GITHUB_APP_PRIVATE_KEY`
  - Secret: *(PEM-formatted private key from your GitHub App settings)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Required for GitHub App JWT signing and installation token generation
 
@@ -732,7 +732,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `_GITHUB_APP_ID`
  - Secret: *(Numeric App ID from GitHub App settings, e.g., `123456`)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: GitHub App identifier
 
@@ -740,7 +740,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `_GITHUB_APP_INSTALLATION_ID`
  - Secret: *(Numeric installation ID for this org, find at https://github.com/organizations/Aries-Serpent/settings/installations)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Links App to this organization installation
 
@@ -748,7 +748,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `_GITHUB_APP_CLIENT_SECRET`
  - Secret: *(Client secret from GitHub App OAuth settings)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: OAuth client secret for App authentication flows
 
@@ -758,7 +758,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `RAG_OPENAI_KEY`
  - Secret: *(OpenAI API key dedicated to RAG operations, starting with `sk-proj-` or `sk-`)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Dedicated OpenAI key for RAG/embedding operations (isolated from main OPENAI_API_KEY)
 
@@ -766,7 +766,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `HF_TOKEN`
  - Secret: *(Hugging Face user access token from https://huggingface.co/settings/tokens)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Access gated models and private datasets on Hugging Face
 
@@ -774,7 +774,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `PYPI_TOKEN`
  - Secret: *(PyPI API token from https://pypi.org/manage/account/token/, starting with `pypi-`)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Publish Python packages to PyPI
 
@@ -782,7 +782,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `NPM_TOKEN`
  - Secret: *(npm access token from https://www.npmjs.com/settings/*/tokens)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Publish Node.js packages to npm registry
 
@@ -790,7 +790,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `CODECOV_TOKEN`
  - Secret: *(Codecov upload token from https://codecov.io/gh/Aries-Serpent/_codex_/settings)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Upload coverage reports to Codecov
 
@@ -798,7 +798,7 @@ Click path: **Org Settings** → **Secrets and variables** → **Actions** → *
  - Click **New organization secret** (or update existing)
  - Name: `_CODEX_ACTION_RUNNER`
  - Secret: *(GitHub PAT for action runner operations)*
- - Repository access: **Selected repositories** → Search `_codex_` → Select → **Update selection**
+ - Repository access: **Selected repositories** Search `_codex_` Select **Update selection**
  - Click **Add secret** (or **Update secret**)
  - Purpose: Runner-specific authentication token
 
@@ -834,7 +834,7 @@ For each org secret:
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/variables/agents
 
-Click path: **Settings** → **Secrets and variables** → **Copilot** (or **Agents**) → **Variables** → **New variable**.
+Click path: **Settings** **Secrets and variables** **Copilot** (or **Agents**) **Variables** **New variable**.
 
 #### Step-by-Step Instructions
 
@@ -873,7 +873,7 @@ Create these variables one by one. Click **New variable** for each:
 
 5. **`COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS`**
  - Name: `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS`
- - Value: *(copy the current value from Repository Variables → Actions at https://github.com/Aries-Serpent/_codex_/settings/variables/actions — must be kept in sync)*
+ - Value: *(copy the current value from Repository Variables Actions at https://github.com/Aries-Serpent/_codex_/settings/variables/actions — must be kept in sync)*
  - Click **Add variable**
  - Purpose: Network allowlist must be synchronized between Actions and Agents settings
 
@@ -968,7 +968,7 @@ Create these variables one by one. Click **New variable** for each:
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
 
-Click path: **Settings** → **Secrets and variables** → **Copilot** (or **Agents**) → **Secrets** → **New secret**.
+Click path: **Settings** **Secrets and variables** **Copilot** (or **Agents**) **Secrets** **New secret**.
 
 #### Step-by-Step Instructions
 
@@ -977,7 +977,7 @@ Click path: **Settings** → **Secrets and variables** → **Copilot** (or **Age
 3. Click the **Secrets** sub-tab
 4. For each secret below, click **New secret**
 
-️ **IMPORTANT**: Most Agent Secrets are **organization secrets** that need to be **granted access** to the Copilot/Agents scope for this repository. You do NOT re-create them here - you **grant repository access** from the organization settings.
+ **IMPORTANT**: Most Agent Secrets are **organization secrets** that need to be **granted access** to the Copilot/Agents scope for this repository. You do NOT re-create them here - you **grant repository access** from the organization settings.
 
 #### MUST-HAVE Agent Secrets (Priority: CRITICAL)
 
@@ -993,7 +993,7 @@ Click path: **Settings** → **Secrets and variables** → **Copilot** (or **Age
  - Search for and select `Aries-Serpent/_codex_`
  - Click **Save**
  - **THEN** return to: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
- - Click **New secret** → Name: `CODEX_MASTER_KEY` → **Add secret from organization secrets** → Select `CODEX_MASTER_KEY` → **Add secret**
+ - Click **New secret** Name: `CODEX_MASTER_KEY` **Add secret from organization secrets** Select `CODEX_MASTER_KEY` **Add secret**
 
 2. **`CODEX_BACKUP_KEY`** ⭐ **CRITICAL**
  - Same process as CODEX_MASTER_KEY:
@@ -1031,7 +1031,7 @@ Click path: **Settings** → **Secrets and variables** → **Copilot** (or **Age
  - Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
  - Note the current value indicator
  - **Then** at https://github.com/Aries-Serpent/_codex_/settings/secrets/agents:
- - Click **New secret** → Name: `OPENAI_API_KEY` → **Add from repository secrets** or **Create new**
+ - Click **New secret** Name: `OPENAI_API_KEY` **Add from repository secrets** or **Create new**
  - If creating new, paste the same value used in Actions secrets
  - Click **Add secret**
 
@@ -1060,7 +1060,7 @@ After adding all secrets, verify at https://github.com/Aries-Serpent/_codex_/set
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/actions/workflows/copilot-setup-steps.yml
 
-Click path: **Actions** → **Copilot Setup Steps** → **Run workflow** dropdown → **Run workflow**.
+Click path: **Actions** **Copilot Setup Steps** **Run workflow** dropdown **Run workflow**.
 
 #### Validation Checklist
 
@@ -1092,11 +1092,11 @@ After completing all above sections, validate the configuration:
  - `GPU_OPT not set` (expected in CPU-only runners)
 
 5. **If workflow fails**:
- - Click on the failed job → expand failed step
+ - Click on the failed job expand failed step
  - Check error message:
- - If `variable not found` → go back to section 1 or 6 and create the missing variable
- - If `secret not found` → go back to section 2, 3, 4, 5, or 7 and add the missing secret
- - If `permission denied` → check organization secret repository access grants
+ - If `variable not found` go back to section 1 or 6 and create the missing variable
+ - If `secret not found` go back to section 2, 3, 4, 5, or 7 and add the missing secret
+ - If `permission denied` check organization secret repository access grants
  - Fix the issue, then re-run the workflow
 
 6. **Success Criteria**:
@@ -1148,7 +1148,7 @@ After completing all above sections, validate the configuration:
 | `COPILOT_ACTIVE_SESSION` | UPDATE (automated) | current session tuple | Must reflect active session state. |
 | `COPILOT_AGENT_PREFLIGHT_RULES` | VERIFY JSON freshness | version/date + mandatory rules | Critical governance source for agent operations. |
 | `COPILOT_WEC_SELECTION_MATRIX` | VERIFY JSON freshness | workflow mapping current to repo reality | Prevent WEC drift and checklist mismatch. |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | VERIFY + SYNC | `count=0` template mapping gaps (normalized `auto-approve-workflows.yml` → `auto-approve-workflows`) | Drift was remediated in `_WEC_ITEMS`; keep the repo variable and agent settings copy aligned to the current zero-drift state. |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | VERIFY + SYNC | `count=0` template mapping gaps (normalized `auto-approve-workflows.yml` `auto-approve-workflows`) | Drift was remediated in `_WEC_ITEMS`; keep the repo variable and agent settings copy aligned to the current zero-drift state. |
 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | REVIEW/PRUNE/UPDATE | approved domains only | Large allowlist should be periodically pruned and normalized. |
 | `COPILOT_RUNNER_PROFILE` | VERIFY | unset or valid runner label; workflow fallback is `ubuntu-latest` | `copilot-setup-steps.yml` reads this variable for larger-runner overrides, but now falls back safely to `ubuntu-latest` when the variable is absent. |
 
@@ -1209,7 +1209,7 @@ After completing all above sections, validate the configuration:
 
 ## Maintainer Required Additions — Agent Variables and Secrets
 
-> Target UI for variables: https://github.com/Aries-Serpent/_codex_/settings/variables/agents 
+> Target UI for variables: https://github.com/Aries-Serpent/_codex_/settings/variables/agents
 > Target UI for secrets: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
 
 ### Agent Variables (Copilot Agent Settings)
@@ -1316,7 +1316,7 @@ Copy this section for fast access to all GitHub settings pages:
 
 ---
 
-## ▶️ What's Next (Post Variables-Only Pass)
+## What's Next (Post Variables-Only Pass)
 
 > **Status 2026-06-04T17:43Z**: All non-secret variables are implemented. See consolidated TODO at the top of this document.
 
@@ -1374,7 +1374,7 @@ Use this checklist to systematically configure all secrets and variables:
 ### Phase 5: Validation
 - [ ] **5.1**: Manual workflow trigger test (see section 8)
  - Navigate to: https://github.com/Aries-Serpent/_codex_/actions/workflows/copilot-setup-steps.yml
- - Click **Run workflow** → Select `main` → **Run workflow**
+ - Click **Run workflow** Select `main` **Run workflow**
  - Wait for completion (~2-5 minutes)
  - Verify green checkmark and no missing variable/secret errors
 - [ ] **5.2**: Check all 7 settings URLs and verify all required names present:

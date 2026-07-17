@@ -1,11 +1,11 @@
-#  COPILOT AGENT DIRECTIVE TO IMPLEMENT:  Aries-Serpent/_codex_ Complete Implementation
+# COPILOT AGENT DIRECTIVE TO IMPLEMENT: Aries-Serpent/_codex_ Complete Implementation
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
-> Generated:  2026-06-22T12:30:00Z | Author: mbaetiong | Target: GitHub Copilot Agent
-> Compiled:  Unified context for autonomous agent implementation
+> Generated: 2026-06-22T12:30:00Z | Author: mbaetiong | Target: GitHub Copilot Agent
+> Compiled: Unified context for autonomous agent implementation
 
 ---
 
@@ -70,7 +70,7 @@
 
 ## Authorization Statement
 
-**Copilot Agent**:  You are authorized to operate autonomously on `Aries-Serpent/_codex_` (repo ID: `1040037790`) with the following scope:
+**Copilot Agent**: You are authorized to operate autonomously on `Aries-Serpent/_codex_` (repo ID: `1040037790`) with the following scope:
 
 | Permission | Scope | Constraints |
 |------------|-------|-------------|
@@ -86,33 +86,33 @@
 
 | Principle | Applied To | Optimization Result |
 |-----------|-----------|---------------------|
-| ️ **Path** | Dependency resolution | 10-100x faster installs (UV vs pip) |
-|  **Fields** | Cache warming | Zero cold-start penalty for 7 iteration window |
-| ️ **Patterns** | Alert grouping | 60% reduction in fix PRs via batching |
-|  **Redundancy** | Multi-tier caching | 95% cache hit rate across environments |
-| ️ **Balance** | Compression level | zstd-19:  3x size reduction, <5% time overhead |
+| **Path** | Dependency resolution | 10-100x faster installs (UV vs pip) |
+| **Fields** | Cache warming | Zero cold-start penalty for 7 iteration window |
+| **Patterns** | Alert grouping | 60% reduction in fix PRs via batching |
+| **Redundancy** | Multi-tier caching | 95% cache hit rate across environments |
+| **Balance** | Compression level | zstd-19: 3x size reduction, <5% time overhead |
 
 ## Implementation-Specific Applications
 
 ### Stream A (Caching): Path Optimization Dominant
-- **Primary**:  Shortest path to dependencies (UV → CDN, no local cache needed)
+- **Primary**: Shortest path to dependencies (UV CDN, no local cache needed)
 - **Secondary**: Field propagation (per-phase warmer maintains cache field)
-- **Tertiary**:  Redundancy (3-tier fallback prevents cache misses)
+- **Tertiary**: Redundancy (3-tier fallback prevents cache misses)
 
 ### Stream B (OpenAI): Balance Optimization Dominant
-- **Primary**: Cost ↔ Performance (model selection algorithm)
-- **Secondary**: Pattern recognition (task type → model capability mapping)
+- **Primary**: Cost Performance (model selection algorithm)
+- **Secondary**: Pattern recognition (task type model capability mapping)
 - **Tertiary**: Fields (context propagation to all agents)
 
 ### Stream C (Semgrep): Pattern Recognition Dominant
 - **Primary**: Alert clustering by fix type (enables batch codemods)
 - **Secondary**: Path optimization (automated fixes vs manual review decision tree)
-- **Tertiary**: Balance (fix thoroughness ↔ developer velocity)
+- **Tertiary**: Balance (fix thoroughness developer velocity)
 
 ### Stream D (Code Scanning): Redundancy Optimization Dominant
-- **Primary**:  Backup preservation (advanced config saved to 2 locations)
+- **Primary**: Backup preservation (advanced config saved to 2 locations)
 - **Secondary**: Fields (org-level policy propagates to all repos)
-- **Tertiary**: Balance (org compliance ↔ custom query requirements)
+- **Tertiary**: Balance (org compliance custom query requirements)
 
 
 ## Repository Context
@@ -159,14 +159,14 @@ secrets_available:
 
 | Stream | Priority | Scope | Dependencies |
 |--------|----------|-------|--------------|
-| **A:  Caching** |  Critical | CI/CD optimization | None |
-| **B: OpenAI Integration** |  Critical | Agent runtime | Stream A (optional) |
-| **C: Semgrep Remediation** |  Critical | Security fixes | Stream D |
-| **D:  Code Scanning** |  Critical | Org compliance | None |
+| **A: Caching** | Critical | CI/CD optimization | None |
+| **B: OpenAI Integration** | Critical | Agent runtime | Stream A (optional) |
+| **C: Semgrep Remediation** | Critical | Security fixes | Stream D |
+| **D: Code Scanning** | Critical | Org compliance | None |
 
 ---
 
-# STREAM A:  COST-OPTIMIZED CACHING ARCHITECTURE
+# STREAM A: COST-OPTIMIZED CACHING ARCHITECTURE
 
 ## Objective
 
@@ -211,7 +211,7 @@ mypy>=1.10
 
 ## Task A. 1.3: Create Dev Requirements
 
-**File**:  `requirements-dev.txt`
+**File**: `requirements-dev.txt`
 
 ```text
 # Development dependencies
@@ -388,7 +388,7 @@ runs:
 
 ### Task A. 4.1: Create Multi-Stage Dockerfile
 
-**File**:  `Dockerfile.ci`
+**File**: `Dockerfile.ci`
 
 ```dockerfile
 # =============================================================================
@@ -452,7 +452,7 @@ CMD ["python", "-m", "pytest", "tests/"]
 
 ## Task A.4.2: Create Container Build Workflow
 
-**File**:  `.github/workflows/build-container-cache.yml`
+**File**: `.github/workflows/build-container-cache.yml`
 
 ```yaml
 name: Build Container Cache
@@ -657,7 +657,7 @@ jobs:
 
 ### Task A.6.1: Create per-phase Cache Warmer
 
-**File**:  `.github/workflows/cache-warmer.yml`
+**File**: `.github/workflows/cache-warmer.yml`
 
 ```yaml
 name: per-phase Cache Warmer
@@ -717,7 +717,7 @@ jobs:
 
 ### Task A. 7.1: Create Secure PR Workflow
 
-**File**:  `.github/workflows/pr-checks.yml`
+**File**: `.github/workflows/pr-checks.yml`
 
 ```yaml
 name: PR Checks (Isolated Cache)
@@ -775,7 +775,7 @@ jobs:
 
 ---
 
-# STREAM B:  OPENAI CUSTOM MODELS INTEGRATION
+# STREAM B: OPENAI CUSTOM MODELS INTEGRATION
 
 ## Objective
 
@@ -1134,7 +1134,7 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
 
 ### Task B. 2.1: Create Agent Runner
 
-**File**:  `src/agents/autonomous_runner.py`
+**File**: `src/agents/autonomous_runner.py`
 
 ```python
 """
@@ -1278,7 +1278,7 @@ if __name__ == "__main__":
 
 ### Task B. 3.1: Create Agent Workflow
 
-**File**:  `.github/workflows/agent-runtime.yml`
+**File**: `.github/workflows/agent-runtime.yml`
 
 ```yaml
 name:  Autonomous Agent Runtime
@@ -1367,8 +1367,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ -f ".agents/reports/"*. json ]; then
             echo "### Report" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            cat .agents/reports/*.json >> $GITHUB_STEP_SUMMARY
+ echo '```json' >> $GITHUB_STEP_SUMMARY
+ cat .agents/reports/*.json >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 ```
@@ -1612,7 +1612,7 @@ Systematically resolve all 1,665 Semgrep code scanning alerts through:
 
 ### Task C. 1.1: Create Analysis Script
 
-**File**:  `scripts/security/export_semgrep_alerts. py`
+**File**: `scripts/security/export_semgrep_alerts. py`
 
 ```python
 """
@@ -2108,7 +2108,7 @@ if __name__ == "__main__":
     main()
 ```
 
-## Phase C.3:  Automated Codemods
+## Phase C.3: Automated Codemods
 
 ### Task C.3.1: Create Codemod for Subprocess Safety
 
@@ -2981,7 +2981,7 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
 
 1. **Create inline suppression** in code:
 ```python
-# nosemgrep:  rule-id
+# nosemgrep: rule-id
 # SECURITY REVIEW: Explanation of why this is safe
 # Reviewed by: @username on YYYY-MM-DD
 code_here()
@@ -3009,7 +3009,7 @@ code_here()
 
 ### Task C. 6.1: Create Security Scan Workflow
 
-**File**:  `.github/workflows/security-scan.yml`
+**File**: `.github/workflows/security-scan.yml`
 
 ```yaml
 name: Security Scanning
@@ -3195,14 +3195,14 @@ The `Aries-Serpent` organization has enabled the "GitHub recommended (default) c
 To restore advanced CodeQL configuration:
 
 1. Check out the backup branch:
-   ```bash
-   git checkout backup/codeql-advanced-YYYYMMDD-XXXXXXX
+ ```bash
+ git checkout backup/codeql-advanced-YYYYMMDD-XXXXXXX
      ```
 
 2. Copy files back:
-   ```bash
-   git checkout main
-   git checkout backup/codeql-advanced-YYYYMMDD-XXXXXXX -- .github/workflows/codeql*. yml
+ ```bash
+ git checkout main
+ git checkout backup/codeql-advanced-YYYYMMDD-XXXXXXX -- .github/workflows/codeql*. yml
     ```
 
 3. Request exclusion from org-level defaults:
@@ -3389,11 +3389,11 @@ jobs:
 If custom configuration is required:
 
 1. **Restore from backup**:
-   ```bash
-   git checkout main
-   git checkout backup/codeql-advanced-YYYYMMDD -- .github/workflows/
-   git commit -m "restore:  advanced CodeQL configuration"
-   git push
+ ```bash
+ git checkout main
+ git checkout backup/codeql-advanced-YYYYMMDD -- .github/workflows/
+ git commit -m "restore: advanced CodeQL configuration"
+ git push
      ```
 
 2. **Request org exclusion**:
@@ -3419,7 +3419,7 @@ If the repository had custom CodeQL queries:
 
 # UNIFIED EXECUTION SEQUENCE
 
-## Copilot Agent:  Execute in This Order
+## Copilot Agent: Execute in This Order
 
 ```yaml
 # Master Execution Plan for Aries-Serpent/_codex_
@@ -3615,7 +3615,7 @@ execution_sequence:
 
 # MASTER VALIDATION CHECKLIST
 
-## Copilot Agent:  Verify All Items Before Completion
+## Copilot Agent: Verify All Items Before Completion
 
 ### Stream A: Caching Architecture
 - [ ] `requirements-minimal.txt` exists and installs successfully
@@ -3638,7 +3638,7 @@ execution_sequence:
 - [ ] Audit logging captures executions
 - [ ] Cost estimation works correctly
 
-### Stream C:  Semgrep Remediation
+### Stream C: Semgrep Remediation
 - [ ] `.github/security/semgrep-alerts-export.json` contains all alerts
 - [ ] `.github/security/prioritized-alerts. csv` has risk scores
 - [ ] `docs/security/semgrep-analysis-report.md` is generated
@@ -3650,7 +3650,7 @@ execution_sequence:
 - [ ] P0 alert count reduced by > 50%
 
 ### Stream D: Code Scanning
-- [ ] Backup branch exists:  `backup/codeql-advanced-*`
+- [ ] Backup branch exists: `backup/codeql-advanced-*`
 - [ ] Advanced workflows moved to `.github/disabled/`
 - [ ] `.github/workflows/codeql-analysis. yml` exists
 - [ ] CodeQL workflow completes successfully
@@ -3667,7 +3667,7 @@ execution_sequence:
 
 ---
 
-##  COPILOT AGENT:  BEGIN EXECUTION
+## COPILOT AGENT: BEGIN EXECUTION
 
 **Authorization Confirmed**: You are authorized to execute this complete implementation plan on `Aries-Serpent/_codex_`.
 

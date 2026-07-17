@@ -2,21 +2,21 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Roles**: [Audit Orchestrator], [Capability Cartographer]  
-**Energy**: 5  
-**Version**: 1.4.0  
+**Roles**: [Audit Orchestrator], [Capability Cartographer]
+**Energy**: 5
+**Version**: 1.4.0
 **Last Updated**: 2026-06-22
 
-> **NOTE**: Full explanations in:  
-> - `Traversal_Workflow.md` (flow & formulas)  
-> - `Usage_Guide.md` (commands & ops)  
+> **NOTE**: Full explanations in:
+> - `Traversal_Workflow.md` (flow & formulas)
+> - `Usage_Guide.md` (commands & ops)
 > - `docs/audit/` (v0.2.1 feature guides)
 
 ---
 
 ## 1. Purpose
 
-Deterministic audit pipeline: harvest → facet → extract → score → gap → render → manifest (integrity chain).
+Deterministic audit pipeline: harvest facet extract score gap render manifest (integrity chain).
 
 **NEW in v0.2.1**:
 - Coverage augmentation for accurate test scoring
@@ -216,7 +216,7 @@ def detect(file_index: dict) -> dict:
     }
 ```
 
-**Run**: `python scripts/space_traversal/audit_runner.py stage S3`  
+**Run**: `python scripts/space_traversal/audit_runner.py stage S3`
 **Verify**: Check `capabilities_raw.json` and `capabilities_scored.json`
 
 ---
@@ -225,13 +225,13 @@ def detect(file_index: dict) -> dict:
 
 | Field | Description | v0.2.1 |
 |-------|-------------|--------|
-| repo_root_sha | SHA256(sorted file names) |  |
-| artifacts[].sha | Per-JSON hash |  |
-| template_hash | Concatenated Jinja hash |  |
-| weights | Effective normalized weights |  |
+| repo_root_sha | SHA256(sorted file names) | |
+| artifacts[].sha | Per-JSON hash | |
+| template_hash | Concatenated Jinja hash | |
+| weights | Effective normalized weights | |
 | coverage_enabled | Coverage augmentation status | **NEW** |
 | dup_heuristic | Duplication method used | **NEW** |
-| warnings | Weight or stage notes |  |
+| warnings | Weight or stage notes | |
 
 ---
 
@@ -249,12 +249,12 @@ def detect(file_index: dict) -> dict:
 
 ## 13. Determinism Check
 
-**Expectation**: Run twice unchanged → identical:
+**Expectation**: Run twice unchanged identical:
 - `repo_root_sha`
 - `capabilities_scored.json` (ignoring timestamp)
 - `coverage_map.json` (if coverage enabled)
 
-**Mismatch** ⇒ Inspect:
+**Mismatch** Inspect:
 - Detector ordering
 - File filters
 - Token-similarity randomness (should be deterministic)
@@ -292,9 +292,9 @@ def detect(file_index: dict) -> dict:
 ## 16. v0.2.1 Migration
 
 **From v1.3.x**:
--  Fully backward compatible
--  New features are opt-in
--  No breaking changes
+- Fully backward compatible
+- New features are opt-in
+- No breaking changes
 
 **Enable v0.2.1 features**:
 1. Add coverage config to workflow.yaml
@@ -417,17 +417,17 @@ make space-audit
 ## Summary
 
 v0.2.1 enhances the audit pipeline with:
--  **Coverage augmentation** for accurate test scores
--  **Token-similarity** for content-based duplicate detection
--  **Enhanced reporting** with daily status updates
--  **Backward compatibility** with v1.3.x
--  **Comprehensive documentation** (6 new guides)
+- **Coverage augmentation** for accurate test scores
+- **Token-similarity** for content-based duplicate detection
+- **Enhanced reporting** with daily status updates
+- **Backward compatibility** with v1.3.x
+- **Comprehensive documentation** (6 new guides)
 
 **All features are opt-in and fully configurable.**
 
 ---
 
-**Version**: 1.4.0  
-**Maintained By**: Audit Pipeline Team  
-**Last Updated**: 2026-06-22  
+**Version**: 1.4.0
+**Maintained By**: Audit Pipeline Team
+**Last Updated**: 2026-06-22
 **Questions**: See documentation in `docs/audit/` or create an issue

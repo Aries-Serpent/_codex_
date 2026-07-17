@@ -92,17 +92,17 @@ gh workflow run root-org-validation.yml \
 ## Artifacts
 
 ### validation-baseline
-**Retention:** 7 iterations  
+**Retention:** 7 iterations
 **Content:** Baseline metrics from pre-validation
 **Format:** Text file with timestamped results
 
 ### reference-validation-report
-**Retention:** 30 iterations  
+**Retention:** 30 iterations
 **Content:** Reference check results
 **Format:** Markdown report
 
 ### root-org-validation-report
-**Retention:** 90 iterations  
+**Retention:** 90 iterations
 **Content:** Complete validation report
 **Format:** Markdown with all job results
 
@@ -323,7 +323,7 @@ For issues:
 
 ---
 
-**Version:** 1.0.0  
-**Created:** 2026-01-21  
-**Status:**  Production Ready  
+**Version:** 1.0.0
+**Created:** 2026-01-21
+**Status:** Production Ready
 **Integration:** root-org scripts, custom agents

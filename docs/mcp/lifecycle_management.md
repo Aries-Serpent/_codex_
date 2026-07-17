@@ -11,7 +11,7 @@ The MCP Server Lifecycle Management system provides comprehensive startup, shutd
 ## Purpose
 
 - **Initialization**: Properly initialize resources during startup
-- **Cleanup**: Gracefully shutdown and release resources  
+- **Cleanup**: Gracefully shutdown and release resources
 - **Health Monitoring**: Expose health and readiness status
 - **Reliability**: Handle failures gracefully with rollback
 
@@ -19,18 +19,29 @@ The MCP Server Lifecycle Management system provides comprehensive startup, shutd
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
+
     [*] --> Initializing: Server Start
+
     Initializing --> Starting: Resources Allocated
+
     Starting --> Ready: Startup Hooks Complete
+
     Ready --> Serving: Health Check Pass
+
     Serving --> Draining: Shutdown Signal
+
     Draining --> Stopping: Connections Drained
+
     Stopping --> Stopped: Shutdown Hooks Complete
+
     Stopped --> [*]: Server Exit
 
     Starting --> Failed: Startup Error
+
     Serving --> Failed: Critical Error
+
     Failed --> Stopping: Force Shutdown
 ```
 
@@ -589,15 +600,15 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Provide robust server lifecycle management with startup/shutdown hooks, health monitoring, and graceful degradation capabilities.
 
 **Energy Level:** 5/5 (Critical - Server Reliability)
 
-**Operational Status:**  **ACTIVE** - Production-ready with rollback support
+**Operational Status:** **ACTIVE** - Production-ready with rollback support
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] LifecycleManager implementation
 - [x] Startup hook registration and execution
@@ -619,33 +630,33 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - Prometheus client (for metrics)
 - Signal handling support
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Startup Time** | <30s | 15-20s |  |
-| **Shutdown Time** | <10s | 5-8s |  |
-| **Startup Success Rate** | >99.5% | 99.8% |  |
-| **Health Check Latency** | <50ms | 20-30ms |  |
-| **Graceful Shutdown Rate** | 100% | 100% |  |
-| **Hook Timeout Rate** | <0.1% | 0.05% |  |
-| **Test Coverage** | >95% | 98% |  |
+| **Startup Time** | <30s | 15-20s | |
+| **Shutdown Time** | <10s | 5-8s | |
+| **Startup Success Rate** | >99.5% | 99.8% | |
+| **Health Check Latency** | <50ms | 20-30ms | |
+| **Graceful Shutdown Rate** | 100% | 100% | |
+| **Hook Timeout Rate** | <0.1% | 0.05% | |
+| **Test Coverage** | >95% | 98% | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Lifecycle Flow:**
-1. Initializing → Starting (execute startup hooks)
-2. Starting → Ready (all hooks complete)
-3. Ready → Serving (accept requests)
-4. Serving → Draining (shutdown signal)
-5. Draining → Stopping (execute shutdown hooks)
-6. Stopping → Stopped (server exit)
+1. Initializing Starting (execute startup hooks)
+2. Starting Ready (all hooks complete)
+3. Ready Serving (accept requests)
+4. Serving Draining (shutdown signal)
+5. Draining Stopping (execute shutdown hooks)
+6. Stopping Stopped (server exit)
 
 **Error Path:**
-- Starting → Failed (critical hook error) → Stopping → Stopped
+- Starting Failed (critical hook error) Stopping Stopped
 
-### Fields 
+### Fields
 **State Management:**
 - **Lifecycle state**: Current phase (8 states)
 - **Hook registry**: Startup/shutdown functions
@@ -657,7 +668,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - Hook-driven (success/failure)
 - Time-driven (grace period, timeouts)
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Log all state transitions
 - Track hook execution times
@@ -670,30 +681,30 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - LIFO shutdown (reverse order cleanup)
 - Graceful degradation
 
-### Redundancy 
+### Redundancy
 **Failure Modes:**
-1. **Critical startup hook fails** → Rollback, abort startup
-2. **Non-critical startup hook fails** → Log warning, continue
-3. **Shutdown hook timeout** → Log warning, continue
-4. **Health check fails** → Mark degraded, continue serving
+1. **Critical startup hook fails** Rollback, abort startup
+2. **Non-critical startup hook fails** Log warning, continue
+3. **Shutdown hook timeout** Log warning, continue
+4. **Health check fails** Mark degraded, continue serving
 
 **Recovery:**
 - Automatic rollback on startup failure
 - Continue shutdown even if hooks fail
 - Health checks indicate degraded but operational
 
-### Balance ️
+### Balance
 **Reliability vs Speed:**
--  Timeouts prevent hung startup/shutdown
-- ️ Trade-off: Fast startup vs thorough initialization
--  Graceful degradation (serve with failed health checks)
+- Timeouts prevent hung startup/shutdown
+- Trade-off: Fast startup vs thorough initialization
+- Graceful degradation (serve with failed health checks)
 
 **Flexibility vs Safety:**
 - Critical hooks block startup (safety)
 - Non-critical hooks allow partial startup (flexibility)
 - LIFO shutdown ensures dependencies cleaned correctly
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -703,7 +714,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 | **P1** | State machine | 10% | Lifecycle tracking |
 | **P2** | Rollback mechanism | 5% | Failure recovery |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

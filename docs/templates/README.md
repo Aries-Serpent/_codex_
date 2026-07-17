@@ -19,7 +19,7 @@ The `docs/templates/` directory curates reusable runbooks that combine execution
 ## When to Use Each Template
 
 ### Iteration Plan Template
-Use for feature implementations, bug fixes, refactoring, security remediation, or infrastructure improvements that span multiple iterations. The template emphasizes iteration-based workflow (not week-based), physics principle alignment (️️️), pre-commit checkpoints, and flexible timelines. See `docs/TERMINOLOGY_MIGRATION.md` for terminology guidance.
+Use for feature implementations, bug fixes, refactoring, security remediation, or infrastructure improvements that span multiple iterations. The template emphasizes iteration-based workflow (not week-based), physics principle alignment (), pre-commit checkpoints, and flexible timelines. See `docs/TERMINOLOGY_MIGRATION.md` for terminology guidance.
 
 ### Migration — Python File Relocation
 Use when reorganizing modules, extracting packages, or introducing aliases that must remain compatible across integrations. The template includes compatibility shims, release checklist items, and rollback guidance.

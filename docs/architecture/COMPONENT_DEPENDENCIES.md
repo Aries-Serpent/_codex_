@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Total Components**: 57 modules across 5 layers
 
 ---
@@ -12,6 +12,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Component Dependencies<br/>Module Relationships'}, 'theme': 'base'}}%%
+
 graph TB
     subgraph L1["Layer 1: Interface"]
         CLI["cli"]
@@ -47,44 +48,74 @@ graph TB
 
     %% Interface depends on ML Platform
     CLI --> TRAIN
+
     CLI --> EVAL
+
     CLI --> SERVE
+
     API --> TRAIN
+
     API --> EVAL
+
     API --> SERVE
 
     %% ML Platform depends on Data Pipeline
     TRAIN --> INGEST
+
     TRAIN --> RAG
+
     TRAIN --> TRANSFORM
+
     EVAL --> RAG
+
     EVAL --> TRANSFORM
+
     SERVE --> RAG
 
     %% Data Pipeline depends on Infrastructure
     INGEST --> CONFIG
+
     INGEST --> DB
+
     INGEST --> LOG
+
     RAG --> CONFIG
+
     RAG --> DB
+
     RAG --> CACHE
+
     RAG --> LOG
+
     TRANSFORM --> CONFIG
+
     TRANSFORM --> LOG
 
     %% ML Platform depends on Infrastructure
     TRAIN --> CONFIG
+
     TRAIN --> DB
+
     TRAIN --> CACHE
+
     TRAIN --> MONITOR
+
     TRAIN --> LOG
+
     EVAL --> CONFIG
+
     EVAL --> DB
+
     EVAL --> MONITOR
+
     EVAL --> LOG
+
     SERVE --> CONFIG
+
     SERVE --> CACHE
+
     SERVE --> MONITOR
+
     SERVE --> LOG
 
     %% Integration depends on everything
@@ -96,7 +127,9 @@ graph TB
 
     %% Infrastructure internal deps
     LOG --> DB
+
     MONITOR --> LOG
+
     CACHE --> CONFIG
 
     %% Styling
@@ -132,31 +165,31 @@ graph TB
 ### Core Dependencies (Foundation)
 
 **Layer 4 (Infrastructure)** - No external dependencies
-- `config` ← Hydra, OmegaConf
-- `db` ← SQLite/PostgreSQL
-- `cache` ← Redis/Memcached
-- `monitor` ← Prometheus, Grafana
-- `logging` ← Python logging
+- `config` Hydra, OmegaConf
+- `db` SQLite/PostgreSQL
+- `cache` Redis/Memcached
+- `monitor` Prometheus, Grafana
+- `logging` Python logging
 
 **Layer 3 (Data)** - Depends on Layer 4
-- `ingest` → config, db, logging
-- `rag` → config, db, cache, logging
-- `transform` → config, logging
+- `ingest` config, db, logging
+- `rag` config, db, cache, logging
+- `transform` config, logging
 
 **Layer 2 (ML)** - Depends on Layer 3 & 4
-- `train` → ingest, rag, transform, config, db, cache, monitor, logging
-- `eval` → rag, transform, config, db, monitor, logging
-- `serve` → rag, config, cache, monitor, logging
+- `train` ingest, rag, transform, config, db, cache, monitor, logging
+- `eval` rag, transform, config, db, monitor, logging
+- `serve` rag, config, cache, monitor, logging
 
 **Layer 1 (Interface)** - Depends on Layer 2
-- `cli` → train, eval, serve
-- `api` → train, eval, serve
+- `cli` train, eval, serve
+- `api` train, eval, serve
 
 **Layer 5 (Integration)** - Cross-cutting
-- `github` → monitor, any layer (async)
-- `zendesk` → monitor, logging (async)
-- `cloud` → db, cache (backup)
-- `auth` → api, config (security)
+- `github` monitor, any layer (async)
+- `zendesk` monitor, logging (async)
+- `cloud` db, cache (backup)
+- `auth` api, config (security)
 
 ---
 
@@ -331,18 +364,18 @@ CLI Command
 ```
 
 **Slowest I/O dependencies**:
-1. `ingest` → `db` (file I/O + SQL queries)
-2. `rag` → `db` (large vector searches)
-3. `serve` → `cache` (fallback if cache miss)
-4. `monitor` → `db` (append-only logs)
+1. `ingest` `db` (file I/O + SQL queries)
+2. `rag` `db` (large vector searches)
+3. `serve` `cache` (fallback if cache miss)
+4. `monitor` `db` (append-only logs)
 
 ---
 
 ## Next Steps
 
-- 👉 See [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) for layer structure
-- 👉 See module-specific docs for detailed component architectures
-- 👉 Review source code for performance optimization patterns
+- See [5-Layer Architecture](../architecture/5_LAYER_ARCHITECTURE.md) for layer structure
+- See module-specific docs for detailed component architectures
+- Review source code for performance optimization patterns
 
 ---
 

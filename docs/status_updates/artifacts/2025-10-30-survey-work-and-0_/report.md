@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Ref:** branch `work`  commit `63694ea8`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-0_`
+**Ref:** branch `work` commit `63694ea8` • **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-0_`
 
 ---
 
@@ -39,7 +39,7 @@ text
 
 ### >>> FILE: configs/training/reasoning/curricula/starter.yaml@work
 text
-(phase_schedule: warmup → first_principles → challenge)
+(phase_schedule: warmup first_principles challenge)
 
 ### >>> FILE: configs/evaluation/reasoning/base.yaml@work
 text

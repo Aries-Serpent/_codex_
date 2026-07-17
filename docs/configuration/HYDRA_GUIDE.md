@@ -3,14 +3,14 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
- Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## Purpose
 Document deterministic, offline-friendly configuration practices compatible with Hydra/OmegaConf patterns while remaining robust without optional dependencies.
 
 ## Principles
 - Deterministic: Avoid random ordering; prefer explicit defaults.
-- Layered: base.yaml → env/cli overrides → experiment.yaml
+- Layered: base.yaml env/cli overrides experiment.yaml
 - Offline: No network-bound resolvers; local file references only.
 - Minimal Writes: Configs remain under `configs/`.
 
@@ -74,17 +74,17 @@ python -m codex_ml.cli.config trainer.seed=42 logging.level=WARNING
 
 The Typer-based `codex-ml` shim now mirrors Hydra defaults even when the CLI is
 invoked in an offline shell. When you pass `--config path/to/train.yaml` the
-command applies the same precedence order as Hydra (CLI overrides → config →
+command applies the same precedence order as Hydra (CLI overrides config
 built-in defaults). Regression tests under
 `tests/codex_ml/test_cli_train_config_bridge.py` load a temporary YAML payload
 and assert that:
 
 - YAML-only values (e.g. `training.epochs`, `gradient_accumulation_steps`) are
-  propagated into `UnifiedTrainingConfig`.
+ propagated into `UnifiedTrainingConfig`.
 - Explicit CLI flags such as `--epochs` or `--grad-accum` take priority over
-  the YAML defaults.
+ the YAML defaults.
 - Offline toggles (e.g. `--mlflow`, `--wandb`) remain deterministic so you can
-  compose reproducible runs without Hydra installed.
+ compose reproducible runs without Hydra installed.
 
 Run the focused check with:
 
@@ -117,9 +117,9 @@ cfg = merge(base, merge(env_cfg, exp))
 ```text
 
 ## Environment Variable Conventions
-- TRAINER_SEED → trainer.seed
-- TRAINER_BATCH_SIZE → trainer.batch_size
-- LOGGING_LEVEL → logging.level
+- TRAINER_SEED trainer.seed
+- TRAINER_BATCH_SIZE trainer.batch_size
+- LOGGING_LEVEL logging.level
 
 Example:
 ```bash
@@ -169,12 +169,12 @@ def apply_env_overrides(cfg: dict) -> dict:
 - Test composition order deterministically.
 - Test environment override precedence.
 - Exercise the Typer CLI bridge to guarantee config defaults and CLI overrides
-  remain reproducible offline (`pytest tests/codex_ml/test_cli_train_config_bridge.py`).
+ remain reproducible offline (`pytest tests/codex_ml/test_cli_train_config_bridge.py`).
 
 ## Quality Gates
-- Missing base.yaml → warn.
-- Non-deterministic fields in configs → flag.
-- Paths not under repo → warn.
+- Missing base.yaml warn.
+- Non-deterministic fields in configs flag.
+- Paths not under repo warn.
 
 ## Appendix: Migration to Hydra (Optional)
 - Keep YAML shapes compatible with OmegaConf.

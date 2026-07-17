@@ -6,7 +6,7 @@
 
 ---
 
-##  Quick Navigation
+## Quick Navigation
 
 - **Operational Runbooks** - Standard operating procedures
 - **Incident Management** - Incident response procedures
@@ -16,7 +16,7 @@
 
 ---
 
-## 🗂️ Directory Structure
+## Directory Structure
 
 ```
 docs/ops/
@@ -30,7 +30,7 @@ docs/ops/
 
 ---
 
-##  Contents
+## Contents
 
 ### Operational Runbooks
 - **Daily Checks** - Daily monitoring tasks
@@ -66,14 +66,14 @@ docs/ops/
 
 ## Quick Start
 
-1. **First Time?** → Read Daily Checks
-2. **Incident?** → Check Incident Response
-3. **Problem?** → See Troubleshooting Guides
-4. **Maintenance Time?** → Follow Maintenance Procedures
+1. **First Time?** Read Daily Checks
+2. **Incident?** Check Incident Response
+3. **Problem?** See Troubleshooting Guides
+4. **Maintenance Time?** Follow Maintenance Procedures
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **[docs/operations/](../operations/)** - Broader operations documentation
 - **[docs/monitoring/](../monitoring/)** - Monitoring setup
@@ -82,7 +82,7 @@ docs/ops/
 
 ---
 
-##  Key Procedures
+## Key Procedures
 
 | Procedure | Frequency | Owner | Est. Time |
 |-----------|-----------|-------|-----------|
@@ -93,7 +93,7 @@ docs/ops/
 
 ---
 
-## 🔔 Important Links
+## Important Links
 
 - **Alerts Dashboard** - See current alerts
 - **Monitoring Dashboard** - System metrics
@@ -102,7 +102,7 @@ docs/ops/
 
 ---
 
-##  Tips for Operations
+## Tips for Operations
 
 - Automate routine tasks where possible
 - Keep procedures documented and current
@@ -113,7 +113,7 @@ docs/ops/
 
 ---
 
-## ⏰ Maintenance Windows
+## Maintenance Windows
 
 - **Weekly Maintenance**: Tuesday 2-4 AM UTC
 - **Monthly Updates**: First Sunday of month 12-2 AM UTC
@@ -121,6 +121,6 @@ docs/ops/
 
 ---
 
-**Last Updated**: 2026-06-22  
-**Category**: Operations & Maintenance  
-**Status**:  Active
+**Last Updated**: 2026-06-22
+**Category**: Operations & Maintenance
+**Status**: Active

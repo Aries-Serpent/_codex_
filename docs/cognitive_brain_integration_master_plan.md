@@ -3,8 +3,8 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **Version:** 1.0.0  
-> **Generated:** 2026-01-04  
+> **Version:** 1.0.0
+> **Generated:** 2026-01-04
 > **Status:** Production-Ready Implementation Guide
 
 ---
@@ -19,7 +19,7 @@ This master plan integrates the GitHub Spark UI with the `Aries-Serpent/_codex_`
 4. **Enhanced Code Pipeline** - AST analysis, tier-based transformations
 5. **Real-time Metrics** - WebSocket-powered dashboard
 
-**Current State:** 3 iterations complete, stub components exist  
+**Current State:** 3 iterations complete, stub components exist
 **Target:** Production-ready full-stack integration in 4 phases
 
 ---
@@ -42,22 +42,35 @@ This master plan integrates the GitHub Spark UI with the `Aries-Serpent/_codex_`
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing React App, 5 Tabs'}}%%
+
 flowchart TB
     subgraph "GitHub Spark UI"
+
         A[React App] --> B[5 Tabs]
+
         B --> C1[Code]
+
         B --> C2[Quantum]
+
         B --> C3[Memory]
+
         B --> C4[Agents]
+
         B --> C5[Physics]
     end
 
     subgraph "FastAPI Backend"
+
         D[API Gateway] --> E1[Cognitive API]
+
         D --> E2[Agents API]
+
         D --> E3[Memory API]
+
         D --> E4[Code API]
+
         D --> E5[Metrics API]
+
         D --> WS[WebSocket Manager]
     end
 
@@ -70,15 +83,23 @@ flowchart TB
     end
 
     C1 --> D
+
     C2 --> D
+
     C3 --> D
+
     C4 --> D
+
     C5 --> D
 
     E1 --> F1
+
     E1 --> F2
+
     E2 --> F4
+
     E3 --> F3
+
     E4 --> F5
 
     WS -.Real-time.-> A
@@ -88,6 +109,7 @@ flowchart TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>API: Return cached result
+
   '}}%%
 sequenceDiagram
     participant UI as React UI
@@ -98,13 +120,16 @@ sequenceDiagram
     UI->>API: POST /api/cognitive/evaluate
     API->>MEM: Check cache
     alt Cache Hit
+
         MEM-->>API: Return cached result
     else Cache Miss
         API->>CB: Evaluate with superposition
         CB->>CB: Parallel evaluation
+
         CB-->>API: Decision + metrics
         API->>MEM: Store pattern
     end
+
     API-->>UI: Response + quantum metrics
     API->>UI: WebSocket update (metrics)
 ```
@@ -1227,22 +1252,22 @@ uvicorn services.api.main:app --reload --port 8000
    mkdir -p services/api
    touch services/api/__init__.py
    touch services/api/main.py
-   ```
+ ```
 
 2. **Install FastAPI dependencies**
    ```bash
    pip install fastapi uvicorn pydantic websockets
-   ```
+ ```
 
 3. **Copy API implementations from this document**
-   - Start with `main.py`
-   - Add `cognitive_api.py`
-   - Test with curl
+ - Start with `main.py`
+ - Add `cognitive_api.py`
+ - Test with curl
 
 4. **Update GitHub Spark UI**
-   - Add new components from this document
-   - Test API connectivity
-   - Verify real-time updates
+ - Add new components from this document
+ - Test API connectivity
+ - Verify real-time updates
 
 ### Future Enhancements
 
@@ -1260,17 +1285,17 @@ uvicorn services.api.main:app --reload --port 8000
 This master plan provides a complete, production-ready integration strategy for connecting the GitHub Spark UI with the _Codex_ cognitive brain backend. All code examples are complete and ready to implement. Follow the 4 phase roadmap for systematic implementation, and use the success metrics to validate progress.
 
 **Key Deliverables:**
--  6 FastAPI routers with complete implementations
--  3 major React components ready to use
--  Extended design system with 15+ new color variables
--  WebSocket real-time updates
--  Docker deployment configuration
--  Integration tests and validation criteria
+- 6 FastAPI routers with complete implementations
+- 3 major React components ready to use
+- Extended design system with 15+ new color variables
+- WebSocket real-time updates
+- Docker deployment configuration
+- Integration tests and validation criteria
 
 **Ready to start:** Copy the API code into `services/api/` and the component code into `src/components/`, then follow the Week 1 roadmap.
 
 ---
 
-*Document Version: 1.0.0*  
+*Document Version: 1.0.0*
 *Last updated: 2026-07-11
 *Status: Ready for Implementation*

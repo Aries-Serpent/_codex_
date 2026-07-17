@@ -1,4 +1,4 @@
-#  AST: Deep Codebase Analysis Requirements
+# AST: Deep Codebase Analysis Requirements
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -6,62 +6,62 @@
 
 - [1. Executive Summary](#1-executive-summary)
 - [2. Requirement Categories Matrix](#2-requirement-categories-matrix)
-  - [2.1 Functional Requirements (FR) - CRITICAL PATH](#21-functional-requirements-fr---critical-path)
-  - [2.2 Non-Functional Requirements (NFR) - QUALITY GATES](#22-non-functional-requirements-nfr---quality-gates)
-  - [2.3 Constraint Requirements (CR) - IMMUTABLE](#23-constraint-requirements-cr---immutable)
+ - [2.1 Functional Requirements (FR) - CRITICAL PATH](#21-functional-requirements-fr---critical-path)
+ - [2.2 Non-Functional Requirements (NFR) - QUALITY GATES](#22-non-functional-requirements-nfr---quality-gates)
+ - [2.3 Constraint Requirements (CR) - IMMUTABLE](#23-constraint-requirements-cr---immutable)
 - [3. Data Model & Schemas](#3-data-model--schemas)
-  - [3.1 Standardized AST Node Structure](#31-standardized-ast-node-structure)
-  - [3.2 Analysis Results Schema](#32-analysis-results-schema)
-  - [3.3 Dependency Graph Schema](#33-dependency-graph-schema)
-  - [3.4 Knowledge Graph Export Schema](#34-knowledge-graph-export-schema)
+ - [3.1 Standardized AST Node Structure](#31-standardized-ast-node-structure)
+ - [3.2 Analysis Results Schema](#32-analysis-results-schema)
+ - [3.3 Dependency Graph Schema](#33-dependency-graph-schema)
+ - [3.4 Knowledge Graph Export Schema](#34-knowledge-graph-export-schema)
 - [4. Implementation Phases & Deliverables](#4-implementation-phases--deliverables)
-  - [Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2](#phase-1-foundation-sprint-1-2---weeks-1-2)
-  - [Phase 2: Metrics & Analysis (Sprint 2-3) - WEEKS 3-5](#phase-2-metrics--analysis-sprint-2-3---weeks-3-5)
-  - [Phase 3: Dependency & Graph (Sprint 3-4) - WEEKS 6-8](#phase-3-dependency--graph-sprint-3-4---weeks-6-8)
-  - [Phase 4: CLI & Integration (Sprint 4-5) - WEEKS 8-10](#phase-4-cli--integration-sprint-4-5---weeks-8-10)
-  - [Phase 5: Testing & Validation (Sprint 6) - WEEKS 11-12](#phase-5-testing--validation-sprint-6---weeks-11-12)
+ - [Phase 1: Foundation (Sprint 1-2) - WEEKS 1-2](#phase-1-foundation-sprint-1-2---weeks-1-2)
+ - [Phase 2: Metrics & Analysis (Sprint 2-3) - WEEKS 3-5](#phase-2-metrics--analysis-sprint-2-3---weeks-3-5)
+ - [Phase 3: Dependency & Graph (Sprint 3-4) - WEEKS 6-8](#phase-3-dependency--graph-sprint-3-4---weeks-6-8)
+ - [Phase 4: CLI & Integration (Sprint 4-5) - WEEKS 8-10](#phase-4-cli--integration-sprint-4-5---weeks-8-10)
+ - [Phase 5: Testing & Validation (Sprint 6) - WEEKS 11-12](#phase-5-testing--validation-sprint-6---weeks-11-12)
 - [5. Quality Assurance Framework](#5-quality-assurance-framework)
-  - [5.1 Testing Strategy (Test Pyramid)](#51-testing-strategy-test-pyramid)
-  - [5.2 Test Coverage Targets by Component](#52-test-coverage-targets-by-component)
-  - [5.3 Regression Test Matrix](#53-regression-test-matrix)
+ - [5.1 Testing Strategy (Test Pyramid)](#51-testing-strategy-test-pyramid)
+ - [5.2 Test Coverage Targets by Component](#52-test-coverage-targets-by-component)
+ - [5.3 Regression Test Matrix](#53-regression-test-matrix)
 - [6. Acceptance & Sign-Off Process](#6-acceptance--sign-off-process)
-  - [6.1 Validation Checkpoints](#61-validation-checkpoints)
-  - [6.2 Functional Acceptance Criteria (Final)](#62-functional-acceptance-criteria-final)
+ - [6.1 Validation Checkpoints](#61-validation-checkpoints)
+ - [6.2 Functional Acceptance Criteria (Final)](#62-functional-acceptance-criteria-final)
 - [7. Risk Assessment & Mitigation](#7-risk-assessment--mitigation)
-  - [7.1 High-Risk Items](#71-high-risk-items)
-  - [7.2 Rollback Procedures](#72-rollback-procedures)
+ - [7.1 High-Risk Items](#71-high-risk-items)
+ - [7.2 Rollback Procedures](#72-rollback-procedures)
 - [Fall back to regex-based analysis](#fall-back-to-regex-based-analysis)
 - [Reduce scope](#reduce-scope)
 - [Reduce sensitivity](#reduce-sensitivity)
 - [8. Success Metrics & KPIs](#8-success-metrics--kpis)
-  - [8.1 Delivery KPIs](#81-delivery-kpis)
-  - [8.2 Adoption KPIs](#82-adoption-kpis)
+ - [8.1 Delivery KPIs](#81-delivery-kpis)
+ - [8.2 Adoption KPIs](#82-adoption-kpis)
 - [9. Documentation Requirements](#9-documentation-requirements)
-  - [9.1 Mandatory Documentation](#91-mandatory-documentation)
+ - [9.1 Mandatory Documentation](#91-mandatory-documentation)
 - [10. Conclusion & Next Steps](#10-conclusion--next-steps)
 - [ AST: Standardization Implementation Guidance](#-ast-standardization-implementation-guidance)
 - [1. Implementation Philosophy](#1-implementation-philosophy)
-  - [1.1 Core Principles](#11-core-principles)
-  - [1.2 Architecture Decision Records (ADRs)](#12-architecture-decision-records-adrs)
+ - [1.1 Core Principles](#11-core-principles)
+ - [1.2 Architecture Decision Records (ADRs)](#12-architecture-decision-records-adrs)
 - [2. Component Deep-Dive](#2-component-deep-dive)
-  - [2.1 Parser Module Implementation Guide](#21-parser-module-implementation-guide)
-  - [2.2 Metrics Analyzer Implementation Guide](#22-metrics-analyzer-implementation-guide)
-  - [2.3 Dependency Graph Implementation Guide](#23-dependency-graph-implementation-guide)
+ - [2.1 Parser Module Implementation Guide](#21-parser-module-implementation-guide)
+ - [2.2 Metrics Analyzer Implementation Guide](#22-metrics-analyzer-implementation-guide)
+ - [2.3 Dependency Graph Implementation Guide](#23-dependency-graph-implementation-guide)
 - [Testing](#testing)
 - [3. Testing & Validation Framework](#3-testing--validation-framework)
-  - [3.1 Test Organization](#31-test-organization)
-  - [3.2 Fixture Strategy (conftest.py)](#32-fixture-strategy-conftestpy)
-  - [3.3 Performance Benchmarks](#33-performance-benchmarks)
+ - [3.1 Test Organization](#31-test-organization)
+ - [3.2 Fixture Strategy (conftest.py)](#32-fixture-strategy-conftestpy)
+ - [3.3 Performance Benchmarks](#33-performance-benchmarks)
 - [4. Integration Checkpoints](#4-integration-checkpoints)
-  - [4.1 Phase Gate Criteria](#41-phase-gate-criteria)
-  - [4.2 CI/CD Integration Template](#42-cicd-integration-template)
+ - [4.1 Phase Gate Criteria](#41-phase-gate-criteria)
+ - [4.2 CI/CD Integration Template](#42-cicd-integration-template)
 - [5. Conclusion](#5-conclusion)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] |  Energy: 5/5
+** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] | Energy: 5/5
 
 ---
 
@@ -70,13 +70,13 @@
 This document establishes **comprehensive, binding requirements** for developing an **AST (Abstract Syntax Tree) Standardization Project** that enables **deep codebase analysis beyond test scope**.
 
 **Strategic Objectives:**
--  Standardize AST parsing across Python/YAML/JSON codebases
--  Enable automated structural and semantic codebase analysis
--  Provide objective metrics for code quality, complexity, and dependencies
--  Integrate maturity tracking with AST-derived findings
--  Create knowledge graphs for team-wide code intelligence
+- Standardize AST parsing across Python/YAML/JSON codebases
+- Enable automated structural and semantic codebase analysis
+- Provide objective metrics for code quality, complexity, and dependencies
+- Integrate maturity tracking with AST-derived findings
+- Create knowledge graphs for team-wide code intelligence
 
-**Scope:** Comprehensive codebase analysis → structural, semantic, quality, and evolution tracking
+**Scope:** Comprehensive codebase analysis structural, semantic, quality, and evolution tracking
 
 ---
 
@@ -95,7 +95,7 @@ This document establishes **comprehensive, binding requirements** for developing
 | **FR-AST-007** | **Code Smell Detection** | HIGH | Detect 8+ smell types (long functions, high complexity, duplication, dead code); >80% precision | FR-AST-003 |
 | **FR-AST-008** | **Type Hint Extraction & Inference** | MEDIUM | Extract explicit hints; infer from usage; measure coverage; <200ms per file | FR-AST-002 |
 | **FR-AST-009** | **Documentation Coverage Analysis** | MEDIUM | Extract docstrings; measure coverage %; assess quality; <100ms per file | FR-AST-002 |
-| **FR-AST-010** | **Testing Coverage Integration** | MEDIUM | Read pytest XML; map to AST nodes; correlate coverage ↔ complexity | FR-AST-002 |
+| **FR-AST-010** | **Testing Coverage Integration** | MEDIUM | Read pytest XML; map to AST nodes; correlate coverage complexity | FR-AST-002 |
 | **FR-AST-011** | **Knowledge Graph Export** | HIGH | Export to JSON/SQLite/Markdown/HTML/DOT; queryable; no data loss; <500ms per 1000 entities | FR-AST-003+ |
 | **FR-AST-012** | **Incremental Delta Analysis** | HIGH | Analyze only changed files; compare to baseline; report improvements/regressions; <1s for typical PR | FR-AST-003+ |
 | **FR-AST-013** | **CLI Interface Suite** | CRITICAL | 3 tools: codex-analyze, codex-audit, codex-diff; offline-capable; <30s per 10K LOC | FR-AST-011+ |
@@ -119,7 +119,7 @@ This document establishes **comprehensive, binding requirements** for developing
 | **NFR-ACC-004** | **Smell Detection Precision** | >80% (false positives <20%) | Manual review sample | HIGH |
 | **NFR-REL-001** | **Error Resilience** | Zero crashes on invalid input | Fuzz testing | CRITICAL |
 | **NFR-REL-002** | **Graceful Degradation** | Partial results on parse error | Error handling tests | HIGH |
-| **NFR-REL-003** | **Determinism** | Identical input → identical output | Reproducibility tests | CRITICAL |
+| **NFR-REL-003** | **Determinism** | Identical input identical output | Reproducibility tests | CRITICAL |
 | **NFR-MAINT-001** | **Code Duplication** | <10% | Automated detection | MEDIUM |
 | **NFR-MAINT-002** | **Test Coverage** | ≥80% | Coverage reports | HIGH |
 | **NFR-MAINT-003** | **Cyclomatic Complexity** | <10 per function | Enforced by own tool | MEDIUM |
@@ -442,10 +442,10 @@ CREATE TABLE quality_metrics (
 
 | Scenario | Test File | Validation |
 |----------|-----------|-----------|
-| Parser consistency | `test_parser_regression.py` | Same input → same AST across runs |
-| Metrics stability | `test_metrics_regression.py` | Known functions → expected CC/LOC |
-| Cycle detection | `test_cycle_regression.py` | Synthetic graphs → correct cycles |
-| Export fidelity | `test_export_regression.py` | Analysis → export → re-parse identical |
+| Parser consistency | `test_parser_regression.py` | Same input same AST across runs |
+| Metrics stability | `test_metrics_regression.py` | Known functions expected CC/LOC |
+| Cycle detection | `test_cycle_regression.py` | Synthetic graphs correct cycles |
+| Export fidelity | `test_export_regression.py` | Analysis export re-parse identical |
 
 ---
 
@@ -455,13 +455,13 @@ CREATE TABLE quality_metrics (
 
 | Checkpoint | Criteria | Owner | Sign-Off |
 |-----------|----------|-------|---------|
-| **Design Review** | Architecture reviewed; tech spike completed | Tech Lead | ✍️ |
-| **Phase 1 Gate** | Parser working for all languages; tests green | QA Lead | ✍️ |
-| **Phase 2 Gate** | Metrics accurate; smells detected; benchmarks met | QA Lead | ✍️ |
-| **Phase 3 Gate** | Dependency graph built; cycles detected; exports work | QA Lead | ✍️ |
-| **Phase 4 Gate** | CLI tools working; MATURITY integrated; docs complete | QA Lead + Product | ✍️ |
-| **Phase 5 Gate** | 80%+ coverage; security clean; performance OK | QA Lead + Tech Lead | ✍️ |
-| **Production Gate** | All acceptance criteria met; no known issues | Tech Lead + Product Lead | ✍️ |
+| **Design Review** | Architecture reviewed; tech spike completed | Tech Lead | |
+| **Phase 1 Gate** | Parser working for all languages; tests green | QA Lead | |
+| **Phase 2 Gate** | Metrics accurate; smells detected; benchmarks met | QA Lead | |
+| **Phase 3 Gate** | Dependency graph built; cycles detected; exports work | QA Lead | |
+| **Phase 4 Gate** | CLI tools working; MATURITY integrated; docs complete | QA Lead + Product | |
+| **Phase 5 Gate** | 80%+ coverage; security clean; performance OK | QA Lead + Tech Lead | |
+| **Production Gate** | All acceptance criteria met; no known issues | Tech Lead + Product Lead | |
 
 ### 6.2 Functional Acceptance Criteria (Final)
 
@@ -577,10 +577,10 @@ codex-analyze --smell-threshold high src/
 This requirements document provides **complete, verifiable, and measurable** specifications for the AST Standardization Project.
 
 **Critical Success Factors:**
-1.  **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
-2.  **Test-Driven Development**: Write tests before code; maintain >80% coverage
-3.  **Regular Sign-Offs**: Validate at each phase gate; no surprises at end
-4.  **Documentation**: Keep docs in sync with code; mandatory for all APIs
+1. **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
+2. **Test-Driven Development**: Write tests before code; maintain >80% coverage
+3. **Regular Sign-Offs**: Validate at each phase gate; no surprises at end
+4. **Documentation**: Keep docs in sync with code; mandatory for all APIs
 
 **Next Actions:**
 1. **This Week:** Schedule kickoff with team; assign roles
@@ -589,21 +589,21 @@ This requirements document provides **complete, verifiable, and measurable** spe
 
 ---
 
-**Document Version:** 1.0 (FINAL)  
-**Status:** APPROVED FOR IMPLEMENTATION  
-**Assigned To:** mbaetiong (Primary Engineer)  
+**Document Version:** 1.0 (FINAL)
+**Status:** APPROVED FOR IMPLEMENTATION
+**Assigned To:** mbaetiong (Primary Engineer)
 **Review Cycle:** Phase-end gates + final sign-off
 ```text
 
 Now creating the complementary validation and implementation guidance file:
 
 ```markdown name=AST_Standardization_InstructionEnhancement.md
-#  AST: Standardization Implementation Guidance
+# AST: Standardization Implementation Guidance
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] |  Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] | Energy: 5/5
 
-⚛️ **Physics:** Path️ [Sequential phases] | Fields [Modular components] | Patterns️ [DRY code, reusable analyzers] | Redundancy [Fallback strategies] | Balance️ [Performance vs accuracy]
+ **Physics:** Path [Sequential phases] | Fields [Modular components] | Patterns [DRY code, reusable analyzers] | Redundancy [Fallback strategies] | Balance [Performance vs accuracy]
 
 ---
 
@@ -616,7 +616,7 @@ Now creating the complementary validation and implementation guidance file:
 | **Standardization** | Single AST format across languages | Enables cross-language analysis; reduces duplication |
 | **Modularity** | Independent parser, analyzer, exporter modules | Allows parallel development; easy testing |
 | **Incrementalism** | Deliver value per phase; iterate on feedback | Reduces risk; enables early validation |
-| **Determinism** | Identical input → identical output always | Reproducible results; easier debugging |
+| **Determinism** | Identical input identical output always | Reproducible results; easier debugging |
 | **Offline-First** | No cloud dependencies; all processing local | Works in air-gapped environments |
 | **Fail-Safe** | Graceful degradation on errors | Partial results better than crash |
 
@@ -1405,11 +1405,11 @@ jobs:
 
 This **Implementation Guidance** provides:
 
- **Module-by-module implementation templates**  
- **Test-driven development patterns**  
- **Performance benchmarks and validation**  
- **CI/CD integration strategies**  
- **Phase-gate criteria for sign-off**  
+ **Module-by-module implementation templates**
+ **Test-driven development patterns**
+ **Performance benchmarks and validation**
+ **CI/CD integration strategies**
+ **Phase-gate criteria for sign-off**
 
 **Critical Success Factors:**
 - Write tests before code (TDD)
@@ -1421,8 +1421,8 @@ This **Implementation Guidance** provides:
 
 ---
 
-**Document Version:** 1.0 (READY FOR IMPLEMENTATION)  
-**Status:** APPROVED  
+**Document Version:** 1.0 (READY FOR IMPLEMENTATION)
+**Status:** APPROVED
 **Assigned To:** mbaetiong (Implementation Lead)
 
 

@@ -3,8 +3,8 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> Complete walkthrough from project setup to first successful run  
-> **Level**: Beginner | **Duration**: ~30 minutes  
+> Complete walkthrough from project setup to first successful run
+> **Level**: Beginner | **Duration**: ~30 minutes
 > **Last Updated**: 2026-06-22 | **Version**: 2.0
 
 ---
@@ -25,12 +25,12 @@
 
 This tutorial walks through creating a complete ML application from scratch:
 
-1.  Set up development environment
-2.  Configure application with Hydra
-3.  Load and preprocess data
-4.  Run model inference
-5.  Deploy to production
-6.  Monitor and iterate
+1. Set up development environment
+2. Configure application with Hydra
+3. Load and preprocess data
+4. Run model inference
+5. Deploy to production
+6. Monitor and iterate
 
 **What you'll build**: A real-time sentiment analysis application
 
@@ -703,4 +703,4 @@ You've successfully:
 ---
 
 **Word Count**: 2,341 | **Code Examples**: 16 | **Sections**: 8
-**Last Updated**: 2026-06-22 | **Status**:  Complete
+**Last Updated**: 2026-06-22 | **Status**: Complete

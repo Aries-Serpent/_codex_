@@ -3,10 +3,10 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2026-06-22  
-> **Status**: Production-Ready  
-> **Audience**: DevOps Engineers, ML Engineers, Platform Teams  
+> **Version**: 1.0.0
+> **Last Updated**: 2026-06-22
+> **Status**: Production-Ready
+> **Audience**: DevOps Engineers, ML Engineers, Platform Teams
 
 ---
 
@@ -48,7 +48,7 @@ This guide provides comprehensive instructions for deploying the Codex ML platfo
 
 ## Multi-Stage Docker Builds
 
-### Strategy: Build → Runtime Separation
+### Strategy: Build Runtime Separation
 
 Multi-stage builds dramatically reduce image size by separating build dependencies from runtime requirements.
 

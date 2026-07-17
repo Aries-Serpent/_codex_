@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---
@@ -14,75 +14,110 @@ This diagram shows how a request flows through all 5 layers from entry to respon
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'End-to-End Request Flow<br/>From Input to Output'}, 'theme': 'base'}}%%
+
 graph TD
+
     Start([" Request Entry"]) --> L1["Layer 1: Interface & CLI"]
     
     %% Layer 1: Parse & Validate
     L1 --> CLI{Check Request<br/>Type}
+
     CLI -->|"CLI Command"| CParse["Parse Command Line Args"]
+
     CLI -->|"REST API"| AParse["Parse HTTP Request"]
+
     CParse --> Hydra[" Load Hydra Config<br/>• Read config files<br/>• Resolve overrides<br/>• Validate schema"]
+
     AParse --> Hydra
     
     Hydra --> ValidCfg{"Config<br/>Valid?"}
+
     ValidCfg -->|" Error"| ErrorCfg["Return Error<br/>Invalid Configuration"]
+
     ValidCfg -->|" OK"| RouteCmd["Route Command<br/>to Layer 2"]
     
     %% Layer 2: ML Operation
     RouteCmd --> L2["Layer 2: ML Platform"]
+
     L2 --> SelectOp{Operation<br/>Type?}
     
     SelectOp -->|"train"| Train[" Training Engine<br/>• Load model<br/>• Load dataset<br/>• Run training loop"]
+
     SelectOp -->|"eval"| Eval[" Evaluation Engine<br/>• Load checkpoint<br/>• Run evaluation<br/>• Compute metrics"]
+
     SelectOp -->|"predict"| Serve[" Serving Engine<br/>• Load model<br/>• Preprocess input<br/>• Run inference"]
     
     %% Data dependencies (Layer 3)
     Train --> L3A["Layer 3: Data Pipeline"]
+
     Eval --> L3A
+
     Serve --> L3A
     
     L3A --> DataOp{Data<br/>Operation?}
+
     DataOp -->|"Need raw code"| Ingest["📥 Code Ingestion<br/>• Parse files<br/>• Generate AST<br/>• Count tokens"]
+
     DataOp -->|"Need context"| RAG[" RAG System<br/>• Vector encode<br/>• Semantic search<br/>• Rank results"]
+
     DataOp -->|"Need transform"| Trans[" Transformation<br/>• Preprocess data<br/>• Format conversion<br/>• Feature extract"]
     
     Ingest --> StoreL4["Persist to Layer 4"]
+
     RAG --> StoreL4
+
     Trans --> StoreL4
     
     %% Infrastructure (Layer 4)
     StoreL4 --> L4["Layer 4: Infrastructure"]
+
     L4 --> ConfigOp[" Configuration<br/>• Load secrets<br/>• Merge settings<br/>• Validate params"]
+
     ConfigOp --> StorageOp["💾 Storage<br/>• Load/save model<br/>• Load/save data<br/>• Update cache"]
+
     StorageOp --> MetricsOp[" Monitoring<br/>• Record metrics<br/>• Log events<br/>• Update health"]
     
     %% Operation completion (back to Layer 2)
     MetricsOp --> L2Complete["Return to Layer 2"]
+
     L2Complete --> OpComplete{"Operation<br/>Complete?"}
     
     OpComplete -->|" Error"| ErrorOp["Handle Error<br/>Log & retry/fail"]
+
     OpComplete -->|" Success"| ExternalCheck{"Notify<br/>External?"}
     
     %% Layer 5: Integration
     ExternalCheck -->|" Internal Only"| Format["Return Result<br/>to User"]
+
     ExternalCheck -->|" Notify"| L5["Layer 5: Integration"]
     
     L5 --> IntOp{Integration<br/>Type?}
+
     IntOp -->|"GitHub"| GHSync["🐙 GitHub Integration<br/>• Post PR comment<br/>• Create issue<br/>• Update workflow"]
+
     IntOp -->|"Zendesk"| ZDSync["🎫 Zendesk Integration<br/>• Update ticket<br/>• Create case<br/>• Sync status"]
+
     IntOp -->|"Cloud"| CloudSync["☁️ Cloud Integration<br/>• Upload model<br/>• Save artifacts<br/>• Update metadata"]
+
     IntOp -->|"HF/MLflow"| ExtSync["🤗 External Services<br/>• Push to Hub<br/>• Log experiment<br/>• Save weights"]
     
     GHSync --> ExtComplete["Integration Complete"]
+
     ZDSync --> ExtComplete
+
     CloudSync --> ExtComplete
+
     ExtSync --> ExtComplete
     
     %% Final response
     ExtComplete --> Format
+
     ErrorOp --> Format
+
     Format --> Response["📤 Return Response<br/>• Status code<br/>• Result data<br/>• Metadata"]
+
     Response --> End([" Request Complete"])
+
     ErrorCfg --> End
     
     %% Styling
@@ -208,11 +243,11 @@ Return:  Metrics: {accuracy: 0.92, f1: 0.88, ...}
 
 ## Error Handling Throughout Flow
 
-**Layer 1**: Configuration errors → Return HTTP 400 (Bad Request)  
-**Layer 2**: Model errors → Return error + retry guidance  
-**Layer 3**: Data errors → Return error + missing data info  
-**Layer 4**: Storage errors → Fallback to alternate storage + alert  
-**Layer 5**: Integration errors → Log error, complete layer 2 operation  
+**Layer 1**: Configuration errors Return HTTP 400 (Bad Request)
+**Layer 2**: Model errors Return error + retry guidance
+**Layer 3**: Data errors Return error + missing data info
+**Layer 4**: Storage errors Fallback to alternate storage + alert
+**Layer 5**: Integration errors Log error, complete layer 2 operation
 
 All errors are logged to Layer 4 monitoring for visibility.
 
@@ -233,9 +268,9 @@ All errors are logged to Layer 4 monitoring for visibility.
 
 ## Next Steps
 
-- 👉 See [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) for layer details
-- 👉 See [Training Workflow](../training/TRAINING_WORKFLOW.md) for training-specific flow
-- 👉 See [Component Dependencies](COMPONENT_DEPENDENCIES.md) for module interactions
+- See [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) for layer details
+- See [Training Workflow](../training/TRAINING_WORKFLOW.md) for training-specific flow
+- See [Component Dependencies](COMPONENT_DEPENDENCIES.md) for module interactions
 
 ---
 

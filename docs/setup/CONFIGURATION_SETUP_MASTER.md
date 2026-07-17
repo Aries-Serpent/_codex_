@@ -3,10 +3,10 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **Consolidated Master Document** for Codex Configuration  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Configuration
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Consolidated from** 6 source files:
 - docs/CONSISTENCY_CHECKS_SETUP.md
@@ -616,4 +616,4 @@ make check-all    # Run all checks
 **This document is the authoritative configuration and setup guide for Codex.**
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (6 files merged)*
+*Consolidation Status: Complete (6 files merged)*

@@ -6,23 +6,23 @@
 
 - [Executive Summary](#executive-summary)
 - [Scoring Framework V3.0](#scoring-framework-v30)
-  - [ACE-Aligned 6-Layer Assessment](#ace-aligned-6-layer-assessment)
-  - [Metacognitive State Vector (MSV)](#metacognitive-state-vector-msv)
-  - [Agentic Metrics (Microsoft/RagaAI)](#agentic-metrics-microsoftragaai)
-  - [Composite V3.0 Score](#composite-v30-score)
+ - [ACE-Aligned 6-Layer Assessment](#ace-aligned-6-layer-assessment)
+ - [Metacognitive State Vector (MSV)](#metacognitive-state-vector-msv)
+ - [Agentic Metrics (Microsoft/RagaAI)](#agentic-metrics-microsoftragaai)
+ - [Composite V3.0 Score](#composite-v30-score)
 - [Detailed Layer Assessment](#detailed-layer-assessment)
-  - [Layer 1: Aspirational — Ethics & Mission (90/100)](#layer-1-aspirational--ethics--mission-90100)
-  - [Layer 2: Global Strategy — Planning & Context (96/100)](#layer-2-global-strategy--planning--context-96100)
-  - [Layer 3: Agent Model — Self-Awareness & Memory (94/100)](#layer-3-agent-model--self-awareness--memory-94100)
-  - [Layer 4: Executive Function — Planning & Execution (95/100)](#layer-4-executive-function--planning--execution-95100)
-  - [Layer 5: Cognitive Control — Adaptive Execution (92/100)](#layer-5-cognitive-control--adaptive-execution-92100)
-  - [Layer 6: Task Prosecution — Action & Feedback (90/100)](#layer-6-task-prosecution--action--feedback-90100)
+ - [Layer 1: Aspirational — Ethics & Mission (90/100)](#layer-1-aspirational--ethics--mission-90100)
+ - [Layer 2: Global Strategy — Planning & Context (96/100)](#layer-2-global-strategy--planning--context-96100)
+ - [Layer 3: Agent Model — Self-Awareness & Memory (94/100)](#layer-3-agent-model--self-awareness--memory-94100)
+ - [Layer 4: Executive Function — Planning & Execution (95/100)](#layer-4-executive-function--planning--execution-95100)
+ - [Layer 5: Cognitive Control — Adaptive Execution (92/100)](#layer-5-cognitive-control--adaptive-execution-92100)
+ - [Layer 6: Task Prosecution — Action & Feedback (90/100)](#layer-6-task-prosecution--action--feedback-90100)
 - [Score Evolution Trajectory](#score-evolution-trajectory)
-  - [Score Delta Analysis](#score-delta-analysis)
-- [Path to 97.0 (A+) — 11 Concrete Improvements  TARGET REACHED](#path-to-970-a--11-concrete-improvements--target-reached)
-  - [PS-14 Implementation Impact (2026-02-12)](#ps-14-implementation-impact-2026-02-12)
-  - [Score Update Estimate](#score-update-estimate)
-    - [S81–S83 Improvement Evidence](#s81s83-improvement-evidence)
+ - [Score Delta Analysis](#score-delta-analysis)
+- [Path to 97.0 (A+) — 11 Concrete Improvements TARGET REACHED](#path-to-970-a--11-concrete-improvements--target-reached)
+ - [PS-14 Implementation Impact (2026-02-12)](#ps-14-implementation-impact-2026-02-12)
+ - [Score Update Estimate](#score-update-estimate)
+ - [S81–S83 Improvement Evidence](#s81s83-improvement-evidence)
 - [Research Sources](#research-sources)
 - [Cognitive App Integration](#cognitive-app-integration)
 - [ Cross-References](#-cross-references)
@@ -32,14 +32,14 @@
 **Assessment Date**: 2026-02-24
 **Codebase**: Aries-Serpent/_codex_ (Cognitive Brain Initiative)
 **Version**: V3.2 — S83 Update (ACE-Aligned, Research-Backed)
-**Prior Versions**: [V1.0 (87.3/100)](../.github/agents/AI_AGENT_INTUITIVENESS_SCORE.md) → [V2.0 (91.8/100)](../.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md)
+**Prior Versions**: [V1.0 (87.3/100)](../.github/agents/AI_AGENT_INTUITIVENESS_SCORE.md) [V2.0 (91.8/100)](../.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md)
 **Methodology**: ACE Framework (6-layer) + Metacognitive State Vector (MSV) + Agentic AI Evaluation (Microsoft/RagaAI AAEF)
 
 ---
 
 ## Executive Summary
 
-**Overall AI Agency Intuitiveness Score: 95.1/100** (Grade: A+) ⬆️ +1.4 from V3.1
+**Overall AI Agency Intuitiveness Score: 95.1/100** (Grade: A+) ⬆ +1.4 from V3.1
 
 The _codex_ codebase achieves **Level 4 AI Functional System** maturity with demonstrated cognitive capabilities across all six ACE architecture layers. V3.2 reflects improvements from sessions S81–S83:
 
@@ -49,7 +49,7 @@ The _codex_ codebase achieves **Level 4 AI Functional System** maturity with dem
 - **RagaAI AAEF** — Agentic application evaluation framework
 
 **Key Improvements Since V3.1 (S81–S83)**:
-- +200 tests (1300→1500+), marshmallow 4.x migration, transformers 5.2 compat
+- +200 tests (13001500+), marshmallow 4.x migration, transformers 5.2 compat
 - +54 specialized agents deployed (RAGIndexer facade, MSPClient.request)
 - +48 CVEs remediated (security posture: Elite)
 - +Knowledge graph v0.2.1 (20 nodes, 12 patterns, 10 edges)
@@ -128,12 +128,12 @@ The Aspirational Layer defines the system's core values, ethical boundaries, and
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| Codebase Agency Policy | `.codex/CODEBASE_AGENCY_POLICY.md` |  Active |
-| Guardrails | `.codex/guardrails.md` |  Active |
-| Safety Guards (3-layer) | Workflow + Script + Config |  Active |
-| Genesis Protocol Ethics | `docs/admin/GENESIS_SETUP_GUIDE.md` |  Documented |
-| Security Policy | `SECURITY.md` |  Active |
-| Code of Conduct | `CODE_OF_CONDUCT.md` |  Active |
+| Codebase Agency Policy | `.codex/CODEBASE_AGENCY_POLICY.md` | Active |
+| Guardrails | `.codex/guardrails.md` | Active |
+| Safety Guards (3-layer) | Workflow + Script + Config | Active |
+| Genesis Protocol Ethics | `docs/admin/GENESIS_SETUP_GUIDE.md` | Documented |
+| Security Policy | `SECURITY.md` | Active |
+| Code of Conduct | `CODE_OF_CONDUCT.md` | Active |
 
 **Strengths**: Three-layer safety system (workflow guard, script guard, config guard) prevents unauthorized autonomous actions. Genesis Protocol requires explicit human admin activation.
 
@@ -151,12 +151,12 @@ The Global Strategy Layer translates mission into strategic objectives.
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| Unified Roadmap | `docs/ROADMAP.md` (v0.2.1) |  Current |
-| Evolution Timeline | `docs/evolution/EVOLUTION_TIMELINE.md` |  Active |
-| Planset Registry | `docs/evolution/PLANSET_REGISTRY.md` |  Complete |
-| Phase Planning (1-18) | `.codex/plans/` (95 files) |  Comprehensive |
-| Cognitive Brain Roadmap | `.codex/plans/COGNITIVE_BRAIN_ROADMAP_2026.md` |  Active |
-| Coverage Path | `.codex/plans/COVERAGE_PATH_70_TO_100_PERCENT.md` |  Active |
+| Unified Roadmap | `docs/ROADMAP.md` (v0.2.1) | Current |
+| Evolution Timeline | `docs/evolution/EVOLUTION_TIMELINE.md` | Active |
+| Planset Registry | `docs/evolution/PLANSET_REGISTRY.md` | Complete |
+| Phase Planning (1-18) | `.codex/plans/` (95 files) | Comprehensive |
+| Cognitive Brain Roadmap | `.codex/plans/COGNITIVE_BRAIN_ROADMAP_2026.md` | Active |
+| Coverage Path | `.codex/plans/COVERAGE_PATH_70_TO_100_PERCENT.md` | Active |
 
 **Strengths**: Exceptional strategic planning with 95 plan files, 18 phases across 4 cycles, and verified completion tracking. Evolution Center provides permanent queryable archive.
 
@@ -172,13 +172,13 @@ The Agent Model Layer maintains the system's self-model, capabilities, and memor
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| Cognitive Brain Core | `scripts/cognitive/cognitive_brain_core.py` |  Active |
-| Meta-Learning Engine | `scripts/cognitive/meta_learning_engine.py` |  Active |
-| Pattern Detection | `scripts/cognitive/detect_patterns.py` |  Active |
-| Metrics Collection | `scripts/cognitive/metrics_collector.py` |  Active |
-| RAG Memory Pipeline | `src/codex/rag/` (retriever, indexer, embeddings) |  Active |
-| Agent Evolution Map | `.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md` |  Active |
-| Status History | `.codex/cognitive_brain/status/` (31 files) |  Active |
+| Cognitive Brain Core | `scripts/cognitive/cognitive_brain_core.py` | Active |
+| Meta-Learning Engine | `scripts/cognitive/meta_learning_engine.py` | Active |
+| Pattern Detection | `scripts/cognitive/detect_patterns.py` | Active |
+| Metrics Collection | `scripts/cognitive/metrics_collector.py` | Active |
+| RAG Memory Pipeline | `src/codex/rag/` (retriever, indexer, embeddings) | Active |
+| Agent Evolution Map | `.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md` | Active |
+| Status History | `.codex/cognitive_brain/status/` (31 files) | Active |
 
 **Strengths**: Comprehensive self-awareness through cognitive brain infrastructure (100+ files), pattern learning, and persistent memory via RAG pipeline with safe meta-tensor handling.
 
@@ -194,12 +194,12 @@ The Executive Function Layer decomposes goals into actionable plans.
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| 53+ Specialized Agents | `.github/agents/` (287 files) |  Deployed |
-| Planset System (PS-01→10) | `.codex/cognitive_brain/ps*_status.md` |  All Complete |
-| Task Decomposition | Phase-based with sub-tasks |  Active |
-| Agent Orchestration | `cognitive_app` Agent Orchestration Panel |  Active |
-| Workflow Automation | `.github/workflows/` (49 workflows) |  Active |
-| Autonomous Agent Script | `scripts/autonomous_agent.py` |  Ready |
+| 53+ Specialized Agents | `.github/agents/` (287 files) | Deployed |
+| Planset System (PS-0110) | `.codex/cognitive_brain/ps*_status.md` | All Complete |
+| Task Decomposition | Phase-based with sub-tasks | Active |
+| Agent Orchestration | `cognitive_app` Agent Orchestration Panel | Active |
+| Workflow Automation | `.github/workflows/` (49 workflows) | Active |
+| Autonomous Agent Script | `scripts/autonomous_agent.py` | Ready |
 
 **Strengths**: 53 specialized agents across 7 domains (CI/CD, Testing, Security, Documentation, RAG/ML, Repository, Configuration) with clear activation commands and scoped responsibilities.
 
@@ -215,12 +215,12 @@ The Cognitive Control Layer selects, prioritizes, and switches tasks.
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| CI Auto-Fix System | `scripts/ci/auto_fix_common_issues.py` |  8 patterns |
-| Test Alignment Fixer | `.github/agents/test-alignment-fixer.agent.md` |  Active |
-| Workflow CI Fixer | `.github/agents/workflow-ci-fixer.agent.md` |  Active |
-| Coverage Monitoring | `.github/agents/test-coverage-monitor.agent.md` |  Active |
-| Self-Healing Iterations | Cognitive brain self-review cycles |  Active |
-| Adaptive Scoring | `src/cognitive_brain/quantum/adaptive_scoring.py` |  Active |
+| CI Auto-Fix System | `scripts/ci/auto_fix_common_issues.py` | 8 patterns |
+| Test Alignment Fixer | `.github/agents/test-alignment-fixer.agent.md` | Active |
+| Workflow CI Fixer | `.github/agents/workflow-ci-fixer.agent.md` | Active |
+| Coverage Monitoring | `.github/agents/test-coverage-monitor.agent.md` | Active |
+| Self-Healing Iterations | Cognitive brain self-review cycles | Active |
+| Adaptive Scoring | `src/cognitive_brain/quantum/adaptive_scoring.py` | Active |
 
 **Strengths**: Automated error detection and correction through CI auto-fix (8 patterns), self-healing iterations, and adaptive scoring with feedback-driven learning.
 
@@ -236,12 +236,12 @@ The Task Prosecution Layer executes plans and gathers environmental feedback.
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| PR Management | GitHub Actions workflows |  Active |
-| Code Execution | `scripts/` (35+ utility scripts) |  Active |
-| Validation Scripts | `scripts/validate_*.py` |  Active |
-| Deployment Pipeline | `deployment/deploy_pipeline.md` |  Documented |
-| cognitive_app Frontend | `cognitive_app/` (React/Vite) |  Deployed |
-| Audit Trail | `.codex/evidence/`, `.codex/action_log.ndjson` |  Active |
+| PR Management | GitHub Actions workflows | Active |
+| Code Execution | `scripts/` (35+ utility scripts) | Active |
+| Validation Scripts | `scripts/validate_*.py` | Active |
+| Deployment Pipeline | `deployment/deploy_pipeline.md` | Documented |
+| cognitive_app Frontend | `cognitive_app/` (React/Vite) | Deployed |
+| Audit Trail | `.codex/evidence/`, `.codex/action_log.ndjson` | Active |
 
 
 **Gap (-10)**: Limited closed-loop feedback from task execution back to higher layers. Execution results not automatically fed into cognitive brain for learning.
@@ -262,7 +262,7 @@ V3.4 (2026-02-12):  ████████████████████
 
 ### Score Delta Analysis
 
-| Category (V2→V3 Mapping) | V2.0 | V3.0 Equivalent | Change | Driver |
+| Category (V2V3 Mapping) | V2.0 | V3.0 Equivalent | Change | Driver |
 |---------------------------|------|-----------------|--------|--------|
 | Documentation Quality | 96 | L2: Global Strategy (96) | = | Evolution Center |
 | Code Structure | 91 | L4: Executive Function (95) | +4 | 53 agents deployed |
@@ -275,54 +275,54 @@ V3.4 (2026-02-12):  ████████████████████
 
 ---
 
-## Path to 97.0 (A+) — 11 Concrete Improvements  TARGET REACHED
+## Path to 97.0 (A+) — 11 Concrete Improvements TARGET REACHED
 
 | # | Improvement | Layer | Current | Target | Effort | Impact | Status |
 |---|-------------|-------|---------|--------|--------|--------|--------|
-| 1 | Ethical imperatives config | L1 | 90 | 96 | 4h | +0.6 |  Complete (.codex/ethics/imperatives.yaml) |
-| 2 | OKR-linked strategy tracking | L2 | 96 | 99 | 6h | +0.5 |  Complete (.codex/strategy/okr_tracking.yaml) |
-| 3 | Live agent capability introspection | L3 | 94 | 97 | 8h | +0.6 |  Complete (scripts/monitoring/agent_introspection.py) |
-| 4 | Automatic agent routing by task type | L4 | 95 | 98 | 10h | +0.6 |  PS-13 Complete |
-| 5 | Continuous cognitive control loop | L5 | 92 | 96 | 8h | +0.8 |  Complete (CacheManager 5/5 + healing loop + fragile guards) |
-| 6 | Closed-loop execution feedback | L6 | 90 | 95 | 6h | +0.8 |  Complete (trend analysis + self-review protocol) |
-| 7 | Dynamic MSV dashboard in cognitive_app | MSV | 92.8 | 96 | 8h | +0.5 |  PS-14 Complete |
-| 8 | Automated regression scoring pipeline | Agentic | 93.0 | 96 | 6h | +0.4 |  Complete (fragile test scanner + healing loop + CI auto-fix) |
-| 9 | Multi-agent consensus protocol | L4 | 96 | 98 | 4h | +0.7 |  Complete (TaskRouter + agent_introspection cross-validation) |
-| 10 | Context window optimization | L5 | 93 | 97 | 6h | +0.8 |  Complete (scripts/cognitive/context_window_optimizer.py) |
-| 11 | Cross-session knowledge transfer | L6 | 91 | 96 | 6h | +0.7 |  Complete (scripts/cognitive/knowledge_transfer.py) |
+| 1 | Ethical imperatives config | L1 | 90 | 96 | 4h | +0.6 | Complete (.codex/ethics/imperatives.yaml) |
+| 2 | OKR-linked strategy tracking | L2 | 96 | 99 | 6h | +0.5 | Complete (.codex/strategy/okr_tracking.yaml) |
+| 3 | Live agent capability introspection | L3 | 94 | 97 | 8h | +0.6 | Complete (scripts/monitoring/agent_introspection.py) |
+| 4 | Automatic agent routing by task type | L4 | 95 | 98 | 10h | +0.6 | PS-13 Complete |
+| 5 | Continuous cognitive control loop | L5 | 92 | 96 | 8h | +0.8 | Complete (CacheManager 5/5 + healing loop + fragile guards) |
+| 6 | Closed-loop execution feedback | L6 | 90 | 95 | 6h | +0.8 | Complete (trend analysis + self-review protocol) |
+| 7 | Dynamic MSV dashboard in cognitive_app | MSV | 92.8 | 96 | 8h | +0.5 | PS-14 Complete |
+| 8 | Automated regression scoring pipeline | Agentic | 93.0 | 96 | 6h | +0.4 | Complete (fragile test scanner + healing loop + CI auto-fix) |
+| 9 | Multi-agent consensus protocol | L4 | 96 | 98 | 4h | +0.7 | Complete (TaskRouter + agent_introspection cross-validation) |
+| 10 | Context window optimization | L5 | 93 | 97 | 6h | +0.8 | Complete (scripts/cognitive/context_window_optimizer.py) |
+| 11 | Cross-session knowledge transfer | L6 | 91 | 96 | 6h | +0.7 | Complete (scripts/cognitive/knowledge_transfer.py) |
 
 **Total Effort**: ~72 hours across 23 sessions
-**Final Score**: 87.3 → 97.0 (+9.7)
-**Progress**: 11/11 improvements complete (100%) 
+**Final Score**: 87.3 97.0 (+9.7)
+**Progress**: 11/11 improvements complete (100%)
 
 ### PS-14 Implementation Impact (2026-02-12)
 
-**Improvement #4: Automatic agent routing by task type** 
+**Improvement #4: Automatic agent routing by task type**
 - PS-13 implemented TaskRouter with 7 categories, 70+ keywords
 - Agent orchestrator routes tasks to specialized agents automatically
 - L4 Executive Function score: 95/100 maintained
 
-**Improvement #5: Continuous cognitive control loop**  Complete
+**Improvement #5: Continuous cognitive control loop** Complete
 - CacheManager workflow integration (5/5 target workflows with health reporting)
 - CI auto-fix system active (8 patterns, 37.5% auto-fix coverage)
 - Fragile test hardening (153/154 files with import guards — 99.4% coverage)
 - Cognitive brain healing loop v1 (4-check: lint, syntax, auto-fix, fragile scan)
 - **Achievement**: Fully operational continuous control with automated diagnostics
 
-**Improvement #7: Dynamic MSV dashboard in cognitive_app** 
+**Improvement #7: Dynamic MSV dashboard in cognitive_app**
 - MSVRadarChart.tsx component implemented (5-dimension visualization)
 - useMSVMetrics() hook with real-time updates (10s refresh)
 - Integrated into MetricsDashboard with live scoring
 - Interactive tooltips, progress bars, and grade display (A/A+)
 - Mock data generator for development
 
-**Improvement #6: Closed-loop execution feedback** 
+**Improvement #6: Closed-loop execution feedback**
 - Trend analysis script (`scripts/cognitive/trend_analysis.py`) extracts session metrics and AAIS progression
 - Self-review protocol with iterative autonomous self-healing across sessions
 - CacheManager health reports in 5 workflows provide CI execution feedback
-- **Achievement**: Full closed-loop from CI execution → health analysis → corrective action
+- **Achievement**: Full closed-loop from CI execution health analysis corrective action
 
-**Improvement #8: Automated regression scoring pipeline** 
+**Improvement #8: Automated regression scoring pipeline**
 - Fragile test scanner (`fragile_tests_scan.py`) detects test quality regressions
 - Healing loop (`healing_loop.py`) automates regression detection (lint, syntax, auto-fix)
 - Import guard tooling (`add_import_guards.py`) prevents collection-time regressions
@@ -346,11 +346,15 @@ V3.4 (2026-02-12):  ████████████████████
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing L5: 93/100, L5: 97/100'}}%%
+
 graph LR
     subgraph "V3.1 → V3.2 Score Improvements"
         direction TB
+
         L5_OLD[L5: 93/100] -->|+4| L5_NEW[L5: 97/100]
+
         L6_OLD[L6: 91/100] -->|+5| L6_NEW[L6: 96/100]
+
         ERR_OLD[Error Recovery: 93] -->|+2| ERR_NEW[Error Recovery: 95]
     end
 
@@ -408,7 +412,7 @@ The scoring system is designed for visibility through the **cognitive_app** — 
 
 ---
 
-##  Cross-References
+## Cross-References
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history context for scoring
 - [Planset Registry](PLANSET_REGISTRY.md) — Evidence for task adherence scoring

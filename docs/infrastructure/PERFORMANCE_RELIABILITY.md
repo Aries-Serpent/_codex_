@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0
 **Last Updated: 2026-07-08
-**Authority:** Phase 12 WS3 Documentation Lane 8  
-**Audience:** SREs, Product Managers, Platform Architects  
+**Authority:** Phase 12 WS3 Documentation Lane 8
+**Audience:** SREs, Product Managers, Platform Architects
 **Status:** Production SLA
 
 ---
@@ -51,8 +51,8 @@ Monthly Downtime Budget:
 
 ### Model Serving SLA
 
-**Target Availability:** 99.95%  
-**Target Latency (p99):** <1 second  
+**Target Availability:** 99.95%
+**Target Latency (p99):** <1 second
 **Target Throughput:** >10,000 inferences/sec per cluster
 
 ```yaml
@@ -66,8 +66,8 @@ SLA Targets:
 
 ### Training Service SLA
 
-**Target Availability:** 99.9%  
-**No strict latency SLA** (async job)  
+**Target Availability:** 99.9%
+**No strict latency SLA** (async job)
 **Checkpoint Interval:** ≤1 hour guaranteed
 
 ```yaml
@@ -80,8 +80,8 @@ SLA Targets:
 
 ### Data Durability SLA
 
-**Target Durability:** 99.999999999% (11 nines)  
-**Minimum Replicas:** 3 across availability zones  
+**Target Durability:** 99.999999999% (11 nines)
+**Minimum Replicas:** 3 across availability zones
 **Backup Frequency:** Hourly with 30-day retention
 
 ```
@@ -316,10 +316,10 @@ Trend:
 
 | Service | p50 Error Rate | p99 Error Rate | Target | Status |
 |---------|---|---|---|---|
-| API | 0.01% | 0.05% | <0.5% |  |
-| Model Server | 0.02% | 0.08% | <0.5% |  |
-| Training | 0.03% | 0.10% | <1% |  |
-| Database | 0.001% | 0.005% | <0.1% |  |
+| API | 0.01% | 0.05% | <0.5% | |
+| Model Server | 0.02% | 0.08% | <0.5% | |
+| Training | 0.03% | 0.10% | <1% | |
+| Database | 0.001% | 0.005% | <0.1% | |
 
 ### Latency Metrics
 
@@ -639,6 +639,6 @@ Goal 5: Achieve 99.99% availability
 ---
 
 **Last Updated: 2026-07-08
-**Next Review:** 2026-10-08  
+**Next Review:** 2026-10-08
 **Escalation Contact:** @platform-leads
 

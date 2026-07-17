@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Maintainer**: DevOps Lead  
-**Approver**: Production Engineering Manager  
+**Version**: 1.0
+**Last Updated**: 2026-06-22
+**Maintainer**: DevOps Lead
+**Approver**: Production Engineering Manager
 
 ## Document Control
 
@@ -19,10 +19,10 @@
 
 This runbook provides comprehensive step-by-step procedures for deploying Aries-Serpent/_codex_ to production. It covers all deployment phases from pre-deployment validation through post-deployment verification, with explicit rollback procedures and approval gates.
 
-**Deployment Target**: Production environment (us-east-1, Kubernetes cluster, managed PostgreSQL)  
-**Estimated Duration**: 2-3 hours (normal flow), 30-45 minutes (expedited with pre-validated components)  
-**Recovery Target Objective (RTO)**: < 5 minutes via automated rollback  
-**Recovery Point Objective (RPO)**: < 1 minute (continuous backup)  
+**Deployment Target**: Production environment (us-east-1, Kubernetes cluster, managed PostgreSQL)
+**Estimated Duration**: 2-3 hours (normal flow), 30-45 minutes (expedited with pre-validated components)
+**Recovery Target Objective (RTO)**: < 5 minutes via automated rollback
+**Recovery Point Objective (RPO)**: < 1 minute (continuous backup)
 
 ---
 
@@ -64,23 +64,23 @@ Contact: _________________________ Phone: _________
      s3://prod-backups/database/prod-full-${BACKUP_ID}.sql
    aws s3api head-object --bucket prod-backups --key database/prod-full-${BACKUP_ID}.sql
    echo "Backup ID for rollback: $BACKUP_ID"
-   ```
+ ```
 
 2. Verify backup integrity:
    ```bash
    pg_restore --list /backup/prod-full-${BACKUP_ID}.sql | head -20
-   ```
+ ```
 
 3. Create Docker image snapshot for rollback:
    ```bash
    CURRENT_VERSION=$(kubectl get deployment codex-api -n production -o jsonpath='{.spec.template.spec.containers[0].image}')
    echo "Current production version: $CURRENT_VERSION" > /tmp/rollback-version.txt
-   ```
+ ```
 
 4. Document current state in deployment log:
    ```bash
    echo "Pre-deployment snapshot at $(date): Version=$CURRENT_VERSION, Backup=$BACKUP_ID" >> /var/log/deployment.log
-   ```
+ ```
 
 **Sign-off**:
 - [ ] Backup verified and accessible
@@ -101,22 +101,22 @@ Contact: _________________________ Phone: _________
    ```bash
    kubectl apply -f k8s/production/deployment.yaml --dry-run=client -o yaml > /tmp/deployment-dry-run.yaml
    echo "Deployment manifest validation passed"
-   ```
+ ```
 
 2. **Check resource limits**:
    ```bash
    kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, cpu: .status.allocatable.cpu, memory: .status.allocatable.memory}'
-   ```
+ ```
 
 3. **Verify secrets exist**:
    ```bash
    kubectl get secrets -n production | grep -E "db-credentials|api-keys|ssl-cert"
-   ```
+ ```
 
 4. **Test database connection string**:
    ```bash
    psql -h $DB_HOST -U $DB_USER -d codex_prod -c "SELECT version();"
-   ```
+ ```
 
 ### 2.2 Service Health Check
 
@@ -151,23 +151,23 @@ Contact: _________________________ Phone: _________
    VERSION=$(cat VERSION)
    docker build -t codex-api:${VERSION} -f Dockerfile.prod .
    docker tag codex-api:${VERSION} $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/codex-api:${VERSION}
-   ```
+ ```
 
 2. **Scan image for vulnerabilities**:
    ```bash
    trivy image --severity HIGH,CRITICAL codex-api:${VERSION}
-   ```
+ ```
 
 3. **Push to ECR**:
    ```bash
    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
    docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/codex-api:${VERSION}
-   ```
+ ```
 
 4. **Verify image availability**:
    ```bash
    aws ecr describe-images --repository-name codex-api --region us-east-1
-   ```
+ ```
 
 ### 3.2 Kubernetes Deployment Configuration
 
@@ -179,23 +179,23 @@ Contact: _________________________ Phone: _________
    ```bash
    kubectl set image deployment/codex-api codex-api=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/codex-api:${VERSION} \
      -n production --record
-   ```
+ ```
 
 2. **Wait for rollout to complete**:
    ```bash
    kubectl rollout status deployment/codex-api -n production --timeout=10m
-   ```
+ ```
 
 3. **Verify pod readiness**:
    ```bash
    kubectl get pods -n production -l app=codex-api -o wide
    kubectl describe pods -n production -l app=codex-api | grep -A 5 "Readiness"
-   ```
+ ```
 
 4. **Check endpoint status**:
    ```bash
    kubectl get endpoints codex-api -n production
-   ```
+ ```
 
 ### 3.3 Database Migration
 
@@ -207,24 +207,24 @@ Contact: _________________________ Phone: _________
    ```bash
    MIGRATION_BACKUP_ID=$(date +%Y%m%d_%H%M%S)
    pg_dumpall -h $DB_HOST -U $DB_USER > /backup/pre-migration-${MIGRATION_BACKUP_ID}.sql
-   ```
+ ```
 
 2. **Run migration scripts**:
    ```bash
    cd /app && python -m alembic upgrade head
-   ```
+ ```
 
 3. **Verify migration success**:
    ```bash
    psql -h $DB_HOST -U $DB_USER -d codex_prod -c "\dt" | head -20
    psql -h $DB_HOST -U $DB_USER -d codex_prod -c "SELECT version FROM alembic_version;"
-   ```
+ ```
 
 4. **Rollback contingency documentation**:
    ```bash
    echo "Pre-migration backup: /backup/pre-migration-${MIGRATION_BACKUP_ID}.sql" > /tmp/migration-rollback.log
    echo "Database name: codex_prod" >> /tmp/migration-rollback.log
-   ```
+ ```
 
 ---
 
@@ -239,18 +239,18 @@ Contact: _________________________ Phone: _________
 1. **Update Prometheus scrape config**:
    ```bash
    kubectl apply -f k8s/prometheus/scrape-config-prod.yaml -n monitoring
-   ```
+ ```
 
 2. **Verify target discovery**:
    ```bash
    kubectl port-forward -n monitoring svc/prometheus 9090:9090 &
    curl http://localhost:9090/api/v1/targets
-   ```
+ ```
 
 3. **Test metric collection**:
    ```bash
    curl 'http://localhost:9090/api/v1/query?query=up{job="codex-api"}'
-   ```
+ ```
 
 ### 4.2 Grafana Dashboard Deployment
 
@@ -261,18 +261,18 @@ Contact: _________________________ Phone: _________
 1. **Apply dashboard ConfigMaps**:
    ```bash
    kubectl apply -f k8s/grafana/dashboards-prod/ -n monitoring
-   ```
+ ```
 
 2. **Verify dashboard availability**:
    ```bash
    kubectl exec -n monitoring grafana-pod -- grafana-cli admin list-dashboards
-   ```
+ ```
 
 3. **Test alerting rules**:
    ```bash
    kubectl apply -f k8s/alertmanager/rules-prod.yaml -n monitoring
    amtool alert
-   ```
+ ```
 
 ### 4.3 Logging Pipeline Validation
 
@@ -284,18 +284,18 @@ Contact: _________________________ Phone: _________
    ```bash
    kubectl apply -f k8s/logging/fluent-bit-prod.yaml -n logging
    kubectl get daemonset -n logging
-   ```
+ ```
 
 2. **Verify log ingestion**:
    ```bash
    kubectl logs -n logging -l app=fluent-bit --tail=50
-   ```
+ ```
 
 3. **Test log queries in Elasticsearch**:
    ```bash
    curl -X GET "localhost:9200/_cat/indices?v"
    curl -X GET "localhost:9200/logs-prod*/_search?size=1"
-   ```
+ ```
 
 ---
 
@@ -310,24 +310,24 @@ Contact: _________________________ Phone: _________
 1. **Apply network policies**:
    ```bash
    kubectl apply -f k8s/network-policies/prod-policies.yaml -n production
-   ```
+ ```
 
 2. **Verify network policy enforcement**:
    ```bash
    kubectl get networkpolicies -n production
-   ```
+ ```
 
 3. **Test connectivity (allowed paths)**:
    ```bash
    # Test: App → DB (should succeed)
    kubectl run debug-pod --image=busybox --rm -it -- nc -zv $DB_HOST 5432
-   ```
+ ```
 
 4. **Test isolation (denied paths)**:
    ```bash
    # Test: Pod → external network (should fail per policy)
    kubectl run debug-pod --image=busybox --rm -it -- curl http://external.com --connect-timeout 5
-   ```
+ ```
 
 ### 5.2 Secret Management
 
@@ -339,20 +339,20 @@ Contact: _________________________ Phone: _________
    ```bash
    kubectl get secret -n production
    kubectl describe secret db-credentials -n production
-   ```
+ ```
 
 2. **Test secret access in pod**:
    ```bash
    kubectl run secret-test --image=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/codex-api:${VERSION} \
      --env="TEST_SECRET=$(kubectl get secret db-credentials -n production -o jsonpath='{.data.password}' | base64 -d)" \
      --rm -it -- env | grep TEST_SECRET
-   ```
+ ```
 
 3. **Rotate secrets if needed**:
    ```bash
    # Document secret rotation procedure
    echo "Secrets rotated at $(date)" >> /tmp/security-log.txt
-   ```
+ ```
 
 ### 5.3 RBAC and Access Control
 
@@ -364,19 +364,19 @@ Contact: _________________________ Phone: _________
    ```bash
    kubectl apply -f k8s/rbac/prod-roles.yaml -n production
    kubectl apply -f k8s/rbac/prod-rolebindings.yaml -n production
-   ```
+ ```
 
 2. **Verify service accounts**:
    ```bash
    kubectl get serviceaccounts -n production
    kubectl get rolebindings -n production
-   ```
+ ```
 
 3. **Test permission enforcement**:
    ```bash
    # Test: Verify restricted access denied
    kubectl auth can-i get pods --as=system:serviceaccount:production:app-user -n production
-   ```
+ ```
 
 ---
 
@@ -392,12 +392,12 @@ Contact: _________________________ Phone: _________
    ```bash
    API_ENDPOINT=$(kubectl get svc codex-api -n production -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
    echo "API Endpoint: $API_ENDPOINT"
-   ```
+ ```
 
 2. **Test health endpoint**:
    ```bash
    curl -v http://${API_ENDPOINT}/health
-   ```
+ ```
 
 3. **Test critical business endpoints**:
    ```bash
@@ -411,12 +411,12 @@ Contact: _________________________ Phone: _________
 
    # Test endpoint 3: Data retrieval
    curl http://${API_ENDPOINT}/api/v1/status
-   ```
+ ```
 
 4. **Run smoke test suite**:
    ```bash
    ./tests/smoke-tests/prod-smoke-test.sh
-   ```
+ ```
 
 ### 6.2 Database Integration Testing
 
@@ -428,12 +428,12 @@ Contact: _________________________ Phone: _________
    ```bash
    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
      -c "EXPLAIN ANALYZE SELECT * FROM users LIMIT 1000;" | head -30
-   ```
+ ```
 
 2. **Verify critical tables exist**:
    ```bash
    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod -c "\dt"
-   ```
+ ```
 
 3. **Test transaction support**:
    ```bash
@@ -442,7 +442,7 @@ Contact: _________________________ Phone: _________
    SELECT COUNT(*) FROM users;
    ROLLBACK;
    EOF
-   ```
+ ```
 
 ### 6.3 Cache Layer Validation
 
@@ -453,19 +453,19 @@ Contact: _________________________ Phone: _________
 1. **Test cache connectivity**:
    ```bash
    redis-cli -h $REDIS_ENDPOINT PING
-   ```
+ ```
 
 2. **Test cache operations**:
    ```bash
    redis-cli -h $REDIS_ENDPOINT SET test-key "test-value"
    redis-cli -h $REDIS_ENDPOINT GET test-key
    redis-cli -h $REDIS_ENDPOINT DEL test-key
-   ```
+ ```
 
 3. **Monitor cache metrics**:
    ```bash
    redis-cli -h $REDIS_ENDPOINT INFO stats | grep -E "total_commands_processed|used_memory"
-   ```
+ ```
 
 ---
 
@@ -480,24 +480,24 @@ Contact: _________________________ Phone: _________
 1. **Run load test with production-like traffic**:
    ```bash
    ./tests/load-tests/artillery.yml --target http://${API_ENDPOINT}
-   ```
+ ```
 
 2. **Monitor system metrics during load test**:
    ```bash
    # Monitor in separate terminal
    kubectl top nodes
    kubectl top pods -n production --containers
-   ```
+ ```
 
 3. **Analyze performance results**:
-   - Response time: < 200ms (p95)
-   - Error rate: < 0.1%
-   - Throughput: > 100 req/sec
+ - Response time: < 200ms (p95)
+ - Error rate: < 0.1%
+ - Throughput: > 100 req/sec
 
 4. **Document baseline metrics**:
    ```bash
    echo "Performance baseline recorded at $(date)" >> /tmp/baseline-metrics.log
-   ```
+ ```
 
 ### 7.2 Stress Testing
 
@@ -508,19 +508,19 @@ Contact: _________________________ Phone: _________
 1. **Run stress test**:
    ```bash
    ./tests/stress-tests/run-stress-test.sh --duration=5m --concurrent=500
-   ```
+ ```
 
 2. **Verify graceful degradation**:
-   - System remains responsive
-   - Error rates controlled
-   - No cascading failures
+ - System remains responsive
+ - Error rates controlled
+ - No cascading failures
 
 3. **Verify recovery**:
    ```bash
    # After stress test, verify system returns to normal
    curl http://${API_ENDPOINT}/health
    kubectl get pods -n production
-   ```
+ ```
 
 ---
 
@@ -577,24 +577,24 @@ START: Execute Traffic Cutover
    kubectl patch deployment codex-api -n production -p '{"spec":{"replicas":10}}'
    kubectl set image deployment/codex-api codex-api=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/codex-api:${VERSION} \
      -n production --selector=version=canary
-   ```
+ ```
 
 2. **Configure traffic split (10% to canary)**:
    ```bash
    kubectl apply -f k8s/traffic-management/canary-10pct.yaml -n production
-   ```
+ ```
 
 3. **Monitor canary metrics for 5 minutes**:
    ```bash
    # Run continuous monitoring
    watch -n 5 'curl -s http://${API_ENDPOINT}/health | jq .'
-   ```
+ ```
 
 4. **Validate canary metrics**:
    ```bash
    # Check in Prometheus
    curl 'http://localhost:9090/api/v1/query?query=rate(http_requests_total{version="canary"}[5m])'
-   ```
+ ```
 
 ### 8.3 Progressive Traffic Rollout
 
@@ -604,18 +604,18 @@ START: Execute Traffic Cutover
    ```bash
    kubectl apply -f k8s/traffic-management/canary-50pct.yaml -n production
    kubectl patch deployment codex-api -n production -p '{"spec":{"replicas":20}}'
-   ```
+ ```
 
 2. **Monitor for 5 minutes**:
    ```bash
    kubectl logs -n production -l app=codex-api --tail=100 -f
-   ```
+ ```
 
 3. **Increase to 100% traffic**:
    ```bash
    kubectl apply -f k8s/traffic-management/stable-100pct.yaml -n production
    kubectl patch deployment codex-api -n production -p '{"spec":{"replicas":30}}'
-   ```
+ ```
 
 4. **Monitor post-cutover (10 minutes)**:
    ```bash
@@ -625,7 +625,7 @@ START: Execute Traffic Cutover
      curl -s http://${API_ENDPOINT}/health
      sleep 60
    done
-   ```
+ ```
 
 ### 8.4 Cutover Sign-Off
 
@@ -661,23 +661,23 @@ Witness: _________________________ Title: _________
    ```bash
    kubectl get pods -n production
    kubectl get pods -n production --field-selector=status.phase!=Running
-   ```
+ ```
 
 2. **Check for pod restart cycles**:
    ```bash
    kubectl get pods -n production -o json | jq '.items[] | select(.status.containerStatuses[].restartCount > 3)'
-   ```
+ ```
 
 3. **Verify resource utilization**:
    ```bash
    kubectl top pods -n production --containers
-   ```
+ ```
 
 4. **Check database replication lag**:
    ```bash
    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
      -c "SELECT now() - pg_last_wal_receive_lsn() AS replication_lag;"
-   ```
+ ```
 
 ### 9.2 Application Monitoring
 
@@ -688,23 +688,23 @@ Witness: _________________________ Title: _________
 1. **Monitor error rates**:
    ```bash
    curl 'http://localhost:9090/api/v1/query?query=rate(http_errors_total[5m])'
-   ```
+ ```
 
 2. **Monitor response times**:
    ```bash
    curl 'http://localhost:9090/api/v1/query?query=http_request_duration_seconds{quantile="0.95"}'
-   ```
+ ```
 
 3. **Check business logic correctness**:
    ```bash
    # Run business-critical endpoint test
    curl -X GET http://${API_ENDPOINT}/api/v1/validation/production-health
-   ```
+ ```
 
 4. **Monitor external dependencies**:
    ```bash
    curl 'http://localhost:9090/api/v1/query?query=up{job="external-service"}'
-   ```
+ ```
 
 ### 9.3 Security Validation
 
@@ -716,17 +716,17 @@ Witness: _________________________ Title: _________
    ```bash
    curl -I https://${API_ENDPOINT}
    openssl s_client -connect ${API_ENDPOINT}:443 -showcerts < /dev/null
-   ```
+ ```
 
 2. **Check security headers**:
    ```bash
    curl -I https://${API_ENDPOINT} | grep -E "X-Content-Type-Options|X-Frame-Options|Strict-Transport-Security"
-   ```
+ ```
 
 3. **Verify WAF rules active**:
    ```bash
    aws wafv2 get-web-acl-for-resource --resource-arn $(kubectl get svc codex-api -n production -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-   ```
+ ```
 
 4. **Test rate limiting**:
    ```bash
@@ -734,7 +734,7 @@ Witness: _________________________ Title: _________
      curl -s http://${API_ENDPOINT}/api/v1/test > /dev/null &
    done
    wait
-   ```
+ ```
 
 ---
 
@@ -797,8 +797,8 @@ curl http://${API_ENDPOINT}/health
 
 ## 10.3 Rollback Sign-Off
 
-**Rollback Approved By**: _________________________ Date: _________  
-**Reason for Rollback**: _______________________________________________  
+**Rollback Approved By**: _________________________ Date: _________
+**Reason for Rollback**: _______________________________________________
 **Witness**: _________________________ Title: _________
 
 ---
@@ -833,9 +833,9 @@ Incidents During Deployment: [ ] None  [ ] Minor  [ ] Major
 
 ## Contact Information and Escalation
 
-**On-Call DevOps Engineer**: [Phone: ________________, Slack: @devops]  
-**Production Engineering Manager**: [Phone: ________________, Slack: @prod-manager]  
-**CTO/Technical Lead**: [Phone: ________________, Slack: @cto]  
+**On-Call DevOps Engineer**: [Phone: ________________, Slack: @devops]
+**Production Engineering Manager**: [Phone: ________________, Slack: @prod-manager]
+**CTO/Technical Lead**: [Phone: ________________, Slack: @cto]
 
 **Emergency Escalation Path**:
 1. Page on-call engineer via PagerDuty
@@ -873,6 +873,6 @@ VERSION=$(cat VERSION)
 
 ---
 
-**Document Version**: 1.0  
-**Last Reviewed**: 2024-01-15  
+**Document Version**: 1.0
+**Last Reviewed**: 2024-01-15
 **Next Review Date**: 2024-02-15

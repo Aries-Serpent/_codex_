@@ -84,13 +84,13 @@ _codex_/
    ```bash
    git clone https://github.com/Aries-Serpent/_codex_.git
    cd _codex_
-   ```
+ ```
 
 2. **Set up a virtual environment**:
    ```bash
    python -m venv .venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
+ ```
 
 3. **Install dependencies**:
    ```bash
@@ -102,14 +102,14 @@ _codex_/
 
    # Option 3: Minimal installation
    pip install -e .
-   ```
+ ```
 
 4. **Verify installation**:
    ```bash
    codex --help
    codex-train --help
    codex-eval --help
-   ```
+ ```
 
 ### First Steps
 
@@ -118,7 +118,7 @@ _codex_/
    # Serve docs locally
    pip install -r docs/requirements.txt
    mkdocs serve
-   ```
+ ```
 
 2. **Run a quick training test**:
    ```bash
@@ -128,12 +128,12 @@ _codex_/
      data.eval_path=data/eval.jsonl \
      logging.mlflow_enable=false \
      training.output_dir=artifacts/runs/quickstart
-   ```
+ ```
 
 3. **Check repository status**:
    ```bash
    codex-status-audit --skip-audit
-   ```
+ ```
 
 ## Key Concepts
 
@@ -311,7 +311,7 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 1. **Snapshot current state**:
    ```bash
    codex zendesk snapshot --env=dev
-   ```
+ ```
 
 2. **Create desired state** in `configs/desired/zendesk/`
 
@@ -321,17 +321,17 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
      --desired-file configs/desired/triggers.json \
      --current-file snapshot/dev/latest/triggers.json \
      --output diffs/triggers_diff.json
-   ```
+ ```
 
 4. **Apply changes**:
    ```bash
    codex zendesk apply triggers plans/triggers_plan.json --env=dev
-   ```
+ ```
 
 5. **Verify**:
    ```bash
    codex zendesk metrics
-   ```
+ ```
 
 ### Key Zendesk Resources
 
@@ -588,4 +588,4 @@ nox -s tests
 
 **Welcome to _codex_!** We're excited to have you here. If you have questions or need help, don't hesitate to ask in discussions or open an issue.
 
-Happy coding! 
+Happy coding!

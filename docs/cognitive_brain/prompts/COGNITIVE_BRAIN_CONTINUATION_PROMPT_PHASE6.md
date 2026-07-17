@@ -9,51 +9,51 @@
 > **Blocking PR**: [#3336](https://github.com/Aries-Serpent/_codex_/pull/3336) — CI fixes pending
 > **Full Planset**: `.codex/plans/PHASE6_CONTINUATION_PLANSET.md`
 > **Consolidation Map**: `.codex/PRODUCTION_READINESS_CONSOLIDATION_MAP.md` 🆕
-> **Previous Phase:** Phase 5 + CI Remediation (Sessions 35–43) —  COMPLETE
+> **Previous Phase:** Phase 5 + CI Remediation (Sessions 35–43) — COMPLETE
 > **Branch:** `copilot/sub-pr-3336`
 > **PR:** #3336
 
 ---
 
-##  Session Start Checklist (MUST DO FIRST)
+## Session Start Checklist (MUST DO FIRST)
 
 1. **Verify CI green** — check if Resilient Validation Suite (run 22203971518 on commit 756c152,
-   then the follow-up commit with evaluator.py fix) passed:
+ then the follow-up commit with evaluator.py fix) passed:
    ```bash
    gh run view 22203971518 --job 64224708717  # slow
    gh run view 22203971518 --job 64224708718  # quick
-   ```
+ ```
 2. **Load memories**: Review stored facts for hf_pinning, CI false positives, conftest xfail
 3. **Check git status**: `git log --oneline -5 && git status --short`
 
 ---
 
-##  Current State (as of 2026-02-19 Session 39)
+## Current State (as of 2026-02-19 Session 39)
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Accuracy | 100% | ≥84% |  |
-| Coherence | 0.814 | ≥0.650 |  |
-| k₁ | 0.332 | ≤0.35 |  |
-| Tests | 346 | All pass |  |
-| Scalability (1000×5) | 96.8% | ≥95% |  |
-| Noise (10% gate) | 91.4% | ≥90% |  |
-| CodeQL alerts | 0 | 0 |  |
-| Ruff errors | 0 | 0 |  |
-| CI false positives | 0 blocking | 0 blocking |  |
-| Agent files k₁=0.332 | All updated | All |  |
+| Accuracy | 100% | ≥84% | |
+| Coherence | 0.814 | ≥0.650 | |
+| k₁ | 0.332 | ≤0.35 | |
+| Tests | 346 | All pass | |
+| Scalability (1000×5) | 96.8% | ≥95% | |
+| Noise (10% gate) | 91.4% | ≥90% | |
+| CodeQL alerts | 0 | 0 | |
+| Ruff errors | 0 | 0 | |
+| CI false positives | 0 blocking | 0 blocking | |
+| Agent files k₁=0.332 | All updated | All | |
 
 ---
 
-##  Priority 1 — Immediate
+## Priority 1 — Immediate
 
 ### P1.1: Verify evaluator.py fix resolves test_run_eval_cli
 
 **What was fixed** (last commit before this session):
 - Removed `revision=get_hf_revision()` from `src/codex_ml/eval/evaluator.py` lines 122+129
 - This allows `ensure_pinned_kwargs` to check `KNOWN_MODEL_REVISIONS` (real hash) before env vars (fake `abcdef0`)
-- Previously: `get_hf_revision()` returned `HF_REVISION=abcdef0` → HuggingFace 404 error
-- Now: `KNOWN_MODEL_REVISIONS["sshleifer/tiny-gpt2"]` = real commit hash → works or graceful skip
+- Previously: `get_hf_revision()` returned `HF_REVISION=abcdef0` HuggingFace 404 error
+- Now: `KNOWN_MODEL_REVISIONS["sshleifer/tiny-gpt2"]` = real commit hash works or graceful skip
 
 **If test_run_eval_cli STILL fails after this fix**, check:
 ```text
@@ -78,7 +78,7 @@ PYTHONPATH=src pytest tests/ -v --timeout=300 -x -q 2>&1 | tail -20
 
 ---
 
-##  Priority 2 — Active Learning Production Graduation
+## Priority 2 — Active Learning Production Graduation
 
 **Goal**: Graduate Active Learning from staging to production with budget controls.
 
@@ -104,9 +104,9 @@ def _enforce_query_budget(self) -> bool:
 
 ---
 
-##  Priority 2 — Extended Noise Validation (1000 scenarios)
+## Priority 2 — Extended Noise Validation (1000 scenarios)
 
-**Current**: 91.4% accuracy at 10% gate error on 200 scenarios 
+**Current**: 91.4% accuracy at 10% gate error on 200 scenarios
 **Target**: Verify ≥90% at 10% gate error on 1000 scenarios
 
 ```bash
@@ -117,7 +117,7 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 
 ---
 
-##  Priority 3 — Enhancement
+## Priority 3 — Enhancement
 
 ### Bayesian CPD EM Update
 
@@ -149,7 +149,7 @@ def test_compliance_chain_prompting_workflow():
 
 ---
 
-## 🔑 Key Technical Facts (verified 2026-02-19)
+## Key Technical Facts (verified 2026-02-19)
 
 ### hf_pinning.py priority order
 ```
@@ -182,7 +182,7 @@ load_from_pretrained():
 
 ---
 
-##  Verification Commands
+## Verification Commands
 
 ```bash
 # 1. Quantum compliance suite (346 tests)
@@ -210,7 +210,7 @@ git ls-files --others --exclude-standard
 
 ---
 
-##  Accountability Note
+## Accountability Note
 
 See `.codex/ACCOUNTABILITY_REPORT_2026_02_19_PR3330.md` for root-cause analysis of the xfail policy violations in sessions 37–38.
 

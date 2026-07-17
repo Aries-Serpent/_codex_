@@ -11,7 +11,7 @@
 
 ---
 
-##  Overview
+## Overview
 
 This system ensures all diagrams, Mermaid charts, and visual representations in the codebase remain current and accurate.
 
@@ -23,7 +23,7 @@ This system ensures all diagrams, Mermaid charts, and visual representations in 
 
 ---
 
-## 🛠️ Automated Update Tool
+## Automated Update Tool
 
 ### Usage
 
@@ -50,15 +50,15 @@ python scripts/maintenance/update_diagrams.py --update
 
 ### What It Checks
 
--  Phase status accuracy (Phase 6-9 completion percentages)
--  Workflow diagram currency (reflects actual workflows)
--  Architecture diagram accuracy (matches current structure)
--  Coverage percentages (reflects current test coverage)
--  Component references (all mentioned components exist)
+- Phase status accuracy (Phase 6-9 completion percentages)
+- Workflow diagram currency (reflects actual workflows)
+- Architecture diagram accuracy (matches current structure)
+- Coverage percentages (reflects current test coverage)
+- Component references (all mentioned components exist)
 
 ---
 
-##  Standard Diagrams
+## Standard Diagrams
 
 ### Phase Status Diagram
 
@@ -67,14 +67,21 @@ python scripts/maintenance/update_diagrams.py --update
 **Current Version**:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Phase 6: MCP<br/>100% , Phase 7: Cognitive Brain<br/>100% '}}%%
+
 graph LR
+
     P6[Phase 6: MCP<br/>100% ] --> P7[Phase 7: Cognitive Brain<br/>100% ]
+
     P7 --> P8[Phase 8: Documentation<br/>100% ]
+
     P8 --> P9[Phase 9: Coverage<br/>10.7% ]
 
     P9 --> P91[9.1: Critical Paths<br/>72% → 85%]
+
     P9 --> P92[9.2: Public APIs<br/>85% → 92%]
+
     P9 --> P93[9.3: Error Paths<br/>92% → 97%]
+
     P9 --> P94[9.4: Edge Cases<br/>97% → 100%]
 
     style P6 fill:#90EE90
@@ -96,6 +103,7 @@ graph LR
 **Current Version**:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Cognitive Map<br/>Architecture, Dashboard<br/>Status'}}%%
+
 graph TB
     subgraph "Cognitive Brain"
         CB_MAP[Cognitive Map<br/>Architecture]
@@ -116,16 +124,25 @@ graph TB
     end
 
     CB_MAP --> CODEX
+
     CB_MAP --> AGENTS
+
     CB_MAP --> MCP
+
     CB_DASH --> TESTS
+
     CB_DASH --> CI
+
     CB_ROAD --> DOCS
 
     AGENTS --> CODEX
+
     MCP --> AGENTS
+
     TESTS --> CODEX
+
     TESTS --> AGENTS
+
     CI --> TESTS
 
     style CB_MAP fill:#E6F3FF
@@ -148,10 +165,15 @@ graph TB
 **Current Version**:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Current: 10.7%, Phase 9.1<br/>25%'}}%%
+
 graph LR
+
     START[Current: 10.7%] --> P91[Phase 9.1<br/>25%]
+
     P91 --> P92[Phase 9.2<br/>92%]
+
     P92 --> P93[Phase 9.3<br/>97%]
+
     P93 --> TARGET[Target: 100% ]
 
     P91 -.150-200 tests.-> P91
@@ -175,13 +197,21 @@ graph LR
 **Current Version**:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Start, Scan Codebase'}}%%
+
 graph TD
+
     START([Start]) --> SCAN[Scan Codebase]
+
     SCAN --> TEST[Run Tests]
+
     TEST --> LINT[Lint & Format]
+
     LINT --> BUILD[Build Package]
+
     BUILD --> DEPLOY{Deploy?}
+
     DEPLOY -->|Yes| PROD[Production]
+
     DEPLOY -->|No| STAGING[Staging]
 
     TEST -.Coverage.-> COV[Coverage Report]
@@ -198,35 +228,35 @@ graph TD
 
 ---
 
-##  Update Process
+## Update Process
 
 ### Manual Update Process
 
 1. **Run Scanner**
    ```bash
    python scripts/maintenance/update_diagrams.py --scan
-   ```
+ ```
 
 2. **Review Report**
-   - Open `docs/maintenance/DIAGRAM_UPDATE_REPORT.md`
-   - Identify diagrams needing updates
-   - Note update reasons
+ - Open `docs/maintenance/DIAGRAM_UPDATE_REPORT.md`
+ - Identify diagrams needing updates
+ - Note update reasons
 
 3. **Update Diagrams**
-   - Use standard diagrams from this guide
-   - Modify percentages, names, or structure as needed
-   - Maintain consistent styling
+ - Use standard diagrams from this guide
+ - Modify percentages, names, or structure as needed
+ - Maintain consistent styling
 
 4. **Validate**
    ```bash
    python scripts/maintenance/update_diagrams.py --validate
-   ```
+ ```
 
 5. **Commit Changes**
    ```bash
    git add <modified_files>
    git commit -m "docs: Update diagrams to reflect current state"
-   ```
+ ```
 
 ### Automated Update Process (Future)
 
@@ -243,7 +273,7 @@ This will:
 
 ---
 
-##  Update Triggers
+## Update Triggers
 
 ### Phase Status Changes
 **Trigger**: Phase completion percentage changes
@@ -283,7 +313,7 @@ This will:
 
 ---
 
-##  Diagram Standards
+## Diagram Standards
 
 ### Naming Conventions
 - Use descriptive, kebab-case filenames for diagram files
@@ -307,7 +337,7 @@ This will:
 
 ---
 
-##  Integration with CI/CD
+## Integration with CI/CD
 
 ### Pre-Commit Hook (Future)
 ```bash
@@ -334,7 +364,7 @@ jobs:
 
 ---
 
-##  Maintenance Schedule
+## Maintenance Schedule
 
 | Task | Frequency | Trigger | Owner |
 |------|-----------|---------|-------|
@@ -346,7 +376,7 @@ jobs:
 
 ---
 
-##  Acceptance Criteria
+## Acceptance Criteria
 
 Diagram system is well-maintained when:
 - [ ] All diagrams reflect current state (0 outdated)
@@ -359,7 +389,7 @@ Diagram system is well-maintained when:
 
 ---
 
-##  References
+## References
 
 ### Documentation
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md) - Architecture
@@ -379,7 +409,7 @@ Diagram system is well-maintained when:
 
 ---
 
-##  Future Enhancements
+## Future Enhancements
 
 ### Phase 1 (Phase 1 (Current Cycle))
 - [ ] Automatic diagram updates

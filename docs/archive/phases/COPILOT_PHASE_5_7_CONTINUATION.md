@@ -8,8 +8,8 @@
 
 PR #2827 security remediation is progressing well. **Phases 1-4 are complete** with all critical vulnerabilities addressed:
 
- **Phase 1-3**: Critical security fixes (shell injection, XML parsing, hash algorithms)  
- **Phase 4**: CORS hardening, pre-commit hooks, Semgrep rules  
+ **Phase 1-3**: Critical security fixes (shell injection, XML parsing, hash algorithms)
+ **Phase 4**: CORS hardening, pre-commit hooks, Semgrep rules
 
 **Current Commits**:
 - `a97c216`: Critical security fixes
@@ -20,8 +20,8 @@ PR #2827 security remediation is progressing well. **Phases 1-4 are complete** w
 
 ### Phase 5: CI/CD Improvements (High Priority)
 
-#### Task 5.1: Fix Rust Unit Test Failures ️
-**Status**: Needs investigation  
+#### Task 5.1: Fix Rust Unit Test Failures
+**Status**: Needs investigation
 **Command to run**:
 ```bash
 cd /home/runner/work/_codex_/_codex_
@@ -47,8 +47,8 @@ fn process_data<'a>(data: &'a str) -> &'a str {
 let data = data.clone(); // Clone if needed
 ```
 
-#### Task 5.2: Optimize RAG Test Performance ️
-**Status**: Tests timing out after 4-6 minutes  
+#### Task 5.2: Optimize RAG Test Performance
+**Status**: Tests timing out after 4-6 minutes
 **Files**: `tests/rag/` or related RAG modules
 
 **Steps**:
@@ -84,7 +84,7 @@ pytest tests/rag/ -v --durations=10
 pytest tests/rag/ -v --timeout=300
 ```
 
-#### Task 5.3: Test Semgrep Configuration 
+#### Task 5.3: Test Semgrep Configuration
 **Status**: Rules created, needs validation
 
 **Test commands**:
@@ -163,35 +163,35 @@ pytest .github/agents/bridge-security-monitor/tests/ -v
 
 **Sections to add**:
 1. **Subprocess Security**
-   - Always use `shell=False`
-   - Use `shlex.split()` for command parsing
-   - Never pass user input directly to shell
+ - Always use `shell=False`
+ - Use `shlex.split()` for command parsing
+ - Never pass user input directly to shell
 
 2. **XML Parsing Guidelines**
-   - Use `defusedxml` instead of `xml.etree`
-   - Never parse untrusted XML without validation
-   - Disable external entity resolution
+ - Use `defusedxml` instead of `xml.etree`
+ - Never parse untrusted XML without validation
+ - Disable external entity resolution
 
 3. **Hash Algorithm Selection**
-   - Use SHA-256 for security purposes
-   - Add `usedforsecurity=False` for non-security hashing
-   - Document why MD5/SHA1 is used if needed
+ - Use SHA-256 for security purposes
+ - Add `usedforsecurity=False` for non-security hashing
+ - Document why MD5/SHA1 is used if needed
 
 4. **Pickle Safety**
-   - Use `utils.safe_pickle.safe_pickle_load()`
-   - Never unpickle untrusted data
-   - Prefer JSON for serialization
+ - Use `utils.safe_pickle.safe_pickle_load()`
+ - Never unpickle untrusted data
+ - Prefer JSON for serialization
 
 5. **CORS Configuration**
-   - Never use wildcard origins
-   - Use environment variables for flexibility
-   - Reference `docs/security/CORS_CONFIGURATION.md`
+ - Never use wildcard origins
+ - Use environment variables for flexibility
+ - Reference `docs/security/CORS_CONFIGURATION.md`
 
 6. **Pre-commit Hook Setup**
    ```bash
    pre-commit install
    pre-commit run --all-files
-   ```
+ ```
 
 #### Task 7.2: Create Developer Security Guide
 **File**: `docs/security/SECURE_CODING_GUIDE.md`
@@ -219,7 +219,7 @@ pytest .github/agents/bridge-security-monitor/tests/ -v
  **Unsafe**:
 ```python
 cmd = f"rm -rf {user_input}"
-subprocess.run(cmd, shell=True)  # Command injection!
+subprocess.run(cmd, shell=True) # Command injection!
 ```
 
  **Safe**:
@@ -233,7 +233,7 @@ subprocess.run(cmd, shell=False)
  **Unsafe**:
 ```python
 import xml.etree.ElementTree as ET
-tree = ET.parse(untrusted_xml)  # XXE vulnerability!
+tree = ET.parse(untrusted_xml) # XXE vulnerability!
 ```
 
  **Safe**:
@@ -305,22 +305,22 @@ cargo build --release
 When all phases complete:
 
 1. **Security Report**
-   - File: `docs/security/PR2827_FINAL_SECURITY_REPORT.md`
-   - Include: All fixes, metrics, before/after comparisons
+ - File: `docs/security/PR2827_FINAL_SECURITY_REPORT.md`
+ - Include: All fixes, metrics, before/after comparisons
 
 2. **Test Coverage Report**
-   - Run: `pytest --cov=src --cov-report=html`
-   - Target: >80% coverage for security-related modules
+ - Run: `pytest --cov=src --cov-report=html`
+ - Target: >80% coverage for security-related modules
 
 3. **Performance Benchmarks**
-   - RAG test execution times
-   - CI pipeline duration
-   - Security scan times
+ - RAG test execution times
+ - CI pipeline duration
+ - Security scan times
 
 4. **Updated Cognitive Brain Status**
-   - Security posture score
-   - Integration status
-   - Monitoring metrics
+ - Security posture score
+ - Integration status
+ - Monitoring metrics
 
 ## References
 
@@ -361,8 +361,8 @@ When all phases complete:
 4. Complete documentation
 5. Create final security report
 
-**Assigned**: @copilot  
-**Priority**: High  
-**Expected Duration**: 8-12 hours  
-**Started**: 2026-01-13T04:30:00Z  
+**Assigned**: @copilot
+**Priority**: High
+**Expected Duration**: 8-12 hours
+**Started**: 2026-01-13T04:30:00Z
 **Target Completion**: 2026-01-14T16:00:00Z

@@ -2,28 +2,38 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**PR:** Fix for Non-callable called  
-**Branch:** `finding-autofix-faa8614c`  
-**Sessions:** S861 → S862 → S863 → S864 → S865 → S866  
+**PR:** Fix for Non-callable called
+**Branch:** `finding-autofix-faa8614c`
+**Sessions:** S861 S862 S863 S864 S865 S866
 **Date 2026-07-13
 
 ---
 
-## 🗺️ Session Flow Diagram
+## Session Flow Diagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4351 Created, S861: Initial Fixes'}}%%
+
 graph TD
+
     Start[PR #4351 Created] --> S861[S861: Initial Fixes]
+
     S861 --> S862[S862: Review Thread Resolution]
+
     S862 --> S863[S863: Comment Gate Unblock]
+
     S863 --> S864[S864: Fast Validation Fix]
+
     S864 --> S865[S865: CI Rescue - Sparse Checkout]
+
     S865 --> S866[S866: PR Review Comments]
 
     S866 --> RateLimit{Rate-Limit<br/>Orchestration?}
+
     RateLimit -->|Yes| S867[S867: Workflow Orchestration]
+
     RateLimit -->|No| Merge[Ready for Merge]
+
     S867 --> Merge
 
     style S861 fill:#e1f5ff
@@ -38,11 +48,11 @@ graph TD
 
 ---
 
-##  Session Breakdown
+## Session Breakdown
 
 ### S861: Initial Wrong-Named-Arg Fixes
-**Objective:** Fix CodeQL `py/wrong-named-arg` alerts  
-**Status:**  Partial completion  
+**Objective:** Fix CodeQL `py/wrong-named-arg` alerts
+**Status:** Partial completion
 **Key Changes:**
 - Fixed multiple wrong-named-arg issues across codebase
 - Initial commit series addressing CodeQL alerts
@@ -50,8 +60,8 @@ graph TD
 ---
 
 ### S862: Review Thread Resolution (PR #4346)
-**Objective:** Address unresolved Copilot review threads  
-**Status:**  Complete  
+**Objective:** Address unresolved Copilot review threads
+**Status:** Complete
 **Key Changes:**
 - Confirmed 5 review threads already resolved in code
 - Updated accountability report
@@ -60,8 +70,8 @@ graph TD
 ---
 
 ### S863: Comment Gate Unblock
-**Objective:** Reply to blocking comment to unblock CI  
-**Status:**  Complete  
+**Objective:** Reply to blocking comment to unblock CI
+**Status:** Complete
 **Key Changes:**
 - Replied to comment #4403328142
 - Passed P-045 gate (ruff, sync_tracked_files, no conflicts)
@@ -69,10 +79,10 @@ graph TD
 ---
 
 ### S864: Fast Validation Fix
-**Objective:** Fix pre-commit hook failures  
-**Status:**  Complete  
+**Objective:** Fix pre-commit hook failures
+**Status:** Complete
 **Key Changes:**
-- Fixed `detect-secrets` version mismatch (1.4.0 → 1.5.0)
+- Fixed `detect-secrets` version mismatch (1.4.0 1.5.0)
 - Removed `shell=True` false positive from error message
 - Fixed broken relative link in docs
 - Replied to comment #4403330132
@@ -80,8 +90,8 @@ graph TD
 ---
 
 ### S865: CI Rescue - Sparse Checkout Cache Issue
-**Objective:** Fix CI gate failures from pip cache  
-**Status:**  Complete  
+**Objective:** Fix CI gate failures from pip cache
+**Status:** Complete
 **Key Changes:**
 - Removed `cache: pip` from sparse-checkout workflows
 - Fixed `comment-review-gate.yml`
@@ -105,14 +115,14 @@ graph TD
 ---
 
 ## S866: PR Review Comments Resolution ⭐ CURRENT
-**Objective:** Address all 16 PR review comments  
-**Status:**  Complete  
+**Objective:** Address all 16 PR review comments
+**Status:** Complete
 **Key Changes:**
 
 ### 1. Fixed CodeQL Alerts (13 items)
-**File:** `tests/serving/test_inference_enhanced.py`  
-**Issue:** "Wrong number of arguments in a call" on `create_app(config)`  
-**Root Cause:** Stub `create_app()` had no parameters  
+**File:** `tests/serving/test_inference_enhanced.py`
+**Issue:** "Wrong number of arguments in a call" on `create_app(config)`
+**Root Cause:** Stub `create_app()` had no parameters
 **Fix:**
 ```python
 # Before (line 535)
@@ -125,8 +135,8 @@ def create_app(config: Optional[ModelConfig] = None) -> None:  #  Matches real s
 ```
 
 ## 2. Fixed Callable Pattern (2 items)
-**File:** `src/codex_ml/evaluation/runner.py`  
-**Issue:** `getattr(self.model, "__call__", ...)` bypasses Python's special method resolution  
+**File:** `src/codex_ml/evaluation/runner.py`
+**Issue:** `getattr(self.model, "__call__", ...)` bypasses Python's special method resolution
 **Fix:**
 ```python
 # Before (lines 227-233)
@@ -143,8 +153,8 @@ elif callable(self.model):
 ```
 
 ## 3. Enhanced Test Robustness (1 item)
-**File:** `tests/agents/test_phase2_deep_coverage_batch4.py`  
-**Issue:** Test silently skips on signature mismatch  
+**File:** `tests/agents/test_phase2_deep_coverage_batch4.py`
+**Issue:** Test silently skips on signature mismatch
 **Fix:**
 ```python
 # Before
@@ -166,15 +176,15 @@ except TypeError:
 ```
 
 **Validation:**
--  ruff check passed
--  mypy baseline (130 == 130)
--  sync_tracked_files passed
+- ruff check passed
+- mypy baseline (130 == 130)
+- sync_tracked_files passed
 
 ---
 
 ## S867: Rate-Limit Workflow Orchestration (PLANNED)
-**Objective:** Implement rate-limit aware workflow management  
-**Status:**  Planned  
+**Objective:** Implement rate-limit aware workflow management
+**Status:** Planned
 **Scope (from maintainer comment #4404122666):**
 1. Review PR and analyze rate-limit warnings/errors
 2. Fix/cancel repetitive, duplicate workflows
@@ -191,26 +201,26 @@ except TypeError:
 
 ---
 
-##  Key Patterns Learned
+## Key Patterns Learned
 
 ### Pattern 1: Sparse Checkout + Python Cache
-**Problem:** `actions/setup-python` with `cache: pip` fails when dependency files aren't checked out  
-**Solution:** Omit `cache: pip` in sparse-checkout jobs  
-**Memory Stored:**  (workflow caching fact)
+**Problem:** `actions/setup-python` with `cache: pip` fails when dependency files aren't checked out
+**Solution:** Omit `cache: pip` in sparse-checkout jobs
+**Memory Stored:** (workflow caching fact)
 
 ### Pattern 2: Stub Function Signatures
-**Problem:** Stub functions must match real signatures to avoid CodeQL alerts  
-**Solution:** Keep stub signatures in sync with real implementations  
+**Problem:** Stub functions must match real signatures to avoid CodeQL alerts
+**Solution:** Keep stub signatures in sync with real implementations
 **Applies To:** All conditional imports with fallback stubs
 
 ### Pattern 3: Special Method Resolution
-**Problem:** `getattr(obj, "__call__", ...)` bypasses Python's type-level resolution  
-**Solution:** Use `callable(obj)` and invoke directly with try/except  
+**Problem:** `getattr(obj, "__call__", ...)` bypasses Python's type-level resolution
+**Solution:** Use `callable(obj)` and invoke directly with try/except
 **Applies To:** All dynamic callable checks
 
 ---
 
-##  Session Metrics
+## Session Metrics
 
 | Session | Duration | Commits | Files Changed | Key Achievement |
 |---------|----------|---------|---------------|-----------------|
@@ -224,7 +234,7 @@ except TypeError:
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - [PR4351_whats_next.md](../roadmap/PR4351_whats_next.md) - Next steps and planning
 - [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../accountability/AGENT_ACCOUNTABILITY_REPORT.md) - Session summaries
@@ -233,7 +243,7 @@ except TypeError:
 
 ---
 
-##  Notes
+## Notes
 
 - This PR demonstrates the importance of maintaining signature consistency across conditional imports
 - The sparse-checkout cache pattern is now documented as a repository memory

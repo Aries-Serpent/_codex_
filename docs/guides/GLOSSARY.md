@@ -143,11 +143,11 @@
 **Relation**
 - Connection between concepts
 - Types: causal, temporal, spatial, generic
-- Directed: source → target
+- Directed: source target
 
 **Analogy**
 - Mapping between domains
-- Source domain → Target domain
+- Source domain Target domain
 - Quality scored by structural similarity
 
 **Embedding**

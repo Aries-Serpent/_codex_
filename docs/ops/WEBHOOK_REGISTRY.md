@@ -16,13 +16,13 @@
 
 | Condition | Status |
 |-----------|--------|
-| `CODEX_MASTER_KEY` available in workflow |  (via `secrets.CODEX_MASTER_KEY`) |
-| `WEBHOOK_SECRET` available in workflow |  (via `secrets.WEBHOOK_SECRET`) |
-| `WEBHOOK_RECEIVER_URL` repo variable set |  **Auto-set by Codespace `post-start.sh`** — format: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
-| `POST /webhook/github` endpoint |  **Implemented** in `cognitive_app/src/server/cli_api_server.py` |
-| Port 8765 public visibility | ️ Must be set manually in Codespace Ports panel for GitHub delivery |
-| Hooks `active: true` |  Both hooks have `active: false` (intentional — activate after confirming delivery works) |
-| **Apply result** |  **READY** — once port 8765 is public and hooks are set to `active: true` |
+| `CODEX_MASTER_KEY` available in workflow | (via `secrets.CODEX_MASTER_KEY`) |
+| `WEBHOOK_SECRET` available in workflow | (via `secrets.WEBHOOK_SECRET`) |
+| `WEBHOOK_RECEIVER_URL` repo variable set | **Auto-set by Codespace `post-start.sh`** — format: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
+| `POST /webhook/github` endpoint | **Implemented** in `cognitive_app/src/server/cli_api_server.py` |
+| Port 8765 public visibility | Must be set manually in Codespace Ports panel for GitHub delivery |
+| Hooks `active: true` | Both hooks have `active: false` (intentional — activate after confirming delivery works) |
+| **Apply result** | **READY** — once port 8765 is public and hooks are set to `active: true` |
 
 > **To activate:** Set port 8765 to **public** in the Codespace Ports panel. Update both hooks to `active: true`
 > in `.codex/webhook_config.json`, then comment `@agent-infra apply-webhooks` on a PR.
@@ -67,6 +67,7 @@ Creating webhook 'runner-health-notification' ...
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "GitHub Platform", "Aries-Serpent/_codex_"'}}%%
+
 graph TB
     subgraph GitHub["GitHub Platform"]
         REPO["Aries-Serpent/_codex_"]
@@ -87,11 +88,15 @@ graph TB
 
     EVENTS -->|POST payload| HOOKS
     HOOKS -.pending deployment.-> CB_API
+
     CB_API --> CB_MEM & CB_RUN
 
     WCF -->|apply| WC
+
     WC -->|GitHub REST API| HOOKS
+
     WC -->|writes| WCR
+
     AIM -->|invokes| WC
 
     style CB_API fill:#ef4444,color:#fff
@@ -123,6 +128,7 @@ once the Cognitive Brain API server is deployed.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>CB: ack
+
     CB'}}%%
 sequenceDiagram
     participant GH as GitHub
@@ -135,7 +141,9 @@ sequenceDiagram
     Note over WH,CB: HMAC-SHA256 signature in X-Hub-Signature-256 header
     CB->>CB: verify HMAC(WEBHOOK_SECRET)
     CB->>MEM: store CI outcome
+
     MEM-->>CB: ack
+
     CB-->>WH: HTTP 200
 ```
 
@@ -146,9 +154,9 @@ sequenceDiagram
 | **Events** | `push`, `pull_request`, `issue_comment`, `pull_request_review_comment`, `workflow_run`, `repository_dispatch`, `check_run`, `check_suite` |
 | **Content type** | `application/json` |
 | **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256) |
-| **SSL verification** |  Enabled |
+| **SSL verification** | Enabled |
 | **Active** | `false` — pending server deployment |
-| **Status** |  PENDING DEPLOYMENT |
+| **Status** | PENDING DEPLOYMENT |
 
 ### Hook 2: `runner-health-notification`
 
@@ -162,7 +170,7 @@ next session.
 | **Name** | `runner-health-notification` |
 | **URL** | `https://api.your-cognitive-brain-server.com/webhook/github` *(shared with Hook 1)* |
 | **Events** | `workflow_run` only |
-| **Status** |  PENDING DEPLOYMENT — activate alongside Hook 1 |
+| **Status** | PENDING DEPLOYMENT — activate alongside Hook 1 |
 
 ---
 
@@ -174,6 +182,7 @@ external webhooks would relay.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "workflow_run\n(copilot-setup-steps,\ncognitive_brain_ci_feedback)", "pull_request\n(opened, sync, close)"'}}%%
+
 graph LR
     subgraph "External Webhook Events (outbound POST to receiver)"
         WR["workflow_run\n(copilot-setup-steps,\ncognitive_brain_ci_feedback)"]
@@ -192,20 +201,22 @@ graph LR
     end
 
     IC --> WL1 & WL4 & WL5 & WL6
+
     PR --> WL2
+
     WR --> WL3
 ```
 
 | GitHub Event | Webhook-Triggerable | Critical Workflows | AAIS Relevance |
 |---|---|---|---|
-| `workflow_run` |  | `cognitive_brain_ci_feedback.yml` | Pillar 2: Adaptive Learning |
-| `pull_request` |  | `agent-auth-delegation.yml` | Pillar 3: Reliability |
-| `issue_comment` |  | `chatops_copilot_trigger.yml`, `agent-handoff-gate.yml`, `session-watchdog.yml`, `agent-var-writer.yml` | Pillar 3: Automation Coverage |
-| `push` |  | 20+ workflows | Pillar 1: CI/CD Maturity |
-| `check_run` / `check_suite` |  | Status monitoring | Pillar 3: Observability |
-| `repository_dispatch` |  | `agent_infrastructure_manager.yml` | Pillar 3: Automation |
-| `schedule` |  (cron, not webhook) | 15+ workflows | — |
-| `workflow_dispatch` |  (manual, not webhook) | 60+ workflows | — |
+| `workflow_run` | | `cognitive_brain_ci_feedback.yml` | Pillar 2: Adaptive Learning |
+| `pull_request` | | `agent-auth-delegation.yml` | Pillar 3: Reliability |
+| `issue_comment` | | `chatops_copilot_trigger.yml`, `agent-handoff-gate.yml`, `session-watchdog.yml`, `agent-var-writer.yml` | Pillar 3: Automation Coverage |
+| `push` | | 20+ workflows | Pillar 1: CI/CD Maturity |
+| `check_run` / `check_suite` | | Status monitoring | Pillar 3: Observability |
+| `repository_dispatch` | | `agent_infrastructure_manager.yml` | Pillar 3: Automation |
+| `schedule` | (cron, not webhook) | 15+ workflows | — |
+| `workflow_dispatch` | (manual, not webhook) | 60+ workflows | — |
 
 ---
 
@@ -213,10 +224,15 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "GitHub\n(sender)", "Receiver endpoint"'}}%%
+
 graph LR
+
     GH["GitHub\n(sender)"] -->|POST + X-Hub-Signature-256| RECV["Receiver endpoint"]
+
     RECV -->|HMAC-SHA256(body, WEBHOOK_SECRET)| VERIFY{"Signature\nvalid?"}
+
     VERIFY -->| Yes| PROCESS["Process payload"]
+
     VERIFY -->| No| REJECT["HTTP 403\nDrop payload"]
 
     style VERIFY fill:#f59e0b,color:#000
@@ -226,11 +242,11 @@ graph LR
 
 | Security Control | Status | Implementation |
 |---|---|---|
-| HMAC-SHA256 signature |  Configured in schema | `WEBHOOK_SECRET` org secret → `webhook_configurator.py` |
-| SSL/TLS verification |  `insecure_ssl: "0"` | Set in `create_hook()` body |
-| Secret rotation runbook |  Exists | `docs/ops/HMAC_rotation.md` |
-| Token for management |  Documented | `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (admin:repo_hook) |
-| Receiver HMAC validation |  **Implemented** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` — fails closed if `WEBHOOK_SECRET` not set |
+| HMAC-SHA256 signature | Configured in schema | `WEBHOOK_SECRET` org secret `webhook_configurator.py` |
+| SSL/TLS verification | `insecure_ssl: "0"` | Set in `create_hook()` body |
+| Secret rotation runbook | Exists | `docs/ops/HMAC_rotation.md` |
+| Token for management | Documented | `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (admin:repo_hook) |
+| Receiver HMAC validation | **Implemented** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` — fails closed if `WEBHOOK_SECRET` not set |
 
 ---
 
@@ -265,7 +281,7 @@ python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --d
 > **`WEBHOOK_RECEIVER_URL` override**: If this environment variable is set, it replaces
 > the placeholder URL `https://api.your-cognitive-brain-server.com/webhook/github` in all
 > webhook config entries. Set this as a GitHub repo variable
-> (`Settings → Variables → Repository variables`) so `@agent-infra apply-webhooks`
+> (`Settings Variables Repository variables`) so `@agent-infra apply-webhooks`
 > picks it up automatically without editing `.codex/webhook_config.json`.
 
 ## Delete a hook

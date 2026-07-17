@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Production Ready  
-**Version:** 1.0.0  
+**Status:** Production Ready
+**Version:** 1.0.0
 **Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
@@ -371,52 +371,52 @@ admin:*                      (Admin scopes)
 ### Scope Definitions
 
 #### api:agents:read
-**Permission:** Read agent definitions and status  
-**Resources:** Agent metadata, configurations, logs  
+**Permission:** Read agent definitions and status
+**Resources:** Agent metadata, configurations, logs
 **Denied:** Agent modification, execution (unless write scope)
 
 #### api:agents:write
-**Permission:** Create, update, delete agents  
-**Requires:** api:agents:read (implied)  
-**Resources:** Agent metadata, parameters  
+**Permission:** Create, update, delete agents
+**Requires:** api:agents:read (implied)
+**Resources:** Agent metadata, parameters
 **Denied:** Agent execution, role assignment
 
 #### api:agents:exec
-**Permission:** Execute agents and run tasks  
-**Requires:** api:agents:read (implied)  
-**Resources:** Agent executions, task runs  
+**Permission:** Execute agents and run tasks
+**Requires:** api:agents:read (implied)
+**Resources:** Agent executions, task runs
 **Denied:** Agent definition modification
 
 #### api:workflows:read
-**Permission:** Read workflow definitions  
-**Resources:** Workflow metadata, execution history  
+**Permission:** Read workflow definitions
+**Resources:** Workflow metadata, execution history
 
 #### api:workflows:exec
-**Permission:** Trigger workflow execution  
-**Requires:** api:workflows:read (implied)  
+**Permission:** Trigger workflow execution
+**Requires:** api:workflows:read (implied)
 
 #### api:workflows:approve
-**Permission:** Approve pending workflow approvals  
-**Resources:** Approval requests  
+**Permission:** Approve pending workflow approvals
+**Resources:** Approval requests
 
 #### api:secrets:read
-**Permission:** Read secrets (metadata only, not values)  
-**Resources:** Secret metadata (name, type, rotation date)  
+**Permission:** Read secrets (metadata only, not values)
+**Resources:** Secret metadata (name, type, rotation date)
 **Never:** Secret values in logs
 
 #### api:secrets:rotate
-**Permission:** Rotate/update secrets  
-**Requires:** api:secrets:read (implied)  
+**Permission:** Rotate/update secrets
+**Requires:** api:secrets:read (implied)
 **Audit:** All rotations logged with details
 
 #### governance:approve
-**Permission:** Approve governance requests  
-**Scope:** Approval workflows  
+**Permission:** Approve governance requests
+**Scope:** Approval workflows
 **Authority:** Limited to policy scope
 
 #### governance:audit
-**Permission:** Read audit logs  
-**Resources:** Complete audit trail  
+**Permission:** Read audit logs
+**Resources:** Complete audit trail
 **Retention:** 90 days (configurable)
 
 ### Scope Assignment Rules
@@ -832,8 +832,8 @@ curl -H "Authorization: ******" https://api.codex.local/api/v1/agents
 
 ### 3. Token Rotation
 
-**Access Tokens:** Auto-refresh every 15 minutes  
-**Refresh Tokens:** Rotate on every refresh (old token revoked)  
+**Access Tokens:** Auto-refresh every 15 minutes
+**Refresh Tokens:** Rotate on every refresh (old token revoked)
 **API Tokens:** Rotate monthly (manual process)
 
 ```python
@@ -901,5 +901,5 @@ def logout(session_token: str):
 ---
 
 **Last Updated: 2026-07-08
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Status:** Production Ready

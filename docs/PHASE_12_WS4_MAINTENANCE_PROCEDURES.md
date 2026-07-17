@@ -2,9 +2,9 @@
 
 **Version**: v0.2.1
 
-**Status:** Phase 4 DELIVERABLE GENERATION  
-**Date:** 2026-07-08  
-**Agent:** doc-freshness-checker  
+**Status:** Phase 4 DELIVERABLE GENERATION
+**Date:** 2026-07-08
+**Agent:** doc-freshness-checker
 **Target:** 100% documentation freshness SLA
 
 ---
@@ -14,11 +14,11 @@
 This document establishes the operational procedures for maintaining 100% documentation freshness across the Codex ecosystem. It integrates with the unified-doc-agent (M-02 merge) to provide comprehensive documentation health management.
 
 **Freshness Maintenance SLA:**
--  **98% minimum content freshness** (target: ≥98%)
--  **0% broken links** in active documentation
--  **100% code example validity** (syntax + imports + currency)
--  **< 50 MkDocs warnings** in active docs
--  **Quarterly audit cycle** with rapid remediation
+- **98% minimum content freshness** (target: ≥98%)
+- **0% broken links** in active documentation
+- **100% code example validity** (syntax + imports + currency)
+- **< 50 MkDocs warnings** in active docs
+- **Quarterly audit cycle** with rapid remediation
 
 ---
 
@@ -80,8 +80,8 @@ Where:
 
 ### 2.1 Weekly Maintenance Cycle
 
-**Frequency:** Every Monday 9:00 AM UTC  
-**Owner:** Documentation team  
+**Frequency:** Every Monday 9:00 AM UTC
+**Owner:** Documentation team
 **Effort:** 30 minutes
 
 **Checklist:**
@@ -140,8 +140,8 @@ echo "Weekly check complete - $(date)" >> docs/WEEKLY_CHECKS.log
 
 ### 2.2 Monthly Validation Cycle
 
-**Frequency:** First Monday of every month  
-**Owner:** Documentation team lead  
+**Frequency:** First Monday of every month
+**Owner:** Documentation team lead
 **Effort:** 2 hours
 
 **Comprehensive Validation:**
@@ -151,18 +151,18 @@ echo "Weekly check complete - $(date)" >> docs/WEEKLY_CHECKS.log
 
 ### Phase 1: Automated Scan (30 min)
 1. Run freshness audit
-   ```bash
-   python tools/freshness_audit.py > docs/AUDIT_$(date +%Y-%m).md
+ ```bash
+ python tools/freshness_audit.py > docs/AUDIT_$(date +%Y-%m).md
    ```
 
 2. Validate code examples
-   ```bash
-   python tools/validate_code_examples.py --report
+ ```bash
+ python tools/validate_code_examples.py --report
    ```
 
 3. Check external links
-   ```bash
-   python tools/link_validator.py --skip-localhost --report
+ ```bash
+ python tools/link_validator.py --skip-localhost --report
    ```
 
 ### Phase 2: Manual Review (60 min)
@@ -199,8 +199,8 @@ echo "Weekly check complete - $(date)" >> docs/WEEKLY_CHECKS.log
 
 ### 2.3 Quarterly Audit Cycle
 
-**Frequency:** Every 90 days (Jan 1, Apr 1, Jul 1, Oct 1)  
-**Owner:** Documentation lead + team  
+**Frequency:** Every 90 days (Jan 1, Apr 1, Jul 1, Oct 1)
+**Owner:** Documentation lead + team
 **Effort:** 8-12 hours
 
 **Major Audit Components:**
@@ -262,41 +262,41 @@ python tools/update_version_refs.py --dry-run
 
 ### 2.4 Annual Comprehensive Review
 
-**Frequency:** Once per year (January 1)  
-**Owner:** Documentation governance  
+**Frequency:** Once per year (January 1)
+**Owner:** Documentation governance
 **Effort:** 40-60 hours (spread over month)
 
 **Annual Review Scope:**
 
 1. **Documentation Strategy Review**
-   - [ ] Assess overall documentation effectiveness
-   - [ ] Review user feedback on documentation
-   - [ ] Identify major gaps or redundancies
-   - [ ] Plan documentation improvements for next year
+ - [ ] Assess overall documentation effectiveness
+ - [ ] Review user feedback on documentation
+ - [ ] Identify major gaps or redundancies
+ - [ ] Plan documentation improvements for next year
 
 2. **Archive & Deprecation**
-   - [ ] Review all archived documentation
-   - [ ] Decide what to keep, what to remove
-   - [ ] Consolidate duplicate documentation
-   - [ ] Update deprecation notices
+ - [ ] Review all archived documentation
+ - [ ] Decide what to keep, what to remove
+ - [ ] Consolidate duplicate documentation
+ - [ ] Update deprecation notices
 
 3. **Structure Reorganization**
-   - [ ] Evaluate current hierarchy
-   - [ ] Identify reorganization opportunities
-   - [ ] Plan migration if needed
-   - [ ] Update navigation maps
+ - [ ] Evaluate current hierarchy
+ - [ ] Identify reorganization opportunities
+ - [ ] Plan migration if needed
+ - [ ] Update navigation maps
 
 4. **Tool & Process Upgrades**
-   - [ ] Review documentation tools (MkDocs version, plugins)
-   - [ ] Evaluate new tools for better integration
-   - [ ] Update CI/CD pipeline for documentation
-   - [ ] Improve automation
+ - [ ] Review documentation tools (MkDocs version, plugins)
+ - [ ] Evaluate new tools for better integration
+ - [ ] Update CI/CD pipeline for documentation
+ - [ ] Improve automation
 
 5. **Team Training**
-   - [ ] Document best practices
-   - [ ] Train new contributors on doc standards
-   - [ ] Establish documentation review guidelines
-   - [ ] Create templates for common doc types
+ - [ ] Document best practices
+ - [ ] Train new contributors on doc standards
+ - [ ] Establish documentation review guidelines
+ - [ ] Create templates for common doc types
 
 ---
 
@@ -613,23 +613,23 @@ review_date: YYYY-MM-DD  # Next scheduled review
 **For Every Documentation PR:**
 
 ```
-Code Quality    [50 points]
-   Examples are syntactically valid      [10 pts]
-   Examples use current API              [10 pts]
-   Examples include error handling       [10 pts]
-   No hardcoded secrets/credentials      [10 pts]
-   Performance appropriate               [10 pts]
+Code Quality [50 points]
+ Examples are syntactically valid [10 pts]
+ Examples use current API [10 pts]
+ Examples include error handling [10 pts]
+ No hardcoded secrets/credentials [10 pts]
+ Performance appropriate [10 pts]
 
 Content Quality [30 points]
-   Clear and concise writing             [10 pts]
-   Proper formatting and structure       [10 pts]
-   All links are valid                   [10 pts]
+ Clear and concise writing [10 pts]
+ Proper formatting and structure [10 pts]
+ All links are valid [10 pts]
 
-Freshness       [20 points]
-   Metadata/timestamps current           [5 pts]
-   Matches current implementation        [5 pts]
-   No stale markers (TODO/FIXME)         [5 pts]
-   Version references accurate           [5 pts]
+Freshness [20 points]
+ Metadata/timestamps current [5 pts]
+ Matches current implementation [5 pts]
+ No stale markers (TODO/FIXME) [5 pts]
+ Version references accurate [5 pts]
 
 PASS Threshold: 70+ points
 ```
@@ -691,11 +691,11 @@ Measurement: Monthly
 
 | KPI | Target | Current | Trend | Status |
 |-----|--------|---------|-------|--------|
-| Content Freshness | ≥98% | 98.3% | ↗ |  PASS |
-| Code Example Validity | ≥99% | 97.2% | ↘ | ️ WATCH |
-| Link Integrity | ≥99% | 98.8% | ↗ |  PASS |
-| Doc Coverage | ≥95% | 92.1% | → | ️ LOW |
-| Issue Resolution | <7d | 5.2d | ↗ |  PASS |
+| Content Freshness | ≥98% | 98.3% | | PASS |
+| Code Example Validity | ≥99% | 97.2% | | WATCH |
+| Link Integrity | ≥99% | 98.8% | | PASS |
+| Doc Coverage | ≥95% | 92.1% | | LOW |
+| Issue Resolution | <7d | 5.2d | | PASS |
 
 ## Issues & Actions
 

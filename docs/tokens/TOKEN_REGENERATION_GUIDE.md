@@ -2,75 +2,75 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Last Updated**: 2026-01-26T19:00:00Z  
-> **Status**: Active - Token Refreshed  
+> **Last Updated**: 2026-01-26T19:00:00Z
+> **Status**: Active - Token Refreshed
 > **Audience**: Human Admin (@mbaetiong)
 
 ---
 
-##  Overview
+## Overview
 
 This guide provides comprehensive instructions for updating all repository components after GitHub token regeneration. Follow these steps to ensure proper configuration across workflows, scripts, documentation, and agent systems.
 
 ---
 
-##  Token Types & Scopes
+## Token Types & Scopes
 
 ### Personal Access Token (PAT) - Classic
 
 **Required Scopes:**
--  `repo` (Full control of private repositories)
--  `workflow` (Update GitHub Action workflows)
--  `write:packages` (Upload packages to GitHub Package Registry)
--  `delete:packages` (Delete packages from GitHub Package Registry)
--  `admin:org` (Full control of orgs and teams)
--  `admin:public_key` (Full control of user public keys)
--  `admin:repo_hook` (Full control of repository hooks)
--  `admin:org_hook` (Full control of organization hooks)
--  `gist` (Create gists)
--  `notifications` (Access notifications)
--  `user` (Update ALL user data)
--  `delete_repo` (Delete repositories)
--  `write:discussion` (Read and write team discussions)
--  `read:packages` (Download packages from GitHub Package Registry)
--  `read:org` (Read org and team membership, read org projects)
--  `write:org` (Read and write org and team membership, read and write org projects)
--  `admin:gpg_key` (Full control of user gpg keys)
--  `codespace` (Full control of codespaces)
--  `project` (Full control of projects)
--  `security_events` (Read and write security events)
+- `repo` (Full control of private repositories)
+- `workflow` (Update GitHub Action workflows)
+- `write:packages` (Upload packages to GitHub Package Registry)
+- `delete:packages` (Delete packages from GitHub Package Registry)
+- `admin:org` (Full control of orgs and teams)
+- `admin:public_key` (Full control of user public keys)
+- `admin:repo_hook` (Full control of repository hooks)
+- `admin:org_hook` (Full control of organization hooks)
+- `gist` (Create gists)
+- `notifications` (Access notifications)
+- `user` (Update ALL user data)
+- `delete_repo` (Delete repositories)
+- `write:discussion` (Read and write team discussions)
+- `read:packages` (Download packages from GitHub Package Registry)
+- `read:org` (Read org and team membership, read org projects)
+- `write:org` (Read and write org and team membership, read and write org projects)
+- `admin:gpg_key` (Full control of user gpg keys)
+- `codespace` (Full control of codespaces)
+- `project` (Full control of projects)
+- `security_events` (Read and write security events)
 
 ### Fine-Grained Personal Access Token (Recommended)
 
 **Repository Permissions:**
--  Actions: Read and write
--  Contents: Read and write
--  Issues: Read and write
--  Metadata: Read-only (automatic)
--  Pull requests: Read and write
--  Secrets: Read and write
--  Workflows: Read and write
--  Code scanning alerts: Read and write
--  Dependabot alerts: Read and write
--  Secret scanning alerts: Read and write
+- Actions: Read and write
+- Contents: Read and write
+- Issues: Read and write
+- Metadata: Read-only (automatic)
+- Pull requests: Read and write
+- Secrets: Read and write
+- Workflows: Read and write
+- Code scanning alerts: Read and write
+- Dependabot alerts: Read and write
+- Secret scanning alerts: Read and write
 
 **Organization Permissions:**
--  Members: Read-only (for team operations)
--  Administration: Read and write (for org-level operations)
+- Members: Read-only (for team operations)
+- Administration: Read and write (for org-level operations)
 
 ---
 
-##  Step 1: Generate New Token
+## Step 1: Generate New Token
 
 ### Via GitHub UI
 
 1. Navigate to: https://github.com/settings/tokens
-2. Click "Generate new token" → "Generate new token (classic)" OR "Fine-grained tokens"
+2. Click "Generate new token" "Generate new token (classic)" OR "Fine-grained tokens"
 3. **Token Name**: `_codex_-master-key-2026-01-26`
-4. **Expiration**: Custom → 1 year (2027-01-26)
+4. **Expiration**: Custom 1 year (2027-01-26)
 5. Select all required scopes (see above)
 6. Click "Generate token"
-7. **️ CRITICAL**: Copy token immediately (shown only once)
+7. ** CRITICAL**: Copy token immediately (shown only once)
 
 ### Via GitHub CLI
 
@@ -86,7 +86,7 @@ gh api -X POST /user/tokens \
 
 ---
 
-##  Step 2: Update Repository Secrets
+## Step 2: Update Repository Secrets
 
 ### Method 1: GitHub UI
 
@@ -130,7 +130,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 
 ---
 
-##  Step 3: Update Configuration Files
+## Step 3: Update Configuration Files
 
 ### 3.1 Update `.codex/flags.json`
 
@@ -165,7 +165,7 @@ github:
 
 ---
 
-##  Step 4: Verify Token Configuration
+## Step 4: Verify Token Configuration
 
 ### 4.1 Test GitHub API Access
 
@@ -219,7 +219,7 @@ gh run view --log | grep -i "permission\|403\|401\|unauthorized"
 
 ---
 
-##  Step 5: Update Agent Systems
+## Step 5: Update Agent Systems
 
 ### 5.1 Update Autonomous Agent Configuration
 
@@ -268,25 +268,25 @@ gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts --paginate | jq 'length
 
 ---
 
-##  Step 6: Update Documentation
+## Step 6: Update Documentation
 
 ### 6.1 Update Token Status Documents
 
 Update the following documentation files:
 
 1. **`.codex/QUICK_REFERENCE_TOKEN_STATUS.md`**
-   - Update "Last Refreshed" timestamp
-   - Update "Expiry Date"
-   - Update "Status" to  Active
+ - Update "Last Refreshed" timestamp
+ - Update "Expiry Date"
+ - Update "Status" to Active
 
 2. **`.codex/HUMAN_ADMIN_REQUIRED_TOKEN_SETUP.md`**
-   - Add completion timestamp
-   - Mark token setup as complete
-   - Document new token generation date
+ - Add completion timestamp
+ - Mark token setup as complete
+ - Document new token generation date
 
 3. **`docs/admin/GENESIS_SETUP_GUIDE.md`**
-   - Update token configuration section
-   - Add latest token refresh timestamp
+ - Update token configuration section
+ - Add latest token refresh timestamp
 
 ### 6.2 Update Workflow Documentation
 
@@ -314,7 +314,7 @@ EOF
 
 ---
 
-##  Step 7: Test Integration Points
+## Step 7: Test Integration Points
 
 ### 7.1 Test Workflow Execution
 
@@ -366,7 +366,7 @@ cat /tmp/test-alerts/alert_summary.md
 
 ---
 
-## 🧪 Step 8: Comprehensive Validation
+## Step 8: Comprehensive Validation
 
 ### 8.1 Run Full Test Suite
 
@@ -423,7 +423,7 @@ chmod +x /tmp/validate_all_permissions.sh
 
 ---
 
-##  Step 9: Update Monitoring & Logging
+## Step 9: Update Monitoring & Logging
 
 ### 9.1 Log Token Rotation Event
 
@@ -488,14 +488,14 @@ python .codex/monitoring/token_expiry_check.py
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Common Issues & Solutions
 
 #### Issue 1: "Bad credentials" or 401 Errors
 
-**Symptom**: API requests return 401 Unauthorized  
-**Cause**: Token not properly updated or has expired  
+**Symptom**: API requests return 401 Unauthorized
+**Cause**: Token not properly updated or has expired
 **Solution**:
 ```bash
 # Verify token is set correctly
@@ -510,8 +510,8 @@ gh api /user | jq '.login'
 
 #### Issue 2: "Resource not accessible by integration" or 403 Errors
 
-**Symptom**: API requests return 403 Forbidden  
-**Cause**: Token missing required scopes  
+**Symptom**: API requests return 403 Forbidden
+**Cause**: Token missing required scopes
 **Solution**:
 ```bash
 # Check token scopes
@@ -523,8 +523,8 @@ gh api /user --include | grep -i "x-oauth-scopes"
 
 #### Issue 3: Workflow Fails with "Not Found" Error
 
-**Symptom**: Workflow runs but cannot access repository resources  
-**Cause**: Workflow using old token or wrong secret name  
+**Symptom**: Workflow runs but cannot access repository resources
+**Cause**: Workflow using old token or wrong secret name
 **Solution**:
 ```bash
 # Verify secret exists
@@ -539,8 +539,8 @@ gh workflow run phase34-codeql-alert-fetch.yml
 
 #### Issue 4: Token Permissions Inconsistent Between UI and CLI
 
-**Symptom**: Operations work in UI but fail in CLI or workflows  
-**Cause**: Different tokens being used  
+**Symptom**: Operations work in UI but fail in CLI or workflows
+**Cause**: Different tokens being used
 **Solution**:
 ```bash
 # Ensure same token everywhere
@@ -555,7 +555,7 @@ gh auth status
 
 ---
 
-## 📅 Token Rotation Schedule
+## Token Rotation Schedule
 
 ### Recommended Rotation Frequency
 
@@ -566,7 +566,7 @@ gh auth status
 ### Next Rotation Date
 
 2026-07-13
-**Next Scheduled Rotation**: 2026-04-26 (90 days)  
+**Next Scheduled Rotation**: 2026-04-26 (90 days)
 **Expiry Date**: 2027-01-26 (1 year)
 
 ### Rotation Reminder
@@ -578,7 +578,7 @@ Set calendar reminders:
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **Token Setup Guide**: `.codex/HUMAN_ADMIN_REQUIRED_TOKEN_SETUP.md`
 - **Genesis Setup**: `docs/admin/GENESIS_SETUP_GUIDE.md`
@@ -589,7 +589,7 @@ Set calendar reminders:
 
 ---
 
-##  Completion Checklist
+## Completion Checklist
 
 After completing all steps, verify:
 
@@ -608,11 +608,11 @@ After completing all steps, verify:
 
 ---
 
-**Document Version**: 1.0.0  
-**Last Updated**: 2026-01-26T19:00:00Z  
-**Maintained By**: @mbaetiong  
+**Document Version**: 1.0.0
+**Last Updated**: 2026-01-26T19:00:00Z
+**Maintained By**: @mbaetiong
 **Next Review**: 2026-04-26 (before next rotation)
 
 ---
 
-**End of Token Regeneration Guide** 
+**End of Token Regeneration Guide**

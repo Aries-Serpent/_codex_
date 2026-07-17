@@ -143,8 +143,8 @@ except (json.JSONDecodeError, OSError):
 
 The repository has **two RAG implementations**:
 
-1.  **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
-2. ️ **Legacy**: `src/rag/pipelines/` - Original implementation
+1. **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
+2. **Legacy**: `src/rag/pipelines/` - Original implementation
 
 **Preference**: Use sentence-transformers for new RAG features. OpenAI integration is optional for development.
 
@@ -174,6 +174,6 @@ The repository has **two RAG implementations**:
 
 ---
 
-**Maintained by**: GitHub Copilot Agent  
-**Last Updated**: 2026-01-08  
+**Maintained by**: GitHub Copilot Agent
+**Last Updated**: 2026-01-08
 **PR**: #2750 (copilot/sub-pr-2750 branch)

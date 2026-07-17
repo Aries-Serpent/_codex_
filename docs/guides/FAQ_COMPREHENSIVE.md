@@ -7,7 +7,7 @@
 
 ---
 
-##  Quick Search
+## Quick Search
 
 **What's your role?**
 - [Data Scientist FAQs](#-data-scientist-faqs)
@@ -19,7 +19,7 @@
 
 ---
 
-## 🔬 Data Scientist FAQs
+## Data Scientist FAQs
 
 ### Training & Model Development
 
@@ -156,7 +156,7 @@ metrics = evaluator.compute(
 
 ---
 
-##  ML Engineer FAQs
+## ML Engineer FAQs
 
 ### Deployment & Serving
 
@@ -240,7 +240,7 @@ if monitor.check_drift()['detected']:
 
 ---
 
-## 🛠️ DevOps / SRE FAQs
+## DevOps / SRE FAQs
 
 ### Infrastructure
 
@@ -283,7 +283,7 @@ A:
 
 ---
 
-## 🔌 API Consumer FAQs
+## API Consumer FAQs
 
 ### Integration
 
@@ -356,7 +356,7 @@ A:
 
 ---
 
-## 👥 End User FAQs
+## End User FAQs
 
 ### Web Interface
 
@@ -388,7 +388,7 @@ A: Yes! Multiple formats:
 
 ---
 
-##  General FAQs
+## General FAQs
 
 ### Account & Billing
 
@@ -488,7 +488,7 @@ A: Try:
 
 ---
 
-##  More Help
+## More Help
 
 - **Video Tutorials**: [YouTube Channel](https://youtube.com/codex-ml)
 - **Documentation**: [Full Docs](../index.md)
@@ -497,4 +497,4 @@ A: Try:
 
 ---
 
-**Questions not answered? Ask in [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions) 💬**
+**Questions not answered? Ask in [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions) **

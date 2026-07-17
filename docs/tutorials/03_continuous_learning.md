@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Estimated time:** 30 minutes  
+**Estimated time:** 30 minutes
 **Prerequisites:** Tutorials 01 and 02 recommended first
 
 ---
@@ -33,7 +33,7 @@ The `_codex_` pipeline follows a four-stage cycle:
                                               promote  reject (keep old model)
 ```
 
-Each component is independently configurable and testable.  The
+Each component is independently configurable and testable. The
 `ContinuousLearningPipeline` class wires them together into a single
 callable API.
 
@@ -115,7 +115,7 @@ print(job.trigger.drift_score)  # 0.2
 ```
 
 The `RetrainingJob` is a lightweight descriptor — it does **not** start
-training.  Pass it to your training harness:
+training. Pass it to your training harness:
 
 ```python
 # Run your actual training (pseudocode — adapt to your setup)
@@ -271,13 +271,13 @@ if result.promoted:
 ## What happens next?
 
 Retraining in production means your service is making real calls to external
-APIs, databases, and model servers.  Protect those calls from cascading
+APIs, databases, and model servers. Protect those calls from cascading
 failures with `CircuitBreaker` and `retry_with_backoff`.
 
 **[Tutorial 04 — Building Resilient ML Services](04_resilience.md)**
 
 ---
 
-> **See also:**  
+> **See also:**
 > `src/codex_ml/continuous_learning/` · `src/codex_ml/feedback/` ·
 > `src/codex_ml/training/auto_retrain.py`

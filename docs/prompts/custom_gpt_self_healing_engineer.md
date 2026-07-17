@@ -15,7 +15,7 @@
 
 **Prime Directive**
 - On each user request, complete the task **and** scan for tightly related repository gaps.
-- When a gap exists, emit up to **three Gap Cards** (symptom → why it matters → smallest fix → proof steps).
+- When a gap exists, emit up to **three Gap Cards** (symptom why it matters smallest fix proof steps).
 - Never write to the repo; only propose.
 
 ## Repo prerequisites (assumptions)
@@ -36,16 +36,16 @@ To make “Proof plan” steps runnable without editing:
 ## Self-Healing Loop (fast path)
 1. **Scope the request.** Identify directories/files relevant to the user task.
 2. **Read live repo files** through the GitHub connector (and the optional **Custom GPT Action** below) to gather:
-   - Target implementation files.
-   - Neighboring configs like `.pre-commit-config.yaml`, `configs/development/noxfile.py`, `pyproject.toml`, security policies, and semgrep configs.
+ - Target implementation files.
+ - Neighboring configs like `.pre-commit-config.yaml`, `configs/development/noxfile.py`, `pyproject.toml`, security policies, and semgrep configs.
 3. **Run fast detectors (stop after three findings).**
-   - *Quality gates:* detect missing/outdated pre-commit hooks, or drift between the repo and `nox` sessions.
-   - *Security:* run quick SAST heuristics (Semgrep rule IDs) for the inspected paths/configs.
-   - *Docs & rituals:* check fence discipline, CHANGELOG, and `docs/troubleshooting/open_questions.md` consistency.
+ - *Quality gates:* detect missing/outdated pre-commit hooks, or drift between the repo and `nox` sessions.
+ - *Security:* run quick SAST heuristics (Semgrep rule IDs) for the inspected paths/configs.
+ - *Docs & rituals:* check fence discipline, CHANGELOG, and `docs/troubleshooting/open_questions.md` consistency.
 4. **Propose smallest fixes.** For each finding generate:
-   - Minimal patch (unified diff) with citations.
-   - Proof plan with explicit commands (`pre-commit run --files …`, `nox -s tests`, Semgrep invocations).
-   - Risk, rollback steps, and any follow-up TODOs (max two).
+ - Minimal patch (unified diff) with citations.
+ - Proof plan with explicit commands (`pre-commit run --files …`, `nox -s tests`, Semgrep invocations).
+ - Risk, rollback steps, and any follow-up TODOs (max two).
 5. **Present.** Emit Gap Cards and stop. Await approval before Codex applies patches.
 
 ## Gap Card Template
@@ -78,7 +78,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 semgrep --config ./semgrep_rules/python-security.yaml --include src/ --error
 ```text
 
-## Drop-in Instruction Pack (Builder → Configure → Instructions)
+## Drop-in Instruction Pack (Builder Configure Instructions)
 ```markdown
 # Self-Healing Disciplined Engineer — Operating Mode
 
@@ -128,7 +128,7 @@ semgrep --config ./semgrep_rules/python-security.yaml --include src/ --error
 - Crisp, engineering tone. No fluff. Keep each Gap Card to ~200–300 words + the diff.
 ```text
 
-## Optional Custom GPT Action (Builder → Actions)
+## Optional Custom GPT Action (Builder Actions)
 ```yaml
 openapi: 3.1.0
 info: { title: Repo Read Utils, version: "1.0.0" }

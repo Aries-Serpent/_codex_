@@ -48,7 +48,7 @@ Use these iterative prompts to generate and self-verify each missing artifact un
 **Targets:** `src/agent/orchestrator.py`, `state_models.py`, runners, `adapters/openai_responses_client.py`, `adapters/tracing_adapter.py`.
 
 **Prompt:**
-> Implement PLAN→ACT→OBSERVE→VERIFY orchestrator integrating RAG, tools, CoVe pipeline, and verification policy. Provide typed state models, CLI/API runners, and adapters for Responses API and tracing (OTEL-friendly). Handle retries, timeouts, aborts, and token budgeting.
+> Implement PLANACTOBSERVEVERIFY orchestrator integrating RAG, tools, CoVe pipeline, and verification policy. Provide typed state models, CLI/API runners, and adapters for Responses API and tracing (OTEL-friendly). Handle retries, timeouts, aborts, and token budgeting.
 
 **Definition of done:** Deterministic state transitions; error handling separated; runners accept config paths and log trace IDs; adapters mockable.
 

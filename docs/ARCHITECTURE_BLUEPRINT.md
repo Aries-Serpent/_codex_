@@ -1,4 +1,4 @@
-# ️ ARCHIVED: Consolidated Architecture Document Available
+# ARCHIVED: Consolidated Architecture Document Available
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -13,7 +13,7 @@
 
 This document has been **consolidated** with `ARCHITECTURE.md` and `Architecture.md` into a single comprehensive reference:
 
-### **→ [Read the Consolidated Architecture](architecture/ARCHITECTURE_CONSOLIDATED.md)**
+### ** [Read the Consolidated Architecture](architecture/ARCHITECTURE_CONSOLIDATED.md)**
 
 All content from this document is now available in the consolidated version with improved organization and cross-references.
 
@@ -228,6 +228,7 @@ tests/
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Users", Developers'}}%%
+
 flowchart TB
  subgraph Users[" Users"]
  Dev[Developers]
@@ -267,20 +268,27 @@ flowchart TB
  end
 
  Dev --> CLI
+
  Agent --> Runner
+
  CI --> Runner
 
  CLI --> Training
+
  CLI --> Eval
 
  Runner --> Scanner
+
  Scanner --> Metrics
+
  Metrics --> Trends
 
  Trends --> SQLite
+
  Trends --> Viz
 
  Training --> Models
+
  Eval --> Models
 
  Dashboard --> Reports

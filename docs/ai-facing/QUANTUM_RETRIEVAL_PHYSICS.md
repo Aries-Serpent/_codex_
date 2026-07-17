@@ -4,8 +4,8 @@
 
 **Last Updated: 2026-06-22
 
-**Document Version:** 1.0  
-**Author:** Copilot Agent  
+**Document Version:** 1.0
+**Author:** Copilot Agent
 **Date:2026-07-13
 **Status:** Active
 
@@ -83,9 +83,9 @@ where:
 - temporal_factor = 1 - exp(-β × age/3600)
 
 **Physical Interpretation:**
-- **High-frequency topics** → Higher energy (more "excited" state)
-- **Older documents** → Higher energy (less stable)
-- **Recent, focused documents** → Lower energy (preferred)
+- **High-frequency topics** Higher energy (more "excited" state)
+- **Older documents** Higher energy (less stable)
+- **Recent, focused documents** Lower energy (preferred)
 
 ### 4. Entropy Minimization (Thermodynamics)
 
@@ -113,9 +113,9 @@ This greedy algorithm balances:
 - **Diversity** (avoid redundancy)
 
 **Physical Interpretation:**
-- **Low entropy** → Coherent, focused result set
-- **High entropy** → Diverse, scattered results
-- **Equilibrium** → Optimal balance between focus and coverage
+- **Low entropy** Coherent, focused result set
+- **High entropy** Diverse, scattered results
+- **Equilibrium** Optimal balance between focus and coverage
 
 ### 5. Thermodynamic Equilibrium
 
@@ -130,8 +130,8 @@ The entropy penalty parameter λ controls the exploration-exploitation tradeoff:
 λ = 0.1  (default)
 ```
 
-- **λ → 0:** Pure exploitation (select highest relevance, ignore diversity)
-- **λ → ∞:** Pure exploration (maximize diversity, ignore relevance)
+- **λ 0:** Pure exploitation (select highest relevance, ignore diversity)
+- **λ ∞:** Pure exploration (maximize diversity, ignore relevance)
 - **λ = 0.1:** Balanced equilibrium
 
 ---
@@ -227,19 +227,19 @@ Implements the physics-inspired scoring algorithm.
 **Key Methods:**
 
 1. **`calculate_quantum_state(chunk, query_embedding, current_time)`**
-   - Computes the quantum state for a document
-   - Combines semantic, temporal, and authority factors
-   - Returns `QuantumState` object
+ - Computes the quantum state for a document
+ - Combines semantic, temporal, and authority factors
+ - Returns `QuantumState` object
 
 2. **`optimize_entropy(states, max_results)`**
-   - Selects documents to minimize total entropy
-   - Uses greedy algorithm with entropy penalty
-   - Returns indices of selected documents
+ - Selects documents to minimize total entropy
+ - Uses greedy algorithm with entropy penalty
+ - Returns indices of selected documents
 
 3. **`_cosine_similarity(vec1, vec2)`**
-   - Calculates cosine similarity between vectors
-   - Handles edge cases (None, empty, zero vectors)
-   - Returns normalized similarity in [0, 1]
+ - Calculates cosine similarity between vectors
+ - Handles edge cases (None, empty, zero vectors)
+ - Returns normalized similarity in [0, 1]
 
 ### Class: `QuantumEnhancedRetrieval`
 
@@ -248,9 +248,9 @@ Extends `RetrievalPipeline` with quantum scoring.
 **Key Methods:**
 
 1. **`retrieve_from_chunks(query, chunks, top_k, current_time)`**
-   - Main retrieval method
-   - Applies quantum scoring to all chunks
-   - Optimizes entropy and returns top-k results
+ - Main retrieval method
+ - Applies quantum scoring to all chunks
+ - Optimizes entropy and returns top-k results
 
 ---
 
@@ -291,45 +291,45 @@ Extends `RetrievalPipeline` with quantum scoring.
 ### Physics Consistency Checks
 
 1. **Probability Normalization**
-   - All collapse probabilities ∈ [0, 1]
-   - Sum of weights α + β + γ = 1
+ - All collapse probabilities ∈ [0, 1]
+ - Sum of weights α + β + γ = 1
 
 2. **Born Rule Compliance**
-   - P_collapse = |amplitude|²
-   - Verified in tests: `test_born_rule_probability`
+ - P_collapse = |amplitude|²
+ - Verified in tests: `test_born_rule_probability`
 
 3. **Entropy Properties**
-   - H ≥ 0 (non-negative)
-   - H = 0 for deterministic selection
-   - H maximized for uniform distribution
+ - H ≥ 0 (non-negative)
+ - H = 0 for deterministic selection
+ - H maximized for uniform distribution
 
 4. **Energy Consistency**
-   - E ≥ 0 (non-negative)
-   - Lower energy → higher relevance (generally)
-   - Energy incorporates frequency and recency
+ - E ≥ 0 (non-negative)
+ - Lower energy higher relevance (generally)
+ - Energy incorporates frequency and recency
 
 5. **Temporal Decay**
-   - Exponential decay: e^(-βt)
-   - Recent documents preferred
-   - Verified in tests: `test_temporal_decay`
+ - Exponential decay: e^(-βt)
+ - Recent documents preferred
+ - Verified in tests: `test_temporal_decay`
 
 ### Expected Behaviors
 
 1. **Superposition Effect**
-   - Multiple scoring methods combined coherently
-   - No single method dominates (unless weights set that way)
+ - Multiple scoring methods combined coherently
+ - No single method dominates (unless weights set that way)
 
 2. **Collapse Determinism**
-   - Given same inputs, same outputs (deterministic)
-   - Randomness only from input variations
+ - Given same inputs, same outputs (deterministic)
+ - Randomness only from input variations
 
 3. **Entropy Optimization**
-   - Result sets have lower entropy than random selection
-   - Verified in tests: `test_entropy_reduction`
+ - Result sets have lower entropy than random selection
+ - Verified in tests: `test_entropy_reduction`
 
 4. **Equilibrium Seeking**
-   - System converges to stable selection
-   - Balance between relevance and diversity
+ - System converges to stable selection
+ - Balance between relevance and diversity
 
 ---
 
@@ -338,34 +338,34 @@ Extends `RetrievalPipeline` with quantum scoring.
 ### Quantum Mechanics
 
 1. **Born Rule**: Born, M. (1926). "Zur Quantenmechanik der Stoßvorgänge"
-   - Foundation for probability interpretation of wave functions
+ - Foundation for probability interpretation of wave functions
 
 2. **Wave Function Collapse**: von Neumann, J. (1932). "Mathematical Foundations of Quantum Mechanics"
-   - Measurement theory and state reduction
+ - Measurement theory and state reduction
 
 3. **Superposition Principle**: Dirac, P.A.M. (1930). "The Principles of Quantum Mechanics"
-   - Linear combination of states
+ - Linear combination of states
 
 ### Thermodynamics
 
 4. **Shannon Entropy**: Shannon, C.E. (1948). "A Mathematical Theory of Communication"
-   - Information entropy and uncertainty
+ - Information entropy and uncertainty
 
 5. **Maximum Entropy Principle**: Jaynes, E.T. (1957). "Information Theory and Statistical Mechanics"
-   - Entropy minimization for inference
+ - Entropy minimization for inference
 
 ### Quantum Game Theory
 
 6. **Quantum Games**: Eisert, J., Wilkens, M., Lewenstein, M. (1999). "Quantum Games and Quantum Strategies"
-   - Application of quantum mechanics to game theory
+ - Application of quantum mechanics to game theory
 
 ### Information Retrieval
 
 7. **Vector Space Model**: Salton, G. (1971). "The SMART Retrieval System"
-   - Cosine similarity for document retrieval
+ - Cosine similarity for document retrieval
 
 8. **Temporal Information Retrieval**: Li, X., Croft, W.B. (2003). "Time-based Language Models"
-   - Temporal factors in relevance
+ - Temporal factors in relevance
 
 ---
 

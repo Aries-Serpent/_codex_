@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version:** 1.0.0  
-**Status:** FINAL  
-**Audience:** All contributors, code reviewers, CI/CD operators  
+**Version:** 1.0.0
+**Status:** FINAL
+**Audience:** All contributors, code reviewers, CI/CD operators
 **Last Updated: 2026-07-11
 
 ---
@@ -14,8 +14,8 @@
 This document defines the PR approval workflow, governance gates, and review SLAs for all pull requests in the Aries-Serpent/_codex_ repository.
 
 **Related Docs:**
--  Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
--  Policy compliance checklist: `docs/production/POLICY_COMPLIANCE_CHECKLIST.md`
+- Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
+- Policy compliance checklist: `docs/production/POLICY_COMPLIANCE_CHECKLIST.md`
 
 ---
 

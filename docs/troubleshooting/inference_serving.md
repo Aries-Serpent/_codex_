@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 2.0.0  
+> **Version**: 2.0.0
 > **Last Updated**: 2026-06-22
 
 ---
@@ -139,13 +139,13 @@ print(f"Expires: {decoded['exp']}")
    model = loader.load('model_name')
    print('Model healthy')
    "
-   ```
+ ```
 
 2. Wait for exponential backoff to complete:
-   - First retry: 1 second
-   - Second retry: 2 seconds
-   - Third retry: 4 seconds
-   - Max: 300 seconds
+ - First retry: 1 second
+ - Second retry: 2 seconds
+ - Third retry: 4 seconds
+ - Max: 300 seconds
 
 3. Manual reset (if needed):
 ```python
@@ -167,7 +167,7 @@ breaker.reset()
 
 1. **Check P95/P99 latency:**
    ```bash
-   ```
+ ```
 
 2. **Identify bottleneck:**
    ```bash
@@ -175,7 +175,7 @@ breaker.reset()
 
    # Check queueing time
    # latency_total - prediction_latency = queue_time
-   ```
+ ```
 
 3. **Check resource utilization:**
    ```bash
@@ -187,7 +187,7 @@ breaker.reset()
 
    # Memory
    free -h
-   ```
+ ```
 
 #### Solutions
 
@@ -291,7 +291,7 @@ def predict_with_retry(data, max_retries=3):
 
    # Check port binding
    netstat -tlnp | grep 8000
-   ```
+ ```
 
 2. **Test connectivity:**
    ```bash
@@ -299,7 +299,7 @@ def predict_with_retry(data, max_retries=3):
 
    # Remote
    curl http://<server-ip>:8000/health
-   ```
+ ```
 
 3. **Check firewall rules:**
    ```bash
@@ -308,7 +308,7 @@ def predict_with_retry(data, max_retries=3):
 
    # Check if port is blocked
    telnet <server-ip> 8000
-   ```
+ ```
 
 #### Solutions
 

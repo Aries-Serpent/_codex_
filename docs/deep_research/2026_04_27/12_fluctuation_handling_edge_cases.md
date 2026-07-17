@@ -66,18 +66,31 @@ Capability is high when reserve, fast response, damping, observability, generali
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing R_reserve, F_cap'}}%%
+
 flowchart LR
+
     Reserve[R_reserve] --> Capability[F_cap]
+
     Response[V_response] --> Capability
+
     Damping[D_damping] --> Capability
+
     Observe[O_observe] --> Capability
+
     Generalize[G_generalize] --> Capability
+
     Backup[B_backup] --> Capability
+
     Amplitude[A_amplitude] --> Burden[Fluctuation burden]
+
     Latency[L_latency] --> Burden
+
     Coupling[C_coupling] --> Burden
+
     Uncertainty[U_uncertainty] --> Burden
+
     Burden --> Capability
+
     Capability --> Outcome[absorb / dampen / shed / isolate]
 ```
 
@@ -162,31 +175,51 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Disturbance or fluctuation, Detect amplitude, rate, source'}}%%
+
 flowchart TD
+
     Disturbance[Disturbance or fluctuation] --> Detect[Detect amplitude, rate, source]
+
     Detect --> Classify{Classify type}
+
     Classify --> Periodic[Periodic]
+
     Classify --> Stochastic[Stochastic]
+
     Classify --> Adversarial[Adversarial]
+
     Classify --> Drift[Drift]
+
     Classify --> Extreme[Extreme]
 
     Periodic --> Forecast[Forecast and pre-buffer]
+
     Stochastic --> Smooth[Absorb with storage and smoothing]
+
     Adversarial --> Verify[Authenticate and isolate]
+
     Drift --> Recalibrate[Recalibrate and maintain]
+
     Extreme --> FailSafe[Fail safe and prioritize critical load]
 
     Forecast --> Balance[Reserve and safety balance]
+
     Smooth --> Balance
+
     Verify --> Balance
+
     Recalibrate --> Balance
+
     FailSafe --> Balance
 
     Balance --> Outcome{Critical function preserved?}
+
     Outcome -->|yes| Learn[Update model and margins]
+
     Outcome -->|no| Shed[Shed noncritical load or deny risky action]
+
     Shed --> Learn
+
     Learn --> Detect
 ```
 

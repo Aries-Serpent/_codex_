@@ -4,8 +4,8 @@
 **Last Updated: 2026-06-22
 # NotebookLM Claude Code Integration Guide
 
-**Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code 
-**Tool**: `notebooklm-skill` for Claude Code 
+**Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code
+**Tool**: `notebooklm-skill` for Claude Code
 **Integration Level**: Deep (AI Architect queries)
 
 > ** NOTE:** The `scripts/run.py` references in this guide are for the **external** `notebooklm-skill` repository cloned to `~/.claude/skills/notebooklm/`. These scripts are NOT part of the `_codex_` repository. After cloning the external skill, all commands reference its local copy, not the `_codex_` codebase scripts directory.
@@ -484,7 +484,7 @@ After successful installation:
 
 ---
 
-**Task Status**: READY FOR EXECUTION 
-**Prerequisites**: Task 1 & 2 must be complete 
-**Estimated Time**: 2 hours 
+**Task Status**: READY FOR EXECUTION
+**Prerequisites**: Task 1 & 2 must be complete
+**Estimated Time**: 2 hours
 **Cognitive Brain Impact**: Self-Healing +3, Knowledge Synthesis +5

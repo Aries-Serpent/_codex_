@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 1.0.0  
-> **Last Updated**: 2026-06-22  
+> **Version**: 1.0.0
+> **Last Updated**: 2026-06-22
 > **Purpose**: Structured session logging for AI-driven lessons learned
 
 ## Objective
@@ -202,9 +202,9 @@ The AfterMath Action Workflow will:
 2. Extract `aftermath` blocks or inline tags
 3. Validate schema completeness
 4. Generate durable artifacts:
-   - `lessons_learned.md` (cumulative)
-   - `session_metrics.json` (time series)
-   - `checkpoint_state.yaml` (resume data)
+ - `lessons_learned.md` (cumulative)
+ - `session_metrics.json` (time series)
+ - `checkpoint_state.yaml` (resume data)
 5. Update cognitive brain with findings
 
 ## Integration Requirements
@@ -214,8 +214,8 @@ The AfterMath Action Workflow will:
 1. **Start of Session**: Load previous checkpoints if available
 2. **During Session**: Track decisions, lessons, metrics
 3. **End of Session**: Emit aftermath block to:
-   - `$GITHUB_STEP_SUMMARY` (workflows)
-   - Final PR comment (PRs)
+ - `$GITHUB_STEP_SUMMARY` (workflows)
+ - Final PR comment (PRs)
 4. **Continuation**: Reference previous session_id for continuity
 
 ### For Repository Maintainers
@@ -261,12 +261,12 @@ jobs:
 
 ## Success Criteria
 
--  Aftermath blocks emitted in every session
--  Lessons learned cumulative file updated
--  Metrics tracking operational
--  Checkpoint resume tested and working
--  Cognitive brain integration complete
--  All future Copilot sessions adopt standard
+- Aftermath blocks emitted in every session
+- Lessons learned cumulative file updated
+- Metrics tracking operational
+- Checkpoint resume tested and working
+- Cognitive brain integration complete
+- All future Copilot sessions adopt standard
 
 ## Best Practices
 

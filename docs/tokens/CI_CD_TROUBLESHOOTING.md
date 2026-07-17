@@ -10,7 +10,7 @@
 
 ---
 
-##  Quick Diagnosis Guide
+## Quick Diagnosis Guide
 
 Use this flowchart to identify token-related failures:
 
@@ -38,7 +38,7 @@ Start: CI/CD failure detected
 
 ---
 
-##  Common Token-Related Failures
+## Common Token-Related Failures
 
 ### Failure 1: "Token scope insufficient for this request"
 
@@ -357,7 +357,7 @@ echo "Available scopes: $SCOPES"
 
 ---
 
-##  Token Resolution Debugging
+## Token Resolution Debugging
 
 ### How to Check Which Token is Being Used
 
@@ -430,7 +430,7 @@ TOKEN=$(get_token "elevated")
 
 ---
 
-##  Recovery Procedures
+## Recovery Procedures
 
 ### Emergency Token Rotation
 
@@ -513,7 +513,7 @@ gh run list --workflow="$WORKFLOW_ID" --limit=1 --json status
 
 ---
 
-##  Prevention Strategies
+## Prevention Strategies
 
 ### Pre-Deployment Validation
 
@@ -590,40 +590,40 @@ def check_rate_limits(token):
 
 ---
 
-##  Troubleshooting Checklist
+## Troubleshooting Checklist
 
 When diagnosing token-related failures:
 
 - [ ] **Check Error Message**
-  - [ ] Contains "scope"? → Scope Error
-  - [ ] Contains "403"? → Permission/Scope Error
-  - [ ] Contains "401"? → Token Invalid/Missing
-  - [ ] Contains "429"? → Rate Limit
-  - [ ] Contains "revoked"? → Token Revoked
+ - [ ] Contains "scope"? Scope Error
+ - [ ] Contains "403"? Permission/Scope Error
+ - [ ] Contains "401"? Token Invalid/Missing
+ - [ ] Contains "429"? Rate Limit
+ - [ ] Contains "revoked"? Token Revoked
 
 - [ ] **Check Token Availability**
-  - [ ] GITHUB_TOKEN present? (should always be)
-  - [ ] CODEX_BACKUP_TOKEN present? (check repo secrets)
-  - [ ] CODEX_MASTER_KEY present? (check auth)
+ - [ ] GITHUB_TOKEN present? (should always be)
+ - [ ] CODEX_BACKUP_TOKEN present? (check repo secrets)
+ - [ ] CODEX_MASTER_KEY present? (check auth)
 
 - [ ] **Check Token Validity**
-  - [ ] Token format correct? (ghp_... etc) <!-- pragma: allowlist secret -->
-  - [ ] Test with curl 401? → Invalid/revoked
-  - [ ] Check expiration? (if applicable)
+ - [ ] Token format correct? (ghp_... etc) <!-- pragma: allowlist secret -->
+ - [ ] Test with curl 401? Invalid/revoked
+ - [ ] Check expiration? (if applicable)
 
 - [ ] **Check Scope Requirements**
-  - [ ] Reference TOKEN_HIERARCHY_GUIDE.md
-  - [ ] What operation requires what scope?
-  - [ ] Is current token insufficient?
+ - [ ] Reference TOKEN_HIERARCHY_GUIDE.md
+ - [ ] What operation requires what scope?
+ - [ ] Is current token insufficient?
 
 - [ ] **Check Rate Limits**
-  - [ ] API response 429?
-  - [ ] X-RateLimit-Remaining near 0?
-  - [ ] Retry-After header present?
+ - [ ] API response 429?
+ - [ ] X-RateLimit-Remaining near 0?
+ - [ ] Retry-After header present?
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **TOKEN_HIERARCHY_GUIDE.md** - Token selection and scopes
 - **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - Error handling in scripts

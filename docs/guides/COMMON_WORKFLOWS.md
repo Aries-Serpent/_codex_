@@ -7,7 +7,7 @@
 
 ---
 
-## 🏃 Quick Workflow Reference
+## Quick Workflow Reference
 
 **Need to...**
 - [Train a model from scratch](#workflow-1-train-model-from-scratch)
@@ -25,8 +25,8 @@
 
 ## Workflow 1: Train Model From Scratch
 
-**Duration:** 30-60 minutes  
-**Tools:** Python SDK, GPU recommended  
+**Duration:** 30-60 minutes
+**Tools:** Python SDK, GPU recommended
 **Experience Level:** Intermediate
 
 ### Steps
@@ -95,8 +95,8 @@ engine.save('outputs/my_model')
 
 ## Workflow 2: Fine-tune Existing Model
 
-**Duration:** 15-30 minutes  
-**Tools:** Python SDK, 1+ GPU recommended  
+**Duration:** 15-30 minutes
+**Tools:** Python SDK, 1+ GPU recommended
 **Experience Level:** Intermediate
 
 ### Steps
@@ -150,8 +150,8 @@ merged_model.save_pretrained('outputs/finetuned-model')
 
 ## Workflow 3: Deploy to Production
 
-**Duration:** 20-30 minutes  
-**Tools:** Ray Serve or Kubernetes  
+**Duration:** 20-30 minutes
+**Tools:** Ray Serve or Kubernetes
 **Experience Level:** Advanced
 
 ### Steps (Ray Serve)
@@ -202,8 +202,8 @@ print(f"Latency p99: {metrics['latency_p99']:.0f}ms")
 
 ## Workflow 4: Monitor Production
 
-**Duration:** 15 minutes to setup, ongoing  
-**Tools:** Prometheus, Grafana, Python  
+**Duration:** 15 minutes to setup, ongoing
+**Tools:** Prometheus, Grafana, Python
 **Experience Level:** Intermediate
 
 ### Steps
@@ -270,8 +270,8 @@ def daily_monitor_check():
 
 ## Workflow 5: A/B Test Models
 
-**Duration:** 1 week  
-**Tools:** Python SDK, Kubernetes  
+**Duration:** 1 week
+**Tools:** Python SDK, Kubernetes
 **Experience Level:** Intermediate
 
 ### Steps
@@ -323,8 +323,8 @@ else:
 
 ## Workflow 6: Auto-Retrain When Performance Drops
 
-**Duration:** 30 minutes to setup, runs automatically  
-**Tools:** Python SDK, Airflow/Kubeflow optional  
+**Duration:** 30 minutes to setup, runs automatically
+**Tools:** Python SDK, Airflow/Kubeflow optional
 **Experience Level:** Advanced
 
 ### Steps
@@ -399,8 +399,8 @@ while True:
 
 ## Workflow 7: Integrate with External API
 
-**Duration:** 15-20 minutes  
-**Tools:** Python SDK or REST API  
+**Duration:** 15-20 minutes
+**Tools:** Python SDK or REST API
 **Experience Level:** Beginner
 
 ### Steps
@@ -462,8 +462,8 @@ print(json.dumps(result, indent=2))
 
 ## Workflow 8: Batch Processing
 
-**Duration:** 5-15 minutes setup, depends on data size  
-**Tools:** Python SDK or Web UI  
+**Duration:** 5-15 minutes setup, depends on data size
+**Tools:** Python SDK or Web UI
 **Experience Level:** Beginner
 
 ### Steps (via Python SDK)
@@ -510,8 +510,8 @@ print(f"Negative: {sum(1 for p in predictions if p['label']=='negative')}")
 
 ## Workflow 9: Debug Poor Predictions
 
-**Duration:** 30-60 minutes  
-**Tools:** Python SDK, visualization tools  
+**Duration:** 30-60 minutes
+**Tools:** Python SDK, visualization tools
 **Experience Level:** Intermediate
 
 ### Steps
@@ -571,8 +571,8 @@ if len(hard_examples) > 5:
 
 ## Workflow 10: Optimize for Cost
 
-**Duration:** 20-30 minutes  
-**Tools:** Python SDK, cloud CLI  
+**Duration:** 20-30 minutes
+**Tools:** Python SDK, cloud CLI
 **Experience Level:** Intermediate
 
 ### Steps
@@ -635,7 +635,7 @@ print(f"\n Projected savings: ${cost_report['total_cost'] - new_cost:.0f}/month"
 
 ---
 
-##  See Also
+## See Also
 
 - [Detailed Task Guides](./TASK_GUIDES/)
 - [Advanced Topics](./ADVANCED_TOPICS/)

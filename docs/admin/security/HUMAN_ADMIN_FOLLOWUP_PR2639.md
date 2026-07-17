@@ -1,24 +1,24 @@
-#  HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup
+# HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup
 **Version:** v0.2.1
 
-**Repository**: Aries-Serpent/_codex_  
-**PR**: #2639 / #2660  
-**Branch**: copilot/sub-pr-2639  
-**Status**:  Implementation Complete - **ACTION REQUIRED**  
-**Generated**: 2026-06-22  
-**Priority**:  **HIGH** - Security Enhancement
+**Repository**: Aries-Serpent/_codex_
+**PR**: #2639 / #2660
+**Branch**: copilot/sub-pr-2639
+**Status**: Implementation Complete - **ACTION REQUIRED**
+**Generated**: 2026-06-22
+**Priority**: **HIGH** - Security Enhancement
 
 ---
 
-##  EXECUTIVE SUMMARY
+## EXECUTIVE SUMMARY
 
 The secure token encryption system has been **fully implemented** and is ready for production use. This system provides military-grade encryption (AES-256-GCM) for GitHub tokens used by Copilot Agent automation.
 
 **What's Been Done**:
--  Core encryption/decryption tools created
--  Comprehensive documentation written  
--  Bootstrap workflows implemented
--  5-pass security review completed (ZERO concerns)
+- Core encryption/decryption tools created
+- Comprehensive documentation written
+- Bootstrap workflows implemented
+- 5-pass security review completed (ZERO concerns)
 
 **What You Need To Do**:
 1. **Review and test** the implementation
@@ -31,9 +31,9 @@ The secure token encryption system has been **fully implemented** and is ready f
 
 ---
 
-##  ACTION ITEMS FOR HUMAN ADMIN
+## ACTION ITEMS FOR HUMAN ADMIN
 
-###  PHASE 1: Review Implementation (Est. 10 min)
+### PHASE 1: Review Implementation (Est. 10 min)
 
 #### Task 1.1: Review Created Files
 
@@ -81,18 +81,18 @@ python3 scripts/security/copilot_token_decoder.py
 
 ---
 
-##  PHASE 2: Generate and Encrypt Token (Est. 15 min)
+## PHASE 2: Generate and Encrypt Token (Est. 15 min)
 
 ### Task 2.1: Create GitHub Personal Access Token
 
 1. Navigate to: https://github.com/settings/tokens/new
 2. Configure:
-   - **Note**: `_codex_ Copilot Agent Token - Created 2025-12-29`
-   - **Expiration**: 90 days
-   - **Scopes**:
-     - ☑️ `repo` (Full control of private repositories)
-     - ☑️ `workflow` (Update GitHub Action workflows)
-     - ☑️ `admin:org` (Full control of orgs and teams) - if needed
+ - **Note**: `_codex_ Copilot Agent Token - Created 2025-12-29`
+ - **Expiration**: 90 days
+ - **Scopes**:
+ - `repo` (Full control of private repositories)
+ - `workflow` (Update GitHub Action workflows)
+ - `admin:org` (Full control of orgs and teams) - if needed
 3. Click **Generate token**
 4. **CRITICAL**: Copy the token immediately (format: `ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) <!-- pragma: allowlist secret -->
 
@@ -139,7 +139,7 @@ Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx <!-- pragma: allowl
 
 ---
 
-### 🔑 PHASE 3: Configure GitHub Secrets (Est. 10 min)
+### PHASE 3: Configure GitHub Secrets (Est. 10 min)
 
 Choose ONE of these methods:
 
@@ -202,18 +202,18 @@ gh secret set CODEX_GHP_TOKEN_CONFIG \
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 2. Click **New repository secret**
 3. For **Base64 method** (minimum):
-   - Name: `CODEX_GHP_TOKEN_BASE64`
-   - Value: `[paste Base64 value from tool output]`
-   - Click **Add secret**
+ - Name: `CODEX_GHP_TOKEN_BASE64`
+ - Value: `[paste Base64 value from tool output]`
+ - Click **Add secret**
 4. Add verification hash:
-   - Name: `CODEX_GHP_TOKEN_SHA256`
-   - Value: `[paste SHA256 hash from tool output]`
-   - Click **Add secret**
+ - Name: `CODEX_GHP_TOKEN_SHA256`
+ - Value: `[paste SHA256 hash from tool output]`
+ - Click **Add secret**
 5. **(Optional but Recommended)** For AES encryption, add remaining secrets
 
 ---
 
-###  PHASE 4: Verify Setup (Est. 5 min)
+### PHASE 4: Verify Setup (Est. 5 min)
 
 #### Task 4.1: Test Token Retrieval Locally
 
@@ -260,7 +260,7 @@ gh secret list --repo Aries-Serpent/_codex_
 
 ---
 
-##  PHASE 5: Security Cleanup (Est. 5 min)
+## PHASE 5: Security Cleanup (Est. 5 min)
 
 ### Task 5.1: Revoke Old Token (CRITICAL)
 
@@ -293,7 +293,7 @@ history -c  # Clears history in current session
 
 ---
 
-##  VERIFICATION CHECKLIST
+## VERIFICATION CHECKLIST
 
 Before marking this complete, verify:
 
@@ -355,33 +355,33 @@ gh auth login
 
 ---
 
-##  NEXT STEPS (Optional Enhancements)
+## NEXT STEPS (Optional Enhancements)
 
 After basic setup is complete, consider:
 
 1. **Upgrade to AES Encryption** (if currently using Base64)
-   - More secure
-   - Only requires re-running encryption tool
+ - More secure
+ - Only requires re-running encryption tool
 
 2. **Configure Multiple Environments**
-   - Development: Use less restrictive token
-   - Production: Use highly secure AES token
+ - Development: Use less restrictive token
+ - Production: Use highly secure AES token
 
 3. **Set Up Automated Rotation**
-   - Create GitHub Actions workflow to remind about rotation
-   - Schedule for every 90 iterations
+ - Create GitHub Actions workflow to remind about rotation
+ - Schedule for every 90 iterations
 
 4. **Integrate with Other Workflows**
-   - Update any workflows that use `GITHUB_TOKEN`
-   - Point them to use `copilot_token_decoder`
+ - Update any workflows that use `GITHUB_TOKEN`
+ - Point them to use `copilot_token_decoder`
 
 5. **Monitor Usage**
-   - Review GitHub audit logs for token usage
-   - Set up alerts for unusual activity
+ - Review GitHub audit logs for token usage
+ - Set up alerts for unusual activity
 
 ---
 
-##  COMPLETION SIGN-OFF
+## COMPLETION SIGN-OFF
 
 Once all phases are complete, update this document:
 
@@ -395,7 +395,7 @@ Once all phases are complete, update this document:
 
 ---
 
-##  REFERENCE DOCUMENTATION
+## REFERENCE DOCUMENTATION
 
 **Local Files**:
 - Admin Guide: `docs/admin/security/ADMIN_TOKEN_SETUP.md`
@@ -415,24 +415,24 @@ Once all phases are complete, update this document:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-06-22T00:00:00Z  
-**Maintainer**: @mbaetiong  
-**Status**:  **READY FOR ADMIN ACTION**
+**Document Version**: 1.0
+**Last Updated**: 2026-06-22T00:00:00Z
+**Maintainer**: @mbaetiong
+**Status**: **READY FOR ADMIN ACTION**
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Guide human administrator through complete token encryption system deployment from code review to production activation.
 
-**Energy Level**:  (5/5 - Security Critical)
+**Energy Level**: (5/5 - Security Critical)
 
-**Status**:  Awaiting Admin Action
+**Status**: Awaiting Admin Action
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 ### Implementation Review
 - [ ] All 8 security files present in repository
@@ -457,54 +457,54 @@ Once all phases are complete, update this document:
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Implementation Completeness | 100% | 100% |  |
-| Admin Action Progress | 0/5 phases | 5/5 phases |  |
-| Security Review Issues | 0 concerns | 0 concerns |  |
-| Deployment Time Estimate | 30-45 min | <60 min |  |
-| Token Security Level | N/A | AES-256-GCM |  |
+| Implementation Completeness | 100% | 100% | |
+| Admin Action Progress | 0/5 phases | 5/5 phases | |
+| Security Review Issues | 0 concerns | 0 concerns | |
+| Deployment Time Estimate | 30-45 min | <60 min | |
+| Token Security Level | N/A | AES-256-GCM | |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path ️ | Structured 5-phase deployment journey | Review → Generate → Configure → Verify → Cleanup |
-| Fields  | System state transformation to production-ready | Pre-deployment → Token encrypted → Secrets configured → System active |
-| Patterns ️ | Recognition of deployment milestones | Phase checkboxes, verification steps, completion sign-off |
-| Redundancy  | Multiple configuration methods (automated, CLI, web UI) | 3 parallel setup paths ensure deployment success |
-| Balance ️ | Thoroughness vs time efficiency | Comprehensive 5-phase process completable in <60 minutes |
+| Path | Structured 5-phase deployment journey | Review Generate Configure Verify Cleanup |
+| Fields | System state transformation to production-ready | Pre-deployment Token encrypted Secrets configured System active |
+| Patterns | Recognition of deployment milestones | Phase checkboxes, verification steps, completion sign-off |
+| Redundancy | Multiple configuration methods (automated, CLI, web UI) | 3 parallel setup paths ensure deployment success |
+| Balance | Thoroughness vs time efficiency | Comprehensive 5-phase process completable in <60 minutes |
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Phase 1: Review Implementation |  | Important validation but code already reviewed by AI |
-| Phase 2: Generate & Encrypt Token |  | Critical security foundation |
-| Phase 3: Configure GitHub Secrets |  | Enables production functionality |
-| Phase 4: Verify Setup |  | Confirms end-to-end operation |
-| Phase 5: Security Cleanup |  | Prevents plaintext exposure |
+| Phase 1: Review Implementation | | Important validation but code already reviewed by AI |
+| Phase 2: Generate & Encrypt Token | | Critical security foundation |
+| Phase 3: Configure GitHub Secrets | | Enables production functionality |
+| Phase 4: Verify Setup | | Confirms end-to-end operation |
+| Phase 5: Security Cleanup | | Prevents plaintext exposure |
 
 **Total Energy Investment**: 21/25 units
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Rollback Strategy**: If deployment encounters issues, system remains in pre-deployment state (safe). Original plaintext token only revoked after successful verification.
 
 **Parallel Paths**:
-- If automated setup script fails → Use GitHub CLI manual commands
-- If GitHub CLI unavailable → Use web UI manual configuration
-- If encryption tool fails → Use Base64 encoding (simpler fallback)
-- If local verification fails → Test in workflow environment
-- If workflow test fails → Revert to environment variable testing
+- If automated setup script fails Use GitHub CLI manual commands
+- If GitHub CLI unavailable Use web UI manual configuration
+- If encryption tool fails Use Base64 encoding (simpler fallback)
+- If local verification fails Test in workflow environment
+- If workflow test fails Revert to environment variable testing
 
 **Recovery Procedures**:
 1. **Encryption Tool Error**: Verify Python 3.8+, install `cryptography`, check token format (starts with `ghp_`)

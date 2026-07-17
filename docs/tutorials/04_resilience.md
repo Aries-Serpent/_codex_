@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Estimated time:** 25 minutes  
+**Estimated time:** 25 minutes
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`
 
 ---
@@ -19,7 +19,7 @@ ML services in production routinely call:
 - **Monitoring endpoints** — non-critical but noisy when they fail
 
 Without protection, a single failing dependency can cascade into a full service
-outage.  The `codex.resilience` module provides three complementary primitives
+outage. The `codex.resilience` module provides three complementary primitives
 that compose together for production-grade fault tolerance:
 
 | Primitive | Role |
@@ -42,9 +42,9 @@ CLOSED ──(N failures)──► OPEN ──(timeout elapsed)──► HALF_OP
 
 - **CLOSED** — normal operation; failures are counted.
 - **OPEN** — calls are rejected immediately with `CircuitOpenError` until
-  the recovery timeout elapses.
+ the recovery timeout elapses.
 - **HALF_OPEN** — a limited trial: consecutive successes close the circuit;
-  any failure re-opens it.
+ any failure re-opens it.
 
 ### Decorator pattern
 
@@ -204,7 +204,7 @@ with GracefulDegradation() as dg:
 
 ## Part 4 — Combining All Three
 
-The three primitives are designed to be layered.  Here is a production pattern
+The three primitives are designed to be layered. Here is a production pattern
 for a model inference endpoint that calls an external feature store:
 
 ```python
@@ -242,10 +242,10 @@ def predict(user_id: str) -> dict:
 
 **What this buys you:**
 
-1. Transient errors (network blip) → retried up to 3 times with backoff.
-2. Sustained failure → circuit opens after 5 failures, saving downstream quota.
-3. Circuit still open or all retries exhausted → `GracefulDegradation` returns
-   a default feature set so inference can still proceed.
+1. Transient errors (network blip) retried up to 3 times with backoff.
+2. Sustained failure circuit opens after 5 failures, saving downstream quota.
+3. Circuit still open or all retries exhausted `GracefulDegradation` returns
+ a default feature set so inference can still proceed.
 4. After 60 s, the circuit enters HALF_OPEN and automatically probes recovery.
 
 ---
@@ -282,8 +282,8 @@ def test_circuit_opens_after_threshold():
 
 ---
 
-> **See also:**  
+> **See also:**
 > `src/codex/resilience/circuit_breaker.py` · `src/codex/resilience/retry.py` ·
 > `src/codex/resilience/degradation.py`
 >
-> [← Tutorial 03 — Continuous Learning](03_continuous_learning.md)
+> [ Tutorial 03 — Continuous Learning](03_continuous_learning.md)

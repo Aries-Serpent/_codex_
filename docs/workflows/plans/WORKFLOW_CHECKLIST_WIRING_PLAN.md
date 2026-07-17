@@ -4,9 +4,9 @@
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
-**Status:**  Drafted (S228)  
-**Author:** Copilot Coding Agent (S228)  
+**Version:** 1.0.0
+**Status:** Drafted (S228)
+**Author:** Copilot Coding Agent (S228)
 **Scope:** PR lifecycle workflow gate, Copilot Agent wrap-up hardening
 
 ---
@@ -15,11 +15,11 @@
 
 This plan defines an **explicit checklist-based workflow execution gate** that:
 - Lets Copilot Coding Agent **check off only the workflows it needs** during wrap-up
-- Posts an **execution-plan comment** listing which workflows are allowed () vs skipped (⏭️)
+- Posts an **execution-plan comment** listing which workflows are allowed () vs skipped ()
 - Target workflows must **opt in** (via a `gate-check` step) to actually skip execution
 - Is approved by the **owner approval gate** before execution proceeds
 - Prevents unintended workflow runs from generating artefacts, comments, or commits
-  that conflict with ongoing objectives
+ that conflict with ongoing objectives
 
 > **Current implementation (M1/M2):** `workflow-execution-gate.yml` parses the PR body
 > and posts an execution-plan comment. Actual workflow skipping requires target workflows
@@ -31,13 +31,21 @@ This plan defines an **explicit checklist-based workflow execution gate** that:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Copilot Agent Wraps Up, Workflow Execution Checklist'}}%%
+
 flowchart TD
+
     A[Copilot Agent Wraps Up] -->|updates PR body| B[Workflow Execution Checklist]
+
     B -->|owner reviews| C{Owner Approval Gate}
+
     C -->|approved| D[workflow-execution-gate.yml\nM1  DONE]
+
     D -->|reads checklist| E{Parse PR body}
+
     E -->|checked item| F[Post: WILL RUN notice]
+
     E -->|unchecked item| G[Post: SKIPPED notice]
+
     F & G --> H[Execution Plan Comment\nposted to PR]
 
     subgraph "Opt-in by target workflow — M3-M6"
@@ -48,8 +56,11 @@ flowchart TD
     end
 
     H -.->|signal| I
+
     I --> J
+
     J -->|false| K
+
     J -->|true| L
 
     style F fill:#2d6a4f,color:#fff
@@ -62,7 +73,7 @@ flowchart TD
 
 ## 3. PR Body Checklist Section Format
 
-Each PR managed by Copilot MUST include a `##  Workflow Execution Checklist` section
+Each PR managed by Copilot MUST include a `## Workflow Execution Checklist` section
 in the PR body. This section is managed automatically by `agent-auth-delegation.yml` during
 the Copilot wrap-up phase.
 
@@ -446,8 +457,8 @@ escalation comments to prevent cascade flooding:
 
 | Milestone | Task | Owner | Status |
 |-----------|------|-------|--------|
-| M1 | Create `workflow-execution-gate.yml` | Copilot |  Done (S228) |
-| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot |  Done (S228) |
+| M1 | Create `workflow-execution-gate.yml` | Copilot | Done (S228) |
+| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot | Done (S228) |
 | M3 | Add opt-in gate check to `security-scanning-suite.yml` | Copilot | ⬜ Pending |
 | M4 | Add opt-in gate check to `documentation-link-checker.yml` | Copilot | ⬜ Pending |
 | M5 | Add opt-in gate check to `nox_gates.yml` | Copilot | ⬜ Pending |
@@ -458,16 +469,21 @@ escalation comments to prevent cascade flooding:
 
 ## 11. PDA Loop + Aftermath Tracking
 
-> **PDA = Plan → Do → Act (Deming cycle adapted for agentic CI workflows)**  
+> **PDA = Plan Do Act (Deming cycle adapted for agentic CI workflows)**
 > Each iteration through the gate produces a measurable outcome. Tracked here.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Plan\nDefine checklist\nchoices for session, Do\nAgent checks boxes\n+ triggers gate'}}%%
+
 flowchart LR
     subgraph "PDA Iteration Loop"
+
         P[Plan\nDefine checklist\nchoices for session] --> D[Do\nAgent checks boxes\n+ triggers gate]
+
         D --> A[Act\nGate runs workflows\nskips unchecked]
+
         A --> AF[Aftermath\nRecord outcome\nupdate pattern DB]
+
         AF -->|next session| P
     end
 
@@ -478,7 +494,9 @@ flowchart LR
     end
 
     AF --> DB1
+
     AF --> DB2
+
     AF --> DB3
 ```
 
@@ -520,11 +538,11 @@ Each PDA iteration is recorded as a JSONL entry in `.codex/aftermath/pda_iterati
 
 | Pattern ID | Pattern | Outcome | Iteration |
 |-----------|---------|---------|-----------|
-| P-WEC-001 | Checklist injected by agent-auth-delegation on first session |  Works | 1 |
-| P-WEC-002 | Gate triggers on workflow_dispatch (Copilot wrap-up) | 🔮 Untested | — |
-| P-WEC-003 | Gate triggers on pull_request_review (owner approval) | 🔮 Untested | — |
-| P-WEC-004 | Unchecked workflow correctly skipped via gate | 🔮 Untested | — |
-| P-WEC-005 | Always-required workflow (comment-review-gate) NOT skipped | 🔮 Untested | — |
+| P-WEC-001 | Checklist injected by agent-auth-delegation on first session | Works | 1 |
+| P-WEC-002 | Gate triggers on workflow_dispatch (Copilot wrap-up) | Untested | — |
+| P-WEC-003 | Gate triggers on pull_request_review (owner approval) | Untested | — |
+| P-WEC-004 | Unchecked workflow correctly skipped via gate | Untested | — |
+| P-WEC-005 | Always-required workflow (comment-review-gate) NOT skipped | Untested | — |
 
 ### 11.3 Self-Review at Each PDA Act Phase
 

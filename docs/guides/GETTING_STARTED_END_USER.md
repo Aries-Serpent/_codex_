@@ -3,10 +3,10 @@
 **Version:** v0.2.1
 
 **Last Updated: 2026-07-08
-**Target Audience:** Business analysts, non-technical users, decision makers, SMEs  
+**Target Audience:** Business analysts, non-technical users, decision makers, SMEs
 **Estimated Time:** 10 minutes to first prediction
 
-##  Your Goal
+## Your Goal
 
 Use pre-trained models through web interfaces, no coding required. Make predictions, track results, and export insights for business decisions.
 
@@ -22,7 +22,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 1. Click "Sign Up" button
 2. Enter email and create password
 3. Verify email (check spam folder if needed)
-4. You're ready! 🎉
+4. You're ready!
 
 **Sign In:**
 - Email: your.email@company.com
@@ -35,17 +35,17 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 ### Step 1: Choose a Model
 
-1. **Go to Models** → You'll see available pre-trained models:
-   - 📧 Sentiment Analyzer
-   -  Text Classifier
-   -  Anomaly Detector
-   - And more...
+1. **Go to Models** You'll see available pre-trained models:
+ - Sentiment Analyzer
+ - Text Classifier
+ - Anomaly Detector
+ - And more...
 
 2. **Click a Model** to view details:
-   - What it does (description)
-   - Example inputs/outputs
-   - Accuracy and performance metrics
-   - How to use it
+ - What it does (description)
+ - Example inputs/outputs
+ - Accuracy and performance metrics
+ - How to use it
 
 ### Step 2: Make a Prediction
 
@@ -55,13 +55,13 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 2. Enter text or upload data:
    ```
    Input: "I love this product!"
-   ```
+ ```
 3. Click "Predict"
 4. See instant result:
    ```
    Sentiment: POSITIVE
    Confidence: 95%
-   ```
+ ```
 
 **Option B: Batch Upload**
 
@@ -71,7 +71,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
    text,category
    "Great product!",product_review
    "Terrible experience.",product_review
-   ```
+ ```
 3. Click "Process"
 4. Results display in table format
 5. Download results as CSV or Excel
@@ -160,17 +160,17 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 ### Share Results with Team
 
 **Create Report:**
-1. Go to Results → "Share"
+1. Go to Results "Share"
 2. Select predictions to include
 3. Choose report format:
-   -  Dashboard (interactive)
-   - 📄 PDF (printable)
-   -  PowerPoint (presentation)
+ - Dashboard (interactive)
+ - PDF (printable)
+ - PowerPoint (presentation)
 4. Enter recipient emails
 5. Click "Send"
 
 **Share Dashboard Link:**
-1. Results → "Generate Link"
+1. Results "Generate Link"
 2. Copy link
 3. Send to team
 4. Recipients can view (read-only)
@@ -178,12 +178,12 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 ### Create Alerts
 
 **Get Notified Automatically:**
-1. Settings → Alerts
+1. Settings Alerts
 2. "New Alert"
 3. Choose trigger:
-   - When prediction changes significantly
-   - New high-confidence predictions
-   - Weekly summary email
+ - When prediction changes significantly
+ - New high-confidence predictions
+ - Weekly summary email
 4. Set frequency (daily, weekly, monthly)
 5. Choose recipients
 6. Save
@@ -200,7 +200,7 @@ Alert: Daily Sentiment Summary
 
 ## Phase 5: Best Practices & Tips
 
-###  Do's
+### Do's
 
 - **Prepare clean data**: Remove extra spaces, fix formatting
 - **Check confidence scores**: High confidence (>90%) = more reliable
@@ -210,7 +210,7 @@ Alert: Daily Sentiment Summary
 - **Save important results**: Use star/folder feature
 - **Ask for help**: Click "?" on any page for assistance
 
-###  Don'ts
+### Don'ts
 
 - **Don't trust 100%**: All models make mistakes sometimes
 - **Don't upload sensitive data**: PII, financial info, etc.
@@ -219,7 +219,7 @@ Alert: Daily Sentiment Summary
 - **Don't edit raw results**: Keep original for audit trail
 - **Don't process identical data repeatedly**: Use saved results instead
 
-###  Pro Tips
+### Pro Tips
 
 **Tip 1: Batch Processing is Faster**
 - Processing 1 item: 1-2 seconds
@@ -240,7 +240,7 @@ Alert: Daily Sentiment Summary
 
 **Tip 4: Set Up Recurring Batches**
 - Process same data weekly/monthly
-- Schedule in Settings → Automation
+- Schedule in Settings Automation
 - Results auto-download
 
 ---
@@ -250,10 +250,10 @@ Alert: Daily Sentiment Summary
 ### Issue: "Upload Failed"
 
 **Causes & Solutions:**
-- File too large (>100MB) → Split into smaller files
-- Wrong format (PDF) → Convert to CSV/Excel
-- Missing headers → Add column names to first row
-- Special characters → Remove or replace
+- File too large (>100MB) Split into smaller files
+- Wrong format (PDF) Convert to CSV/Excel
+- Missing headers Add column names to first row
+- Special characters Remove or replace
 
 **How to fix:**
 ```
@@ -273,14 +273,14 @@ Alert: Daily Sentiment Summary
 
 **What to do:**
 1. Check confidence score
-   - Low (<60%) → Results uncertain
-   - High (>80%) → Check input format
+ - Low (<60%) Results uncertain
+ - High (>80%) Check input format
 2. Manual validation
-   - Review 10-20 random predictions
-   - Compare with your knowledge
+ - Review 10-20 random predictions
+ - Compare with your knowledge
 3. Ask for help
-   - Contact support team
-   - Share 3-5 examples
+ - Contact support team
+ - Share 3-5 examples
 
 ### Issue: "How Long Does Processing Take?"
 
@@ -299,22 +299,22 @@ Alert: Daily Sentiment Summary
 
 ## Phase 7: Getting Help
 
-###  Learning Resources
+### Learning Resources
 
 - **Video Tutorials**: [YouTube Channel](https://youtube.com/codex-ml)
-  - 2-5 minute walkthroughs
-  - Common use cases covered
-  - No technical knowledge needed
+ - 2-5 minute walkthroughs
+ - Common use cases covered
+ - No technical knowledge needed
 
 - **Help Center**: [help.codex-ml.dev](https://help.codex-ml.dev)
-  - FAQs by topic
-  - Video guides
-  - Searchable knowledge base
+ - FAQs by topic
+ - Video guides
+ - Searchable knowledge base
 
 - **Live Chat**: In app (bottom right corner)
-  - Available 9 AM - 5 PM (PT)
-  - Average response: 2 minutes
-  - Multilingual support
+ - Available 9 AM - 5 PM (PT)
+ - Average response: 2 minutes
+ - Multilingual support
 
 ### 🆘 Support Options
 
@@ -324,7 +324,7 @@ Alert: Daily Sentiment Summary
 - Most questions answered in 1 minute
 
 **Detailed Help:**
-- Click "Help" → "Contact Support"
+- Click "Help" "Contact Support"
 - Describe your issue
 - Attach screenshots if helpful
 - Get response within 24 hours
@@ -342,47 +342,47 @@ Alert: Daily Sentiment Summary
 ### Account Settings
 
 **Change Password:**
-1. Settings → Security → Change Password
+1. Settings Security Change Password
 2. Enter current password
 3. Enter new password (8+ characters, mix of letters/numbers)
 4. Confirm new password
 5. Click "Update"
 
 **Enable Two-Factor Authentication:**
-1. Settings → Security → Two-Factor Auth
+1. Settings Security Two-Factor Auth
 2. Choose method:
-   - 📱 Authenticator App (Google Authenticator, Authy)
-   - 📧 Email codes
+ - Authenticator App (Google Authenticator, Authy)
+ - Email codes
 3. Follow setup instructions
 4. Save backup codes (in case phone lost)
 
 **View Account Activity:**
-1. Settings → Security → Activity Log
+1. Settings Security Activity Log
 2. See all logins and password changes
 3. If unfamiliar activity, click "Change Password" immediately
 
 ### Data Privacy
 
 **Your Data:**
--  Your predictions are private
--  We don't share your data with others
--  You can delete all data anytime
--  GDPR/CCPA compliant
+- Your predictions are private
+- We don't share your data with others
+- You can delete all data anytime
+- GDPR/CCPA compliant
 
 **Download Your Data:**
-1. Settings → Data → "Download My Data"
+1. Settings Data "Download My Data"
 2. Receive email with all your data
 3. Can import to another system
 
 **Delete Your Account:**
-1. Settings → Account → "Delete Account"
+1. Settings Account "Delete Account"
 2. Confirm deletion
 3. All data permanently deleted
 4. Cannot be undone
 
 ---
 
-## 🎓 Next Steps
+## Next Steps
 
 1. **Explore Models**: Try 2-3 different models with sample data
 2. **Do a Pilot**: Use with small dataset (10-100 items)
@@ -410,4 +410,4 @@ A: Yes! $0 to start. Upgrade only when ready.
 
 ---
 
-**Welcome to Codex ML! Start predicting today 🎉**
+**Welcome to Codex ML! Start predicting today **

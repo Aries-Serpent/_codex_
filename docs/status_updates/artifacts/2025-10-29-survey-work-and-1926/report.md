@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Ref:** branch `work`  commit `c829fec7`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
+**Ref:** branch `work` commit `c829fec7` • **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926`
 
 ---
 
@@ -71,32 +71,32 @@ END_MARKER = "[END CONTENT]"
 
 
 def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
-    """Replace marker pairs with ```text fenced blocks."""
-    output: List[str] = []
-    buffer: List[str] = []
-    inside = False
+ """Replace marker pairs with ```text fenced blocks."""
+ output: List[str] = []
+ buffer: List[str] = []
+ inside = False
 
-    for raw in lines:
-        stripped = raw.strip()
-        if stripped == BEGIN_MARKER:
-            if inside:
-                output.extend(_render_buffer(buffer))
-                buffer.clear()
-            inside = True
-            buffer.clear()
-            continue
-        if stripped == END_MARKER:
-            if inside:
-                output.extend(_render_buffer(buffer))
-                buffer.clear()
-                inside = False
-            continue
+ for raw in lines:
+ stripped = raw.strip()
+ if stripped == BEGIN_MARKER:
+ if inside:
+ output.extend(_render_buffer(buffer))
+ buffer.clear()
+ inside = True
+ buffer.clear()
+ continue
+ if stripped == END_MARKER:
+ if inside:
+ output.extend(_render_buffer(buffer))
+ buffer.clear()
+ inside = False
+ continue
 
-        clean = raw.rstrip("\r")
-        if inside:
-            buffer.append(clean)
-        else:
-            output.append(clean)
+ clean = raw.rstrip("\r")
+ if inside:
+ buffer.append(clean)
+ else:
+ output.append(clean)
 ```text
 
 **FILE:** docs/status_updates/README.md@HEAD
@@ -109,12 +109,12 @@ def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
    scripts/survey.sh --pr 1926 --stdin <<'EOF'
    <paste Codex plaintext survey here>
    EOF
-   ```
-   - Use `--from-file <path>` if the plaintext is saved locally.
+ ```
+ - Use `--from-file <path>` if the plaintext is saved locally.
 3) **Resulting paths**:
-   - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
-   - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
-   - The artifact folder also mirrors the report at `report.md` for easy packaging.
+ - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
+ - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
+ - The artifact folder also mirrors the report at `report.md` for easy packaging.
 ```text
 
 ### 4.2 CLI/Docs Mismatches

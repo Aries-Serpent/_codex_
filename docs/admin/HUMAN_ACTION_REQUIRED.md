@@ -5,78 +5,78 @@
 ## Table of Contents
 
 - [Executive Summary](#executive-summary)
-  - [Statistics](#statistics)
-  - [Quick Actions](#quick-actions)
+ - [Statistics](#statistics)
+ - [Quick Actions](#quick-actions)
 - [1. CRITICAL - Immediate Action Required](#1-critical---immediate-action-required)
-  - [1.1 Stakeholder Alignment & Funding](#11-stakeholder-alignment--funding)
-  - [1.2 Security Configuration Review](#12-security-configuration-review)
-  - [1.3 Production Deployment Checklist](#13-production-deployment-checklist)
+ - [1.1 Stakeholder Alignment & Funding](#11-stakeholder-alignment--funding)
+ - [1.2 Security Configuration Review](#12-security-configuration-review)
+ - [1.3 Production Deployment Checklist](#13-production-deployment-checklist)
 - [2. HIGH - Action Required Soon](#2-high---action-required-soon)
-  - [2.1 Archived TODO Cleanup](#21-archived-todo-cleanup)
-  - [2.2 PR Error Log Action Items](#22-pr-error-log-action-items)
-  - [2.3 Historical Documentation Archival Notice](#23-historical-documentation-archival-notice)
-  - [2.4 Phase0 Risk Mitigation Plan](#24-phase0-risk-mitigation-plan)
-  - [2.5 HAR Integration Documentation](#25-har-integration-documentation)
-  - [2.6 Code TODOs in Source Files](#26-code-todos-in-source-files)
-  - [2.7 Plugin Quarantine Enhancement](#27-plugin-quarantine-enhancement)
-  - [2.8 Self-Review Checklist Compliance](#28-self-review-checklist-compliance)
+ - [2.1 Archived TODO Cleanup](#21-archived-todo-cleanup)
+ - [2.2 PR Error Log Action Items](#22-pr-error-log-action-items)
+ - [2.3 Historical Documentation Archival Notice](#23-historical-documentation-archival-notice)
+ - [2.4 Phase0 Risk Mitigation Plan](#24-phase0-risk-mitigation-plan)
+ - [2.5 HAR Integration Documentation](#25-har-integration-documentation)
+ - [2.6 Code TODOs in Source Files](#26-code-todos-in-source-files)
+ - [2.7 Plugin Quarantine Enhancement](#27-plugin-quarantine-enhancement)
+ - [2.8 Self-Review Checklist Compliance](#28-self-review-checklist-compliance)
 - [3. MEDIUM - Action Recommended](#3-medium---action-recommended)
-  - [3.1 Test Generation Guide Best Practices](#31-test-generation-guide-best-practices)
-  - [3.2 Audit Prompt Reference Examples](#32-audit-prompt-reference-examples)
-  - [3.3 Phase 1 Completion Skeleton Implementations](#33-phase-1-completion-skeleton-implementations)
-  - [3.4 AST Phase0 File Analysis TODOs](#34-ast-phase0-file-analysis-todos)
+ - [3.1 Test Generation Guide Best Practices](#31-test-generation-guide-best-practices)
+ - [3.2 Audit Prompt Reference Examples](#32-audit-prompt-reference-examples)
+ - [3.3 Phase 1 Completion Skeleton Implementations](#33-phase-1-completion-skeleton-implementations)
+ - [3.4 AST Phase0 File Analysis TODOs](#34-ast-phase0-file-analysis-todos)
 - [TODO: Implement file analysis](#todo-implement-file-analysis)
 - [TODO: Implement directory analysis](#todo-implement-directory-analysis)
 - [3.5 Changelog TODO References](#35-changelog-todo-references)
-  - [3.6 PR Template Compliance Check](#36-pr-template-compliance-check)
-  - [3.7 Capability Mapping TODO Association](#37-capability-mapping-todo-association)
-  - [3.8 LoRA Metrics Task Sequence](#38-lora-metrics-task-sequence)
+ - [3.6 PR Template Compliance Check](#36-pr-template-compliance-check)
+ - [3.7 Capability Mapping TODO Association](#37-capability-mapping-todo-association)
+ - [3.8 LoRA Metrics Task Sequence](#38-lora-metrics-task-sequence)
 - [4. LOW - Optional Improvements](#4-low---optional-improvements)
-  - [4.1 Archive Directory Organization](#41-archive-directory-organization)
-  - [4.2 Master Implementation Plan Status](#42-master-implementation-plan-status)
-  - [4.3 Component Gaps JSON Audit](#43-component-gaps-json-audit)
-  - [4.4 Schema Validation Implementation](#44-schema-validation-implementation)
-  - [4.5 Checkpoint Manager Coverage](#45-checkpoint-manager-coverage)
-  - [4.6 Codex Workflow Tool Coverage](#46-codex-workflow-tool-coverage)
-  - [4.7 Verification Tool Implementation](#47-verification-tool-implementation)
-  - [4.8 Data Loader Enhancement](#48-data-loader-enhancement)
-  - [4.9 Training Data Utils](#49-training-data-utils)
-  - [4.10 Historical Documentation Markers](#410-historical-documentation-markers)
+ - [4.1 Archive Directory Organization](#41-archive-directory-organization)
+ - [4.2 Master Implementation Plan Status](#42-master-implementation-plan-status)
+ - [4.3 Component Gaps JSON Audit](#43-component-gaps-json-audit)
+ - [4.4 Schema Validation Implementation](#44-schema-validation-implementation)
+ - [4.5 Checkpoint Manager Coverage](#45-checkpoint-manager-coverage)
+ - [4.6 Codex Workflow Tool Coverage](#46-codex-workflow-tool-coverage)
+ - [4.7 Verification Tool Implementation](#47-verification-tool-implementation)
+ - [4.8 Data Loader Enhancement](#48-data-loader-enhancement)
+ - [4.9 Training Data Utils](#49-training-data-utils)
+ - [4.10 Historical Documentation Markers](#410-historical-documentation-markers)
 - [5. Source Code TODOs (11 instances)](#5-source-code-todos-11-instances)
 - [6. Configuration & Environment Setup](#6-configuration--environment-setup)
-  - [6.1 Encryption Key Configuration](#61-encryption-key-configuration)
-  - [6.2 Database Path Configuration](#62-database-path-configuration)
-  - [6.3 Security Validation Automation](#63-security-validation-automation)
+ - [6.1 Encryption Key Configuration](#61-encryption-key-configuration)
+ - [6.2 Database Path Configuration](#62-database-path-configuration)
+ - [6.3 Security Validation Automation](#63-security-validation-automation)
 - [7. Recommendations](#7-recommendations)
-  - [7.1 TODO Tracking System](#71-todo-tracking-system)
-  - [7.2 Documentation Review Cycle](#72-documentation-review-cycle)
-  - [7.3 Code Quality Gates](#73-code-quality-gates)
+ - [7.1 TODO Tracking System](#71-todo-tracking-system)
+ - [7.2 Documentation Review Cycle](#72-documentation-review-cycle)
+ - [7.3 Code Quality Gates](#73-code-quality-gates)
 - [Appendix A: Full Search Results](#appendix-a-full-search-results)
-  - [Documentation TODOs (50+ instances)](#documentation-todos-50-instances)
-  - [Code TODOs (11 instances)](#code-todos-11-instances)
-  - [Action Keywords Found](#action-keywords-found)
+ - [Documentation TODOs (50+ instances)](#documentation-todos-50-instances)
+ - [Code TODOs (11 instances)](#code-todos-11-instances)
+ - [Action Keywords Found](#action-keywords-found)
 - [Appendix B: Priority Matrix](#appendix-b-priority-matrix)
 - [Appendix C: Contact & Ownership](#appendix-c-contact--ownership)
 - [Document Maintenance](#document-maintenance)
 - [Re-run audit and update this document](#re-run-audit-and-update-this-document)
 - [Then manually categorize and update this document](#then-manually-categorize-and-update-this-document)
 - [ Mission Overview](#-mission-overview)
-- [️ Verification Checklist](#-verification-checklist)
+- [ Verification Checklist](#-verification-checklist)
 - [ Success Metrics](#-success-metrics)
-- [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path ️ - Action Resolution Flow](#path----action-resolution-flow)
-  - [Fields  - Priority Gradients](#fields----priority-gradients)
-  - [Patterns ️ - Action Signatures](#patterns----action-signatures)
-  - [Redundancy  - Tracking Safeguards](#redundancy----tracking-safeguards)
-  - [Balance ️ - Action Load Distribution](#balance----action-load-distribution)
+- [ Physics Alignment](#-physics-alignment)
+ - [Path - Action Resolution Flow](#path----action-resolution-flow)
+ - [Fields - Priority Gradients](#fields----priority-gradients)
+ - [Patterns - Action Signatures](#patterns----action-signatures)
+ - [Redundancy - Tracking Safeguards](#redundancy----tracking-safeguards)
+ - [Balance - Action Load Distribution](#balance----action-load-distribution)
 - [ Energy Distribution](#-energy-distribution)
-  - [Priority-Based Allocation](#priority-based-allocation)
-  - [Temporal Energy Flow](#temporal-energy-flow)
+ - [Priority-Based Allocation](#priority-based-allocation)
+ - [Temporal Energy Flow](#temporal-energy-flow)
 - [ Redundancy Patterns](#-redundancy-patterns)
-  - [Action Tracking Rollback](#action-tracking-rollback)
+ - [Action Tracking Rollback](#action-tracking-rollback)
 
-**Generated**: 2026-06-22  
-**Branch**: `copilot/fix-security-vulnerabilities`  
+**Generated**: 2026-06-22
+**Branch**: `copilot/fix-security-vulnerabilities`
 **Repository**: `Aries-Serpent/_codex_`
 
 ---
@@ -102,35 +102,35 @@ This document catalogs all items requiring human intervention, code owner review
 ## 1. CRITICAL - Immediate Action Required
 
 ### 1.1 Stakeholder Alignment & Funding
-**File**: `docs/plans/AST_PHASE0_COMPLETION_GUIDE.md`  
-**Lines**: 43-45  
-**Action**: Obtain leadership approval, budget allocation, and team resources for AST Phase 0  
-**Owner**: Repository Owner / Project Manager  
+**File**: `docs/plans/AST_PHASE0_COMPLETION_GUIDE.md`
+**Lines**: 43-45
+**Action**: Obtain leadership approval, budget allocation, and team resources for AST Phase 0
+**Owner**: Repository Owner / Project Manager
 **Context**:
 ```markdown
 - [ ] **Stakeholder Alignment** - Leadership approval required ( ACTION REQUIRED)
 - [ ] **Funding Approved** - Budget allocation confirmed ( ACTION REQUIRED)
 - [ ] **Team Allocated** - Resources committed ( ACTION REQUIRED)
 ```
-**Impact**: AST Phase 0 implementation cannot proceed without these approvals  
+**Impact**: AST Phase 0 implementation cannot proceed without these approvals
 **Estimated Time**: 2-4 phases (stakeholder meetings, budget approval process)
 
 ### 1.2 Security Configuration Review
-**File**: `SECURITY.md` (implied)  
-**Line**: N/A  
-**Action**: Review and configure environment variables for encrypted storage utilities  
-**Owner**: DevOps / Security Admin  
-**Context**: `SecureStorage` class requires `ENCRYPTION_KEY` environment variable  
-**Impact**: Encrypted storage features will not function without proper configuration  
+**File**: `SECURITY.md` (implied)
+**Line**: N/A
+**Action**: Review and configure environment variables for encrypted storage utilities
+**Owner**: DevOps / Security Admin
+**Context**: `SecureStorage` class requires `ENCRYPTION_KEY` environment variable
+**Impact**: Encrypted storage features will not function without proper configuration
 **Estimated Time**: 1-2 hours
 
 ### 1.3 Production Deployment Checklist
-**File**: `docs/archive/PRODUCTION_READINESS_CERTIFICATION.md`  
-**Line**: 146  
-**Action**: Verify plugin quarantine implementation in production environment  
-**Owner**: Release Manager  
-**Context**: Plugin quarantine feature completed but needs production verification  
-**Impact**: Security feature may not be active in production  
+**File**: `docs/archive/PRODUCTION_READINESS_CERTIFICATION.md`
+**Line**: 146
+**Action**: Verify plugin quarantine implementation in production environment
+**Owner**: Release Manager
+**Context**: Plugin quarantine feature completed but needs production verification
+**Impact**: Security feature may not be active in production
 **Estimated Time**: 2-4 hours
 
 ---
@@ -138,80 +138,80 @@ This document catalogs all items requiring human intervention, code owner review
 ## 2. HIGH - Action Required Soon
 
 ### 2.1 Archived TODO Cleanup
-**File**: `docs/archive/GAP_ANALYSIS.md`, `docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md`, `docs/archive/FINAL_GAP_ANALYSIS.md`  
-**Lines**: Multiple (120, 61-62, 112, 119, 124, 422, etc.)  
-**Action**: Review archived TODO items and determine if cleanup/archival is needed  
-**Owner**: Code Owner  
-**Context**: Multiple historical TODO/FIXME references in archived documentation  
-**Impact**: Documentation clarity, potential confusion about resolved vs unresolved items  
+**File**: `docs/archive/GAP_ANALYSIS.md`, `docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md`, `docs/archive/FINAL_GAP_ANALYSIS.md`
+**Lines**: Multiple (120, 61-62, 112, 119, 124, 422, etc.)
+**Action**: Review archived TODO items and determine if cleanup/archival is needed
+**Owner**: Code Owner
+**Context**: Multiple historical TODO/FIXME references in archived documentation
+**Impact**: Documentation clarity, potential confusion about resolved vs unresolved items
 **Estimated Time**: 2-3 hours
 
 ### 2.2 PR Error Log Action Items
-**File**: `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Lines**: 40-41, 45, 644-649  
-**Action**: Address TODO items for missing files and pending integrations  
-**Owner**: Code Owner  
+**File**: `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Lines**: 40-41, 45, 644-649
+**Action**: Address TODO items for missing files and pending integrations
+**Owner**: Code Owner
 **Context**:
 - ERR-2151-001: JSON version consistency (MEDIUM priority)
 - ERR-2151-002: Schema validation (LOW priority)
 - ERR-2151-006: Training pipeline integration (MEDIUM priority)
 - Missing files: `data/loader_enhanced.py`, `tools/verification_tool.py`, `training/data_utils.py`
-**Impact**: Incomplete features, missing validations  
+**Impact**: Incomplete features, missing validations
 **Estimated Time**: 4-6 hours total
 
 ### 2.3 Historical Documentation Archival Notice
-**File**: `docs/plans/COMPREHENSIVE_PLAN_VERIFICATION.md`  
-**Line**: 261  
-**Action**: Add "HISTORICAL - NO ACTION REQUIRED" notices to appropriate archived documents  
-**Owner**: Documentation Maintainer  
-**Context**: Improve clarity for users reviewing archived documentation  
-**Impact**: Prevents confusion about whether archived plans need action  
+**File**: `docs/plans/COMPREHENSIVE_PLAN_VERIFICATION.md`
+**Line**: 261
+**Action**: Add "HISTORICAL - NO ACTION REQUIRED" notices to appropriate archived documents
+**Owner**: Documentation Maintainer
+**Context**: Improve clarity for users reviewing archived documentation
+**Impact**: Prevents confusion about whether archived plans need action
 **Estimated Time**: 30 minutes
 
 ### 2.4 Phase0 Risk Mitigation Plan
-**File**: `docs/plans/Phase0_ExecutiveDashboard.md`  
-**Lines**: 408-409  
-**Action**: Complete Phase0 risk mitigation and executive summary documents  
-**Owner**: Risk Manager / Project Manager  
+**File**: `docs/plans/Phase0_ExecutiveDashboard.md`
+**Lines**: 408-409
+**Action**: Complete Phase0 risk mitigation and executive summary documents
+**Owner**: Risk Manager / Project Manager
 **Context**:
-- `Phase0_RiskMitigation_Copilot.md` -  TODO
-- `Phase0_ExecutiveSummary_Copilot.md` -  TODO
-**Impact**: Executive visibility into risks and project status  
+- `Phase0_RiskMitigation_Copilot.md` - TODO
+- `Phase0_ExecutiveSummary_Copilot.md` - TODO
+**Impact**: Executive visibility into risks and project status
 **Estimated Time**: 4-6 hours
 
 ### 2.5 HAR Integration Documentation
-**File**: Referenced in `docs/archive/FINAL_GAP_ANALYSIS.md`  
-**Line**: 364  
-**Action**: Review and address TODO comments in HAR integration plan  
-**Owner**: Integration Team Lead  
-**Context**: `docs/HAR_INTEGRATION_PLAN.md` has +5 TODO comments  
-**Impact**: HAR integration may be incomplete  
+**File**: Referenced in `docs/archive/FINAL_GAP_ANALYSIS.md`
+**Line**: 364
+**Action**: Review and address TODO comments in HAR integration plan
+**Owner**: Integration Team Lead
+**Context**: `docs/HAR_INTEGRATION_PLAN.md` has +5 TODO comments
+**Impact**: HAR integration may be incomplete
 **Estimated Time**: 2-3 hours
 
 ### 2.6 Code TODOs in Source Files
-**Count**: 11 instances across `src/`, `agents/`, `scripts/`, `services/`  
-**Action**: Review and resolve or document inline TODO/FIXME comments  
-**Owner**: Code Owners (by file)  
-**Context**: Found via `grep -rn "# TODO\|# FIXME"` in Python source files  
-**Impact**: Code completeness, technical debt tracking  
+**Count**: 11 instances across `src/`, `agents/`, `scripts/`, `services/`
+**Action**: Review and resolve or document inline TODO/FIXME comments
+**Owner**: Code Owners (by file)
+**Context**: Found via `grep -rn "# TODO\|# FIXME"` in Python source files
+**Impact**: Code completeness, technical debt tracking
 **Estimated Time**: Variable (1-8 hours depending on complexity)
 
 ### 2.7 Plugin Quarantine Enhancement
-**File**: `docs/archive/FINAL_GAP_ANALYSIS.md`  
-**Lines**: 40-43, 192, 323  
-**Action**: Implement quarantine duration check feature (P2 priority)  
-**Owner**: Plugin System Maintainer  
-**Context**: Feature enhancement marked as "TODO documented, not blocking"  
-**Impact**: Enhanced plugin security monitoring  
+**File**: `docs/archive/FINAL_GAP_ANALYSIS.md`
+**Lines**: 40-43, 192, 323
+**Action**: Implement quarantine duration check feature (P2 priority)
+**Owner**: Plugin System Maintainer
+**Context**: Feature enhancement marked as "TODO documented, not blocking"
+**Impact**: Enhanced plugin security monitoring
 **Estimated Time**: 2-4 hours
 
 ### 2.8 Self-Review Checklist Compliance
-**File**: `docs/SELF_REVIEW_CHECKLIST.md`  
-**Line**: 10  
-**Action**: Ensure all PRs pass "No TODOs/FIXMEs" check before merging  
-**Owner**: All Contributors  
-**Context**: Part of standard review process  
-**Impact**: Code quality, completeness standards  
+**File**: `docs/SELF_REVIEW_CHECKLIST.md`
+**Line**: 10
+**Action**: Ensure all PRs pass "No TODOs/FIXMEs" check before merging
+**Owner**: All Contributors
+**Context**: Part of standard review process
+**Impact**: Code quality, completeness standards
 **Estimated Time**: Ongoing (5-10 minutes per PR)
 
 ---
@@ -219,79 +219,79 @@ This document catalogs all items requiring human intervention, code owner review
 ## 3. MEDIUM - Action Recommended
 
 ### 3.1 Test Generation Guide Best Practices
-**File**: `docs/testing/ai_test_generation_guide.md`  
-**Lines**: 468-478, 668  
-**Action**: Review generated test code for TODO placeholders before committing  
-**Owner**: Test Maintainers  
-**Context**: AI-generated tests may contain `# TODO` placeholders that need implementation  
-**Impact**: Test completeness  
+**File**: `docs/testing/ai_test_generation_guide.md`
+**Lines**: 468-478, 668
+**Action**: Review generated test code for TODO placeholders before committing
+**Owner**: Test Maintainers
+**Context**: AI-generated tests may contain `# TODO` placeholders that need implementation
+**Impact**: Test completeness
 **Estimated Time**: 10-15 minutes per test suite
 
 ### 3.2 Audit Prompt Reference Examples
-**File**: `docs/reference/audit_prompt.md`  
-**Lines**: 165, 171, 274-302  
-**Action**: Update audit examples to reflect current TODO/capability tracking practices  
-**Owner**: Documentation Team  
-**Context**: Reference examples for extracting TODOs from documentation  
-**Impact**: Consistency in audit processes  
+**File**: `docs/reference/audit_prompt.md`
+**Lines**: 165, 171, 274-302
+**Action**: Update audit examples to reflect current TODO/capability tracking practices
+**Owner**: Documentation Team
+**Context**: Reference examples for extracting TODOs from documentation
+**Impact**: Consistency in audit processes
 **Estimated Time**: 1 hour
 
 ### 3.3 Phase 1 Completion Skeleton Implementations
-**File**: `docs/plans/PHASE1_COMPLETION_REPORT.md`  
-**Lines**: 173, 275  
-**Action**: Complete skeleton implementations with TODO markers  
-**Owner**: Phase 1 Implementation Team  
-**Context**: Skeleton code exists but needs full implementation  
-**Impact**: Feature completeness  
+**File**: `docs/plans/PHASE1_COMPLETION_REPORT.md`
+**Lines**: 173, 275
+**Action**: Complete skeleton implementations with TODO markers
+**Owner**: Phase 1 Implementation Team
+**Context**: Skeleton code exists but needs full implementation
+**Impact**: Feature completeness
 **Estimated Time**: Variable (8-16 hours)
 
 ### 3.4 AST Phase0 File Analysis TODOs
-**File**: `docs/plans/AST_PHASE0_COMPLETION_GUIDE.md`  
-**Lines**: 1010-1013  
-**Action**: Implement file and directory analysis functionality  
-**Owner**: AST Team  
+**File**: `docs/plans/AST_PHASE0_COMPLETION_GUIDE.md`
+**Lines**: 1010-1013
+**Action**: Implement file and directory analysis functionality
+**Owner**: AST Team
 **Context**:
 ```python
 # TODO: Implement file analysis
 # TODO: Implement directory analysis
 ```
-**Impact**: AST analysis capabilities  
+**Impact**: AST analysis capabilities
 **Estimated Time**: 4-6 hours
 
 ## 3.5 Changelog TODO References
-**File**: `docs/CHANGELOG/changelog_codex.md`  
-**Lines**: 353, 382  
-**Action**: Verify gaps reports for TODOs and stubs have been generated  
-**Owner**: Changelog Maintainer  
-**Context**: Historical changelog entries mentioning TODO tracking  
-**Impact**: Historical record accuracy  
+**File**: `docs/CHANGELOG/changelog_codex.md`
+**Lines**: 353, 382
+**Action**: Verify gaps reports for TODOs and stubs have been generated
+**Owner**: Changelog Maintainer
+**Context**: Historical changelog entries mentioning TODO tracking
+**Impact**: Historical record accuracy
 **Estimated Time**: 30 minutes
 
 ### 3.6 PR Template Compliance Check
-**File**: `docs/PR_TEMPLATE_COMPREHENSIVE.md`  
-**Line**: 85  
-**Action**: Ensure PR template includes TODO/FIXME resolution checkbox  
-**Owner**: Repository Maintainers  
-**Context**: `- [ ] **TODO/FIXME Resolved** - No unresolved TODO or FIXME comments`  
-**Impact**: PR review quality  
+**File**: `docs/PR_TEMPLATE_COMPREHENSIVE.md`
+**Line**: 85
+**Action**: Ensure PR template includes TODO/FIXME resolution checkbox
+**Owner**: Repository Maintainers
+**Context**: `- [ ] **TODO/FIXME Resolved** - No unresolved TODO or FIXME comments`
+**Impact**: PR review quality
 **Estimated Time**: 5 minutes (one-time update)
 
 ### 3.7 Capability Mapping TODO Association
-**File**: `docs/reference/audit_prompt.md`  
-**Line**: 171  
-**Action**: Update capability mapping scripts to associate TODOs with capability index  
-**Owner**: Tools Team  
-**Context**: Machine-readable `capability_map.json` generation  
-**Impact**: Automated TODO tracking  
+**File**: `docs/reference/audit_prompt.md`
+**Line**: 171
+**Action**: Update capability mapping scripts to associate TODOs with capability index
+**Owner**: Tools Team
+**Context**: Machine-readable `capability_map.json` generation
+**Impact**: Automated TODO tracking
 **Estimated Time**: 2-3 hours
 
 ### 3.8 LoRA Metrics Task Sequence
-**File**: `docs/codex_task_sequence_lora_metrics.md`  
-**Line**: 48  
-**Action**: Tag deferred work using `NotImplementedError` or doc TODOs referencing pruning report  
-**Owner**: ML Team  
-**Context**: "Tag deferred work in-code using explicit `NotImplementedError` or doc TODOs"  
-**Impact**: ML feature tracking  
+**File**: `docs/codex_task_sequence_lora_metrics.md`
+**Line**: 48
+**Action**: Tag deferred work using `NotImplementedError` or doc TODOs referencing pruning report
+**Owner**: ML Team
+**Context**: "Tag deferred work in-code using explicit `NotImplementedError` or doc TODOs"
+**Impact**: ML feature tracking
 **Estimated Time**: 1-2 hours
 
 ---
@@ -299,81 +299,81 @@ This document catalogs all items requiring human intervention, code owner review
 ## 4. LOW - Optional Improvements
 
 ### 4.1 Archive Directory Organization
-**Files**: All files in `docs/archive/`  
-**Action**: Consider adding README.md to archive directory explaining status of archived docs  
-**Owner**: Documentation Team  
-**Impact**: User clarity when browsing archives  
+**Files**: All files in `docs/archive/`
+**Action**: Consider adding README.md to archive directory explaining status of archived docs
+**Owner**: Documentation Team
+**Impact**: User clarity when browsing archives
 **Estimated Time**: 30 minutes
 
 ### 4.2 Master Implementation Plan Status
-**File**: `docs/archive/MASTER_IMPLEMENTATION_PLAN.md`  
-**Line**: 40  
-**Action**: Verify quarantine TODO resolution is accurately reflected  
-**Owner**: Plan Maintainer  
-**Impact**: Historical accuracy  
+**File**: `docs/archive/MASTER_IMPLEMENTATION_PLAN.md`
+**Line**: 40
+**Action**: Verify quarantine TODO resolution is accurately reflected
+**Owner**: Plan Maintainer
+**Impact**: Historical accuracy
 **Estimated Time**: 10 minutes
 
 ### 4.3 Component Gaps JSON Audit
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 40  
-**Action**: Address JSON version consistency for audit trail integrity  
-**Owner**: Audit Team  
-**Impact**: Audit trail completeness  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 40
+**Action**: Address JSON version consistency for audit trail integrity
+**Owner**: Audit Team
+**Impact**: Audit trail completeness
 **Estimated Time**: 1 hour
 
 ### 4.4 Schema Validation Implementation
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 41  
-**Action**: Implement schema validation for manifest.json  
-**Owner**: Schema Team  
-**Impact**: File structure validation  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 41
+**Action**: Implement schema validation for manifest.json
+**Owner**: Schema Team
+**Impact**: File structure validation
 **Estimated Time**: 2 hours
 
 ### 4.5 Checkpoint Manager Coverage
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 648  
-**Action**: Add 2 missing test cases for checkpoint manager  
-**Owner**: Test Team  
-**Impact**: Test coverage  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 648
+**Action**: Add 2 missing test cases for checkpoint manager
+**Owner**: Test Team
+**Impact**: Test coverage
 **Estimated Time**: 15 minutes
 
 ### 4.6 Codex Workflow Tool Coverage
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 649  
-**Action**: Add 1 missing test case for codex workflow  
-**Owner**: Test Team  
-**Impact**: Test coverage  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 649
+**Action**: Add 1 missing test case for codex workflow
+**Owner**: Test Team
+**Impact**: Test coverage
 **Estimated Time**: 10 minutes
 
 ### 4.7 Verification Tool Implementation
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 645  
-**Action**: Create or locate `tools/verification_tool.py` (7 test cases needed)  
-**Owner**: Tools Team  
-**Impact**: Verification capabilities  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 645
+**Action**: Create or locate `tools/verification_tool.py` (7 test cases needed)
+**Owner**: Tools Team
+**Impact**: Verification capabilities
 **Estimated Time**: 1-2 hours
 
 ### 4.8 Data Loader Enhancement
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 644  
-**Action**: Identify and create `data/loader_enhanced.py` (6 test cases needed)  
-**Owner**: Data Team  
-**Impact**: Data loading features  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 644
+**Action**: Identify and create `data/loader_enhanced.py` (6 test cases needed)
+**Owner**: Data Team
+**Impact**: Data loading features
 **Estimated Time**: 1 hour
 
 ### 4.9 Training Data Utils
-**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`  
-**Line**: 646  
-**Action**: Implement `training/data_utils.py` (5 test cases needed)  
-**Owner**: Training Team  
-**Impact**: Training utilities  
+**File**: Mentioned in `docs/archive/pr_reports/PR-2151_Comprehensive_Error_Log.md`
+**Line**: 646
+**Action**: Implement `training/data_utils.py` (5 test cases needed)
+**Owner**: Training Team
+**Impact**: Training utilities
 **Estimated Time**: 1 hour
 
 ### 4.10 Historical Documentation Markers
-**Files**: All archived documentation  
-**Action**: Add consistent "ARCHIVED - [DATE]" markers to all archived documents  
-**Owner**: Documentation Team  
-**Impact**: User orientation  
+**Files**: All archived documentation
+**Action**: Add consistent "ARCHIVED - [DATE]" markers to all archived documents
+**Owner**: Documentation Team
+**Impact**: User orientation
 **Estimated Time**: 1 hour
 
 ---
@@ -391,7 +391,7 @@ grep -rn "# TODO\|# FIXME\|# ACTION\|# MANUAL\|# OWNER" src/ agents/ scripts/ se
 2. Create a tracked issue for the TODO
 3. Remove the TODO if no longer applicable
 
-**Owner**: Code owners by directory  
+**Owner**: Code owners by directory
 **Estimated Time**: 1-8 hours (varies by complexity)
 
 ---
@@ -399,30 +399,30 @@ grep -rn "# TODO\|# FIXME\|# ACTION\|# MANUAL\|# OWNER" src/ agents/ scripts/ se
 ## 6. Configuration & Environment Setup
 
 ### 6.1 Encryption Key Configuration
-**Action**: Set `ENCRYPTION_KEY` environment variable for production  
-**Owner**: DevOps / Security Admin  
+**Action**: Set `ENCRYPTION_KEY` environment variable for production
+**Owner**: DevOps / Security Admin
 **Command**:
 ```bash
 export ENCRYPTION_KEY=$(python -c "from codex.security.storage import generate_key; print(generate_key())")
 ```
-**Impact**: Required for `SecureStorage` functionality  
+**Impact**: Required for `SecureStorage` functionality
 **Estimated Time**: 15 minutes
 
 ### 6.2 Database Path Configuration
-**Action**: Set `CODEX_DB_PATH` and `CODEX_SESSION_LOG_DIR` if using non-default paths  
-**Owner**: DevOps  
-**Impact**: Session logging and database functionality  
+**Action**: Set `CODEX_DB_PATH` and `CODEX_SESSION_LOG_DIR` if using non-default paths
+**Owner**: DevOps
+**Impact**: Session logging and database functionality
 **Estimated Time**: 10 minutes
 
 ### 6.3 Security Validation Automation
-**Action**: Add security validation to CI/CD pipeline  
-**Owner**: CI/CD Admin  
+**Action**: Add security validation to CI/CD pipeline
+**Owner**: CI/CD Admin
 **Command**: Add to workflow:
 ```yaml
 - name: Security Validation
   run: python scripts/security/validate_security.py --verbose
 ```
-**Impact**: Automated security checking  
+**Impact**: Automated security checking
 **Estimated Time**: 30 minutes
 
 ---
@@ -430,32 +430,32 @@ export ENCRYPTION_KEY=$(python -c "from codex.security.storage import generate_k
 ## 7. Recommendations
 
 ### 7.1 TODO Tracking System
-**Recommendation**: Implement systematic TODO tracking  
+**Recommendation**: Implement systematic TODO tracking
 **Action**:
 1. Create GitHub issue labels: `todo`, `fixme`, `action-required`
 2. Automate detection of TODO comments in PRs
 3. Require issue creation for all TODO comments
 
-**Owner**: Repository Admins  
-**Impact**: Better technical debt visibility  
+**Owner**: Repository Admins
+**Impact**: Better technical debt visibility
 **Estimated Time**: 2-3 hours setup
 
 ### 7.2 Documentation Review Cycle
-**Recommendation**: Establish quarterly documentation review  
+**Recommendation**: Establish quarterly documentation review
 **Action**:
 1. Review all TODOs in docs/
 2. Archive or update stale documentation
 3. Verify accuracy of archived material
 
-**Owner**: Documentation Team  
-**Impact**: Documentation quality maintenance  
+**Owner**: Documentation Team
+**Impact**: Documentation quality maintenance
 **Estimated Time**: 4-6 hours per quarter
 
 ### 7.3 Code Quality Gates
-**Recommendation**: Enforce "no TODOs in main" policy  
-**Action**: Add pre-commit hook to warn on TODO additions  
-**Owner**: DevOps  
-**Impact**: Prevents accumulation of untracked work  
+**Recommendation**: Enforce "no TODOs in main" policy
+**Action**: Add pre-commit hook to warn on TODO additions
+**Owner**: DevOps
+**Impact**: Prevents accumulation of untracked work
 **Estimated Time**: 1 hour
 
 ---
@@ -507,8 +507,8 @@ grep -rn "# TODO\|# FIXME\|# ACTION\|# MANUAL\|# OWNER" \
 
 ## Document Maintenance
 
-**Last Updated**: 2026-06-22T00:00:00Z  
-**Next Review**: 2026-02-23T11:00:00Z (monthly)  
+**Last Updated**: 2026-06-22T00:00:00Z
+**Next Review**: 2026-02-23T11:00:00Z (monthly)
 **Automation**: Can be regenerated by running comprehensive audit scripts
 
 **Update Command**:
@@ -525,17 +525,17 @@ grep -rn "# TODO\|# FIXME" src/ agents/ scripts/ services/ --include="*.py" > /t
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
-**Objective:** Comprehensive action item tracking system for human-required interventions  
-**Energy Level:**  (5/5 - Action Critical)  
-**Status:**  Audit Complete |  Action Items Pending  
+**Objective:** Comprehensive action item tracking system for human-required interventions
+**Energy Level:** (5/5 - Action Critical)
+**Status:** Audit Complete | Action Items Pending
 
 This document serves as the authoritative catalog of all items requiring human intervention across the codebase. It prioritizes actions by criticality, assigns ownership, and tracks resolution status. The system ensures no critical action falls through gaps while maintaining visibility into technical debt and incomplete work.
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 | Priority | Category | Total Items | Validation Criteria | Completed |
 |----------|----------|-------------|---------------------|-----------|
@@ -543,12 +543,12 @@ This document serves as the authoritative catalog of all items requiring human i
 | **HIGH** | Cleanup/PRs/Documentation | 8 | Resolved within 5 iteration cycles | 0/8 |
 | **MEDIUM** | Tests/Integration/Compliance | 25 | Resolved within 10 iteration cycles | 0/25 |
 | **LOW** | Improvements/Enhancements | 20 | Backlog tracking active | 0/20 |
-| **Audit Refresh** | Document Currency | - | Re-run audit monthly | ☐ |
-| **Action Closure** | Completion Validation | - | All actions verified before closure | ☐ |
+| **Audit Refresh** | Document Currency | - | Re-run audit monthly | |
+| **Action Closure** | Completion Validation | - | All actions verified before closure | |
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | KPI | Target | Measurement Method | Current |
 |-----|--------|-------------------|---------|
@@ -563,9 +563,9 @@ This document serves as the authoritative catalog of all items requiring human i
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ - Action Resolution Flow
+### Path - Action Resolution Flow
 ```
 Discovery → Triage → Assignment → Execution → Validation → Closure
     ↓          ↓          ↓           ↓            ↓          ↓
@@ -577,25 +577,25 @@ Discovery → Triage → Assignment → Execution → Validation → Closure
 ```
 **Alignment:** Systematic progression ensures no action stuck in limbo
 
-### Fields  - Priority Gradients
+### Fields - Priority Gradients
 - **Critical Field:** Immediate escalation, highest resource allocation (40% energy)
 - **High Field:** Near-term focus, significant resource commitment (30% energy)
 - **Medium Field:** Planned resolution, moderate resources (20% energy)
 - **Low Field:** Backlog tracking, opportunistic resolution (10% energy)
 
-### Patterns ️ - Action Signatures
-- **Stakeholder Pattern:** Leadership approval → funding → team allocation (Section 1.1)
-- **Security Pattern:** Configuration → validation → audit trail (Section 1.2)
-- **Cleanup Pattern:** Scan → categorize → resolve or archive (Section 2.1)
-- **TODO Pattern:** Discovery → issue creation → implementation or removal (Section 2.6)
+### Patterns - Action Signatures
+- **Stakeholder Pattern:** Leadership approval funding team allocation (Section 1.1)
+- **Security Pattern:** Configuration validation audit trail (Section 1.2)
+- **Cleanup Pattern:** Scan categorize resolve or archive (Section 2.1)
+- **TODO Pattern:** Discovery issue creation implementation or removal (Section 2.6)
 
-### Redundancy  - Tracking Safeguards
+### Redundancy - Tracking Safeguards
 - **Primary:** This document (Human Action Required)
 - **Backup:** GitHub Issues for each action item
 - **Tertiary:** Inline code TODOs for granular tracking
 - **Audit:** Monthly re-scan to catch new items
 
-### Balance ️ - Action Load Distribution
+### Balance - Action Load Distribution
 ```
 Critical (3 items):  █████████████████████████████████ 40% effort
 High (8 items):      ███████████████████ 30% effort
@@ -606,7 +606,7 @@ Low (20 items):      ██ 10% effort
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 ### Priority-Based Allocation
 - **P0 (Critical - 40%):** Stakeholder alignment (1.1), Security config (1.2), Production deployment (1.3)
@@ -626,7 +626,7 @@ Iteration 18+:   ██████ Low actions (20 items, opportunistic)
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Action Tracking Rollback
 
@@ -645,11 +645,11 @@ Iteration 18+:   ██████ Low actions (20 items, opportunistic)
 6. **Close with Evidence:** Require proof of resolution (PR link, test results, config screenshot)
 
 **Status Transition States:**
-- **☐ Not Started:** Initial state after discovery
+- ** Not Started:** Initial state after discovery
 - ** In Progress:** Owner actively working on resolution
-- **⏸️ Blocked:** Waiting on external dependency or approval
+- ** Blocked:** Waiting on external dependency or approval
 - ** Completed:** Validated resolution with evidence
-- **🔁 Reopened:** Previously completed, now requires rework
+- ** Reopened:** Previously completed, now requires rework
 - ** Obsolete:** No longer relevant, archived with rationale
 
 **Audit Validation:**
@@ -666,6 +666,6 @@ Iteration 18+:   ██████ Low actions (20 items, opportunistic)
 
 ---
 
-**Template Version:** 1.0.0  
-**Applied:** 2026-01-23T11:00:00Z  
+**Template Version:** 1.0.0
+**Applied:** 2026-01-23T11:00:00Z
 **Next Audit Run:** 2026-02-23T11:00:00Z (monthly cadence)

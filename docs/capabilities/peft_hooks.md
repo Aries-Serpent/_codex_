@@ -4,11 +4,11 @@
 
 **Last Updated: 2026-06-22
 
-> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ Code Quality](code_quality_tooling.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [ Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ Code Quality](code_quality_tooling.md)
 
 ## Overview
 
-**Status**:  Complete - Comprehensive PEFT techniques and integration patterns documented
+**Status**: Complete - Comprehensive PEFT techniques and integration patterns documented
 
 > **Note**: Code examples throughout this document include imports at the beginning of each snippet for clarity and standalone usage. This is intentional to make each example self-contained and easy to copy.
 
@@ -280,21 +280,21 @@ model = get_peft_model(base_model, lora_config)
 ## Best Practices
 
 1. **Choose the Right Technique**
-   - **LoRA**: Best for large models, 0.1-1% of parameters trainable
-   - **Adapters**: Good balance, 1-5% of parameters trainable
-   - **Prefix Tuning**: Efficient for generation tasks, fixed compute cost
-   - **Full Fine-Tuning**: Use only for small models or when necessary
+ - **LoRA**: Best for large models, 0.1-1% of parameters trainable
+ - **Adapters**: Good balance, 1-5% of parameters trainable
+ - **Prefix Tuning**: Efficient for generation tasks, fixed compute cost
+ - **Full Fine-Tuning**: Use only for small models or when necessary
 
 2. **Hyperparameter Selection**
-   - LoRA rank (r): Start with 8, increase to 16/32 for complex tasks
-   - LoRA alpha: Typically 2-4x the rank (e.g., alpha=32 for r=8)
-   - Adapter bottleneck: 64-256 dimensions depending on model size
-   - Prefix length: 10-30 virtual tokens
+ - LoRA rank (r): Start with 8, increase to 16/32 for complex tasks
+ - LoRA alpha: Typically 2-4x the rank (e.g., alpha=32 for r=8)
+ - Adapter bottleneck: 64-256 dimensions depending on model size
+ - Prefix length: 10-30 virtual tokens
 
 3. **Memory Management**
-   - PEFT reduces memory by 3-10x vs full fine-tuning
-   - Combine with gradient checkpointing for further savings
-   - Use 8-bit/4-bit base models with bitsandbytes
+ - PEFT reduces memory by 3-10x vs full fine-tuning
+ - Combine with gradient checkpointing for further savings
+ - Use 8-bit/4-bit base models with bitsandbytes
 
 4. **Merging Adapters**
 ```python

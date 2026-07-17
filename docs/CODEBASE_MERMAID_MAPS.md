@@ -1,11 +1,11 @@
-# ️ Codebase-Wide Mermaid Architecture Maps
+# Codebase-Wide Mermaid Architecture Maps
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.4.1 (S1292a · 2026-06-03) 
+> **Version:** 1.4.1 (S1292a · 2026-06-03)
 > **Updated: 2026-07-11
-> **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_` 
-> **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight 
+> **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`
+> **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight
 > **Previous:** v0.2.1 S1259 · 2026-05-23
 
 ---
@@ -37,6 +37,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing src/codex/\nPython package, tests/\n2,130 test files'}}%%
+
 graph TD
  subgraph "Aries-Serpent/_codex_ — Repository Structure"
  SRC[src/codex/\nPython package]
@@ -54,10 +55,15 @@ graph TD
  end
 
  SRC -->|installed via| PYPROJ
+
  CLI --> MAIN
+
  SCRIPTS -->|reads| SRC
+
  TESTS -->|imports| SRC
+
  GITHUB -->|CI runs| TESTS
+
  CODEX -->|session state| GITHUB
 ```
 
@@ -67,6 +73,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing git push to branch, PR review submitted'}}%%
+
 flowchart TD
  subgraph "PR Event Triggers"
  PUSH[git push to branch]
@@ -100,12 +107,19 @@ flowchart TD
  end
 
  PUSH --> DEFERRAL & COMMENT_GATE & AUTH
+
  PR_REVIEW --> COMMENT_GATE
+
  WFLOW_RUN --> HEALING
+
  HEALING -->|failure| RESCUE
+
  RESCUE -->|unresolved| AUTOFIX
+
  AUTH -->|approved| PREMERGE & RESILIENT
+
  PREMERGE -->|failure| HEALING
+
  AUTH --> SECURITY & CODEQL & SEMGREP
 ```
 
@@ -115,20 +129,31 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing feature branch\ncopilot/XXX, PR #NNNN'}}%%
+
 flowchart LR
  subgraph "Branch Lifecycle"
+
  F[feature branch\ncopilot/XXX] -->|PR opened| PR[PR #NNNN]
+
  PR -->|merged| BASE[0D_base_]
+
  BASE -->|approved| MAIN[main]
  end
 
  subgraph "Copilot Session Lifecycle"
+
  TASK[@copilot task\ncomment] --> SESSION[Copilot\nCoding Session]
+
  SESSION -->|report_progress| COMMIT[commit + push]
+
  COMMIT -->|CI| GATE{All gates\npass?}
+
  GATE -->|yes| WRAP[Wrap-up:\naccountability +\ncognitive brain]
+
  GATE -->|no| HEAL[iterative\nself-healing]
+
  HEAL --> SESSION
+
  WRAP -->|post comment| DONE[ Session Done]
  end
 
@@ -143,6 +168,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing SQLiteMemory\nSTM → LTM\n80% capacity trigger, TopologyManager\nsemantic nav'}}%%
+
 graph TD
  subgraph "Cognitive Brain Core (.codex/)"
  SM[SQLiteMemory\nSTM → LTM\n80% capacity trigger]
@@ -177,17 +203,27 @@ graph TD
  end
 
  CI_SIG & PR_SIG & WF_SIG & MEM --> SM
+
  SM -->|compress STM→LTM at 80%| MS
+
  MS --> SM
+
  SM --> TM & OT & PL
+
  PL --> QEC
+
  QEC --> HEAL_OUT & OODA
+
  OT --> PDA_OUT
+
  TM --> STATUS
 
  RLO -->|rate-limit context| QEC
+
  TTL -->|session lock TTL| QEC
+
  APR & SHD -->|autonomy design| OT
+
  VAR & WHK -->|pending deployments| OT
 
  style RLO fill:#e8f5e9,color:#000
@@ -205,6 +241,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Repository Variables\nNODE_JS_VERSION\nCODEX_CACHE_VERSION\nCOPILOT_RUNNER_PROFILE\nCODEX_CI_FAILURE_*, Agents Variables\nCOPILOT_AGENT_*\nCOPILOT_WEC_*\nCOGNITIVE_BRAIN_*'}}%%
+
 graph LR
  subgraph "Configuration Surfaces"
  REPOV[Repository Variables\nNODE_JS_VERSION\nCODEX_CACHE_VERSION\nCOPILOT_RUNNER_PROFILE\nCODEX_CI_FAILURE_*]
@@ -228,15 +265,25 @@ graph LR
  end
 
  REPOV --> SETUP
+
  AGENTV --> CIA & WFA & CBA & SCA
+
  ORGS --> SETUP
+
  SETUP --> ENVX & LOGX & DBX
+
  REPOV --> LOGDB
+
  ENVX --> SCA
+
  LOGX --> CIA & CBA
+
  DBX --> CBA
+
  LOGDB --> CIA & CBA
+
  REPOV --> CIA & WFA
+
  WFA -->|routes / validates| CIA & CBA & SCA
 ```
 
@@ -246,6 +293,7 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing agent-auth-delegation.yml\ncognitive-preflight wrap-up, Inject Workflow Execution\nChecklist into PR body'}}%%
+
 flowchart TD
  subgraph "Copilot Wrap-Up"
  WU[agent-auth-delegation.yml\ncognitive-preflight wrap-up]
@@ -264,9 +312,13 @@ flowchart TD
  end
 
  WU --> CHK --> CB
+
  CB -->|owner approves| PARSE
+
  PARSE --> RUN
+
  RUN -->|yes| DISPATCH
+
  RUN -->|no| SKIP_WF
 
  style CB fill:#e9c46a,color:#000
@@ -278,6 +330,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing scripts/ci/check_pr_comments.py\n--pr PR_NUMBER, BLOCKING\nmbaetiong + critical bots'}}%%
+
 flowchart TD
  subgraph "comment-review-gate.yml"
  SCAN[scripts/ci/check_pr_comments.py\n--pr PR_NUMBER]
@@ -303,10 +356,15 @@ flowchart TD
  end
 
  SCAN --> CLASSIFY
+
  CLASSIFY --> BLOCKING & WARNING & INFO
+
  IC & RC & RV -->|was_addressed()| BLOCKING
+
  BLOCKING -->|all resolved| PASS
+
  BLOCKING -->|any unresolved| FAIL
+
  SCAN --> PROM
 ```
 
@@ -316,27 +374,39 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, skip ci'}}%%
+
 stateDiagram-v2
+
  [*] --> IDLE
+
  IDLE --> DETECT: workflow_run failure event
 
  DETECT --> DEDUP: check 30-min dedup marker
+
  DEDUP --> IDLE: duplicate — skip
+
  DEDUP --> CLASSIFY: new failure
 
  CLASSIFY --> DISPATCH_FIX: known pattern (RP-001…RP-004)
+
  CLASSIFY --> DISPATCH_SWEEP: unknown pattern
+
  CLASSIFY --> ESCALATE: pattern unrecognised + 5+ iterations
 
  DISPATCH_FIX --> VERIFY: apply pattern fix
+
  DISPATCH_SWEEP --> VERIFY: run all patterns
 
  VERIFY --> GATE: sync_tracked_files --check
+
  GATE --> COMMIT: all 4 consistent 
+
  GATE --> ESCALATE: sync drift persists
 
  COMMIT --> IDLE: [skip ci] commit
+
  ESCALATE --> POST_COMMENT: @copilot escalation
+
  POST_COMMENT --> IDLE: cooling down (30 min)
 ```
 
@@ -346,6 +416,7 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Define session\nobjectives, Select workflows\nto execute'}}%%
+
 flowchart LR
  subgraph "Plan"
  P1[Define session\nobjectives]
@@ -372,9 +443,13 @@ flowchart LR
  end
 
  P1 --> P2 --> P3
+
  P3 --> D1 --> D2 --> D3
+
  D3 --> A1 --> A2 --> A3
+
  A3 --> AF1 & AF2 & AF3
+
  AF3 -->|next session| P1
 ```
 
@@ -384,6 +459,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing src/codex/\n__init__.py\nconfig/\nservices/, src/codex/config/\nopenai_client.py MISSING'}}%%
+
 graph TD
  subgraph "src/ layout (editable install)"
  SRC_CODEX[src/codex/\n__init__.py\nconfig/\nservices/]
@@ -405,6 +481,7 @@ graph TD
  end
 
  TEST -->|resolves to| LEGACY_CONFIG & LEGACY_SVC
+
  LEGACY_CONFIG & LEGACY_SVC -->|wrong module| ERR
 
  SRC_CONFIG -.->|Option B fix: add file| SRC_CODEX
@@ -423,6 +500,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CODEX_MASTER_KEY\nfull repo access, CODEX_BACKUP_KEY\nrotation backup'}}%%
+
 flowchart TD
  subgraph "Token Sources"
  MK[CODEX_MASTER_KEY\nfull repo access]
@@ -467,16 +545,27 @@ flowchart TD
  end
 
  MK & BK --> CHAIN
+
  GT --> CHAIN
+
  CHAIN --> AAD
+
  TTL_VAR --> AAD
+
  AAD --> AUTH_CHECK
+
  AUTH_CHECK -->|yes| ALLOWED
+
  ALLOWED --> MB & GA & CS & GH
+
  MB & CS -->|can write| MANIFEST & BASELINE & REPORT
+
  MK -->|CODEX_MASTER_KEY required| VAR_TEST
+
  VAR_TEST -->|reads scopes allowlist| VARS_REF
+
  VARS_REF --> CB_REF
+
  MK -->|write ops| VAR_WRITER
 
  style CHAIN fill:#e8f5e9,color:#000
@@ -495,6 +584,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing cli.py\nEntry point, capabilities/\nci_test, monitoring,\nusage_logger'}}%%
+
 graph TD
  subgraph "src/codex/ — Python Package"
  CLI2[cli.py\nEntry point]
@@ -519,12 +609,19 @@ graph TD
  end
 
  CLI2 --> CAPS & CONFIG2 & SERVICES
+
  UTILS --> CAPS
+
  LOGGING --> AGENTS2
+
  T_CAPS --> CAPS
+
  T_UNIT --> UTILS & CONFIG2
+
  CONF -->|sys.path fix| T_CAPS & T_UNIT
+
  CI_SCRIPTS -->|reads| T_CAPS
+
  COG_SCRIPTS -->|indexes| CLI2
 ```
 
@@ -542,6 +639,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing WEC Checklist\nworkflow-execution-gate.yml\nArms workflows per checkbox, Agent Auth Delegation\nagent-auth-delegation.yml\nPre-authorises token write ops'}}%%
+
 graph TD
  subgraph "5 Autonomy Surfaces"
  WEC[WEC Checklist\nworkflow-execution-gate.yml\nArms workflows per checkbox]
@@ -552,10 +650,15 @@ graph TD
  end
 
  subgraph "Zero Human Gate Loop"
+
  PUSH2[git push] --> GATE[WEC Gate\nparse checklist]
+
  GATE -->|armed| AUTO_APPROVE[auto-approve-workflows.yml\nApproves action_required]
+
  AUTO_APPROVE --> DELEGATE[agent-auth-delegation.yml\nIssue session token\nTTL=COPILOT_SESSION_TTL_SECONDS]
+
  DELEGATE --> AGENT_OPS[Copilot Agent\nfull write ops]
+
  AGENT_OPS -->|report_progress| PUSH2
  end
 
@@ -566,8 +669,11 @@ graph TD
  end
 
  CODEX_MK -->|write ops| AGENT_OPS
+
  BACKUP_KEY -->|fallback| AGENT_OPS
+
  COPILOT_AUTH -->|pre-authorises| DELEGATE
+
  WEC & AAD2 & DISCUSS & WHK2 & VARS2 -->|compose| AGENT_OPS
 
  style WEC fill:#e8f5e9,color:#000
@@ -584,6 +690,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing cancel-superseded\ncancel all but latest run per workflow, check-rate-limit\nall tokens report'}}%%
+
 flowchart TD
  subgraph "CLI Entry Points"
  CLI_CAP[cancel-superseded\ncancel all but latest run per workflow]
@@ -612,16 +719,27 @@ flowchart TD
  end
 
  CLI_CAP --> cancel_superseded_runs
+
  CLI_CHECK --> check_rate_limit_status
+
  CLI_TRICKLE --> REQ
+
  REQ --> STATUS
+
  STATUS -->|429 or 5xx| RETRY
+
  STATUS -->|success| RETURN[return status result]
+
  RETRY -->|exhausted| LAST
+
  TOKEN_LOOP --> CRITICAL
+
  CRITICAL -->|yes| CRIT_STATUS
+
  CRITICAL -->|no| OK_STATUS
+
  LIST --> KEEP
+
  KEEP --> CANCEL
 
  style LAST fill:#fff3e0,color:#000
@@ -636,21 +754,27 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
+
  [*] --> Idle
 
  Idle --> Acquiring: maintainer push or copilot continue
+
  Acquiring --> Active: agent-auth-delegation issues token TTL=COPILOT_SESSION_TTL_SECONDS
 
  Active --> Wrapping: session objectives complete or TTL approaching
+
  Wrapping --> Committed: report_progress push P-045 gate passed
 
  Committed --> Idle: copilot-agent-session-done.yml fires
 
  Active --> SelfHealing: CI failure detected
+
  SelfHealing --> Active: fix applied iterative-self-healing-ci.yml
 
  Active --> Escalating: all auto-fix patterns exhausted
+
  Escalating --> Active: maintainer approves re-dispatches
 
  Committed --> [*]: PR merged
@@ -664,6 +788,7 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing 12 problem-statement diffs S867, T-01 token chain fix S867'}}%%
+
 graph LR
  subgraph "Phase 9 Completed"
  P9A[12 problem-statement diffs S867]
@@ -691,7 +816,9 @@ graph LR
  end
 
  P9A & P9B & P9C & P9D & P9E --> P9J
+
  P9F & P9G & P9H & P9I --> P9K
+
  P9J & P9K & P9L & P9M --> P10A & P10B & P10C & P10D & P10E & P10F
 
  style P9A fill:#e8f5e9,color:#000
@@ -723,6 +850,7 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Overall statements: 17.57%, src/security/: 90.72% '}}%%
+
 graph TD
  subgraph "Coverage Baseline (S1292 — 2026-05-28)"
  CB1[Overall statements: 17.57%]
@@ -765,9 +893,13 @@ graph TD
  end
 
  CB1 & CB2 & CB3 & CB4 --> RG1 & RG2 & RG3 & RG4
+
  RG1 & RG2 & RG3 & RG4 --> GF1 & GF2 & GF3 & GF4 & GF5 & GF6 & GF7
+
  GF1 & GF2 & GF3 & GF4 & GF5 & GF6 & GF7 --> GF8
+
  GF8 --> DA1 & DA2 & DA3 & DA4 & DA5
+
  DA1 & DA2 & DA3 --> AL1 & AL2 & AL3 & AL4
 
  style CB1 fill:#fff3e0,color:#000
@@ -805,6 +937,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Security module: src/security/\n90.72% coverage , ITA service tests\ntests/services/ita/ '}}%%
+
 graph LR
  subgraph "Completed in S1292"
  S1A[Security module: src/security/\n90.72% coverage ]
@@ -834,7 +967,9 @@ graph LR
  end
 
  S1A & S1B & S1C & S1D & S1E --> P1 & P2 & P3 & P4
+
  P1 & P2 & P3 & P4 & P5 & P6 & P7 --> N1 & N2 & N3 & N4
+
  N1 & N2 & N3 & N4 --> N5 --> N6
 
  style S1A fill:#e8f5e9,color:#000

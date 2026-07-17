@@ -20,7 +20,7 @@
 
 ## Compose Override
 - Base compose has `codex-cpu`; healthcheck configured with official keys.
-- `docker compose up` → service transitions to `healthy`.
+- `docker compose up` service transitions to `healthy`.
 
 ## Artifacts
 - `artifacts/docs/` (pdoc)

@@ -16,14 +16,14 @@ Document how to store, rotate, and audit repository secrets and environment vari
 ## Core Principles
 
 - **Never commit secrets** to the repository.
-- **Token chain for all write ops**: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `github.token`
+- **Token chain for all write ops**: `CODEX_MASTER_KEY` `CODEX_BACKUP_KEY` `github.token`
 - **Use least privilege** — scope API keys to test environments where possible.
-- Use `report_progress` tool (never `git push`) for all commits.  # pragma: allowlist secret
+- Use `report_progress` tool (never `git push`) for all commits. # pragma: allowlist secret
 - `DISABLE_SECRET_FILTER` must **never** be set to `true` in production.
 
 ---
 
-##  Immediate Actions Required (As of 2026-06-03)
+## Immediate Actions Required (As of 2026-06-03)
 
 The following org secrets are 5+ months old and past their recommended rotation window:
 
@@ -44,21 +44,21 @@ The following org secrets are 5+ months old and past their recommended rotation 
 1. Generate new Fernet key:
    ```bash
    python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-   ```
-2. Navigate to **GitHub → Organization Settings → Secrets and variables → Secrets**
+ ```
+2. Navigate to **GitHub Organization Settings Secrets and variables Secrets**
 3. Update `CODEX_MASTER_KEY` (and separately `CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`)
 4. Verify the next CI run succeeds (any workflow using write ops)
 5. Record rotation in `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
-**Rotation frequency**: Every 90 days  
+**Rotation frequency**: Every 90 days
 **Emergency rotation**: Immediately if compromised — use `AGENT_KILL_SWITCH=1` to halt all agents first
 
 ### GitHub App Keys (_GITHUB_APP_*)
 
-1. Navigate to **GitHub → Organization Settings → GitHub Apps → `_codex_` app → Generate new private key**
+1. Navigate to **GitHub Organization Settings GitHub Apps `_codex_` app Generate new private key**
 2. Download the new `.pem` file
 3. Update `_GITHUB_APP_PRIVATE_KEY` in org secrets with the new PEM content
-4. If rotating client secret: **Edit → Rotate secret** in the GitHub App settings
+4. If rotating client secret: **Edit Rotate secret** in the GitHub App settings
 5. Update `_GITHUB_APP_CLIENT_SECRET` in org secrets
 6. Trigger a test `actions/create-github-app-token@v1` workflow to verify
 
@@ -76,10 +76,10 @@ The following org secrets are 5+ months old and past their recommended rotation 
 
 ### Runner Token (CODEX_RUNNER_TOKEN / _CODEX_BOT_RUNNER / _CODEX_ACTION_RUNNER)
 
-1. Navigate to **GitHub → Settings → Actions → Runners**
+1. Navigate to **GitHub Settings Actions Runners**
 2. Re-register the runner with a new token
 3. Update the environment secret `CODEX_RUNNER_TOKEN` and repo secret `_CODEX_BOT_RUNNER`
-4. For org-level `_CODEX_ACTION_RUNNER`: update in **Organization Settings → Actions → Runners**
+4. For org-level `_CODEX_ACTION_RUNNER`: update in **Organization Settings Actions Runners**
 
 **Rotation frequency**: Every 90 days or on runner recycle
 
@@ -107,7 +107,7 @@ To immediately halt all autonomous agent activity:
 
 ## Audit & Monitoring
 
-- **GitHub Audit Log**: Settings → Security → Audit log → filter by "secret"
+- **GitHub Audit Log**: Settings Security Audit log filter by "secret"
 - **CI Failure Rate**: Monitor `CODEX_CI_FAILURE_RATE` variable (threshold: `CODEX_CI_FAILURE_THRESHOLD = 10.0`)
 - **Last Green SHA**: `CODEX_CI_LAST_GREEN_SHA` — updated automatically by CI agent
 - **Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
@@ -118,7 +118,7 @@ To immediately halt all autonomous agent activity:
 ## Setting New Variables
 
 ### Repository Variables
-**GitHub UI**: Settings → Secrets and variables → Actions → Variables → **New repository variable**
+**GitHub UI**: Settings Secrets and variables Actions Variables **New repository variable**
 
 Naming conventions (from `.codex/CRITICAL_REPOSITORY_VARIABLES.md`):
 - `CODEX_*` — repository-specific configuration
@@ -127,7 +127,7 @@ Naming conventions (from `.codex/CRITICAL_REPOSITORY_VARIABLES.md`):
 - `AGENT_*` — agent runner controls
 
 ### Environment Variables (Aries_Serpent_codex_)
-**GitHub UI**: Settings → Environments → `Aries_Serpent_codex_` → Variables → **Add variable**
+**GitHub UI**: Settings Environments `Aries_Serpent_codex_` Variables **Add variable**
 
 These are injected into the Copilot sandbox. Sensitive section at `copilot-setup-steps.yml:141-147` must use `run: |` (pipe) with brace-free shell syntax.
 

@@ -218,7 +218,7 @@ result = navigator.execute('AUDIT_EXEC')
 **Architecture**: Hippocampus-Cortex model
 - **Short-Term Memory (STM)**: Recent 5-10 interactions
 - **Long-Term Memory (LTM)**: Pattern library with compression
-- **Consolidation**: Automatic STM → LTM transfer
+- **Consolidation**: Automatic STM LTM transfer
 
 **Compression**: 60% size reduction via PCA + quantization
 
@@ -1632,7 +1632,7 @@ pip install mangum
 **A**: The system uses a hippocampus-cortex model:
 - **Short-Term Memory (STM)**: Recent 5-10 interactions, fast access
 - **Long-Term Memory (LTM)**: Pattern library, compressed (60% reduction)
-- **Consolidation**: Automatic STM → LTM transfer based on usage patterns
+- **Consolidation**: Automatic STM LTM transfer based on usage patterns
 - **Cache-First Strategy**: Check memory before computation (30%+ hit rate)
 
 ### Q: Is this production-ready?

@@ -64,7 +64,7 @@ score = metric(
 
 ## Generative Metrics
 
-> ℹ️ When running via the Typer evaluation CLI, provide
+> ℹ When running via the Typer evaluation CLI, provide
 > `--prediction-transform` / `--target-transform` (or configure
 > `evaluation.prediction_transform`) so that raw model outputs are decoded to
 > text before these metrics are computed.

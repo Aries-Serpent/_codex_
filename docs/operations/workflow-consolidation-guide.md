@@ -1,9 +1,9 @@
 # Workflow Consolidation Developer Guide
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-07-13  
-**Audience:** Developers, DevOps Engineers  
-**Phase:** 3.3 - Phase 3.5 Documentation  
+**Version:** 1.0.0
+**Last Updated:** 2026-07-13
+**Audience:** Developers, DevOps Engineers
+**Phase:** 3.3 - Phase 3.5 Documentation
 
 ---
 
@@ -135,11 +135,11 @@ Results are located the same as before:
 
 | Scan Type | Output Location |
 |-----------|-----------------|
-| CodeQL | GitHub Security tab → Code scanning → CodeQL |
-| Semgrep | GitHub Security tab → Code scanning → Semgrep |
-| Container | GitHub Security tab → Code scanning → Trivy |
+| CodeQL | GitHub Security tab Code scanning CodeQL |
+| Semgrep | GitHub Security tab Code scanning Semgrep |
+| Container | GitHub Security tab Code scanning Trivy |
 | CVE | Artifacts: `cve-scan-results.json` |
-| Secrets | GitHub Security tab → Secret scanning |
+| Secrets | GitHub Security tab Secret scanning |
 | Dependencies | Artifacts: `dependency-scan-results.json` |
 
 #### Artifacts Access
@@ -164,13 +164,13 @@ The following workflows are now consolidated into `optimized-test-execution.yml`
 
 | Old Workflow | New Location | Status |
 |--------------|--------------|--------|
-| `ci-pytest.yml.disabled` | Suite orchestration | ✅ Consolidated |
-| `comprehensive_tests.yml.disabled` | Suite with levels | ✅ Consolidated |
-| `tests.yml.disabled` | Suite basic tests | ✅ Consolidated |
-| `auth-tests.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
-| `ml-tests.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
-| `test-rag.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
-| `rust_swarm_ci.yml` | Specialized trigger | ⚠️ Kept (special trigger) |
+| `ci-pytest.yml.disabled` | Suite orchestration | Consolidated |
+| `comprehensive_tests.yml.disabled` | Suite with levels | Consolidated |
+| `tests.yml.disabled` | Suite basic tests | Consolidated |
+| `auth-tests.yml` | Specialized trigger | Kept (special trigger) |
+| `ml-tests.yml` | Specialized trigger | Kept (special trigger) |
+| `test-rag.yml` | Specialized trigger | Kept (special trigger) |
+| `rust_swarm_ci.yml` | Specialized trigger | Kept (special trigger) |
 
 #### New Features
 
@@ -198,12 +198,12 @@ gh workflow run optimized-test-execution.yml \
 #### Workflow Triggers
 
 **Automatic Triggers (No Action Needed):**
-- Push to `main` or `develop` branch → Runs all tests
-- Pull request to `main` → Runs all tests
-- Push to `src/codex/auth/**` → Auth tests only
-- Push to `training/**` or `src/**ml**` → ML tests only
-- Push to `src/codex/rag/**` → RAG tests only
-- Push to `.rs` files → Rust tests only
+- Push to `main` or `develop` branch Runs all tests
+- Pull request to `main` Runs all tests
+- Push to `src/codex/auth/**` Auth tests only
+- Push to `training/**` or `src/**ml**` ML tests only
+- Push to `src/codex/rag/**` RAG tests only
+- Push to `.rs` files Rust tests only
 
 **Manual Trigger (Selective Execution):**
 ```bash
@@ -368,19 +368,19 @@ cat .codex/WORKFLOW_HEALTH_DASHBOARD.json | jq .
 #### Alert Thresholds
 
 Dashboard alerts on:
-- 🔴 **CRITICAL:** Immediate action needed
-  - Health score < 70%
-  - Success rate < 80%
-  - Compliance < 90%
+- **CRITICAL:** Immediate action needed
+ - Health score < 70%
+ - Success rate < 80%
+ - Compliance < 90%
 
 - 🟡 **WARNING:** Monitor closely
-  - Health score 85-70%
-  - Success rate 90-80%
-  - Any manual approval needed
+ - Health score 85-70%
+ - Success rate 90-80%
+ - Any manual approval needed
 
 - 🟢 **INFO:** Normal operations
-  - All metrics in range
-  - Minor variations acceptable
+ - All metrics in range
+ - Minor variations acceptable
 
 ---
 
@@ -388,11 +388,11 @@ Dashboard alerts on:
 
 ### What Stayed the Same?
 
-✅ **PR Checks** - All scans still run on pull requests  
-✅ **Scheduling** - All original schedules preserved  
-✅ **Artifacts** - Same output patterns and locations  
-✅ **SARIF Uploads** - Code scanning tab unchanged  
-✅ **Lane Metadata** - Traceability contracts maintained  
+ **PR Checks** - All scans still run on pull requests
+ **Scheduling** - All original schedules preserved
+ **Artifacts** - Same output patterns and locations
+ **SARIF Uploads** - Code scanning tab unchanged
+ **Lane Metadata** - Traceability contracts maintained
 
 ### What's Different?
 

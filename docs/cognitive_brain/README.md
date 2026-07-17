@@ -33,10 +33,10 @@ The Cognitive Brain is the autonomous decision-making and orchestration layer of
 
 ## Getting Started
 
-1. **Understand the Architecture** → Start with [INDEX.md](./INDEX.md)
-2. **Explore Agent Capabilities** → See [.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)
-3. **Review Decision Patterns** → Check [Quantum Decision Engine](../QUANTUM_AGENT_FRAMEWORK.md)
-4. **Implement Custom Agents** → Follow [Agent Development Guide](../agent/OPERATIONAL_GUIDELINES.md)
+1. **Understand the Architecture** Start with [INDEX.md](./INDEX.md)
+2. **Explore Agent Capabilities** See [.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)
+3. **Review Decision Patterns** Check [Quantum Decision Engine](../QUANTUM_AGENT_FRAMEWORK.md)
+4. **Implement Custom Agents** Follow [Agent Development Guide](../agent/OPERATIONAL_GUIDELINES.md)
 
 ## Learn More
 

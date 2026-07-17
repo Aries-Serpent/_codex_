@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Generated:** 2025-11-11  
-**Current HEAD:** 04fcefc (Fix P1: keep_last checkpoint retention leak in best-k)  
+**Generated:** 2025-11-11
+**Current HEAD:** 04fcefc (Fix P1: keep_last checkpoint retention leak in best-k)
 **Status:** P1 fixes complete (6/6), Iteration 1-3 implementation complete (100%), Gap items in progress
 
 ---
@@ -18,14 +18,14 @@ All P1 bugs fixed and all components from Iterations 1-3 implemented. This docum
 
 | Area | Current State | Remaining To Do | Acceptance Criteria | Priority | Status |
 |------|---------------|-----------------|---------------------|----------|--------|
-| **Tests Coverage** | Regression tests added (8 tests); target ≥95% set | Generate coverage report; verify per-file thresholds; plan for 96-99% | pytest-cov XML/HTML; ≥95% on new/changed modules | HIGH |  READY |
-| **Lint/Style** | Minor fixes applied; E501/E402/E741 pending | One-shot repo-wide E501 fix; targeted E402; rename E741 | ruff/black clean; no new warnings | MEDIUM |  PLANNED |
-| **Type Checking** | Type hints present; not executed | Run mypy on src/; address typing gaps | mypy passes; report attached | MEDIUM |  PLANNED |
-| **Security Gate** | Nox session unified; allowlist present | Run nox -s security; attach artifacts/security_report.json | No HIGH/CRITICAL unallowlisted | HIGH |  READY |
-| **Determinism** | CLI compare supports check | Add cross-process repro tests; env snapshot | Determinism proof; env snapshot artifact | MEDIUM |  PLANNED |
-| **Config Validator** | Fixed + tested; nox session added | Run nox -s validate-configs in verification | Session green; logs attached | HIGH |  READY |
-| **AST CLI** | Implemented with tests | Verify --json output; stable exit codes | Integration tests pass | MEDIUM |  DONE |
-| **Artifacts** | IMPLEMENTATION_STATUS.md created | Generate coverage.xml, security_report.json, validation logs | All artifacts committed/attached | HIGH |  IN PROGRESS |
+| **Tests Coverage** | Regression tests added (8 tests); target ≥95% set | Generate coverage report; verify per-file thresholds; plan for 96-99% | pytest-cov XML/HTML; ≥95% on new/changed modules | HIGH | READY |
+| **Lint/Style** | Minor fixes applied; E501/E402/E741 pending | One-shot repo-wide E501 fix; targeted E402; rename E741 | ruff/black clean; no new warnings | MEDIUM | PLANNED |
+| **Type Checking** | Type hints present; not executed | Run mypy on src/; address typing gaps | mypy passes; report attached | MEDIUM | PLANNED |
+| **Security Gate** | Nox session unified; allowlist present | Run nox -s security; attach artifacts/security_report.json | No HIGH/CRITICAL unallowlisted | HIGH | READY |
+| **Determinism** | CLI compare supports check | Add cross-process repro tests; env snapshot | Determinism proof; env snapshot artifact | MEDIUM | PLANNED |
+| **Config Validator** | Fixed + tested; nox session added | Run nox -s validate-configs in verification | Session green; logs attached | HIGH | READY |
+| **AST CLI** | Implemented with tests | Verify --json output; stable exit codes | Integration tests pass | MEDIUM | DONE |
+| **Artifacts** | IMPLEMENTATION_STATUS.md created | Generate coverage.xml, security_report.json, validation logs | All artifacts committed/attached | HIGH | IN PROGRESS |
 
 ---
 
@@ -226,19 +226,19 @@ artifacts/
 ## Next Steps
 
 ### Immediate (Can execute now):
-1.  Run `nox -s tests` and generate coverage report
-2.  Run `nox -s security` and commit security_report.json
-3.  Run `nox -s validate-configs` and verify output
+1. Run `nox -s tests` and generate coverage report
+2. Run `nox -s security` and commit security_report.json
+3. Run `nox -s validate-configs` and verify output
 
 ### Short-term (This iteration):
-4.  Run `nox -s lint` and fix reported issues
-5.  Run `nox -s typecheck` and address type errors
-6.  Commit all artifacts to artifacts/ directory
+4. Run `nox -s lint` and fix reported issues
+5. Run `nox -s typecheck` and address type errors
+6. Commit all artifacts to artifacts/ directory
 
 ### Medium-term (Next iteration - 96-99% target):
-7.  Add determinism tests to tests/repro/
-8.  Add edge case tests to reach 96-99% coverage
-9.  Add golden baseline tests for regression prevention
+7. Add determinism tests to tests/repro/
+8. Add edge case tests to reach 96-99% coverage
+9. Add golden baseline tests for regression prevention
 
 ---
 

@@ -1,9 +1,9 @@
-#  CI Failure Auto-Response
+# CI Failure Auto-Response
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Owner:** @mbaetiong  
-> **Version:** 1.0.0  
+> **Owner:** @mbaetiong
+> **Version:** 1.0.0
 > **Last Updated: 2026-07-11
 > **Workflow:** [`.github/workflows/ci-failure-issue-creator.yml`](../.github/workflows/ci-failure-issue-creator.yml)
 
@@ -16,11 +16,11 @@ automatically:
 
 1. **Opens a GitHub Issue** to track the failure (all severities).
 2. **For critical failures** — creates a dedicated fix branch and opens a PR with an
-   `@copilot` command so the Copilot Coding Agent begins the investigation immediately.
+ `@copilot` command so the Copilot Coding Agent begins the investigation immediately.
 3. **Enforces a single-branch rule** — at most one `fix/ci-*` branch exists at any
-   given time. Additional failures are _queued_ (issue opened, no second branch created).
+ given time. Additional failures are _queued_ (issue opened, no second branch created).
 4. **Posts every outcome** to the ** PR Status Dashboard** via
-   `pr_comment_consolidator.py` — all state is visible in one place.
+ `pr_comment_consolidator.py` — all state is visible in one place.
 5. **Auto-closes** the tracking issue when the workflow passes on `main` again.
 
 ---
@@ -29,12 +29,17 @@ automatically:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing  CI Workflow completes on main, Job: close-on-fix'}}%%
+
 flowchart TD
+
     A([ CI Workflow completes on main]) --> B{conclusion?}
 
     B -- success --> Z1[Job: close-on-fix]
+
     Z1 --> Z2{Open ci-failure\nissue for this workflow?}
+
     Z2 -- Yes --> Z3[ Auto-close issue\n+ post comment]
+
     Z2 -- No  --> Z4([End — nothing to close])
 
     B -- failure --> C
@@ -43,24 +48,34 @@ flowchart TD
         C[Job: triage\nClassify + Deduplicate]
 
         C --> D{L1: open ci-failure\nissue already exists?}
+
         D -- Yes --> E1[action = skip]
 
         D -- No --> F{L2: any fix/ci-*\nbranch active?}
+
         F -- Yes --> E2[action = queue\nSingle-branch rule active]
+
         F -- No  --> E3[action = new_issue]
     end
 
     E1 --> DASH
+
     E2 --> ISS
+
     E3 --> ISS
 
     ISS[Job: create-issue\nOpen labelled GitHub Issue]
+
     ISS --> SEV{severity?}
+
     SEV -- normal   --> DASH
+
     SEV -- critical --> FPR[Job: create-fix-pr\nCreate fix/ci-* branch\nOpen PR + @copilot command]
+
     FPR --> DASH
 
     DASH[Job: post-dashboard\nUpdate PR Status Dashboard\nvia pr_comment_consolidator.py]
+
     DASH --> END([End])
 ```
 
@@ -68,33 +83,41 @@ flowchart TD
 
 ## 2. Single-Branch Rule — State Diagram
 
-Only **one** `fix/ci-*` branch may exist at a time.  
+Only **one** `fix/ci-*` branch may exist at a time.
 Subsequent failures are queued until the active branch merges.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
+
 stateDiagram-v2
     direction LR
 
     [*]          --> Idle          : system start
+
     Idle         --> Triaging      : workflow_run.failure on main
 
     Triaging     --> Skipped       : existing issue found (L1)
+
     Triaging     --> Queued        : fix branch active (L2 — single-branch rule)
+
     Triaging     --> IssueOpened   : no existing tracker
 
     IssueOpened  --> FixPROpen     : severity == critical
+
     IssueOpened  --> AwaitingFix   : severity == normal
 
     FixPROpen    --> CopilotActive : @copilot assigned
+
     CopilotActive --> FixMerged   : PR approved + merged to main
 
     AwaitingFix  --> FixMerged    : developer merges fix
 
     FixMerged    --> IssueClosed  : workflow_run.success on main
+
     Queued       --> Triaging     : active fix branch merges (re-triggered)
 
     IssueClosed  --> Idle
+
     Skipped      --> Idle
 
     note right of Queued
@@ -116,15 +139,21 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name,  Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
+
 flowchart LR
+
     WF([Workflow Name]) --> SC{Pattern match}
 
     SC -->|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
+
     SC -->|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
+
     SC -->|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
+
     SC -->|no match| S4[ Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
 
     S1 & S2 & S3 --> FPR[ Fix PR\n+ @copilot]
+
     S4 --> ISO[ Issue only\nManual fix]
 ```
 
@@ -134,6 +163,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >> DEV : issue opened, manual '}}%%
+
 sequenceDiagram
     actor CI   as CI Workflow (main)
     participant WR as workflow_run trigger
@@ -159,6 +189,7 @@ sequenceDiagram
             DEV ->> GH : review + approve PR
             GH ->> CI : merge fix/ci-* → main
         else severity == normal
+
             T  -->> DEV : issue opened, manual fix required
         end
     else Fix branch already active  (single-branch rule)
@@ -169,6 +200,7 @@ sequenceDiagram
     end
 
     T   ->> DB : update PR Status Dashboard section
+
     WR  -->> T : release global lock
 
     CI  ->> WR : concludes: success (after fix)
@@ -181,15 +213,15 @@ sequenceDiagram
 ## 5. Dashboard Integration
 
 Every outcome writes **one section** to the ** PR Status Dashboard** comment on the
-active PR.  No additional standalone comments are posted.
+active PR. No additional standalone comments are posted.
 
 | Outcome | Dashboard status | Dashboard summary example |
 |---------|-----------------|--------------------------|
-| Workflow passed (resolved) |  success | ` \`CodeQL Analysis\` — passing on \`main\`` |
-| Skip (existing issue) | ️ warning | ` \`CodeQL Analysis\` failed — existing tracker covers this` |
-| Queued (branch active) | ️ warning | ` \`CodeQL Analysis\` failed — queued (single-branch rule active)` |
-| Normal failure → new issue |  failure | ` \`Data Quality Suite\` failed — issue opened, manual fix required` |
-| Critical → fix PR opened |  failure | ` CRITICAL \`Auth Tests\` failed — fix PR opened, @copilot assigned` |
+| Workflow passed (resolved) | success | ` \`CodeQL Analysis\` — passing on \`main\`` |
+| Skip (existing issue) | warning | ` \`CodeQL Analysis\` failed — existing tracker covers this` |
+| Queued (branch active) | warning | ` \`CodeQL Analysis\` failed — queued (single-branch rule active)` |
+| Normal failure new issue | failure | ` \`Data Quality Suite\` failed — issue opened, manual fix required` |
+| Critical fix PR opened | failure | ` CRITICAL \`Auth Tests\` failed — fix PR opened, @copilot assigned` |
 
 ---
 
@@ -197,6 +229,7 @@ active PR.  No additional standalone comments are posted.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 gantt
     title  Single-Branch Rule — Failure Queue Timeline
     dateFormat HH:mm
@@ -224,16 +257,20 @@ gantt
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing triage\n holds global lock, create-issue\nall non-skip failures'}}%%
+
 graph LR
     T[triage\n holds global lock]
 
     T --> CI[create-issue\nall non-skip failures]
+
     T --> CF[close-on-fix\nsuccess path only]
 
     CI --> FP[create-fix-pr\ncritical + new_issue only]
 
     CI  --> PD[post-dashboard]
+
     FP  --> PD
+
     T   --> PD
 ```
 
@@ -280,5 +317,5 @@ on:
 
 ---
 
->  _This document is maintained alongside `.github/workflows/ci-failure-issue-creator.yml`.  
+> _This document is maintained alongside `.github/workflows/ci-failure-issue-creator.yml`.
 > Update both when changing the process logic._

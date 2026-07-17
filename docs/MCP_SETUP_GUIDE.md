@@ -27,9 +27,9 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
 ### For Claude Desktop (Recommended)
 
 1. **Locate Configuration File:**
-   - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-   - **Linux:** `~/.config/Claude/claude_desktop_config.json`
+ - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+ - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+ - **Linux:** `~/.config/Claude/claude_desktop_config.json`
 
 2. **Install Required Tools:**
    ```bash
@@ -42,7 +42,7 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
 
    # Windows
    # Download from https://nodejs.org
-   ```
+ ```
 
 3. **Install MCP Servers:**
    ```bash
@@ -52,11 +52,11 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
    # Playwright MCP Server (for browser automation)
    npm install -g @playwright/test
    npx playwright install
-   ```
+ ```
 
 4. **Configure Claude Desktop:**
 
-   Edit `claude_desktop_config.json`:
+ Edit `claude_desktop_config.json`:
    ```json
    {
      "mcpServers": {
@@ -77,36 +77,36 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
        }
      }
    }
-   ```
+ ```
 
 5. **Create GitHub Personal Access Token:**
 
-   a. Go to https://github.com/settings/tokens
+ a. Go to https://github.com/settings/tokens
 
-   b. Click "Generate new token (classic)"
+ b. Click "Generate new token (classic)"
 
-   c. Name: "MCP Server Access"
+ c. Name: "MCP Server Access"
 
-   d. Select scopes:
-      -  `repo` (Full control of private repositories)
-      -  `workflow` (Update GitHub Action workflows)
-      -  `read:org` (Read org and team membership)
-      -  `project` (Access projects)
+ d. Select scopes:
+ - `repo` (Full control of private repositories)
+ - `workflow` (Update GitHub Action workflows)
+ - `read:org` (Read org and team membership)
+ - `project` (Access projects)
 
-   e. Click "Generate token"
+ e. Click "Generate token"
 
-   f. Copy token and paste into config (replace `your_github_personal_access_token_here`)
+ f. Copy token and paste into config (replace `your_github_personal_access_token_here`)
 
 6. **Restart Claude Desktop**
 
 7. **Verify Setup:**
 
-   In Claude Desktop, ask:
+ In Claude Desktop, ask:
    ```
    Can you list the workflows in the Aries-Serpent/_codex_ repository?
-   ```
+ ```
 
-   If configured correctly, Claude will use the GitHub MCP server to fetch workflow information.
+ If configured correctly, Claude will use the GitHub MCP server to fetch workflow information.
 
 ---
 
@@ -175,26 +175,26 @@ For comprehensive development capabilities, use this full configuration:
 ## Security Best Practices
 
 ### 1. Token Security
--  Use fine-grained tokens when possible
--  Set token expiration (90 days recommended)
--  Never commit tokens to repositories
--  Rotate tokens regularly
--  Don't share tokens
+- Use fine-grained tokens when possible
+- Set token expiration (90 days recommended)
+- Never commit tokens to repositories
+- Rotate tokens regularly
+- Don't share tokens
 
 ### 2. Filesystem Access
--  Limit `ALLOWED_DIRECTORIES` to project directories and `/tmp`
--  Never allow root directory `/`
--  Review file access patterns regularly
+- Limit `ALLOWED_DIRECTORIES` to project directories and `/tmp`
+- Never allow root directory `/`
+- Review file access patterns regularly
 
 ### 3. Command Execution
--  Use `ALLOWED_COMMANDS` to restrict bash operations
--  Avoid allowing destructive commands (`rm -rf`, `sudo`, etc.)
--  Review command execution logs
+- Use `ALLOWED_COMMANDS` to restrict bash operations
+- Avoid allowing destructive commands (`rm -rf`, `sudo`, etc.)
+- Review command execution logs
 
 ### 4. Repository Access
--  Use read-only tokens for read-only operations
--  Limit token scope to necessary repositories
--  Monitor token usage in GitHub settings
+- Use read-only tokens for read-only operations
+- Limit token scope to necessary repositories
+- Monitor token usage in GitHub settings
 
 ---
 
@@ -220,7 +220,7 @@ npm install -g @playwright/mcp-server
 4. Test token manually:
    ```bash
    curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/user
-   ```
+ ```
 
 ### Issue: "Permission denied" for bash commands
 **Solution:**
@@ -341,23 +341,23 @@ Watch for MCP support in JetBrains IDEs.
   ```bash
   npm update -g @modelcontextprotocol/server-github
   npm update -g @playwright/mcp-server
-  ```
+ ```
 
 ### When Issues Arise
 1. Check Claude Desktop logs:
-   - **macOS:** `~/Library/Logs/Claude/`
-   - **Windows:** `%APPDATA%\Claude\logs\`
-   - **Linux:** `~/.config/Claude/logs/`
+ - **macOS:** `~/Library/Logs/Claude/`
+ - **Windows:** `%APPDATA%\Claude\logs\`
+ - **Linux:** `~/.config/Claude/logs/`
 
 2. Verify MCP server versions:
    ```bash
    npm list -g | grep modelcontextprotocol
-   ```
+ ```
 
 3. Test token validity:
    ```bash
    curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/user
-   ```
+ ```
 
 ---
 

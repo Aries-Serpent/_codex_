@@ -10,10 +10,11 @@
 
 ---
 
-## 🗺️ Full Session Flow (S867 → S873)
+## Full Session Flow (S867 S873)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: validate  · resilient  '}}%%
+
 sequenceDiagram
     participant M as Maintainer (@mbaetiong)
     participant A as Copilot Agent (S867/S868)
@@ -43,6 +44,7 @@ sequenceDiagram
     A->>WEC: report_progress (WEC 9 boxes checked)
     WEC->>AA: Dispatch newly-checked workflows
     AA->>CI: Approve all action_required runs (CODEX_MASTER_KEY)
+
     CI-->>A: validate  · resilient  · nox  · codeql  · pr-checks 
 
     Note over A,CI: parallel_validation → 4 code review comments
@@ -72,15 +74,17 @@ sequenceDiagram
 
     A->>WEC: Final report_progress (S868)
     WEC->>CB: post-accountability-to-discussion.yml fires
+
     CB-->>M: Discussion #3673 updated
 ```
 
 ---
 
-## 🏗️ Architecture Built (S867 + S868)
+## Architecture Built (S867 + S868)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "📄 New Documentation (S867/S868)", "AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n• Master mermaid privilege routing\n• 5-surface autonomy map\n• WEC controller anatomy\n• Full autonomy loop sequence\n• Operator quick-reference (no human gates)\n• Failure modes & fallback chains"'}}%%
+
 graph TD
     subgraph DOCS_NEW["📄 New Documentation (S867/S868)"]
         D1["AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n• Master mermaid privilege routing\n• 5-surface autonomy map\n• WEC controller anatomy\n• Full autonomy loop sequence\n• Operator quick-reference (no human gates)\n• Failure modes & fallback chains"]
@@ -118,10 +122,11 @@ graph TD
 
 ---
 
-##  Security & CodeQL Status
+## Security & CodeQL Status
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " CodeQL Status", "13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"'}}%%
+
 graph LR
     subgraph CODEQL[" CodeQL Status"]
         A1["13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"]
@@ -141,6 +146,7 @@ graph LR
 
     A1 --> A2
     A2 -.->|"T-03 unblocks\nfull inline scan"| A3
+
     S1 --> S2
     D1 -.->|"masks"| D2
 
@@ -153,10 +159,11 @@ graph LR
 
 ---
 
-## 🔑 Privilege Tier Map (Established This Session)
+## Privilege Tier Map (Established This Session)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_MASTER_KEY\n Variables API\n Workflow approve/dispatch\n Force-push\n125 workflows", "CODEX_BACKUP_KEY\n Read/write\n Variables API\n115 workflows"'}}%%
+
 graph LR
     T1["CODEX_MASTER_KEY\n Variables API\n Workflow approve/dispatch\n Force-push\n125 workflows"]
     T2["CODEX_BACKUP_KEY\n Read/write\n Variables API\n115 workflows"]
@@ -177,10 +184,11 @@ graph LR
 
 ---
 
-##  WEC Self-Healing Loop (Verified This Session)
+## WEC Self-Healing Loop (Verified This Session)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "git push to branch", "workflow-execution-gate.yml\nParse WEC checkbox block\nfrom PR body"'}}%%
+
 flowchart TD
     PUSH["git push to branch"]
     WEC_PARSE["workflow-execution-gate.yml\nParse WEC checkbox block\nfrom PR body"]
@@ -193,14 +201,23 @@ flowchart TD
     SESSION_DONE["copilot-agent-session-done.yml\nPost @copilot review trigger\nUpdate Discussion #3673"]
 
     PUSH --> WEC_PARSE
+
     WEC_PARSE --> DISPATCH
+
     WEC_PARSE --> CANCEL
+
     DISPATCH --> AUTO_APPROVE
+
     AUTO_APPROVE --> CI_RUN
+
     CI_RUN -->|"failure"| HEALER
+
     CI_RUN -->|"success"| SESSION_DONE
+
     HEALER -->|"pattern known"| CI_RUN
+
     HEALER -->|"escalate"| SESSION_DONE
+
     SESSION_DONE --> ACCOUNTABILITY
 
     style PUSH fill:#2266cc,color:#fff
@@ -213,14 +230,17 @@ flowchart TD
 
 ---
 
-## 🗓️ Session Handoff State Machine
+## Session Handoff State Machine
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
+
 stateDiagram-v2
+
     [*] --> Idle : no active session
 
     Idle --> Queued : PR opened / @copilot comment\n(COPILOT_SESSION_QUEUE set)
+
     Queued --> Active : COPILOT_ACTIVE_SESSION var set\nagent-auth-delegation fires
 
     Active --> Working : Agent reads PR state\nloads memories & context\nbegins implementation
@@ -232,11 +252,15 @@ stateDiagram-v2
     WECUpdate --> CIWaiting : WEC gate parses PR body\nauto-approve dispatches workflows
 
     CIWaiting --> CIGreen : All required checks pass
+
     CIWaiting --> CIRed : One or more checks fail
+
     CIRed --> Working : self-healing escalation\nor agent re-invoked
+
     CIGreen --> SessionDone : copilot-agent-session-done fires\nDiscussion updated\nAccountability updated
 
     SessionDone --> TTLExpiry : COPILOT_ACTIVE_SESSION cleared\nNext PR dequeued
+
     TTLExpiry --> Idle : TTL=12h elapsed\nor PR closed
 
     note right of Active
@@ -260,37 +284,38 @@ stateDiagram-v2
 
 ---
 
-##  Full CI Matrix (Latest HEAD `95c55bd`)
+## Full CI Matrix (Latest HEAD `95c55bd`)
 
 | Category | Workflow | Result |
 |----------|----------|--------|
-|  Core | Resilient Validation Suite |  success |
-|  Core | Reference Integrity + Agent Size Gate |  success |
-|  Core | Deferral Language Gate |  success |
-|  Core | PR Comment Review Gate |  success |
-|  Core | Workflow Compliance Audit (actionlint) |  success |
-|  Core | Workflow Execution Gate |  success |
-|  Core | Auto-Approve Pending Workflow Runs |  success |
-|  Core | Documentation Link Checker |  success |
-|  Core | Trigger validations on approval |  success |
-| �� Core |  PR Cost Check |  success |
-|  Security | CodeQL Analysis (codeql-analysis.yml) |  success |
-|  Security | Security Scanning Suite |  success |
-|  Auth | Agent Token Delegation | action_required (pending approval) |
-| ️ Infra | Automatic Dependency Submission (GitHub-managed) | GitHub HTTP 503 — transient, non-blocking |
-| ️ Infra | Rust-Python Hybrid Swarm CI/CD | startup_failure — pre-existing Rust runner |
-| ️ Infra | Progressive Validation Suite | startup_failure — pre-existing runner infra |
-| ️ Infra | Data Quality & Determinism Suite | startup_failure — pre-existing runner infra |
+| Core | Resilient Validation Suite | success |
+| Core | Reference Integrity + Agent Size Gate | success |
+| Core | Deferral Language Gate | success |
+| Core | PR Comment Review Gate | success |
+| Core | Workflow Compliance Audit (actionlint) | success |
+| Core | Workflow Execution Gate | success |
+| Core | Auto-Approve Pending Workflow Runs | success |
+| Core | Documentation Link Checker | success |
+| Core | Trigger validations on approval | success |
+| �� Core | PR Cost Check | success |
+| Security | CodeQL Analysis (codeql-analysis.yml) | success |
+| Security | Security Scanning Suite | success |
+| Auth | Agent Token Delegation | action_required (pending approval) |
+| Infra | Automatic Dependency Submission (GitHub-managed) | GitHub HTTP 503 — transient, non-blocking |
+| Infra | Rust-Python Hybrid Swarm CI/CD | startup_failure — pre-existing Rust runner |
+| Infra | Progressive Validation Suite | startup_failure — pre-existing runner infra |
+| Infra | Data Quality & Determinism Suite | startup_failure — pre-existing runner infra |
 
-> **34/38 checks passing** → Merge readiness 96/100
+> **34/38 checks passing** Merge readiness 96/100
 > The 4 non-passing items are infrastructure limitations, not code defects.
 
 ---
 
-## 🏁 S870 Final Status — Issue #4360 Triage
+## S870 Final Status — Issue #4360 Triage
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Issue #4360
+
 97 failures · 24 workflows", " Secrets Baseline Enforcer
 webhook_config.json lines 7+85
 'Secret Keyword' false positive"'}}%%
@@ -301,24 +326,32 @@ graph TD
     I4360 --> P1[" Secrets Baseline Enforcer
 webhook_config.json lines 7+85
 'Secret Keyword' false positive"]
+
     I4360 --> P2["Validation Pipeline
 Fast Validation hook failure
 on OLD commit f25996a7"]
+
     I4360 --> P3["Automatic Dependency Submission
 GitHub HTTP 503 infra"]
+
     I4360 --> P4["finding-autofix-faa8614c
 Separate bot branch"]
+
     I4360 --> P5["Agent Token Delegation
 action_required gate"]
 
     P1 --> FIX1[" Fixed
 is_secret=false in .secrets.baseline"]
+
     P2 --> INFO1["ℹ️ Not current HEAD
 already resolved in S864+"]
+
     P3 --> INFO2["ℹ️ Resilient workflow
 already in place since S154"]
+
     P4 --> INFO3["ℹ️ Different branch
 not PR #4356"]
+
     P5 --> INFO4["ℹ️ Normal gating
 approved by maintainer"]
 
@@ -332,17 +365,29 @@ approved by maintainer"]
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing 8 Review Comments, subprocess.py\ninput type narrowing'}}%%
+
 graph LR
+
     RC[8 Review Comments] --> F1[subprocess.py\ninput type narrowing]
+
     RC --> F2[rate_limit_orchestrator.py\nreturn last status]
+
     RC --> F3[rate_limit_orchestrator.py\ndocstring+log accuracy]
+
     RC --> F4[rate_limit_orchestrator.py\nBooleanOptionalAction]
+
     RC --> F5[agent-auth-delegation.yml\nTTL via repo variable]
+
     RC --> F6[PR scope note\ndescription updated]
+
     F1 & F2 & F3 & F4 & F5 & F6 --> COMMIT[commit 91763033f]
+
     COMMIT --> RUFF[ruff E501 per-file-ignore\npyproject.toml]
+
     RUFF --> GREEN[RC=0 ]
+
     COMMIT --> REPLIES[8/8 threads replied]
+
     GREEN & REPLIES --> MERGE_READY[Merge Ready]
 ```
 
@@ -352,6 +397,7 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: 39/40  · 3 startup_failu'}}%%
+
 sequenceDiagram
     participant M as Maintainer
     participant BOT as Auto-Rescue Bot
@@ -383,8 +429,8 @@ sequenceDiagram
 | Metric | Value |
 |--------|-------|
 | HEAD | `047bf03b` |
-| Merge readiness | 99/100  |
+| Merge readiness | 99/100 |
 | CI checks | 39/40 passing |
-| Review threads | 8/8 resolved  |
-| CodeQL alerts | 0  |
+| Review threads | 8/8 resolved |
+| CodeQL alerts | 0 |
 | New commits this session | 1 (living docs) |

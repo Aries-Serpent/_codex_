@@ -222,13 +222,13 @@ if result["meta"]["risk_level"] == "high":
    ```bash
    git mv mymodule/ src/mymodule/
    # Update imports throughout codebase
-   ```
+ ```
 
 2. **Rename one module**:
    ```bash
    mv mymodule/ mymodule_legacy/
    # Update references
-   ```
+ ```
 
 3. **Use explicit namespacing**:
 ```python
@@ -245,18 +245,18 @@ from src.mymodule import *  # Explicit delegation
    ```bash
    mv torch/ torch_custom/
    mv numpy/ numpy_extensions/
-   ```
+ ```
 
 2. **Move to `src/`**:
    ```bash
    mkdir -p src/project_torch
    git mv torch/* src/project_torch/
-   ```
+ ```
 
 3. **Use package prefix**:
    ```bash
    mv torch/ myproject_torch/
-   ```
+ ```
 
 ## Best Practices
 
@@ -270,19 +270,19 @@ from src.mymodule import *  # Explicit delegation
    ├── tests/
    ├── docs/
    └── scripts/
-   ```
+ ```
 
 2. **Avoid namespace conflicts**:
-   - Never name directories after PyPI packages
-   - Use project-specific prefixes for utilities
+ - Never name directories after PyPI packages
+ - Use project-specific prefixes for utilities
 
 3. **Maintain single source of truth**:
-   - Each module should exist in exactly one location
-   - Use explicit imports, not duplicate code
+ - Each module should exist in exactly one location
+ - Use explicit imports, not duplicate code
 
 4. **Follow PEP 420** (Implicit Namespace Packages):
-   - Use `__init__.py` for all packages
-   - Avoid relying on implicit namespace behavior
+ - Use `__init__.py` for all packages
+ - Avoid relying on implicit namespace behavior
 
 ### Detection Configuration
 
@@ -410,8 +410,8 @@ The structural integrity detector includes the following safeguards:
 
 ---
 
-**Last Updated**: 2025-12-09  
-**Maintainer**: Codex Audit System  
+**Last Updated**: 2025-12-09
+**Maintainer**: Codex Audit System
 **Capability ID**: structural-integrity
 
 ## Advanced Safeguards

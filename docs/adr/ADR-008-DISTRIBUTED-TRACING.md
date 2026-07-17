@@ -3,10 +3,10 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-**Status:** Accepted  
-**Date:** 2026-07-10  
-**Author:** @mbaetiong  
-**Session:** S250-doc-arch  
+**Status:** Accepted
+**Date:** 2026-07-10
+**Author:** @mbaetiong
+**Session:** S250-doc-arch
 
 ---
 
@@ -168,17 +168,17 @@ spec:
 ## Consequences
 
 ### Positive
- Complete visibility into request flow  
- Performance bottlenecks identified automatically  
- Easier debugging of distributed issues  
- Automatic service dependency mapping  
- Integrates with Prometheus metrics  
- Sampling reduces overhead  
+ Complete visibility into request flow
+ Performance bottlenecks identified automatically
+ Easier debugging of distributed issues
+ Automatic service dependency mapping
+ Integrates with Prometheus metrics
+ Sampling reduces overhead
 
 ### Negative
-️ Additional infrastructure (Jaeger)  
-️ Storage overhead (traces can be large)  
-️ Sampling might miss rare errors  
+ Additional infrastructure (Jaeger)
+ Storage overhead (traces can be large)
+ Sampling might miss rare errors
 
 ### Mitigations
 - Jaeger provided via Docker for easy setup

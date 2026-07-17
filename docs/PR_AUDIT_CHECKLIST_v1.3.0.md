@@ -4,18 +4,18 @@
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
- Roles: [Audit Orchestrator], [Capability Cartographer]  
- Energy: 5  
-⚛️ Physics:
-- Path️
+ Roles: [Audit Orchestrator], [Capability Cartographer]
+ Energy: 5
+ Physics:
+- Path
 - Fields
-- Patterns️
+- Patterns
 - Redundancy
-- Balance️
+- Balance
 
 ## Overview
 
-Use this template to validate PRs via the deterministic audit pipeline (S1–S7).  
+Use this template to validate PRs via the deterministic audit pipeline (S1–S7).
 Attach commands, outputs, artifacts, and SHAs. Confirm determinism, gates, and offline policy.
 
 ---
@@ -94,34 +94,34 @@ Attach files, SHAs, sizes for all generated artifacts.
 ## 7) Determinism Proof
 
 - [ ] **repo_root_sha[run1] == repo_root_sha[run2]** (attach values)
-  - Run 1 SHA: ________
-  - Run 2 SHA: ________
-  - Equality: [ ] PASS [ ] FAIL
+ - Run 1 SHA: ________
+ - Run 2 SHA: ________
+ - Equality: [ ] PASS [ ] FAIL
 
 - [ ] **capabilities_scored.json equal across two runs** (normalized; exclude timestamp)
-  - Normalized comparison: [ ] PASS [ ] FAIL
+ - Normalized comparison: [ ] PASS [ ] FAIL
 
 - [ ] **Template hash present and unchanged** across runs unless explicitly updated
-  - Template hash: ________
-  - Status: [ ] Unchanged [ ] Updated (justified)
+ - Template hash: ________
+ - Status: [ ] Unchanged [ ] Updated (justified)
 
 ---
 
 ## 8) Security & Vulnerability Checks (if configured)
 
 - [ ] **CodeQL analysis** — 0 alerts (attach summary)
-  - Status: [ ] PASS [ ] FAIL [ ] N/A
-  - Alerts: ___
+ - Status: [ ] PASS [ ] FAIL [ ] N/A
+ - Alerts: ___
 
 - [ ] **Secret detection** — 0 findings
-  - Tool: ___
-  - Status: [ ] PASS [ ] FAIL [ ] N/A
+ - Tool: ___
+ - Status: [ ] PASS [ ] FAIL [ ] N/A
 
 - [ ] **Injection/path traversal checks** — reviewed
-  - Status: [ ] SAFE [ ] ISSUES [ ] N/A
+ - Status: [ ] SAFE [ ] ISSUES [ ] N/A
 
 - [ ] **Supply chain security** — reviewed
-  - Dependencies checked: [ ] YES [ ] NO [ ] N/A
+ - Dependencies checked: [ ] YES [ ] NO [ ] N/A
 
 ---
 
@@ -334,16 +334,16 @@ jobs:
 
 ### Common Issues
 
-**Issue**: `ModuleNotFoundError: No module named 'yaml'`  
+**Issue**: `ModuleNotFoundError: No module named 'yaml'`
 **Solution**: Install pyyaml: `pip install pyyaml`
 
-**Issue**: Determinism check fails  
+**Issue**: Determinism check fails
 **Solution**: Check for timestamp fields or non-deterministic operations. Review `verify_determinism.py` normalization logic.
 
-**Issue**: S6 template rendering fails  
+**Issue**: S6 template rendering fails
 **Solution**: Ensure `.copilot-space/workflow.yaml` exists and has correct `matrix_template` path.
 
-**Issue**: Import detection misses capabilities  
+**Issue**: Import detection misses capabilities
 **Solution**: Check detector patterns in `scripts/space_traversal/detectors/*.py`
 
 ---
@@ -368,7 +368,7 @@ jobs:
 
 ---
 
-**Template Status**:  ACTIVE  
-**Recommended For**: All PRs with code changes, especially those affecting capabilities, detectors, or audit pipeline  
-**Maintained By**: @copilot, @mbaetiong  
+**Template Status**: ACTIVE
+**Recommended For**: All PRs with code changes, especially those affecting capabilities, detectors, or audit pipeline
+**Maintained By**: @copilot, @mbaetiong
 **Last Updated**: 2026-06-22

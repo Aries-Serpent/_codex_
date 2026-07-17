@@ -51,43 +51,43 @@ Read: Full [REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_
 
 ### 4.1 Implementation Questions
 1. **Are default smell thresholds appropriate?**
- - Long function: 50 lines 
- - Max arguments: 5 
- - Max nesting: 4 levels 
- - God class: 20 methods 
+ - Long function: 50 lines
+ - Max arguments: 5
+ - Max nesting: 4 levels
+ - God class: 20 methods
 
 2. **Are all 5 export formats needed?**
- - JSON, YAML, HTML, CSV, SQLite 
+ - JSON, YAML, HTML, CSV, SQLite
 
 3. **Should LibCST remain primary parser?**
- - Yes, elevate to primary 
+ - Yes, elevate to primary
 
 ### 4.2 Configuration Questions
 4. **Should AST_SIMILARITY_ENABLE be default in CI?**
- - Yes in CI, No locally 
+ - Yes in CI, No locally
 
 5. **Should errors="ignore" log warnings?**
- - Yes, use errors="replace" + logging 
+ - Yes, use errors="replace" + logging
 
 ### 4.3 Integration Questions
 6. **Should CLI entry points be registered?**
- - Yes, register codex-analyze, codex-audit, codex-diff 
+ - Yes, register codex-analyze, codex-audit, codex-diff
 
 7. **Should code smell detection block merges?**
- - Warnings only (3-phase rollout) ️
+ - Warnings only (3-phase rollout)
 
 8. **Standard SQLite location?**
- - Yes, `.codex/session_logs.db` 
+ - Yes, `.codex/session_logs.db`
 
 ### 4.4 Future Direction Questions
 9. **Tree-sitter for YAML/SQL?**
- - Yes, medium priority 
+ - Yes, medium priority
 
 10. **Incremental analysis needed?**
- - Yes, high priority (10-100x faster) 
+ - Yes, high priority (10-100x faster)
 
 11. **HTML report generation?**
- - Yes, medium priority 
+ - Yes, medium priority
 
 ---
 
@@ -108,7 +108,7 @@ Each decision leverages physics paradigms from `agents/advanced_physics_calculat
 
 ---
 
-## ️ Implementation Phases
+## Implementation Phases
 
 | Phase | Duration | Priority | Deliverables |
 |-------|----------|----------|--------------|
@@ -183,13 +183,13 @@ Documentation includes research from:
 
 1. **Physics-Logic Framework**: Apply physical principles to software decisions
 2. **Context-Aware Configs**: Different settings for local/CI/production
-3. **Graduated Enforcement**: 3-phase rollout (observe → warn → enforce)
+3. **Graduated Enforcement**: 3-phase rollout (observe warn enforce)
 4. **Multi-Persona Design**: Export formats optimized for different users
 5. **Incremental Analysis**: Path to 10-100x performance improvement
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Found an issue or have suggestions?
 
@@ -230,7 +230,7 @@ Found an issue or have suggestions?
 
 ---
 
-**Version**: 1.0.0 
-**Created**: 2025-12-21 
-**Maintainer**: Codex Admin Team 
+**Version**: 1.0.0
+**Created**: 2025-12-21
+**Maintainer**: Codex Admin Team
 **License**: Same as repository

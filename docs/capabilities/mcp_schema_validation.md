@@ -449,6 +449,6 @@ The MCP schema validation system includes:
 
 ---
 
-**Last Updated**: 2025-12-09  
-**Maintainer**: Codex MCP Team  
+**Last Updated**: 2025-12-09
+**Maintainer**: Codex MCP Team
 **Capability ID**: mcp-schema-validation

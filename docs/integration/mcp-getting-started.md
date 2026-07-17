@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Consolidated guide to Model Context Protocol (MCP) integration and usage  
-> **Level**: Beginner to Intermediate | **Prerequisites**: Basic GitHub knowledge  
+> Consolidated guide to Model Context Protocol (MCP) integration and usage
+> **Level**: Beginner to Intermediate | **Prerequisites**: Basic GitHub knowledge
 > **Last Updated**: 2026-06-22 | **Version**: 2.0
 
 ---
@@ -47,19 +47,19 @@ The Model Context Protocol (MCP) is a standardized protocol for AI applications 
 ### Capabilities
 
 1. **Tools**: Functions the client can call
-   - Example: "fetch_data", "save_file"
-   - Sync or async execution
-   - Input validation and typing
+ - Example: "fetch_data", "save_file"
+ - Sync or async execution
+ - Input validation and typing
 
 2. **Resources**: Data the server can expose
-   - Example: Configuration files, documents
-   - Versioning and change tracking
-   - Read-only or read-write
+ - Example: Configuration files, documents
+ - Versioning and change tracking
+ - Read-only or read-write
 
 3. **Prompts**: Pre-built conversation starters
-   - Example: "code review template"
-   - Context-aware content
-   - Reusable workflows
+ - Example: "code review template"
+ - Context-aware content
+ - Reusable workflows
 
 ### Benefits
 
@@ -633,4 +633,4 @@ async def get_prompt(name: str, arguments: dict) -> GetPromptResult:
 ---
 
 **Word Count**: 2,124 | **Examples**: 18 | **Patterns**: 8
-**Last Updated**: 2026-06-22 | **Status**:  Complete
+**Last Updated**: 2026-06-22 | **Status**: Complete

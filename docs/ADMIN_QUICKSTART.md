@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-> ⏱️ **Time Required:** 5 minutes for critical items
+> **Time Required:** 5 minutes for critical items
 
 This is a condensed quick start guide. For complete documentation, see [ADMIN_IMPLEMENTATION_GUIDE.md](./ADMIN_IMPLEMENTATION_GUIDE.md).
 
@@ -34,7 +34,7 @@ This is a condensed quick start guide. For complete documentation, see [ADMIN_IM
 
 1. Go to: `https://github.com/Aries-Serpent/_codex_/actions`
 2. Verify workflows are visible and can be run
-3. Click any workflow → **Run workflow** to test
+3. Click any workflow **Run workflow** to test
 
 ---
 

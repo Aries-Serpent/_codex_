@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated: 2026-07-08
-**Audience:** Developers, DevOps, Admins 
+**Audience:** Developers, DevOps, Admins
 **Related:** [Master Index](MASTER_INDEX.md), [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
@@ -16,7 +16,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 
 ## Quick Navigation by Role
 
-### ‍ **Developers**
+### **Developers**
 1. **Get started:** [Quickstart Guide](getting-started.md)
 2. **Understand the system:** [Architecture Quick Reference](ARCHITECTURE_QUICK_REFERENCE.md)
 3. **Code & test:** [Contributing Guidelines](CONTRIBUTING.md), [Testing Guide](TESTING.md)
@@ -109,11 +109,11 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 
 ### By Experience Level
 
-- **New to _codex_?** → [Quickstart Guide](getting-started.md)
-- **Contributing code?** → [Contributing Guide](CONTRIBUTING.md)
-- **Running in production?** → [Admin Guide](admin/INDEX.md)
-- **Optimizing performance?** → [Performance Guide](PERFORMANCE_OPTIMIZATION_GUIDE.md)
-- **Building integrations?** → [API Reference](API_REFERENCE.md)
+- **New to _codex_?** [Quickstart Guide](getting-started.md)
+- **Contributing code?** [Contributing Guide](CONTRIBUTING.md)
+- **Running in production?** [Admin Guide](admin/INDEX.md)
+- **Optimizing performance?** [Performance Guide](PERFORMANCE_OPTIMIZATION_GUIDE.md)
+- **Building integrations?** [API Reference](API_REFERENCE.md)
 
 ---
 

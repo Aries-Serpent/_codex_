@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Consolidated Master Document** for Codex Architecture  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Architecture
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Source Files Consolidated**:
 - agents/prompts/ARCHITECTURE.md
@@ -98,6 +98,7 @@ The Codex platform is organized into the following architectural layers, each wi
 
 ```mermaid
 flowchart TB
+
     subgraph Users["👥 Users"]
         Dev[Developers]
         Agent[AI Agents]
@@ -130,9 +131,13 @@ flowchart TB
     end
 
     Users -->|interact| Core
+
     Core -->|call| Services
+
     Services -->|use| ML
+
     ML -->|train| Training
+
     Training -->|validate| Eval
 ```
 
@@ -347,10 +352,10 @@ Domain 4 (D4): Agent & Orchestration
 
 | # | Criterion | Status | Reference |
 |---|-----------|--------|-----------|
-| 1 | Architecture doc present |  | This document |
-| 2 | `.importlinter` config present |  | `.importlinter` |
-| 3 | `import-linter.yml` CI workflow |  | `.github/workflows/` |
-| 4 | Domain ownership map |  | `.codex/DOMAIN_OWNERSHIP.md` |
+| 1 | Architecture doc present | | This document |
+| 2 | `.importlinter` config present | | `.importlinter` |
+| 3 | `import-linter.yml` CI workflow | | `.github/workflows/` |
+| 4 | Domain ownership map | | `.codex/DOMAIN_OWNERSHIP.md` |
 
 ---
 
@@ -371,8 +376,8 @@ Domain 4 (D4): Agent & Orchestration
 
 ---
 
-**This document is the authoritative architecture reference for Codex.**  
+**This document is the authoritative architecture reference for Codex.**
 Keep in sync with import linters, governance policies, and domain ownership maps.
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (12 files merged)*
+*Consolidation Status: Complete (12 files merged)*

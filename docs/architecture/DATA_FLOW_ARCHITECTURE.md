@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---
@@ -12,6 +12,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Data Flow Architecture<br/>From Source to Consumption'}, 'theme': 'base'}}%%
+
 graph LR
     subgraph "Data Sources"
         GitHub["🐙 GitHub Repos<br/>Source code<br/>Issues<br/>PRs"]
@@ -57,38 +58,53 @@ graph LR
 
     %% Data flow
     GitHub --> Parser
+
     Upload --> Parser
+
     External --> Parser
 
     Parser --> Tokenizer
+
     Parser --> AST
 
     Tokenizer --> Preprocess
+
     AST --> Preprocess
 
     Preprocess --> Transform
+
     Transform --> Embed
 
     Embed --> VectorDB
+
     Parser --> RawDB
+
     Preprocess --> MetadataDB
 
     VectorDB --> Search
+
     MetadataDB --> Search
+
     RawDB --> Search
 
     Search --> Rank
+
     Rank --> Build
 
     Build --> Train
+
     Build --> Cache
+
     Build --> Eval
 
     Train --> Cache
+
     Cache --> API
+
     Eval --> API
 
     API --> Storage
+
     API --> External2
     VectorDB -.updates.-> Cache
     MetadataDB -.stats.-> Eval
@@ -128,7 +144,7 @@ graph LR
 ## Data Transformation Pipeline
 
 ### Stage 1: Ingestion
-**Input**: Raw files (source code, data, models)  
+**Input**: Raw files (source code, data, models)
 **Process**:
 ```
 Raw File
@@ -152,7 +168,7 @@ Store Original
 **Volume**: 1GB-100GB per ingestion run
 
 ### Stage 2: Tokenization
-**Input**: Parsed content  
+**Input**: Parsed content
 **Process**:
 ```
 Content
@@ -174,7 +190,7 @@ Encode to IDs
 **Volume**: 100M-1B tokens per ingestion
 
 ### Stage 3: Processing
-**Input**: Tokenized content  
+**Input**: Tokenized content
 **Process**:
 ```
 Tokens
@@ -201,7 +217,7 @@ Store Vectors
 **Volume**: 100K-10M embeddings (768-4096 dims)
 
 ### Stage 4: Retrieval
-**Input**: Query or context need  
+**Input**: Query or context need
 **Process**:
 ```
 Query
@@ -229,7 +245,7 @@ Build Context
 **Latency**: <100ms for 10k vector search
 
 ### Stage 5: ML Operations
-**Input**: Context + data  
+**Input**: Context + data
 **Process**:
 ```
 Context

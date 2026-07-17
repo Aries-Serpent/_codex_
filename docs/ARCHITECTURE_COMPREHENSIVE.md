@@ -3,10 +3,10 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-**Version:** 5.0.0  
+**Version:** 5.0.0
 **Last Updated: 2026-07-10
-**Status:** Complete — Phase 5 Track 4  
-**Session:** S250-doc-arch  
+**Status:** Complete — Phase 5 Track 4
+**Session:** S250-doc-arch
 
 ---
 
@@ -31,19 +31,19 @@ The Codex ML Platform is a comprehensive, production-grade machine learning fram
 
 **Components:**
 - **Hydra Configuration System** — Single source of truth for all parameters
-  - Multi-level config composition (base → experiment → run-specific)
-  - Type-safe schema validation via OmegaConf
-  - Dynamic defaults and sweeps for hyperparameter tuning
-  
+ - Multi-level config composition (base experiment run-specific)
+ - Type-safe schema validation via OmegaConf
+ - Dynamic defaults and sweeps for hyperparameter tuning
+
 - **Workflow Orchestrator** — DAG-based task scheduling
-  - Dependency resolution and parallel execution
-  - Failure recovery with checkpointing
-  - Resource allocation and scheduling
+ - Dependency resolution and parallel execution
+ - Failure recovery with checkpointing
+ - Resource allocation and scheduling
 
 - **State Manager** — Persistent workflow state
-  - Checkpoint storage (local, cloud, S3-compatible)
-  - Recovery point management
-  - Session tracking
+ - Checkpoint storage (local, cloud, S3-compatible)
+ - Recovery point management
+ - Session tracking
 
 **Key Design Patterns:**
 - **Factory Pattern** — Configuration objects instantiate components
@@ -72,24 +72,24 @@ ConfigurationStore:
 
 **Components:**
 - **File Ingestor** — Multi-format support
-  - CSV, JSON, Parquet, HDF5, Apache Arrow
-  - Automatic encoding detection (UTF-8, Latin-1, GB18030, etc.)
-  - Large file streaming (>100GB support)
-  
+ - CSV, JSON, Parquet, HDF5, Apache Arrow
+ - Automatic encoding detection (UTF-8, Latin-1, GB18030, etc.)
+ - Large file streaming (>100GB support)
+
 - **CSV Ingestor** — Specialized CSV handling
-  - Dialect detection (delimiter, quote char, encoding)
-  - Type inference and validation
-  - Memory-efficient chunked processing
-  
+ - Dialect detection (delimiter, quote char, encoding)
+ - Type inference and validation
+ - Memory-efficient chunked processing
+
 - **Text Processing Pipeline**
-  - Tokenization with multiple backends (NLTK, spaCy, HuggingFace)
-  - Document splitting (semantic, sliding window, recursive)
-  - Format preservation (markdown, code blocks, etc.)
+ - Tokenization with multiple backends (NLTK, spaCy, HuggingFace)
+ - Document splitting (semantic, sliding window, recursive)
+ - Format preservation (markdown, code blocks, etc.)
 
 - **Data Validation Framework**
-  - Schema validation (Pydantic)
-  - Statistical profile validation
-  - Drift detection
+ - Schema validation (Pydantic)
+ - Statistical profile validation
+ - Drift detection
 
 **Data Flow:**
 ```
@@ -99,9 +99,9 @@ Raw Input → Format Detection → Parsing → Validation → Normalization → 
 ```
 
 **Key Methods:**
-- `ingest(path: str, config: Config) → Dataset` — Main ingestion entry point
-- `detect_format(bytes: bytes) → Format` — Format auto-detection
-- `split_document(text: str, strategy: str) → List[str]` — Document splitting
+- `ingest(path: str, config: Config) Dataset` — Main ingestion entry point
+- `detect_format(bytes: bytes) Format` — Format auto-detection
+- `split_document(text: str, strategy: str) List[str]` — Document splitting
 
 ---
 
@@ -111,25 +111,25 @@ Raw Input → Format Detection → Parsing → Validation → Normalization → 
 
 **Components:**
 - **Training Engine**
-  - PyTorch-based distributed training
-  - Gradient accumulation and mixed precision
-  - Learning rate scheduling and warmup
-  - Early stopping with patience
+ - PyTorch-based distributed training
+ - Gradient accumulation and mixed precision
+ - Learning rate scheduling and warmup
+ - Early stopping with patience
 
 - **Evaluation Framework**
-  - Multiple metric support (accuracy, F1, AUROC, custom)
-  - Cross-validation with stratification
-  - Confidence interval estimation
+ - Multiple metric support (accuracy, F1, AUROC, custom)
+ - Cross-validation with stratification
+ - Confidence interval estimation
 
 - **Model Registry**
-  - MLflow integration for experiment tracking
-  - Model versioning and lineage
-  - Artifact storage and retrieval
+ - MLflow integration for experiment tracking
+ - Model versioning and lineage
+ - Artifact storage and retrieval
 
 - **Inference Pipeline**
-  - Batch processing with queue management
-  - Single-shot and streaming inference
-  - Latency optimization
+ - Batch processing with queue management
+ - Single-shot and streaming inference
+ - Latency optimization
 
 **Training Loop Pseudocode:**
 ```python
@@ -155,24 +155,24 @@ for epoch in range(num_epochs):
 
 **Components:**
 - **Vector Store**
-  - FAISS for dense vector search (CPU/GPU)
-  - BM25 for sparse keyword search
-  - Hybrid search combining both approaches
+ - FAISS for dense vector search (CPU/GPU)
+ - BM25 for sparse keyword search
+ - Hybrid search combining both approaches
 
 - **Embedding Service**
-  - Multi-model support (BERT, BGE, OpenAI)
-  - Batch embedding with caching
-  - Dimension reduction and normalization
+ - Multi-model support (BERT, BGE, OpenAI)
+ - Batch embedding with caching
+ - Dimension reduction and normalization
 
 - **Retrieval Pipeline**
-  - Query encoding and expansion
-  - Top-K retrieval with reranking
-  - Context window management
+ - Query encoding and expansion
+ - Top-K retrieval with reranking
+ - Context window management
 
 - **Knowledge Graph Manager**
-  - Entity and relationship storage
-  - Graph traversal and reasoning
-  - Link prediction
+ - Entity and relationship storage
+ - Graph traversal and reasoning
+ - Link prediction
 
 **Retrieval Flow:**
 ```
@@ -189,24 +189,24 @@ Query → Encoding → Vector Search → Reranking → Context Window → LLM Pr
 
 **Components:**
 - **REST API** (FastAPI)
-  - OpenAPI/Swagger documentation
-  - Request/response validation
-  - Authentication and rate limiting
+ - OpenAPI/Swagger documentation
+ - Request/response validation
+ - Authentication and rate limiting
 
 - **gRPC Services** (High-performance)
-  - Streaming support for large payloads
-  - Protocol buffer serialization
-  - Service mesh integration
+ - Streaming support for large payloads
+ - Protocol buffer serialization
+ - Service mesh integration
 
 - **Event Bus**
-  - Publish/Subscribe pattern
-  - Event sourcing
-  - Dead letter queue for failed events
+ - Publish/Subscribe pattern
+ - Event sourcing
+ - Dead letter queue for failed events
 
 - **CLI Interface** (Typer)
-  - Command-based operations
-  - Batch execution support
-  - Output formatting (JSON, table, markdown)
+ - Command-based operations
+ - Batch execution support
+ - Output formatting (JSON, table, markdown)
 
 ---
 
@@ -214,6 +214,7 @@ Query → Encoding → Vector Search → Reranking → Context Window → LLM Pr
 
 ```mermaid
 graph TB
+
     subgraph Layer1["Layer 1: Configuration & Orchestration"]
         A["Hydra Config\nManager"]
         B["Workflow\nOrchestrator"]
@@ -245,22 +246,35 @@ graph TB
     end
     
     A -->|config| B
+
     B -->|orchestrate| C
+
     B -->|load| D
+
     D -->|validate| E
+
     E -->|process| F
+
     F -->|train| G
+
     G -->|evaluate| H
+
     H -->|register| I
+
     I -->|store embedding| K
+
     K -->|populate| J
+
     J -->|search| L
     
     M -->|query| J
+
     N -->|grpc| G
+
     O -->|command| B
     
     C -->|checkpoint| I
+
     I -->|retrieve| G
 ```
 
@@ -272,6 +286,7 @@ graph TB
 
 ```mermaid
 sequenceDiagram
+
     participant User
     participant CLI
     participant Orchestrator
@@ -284,6 +299,7 @@ sequenceDiagram
     CLI->>Orchestrator: execute_training(config)
     Orchestrator->>DataPipeline: load_data(config)
     DataPipeline->>DataPipeline: ingest → validate → split
+
     DataPipeline-->>Orchestrator: dataset
     
     loop Epoch
@@ -294,7 +310,9 @@ sequenceDiagram
     end
     
     Orchestrator->>ModelRegistry: finalize_model(version)
+
     ModelRegistry-->>MLflow: register_model(model, version)
+
     MLflow-->>User:  Training Complete
 ```
 
@@ -302,6 +320,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+
     participant Client
     participant REST_API
     participant InferenceEngine
@@ -314,14 +333,18 @@ sequenceDiagram
     
     alt Use RAG
         InferenceEngine->>EmbeddingService: embed_query(query)
+
         EmbeddingService-->>InferenceEngine: query_embedding
         InferenceEngine->>VectorStore: search_top_k(query_embedding, k=5)
+
         VectorStore-->>InferenceEngine: [context_docs]
     end
     
     InferenceEngine->>LLM: generate(query, context)
+
     LLM-->>InferenceEngine: response
     InferenceEngine->>REST_API: response + metadata
+
     REST_API-->>Client: {response, latency, tokens}
 ```
 
@@ -850,6 +873,6 @@ sqlite3 codex.db < /var/backups/codex/db_2026_07_10.sql
 
 ---
 
-**Document maintained by:** @mbaetiong  
-**Last review:** 2026-07-10  
+**Document maintained by:** @mbaetiong
+**Last review:** 2026-07-10
 **Next review:** 2026-08-10

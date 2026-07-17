@@ -1,9 +1,9 @@
-# Terminology Migration Guide: Week-Based → Iteration-Based
+# Terminology Migration Guide: Week-Based Iteration-Based
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Status**: Active Migration  
-> **Version**: 1.0  
+> **Status**: Active Migration
+> **Version**: 1.0
 > **Last Updated**: 2026-06-22
 
 ---
@@ -18,7 +18,7 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 
 ### Timeline References
 
-|  Old Term |  New Term | Example Usage |
+| Old Term | New Term | Example Usage |
 |------------|------------|---------------|
 | Pre-commit 1-2, Pre-commit 3-4 | Iteration 1, Iteration 2 | "Iteration 1: Foundation" |
 | Day 1, Day 2 | Commit Step 1, Commit Step 2 | "Commit Step 3: Integration" |
@@ -29,7 +29,7 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 
 ### Phase References
 
-|  Old Term |  New Term |
+| Old Term | New Term |
 |------------|------------|
 | Phase 1 (Pre-commit 1-4) | Iteration 1 |
 | Phase 2 (Pre-commit 5-8) | Iteration 2 |
@@ -42,21 +42,21 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 ### Priority Levels
 
 1. **High Priority** (Immediate Update):
-   - New documentation and plans
-   - Templates and examples
-   - User-facing guides
-   - README files
+ - New documentation and plans
+ - Templates and examples
+ - User-facing guides
+ - README files
 
 2. **Medium Priority** (Update as Modified):
-   - Active development plans
-   - Recent implementation guides
-   - Current roadmaps
+ - Active development plans
+ - Recent implementation guides
+ - Current roadmaps
 
 3. **Low Priority** (Archive Reference):
-   - Historical status reports
-   - Completed milestone summaries
-   - Legacy documentation
-   - Archived plans (keep as-is for historical accuracy)
+ - Historical status reports
+ - Completed milestone summaries
+ - Legacy documentation
+ - Archived plans (keep as-is for historical accuracy)
 
 ### Migration Approach
 
@@ -142,10 +142,10 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 ## Status: Current Documentation
 
 ### Updated Files
--  `docs/templates/ITERATION_PLAN_TEMPLATE.md` - Created
--  `docs/reporting/REPORTING.md` - Uses iteration terminology
--  Recent PHASE2 documents - Already use iteration terminology
--  Most completion reports - Use iteration structure
+- `docs/templates/ITERATION_PLAN_TEMPLATE.md` - Created
+- `docs/reporting/REPORTING.md` - Uses iteration terminology
+- Recent PHASE2 documents - Already use iteration terminology
+- Most completion reports - Use iteration structure
 
 ### Files with Week References (508 occurrences)
 
@@ -161,15 +161,15 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 
 ## Guidelines for New Content
 
-###  DO:
+### DO:
 - Use "Iteration N" for phases
 - Use "Pre-commit Checkpoint" for prerequisites
 - Use "Commit Tasks" for action items
-- Use physics symbols (️️️) for iteration phases
+- Use physics symbols () for iteration phases
 - Include flexible timelines without fixed dates
 - Focus on deliverables over duration
 
-###  DON'T:
+### DON'T:
 - Use "Week N" or "Day N" for new plans
 - Specify fixed calendar durations
 - Create rigid time-based schedules
@@ -181,11 +181,11 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 
 Use these symbols to indicate the physics principle aligned with each iteration:
 
-- ️ **Path** - Clear forward momentum, foundational work
--  **Fields** - Transformation, data flow, state changes
-- ️ **Patterns** - Recognition, observation, analysis
--  **Redundancy** - Fallbacks, alternatives, resilience
-- ️ **Equilibrium** - Balance, stability, validation
+- **Path** - Clear forward momentum, foundational work
+- **Fields** - Transformation, data flow, state changes
+- **Patterns** - Recognition, observation, analysis
+- **Redundancy** - Fallbacks, alternatives, resilience
+- **Equilibrium** - Balance, stability, validation
 
 ---
 
@@ -229,6 +229,6 @@ For questions about terminology migration or template usage, refer to:
 
 ---
 
-**Approved By**: [@mbaetiong]  
-**Effective Date**: 2025-12-24  
+**Approved By**: [@mbaetiong]
+**Effective Date**: 2025-12-24
 **Review Cycle**: Quarterly

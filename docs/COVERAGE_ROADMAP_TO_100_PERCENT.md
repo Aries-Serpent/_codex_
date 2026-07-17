@@ -12,22 +12,22 @@
 - [Phase 14.0: Foundation (Current Phase)](#phase-140-foundation-current-phase)
  - [Completed Items](#completed-items)
  - [Exit Criteria - ALL MET ](#exit-criteria---all-met-)
-- [Phase 14.1: Core Modules (30% → 50%)](#phase-141-core-modules-30--50)
+- [Phase 14.1: Core Modules (30% 50%)](#phase-141-core-modules-30--50)
  - [Priority Modules (High Impact)](#priority-modules-high-impact)
  - [Top 10 Priority Modules (from Priority Matrix)](#top-10-priority-modules-from-priority-matrix)
  - [Test Categories to Add](#test-categories-to-add)
  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
  - [Exit Criteria](#exit-criteria)
-- [Phase 14.2: Training, Agents & RAG (50% → 70%)](#phase-142-training-agents--rag-50--70)
+- [Phase 14.2: Training, Agents & RAG (50% 70%)](#phase-142-training-agents--rag-50--70)
  - [Priority Modules](#priority-modules)
  - [Test Categories to Add](#test-categories-to-add)
  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
  - [Exit Criteria](#exit-criteria)
-- [Phase 14.3: Integration & Edge Cases (70% → 85%)](#phase-143-integration--edge-cases-70--85)
+- [Phase 14.3: Integration & Edge Cases (70% 85%)](#phase-143-integration--edge-cases-70--85)
  - [Focus Areas](#focus-areas)
  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
  - [Exit Criteria](#exit-criteria)
-- [Phase 14.4: Final Gaps & Branch Coverage (85% → 100%)](#phase-144-final-gaps--branch-coverage-85--100)
+- [Phase 14.4: Final Gaps & Branch Coverage (85% 100%)](#phase-144-final-gaps--branch-coverage-85--100)
  - [Strategy](#strategy)
  - [Final Push Categories](#final-push-categories)
  - [Exit Criteria](#exit-criteria)
@@ -65,10 +65,10 @@
 - [Phase 14.2: Security Hardening - COMPLETE](#phase-142-security-hardening----complete)
 - [Phase 14.3: Integration & Edge Cases - COMPLETE](#phase-143-integration--edge-cases----complete)
 
-**Created:** 2026-01-18 
+**Created:** 2026-01-18
 **Updated: 2026-07-11
-**Current Baseline:** ~27.5% (estimated 196 of 714 modules covered) 
-**Target:** 100% test coverage 
+**Current Baseline:** ~27.5% (estimated 196 of 714 modules covered)
+**Target:** 100% test coverage
 **Status:** Phase 14.0 Complete | Phase 14.1 Executing
 
 ---
@@ -113,11 +113,11 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 
 | Phase | Target Coverage | Duration | Focus Area | Threshold Setting |
 |-------|-----------------|----------|------------|-------------------|
-| 14.0 (Current) | 0% → 30% | 2 phases | Foundation & Infrastructure | `fail_under = 0` |
-| 14.1 | 30% → 50% | 3 phases | Core Modules (codex, codex_ml) | `fail_under = 30` |
-| 14.2 | 50% → 70% | 4 phases | Training, Agents, RAG | `fail_under = 50` |
-| 14.3 | 70% → 85% | 3 phases | Integration & Edge Cases | `fail_under = 70` |
-| 14.4 | 85% → 100% | 3 phases | Final Gaps & Branch Coverage | `fail_under = 85` |
+| 14.0 (Current) | 0% 30% | 2 phases | Foundation & Infrastructure | `fail_under = 0` |
+| 14.1 | 30% 50% | 3 phases | Core Modules (codex, codex_ml) | `fail_under = 30` |
+| 14.2 | 50% 70% | 4 phases | Training, Agents, RAG | `fail_under = 50` |
+| 14.3 | 70% 85% | 3 phases | Integration & Edge Cases | `fail_under = 70` |
+| 14.4 | 85% 100% | 3 phases | Final Gaps & Branch Coverage | `fail_under = 85` |
 | Post-14 | 100% | Ongoing | Maintenance & Regression | `fail_under = 100` |
 
 **Total Estimated Duration:** 15 phases
@@ -126,9 +126,9 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 
 ## Phase 14.0: Foundation (Current Phase)
 
-**Goal:** Establish test infrastructure and baseline coverage 
-**Duration:** 2 phases 
-**Threshold:** `fail_under = 0` 
+**Goal:** Establish test infrastructure and baseline coverage
+**Duration:** 2 phases
+**Threshold:** `fail_under = 0`
 **Status:** COMPLETE
 
 ### Completed Items
@@ -143,7 +143,7 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 - [x] Fix yamllint issues per AI Agency Policy
 - [x] Create coverage roadmap (this document)
 
-### Exit Criteria - ALL MET 
+### Exit Criteria - ALL MET
 - All CI jobs passing
 - Coverage baseline established (27.5%)
 - Test infrastructure documented
@@ -151,11 +151,11 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 
 ---
 
-## Phase 14.1: Core Modules (30% → 50%)
+## Phase 14.1: Core Modules (30% 50%)
 
-**Goal:** Cover high-impact core modules 
-**Duration:** 3 phases 
-**Threshold:** `fail_under = 30` 
+**Goal:** Cover high-impact core modules
+**Duration:** 3 phases
+**Threshold:** `fail_under = 30`
 **Status:** IN PROGRESS
 
 ### Priority Modules (High Impact)
@@ -194,7 +194,7 @@ Based on `.codex/qa_walkthrough/test_priority_matrix.json`:
 
 2. **Integration Tests** (~30 tests)
  - CLI end-to-end flows
- - Config → execution paths
+ - Config execution paths
  - Data pipeline integration
 
 ### Coverage Targets by Module Group
@@ -215,10 +215,10 @@ src/codex_ml/data/ → 70%
 
 ---
 
-## Phase 14.2: Training, Agents & RAG (50% → 70%)
+## Phase 14.2: Training, Agents & RAG (50% 70%)
 
-**Goal:** Cover ML training pipeline, agents, and RAG system 
-**Duration:** 4 phases 
+**Goal:** Cover ML training pipeline, agents, and RAG system
+**Duration:** 4 phases
 **Threshold:** `fail_under = 50`
 
 ### Priority Modules
@@ -271,18 +271,18 @@ src/codex_ml/models/ → 80%
 
 ---
 
-## Phase 14.3: Integration & Edge Cases (70% → 85%)
+## Phase 14.3: Integration & Edge Cases (70% 85%)
 
-**Goal:** Cover integration paths and edge cases 
-**Duration:** 3 phases 
+**Goal:** Cover integration paths and edge cases
+**Duration:** 3 phases
 **Threshold:** `fail_under = 70`
 
 ### Focus Areas
 
 1. **Cross-Module Integration Tests** (~60 tests)
- - Config → Training → Evaluation flow
- - RAG → Agent → Response flow
- - CLI → Core → Output flow
+ - Config Training Evaluation flow
+ - RAG Agent Response flow
+ - CLI Core Output flow
 
 2. **Error Handling & Edge Cases** (~80 tests)
  - Invalid inputs
@@ -314,10 +314,10 @@ src/codex/quantum_orchestrator/ → 70%
 
 ---
 
-## Phase 14.4: Final Gaps & Branch Coverage (85% → 100%)
+## Phase 14.4: Final Gaps & Branch Coverage (85% 100%)
 
-**Goal:** Achieve 100% line and branch coverage 
-**Duration:** 3 phases 
+**Goal:** Achieve 100% line and branch coverage
+**Duration:** 3 phases
 **Threshold:** `fail_under = 85`
 
 ### Strategy
@@ -604,5 +604,5 @@ if complex_condition: # pragma: no cover # Don't do this
 - [x] `tests/integration/test_phase14_cross_module_coverage.py` - 35+ tests
 - [x] `tests/integration/test_phase14_edge_cases_coverage.py` - 45+ tests
 
-**Owner:** Phase 14 implementation team 
+**Owner:** Phase 14 implementation team
 **Review Cadence:** per-phase coverage review

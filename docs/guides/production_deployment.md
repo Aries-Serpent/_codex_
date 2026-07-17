@@ -3,9 +3,9 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **Version**: 1.0 (Phase 7D)  
-> **Status**:  Complete and production-ready  
-> **Last Updated**: 2026-06-22T09:30:00Z  
+> **Version**: 1.0 (Phase 7D)
+> **Status**: Complete and production-ready
+> **Last Updated**: 2026-06-22T09:30:00Z
 > **Authority**: @mbaetiong
 
 ---
@@ -15,12 +15,12 @@
 This guide provides comprehensive procedures for deploying the _codex_ system to production environments. It covers infrastructure setup, containerization, orchestration, monitoring, and disaster recovery.
 
 **Key Capabilities**:
--  Multi-cloud deployment (AWS, Azure, GCP)
--  Kubernetes orchestration with Helm charts
--  Zero-downtime deployments (blue-green, canary)
--  Automatic health checks and monitoring
--  Disaster recovery and rollback procedures
--  Security compliance and secrets management
+- Multi-cloud deployment (AWS, Azure, GCP)
+- Kubernetes orchestration with Helm charts
+- Zero-downtime deployments (blue-green, canary)
+- Automatic health checks and monitoring
+- Disaster recovery and rollback procedures
+- Security compliance and secrets management
 
 ---
 
@@ -118,8 +118,8 @@ kubectl patch service codex -p \
 kubectl delete deployment codex-blue  # Only after 24h validation
 ```
 
-**Advantages**: Zero downtime, quick rollback, safe testing  
-**Duration**: ~5-10 minutes  
+**Advantages**: Zero downtime, quick rollback, safe testing
+**Duration**: ~5-10 minutes
 **Risk**: LOW
 
 ## 2. Canary Deployment
@@ -144,8 +144,8 @@ kubectl rollout resume deployment/codex
 kubectl rollout undo deployment/codex
 ```
 
-**Advantages**: Safety, gradual validation, quick rollback  
-**Duration**: 30-120 minutes  
+**Advantages**: Safety, gradual validation, quick rollback
+**Duration**: 30-120 minutes
 **Risk**: MEDIUM
 
 ## 3. Rolling Update
@@ -177,8 +177,8 @@ spec:
         image: codex:v2.0.0
 ```
 
-**Advantages**: Gradual, automatic, built-in  
-**Duration**: 10-30 minutes (5 replicas)  
+**Advantages**: Gradual, automatic, built-in
+**Duration**: 10-30 minutes (5 replicas)
 **Risk**: MEDIUM-HIGH
 
 ---
@@ -504,10 +504,10 @@ fi
 **Deployment Steps for GitHub App OAuth:**
 
 1. **Generate GitHub App Client Secret:**
-   - Go to https://github.com/settings/developers
-   - Click on your OAuth App
-   - In "Client Secret" section, click "Generate a new client secret"
-   - Copy the newly generated secret immediately (it only displays once)
+ - Go to https://github.com/settings/developers
+ - Click on your OAuth App
+ - In "Client Secret" section, click "Generate a new client secret"
+ - Copy the newly generated secret immediately (it only displays once)
 
 2. **Set in Deployment Environment:**
    ```bash
@@ -523,7 +523,7 @@ fi
    # For systemd service
    # Add to /etc/systemd/system/codex.service:
    # Environment="GITHUB_APP_CLIENT_SECRET=<secret>"
-   ```
+ ```
 
 3. **Verify Configuration:**
    ```bash
@@ -534,7 +534,7 @@ fi
    
    # Should return 400 Bad Request (invalid code), NOT 500 Server Error
    # A 500 error indicates GITHUB_APP_CLIENT_SECRET is not set properly
-   ```
+ ```
 
 #### 3. Additional Service Credentials
 
@@ -542,10 +542,10 @@ For services requiring authentication:
 
 | Service | Environment Variable | How to Obtain |
 |---------|----------------------|---------------|
-| **Slack Webhooks** | `SLACK_WEBHOOK_URL` | Create in Slack App settings → Incoming Webhooks |
-| **AWS Credentials** | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | AWS IAM → Create Access Keys → Download CSV |
-| **Azure Credentials** | `AZURE_SUBSCRIPTION_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET` | Azure Portal → App Registrations → Certificates & Secrets |
-| **GCP Credentials** | `GOOGLE_APPLICATION_CREDENTIALS` | GCP Console → Service Accounts → Create Key (JSON) |
+| **Slack Webhooks** | `SLACK_WEBHOOK_URL` | Create in Slack App settings Incoming Webhooks |
+| **AWS Credentials** | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | AWS IAM Create Access Keys Download CSV |
+| **Azure Credentials** | `AZURE_SUBSCRIPTION_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET` | Azure Portal App Registrations Certificates & Secrets |
+| **GCP Credentials** | `GOOGLE_APPLICATION_CREDENTIALS` | GCP Console Service Accounts Create Key (JSON) |
 | **API Keys** | Service-specific | Provider's developer console |
 
 **Example Multi-Service Setup:**
@@ -580,12 +580,12 @@ Before deploying to production, verify:
 - [ ] **AUTH_SECRET_KEY is set:**
   ```bash
   if [ -z "$AUTH_SECRET_KEY" ]; then echo " NOT SET"; else echo " SET"; fi
-  ```
+ ```
 
 - [ ] **GITHUB_APP_CLIENT_SECRET is set** (if using GitHub OAuth):
   ```bash
   if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then echo " NOT SET"; else echo " SET"; fi
-  ```
+ ```
 
 - [ ] **All service credentials are set:**
   ```bash
@@ -597,22 +597,22 @@ Before deploying to production, verify:
       echo " $var is set (length: ${#var})"
     fi
   done
-  ```
+ ```
 
 - [ ] **Secrets are NOT committed to git:**
   ```bash
   git log -p | grep -i "AUTH_SECRET_KEY\|GITHUB_APP_CLIENT_SECRET" || echo " No secrets in git history"
-  ```
+ ```
 
 - [ ] **Environment variables are isolated per environment:**
-  - Production secrets ≠ Development secrets
-  - Each environment has separate credential sets
+ - Production secrets ≠ Development secrets
+ - Each environment has separate credential sets
 
 - [ ] **Secrets are rotated on deployment:**
   ```bash
   # Example: Auto-generate new key on deploy
   export AUTH_SECRET_KEY=$(openssl rand -hex 32)
-  ```
+ ```
 
 
 
@@ -852,5 +852,5 @@ kubectl exec codex-xxxx -n production -- \
 ---
 
 *Last Updated: 2026-06-22
-*Authority: @mbaetiong*  
-*Status:  Phase 7D Complete*
+*Authority: @mbaetiong*
+*Status: Phase 7D Complete*

@@ -230,7 +230,7 @@ overrides = [
 
 ## Best Practices
 
-### DO 
+### DO
 
 1. **Use ConfigLoader for all config loading**
 ```python
@@ -243,14 +243,14 @@ cfg = load_config("base", config_dir="conf/model")
    training:
      epochs: 10
      max_epochs: ${training.epochs}
-   ```
+ ```
 
 3. **Organize configs by logical groups**
    ```
    conf/model/     # Model-specific
    conf/training/  # Training-specific
    conf/data/      # Data-specific
-   ```
+ ```
 
 4. **Use overrides for run-specific changes**
 ```python
@@ -265,7 +265,7 @@ except MissingConfigException:
     # Handle missing config
 ```
 
-### DON'T 
+### DON'T
 
 1. **Don't hardcode config paths**
 ```python
@@ -288,7 +288,7 @@ cfg = load_config("base", config_dir="conf/training")
    training:
      epochs: 10
    max_epochs: ${training.epochs}
-   ```
+ ```
 
 3. **Don't skip error handling**
 ```python
@@ -435,5 +435,5 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
 
 ---
 
-**Maintained By:** PS-01 Configuration Consolidation  
+**Maintained By:** PS-01 Configuration Consolidation
 **Questions:** File an issue with "configuration" label

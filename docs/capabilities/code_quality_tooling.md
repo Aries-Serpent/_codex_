@@ -4,11 +4,11 @@
 
 **Last Updated: 2026-06-22
 
-> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [ GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [ Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [ GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
 
 ## Overview
 
-**Status**:  Complete - Comprehensive code quality tooling guide with configurations and examples
+**Status**: Complete - Comprehensive code quality tooling guide with configurations and examples
 
 This capability covers comprehensive code quality tooling for the _codex_ repository, including linting, formatting, type checking, and static analysis tools.
 
@@ -270,7 +270,7 @@ jobs:
    # Hooks will run automatically on git commit
    # Or run manually:
    pre-commit run --all-files
-   ```
+ ```
 
 2. **Fix Issues Automatically**
    ```bash
@@ -282,7 +282,7 @@ jobs:
 
    # Both together
    ruff check --fix . && black .
-   ```
+ ```
 
 3. **Ignore Specific Issues Sparingly**
 ```python
@@ -298,7 +298,7 @@ value = some_untyped_library()  # type: ignore[no-untyped-call]
    [tool.ruff.per-file-ignores]
    "tests/*.py" = ["S101"]  # Allow asserts in tests
    "scripts/*.py" = ["T201"]  # Allow prints in scripts
-   ```
+ ```
 
 5. **Monitor Coverage Trends**
    ```bash
@@ -307,7 +307,7 @@ value = some_untyped_library()  # type: ignore[no-untyped-call]
 
    # View in browser
    open htmlcov/index.html
-   ```
+ ```
 
 ## Integration with Development Workflow
 
@@ -376,18 +376,18 @@ git commit -m "feat: add new feature"
 
 | Feature | Ruff | Black | mypy | pytest |
 |---------|------|-------|------|--------|
-| Speed |  (100x faster) |  |  |  |
-| Auto-fix |  |  |  | N/A |
-| Customizable |  High | ️ Limited |  High |  High |
-| Error Messages |  Clear | N/A | ️ Can be cryptic |  Clear |
+| Speed | (100x faster) | | | |
+| Auto-fix | | | | N/A |
+| Customizable | High | Limited | High | High |
+| Error Messages | Clear | N/A | Can be cryptic | Clear |
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Ruff conflicts with Black**
-   - Solution: Ruff's `E501` (line too long) is ignored by default
-   - Let Black handle formatting, Ruff handles linting logic
+ - Solution: Ruff's `E501` (line too long) is ignored by default
+ - Let Black handle formatting, Ruff handles linting logic
 
 2. **mypy type errors in third-party libraries**
 ```text
@@ -408,14 +408,14 @@ ignore_missing_imports = true
 
    # Or run specific hooks
    pre-commit run ruff --all-files
-   ```
+ ```
 
 4. **Coverage not reflecting changes**
    ```bash
    # Clear cache and re-run
    rm -rf .coverage htmlcov/
    pytest --cov=agents --cov-report=html
-   ```
+ ```
 
 ## Future Enhancements
 

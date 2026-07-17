@@ -13,7 +13,7 @@
 ## Overview
 
 This document is the standardised reference for every diagnostic performed during
-session S145.  Each check has its own section with:
+session S145. Each check has its own section with:
 
 - **Root cause** — what failed and why
 - **Repro command** — exact shell command to reproduce the symptom
@@ -38,7 +38,7 @@ individually via `--check <N>` or all at once.
 
 Shell's `[` (test) command performs **lexicographic** string comparison with `\>` and `\<`.
 Applying it to floating-point values (e.g., `'99.65' \> '99.6'`) produces incorrect
-results for strings like `100.0 \> 99.6` → `false` (because `'1' < '9'` lexicographically).
+results for strings like `100.0 \> 99.6` `false` (because `'1' < '9'` lexicographically).
 actionlint/shellcheck flag this as SC2072.
 
 ### Repro
@@ -128,7 +128,7 @@ ruff check --select I scripts/ci/aais_v4_scorer.py scripts/ci/pr_comment_consoli
 
 ### Root Cause
 
-`.mypy_baseline` contained `0`.  The CI gate runs:
+`.mypy_baseline` contained `0`. The CI gate runs:
 
 ```python
 # scripts/ci/mypy_baseline.py logic:
@@ -136,7 +136,7 @@ if current_count > stored_baseline:
     sys.exit(1)  # regression
 ```
 
-The codebase had 282 type errors, so `282 > 0` → gate failed.
+The codebase had 282 type errors, so `282 > 0` gate failed.
 The baseline was accidentally zeroed in a previous session.
 
 ## Repro
@@ -179,7 +179,7 @@ python scripts/ci/mypy_baseline.py
 
 ### Root Cause
 
-This is the canonical first-line diagnostic.  Patterns 1–16 cover unused imports,
+This is the canonical first-line diagnostic. Patterns 1–16 cover unused imports,
 unused variables, YAML indentation, coverage thresholds, tokenizer fallbacks,
 test assertions, redundant imports, CodeQL alerts, unsorted imports, bandit,
 f-string placeholders, line length, W-series warnings, link checker config,
@@ -220,7 +220,7 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 ### Root Cause
 
 The workflow embeds a base64-encoded Python script to extract metrics from
-`/tmp/telemetry_report.json`.  The original script used `chr(34)` obfuscation:
+`/tmp/telemetry_report.json`. The original script used `chr(34)` obfuscation:
 
 ```python
 # BUGGY — constructs the string '"failed_runs"' (with embedded quotes):
@@ -230,7 +230,7 @@ print(f'FAILED_RUNS={s.get(chr(34)+"failed_runs"+chr(34),0)}')
 ```
 
 `failure_rate` used plain `'failure_rate'` (single-quote string) and worked
-correctly.  Only `failed_runs` and `total_runs` used `chr(34)` — always returning 0.
+correctly. Only `failed_runs` and `total_runs` used `chr(34)` — always returning 0.
 
 **Observable symptom:** GitHub issue body showed `Total Runs: 0, Failed Runs: 0`
 alongside a non-zero `Failure Rate: 11.7%` — mathematically impossible unless the
@@ -335,7 +335,7 @@ Two thresholds in the same workflow were inconsistent:
 | Enforcement `threshold` | `score < threshold` | 99.7 |
 
 A score of **99.65** would set `--status success` (dashboard looks green) but then
-immediately fail the enforcement step (job fails red).  Users see contradictory
+immediately fail the enforcement step (job fails red). Users see contradictory
 signals.
 
 ### Repro

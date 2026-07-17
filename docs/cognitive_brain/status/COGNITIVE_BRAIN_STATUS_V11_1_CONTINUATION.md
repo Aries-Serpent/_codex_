@@ -121,17 +121,28 @@ Phase 11.1 continues the cognitive brain enhancement workflow, focusing on docum
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing MkDocs Build, Categorize'}}%%
+
 graph TB
     subgraph "Phase 11.1 - Documentation Quality"
+
         A[MkDocs Build] --> B{Warnings?}
+
         B -->|Yes| C[Categorize]
+
         C --> D[Nav Issues]
+
         C --> E[Broken Links]
+
         C --> F[Conflicts]
+
         D --> G[Fix mkdocs.yml]
+
         E --> H{Docs Equivalent?}
+
         H -->|Yes| I[Fix Relative Path]
+
         H -->|No| J[Document/Defer]
+
         F --> K[Expected Behavior]
     end
 

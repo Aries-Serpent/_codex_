@@ -149,16 +149,16 @@ from codex_ml.monitoring.drift_detection import ComprehensiveDriftMonitor
 
 # Initialize pipeline
 pipeline = ContinuousLearningPipeline(
-    model_name="my_model",
-    drift_threshold=0.15,
-    min_samples_retrain=1000
+ model_name="my_model",
+ drift_threshold=0.15,
+ min_samples_retrain=1000
 )
 
 # Initialize drift monitor
 monitor = ComprehensiveDriftMonitor(
-    data_threshold=0.1,
-    config_threshold=0.0,
-    model_threshold=0.1
+ data_threshold=0.1,
+ config_threshold=0.0,
+ model_threshold=0.1
 )
 ```
 
@@ -176,16 +176,16 @@ monitor = ComprehensiveDriftMonitor(
 results = monitor.monitor_all(...)
 
 if monitor.has_critical_drift():
-    # Trigger retraining
-    new_version = pipeline.retrain(train_fn, train_data)
+ # Trigger retraining
+ new_version = pipeline.retrain(train_fn, train_data)
 
-    # Compare with production
-    comparison = pipeline.compare_models(new_version)
+ # Compare with production
+ comparison = pipeline.compare_models(new_version)
 
-    if comparison["is_better"]:
-        pipeline.deploy_model(new_version)
-    else:
-        pipeline.rollback()
+ if comparison["is_better"]:
+ pipeline.deploy_model(new_version)
+ else:
+ pipeline.rollback()
 ```
 ```
 
@@ -199,24 +199,24 @@ if monitor.has_critical_drift():
 from codex_ml.plugins.plugin_sandbox import Plugin, PluginContract
 
 class MyPlugin(Plugin):
-    def initialize(self) -> bool:
-        # Setup resources
-        return True
+ def initialize(self) -> bool:
+ # Setup resources
+ return True
 
-    def execute(self, data):
-        # Process data
-        return {"result": "processed"}
+ def execute(self, data):
+ # Process data
+ return {"result": "processed"}
 
-    def cleanup(self):
-        # Clean up resources
-        pass
+ def cleanup(self):
+ # Clean up resources
+ pass
 
-    def get_contract(self) -> PluginContract:
-        return PluginContract(
-            required_methods=["initialize", "execute", "cleanup"],
-            max_execution_time=10.0,
-            required_config_keys=["api_key"]
-        )
+ def get_contract(self) -> PluginContract:
+ return PluginContract(
+ required_methods=["initialize", "execute", "cleanup"],
+ max_execution_time=10.0,
+ required_config_keys=["api_key"]
+ )
 ```
 
 ## Testing
@@ -262,30 +262,30 @@ Plugins are automatically disabled after 3 consecutive failures to prevent casca
 
 #### Phase 1: P0 Stubs (Critical - Pre-commit 29-30)
 1. **NotImplementedError items** (highest priority)
-   - Review each NotImplementedError
-   - Implement minimal viable functionality
-   - Add tests for new implementations
+ - Review each NotImplementedError
+ - Implement minimal viable functionality
+ - Add tests for new implementations
 
 2. **Critical TODOs**
-   - Security-related TODOs
-   - Data integrity TODOs
-   - Production-blocking TODOs
+ - Security-related TODOs
+ - Data integrity TODOs
+ - Production-blocking TODOs
 
 #### Phase 2: P1 Stubs (High - Pre-commit 31-32)
 1. **High-priority FIXMEs**
-   - Performance issues
-   - Scalability concerns
-   - User experience improvements
+ - Performance issues
+ - Scalability concerns
+ - User experience improvements
 
 2. **High-priority TODOs**
-   - Feature completeness
-   - Error handling improvements
+ - Feature completeness
+ - Error handling improvements
 
 #### Phase 3: P2 Stubs (Low - Post-Phase 4)
 1. **Nice-to-have improvements**
-   - Code organization
-   - Documentation enhancements
-   - Refactoring opportunities
+ - Code organization
+ - Documentation enhancements
+ - Refactoring opportunities
 
 ### Target
 
@@ -343,20 +343,20 @@ diff run1/metrics.json run2/metrics.json
 ## 5. Continuous Integration
 
 All CI checks must pass:
--  Audit
--  Determinism
--  Conflicts
--  Security scans
--  Tests
--  Linting
+- Audit
+- Determinism
+- Conflicts
+- Security scans
+- Tests
+- Linting
 
 ### 6. Documentation Completeness
 
--  API documentation for all public classes/functions
--  User guides for key workflows
--  Architecture documentation
--  Deployment runbooks
--  Troubleshooting guides
+- API documentation for all public classes/functions
+- User guides for key workflows
+- Architecture documentation
+- Deployment runbooks
+- Troubleshooting guides
 
 ## Production Readiness Validation
 
@@ -411,7 +411,7 @@ Configure monitoring for:
 
 ### Phase 4 Complete When:
 
-- [ ] Sprint 7 complete 
+- [ ] Sprint 7 complete
 - [ ] Sprint 8 complete
 - [ ] Level 4 MLOps maturity achieved
 - [ ] Zero technical debt

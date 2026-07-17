@@ -1,4 +1,4 @@
-# Research Note 13 — CI Failure Triage (#4100) ↔ Adaptive-Energy Deep Research Cross-Walk
+# Research Note 13 — CI Failure Triage (#4100) Adaptive-Energy Deep Research Cross-Walk
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -49,7 +49,7 @@ The 26 failing workflows in #4100 cluster into 6 packet-aligned families. The ma
 | F1 — Telemetry/observability friction | `Generate PR Follow-Up Prompt`, `QA Walkthrough Agent`, `Session Watchdog`, `Session Incremental Summary Reminder`, ` Proactive CI Monitor`, ` Issue Resolution Gate`, `Copilot Issue Triage` | $Φ_d$ (context), $O_observe$ (observability), $U_uncertainty$ | comment/posting/permissions-shaped failures; degraded $O_observe$ |
 | F2 — Agent/auth and cost gating | `Agent Token Delegation`, ` PR Cost Check`, `Workflow Execution Gate`, ` Deferral Language Gate`, `PR Comment Review Gate` | $μF$ (governed friction), $R_d$ (risk penalty), $S_safety$ | governance enthalpy mismatch / WEC parsing / token chain |
 | F3 — Tracked-file & baseline drift | ` Secrets Baseline Enforcer`, `Auto-Fix Common CI Issues`, `PR Auto-Fix Check`, `Pre-Merge Validation`, `Validation Pipeline`, `Resilient Validation Suite` | $S_d$ (reserve), $D_d$ / $D_drift$, $E_min_margin$ | reserve drift in baselines/manifests/auto-fix patterns |
-| F4 — Dependency and supply chain | `Automatic Dependency Submission`, `Dependency Graph`, `📦 Dependabot Auto-Absorb`, `Security Scanning Suite (CodeQL python/js)`, `CodeQL` | $P_in(t)$ (supply), $P_safety$, $C_coupling$ | supply-side fluctuation and coupling under Dependabot bursts |
+| F4 — Dependency and supply chain | `Automatic Dependency Submission`, `Dependency Graph`, ` Dependabot Auto-Absorb`, `Security Scanning Suite (CodeQL python/js)`, `CodeQL` | $P_in(t)$ (supply), $P_safety$, $C_coupling$ | supply-side fluctuation and coupling under Dependabot bursts |
 | F5 — Self-healing/iteration loops | `Iterative Self-Healing CI`, `Auto-Fix Common CI Issues` (loop dimension) | $V_response$, $D_damping$, $L_latency$ | oscillation and undamped retry under correlated fluctuation |
 | F6 — Pages/build infra | `pages-build-deployment`, `Root Organization Validation` | $P_loss$, $η_convert$ | conversion/path loss in deploy/move steps |
 
@@ -59,21 +59,37 @@ Each family corresponds to a known packet failure mode (notes 09 §4 and 12 §3)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Issue #4100<br/>26 workflows / 95 failures, Pattern clustering'}}%%
+
 flowchart LR
+
     Issue[Issue #4100<br/>26 workflows / 95 failures] --> Cluster[Pattern clustering]
+
     Cluster --> F1[F1 Observability friction<br/>Phi_d, O_observe]
+
     Cluster --> F2[F2 Auth and cost gating<br/>muF, R_d, S_safety]
+
     Cluster --> F3[F3 Baseline drift<br/>S_d, D_d, E_min_margin]
+
     Cluster --> F4[F4 Supply chain bursts<br/>P_in, P_safety, C_coupling]
+
     Cluster --> F5[F5 Healing oscillation<br/>V_response, D_damping]
+
     Cluster --> F6[F6 Pages/build infra<br/>P_loss, eta_convert]
+
     F1 --> Plan[Prioritized correction plan]
+
     F2 --> Plan
+
     F3 --> Plan
+
     F4 --> Plan
+
     F5 --> Plan
+
     F6 --> Plan
+
     Plan --> ScopeIn[In-scope: docs cross-walk<br/>plus WEC default hardening]
+
     Plan --> ScopeOut[Out-of-scope: separate focused PRs<br/>for remaining family-specific fixes]
 ```
 
@@ -96,7 +112,7 @@ Priority is assigned using the maturity equation (note 10) and continuity counte
 ### Priority 3 — Tame supply-chain bursts (F4)
 
 - For Dependabot floods, throttle CodeQL and Security Scanning to the configured matrix only and ensure `actions/checkout` + dependency submission tokens are scoped correctly.
-- Add coexistence policy: do not run heavy supply-chain workflows on every Dependabot bump simultaneously; prefer batched absorption via `📦 Dependabot Auto-Absorb`.
+- Add coexistence policy: do not run heavy supply-chain workflows on every Dependabot bump simultaneously; prefer batched absorption via ` Dependabot Auto-Absorb`.
 
 ### Priority 4 — Damp self-healing oscillation (F5)
 
@@ -113,7 +129,7 @@ Priority is assigned using the maturity equation (note 10) and continuity counte
 
 ### Remaining Follow-On Fixes Beyond This PR
 
-This PR now carries the cross-walk and the WEC default/template hardening that directly reduces F2/F5 governance and continuation-loop risk on `copilot/research-security-vs-access` → `main`. The remaining corrections in P1–P6 still span additional workflow YAML, dependabot branches, or branch-specific incidents, so they should continue as focused fixes keyed off this note's family map.
+This PR now carries the cross-walk and the WEC default/template hardening that directly reduces F2/F5 governance and continuation-loop risk on `copilot/research-security-vs-access` `main`. The remaining corrections in P1–P6 still span additional workflow YAML, dependabot branches, or branch-specific incidents, so they should continue as focused fixes keyed off this note's family map.
 
 ## 6. Maturity Verdict for the CI System (per Note 10)
 

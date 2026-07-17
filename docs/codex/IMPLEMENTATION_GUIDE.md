@@ -2,32 +2,32 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Status**: All 10 Codex processing issues addressed with research-backed fixes.  
-> **Last Updated**: 2026-06-22  
-> **Target**: Reduce session overhead from 287 → 120 operations (58% savings)
+> **Status**: All 10 Codex processing issues addressed with research-backed fixes.
+> **Last Updated**: 2026-06-22
+> **Target**: Reduce session overhead from 287 120 operations (58% savings)
 
 ## Executive Summary
 
 | Issue | Root Cause | Fix | Benefit |
 |-------|-----------|-----|---------|
-| CODEX-001 | Patch format invalid | Validation script | 67% → 5% failure rate |
+| CODEX-001 | Patch format invalid | Validation script | 67% 5% failure rate |
 | CODEX-002 | Escape sequence confusion | Bash reference guide | Reduce by 6 syntax errors |
 | CODEX-003 | Pre-commit hooks hang | Timeout settings | Eliminate 3+ interruptions |
 | CODEX-004 | File I/O redundancy | Caching layer | 34% I/O reduction |
-| CODEX-005 | Planning deficit | Pre-flight checklist | 50% → 15% rework |
+| CODEX-005 | Planning deficit | Pre-flight checklist | 50% 15% rework |
 | CODEX-006 | Printf formatting | Formatting standards | Fix newline handling |
 | CODEX-007 | Wrong tool selection | Decision tree guide | 45% waste elimination |
 | CODEX-008 | PR number guessing | Context discovery | 100% early detection |
 | CODEX-009 | Heredoc quoting confusion | Reference guide | Escape sequence clarity |
-| CODEX-010 | Manual validation loops | Automated validators | 14 → 3.5 cycles |
+| CODEX-010 | Manual validation loops | Automated validators | 14 3.5 cycles |
 
 ## Quick Reference: Where to Find Solutions
 
 ### For Patch Application Issues
 - **Issue**: CODEX-001 (Patch format failures)
 - **Solution**: Use `bash scripts/validate_patch.sh <patch-file>` before applying
-- **Reference**: `docs/guides/CODEX_TOOL_SELECTION.md` → Scenario 5
-- **Success Rate**: Improves from 50% → 95%
+- **Reference**: `docs/guides/CODEX_TOOL_SELECTION.md` Scenario 5
+- **Success Rate**: Improves from 50% 95%
 
 ### For Shell Script Issues
 - **Issue**: CODEX-002, CODEX-009 (Escape sequences, heredoc confusion)
@@ -52,7 +52,7 @@
 - **Solution**: Complete pre-flight checklist before execution
 - **Tool**: `python scripts/generate_preflight.py --task "..." --files "..."`
 - **Template**: `docs/codex/PRE_FLIGHT_CHECKLIST.md`
-- **Benefit**: 50% → 15% rework reduction
+- **Benefit**: 50% 15% rework reduction
 
 ### For Tool Selection Clarity
 - **Issue**: CODEX-007 (Wrong tool chosen, 45% waste)
@@ -70,7 +70,7 @@
 - **Issue**: CODEX-010 (14+ manual validation cycles)
 - **Solution**: Use validators from `src/codex/utils/validators`
 - **Functions**: `validate_file_structure()`, `validate_with_checksum()`, `validate_with_diff()`
-- **Benefit**: 14 → 3.5 validation cycles
+- **Benefit**: 14 3.5 validation cycles
 
 ## Implementation Checklist
 
@@ -205,7 +205,7 @@ For issues or questions about any optimization:
 
 ---
 
-**Created**: 2025-10-30  
-**Author**: Codex Optimization Team  
-**Status**: Ready for production deployment  
-**Confidence**:  (5/5 - Industry-backed, fully validated)
+**Created**: 2025-10-30
+**Author**: Codex Optimization Team
+**Status**: Ready for production deployment
+**Confidence**: (5/5 - Industry-backed, fully validated)

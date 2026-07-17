@@ -6,8 +6,8 @@ Yep — you can use **GitHub Copilot in the CLI** right in an Ubuntu 24.x termin
 
 * Natural-language help for shell/git/`gh` commands:
 
-  * Explain a command: `gh copilot explain "sudo apt-get"` ([GitHub Docs][1])
-  * Suggest a command (interactive): `gh copilot suggest "Undo the last commit"` ([GitHub Docs][1])
+ * Explain a command: `gh copilot explain "sudo apt-get"` ([GitHub Docs][1])
+ * Suggest a command (interactive): `gh copilot suggest "Undo the last commit"` ([GitHub Docs][1])
 * Optional aliases so it can **execute** chosen suggestions (`ghcs`) after confirmation. ([GitHub Docs][2])
 
 ## Requirements (Ubuntu 24.x)
@@ -63,9 +63,9 @@ gh copilot config
 
 ## Troubleshooting quick hits
 
-* **“Feature disabled by org”** → your owner must enable “Copilot in the CLI.” ([GitHub Docs][1])
-* **Extension out of date** → `gh extension upgrade gh-copilot`. ([GitHub Docs][5])
-* **Auth problems** → re-run `gh auth login` and ensure the account has Copilot entitlements. ([GitHub Docs][4])
+* **“Feature disabled by org”** your owner must enable “Copilot in the CLI.” ([GitHub Docs][1])
+* **Extension out of date** `gh extension upgrade gh-copilot`. ([GitHub Docs][5])
+* **Auth problems** re-run `gh auth login` and ensure the account has Copilot entitlements. ([GitHub Docs][4])
 
 If you want, I can bundle a tiny shell script that installs `gh`, logs in (browser step still required), adds the Copilot extension, and wires up the aliases for Bash/Zsh — so your lab VMs get Copilot-in-CLI in one go.
 

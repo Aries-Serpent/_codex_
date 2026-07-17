@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.0  
-**Audience**: Enterprise IT, Infrastructure teams, self-hosted operators  
-**Environment**: On-Premise Kubernetes (KubeAdm, Rancher, etc.)  
+**Last Updated**: 2026-07-08
+**Version**: 1.0
+**Audience**: Enterprise IT, Infrastructure teams, self-hosted operators
+**Environment**: On-Premise Kubernetes (KubeAdm, Rancher, etc.)
 **Tier**: Production-Ready
 
 ---

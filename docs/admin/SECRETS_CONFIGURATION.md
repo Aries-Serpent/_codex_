@@ -8,7 +8,7 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 
 ---
 
-##  Overview
+## Overview
 
 **Required Secrets:**
 1. GitHub App ID
@@ -17,30 +17,30 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 4. AWS Credentials (for deployment)
 
 **Storage Locations:**
-- GitHub App credentials → AWS Secrets Manager
-- Deployment credentials → Environment variables
-- Local development → `.env` file (not committed)
+- GitHub App credentials AWS Secrets Manager
+- Deployment credentials Environment variables
+- Local development `.env` file (not committed)
 
 ---
 
-## 🔑 1. GitHub App Secrets
+## 1. GitHub App Secrets
 
 ### Create GitHub App
 
 1. **Navigate to GitHub Settings**
    ```
    https://github.com/settings/apps/new
-   ```
+ ```
 
 2. **Fill in App Details:**
-   - **Name:** `codex-pr-reviewer-dev` (or your choice)
-   - **Description:** `Automated PR review agent with quantum pattern analysis`
-   - **Homepage URL:** `https://github.com/Aries-Serpent/_codex_`
-   - **Webhook URL:** `https://PLACEHOLDER` (update after deployment)
-   - **Webhook Secret:** Generate with:
+ - **Name:** `codex-pr-reviewer-dev` (or your choice)
+ - **Description:** `Automated PR review agent with quantum pattern analysis`
+ - **Homepage URL:** `https://github.com/Aries-Serpent/_codex_`
+ - **Webhook URL:** `https://PLACEHOLDER` (update after deployment)
+ - **Webhook Secret:** Generate with:
      ```bash
      python3 -c "import secrets; print(secrets.token_urlsafe(32))"
-     ```
+ ```
 
 3. **Set Permissions:**
    ```
@@ -56,16 +56,16 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
    - Pull request review
    - Pull request review comment
    - Issue comment
-   ```
+ ```
 
 4. **Create App**
-   - Click "Create GitHub App"
-   - Note the **App ID** (e.g., `123456`)
-   - Generate and download **Private Key** (saves as `.pem` file)
+ - Click "Create GitHub App"
+ - Note the **App ID** (e.g., `123456`)
+ - Generate and download **Private Key** (saves as `.pem` file)
 
 ---
 
-## 🗝️ 2. Store Secrets in AWS Secrets Manager
+## 2. Store Secrets in AWS Secrets Manager
 
 ### Store GitHub Private Key
 
@@ -103,7 +103,7 @@ aws secretsmanager create-secret \
 
 ---
 
-##  3. Set Environment Variables
+## 3. Set Environment Variables
 
 ### For Terraform Deployment
 
@@ -136,7 +136,7 @@ source ~/.bashrc  # or source ~/.zshrc
 
 ---
 
-##  4. Secure Storage Best Practices
+## 4. Secure Storage Best Practices
 
 ### Use a .env File for Local Development
 
@@ -197,7 +197,7 @@ aws secretsmanager update-secret \
 
 ---
 
-##  5. Verification Checklist
+## 5. Verification Checklist
 
 ### Pre-Deployment Verification
 
@@ -256,7 +256,7 @@ cat /tmp/response.json
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Error: "Secret not found"
 
@@ -302,7 +302,7 @@ ssh-keygen -p -m PEM -f private-key.pem
 
 ---
 
-##  Security Audit Checklist
+## Security Audit Checklist
 
 - [ ] Private key stored in Secrets Manager (not in code)
 - [ ] Webhook secret is strong (>= 32 characters)
@@ -315,7 +315,7 @@ ssh-keygen -p -m PEM -f private-key.pem
 
 ---
 
-##  Multi-Environment Setup
+## Multi-Environment Setup
 
 ### Development
 ```bash
@@ -340,7 +340,7 @@ aws secretsmanager create-secret --name github-app-private-key-prod --secret-str
 
 ---
 
-##  Quick Reference
+## Quick Reference
 
 **Environment Variables:**
 ```bash
@@ -366,18 +366,18 @@ terraform.tfstate              # Terraform state (use S3 backend)
 
 ---
 
-**Status:** Ready for execution  
-**Estimated Time:** 10 minutes  
+**Status:** Ready for execution
+**Estimated Time:** 10 minutes
 **Next:** Run verification checklist, then proceed to deployment
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
-**Agent Name**: Secrets Configuration Guide  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
-**Operational Status**:  Active
+**Agent Name**: Secrets Configuration Guide
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
+**Operational Status**: Active
 
 ### Purpose
 This agent provides specialized functionality for secrets configuration guide operations within the Codex ecosystem.
@@ -395,7 +395,7 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## ️ Verification Checklist
+## Verification Checklist
 
 ### Prerequisites
 - [ ] Required tools and dependencies installed
@@ -410,23 +410,23 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 - [ ] Integration points functional
 
 ### Agent Capabilities
--  Autonomous operation
--  Error detection and recovery
--  Progress reporting
--  Result validation
+- Autonomous operation
+- Error detection and recovery
+- Progress reporting
+- Result validation
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
 
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status | Iteration |
 |--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% |  | Current |
-| Avg Execution Time | <5min | 3.2min |  | Current |
-| Error Rate | <5% | 2.1% |  | Current |
-| Coverage | ≥90% | 100% |  | Current |
+| Success Rate | ≥95% | 96% | | Current |
+| Avg Execution Time | <5min | 3.2min | | Current |
+| Error Rate | <5% | 2.1% | | Current |
+| Coverage | ≥90% | 100% | | Current |
 
 ### Performance Indicators
 - **Reliability**: 96% success rate across all invocations
@@ -438,32 +438,32 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️ (Information Flow)
+### Path (Information Flow)
 ```
 Input → Validation → Processing → Output → Verification
 ```
 
-### Fields  (State Management)
+### Fields (State Management)
 - **Input State**: Raw parameters and context
 - **Processing State**: Transformation and execution
 - **Output State**: Results and artifacts
 - **Feedback State**: Validation and reporting
 
-### Patterns ️ (Observable Behaviors)
+### Patterns (Observable Behaviors)
 - Consistent execution patterns
 - Predictable error handling
 - Standard output formats
 - Repeatable results
 
-### Redundancy  (Failure Recovery)
+### Redundancy (Failure Recovery)
 - Automatic retry on transient failures
 - Fallback strategies for degraded operation
 - State preservation across failures
 - Graceful degradation patterns
 
-### Balance ️ (Resource Optimization)
+### Balance (Resource Optimization)
 - CPU: Optimized processing algorithms
 - Memory: Efficient data structures
 - I/O: Batched operations where possible
@@ -473,7 +473,7 @@ Input → Validation → Processing → Output → Verification
 
 
 
-##  Energy Distribution
+## Energy Distribution
 
 ### Priority Breakdown
 
@@ -501,7 +501,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Fallback Strategies
 
@@ -544,9 +544,9 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🏷️ Agent Type Classification
+## Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -559,16 +559,16 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🛠️ Capabilities Matrix
+## Capabilities Matrix
 
 | Capability | Available | Permission Level | Notes |
 |------------|-----------|------------------|-------|
-| File System Access |  | Read/Write | Scoped to workspace |
-| Network Access |  | Restricted | Approved endpoints only |
-| Process Execution |  | Sandboxed | Monitored execution |
-| Database Access | ️ | Read-only | If configured |
-| API Integrations |  | Authenticated | Token-based |
-| Git Operations |  | Full | Within repository |
+| File System Access | | Read/Write | Scoped to workspace |
+| Network Access | | Restricted | Approved endpoints only |
+| Process Execution | | Sandboxed | Monitored execution |
+| Database Access | | Read-only | If configured |
+| API Integrations | | Authenticated | Token-based |
+| Git Operations | | Full | Within repository |
 
 ### Tool Access
 - **bash**: Command execution
@@ -581,7 +581,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-##  Usage Examples
+## Usage Examples
 
 ### Basic Invocation
 
@@ -626,17 +626,23 @@ prompt: |
 
 
 
-##  Integration Patterns
+## Integration Patterns
 
 ### Workflow Integration
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Trigger, Agent Activation'}}%%
+
 graph LR
+
     A[Trigger] --> B[Agent Activation]
+
     B --> C[Execution]
+
     C --> D[Validation]
+
     D --> E[Reporting]
+
     E --> F[Next Stage]
 ```
 
@@ -663,7 +669,7 @@ graph LR
 
 
 
-##  Activation Commands
+## Activation Commands
 
 ### Manual Activation
 
@@ -700,7 +706,7 @@ result = invoke_agent(
 
 
 
-## 📦 Tool Dependencies
+## Tool Dependencies
 
 ### Required Tools
 
@@ -729,7 +735,7 @@ requests>=2.31.0
 
 
 
-## 📤 Output Formats
+## Output Formats
 
 ### Standard Output Format
 
@@ -786,12 +792,12 @@ requests>=2.31.0
 
 
 
-## ️ Error Handling
+## Error Handling
 
 ### Common Failure Modes
 
 #### 1. Input Validation Failure
-**Symptoms**: Agent rejects input parameters  
+**Symptoms**: Agent rejects input parameters
 **Recovery**:
 - Validate input format
 - Check required fields
@@ -799,7 +805,7 @@ requests>=2.31.0
 - Review examples
 
 #### 2. Resource Access Failure
-**Symptoms**: Cannot access required resources  
+**Symptoms**: Cannot access required resources
 **Recovery**:
 - Check permissions
 - Verify paths exist
@@ -807,7 +813,7 @@ requests>=2.31.0
 - Review authentication
 
 #### 3. Execution Timeout
-**Symptoms**: Operation exceeds time limit  
+**Symptoms**: Operation exceeds time limit
 **Recovery**:
 - Reduce scope of operation
 - Check for blocking operations
@@ -815,7 +821,7 @@ requests>=2.31.0
 - Consider batch processing
 
 #### 4. Dependency Failure
-**Symptoms**: Required tool or service unavailable  
+**Symptoms**: Required tool or service unavailable
 **Recovery**:
 - Verify tool installation
 - Check service status
@@ -826,10 +832,10 @@ requests>=2.31.0
 
 | Category | Severity | Auto-Retry | Escalation |
 |----------|----------|------------|------------|
-| Transient | Low |  Yes (3x) | After retries |
-| Configuration | Medium |  No | Immediate |
-| Permission | High |  No | Immediate |
-| System | Critical | ️ Once | Immediate |
+| Transient | Low | Yes (3x) | After retries |
+| Configuration | Medium | No | Immediate |
+| Permission | High | No | Immediate |
+| System | Critical | Once | Immediate |
 
 ### Recovery Patterns
 

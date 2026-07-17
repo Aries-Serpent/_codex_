@@ -4,14 +4,14 @@
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
-**Date:** 2026-06-14T04:05:00Z  
-**Owner:** Operations Team  
-**Status:** Ready for Production Deployment  
+**Version:** 1.0.0
+**Date:** 2026-06-14T04:05:00Z
+**Owner:** Operations Team
+**Status:** Ready for Production Deployment
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 1. [Daily Operations](#daily-operations)
 2. [Scaling & Performance](#scaling--performance)
@@ -471,7 +471,7 @@ systemctl reload prometheus
 
 ---
 
-## 📞 Escalation Contacts
+## Escalation Contacts
 
 **On-Call Rotation:**
 - Week 1: Alice (alice@codex.io, +1-555-0001)

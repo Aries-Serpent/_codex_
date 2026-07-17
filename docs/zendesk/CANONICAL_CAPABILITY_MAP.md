@@ -327,11 +327,11 @@ This appendix provides comprehensive context about AI-assisted content creation,
 - Analyzed system prompt defining the role as a "Zendesk app planning specialist"
 - Applied constraints about app locations (Navbar, Sidebar, Topbar) and their UI/UX limitations
 - Drew from general knowledge of:
-    - Web application architecture patterns
-    - Client-side JavaScript frameworks (React)
-    - API integration patterns (REST, OAuth, proxies)
-    - Browser security models (CSP, CORS, sandboxing)
-    - SaaS platform constraints common to app marketplaces
+ - Web application architecture patterns
+ - Client-side JavaScript frameworks (React)
+ - API integration patterns (REST, OAuth, proxies)
+ - Browser security models (CSP, CORS, sandboxing)
+ - SaaS platform constraints common to app marketplaces
 
 **Limitations of This Response**:
 - **Not authoritative**: No access to real-time Zendesk documentation or internal engineering specifications
@@ -346,16 +346,16 @@ This appendix provides comprehensive context about AI-assisted content creation,
 4. **Consult Zendesk support**: For authoritative answers on edge cases
 
 **AI Strengths for Your Use Case**:
--  Pattern recognition across similar platforms
--  Rapid prototyping of conceptual frameworks
--  Identifying common pitfalls in SaaS app development
--  Creating structured planning documents
+- Pattern recognition across similar platforms
+- Rapid prototyping of conceptual frameworks
+- Identifying common pitfalls in SaaS app development
+- Creating structured planning documents
 
 **AI Weaknesses**:
--  No real-time data
--  Cannot test actual Zendesk APIs
--  may miss recent platform updates
--  Cannot guarantee accuracy of specific technical limits
+- No real-time data
+- Cannot test actual Zendesk APIs
+- may miss recent platform updates
+- Cannot guarantee accuracy of specific technical limits
 
 ### AI Role in Your Workflow
 

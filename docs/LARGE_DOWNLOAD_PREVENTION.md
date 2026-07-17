@@ -15,16 +15,16 @@ From our test execution attempt, we identified these large downloads:
 
 | Package | Size | Action |
 |---------|------|--------|
-| torch | 899.7 MB | ️ SKIP (close to limit) |
-| nvidia-cublas-cu12 | 594.3 MB |  SKIP |
-| nvidia-cudnn-cu12 | 706.8 MB |  SKIP |
-| nvidia-cusparse-cu12 | 288.2 MB |  ALLOW |
-| nvidia-cusolver-cu12 | 267.5 MB |  ALLOW |
-| nvidia-cusparselt-cu12 | 287.2 MB |  ALLOW |
-| nvidia-nccl-cu12 | 322.3 MB |  ALLOW |
-| nvidia-cufft-cu12 | 193.1 MB |  ALLOW |
-| triton | 170.5 MB |  ALLOW |
-| transformers | 12.0 MB |  ALLOW |
+| torch | 899.7 MB | SKIP (close to limit) |
+| nvidia-cublas-cu12 | 594.3 MB | SKIP |
+| nvidia-cudnn-cu12 | 706.8 MB | SKIP |
+| nvidia-cusparse-cu12 | 288.2 MB | ALLOW |
+| nvidia-cusolver-cu12 | 267.5 MB | ALLOW |
+| nvidia-cusparselt-cu12 | 287.2 MB | ALLOW |
+| nvidia-nccl-cu12 | 322.3 MB | ALLOW |
+| nvidia-cufft-cu12 | 193.1 MB | ALLOW |
+| triton | 170.5 MB | ALLOW |
+| transformers | 12.0 MB | ALLOW |
 
 **Total CUDA dependencies**: ~3.5 GB (ALL SKIP)
 **Torch alone**: ~900 MB (SKIP)
@@ -176,16 +176,16 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
 
 ### What We Can Do NOW (Without Large Downloads)
 
-1.  **Run minimal tests**:
+1. **Run minimal tests**:
    ```bash
    # Install only pytest, ruff, black (<200 MB total)
    pip install pytest pytest-cov ruff black mypy
 
    # Run non-ML tests
    pytest -m "not requires_torch" -q
-   ```
+ ```
 
-2.  **Run security scans**:
+2. **Run security scans**:
    ```bash
    # Bandit already installed (<100 MB)
    bandit -r src/ -c bandit.yaml
@@ -193,42 +193,42 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
    # Semgrep (if available, ~50 MB)
    pip install semgrep
    semgrep scan --config semgrep_rules/ src/
-   ```
+ ```
 
-3.  **Fix fence errors**:
+3. **Fix fence errors**:
    ```bash
    # No dependencies needed
    python /tmp/fence_fixer_automated.py --path .
-   ```
+ ```
 
-4.  **Generate final reports**:
+4. **Generate final reports**:
    ```bash
    # No dependencies needed
    # All reporting is just file I/O
-   ```
+ ```
 
 ### What We SKIP (Large Downloads)
 
-1.  **ML tests with CUDA**: 3.5 GB of CUDA libraries
-2.  **Full torch installation**: 900 MB
-3.  **Transformers model downloads**: Variable size
-4.  **Full dependency installation**: 4-5 GB total
+1. **ML tests with CUDA**: 3.5 GB of CUDA libraries
+2. **Full torch installation**: 900 MB
+3. **Transformers model downloads**: Variable size
+4. **Full dependency installation**: 4-5 GB total
 
 ## Updated Verification Strategy
 
-### Tier 1: Minimal Verification (<200 MB)  DO NOW
+### Tier 1: Minimal Verification (<200 MB) DO NOW
 - Code quality (already done)
 - Syntax validation (already done)
 - Non-ML tests
 - Security scans (bandit, basic pip-audit)
 - Fence error fixes
 
-### Tier 2: Lite ML Verification (<500 MB) ️ IF SPACE ALLOWS
+### Tier 2: Lite ML Verification (<500 MB) IF SPACE ALLOWS
 - CPU-only torch
 - Basic ML tests
 - Transformers without models
 
-### Tier 3: Full ML Verification (5+ GB)  SKIP IN CURRENT ENV
+### Tier 3: Full ML Verification (5+ GB) SKIP IN CURRENT ENV
 - CUDA support
 - Full ML test suite
 - Model download tests
@@ -249,19 +249,19 @@ Rationale:
 ## Future Prevention
 
 1. **CI/CD Enhancement**:
-   - Use runners with 20+ GB disk space
-   - Pre-cache dependencies
-   - Use Docker images with pre-installed dependencies
+ - Use runners with 20+ GB disk space
+ - Pre-cache dependencies
+ - Use Docker images with pre-installed dependencies
 
 2. **Repository Updates**:
-   - Create requirements-minimal.txt
-   - Update nox sessions with disk space checks
-   - Document size requirements
+ - Create requirements-minimal.txt
+ - Update nox sessions with disk space checks
+ - Document size requirements
 
 3. **Testing Strategy**:
-   - Separate ML tests to dedicated CI job
-   - Make CUDA tests optional
-   - Use CPU-only mode for quick feedback
+ - Separate ML tests to dedicated CI job
+ - Make CUDA tests optional
+ - Use CPU-only mode for quick feedback
 
 ---
 

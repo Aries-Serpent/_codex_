@@ -15,33 +15,33 @@
 - [Copilot Session Operating Envelope](#copilot-session-operating-envelope)
 - [Smoke-Test Posture and Expected Edge Cases](#smoke-test-posture-and-expected-edge-cases)
 - [Requested Findings Summary](#requested-findings-summary)
-  - [What works](#what-works)
-  - [What does not work](#what-does-not-work)
-  - [What is missing](#what-is-missing)
-  - [What needs to be improved](#what-needs-to-be-improved)
+ - [What works](#what-works)
+ - [What does not work](#what-does-not-work)
+ - [What is missing](#what-is-missing)
+ - [What needs to be improved](#what-needs-to-be-improved)
 - [Validated Disable / Keep / Archive Decisions](#validated-disable--keep--archive-decisions)
-  - [Disable-now (validated)](#disable-now-validated)
-  - [Keep-enabled after lifetime review](#keep-enabled-after-lifetime-review)
-  - [Archive-review bucket](#archive-review-bucket)
+ - [Disable-now (validated)](#disable-now-validated)
+ - [Keep-enabled after lifetime review](#keep-enabled-after-lifetime-review)
+ - [Archive-review bucket](#archive-review-bucket)
 - [Similar Logic / Overlap Groups](#similar-logic--overlap-groups)
 - [ Branch-Update Conflict Dashboard](#-branch-update-conflict-dashboard)
-  - [Active Session Conflict Protocol](#active-session-conflict-protocol)
-  - [Mitigation Variables — Quick Reference](#mitigation-variables--quick-reference)
-  - [HIGH-Risk Workflows — Mandatory Mitigation](#high-risk-workflows--mandatory-mitigation)
-    - [ `iterative-self-healing-ci.yml` — Iterative Self-Healing CI](#-iterative-self-healing-ciyml--iterative-self-healing-ci)
-    - [ `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)](#-copilot-evolution-suiteyml--copilot-evolution--review-unified)
-    - [ `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session](#-copilot-agent-session-doneyml--auto-post-copilot-review-after-agent-session)
-    - [ `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)](#-agent-var-writeryml--agent-variable-writer-provenance-chain)
-    - [ `copilot-session-chain.yml` — Copilot Session Chain](#-copilot-session-chainyml--copilot-session-chain)
-    - [ `agent-orchestration-unified.yml` — Agent Orchestration (Unified)](#-agent-orchestration-unifiedyml--agent-orchestration-unified)
-  - [MEDIUM-Risk Workflows — Standard Mitigation](#medium-risk-workflows--standard-mitigation)
-  - [Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions](#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions)
+ - [Active Session Conflict Protocol](#active-session-conflict-protocol)
+ - [Mitigation Variables — Quick Reference](#mitigation-variables--quick-reference)
+ - [HIGH-Risk Workflows — Mandatory Mitigation](#high-risk-workflows--mandatory-mitigation)
+ - [ `iterative-self-healing-ci.yml` — Iterative Self-Healing CI](#-iterative-self-healing-ciyml--iterative-self-healing-ci)
+ - [ `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)](#-copilot-evolution-suiteyml--copilot-evolution--review-unified)
+ - [ `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session](#-copilot-agent-session-doneyml--auto-post-copilot-review-after-agent-session)
+ - [ `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)](#-agent-var-writeryml--agent-variable-writer-provenance-chain)
+ - [ `copilot-session-chain.yml` — Copilot Session Chain](#-copilot-session-chainyml--copilot-session-chain)
+ - [ `agent-orchestration-unified.yml` — Agent Orchestration (Unified)](#-agent-orchestration-unifiedyml--agent-orchestration-unified)
+ - [MEDIUM-Risk Workflows — Standard Mitigation](#medium-risk-workflows--standard-mitigation)
+ - [Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions](#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions)
 - [Top 20 Quick-Win Workflows to Update (Copilot Session First)](#top-20-quick-win-workflows-to-update-copilot-session-first)
 - [Perspective: Capability + Future Vision](#perspective-capability--future-vision)
-  - [What this codebase is capable of doing well](#what-this-codebase-is-capable-of-doing-well)
-  - [Future vision and path improvement](#future-vision-and-path-improvement)
+ - [What this codebase is capable of doing well](#what-this-codebase-is-capable-of-doing-well)
+ - [Future vision and path improvement](#future-vision-and-path-improvement)
 
-Generated at: 2026-05-16T15:26:16.938000+00:00  
+Generated at: 2026-05-16T15:26:16.938000+00:00
 Repository: `Aries-Serpent/_codex_`
 
 ## Dataset Artifacts
@@ -66,49 +66,69 @@ Repository: `Aries-Serpent/_codex_`
 ## Portfolio Action Snapshot
 
 - The refreshed portfolio table now carries three Copilot-facing decision columns:
-  `recommended_portfolio_action`, `copilot_smoke_posture`, and `portfolio_note`.
+ `recommended_portfolio_action`, `copilot_smoke_posture`, and `portfolio_note`.
 - **Do not treat 7-day inactivity by itself as a disable signal.** Historical run counts matter:
-  several 7-day-idle workflows still have deep lifetime usage (`actionlint-audit.yml` 908 runs,
-  `agent-registry-validation.yml` 992, `api-documentation.yml` 139, `admin_setup_verification.yml` 70).
+ several 7-day-idle workflows still have deep lifetime usage (`actionlint-audit.yml` 908 runs,
+ `agent-registry-validation.yml` 992, `api-documentation.yml` 139, `admin_setup_verification.yml` 70).
 - **Validated immediate disable/archive targets:** three active orphan workflows that no longer exist
-  on `main`, so keeping them active only clutters Actions:
-  - `documentation-quality-check.yml` (workflow id `232765053`)
-  - `cache-validation.yml` (workflow id `232765010`)
-  - `cache-health-monitor.yml` (workflow id `232765030`)
+ on `main`, so keeping them active only clutters Actions:
+ - `documentation-quality-check.yml` (workflow id `232765053`)
+ - `cache-validation.yml` (workflow id `232765010`)
+ - `cache-health-monitor.yml` (workflow id `232765030`)
 - **Disable attempt result:** direct REST `PUT /actions/workflows/{id}/disable` calls returned
-  `HTTP 403 Resource not accessible by integration` when authenticated only with `github.token`.
-  The operation requires `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
+ `HTTP 403 Resource not accessible by integration` when authenticated only with `github.token`.
+ The operation requires `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY`.
 - **Archive-review bucket:** workflows that are low-usage but still intentional/manual utilities
-  (for example `app-package-download.yml`) should be reviewed for product value before disablement.
+ (for example `app-package-download.yml`) should be reviewed for product value before disablement.
 
 ## Mermaid Mapping — Workflow + Variable + Conflict Logic
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Trigger Event, Workflow Entry'}}%%
+
 flowchart TD
+
   A[Trigger Event] --> B[Workflow Entry]
+
   B --> C{Guardrails}
+
   C --> C1[permissions]
+
   C --> C2[concurrency/rate-limit]
+
   C --> C3[timeout-minutes]
+
   C --> D[Execution + Artifacts]
+
   D --> E{Dependency Paths}
+
   E --> E1[workflow_call]
+
   E --> E2[workflow_run]
+
   E --> E3[direct jobs]
+
   E1 --> F[Session Context Outputs]
+
   E2 --> F
+
   E3 --> F
 ```
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing main branch update, PR branch behind'}}%%
+
 flowchart LR
+
   M[main branch update] --> G[PR branch behind]
+
   G --> H{Write-capable workflows?}
+
   H -->|yes| I[Conflict risk rises
 merge/rebase/write races]
+
   H -->|no| J[Low conflict risk]
+
   I --> K[Mitigation vars
 CODEX_SWEEP_SKIP_MAIN
 CODEX_MAX_HEALER_RUNS_PER_HOUR
@@ -149,15 +169,25 @@ CODEX_HEALER_SKIP_SKIPCI]
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Copilot session start, "copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"'}}%%
+
 flowchart TD
+
   S[Copilot session start] --> SETUP["copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"]
+
   SETUP --> WEC["workflow-execution-gate.yml<br/>TSEC_CODEX_MASTER_KEY<br/>TSEC_CODEX_BACKUP_KEY<br/>TSEC_GITHUB_TOKEN"]
+
   WEC --> ALWAYS["Always-required WEC<br/>pre-merge-validation.yml<br/>comment-review-gate.yml<br/>deferral-language-gate.yml<br/>agent-auth-delegation.yml<br/>workflow-execution-gate.yml<br/>copilot-agent-checkin.yml<br/>cost-gate.yml"]
+
   WEC --> ACTIVE["Always-active but never auto-checked<br/>copilot-agent-session-done.yml<br/>copilot-iterative-self-healing.yml"]
+
   WEC --> VALIDATE["Validation & testing opt-ins<br/>validate.yml<br/>resilient_validation.yml<br/>nox_gates.yml<br/>mypy-baseline.yml<br/>coverage-with-timeout.yml<br/>progressive-validation.yml<br/>pre-flight-validation.yml<br/>ci-checkpoint-validation.yml<br/>data-quality-suite.yml<br/>auth-tests.yml<br/>pr-checks.yml<br/>html_visual_regression.yml"]
+
   WEC --> SECURITY["Security & quality opt-ins<br/>security-scanning-suite.yml<br/>codeql-analysis.yml<br/>actionlint-audit.yml<br/>semgrep_sarif.yml<br/>auto-fix-common-issues.yml<br/>auto-fix-pr-check.yml<br/>code-quality-coverage-suite.yml<br/>audit-qa-suite.yml<br/>template_lint.yml<br/>codeql-alert-fetcher.yml"]
+
   WEC --> DOCS["Documentation opt-ins<br/>documentation-link-checker.yml<br/>pages-pre-merge-validation.yml"]
+
   WEC --> INFRA["Infrastructure & deploy opt-ins<br/>reference-integrity.yml<br/>dependency-submission.yml<br/>docker-build-push.yml<br/>rust_swarm_ci.yml<br/>root-org-validation.yml<br/>agent-registry-validation.yml<br/>qa-walkthrough.yml"]
+
   WEC --> APPROVE["Autonomy grant<br/>auto-approve-workflows"]
 ```
 
@@ -205,15 +235,25 @@ Where:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Copilot session starts, Read startup packet + conflict dashboard'}}%%
+
 flowchart LR
+
   S0[Copilot session starts] --> S1[Read startup packet + conflict dashboard]
+
   S1 --> S2{drift severity}
+
   S2 -->|LOW| S3[Run planned workflow path]
+
   S2 -->|MED/HIGH| S4[Set TVAR_CODEX_SWEEP_SKIP_MAIN + healer bounds]
+
   S4 --> S5[Rebase gate]
+
   S5 --> S3
+
   S3 --> S6[Validation + checks]
+
   S6 --> S7[Living-doc updates]
+
   S7 --> S8[Session handoff]
 ```
 
@@ -221,35 +261,35 @@ flowchart LR
 
 - **Session budget:** treat each Copilot coding/cloud-agent session as a hard **60-minute** window.
 - **Suggested time slices:**
-  - **0–10 min:** environment setup, repo preload, drift/rate-limit probe, WEC review.
-  - **10–50 min:** scoped implementation + targeted validation.
-  - **50–55 min:** final checks, artifact refresh, accountability/changelog updates.
-  - **55–60 min:** `report_progress`, handoff prompt, next-session continuation notes.
+ - **0–10 min:** environment setup, repo preload, drift/rate-limit probe, WEC review.
+ - **10–50 min:** scoped implementation + targeted validation.
+ - **50–55 min:** final checks, artifact refresh, accountability/changelog updates.
+ - **55–60 min:** `report_progress`, handoff prompt, next-session continuation notes.
 - **Do not start broad workflow fanout after minute 50.** Long matrix or `workflow_run` chains will
-  often outlive the active session and produce stale handoff context.
+ often outlive the active session and produce stale handoff context.
 - **Rate-limit posture:** prefer read-only MCP queries first, throttle repeated GitHub REST calls,
-  and keep `auto-approve-workflows` / `workflow-execution-gate` fanout bounded to the workflows
-  actually needed for the current task.
+ and keep `auto-approve-workflows` / `workflow-execution-gate` fanout bounded to the workflows
+ actually needed for the current task.
 
 ## Smoke-Test Posture and Expected Edge Cases
 
 - This portfolio uses **observed smoke posture** rather than re-dispatching every workflow. The
-  `copilot_smoke_posture` column records whether the latest 7-day evidence is:
-  - `observed-green`
-  - `observed-failures`
-  - `approval-gated-or-mixed`
-  - `unobserved-7d`
-  - `disabled`
+ `copilot_smoke_posture` column records whether the latest 7-day evidence is:
+ - `observed-green`
+ - `observed-failures`
+ - `approval-gated-or-mixed`
+ - `unobserved-7d`
+ - `disabled`
 - Full live smoke-dispatch of all workflows was intentionally **not** performed: it would create
-  unnecessary queue pressure, mutate live PR state, and requires `actions:write` for approval-gated
-  runs.
+ unnecessary queue pressure, mutate live PR state, and requires `actions:write` for approval-gated
+ runs.
 - Expected edge cases:
-  1. **Approval-gated fanout:** WEC-selected workflows can stall in `action_required` unless
-     `auto-approve-workflows` is active.
-  2. **Branch drift:** `workflow_run` listeners and write-capable workflows can act on stale SHAs.
-  3. **Token scope mismatch:** `github.token` can read inventory but cannot enable/disable workflows.
-  4. **Historical orphan records:** some workflows remain active in Actions even when the backing
-     workflow file is gone from `main`.
+ 1. **Approval-gated fanout:** WEC-selected workflows can stall in `action_required` unless
+ `auto-approve-workflows` is active.
+ 2. **Branch drift:** `workflow_run` listeners and write-capable workflows can act on stale SHAs.
+ 3. **Token scope mismatch:** `github.token` can read inventory but cannot enable/disable workflows.
+ 4. **Historical orphan records:** some workflows remain active in Actions even when the backing
+ workflow file is gone from `main`.
 
 ## Requested Findings Summary
 
@@ -310,8 +350,8 @@ so disabling them will not interrupt a current repository process:
 ### Archive-review bucket
 
 - Manual niche workflows with very low lifetime usage but still-documented product value should
-  move to an explicit archive review, not an automatic disable. `app-package-download.yml` is the
-  clearest current example.
+ move to an explicit archive review, not an automatic disable. `app-package-download.yml` is the
+ clearest current example.
 
 ## Similar Logic / Overlap Groups
 
@@ -324,14 +364,14 @@ so disabling them will not interrupt a current repository process:
 | Docs and Pages | `documentation-link-checker.yml`, `pages-pre-merge-validation.yml`, `pages-scheduled-validation.yml`, `pages-mkdocs.yml`, `workflow-link-validation.yml` | Several docs workflows share similar signal paths and can likely be simplified. |
 | Agent and cognitive orchestration | `agent-orchestration-unified.yml`, `copilot-session-chain.yml`, `copilot-pr-session-injector.yml`, `copilot-setup-steps.yml`, `chatops_copilot_trigger.yml` | Highest coordination risk when branch drift or rate limits appear mid-session. |
 
-##  Branch-Update Conflict Dashboard
+## Branch-Update Conflict Dashboard
 
 > **Priority section — read before editing any file during an active session.**
 > When `main` receives commits while your branch session is active, the workflows below
 > can race, produce stale-head writes, or cascade into each other via `workflow_run`.
 > **Total conflict-risk workflows: HIGH=10, MEDIUM=38.**
 >
-> Cross-reference: [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md → Plan C](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
+> Cross-reference: [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md Plan C](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
 
 ### Active Session Conflict Protocol
 
@@ -345,20 +385,31 @@ Detect drift (git log main..HEAD --oneline | wc -l):
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Active Copilot Session, LOW: Proceed normally'}}%%
+
 flowchart TD
+
   START([Active Copilot Session]) --> DETECT{Detect branch drift\ngit log main..HEAD}
+
   DETECT -->|0 commits| LOW[LOW: Proceed normally]
+
   DETECT -->|1-3 commits| MEDIUM[MEDIUM: Note drift in handoff]
+
   DETECT -->|4+ commits| HIGH[HIGH: Rebase before any write]
+
   DETECT -->|force-push detected| CRIT[CRITICAL: Abort + Restart]
 
   MEDIUM --> MITM[Set CODEX_SWEEP_SKIP_MAIN=true\nfor all write-capable workflows]
+
   HIGH --> MITH[1 Rebase branch on main\n2 Re-run setup probe\n3 Set all three mitigation vars]
+
   CRIT --> MITC[Fetch latest main\nRe-run session bootstrap\nRe-validate required checks]
 
   MITM --> WRITE[Safe to edit files]
+
   MITH --> WRITE
+
   LOW --> WRITE
+
   WRITE --> DONE([Continue session])
 ```
 
@@ -378,120 +429,120 @@ flowchart TD
 
 ---
 
-####  `iterative-self-healing-ci.yml` — Iterative Self-Healing CI
+#### `iterative-self-healing-ci.yml` — Iterative Self-Healing CI
 - **Runs (7d):** 413 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Write-capable + event-driven; fires on every push and can race with
-  main-branch updates during active sessions, producing concurrent writes to the same files.
+ main-branch updates during active sessions, producing concurrent writes to the same files.
 - **Mitigation steps:**
-  1. Set repo variable `CODEX_SWEEP_SKIP_MAIN=true` before running or triggering this workflow.
-  2. Set `CODEX_MAX_HEALER_RUNS_PER_HOUR` to `3` or lower to cap cascade rate.
-  3. Set `CODEX_HEALER_SKIP_SKIPCI=true` to prevent skip-ci bypass during drift.
-  4. Rebase your branch on latest `main` before committing any healer-initiated changes.
-  5. After rebase, re-run the session access probe to confirm drift is cleared.
+ 1. Set repo variable `CODEX_SWEEP_SKIP_MAIN=true` before running or triggering this workflow.
+ 2. Set `CODEX_MAX_HEALER_RUNS_PER_HOUR` to `3` or lower to cap cascade rate.
+ 3. Set `CODEX_HEALER_SKIP_SKIPCI=true` to prevent skip-ci bypass during drift.
+ 4. Rebase your branch on latest `main` before committing any healer-initiated changes.
+ 5. After rebase, re-run the session access probe to confirm drift is cleared.
 - **Required workflow controls:**
   ```yaml
   concurrency:
     group: "${{ github.workflow }}-${{ github.head_ref }}"
     cancel-in-progress: true
   timeout-minutes: 30
-  ```
+ ```
 
 ---
 
-####  `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)
+#### `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)
 - **Runs (7d):** 10 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Dispatches review + write operations; if `main` moved since checkout,
-  the "evolution" diff will target a stale base and can produce incorrect PR edits.
+ the "evolution" diff will target a stale base and can produce incorrect PR edits.
 - **Mitigation steps:**
-  1. Confirm `main` HEAD SHA matches your branch's merge-base before triggering.
-  2. Set `CODEX_SWEEP_SKIP_MAIN=true`.
-  3. Do not trigger manually during HIGH drift; wait for rebase to complete.
-  4. After rebase, confirm no open review comments from a prior run target stale lines.
+ 1. Confirm `main` HEAD SHA matches your branch's merge-base before triggering.
+ 2. Set `CODEX_SWEEP_SKIP_MAIN=true`.
+ 3. Do not trigger manually during HIGH drift; wait for rebase to complete.
+ 4. After rebase, confirm no open review comments from a prior run target stale lines.
 - **Required workflow controls:**
   ```yaml
   concurrency:
     group: "${{ github.workflow }}-${{ github.head_ref }}"
     cancel-in-progress: true
   timeout-minutes: 45
-  ```
+ ```
 
 ---
 
-####  `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session
+#### `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session
 - **Runs (7d):** 10 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Fires on `workflow_run` completion; if the triggering run targeted a
-  stale SHA, the auto-post will reference an outdated diff and can confuse subsequent sessions.
+ stale SHA, the auto-post will reference an outdated diff and can confuse subsequent sessions.
 - **Mitigation steps:**
-  1. Verify the triggering workflow ran against your current branch HEAD (not a prior SHA).
-  2. Set `CODEX_SWEEP_SKIP_MAIN=true` when drift is detected.
-  3. If auto-post fires against a stale SHA, manually close the generated comment and re-trigger
-     after rebase.
+ 1. Verify the triggering workflow ran against your current branch HEAD (not a prior SHA).
+ 2. Set `CODEX_SWEEP_SKIP_MAIN=true` when drift is detected.
+ 3. If auto-post fires against a stale SHA, manually close the generated comment and re-trigger
+ after rebase.
 - **Required workflow controls:**
   ```yaml
   concurrency:
     group: "${{ github.workflow }}-${{ github.head_ref }}"
     cancel-in-progress: false  # allow completion but gate new runs
   timeout-minutes: 15
-  ```
+ ```
 
 ---
 
-####  `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)
+#### `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)
 - **Runs (7d):** 5 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Writes directly to GitHub Repo Variables using `CODEX_MASTER_KEY`;
-  concurrent writes during drift can overwrite a value set by a prior healer run.
+ concurrent writes during drift can overwrite a value set by a prior healer run.
 - **Mitigation steps:**
-  1. Never trigger in parallel with `iterative-self-healing-ci.yml` on the same branch.
-  2. Confirm `CODEX_CI_LAST_GREEN_SHA` matches the last known-good commit before writing.
-  3. Set `CODEX_SWEEP_SKIP_MAIN=true` to prevent the variable writer from broadcasting to `main`.
-  4. After any variable write, re-read the value via the GitHub API to confirm it was not
-     overwritten by a concurrent run.
+ 1. Never trigger in parallel with `iterative-self-healing-ci.yml` on the same branch.
+ 2. Confirm `CODEX_CI_LAST_GREEN_SHA` matches the last known-good commit before writing.
+ 3. Set `CODEX_SWEEP_SKIP_MAIN=true` to prevent the variable writer from broadcasting to `main`.
+ 4. After any variable write, re-read the value via the GitHub API to confirm it was not
+ overwritten by a concurrent run.
 - **Required workflow controls:**
   ```yaml
   concurrency:
     group: "var-writer-${{ github.repository }}"
     cancel-in-progress: false  # variable writes must not be interrupted mid-write
   timeout-minutes: 10
-  ```
+ ```
 
 ---
 
-####  `copilot-session-chain.yml` — Copilot Session Chain
+#### `copilot-session-chain.yml` — Copilot Session Chain
 - **Runs (7d):** 0 (active, not triggered recently) &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Chains multiple session workflows in sequence; if `main` moves between
-  chain steps, later steps will operate on a branch that is already behind, producing
-  incorrect artifacts or triggering redundant self-healing cycles.
+ chain steps, later steps will operate on a branch that is already behind, producing
+ incorrect artifacts or triggering redundant self-healing cycles.
 - **Mitigation steps:**
-  1. Only trigger when branch drift is LOW (0 commits behind `main`).
-  2. Add a `git fetch origin main && git merge-base --is-ancestor main HEAD` pre-check to the
-     first job; fail fast if the check fails.
-  3. Set all three mitigation variables before any chain run when drift is MEDIUM or higher.
+ 1. Only trigger when branch drift is LOW (0 commits behind `main`).
+ 2. Add a `git fetch origin main && git merge-base --is-ancestor main HEAD` pre-check to the
+ first job; fail fast if the check fails.
+ 3. Set all three mitigation variables before any chain run when drift is MEDIUM or higher.
 - **Required workflow controls:**
   ```yaml
   concurrency:
     group: "${{ github.workflow }}-${{ github.head_ref }}"
     cancel-in-progress: true
   timeout-minutes: 60
-  ```
+ ```
 
 ---
 
-####  `agent-orchestration-unified.yml` — Agent Orchestration (Unified)
+#### `agent-orchestration-unified.yml` — Agent Orchestration (Unified)
 - **Runs (7d):** 0 (active) &nbsp;|&nbsp; **Risk:** HIGH (elevated from medium by write scope)
 - **Why it conflicts:** Orchestrates multiple write-capable sub-agents; stale-branch execution
-  will propagate stale context to all sub-agents simultaneously.
+ will propagate stale context to all sub-agents simultaneously.
 - **Mitigation steps:**
-  1. Inject `branch_drift_severity` from startup probe into the orchestration context before
-     dispatching sub-agents.
-  2. Add a drift gate: if `drift_severity != LOW`, sub-agents that write should be skipped.
-  3. Set `CODEX_SWEEP_SKIP_MAIN=true` and `CODEX_MAX_HEALER_RUNS_PER_HOUR=2`.
+ 1. Inject `branch_drift_severity` from startup probe into the orchestration context before
+ dispatching sub-agents.
+ 2. Add a drift gate: if `drift_severity != LOW`, sub-agents that write should be skipped.
+ 3. Set `CODEX_SWEEP_SKIP_MAIN=true` and `CODEX_MAX_HEALER_RUNS_PER_HOUR=2`.
 - **Required workflow controls:**
   ```yaml
   concurrency:
     group: "${{ github.workflow }}-${{ github.head_ref }}"
     cancel-in-progress: true
   timeout-minutes: 60
-  ```
+ ```
 
 ---
 
@@ -560,7 +611,7 @@ No immediate abort required, but monitor for `workflow_run` ordering anomalies.
 | 3 | `.github/workflows/copilot-automation.yml` | Copilot Automation Suite | active | 0 | unknown | Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group | n/a |
 | 4 | `dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer` | Copilot code review | active | 0 | unknown | Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group | n/a |
 | 5 | `dynamic/agents/openai-code-agent` | OpenAI Codex | active | 0 | unknown | Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group | n/a |
-| 6 | `.github/workflows/copilot-session-chain.yml` |  Copilot Session Chain | active | 0 | high | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | n/a |
+| 6 | `.github/workflows/copilot-session-chain.yml` | Copilot Session Chain | active | 0 | high | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | n/a |
 | 7 | `dynamic/copilot-swe-agent/copilot` | Copilot cloud agent | active | 6 | unknown | Add timeout-minutes to jobs; Add branch-scoped concurrency group; Add explicit rate-limit/throughput guard | n/a |
 | 8 | `.github/workflows/agent-orchestration-unified.yml` | Agent Orchestration (Unified) | active | 0 | medium | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | CODEX_CACHE_VERSION |
 | 9 | `.github/workflows/ci-rescue.yml` | CI Rescue — Auto-Fix & @copilot RCA | disabled_manually | 55 | medium | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | COPILOT_AGENT_AUTH_ENABLED |
@@ -571,10 +622,10 @@ No immediate abort required, but monitor for `workflow_run` ordering anomalies.
 | 14 | `.github/workflows/d-capable-promotion-gate.yml` | D_CAPABLE Agent Promotion Gate | active | 0 | medium | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | n/a |
 | 15 | `.github/workflows/agent-registry-validation.yml` | Agent Registry Validation | active | 0 | low | Review trigger scope and remove stale fanout | CODEX_CACHE_VERSION |
 | 16 | `.github/workflows/build-agent-env-cache.yml` | Build Agent Environment Cache | active | 0 | low | Review trigger scope and remove stale fanout | CODEX_CACHE_VERSION |
-| 17 | `.github/workflows/create-sub-pr-to-0D_base_.yml` |  Create Sub-PR: Session Branch → 0D_base_ | active | 0 | low | Review trigger scope and remove stale fanout | n/a |
+| 17 | `.github/workflows/create-sub-pr-to-0D_base_.yml` | Create Sub-PR: Session Branch 0D_base_ | active | 0 | low | Review trigger scope and remove stale fanout | n/a |
 | 18 | `.github/workflows/agent-var-writer.yml` | Agent Variable Writer (Provenance-Chain) | active | 5 | high | Harden against main-update drift (rebase gate + write isolation) | n/a |
 | 19 | `.github/workflows/copilot-evolution-suite.yml` | Copilot Evolution & Review (Unified) | active | 10 | high | Harden against main-update drift (rebase gate + write isolation) | n/a |
-| 20 | `.github/workflows/copilot-agent-session-done.yml` |  Auto-Post @copilot review After Agent Session | active | 10 | high | Harden against main-update drift (rebase gate + write isolation) | COPILOT_AGENT_AUTH_ENABLED |
+| 20 | `.github/workflows/copilot-agent-session-done.yml` | Auto-Post @copilot review After Agent Session | active | 10 | high | Harden against main-update drift (rebase gate + write isolation) | COPILOT_AGENT_AUTH_ENABLED |
 
 ## Perspective: Capability + Future Vision
 

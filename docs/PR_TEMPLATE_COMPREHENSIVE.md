@@ -7,11 +7,11 @@
 - [ PR OVERVIEW](#-pr-overview)
  - [Basic Information](#basic-information)
  - [Scope Summary](#scope-summary)
-- [️ REQUIRED SAFETY CONFIRMATIONS](#-required-safety-confirmations)
+- [ REQUIRED SAFETY CONFIRMATIONS](#-required-safety-confirmations)
  - [Network & Security](#network--security)
  - [Data Safety](#data-safety)
  - [Code Quality](#code-quality)
-- [🧪 TESTING REQUIREMENTS](#-testing-requirements)
+- [ TESTING REQUIREMENTS](#-testing-requirements)
  - [Test Coverage](#test-coverage)
  - [Test Quality](#test-quality)
  - [Validation](#validation)
@@ -78,7 +78,7 @@
  - [Performance Metrics](#performance-metrics)
  - [Business Metrics](#business-metrics)
  - [Monitoring Integration](#monitoring-integration)
-- [️ INFRASTRUCTURE & BUILD](#-infrastructure--build)
+- [ INFRASTRUCTURE & BUILD](#-infrastructure--build)
  - [Build System](#build-system)
  - [CI/CD Pipeline](#cicd-pipeline)
  - [Environment](#environment)
@@ -125,11 +125,11 @@
  - [ ] Code Refactor
  - [ ] Documentation
  - [ ] Performance Improvement
- - [ ] 🧪 Tests
+ - [ ] Tests
  - [ ] Security Fix
  - [ ] Code Style/Formatting
  - [ ] Dependency Update
- - [ ] ️ Infrastructure/Build
+ - [ ] Infrastructure/Build
 
 ### Scope Summary
 - [ ] **S-IDs Listed**: All affected system IDs documented (e.g., Retrieval, Inference, Metrics)
@@ -138,7 +138,7 @@
 
 ---
 
-## ️ REQUIRED SAFETY CONFIRMATIONS
+## REQUIRED SAFETY CONFIRMATIONS
 
 **These checkboxes MUST be confirmed before merge:**
 
@@ -160,7 +160,7 @@
 
 ---
 
-## 🧪 TESTING REQUIREMENTS
+## TESTING REQUIREMENTS
 
 ### Test Coverage
 - [ ] **Unit Tests Added** - New unit tests added for all new functionality
@@ -392,8 +392,8 @@
 - [ ] **Progress Indicators** - Progress shown during operations
 
 #### Integration & Workflows
-- [ ] **Full Workflow** - detect → calculate → store → report workflow tested
-- [ ] **Baseline Workflow** - Create baseline → run check → compare workflow tested
+- [ ] **Full Workflow** - detect calculate store report workflow tested
+- [ ] **Baseline Workflow** - Create baseline run check compare workflow tested
 - [ ] **CI/CD Integration** - Exit codes enable CI/CD gating
 - [ ] **Metric Evolution** - Historical tracking enables trend analysis
 
@@ -422,7 +422,7 @@
 - [ ] **LRU Cache** - OrderedDict-based LRU eviction works
 - [ ] **TTL Support** - Time-to-live expiration works
 - [ ] **Content-Based Keys** - SHA256 hash of input used as key
-- [ ] **Deterministic Keys** - Same content → same key regardless of order
+- [ ] **Deterministic Keys** - Same content same key regardless of order
 - [ ] **max_size** - Memory-bounded cache size enforced
 - [ ] **Thread-Safe** - Lock prevents race conditions
 - [ ] **CacheMetrics** - Hit/miss/eviction tracking accurate
@@ -449,7 +449,7 @@
 #### Resilience Patterns
 - [ ] **CircuitBreaker** - CLOSED/OPEN/HALF_OPEN states work
 - [ ] **Failure Threshold** - Opens after N failures
-- [ ] **Success Threshold** - Half-open → closed after N successes
+- [ ] **Success Threshold** - Half-open closed after N successes
 - [ ] **Timeout** - Auto-recovery after timeout period
 - [ ] **Manual Reset** - reset() method works
 - [ ] **Thread-Safe** - State transitions thread-safe
@@ -457,7 +457,7 @@
 - [ ] **Max Retries** - Retry limit enforced
 - [ ] **Max Delay** - Maximum delay cap enforced
 - [ ] **Selective Retry** - Only specified exceptions retried
-- [ ] **FallbackHandler** - Primary → fallback transition works
+- [ ] **FallbackHandler** - Primary fallback transition works
 - [ ] **Cache Fallback** - Fallback to cache on primary failure
 - [ ] **Custom Fallback** - Custom fallback functions work
 - [ ] **Graceful Degradation** - Service degrades gracefully
@@ -646,7 +646,7 @@
 
 ---
 
-## ️ INFRASTRUCTURE & BUILD
+## INFRASTRUCTURE & BUILD
 
 ### Build System
 - [ ] **Build Passes** - Build system completes successfully
@@ -736,7 +736,7 @@
 
 ### Pre-Merge Checklist
 - [ ] **All Checkboxes Reviewed** - All applicable checkboxes in this template reviewed
-- [ ] **All Required Checks Pass** - All required checks (️ sections) pass
+- [ ] **All Required Checks Pass** - All required checks ( sections) pass
 - [ ] **Approvals Received** - Required number of approvals received
 - [ ] **Conflicts Resolved** - No merge conflicts with target branch
 - [ ] **Rebase Complete** (if required) - Branch rebased on latest target branch
@@ -824,7 +824,7 @@
 **Notes for Contributors:**
 1. Check all applicable boxes with `[x]`
 2. Mark non-applicable items with `[N/A]` and brief explanation
-3. Required sections (️) must be completed for all PRs
+3. Required sections () must be completed for all PRs
 4. Feature-specific sections only apply to relevant PRs
 5. Ask questions in PR comments if checklist items are unclear
 6. Update this template if you find gaps or improvements

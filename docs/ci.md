@@ -9,7 +9,7 @@
 - All workflows in `.github/workflows/` are configured for manual runs only via `workflow_dispatch`, and **every job** is guarded with:
   ```yaml
   if: ${{ false }}
-  ```
+ ```
 This prevents automatic execution on GitHub-hosted runners.
 
 Run `make codex-gates` locally or on a self-hosted runner to execute lint and test gates. No GitHub-hosted minutes are consumed, and no workflow YAML needs to be enabled.
@@ -18,4 +18,4 @@ Run `make codex-gates` locally or on a self-hosted runner to execute lint and te
 
 If you intentionally need to run a workflow, you may replace a job guard with a condition using manual inputs, still via `workflow_dispatch`. See GitHub docs for manual workflows and conditions. (2025-08-26T20:17:49Z)
 
-For extra assurance, repository administrators can disable Actions entirely in **Settings → Actions → Disable Actions**.
+For extra assurance, repository administrators can disable Actions entirely in **Settings Actions Disable Actions**.

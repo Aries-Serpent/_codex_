@@ -5,9 +5,9 @@
 **Last Updated: 2026-06-22
 # Phase 4: Memory Layer + xterm.js + Auth Forwarding + Telemetry Classifiers
 
-**Status:**  COMPLETE  
-**PR:** #3422  
-**Branch:** `copilot/add-sqlite-memory-integration`  
+**Status:** COMPLETE
+**PR:** #3422
+**Branch:** `copilot/add-sqlite-memory-integration`
 **Date:2026-07-13
 **Agent:** copilot-swe-agent (Phase 4 session)
 
@@ -17,25 +17,25 @@
 
 | Item | Deliverable | Status |
 |------|-------------|--------|
-| P4.1 | Frontend hooks `→ VITE_CLI_API_URL` (3 files) |  Done |
-| P4.2 | `stm_entries` + `ltm_entries` SQLite tables |  Done |
-| P4.2 | `SQLiteMemory` concrete class |  Done |
-| P4.2 | `GET /api/memory/state` endpoint |  Done |
-| P4.2 | `GET /api/memory/search` endpoint |  Done |
-| P4.3 | Auth header forwarding (`CODEX_MASTER_KEY → Bearer`) |  Done |
-| P4.4 | `XtermTerminal.tsx` (xterm.js + FitAddon + WebLinksAddon) |  Done |
-| P4.4 | `App.tsx` CLI tab → `<XtermTerminal />` |  Done |
-| P4.5 | 3 new telemetry classifiers in `collect_telemetry.py` |  Done |
-| P4.6 | `memory-sync-agent.md` (v2.0 with diagram) |  Done |
-| P4.6 | `telemetry-classifier-agent.md` (v2.0 with diagram) |  Done |
-| P4.7 | `AGENT_REGISTRY.yaml` v0.2.1 (126→128) |  Done |
-| P4.8 | REQ-8 GROUNDED gate in `agent-auth-delegation.yml` |  Done |
-| P4.8 | `cognitive-ooda-loop-agent.md` v2.0 with Phase 4 wiring |  Done |
-| Gov | `CHANGELOG.md` `[Unreleased]` entry |  Done |
-| Gov | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 |  Done |
-| Gov | `COGNITIVE_BRAIN_STATUS_PR3422.md` (this file) |  Done |
-| Sec | Bandit B603 `# nosec` annotation with justification |  Done |
-| Qual | Code review: `datetime.now(timezone.utc)`, `MEMORY_CAPACITY`, auth key precedence |  Done |
+| P4.1 | Frontend hooks ` VITE_CLI_API_URL` (3 files) | Done |
+| P4.2 | `stm_entries` + `ltm_entries` SQLite tables | Done |
+| P4.2 | `SQLiteMemory` concrete class | Done |
+| P4.2 | `GET /api/memory/state` endpoint | Done |
+| P4.2 | `GET /api/memory/search` endpoint | Done |
+| P4.3 | Auth header forwarding (`CODEX_MASTER_KEY Bearer`) | Done |
+| P4.4 | `XtermTerminal.tsx` (xterm.js + FitAddon + WebLinksAddon) | Done |
+| P4.4 | `App.tsx` CLI tab `<XtermTerminal />` | Done |
+| P4.5 | 3 new telemetry classifiers in `collect_telemetry.py` | Done |
+| P4.6 | `memory-sync-agent.md` (v2.0 with diagram) | Done |
+| P4.6 | `telemetry-classifier-agent.md` (v2.0 with diagram) | Done |
+| P4.7 | `AGENT_REGISTRY.yaml` v0.2.1 (126128) | Done |
+| P4.8 | REQ-8 GROUNDED gate in `agent-auth-delegation.yml` | Done |
+| P4.8 | `cognitive-ooda-loop-agent.md` v2.0 with Phase 4 wiring | Done |
+| Gov | `CHANGELOG.md` `[Unreleased]` entry | Done |
+| Gov | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 | Done |
+| Gov | `COGNITIVE_BRAIN_STATUS_PR3422.md` (this file) | Done |
+| Sec | Bandit B603 `# nosec` annotation with justification | Done |
+| Qual | Code review: `datetime.now(timezone.utc)`, `MEMORY_CAPACITY`, auth key precedence | Done |
 
 ---
 
@@ -93,14 +93,14 @@ Agents (128 total)
 
 | Metric | Before P4 | After P4 | Target |
 |--------|-----------|----------|--------|
-| Frontend hooks → real API | 0/3 | **3/3**  | 3/3 |
-| Memory endpoints live | 0/2 | **2/2**  | 2/2 |
-| Auth header forwarding |  | **** |  |
-| xterm.js PTY |  | **** |  |
+| Frontend hooks real API | 0/3 | **3/3** | 3/3 |
+| Memory endpoints live | 0/2 | **2/2** | 2/2 |
+| Auth header forwarding | | **** | |
+| xterm.js PTY | | **** | |
 | Telemetry classifiers | 15 | **18** | 18+ |
 | Agent count | 126 | **128** | 128+ |
 | AGENT_REGISTRY version | v0.2.1 | **v0.2.1** | v0.2.1 |
-| REQ-8 GROUNDED gate |  | **** |  |
+| REQ-8 GROUNDED gate | | **** | |
 | Bandit findings in new code | 1 | **0** | 0 |
 
 ---
@@ -127,7 +127,7 @@ Agents (128 total)
 - [ ] `api-proxy-audit-agent.md` — logs all /api/request calls to LTM for pattern analysis
 
 ### Sprint 15 — Phase 5 Governance
-- [ ] AGENT_REGISTRY.yaml v0.2.1 (128→130)
+- [ ] AGENT_REGISTRY.yaml v0.2.1 (128130)
 - [ ] CHANGELOG Phase 5 entry
 - [ ] SESSION_RESTORE_PR3423.md chain prompt
 
@@ -135,32 +135,32 @@ Agents (128 total)
 
 ## Self-Review Passes (5 × mandatory)
 
-### Pass 1: Code Quality 
+### Pass 1: Code Quality
 - `cli_api_server.py` AST: OK
 - `collect_telemetry.py` AST: OK
 - `datetime.now(timezone.utc)` used in new code (not deprecated `utcnow`)
 - `MEMORY_CAPACITY` extracted as configurable constant
 - Auth key precedence: `master_key if master_key else backup_key`
 
-### Pass 2: Testing & Validation 
+### Pass 2: Testing & Validation
 - YAML parse: 0 errors across all 96 workflows
 - `# nosec B603` annotation with justification on `subprocess.Popen`
 - `console.warn` in XtermTerminal.tsx catch block for debuggability
 - Base64-decoded comment in REQ-8 step for reviewer auditability
 
-### Pass 3: Documentation 
+### Pass 3: Documentation
 - `CHANGELOG.md` `[Unreleased]` entry — WF-001 gate satisfied
 - `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 + Last updated
 - `cognitive_app/.env.example` created with `VITE_CLI_API_URL`
 - All 3 new/updated agents have architecture diagrams
 
-### Pass 4: Security 
+### Pass 4: Security
 - No secrets hardcoded; tokens from `os.environ.get()` only
 - Auth injection scoped to `api.github.com` only
 - Token never logged or returned in response headers
 - `# nosec B603` justified: shell binary from trusted system env var
 
-### Pass 5: Codebase Agency Policy 
+### Pass 5: Codebase Agency Policy
 - All 14 changed files reviewed
 - No tmp artifacts committed
 - `.gitignore` confirms `.codex/agent_auth_session.json` allowed
@@ -170,5 +170,5 @@ Agents (128 total)
 ---
 
 **Report generated:2026-07-13
-**Next review:** After PR #3422 merge + 7-day telemetry cycle  
+**Next review:** After PR #3422 merge + 7-day telemetry cycle
 **Maintainer:** copilot-swe-agent (Phase 4 session)

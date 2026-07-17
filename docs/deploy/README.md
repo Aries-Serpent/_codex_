@@ -6,7 +6,7 @@
 
 ---
 
-##  Quick Navigation
+## Quick Navigation
 
 - **Deployment Guides** - Step-by-step deployment procedures
 - **Environment Configuration** - Deployment environment setup
@@ -16,7 +16,7 @@
 
 ---
 
-## 🗂️ Directory Structure
+## Directory Structure
 
 ```
 docs/deploy/
@@ -28,7 +28,7 @@ docs/deploy/
 
 ---
 
-##  Contents
+## Contents
 
 ### Deployment Guides
 - **Pre-Deployment Checklist** - Verification steps before deployment
@@ -56,14 +56,14 @@ docs/deploy/
 
 ## Quick Start
 
-1. **New to Deployments?** → Start with pre-deployment checklist
-2. **Production Ready?** → Follow production deployment guide
-3. **Need Help?** → Check rollback procedures
-4. **Troubleshooting?** → See related operations documentation
+1. **New to Deployments?** Start with pre-deployment checklist
+2. **Production Ready?** Follow production deployment guide
+3. **Need Help?** Check rollback procedures
+4. **Troubleshooting?** See related operations documentation
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **[docs/operations/](../operations/)** - Operational procedures
 - **[docs/infrastructure/](../infrastructure/)** - Infrastructure setup
@@ -72,7 +72,7 @@ docs/deploy/
 
 ---
 
-##  Key Files
+## Key Files
 
 | File | Purpose | Owner |
 |------|---------|-------|
@@ -83,7 +83,7 @@ docs/deploy/
 
 ---
 
-##  Tips & Best Practices
+## Tips & Best Practices
 
 - Always run pre-deployment checklists
 - Document all manual steps
@@ -93,6 +93,6 @@ docs/deploy/
 
 ---
 
-**Last Updated**: 2026-06-22  
-**Category**: Infrastructure & Deployment  
-**Status**:  Active
+**Last Updated**: 2026-06-22
+**Category**: Infrastructure & Deployment
+**Status**: Active

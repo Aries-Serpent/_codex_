@@ -10,118 +10,124 @@
 - [ Admin Action Notifier — New Pattern (S861-cont)](#-admin-action-notifier--new-pattern-s861-cont)
 - [ RL-2 + RL-3 Rate-Limit Hardening — Complete](#-rl-2--rl-3-rate-limit-hardening--complete)
 - [ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
-  - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
-- [🏆 Merge Readiness Scorecard (S862 · all review comments addressed)](#-merge-readiness-scorecard-s862--all-review-comments-addressed)
+ - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
+- [ Merge Readiness Scorecard (S862 · all review comments addressed)](#-merge-readiness-scorecard-s862--all-review-comments-addressed)
 - [ Ideal Follow-Up Prompt (S863)](#-ideal-follow-up-prompt-s863)
 - [ S861-cont Delivery Summary](#-s861-cont-delivery-summary)
 - [ Admin Action Notifier — New Pattern (S861-cont)](#-admin-action-notifier--new-pattern-s861-cont)
 - [ RL-2 + RL-3 Rate-Limit Hardening — Complete](#-rl-2--rl-3-rate-limit-hardening--complete)
 - [ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
-  - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
-- [🏆 Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)](#-merge-readiness-scorecard-s861-cont--ci-monitoring--ce4a6f44)
-  - [ Continue This Session / Merge Decision](#-continue-this-session--merge-decision)
-    - [Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)](#option-a--merge-now-recommended-if-pre-merge--secrets-gate-pass)
-    - [Option B — Start New PR + Session S862 (for OBJ-B after T-03 resolved)](#option-b--start-new-pr--session-s862-for-obj-b-after-t-03-resolved)
+ - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
+- [ Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)](#-merge-readiness-scorecard-s861-cont--ci-monitoring--ce4a6f44)
+ - [ Continue This Session / Merge Decision](#-continue-this-session--merge-decision)
+ - [Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)](#option-a--merge-now-recommended-if-pre-merge--secrets-gate-pass)
+ - [Option B — Start New PR + Session S862 (for OBJ-B after T-03 resolved)](#option-b--start-new-pr--session-s862-for-obj-b-after-t-03-resolved)
 - [ Key Files Produced (All Sessions)](#-key-files-produced-all-sessions)
-- [ WEC → Dispatch → Auto-Approve Flow (New)](#-wec--dispatch--auto-approve-flow-new)
+- [ WEC Dispatch Auto-Approve Flow (New)](#-wec--dispatch--auto-approve-flow-new)
 - [ Security Fixes Applied](#-security-fixes-applied)
 - [ Documentation Link Checker — Before vs After](#-documentation-link-checker--before-vs-after)
-- [🏆 AAIS Score Trajectory](#-aais-score-trajectory)
-- [⏱ Session Gantt](#-session-gantt)
+- [ AAIS Score Trajectory](#-aais-score-trajectory)
+- [ Session Gantt](#-session-gantt)
 - [ Remaining Gap to AAIS 100.0](#-remaining-gap-to-aais-1000)
 - [ Key Files Produced This Session](#-key-files-produced-this-session)
 - [ Variable & Secret Governance — Copilot Cloud Agent Implementation Plan](#-variable--secret-governance--copilot-cloud-agent-implementation-plan)
-  - [ Implementation Checklist](#-implementation-checklist)
-    - [Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)](#phase-a--pre-flight-validation-admin-runs-manually-before-agent-engagement)
-    - [Phase B — Token Rotation (Admin action — GitHub UI required)](#phase-b--token-rotation-admin-action--github-ui-required)
-    - [Phase C — Add §10.9.1 Suggested New Variables (Copilot agent implements)](#phase-c--add-1091-suggested-new-variables-copilot-agent-implements)
-    - [Phase D — Implement T-02: `token-expiry-monitor.yml`](#phase-d--implement-t-02-token-expiry-monitoryml)
+ - [ Implementation Checklist](#-implementation-checklist)
+ - [Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)](#phase-a--pre-flight-validation-admin-runs-manually-before-agent-engagement)
+ - [Phase B — Token Rotation (Admin action — GitHub UI required)](#phase-b--token-rotation-admin-action--github-ui-required)
+ - [Phase C — Add §10.9.1 Suggested New Variables (Copilot agent implements)](#phase-c--add-1091-suggested-new-variables-copilot-agent-implements)
+ - [Phase D — Implement T-02: `token-expiry-monitor.yml`](#phase-d--implement-t-02-token-expiry-monitoryml)
 - [token-expiry-monitor.yml — T-02 gap closure](#token-expiry-monitoryml--t-02-gap-closure)
 - [Checks CODEX_MASTER_KEY_EXPIRY_DATE and CODEX_BACKUP_KEY_EXPIRY_DATE daily.](#checks-codex_master_key_expiry_date-and-codex_backup_key_expiry_date-daily)
 - [Posts a GitHub issue 14 days before expiry.](#posts-a-github-issue-14-days-before-expiry)
 - [aais-cache: none](#aais-cache-none)
 - [Phase E — Implement §10.9.2 Clean-up Recommendations](#phase-e--implement-1092-clean-up-recommendations)
-  - [Phase F — Post-Implementation Verification](#phase-f--post-implementation-verification)
-  - [ Implementation Dependency Graph](#-implementation-dependency-graph)
-  - [ Agent Prompt — Phase C+D Kickoff](#-agent-prompt--phase-cd-kickoff)
-- [Task: Variable & Secret Governance Implementation — Phases C + D  # pragma: allowlist secret](#task-variable--secret-governance-implementation--phases-c--d---pragma-allowlist-secret)
-  - [Phase C: Add 7 new repository variables via process-variable-intents.yml](#phase-c-add-7-new-repository-variables-via-process-variable-intentsyml)
-  - [Phase D: Create token-expiry-monitor.yml  # pragma: allowlist secret](#phase-d-create-token-expiry-monitoryml---pragma-allowlist-secret)
-  - [Verification:](#verification)
-  - [��️ Section Status](#-section-status)
+ - [Phase F — Post-Implementation Verification](#phase-f--post-implementation-verification)
+ - [ Implementation Dependency Graph](#-implementation-dependency-graph)
+ - [ Agent Prompt — Phase C+D Kickoff](#-agent-prompt--phase-cd-kickoff)
+- [Task: Variable & Secret Governance Implementation — Phases C + D # pragma: allowlist secret](#task-variable--secret-governance-implementation--phases-c--d---pragma-allowlist-secret)
+ - [Phase C: Add 7 new repository variables via process-variable-intents.yml](#phase-c-add-7-new-repository-variables-via-process-variable-intentsyml)
+ - [Phase D: Create token-expiry-monitor.yml # pragma: allowlist secret](#phase-d-create-token-expiry-monitoryml---pragma-allowlist-secret)
+ - [Verification:](#verification)
+ - [�� Section Status](#-section-status)
 - [ Rate-Limit Awareness — Workflow Improvement Plan](#-rate-limit-awareness--workflow-improvement-plan)
-  - [ Audit Summary — Workflows Requiring Improvement](#-audit-summary--workflows-requiring-improvement)
-  - [ Implementation Checklist](#-implementation-checklist)
-    - [Phase RL-1 — P1 Workflows (highest blast radius)](#phase-rl-1--p1-workflows-highest-blast-radius)
-    - [Phase RL-2 — P2 Workflows (scheduled, self-healing)](#phase-rl-2--p2-workflows-scheduled-self-healing)
-    - [Phase RL-3 — Add Rate-Limit Monitoring Variables](#phase-rl-3--add-rate-limit-monitoring-variables)
-    - [Phase RL-4 — Verification](#phase-rl-4--verification)
+ - [ Audit Summary — Workflows Requiring Improvement](#-audit-summary--workflows-requiring-improvement)
+ - [ Implementation Checklist](#-implementation-checklist)
+ - [Phase RL-1 — P1 Workflows (highest blast radius)](#phase-rl-1--p1-workflows-highest-blast-radius)
+ - [Phase RL-2 — P2 Workflows (scheduled, self-healing)](#phase-rl-2--p2-workflows-scheduled-self-healing)
+ - [Phase RL-3 — Add Rate-Limit Monitoring Variables](#phase-rl-3--add-rate-limit-monitoring-variables)
+ - [Phase RL-4 — Verification](#phase-rl-4--verification)
 
-> **Branch:** `finding-autofix-faa8614c` → `main`  
-> **AAIS composite:** **100.0 / 100 (S+)** · **actionlint:**  0 · **ruff:**  · **sync_tracked_files:**  · **Merge conflicts:**   
-> **Latest session:** S864 · 2026-05-08T04:45Z  
-> **CI Status:** Fast Validation failures resolved  — 3 pre-commit hooks fixed
+> **Branch:** `finding-autofix-faa8614c` `main`
+> **AAIS composite:** **100.0 / 100 (S+)** · **actionlint:** 0 · **ruff:** · **sync_tracked_files:** · **Merge conflicts:**
+> **Latest session:** S864 · 2026-05-08T04:45Z
+> **CI Status:** Fast Validation failures resolved — 3 pre-commit hooks fixed
 
 ---
 
-##  S864 Delivery Summary
+## S864 Delivery Summary
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v0.2.1→v0.2.1); `run_validation.sh` now uses `detect-secrets==1.5.0` |  | <!-- pragma: allowlist secret -->
-| 2 | `check-shell-true` false positive: removed `shell=True` literal from `subprocess.py` error message |  |
-| 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` → `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` |  | <!-- pragma: allowlist secret -->
-| 4 | Replied to `comment_new` #4403330132 (Fast Validation failure) |  |
-| 5 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated |  |
+| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v0.2.1v0.2.1); `run_validation.sh` now uses `detect-secrets==1.5.0` | | <!-- pragma: allowlist secret -->
+| 2 | `check-shell-true` false positive: removed `shell=True` literal from `subprocess.py` error message | |
+| 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | | <!-- pragma: allowlist secret -->
+| 4 | Replied to `comment_new` #4403330132 (Fast Validation failure) | |
+| 5 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated | |
 
 ---
 
-##  S863 Delivery Summary
+## S863 Delivery Summary
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | Replied to `comment_new` #4403328142 to unblock ` Scan PR comments` gate |  |
-| 2 | P-045 gate: ruff  · sync_tracked_files  · no conflicts  |  |
+| 1 | Replied to `comment_new` #4403328142 to unblock ` Scan PR comments` gate | |
+| 2 | P-045 gate: ruff · sync_tracked_files · no conflicts | |
 
 ---
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | Reviewed all 5 unresolved Copilot AI review threads |  All confirmed resolved in current code |
-| 2 | `wec_enforcer.py` `_find_and_approve_dispatched_run()` — no `completed` check |  |
-| 3 | `wec_enforcer.py` summary counter — distinct outcome tracking |  |
-| 4 | `post_rotation_verify.sh` — no partial token value in logs |  | <!-- pragma: allowlist secret -->
-| 5 | `# aais-cache: none` comments in `token-probe.yml` + `pr-size-analyzer.yml` |  | <!-- pragma: allowlist secret -->
-| 6 | Replied to all `comment_new` threads (#4403141030, #4403147280, #4403149897) |  |
-| 7 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated |  |
+| 1 | Reviewed all 5 unresolved Copilot AI review threads | All confirmed resolved in current code |
+| 2 | `wec_enforcer.py` `_find_and_approve_dispatched_run()` — no `completed` check | |
+| 3 | `wec_enforcer.py` summary counter — distinct outcome tracking | |
+| 4 | `post_rotation_verify.sh` — no partial token value in logs | | <!-- pragma: allowlist secret -->
+| 5 | `# aais-cache: none` comments in `token-probe.yml` + `pr-size-analyzer.yml` | | <!-- pragma: allowlist secret -->
+| 6 | Replied to all `comment_new` threads (#4403141030, #4403147280, #4403149897) | |
+| 7 | CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, living docs updated | |
 
 ---
 
-##  S861-cont Delivery Summary
+## S861-cont Delivery Summary
 
 | # | Deliverable | Files Touched | Status |
 |---|-------------|---------------|--------|
-| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` |  | <!-- pragma: allowlist secret -->
-| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` |  | <!-- pragma: allowlist secret -->
-| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` |  | <!-- pragma: allowlist secret -->
-| 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` |  |
-| 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` |  |
-| 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files |  |
-| 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple |  |
-| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files |  | <!-- pragma: allowlist secret -->
+| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | | <!-- pragma: allowlist secret -->
+| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | | <!-- pragma: allowlist secret -->
+| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | | <!-- pragma: allowlist secret -->
+| 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` | |
+| 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | |
+| 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | |
+| 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | |
+| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | | <!-- pragma: allowlist secret -->
 
 ---
 
-##  Admin Action Notifier — New Pattern (S861-cont)
+## Admin Action Notifier — New Pattern (S861-cont)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted", "admin-action-t03.yml\n(gap caller)"'}}%%
+
 flowchart LR
+
     TRIGGER["workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted"] --> CALLER
+
     CALLER["admin-action-t03.yml\n(gap caller)"] --> ENGINE
+
     ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call"] --> PROBE
     PROBE{API probe result}
+
     PROBE -- "200 " --> CLOSE["Auto-close issue"]
+
     PROBE -- "403 ️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
     style ENGINE fill:#9b59b6,color:#fff
     style CLOSE fill:#27ae60,color:#fff
@@ -131,7 +137,7 @@ flowchart LR
 **New files:**
 | File | Purpose |
 |------|---------|
-| `.github/workflows/admin-action-notifier.yml` | Reusable `workflow_call` engine — probe → issue → auto-close |
+| `.github/workflows/admin-action-notifier.yml` | Reusable `workflow_call` engine — probe issue auto-close |
 | `.github/workflows/admin-action-t03.yml` | T-03 caller; fires on PR workflow approval events |
 | `scripts/ci/admin_action_probe.py` | CLI probe script; `--probe-only`, `--close-if-ok`, `--dry-run` |
 | `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Pattern guide + gap registry + step-by-step how-to |
@@ -139,19 +145,19 @@ flowchart LR
 
 ---
 
-##  RL-2 + RL-3 Rate-Limit Hardening — Complete
+## RL-2 + RL-3 Rate-Limit Hardening — Complete
 
 | Phase | Workflow | Pattern | Status |
 |-------|----------|---------|--------|
-| RL-2a | `copilot-iterative-self-healing.yml` | Pattern A pre-check + `GH_TRICKLE_POLITE_SLEEP: 0.5` |  S861 |
-| RL-2b | `codebase-health-sweep.yml` | Pattern D `remaining<20` page-guard |  S861 |
-| RL-2c | `codeql.yml` + `codeql-analysis.yml` | Schedule stagger Mon/Thu 03:00 UTC |  S861-cont |
-| RL-3b | `artifact-monitoring.yml` | Pre-check step + all-step guards |  S861-cont |
-| RL-2 (previous) | `workflow-execution-gate.yml`, `auto-approve-workflows.yml`, `promote-integration-branch.yml`, `copilot-agent-session-done.yml` | Patterns A/C/D/GraphQL |  S860 |
+| RL-2a | `copilot-iterative-self-healing.yml` | Pattern A pre-check + `GH_TRICKLE_POLITE_SLEEP: 0.5` | S861 |
+| RL-2b | `codebase-health-sweep.yml` | Pattern D `remaining<20` page-guard | S861 |
+| RL-2c | `codeql.yml` + `codeql-analysis.yml` | Schedule stagger Mon/Thu 03:00 UTC | S861-cont |
+| RL-3b | `artifact-monitoring.yml` | Pre-check step + all-step guards | S861-cont |
+| RL-2 (previous) | `workflow-execution-gate.yml`, `auto-approve-workflows.yml`, `promote-integration-branch.yml`, `copilot-agent-session-done.yml` | Patterns A/C/D/GraphQL | S860 |
 
 ---
 
-##  Remaining (Admin Action Required — cannot be done by agent)
+## Remaining (Admin Action Required — cannot be done by agent)
 
 | Item | Blocker | Auto-notifier |
 |------|---------|---------------|
@@ -159,33 +165,33 @@ flowchart LR
 | **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check | <!-- pragma: allowlist secret -->
 
 ### Admin Steps to Unblock (T-03)
-1. [Settings → Tokens → CODEX_MASTER_KEY → Edit](https://github.com/settings/tokens) → add `security_events` scope, 90-day expiry
+1. [Settings Tokens CODEX_MASTER_KEY Edit](https://github.com/settings/tokens) add `security_events` scope, 90-day expiry
 2. Update secret value in [org settings](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
-3. Run `token-probe.yml` to verify → `admin-action-t03.yml` auto-closes the T-03 issue
+3. Run `token-probe.yml` to verify `admin-action-t03.yml` auto-closes the T-03 issue
 4. Agent can then run `codeql-alert-fetcher.yml` and fix all 15 `py/wrong-named-arg` locations
 
 ---
 
-## 🏆 Merge Readiness Scorecard (S862 · all review comments addressed)
+## Merge Readiness Scorecard (S862 · all review comments addressed)
 
 | Dimension | Weight | Status |
 |-----------|--------|--------|
-| auto_fix (0 auto-fixable) | 15 |  0 auto-fixable |
-| sync_tracked_files | 12 |  consistent |
-| action_versions (all approved) | 12 |  all approved |
-| ruff (src/ clean) | 10 |  clean |
-| github-script ≥ v8 | 8 |  all ≥ v8 |
-| Pattern 27 registered | 7 |  registered |
-| download-artifact min v5 | 7 |  v5 |
-| PDA entry today | 8 |  entry today |
-| accountability report today | 8 |  today |
-| AAIS composite 100.0/100 | 13 |  100.0/100 |
+| auto_fix (0 auto-fixable) | 15 | 0 auto-fixable |
+| sync_tracked_files | 12 | consistent |
+| action_versions (all approved) | 12 | all approved |
+| ruff (src/ clean) | 10 | clean |
+| github-script ≥ v8 | 8 | all ≥ v8 |
+| Pattern 27 registered | 7 | registered |
+| download-artifact min v5 | 7 | v5 |
+| PDA entry today | 8 | entry today |
+| accountability report today | 8 | today |
+| AAIS composite 100.0/100 | 13 | 100.0/100 |
 
-**Estimated score: 100/100 —  MERGE READY** (pending 1 failing CI check: ` Scan PR comments`)
+**Estimated score: 100/100 — MERGE READY** (pending 1 failing CI check: ` Scan PR comments`)
 
 ---
 
-##  Ideal Follow-Up Prompt (S863)
+## Ideal Follow-Up Prompt (S863)
 
 ```
 @copilot CTEP Mode: ON
@@ -202,37 +208,43 @@ After workflows complete:
 ```
 
 
-> **Branch:** `finding-autofix-faa8614c` → `main`  
-> **AAIS composite:** **99.9 / 100 (S+)** · **actionlint:**  0 · **ruff:**  · **sync_tracked_files:**  · **Merge conflicts:**   
-> **Latest commit:** `ce4a6f44` · **CI (ce4a6f44):** 15  / 10  / 4 startup_failure(infra) as of 03:48 UTC
+> **Branch:** `finding-autofix-faa8614c` `main`
+> **AAIS composite:** **99.9 / 100 (S+)** · **actionlint:** 0 · **ruff:** · **sync_tracked_files:** · **Merge conflicts:**
+> **Latest commit:** `ce4a6f44` · **CI (ce4a6f44):** 15 / 10 / 4 startup_failure(infra) as of 03:48 UTC
 
 ---
 
-##  S861-cont Delivery Summary
+## S861-cont Delivery Summary
 
 | # | Deliverable | Files Touched | Status |
 |---|-------------|---------------|--------|
-| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` |  | <!-- pragma: allowlist secret -->
-| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` |  | <!-- pragma: allowlist secret -->
-| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` |  | <!-- pragma: allowlist secret -->
-| 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` |  |
-| 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` |  |
-| 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files |  |
-| 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple |  |
-| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files |  | <!-- pragma: allowlist secret -->
+| 1 | Merge conflict `.secrets.baseline` (branch vs origin/main) | `.secrets.baseline` | | <!-- pragma: allowlist secret -->
+| 2 | `post_rotation_verify.sh` — no partial token value in logs | `scripts/ci/post_rotation_verify.sh` | | <!-- pragma: allowlist secret -->
+| 3 | `# aais-cache: none` rationale corrected | `token-probe.yml`, `pr-size-analyzer.yml` | | <!-- pragma: allowlist secret -->
+| 4 | RL-2c — CodeQL schedule stagger Mon/Thu 03:00 UTC | `codeql.yml`, `codeql-analysis.yml` | |
+| 5 | RL-3b — `artifact-monitoring.yml` rate-limit pre-check + guards | `artifact-monitoring.yml` | |
+| 6 | **Admin Action Notifier** (reusable, reproducible) | 4 new files | |
+| 7 | Living docs, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT | multiple | |
+| 8 | CI monitoring: `github-script@v8`, secrets baseline pragma, `.mypy_baseline` 130 | 3 files | | <!-- pragma: allowlist secret -->
 
 ---
 
-##  Admin Action Notifier — New Pattern (S861-cont)
+## Admin Action Notifier — New Pattern (S861-cont)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted", "admin-action-t03.yml\n(gap caller)"'}}%%
+
 flowchart LR
+
     TRIGGER["workflow_run:\nauto-approve-workflows\nOR trigger-on-approval\ncompleted"] --> CALLER
+
     CALLER["admin-action-t03.yml\n(gap caller)"] --> ENGINE
+
     ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call"] --> PROBE
     PROBE{API probe result}
+
     PROBE -- "200 " --> CLOSE["Auto-close issue"]
+
     PROBE -- "403 ️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
     style ENGINE fill:#9b59b6,color:#fff
     style CLOSE fill:#27ae60,color:#fff
@@ -242,7 +254,7 @@ flowchart LR
 **New files:**
 | File | Purpose |
 |------|---------|
-| `.github/workflows/admin-action-notifier.yml` | Reusable `workflow_call` engine — probe → issue → auto-close |
+| `.github/workflows/admin-action-notifier.yml` | Reusable `workflow_call` engine — probe issue auto-close |
 | `.github/workflows/admin-action-t03.yml` | T-03 caller; fires on PR workflow approval events |
 | `scripts/ci/admin_action_probe.py` | CLI probe script; `--probe-only`, `--close-if-ok`, `--dry-run` |
 | `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Pattern guide + gap registry + step-by-step how-to |
@@ -250,19 +262,19 @@ flowchart LR
 
 ---
 
-##  RL-2 + RL-3 Rate-Limit Hardening — Complete
+## RL-2 + RL-3 Rate-Limit Hardening — Complete
 
 | Phase | Workflow | Pattern | Status |
 |-------|----------|---------|--------|
-| RL-2a | `copilot-iterative-self-healing.yml` | Pattern A pre-check + `GH_TRICKLE_POLITE_SLEEP: 0.5` |  S861 |
-| RL-2b | `codebase-health-sweep.yml` | Pattern D `remaining<20` page-guard |  S861 |
-| RL-2c | `codeql.yml` + `codeql-analysis.yml` | Schedule stagger Mon/Thu 03:00 UTC |  S861-cont |
-| RL-3b | `artifact-monitoring.yml` | Pre-check step + all-step guards |  S861-cont |
-| RL-2 (previous) | `workflow-execution-gate.yml`, `auto-approve-workflows.yml`, `promote-integration-branch.yml`, `copilot-agent-session-done.yml` | Patterns A/C/D/GraphQL |  S860 |
+| RL-2a | `copilot-iterative-self-healing.yml` | Pattern A pre-check + `GH_TRICKLE_POLITE_SLEEP: 0.5` | S861 |
+| RL-2b | `codebase-health-sweep.yml` | Pattern D `remaining<20` page-guard | S861 |
+| RL-2c | `codeql.yml` + `codeql-analysis.yml` | Schedule stagger Mon/Thu 03:00 UTC | S861-cont |
+| RL-3b | `artifact-monitoring.yml` | Pre-check step + all-step guards | S861-cont |
+| RL-2 (previous) | `workflow-execution-gate.yml`, `auto-approve-workflows.yml`, `promote-integration-branch.yml`, `copilot-agent-session-done.yml` | Patterns A/C/D/GraphQL | S860 |
 
 ---
 
-##  Remaining (Admin Action Required — cannot be done by agent)
+## Remaining (Admin Action Required — cannot be done by agent)
 
 | Item | Blocker | Auto-notifier |
 |------|---------|---------------|
@@ -270,45 +282,45 @@ flowchart LR
 | **OBJ-D** Token rotation | GitHub org admin UI required | `token-expiry-monitor.yml` daily check | <!-- pragma: allowlist secret -->
 
 ### Admin Steps to Unblock (T-03)
-1. [Settings → Secrets → CODEX_MASTER_KEY → Edit PAT](https://github.com/settings/tokens) → add `security_events` scope, 90-day expiry
+1. [Settings Secrets CODEX_MASTER_KEY Edit PAT](https://github.com/settings/tokens) add `security_events` scope, 90-day expiry
 2. Update secret value in [org settings](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
-3. Run `token-probe.yml` to verify → `admin-action-t03.yml` auto-closes the T-03 issue
+3. Run `token-probe.yml` to verify `admin-action-t03.yml` auto-closes the T-03 issue
 4. Agent can then run `codeql-alert-fetcher.yml` and fix all 15 `py/wrong-named-arg` locations
 
 ---
 
-## 🏆 Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)
+## Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)
 
 | Dimension | Weight | Status |
 |-----------|--------|--------|
-| auto_fix (0 auto-fixable) | 15 |  all patterns clear |
-| sync_tracked_files | 12 |  consistent |
-| action_versions (all ≥ approved) | 12 |  github-script@v8 fixed |
-| ruff (src/ + scripts/ clean) | 10 |  clean |
-| github-script ≥ v8 | 8 |  fixed in ce4a6f44 |
-| Pattern 27 registered | 7 |  |
-| download-artifact min v5 | 7 |  |
-| PDA entry today | 8 |  |
-| accountability report today | 8 |  S861-cont + monitoring |
-| AAIS composite 99.9/100 | 13 |  99.9 (S+) |
-| **Merge conflicts** | — |  fully resolved |
-| **PR review comments** | — |  all addressed |
-| **comment_new threads** | — |  all 5 replied |
-| **🔖 Required Actions Version Enforcer** | — |  PASS (ce4a6f44) |
-| ** Deferral Language Gate** | — |  PASS |
-| **Workflow Compliance Audit (actionlint)** | — |  PASS |
-| ** Reference Integrity** | — |  PASS |
-| **Pre-Merge Validation** | — |  running |
-| ** Secrets Baseline Enforcer** | — |  pending (fires after Pre-Merge) | <!-- pragma: allowlist secret -->
-| **PR Comment Review Gate** | — |  pending |
-| **startup_failure** (4 infra) | — | ️ env/billing — not code failures |
+| auto_fix (0 auto-fixable) | 15 | all patterns clear |
+| sync_tracked_files | 12 | consistent |
+| action_versions (all ≥ approved) | 12 | github-script@v8 fixed |
+| ruff (src/ + scripts/ clean) | 10 | clean |
+| github-script ≥ v8 | 8 | fixed in ce4a6f44 |
+| Pattern 27 registered | 7 | |
+| download-artifact min v5 | 7 | |
+| PDA entry today | 8 | |
+| accountability report today | 8 | S861-cont + monitoring |
+| AAIS composite 99.9/100 | 13 | 99.9 (S+) |
+| **Merge conflicts** | — | fully resolved |
+| **PR review comments** | — | all addressed |
+| **comment_new threads** | — | all 5 replied |
+| ** Required Actions Version Enforcer** | — | PASS (ce4a6f44) |
+| ** Deferral Language Gate** | — | PASS |
+| **Workflow Compliance Audit (actionlint)** | — | PASS |
+| ** Reference Integrity** | — | PASS |
+| **Pre-Merge Validation** | — | running |
+| ** Secrets Baseline Enforcer** | — | pending (fires after Pre-Merge) | <!-- pragma: allowlist secret -->
+| **PR Comment Review Gate** | — | pending |
+| **startup_failure** (4 infra) | — | env/billing — not code failures |
 
-**Estimated score: 96–98/100** · Only OBJ-B/D admin token rotation outstanding  
+**Estimated score: 96–98/100** · Only OBJ-B/D admin token rotation outstanding
 **`admin-action-t03.yml` will auto-create T-03 issue on next approval event**
 
 ---
 
-###  Continue This Session / Merge Decision
+### Continue This Session / Merge Decision
 
 #### Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)
 ```
@@ -331,7 +343,7 @@ S862 Objectives (after admin rotates CODEX_MASTER_KEY with security_events scope
 Branch: finding-autofix-faa8614c (or new PR off main after merge)
 ```
 
-##  Key Files Produced (All Sessions)
+## Key Files Produced (All Sessions)
 
 | File | Purpose | Session |
 |------|---------|---------|
@@ -347,30 +359,45 @@ Branch: finding-autofix-faa8614c (or new PR off main after merge)
 | `docs/roadmap/PR4346_whats_next.md` | This file — living roadmap | S859–S861-cont |
 | `docs/sessions/PR4346_session_diagram.md` | 5-diagram session map | S859–S861-cont |
 
-##  WEC → Dispatch → Auto-Approve Flow (New)
+## WEC Dispatch Auto-Approve Flow (New)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🖊️ Agent checks\n- [x, "push → workflow-execution-gate.yml\ndetect-wec-changes job"'}}%%
+
 flowchart TD
+
     A["🖊️ Agent checks\n- [x] codeql-alert-fetcher.yml\nin PR WEC block"] --> B["push → workflow-execution-gate.yml\ndetect-wec-changes job"]
+
     B --> C{newly_checked\nnot empty?}
+
     C -- yes --> D["dispatch-checked job\nwec_enforcer.py --dispatch-checked\nGH_TOKEN = CODEX_MASTER_KEY"]
+
     C -- no --> Z["⏭️ Skip dispatch"]
 
     D --> E["POST /actions/workflows/\ncodeql-alert-fetcher.yml/dispatches\nref = head branch"]
+
     E --> F{HTTP 204?}
+
     F -- yes --> G[" Dispatched\n→ new run created"]
+
     F -- no --> H["️ Log warning\n(non-fatal)"]
 
     G --> I["_find_and_approve_dispatched_run()\npoll up to 45 s, 5 s interval"]
+
     I --> J{run status?}
+
     J -- action_required --> K["POST /actions/runs/{id}/approve\nCODEX_MASTER_KEY"]
+
     J -- queued/in_progress --> L["ℹ️ Already running\nno approval needed"]
+
     J -- timeout --> M["️ Soft-fail\nfalls back to 5-min\nauto-approve-workflows schedule"]
 
     K --> N[" Run unblocked\nartifacts produced\nin ~5 min"]
+
     L --> N
+
     M --> O["🕐 auto-approve-workflows.yml\nschedule cron */5 * * * *\napproves any remaining action_required"]
+
     O --> N
 
     style A fill:#4a90d9,color:#fff
@@ -382,10 +409,11 @@ flowchart TD
 
 ---
 
-##  Security Fixes Applied
+## Security Fixes Applied
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "self-healing.yml\non: workflow_run + workflow_dispatch\njobs.delegate:\n  uses: iterative-self-healing-ci.yml\n  ← no workflow_call trigger\n  ← permissions: contents: read only\n  ← no job-level permissions", "trigger-on-approval.yml\nrun: |\n  PR_REF='${{ github.event.pull_request.head.ref }}'\n  ← untrusted value in inline script\n  ← script injection vector"'}}%%
+
 flowchart LR
     subgraph "Before ( actionlint + CodeQL failures)"
         A1["self-healing.yml\non: workflow_run + workflow_dispatch\njobs.delegate:\n  uses: iterative-self-healing-ci.yml\n  ← no workflow_call trigger\n  ← permissions: contents: read only\n  ← no job-level permissions"]
@@ -398,6 +426,7 @@ flowchart LR
     end
 
     A1 -->|restructured| B1
+
     A2 -->|env var routing| B2
 
     style A1 fill:#e74c3c,color:#fff
@@ -408,28 +437,41 @@ flowchart LR
 
 ---
 
-##  Documentation Link Checker — Before vs After
+## Documentation Link Checker — Before vs After
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "push: any *.md changed", "find . -name '*.md'\nentire repo\n~300-500 files\nincl. .github/workflows/*.md"'}}%%
+
 flowchart TB
     subgraph "Before — Full-repo scan on every push"
         direction TB
+
         P1["push: any *.md changed"] --> S1["find . -name '*.md'\nentire repo\n~300-500 files\nincl. .github/workflows/*.md"]
+
         S1 --> C1["Aggregate SHA1\nall files → 1 cache key\nany 1 file = cache miss"]
+
         C1 --> R1["HTTP requests for ALL links\n~300+ files checked\n⏱ slow · 429 risk · noise"]
     end
 
     subgraph "After — Diff-based + per-file cache"
         direction TB
+
         P2["push: any *.md changed"] --> D2["git diff --name-only\nBASE..HEAD -- '*.md'\nexcl. .github/workflows/"]
+
         D2 --> CF2["per-file JSON cache\n.link-check-per-file.json\n{filepath: sha1}"]
+
         CF2 --> F2{any file\nhash changed?}
+
         F2 -- "0 files changed" --> SK2["⏭️ Skip entirely\n~0 runner minutes"]
+
         F2 -- "N files changed" --> R2["Check only changed N files\ntypically 1-10\n⏱ fast · safe rate limit"]
+
         P3["schedule: weekly"] --> FS3["find . -name '*.md'\n(full scan, safety net)\nexcl. .github/workflows/"]
+
         FS3 --> G3{checksum\nchanged since\nlast run?}
+
         G3 -- no --> SK3["⏭️ Skip — nothing new"]
+
         G3 -- yes --> R3["Full link check\nexternal link rot scan"]
     end
 
@@ -442,23 +484,26 @@ flowchart TB
 
 ---
 
-## 🏆 AAIS Score Trajectory
+## AAIS Score Trajectory
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "Baseline", "S859 start", "CI/CD 100%", "Security 100%", "Reliability +self-healing", "actionlint fixed", "WEC dispatch+approve", "Final", 97.34, 97.34, 98.8, 99.1, 99.5, 99.7, 99.9, 99.9'}}%%
+
 xychart-beta
     title "AAIS Composite Score — PR #4346 progression"
     x-axis ["Baseline", "S859 start", "CI/CD 100%", "Security 100%", "Reliability +self-healing", "actionlint fixed", "WEC dispatch+approve", "Final"]
+
     y-axis "Score / 100" 94 --> 100
     line [97.34, 97.34, 98.8, 99.1, 99.5, 99.7, 99.9, 99.9]
 ```
 
 ---
 
-## ⏱ Session Gantt
+## Session Gantt
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 gantt
     title PR #4346 S859 — Work Timeline (2026-05-08)
     dateFormat HH:mm
@@ -494,10 +539,11 @@ gantt
 
 ---
 
-##  Remaining Gap to AAIS 100.0
+## Remaining Gap to AAIS 100.0
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title AAIS 99.9 — Remaining 0.1% gap breakdown
     "CI/CD Maturity 100.0" : 25
     "Security 100.0" : 25
@@ -508,12 +554,12 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 ```
 
 **Path to 100.0:**
-1. **Reliability 98.4 → 100.0** — Sustained green CI (~14 consecutive passing runs at 0% failure rate). `self-healing.yml` + `iterative-self-healing-ci.yml` automates this.
-2. **Autonomy 96.0 → 100.0** — Genesis Phase 2 (human admin secret injection + workflow enablement). Out of agent scope.
+1. **Reliability 98.4 100.0** — Sustained green CI (~14 consecutive passing runs at 0% failure rate). `self-healing.yml` + `iterative-self-healing-ci.yml` automates this.
+2. **Autonomy 96.0 100.0** — Genesis Phase 2 (human admin secret injection + workflow enablement). Out of agent scope.
 
 ---
 
-##  Key Files Produced This Session
+## Key Files Produced This Session
 
 | File | Purpose |
 |------|---------|
@@ -522,20 +568,20 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 | `docs/sessions/PR4346_session_diagram.md` | 8-diagram session map |
 | `.github/workflows/self-healing.yml` | AAIS Reliability gate (manual alias for iterative-self-healing-ci.yml) |
 | `scripts/ci/wec_enforcer.py` | WEC dispatch now auto-approves `action_required` runs |
-| `.github/workflows/workflow-execution-gate.yml` | dispatch-checked job: timeout 10→15 min, annotated |
+| `.github/workflows/workflow-execution-gate.yml` | dispatch-checked job: timeout 1015 min, annotated |
 | `.github/workflows/documentation-link-checker.yml` | 4-fix optimization |
 | `.github/workflows/trigger-on-approval.yml` | env-var routing for untrusted `head.ref` |
 
 ---
 
-##  Variable & Secret Governance — Copilot Cloud Agent Implementation Plan
+## Variable & Secret Governance — Copilot Cloud Agent Implementation Plan
 
 > **Trigger:** Token refresh and variable governance initiative (§10 + §11 of ELEVATED_PRIVILEGES_TOKEN_REVIEW.md)
 > **Owner:** @mbaetiong
 > **Agent:** `copilot-swe-agent[bot]` / Copilot cloud agent
 > **Reference:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §10.9, §10.11, §11
 
-###  Implementation Checklist
+### Implementation Checklist
 
 #### Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)
 
@@ -545,25 +591,25 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
     --repo Aries-Serpent/_codex_ \
     --field pr_number=4346 \
     --field require_both_keys=true
-  ```
+ ```
 - [ ] **A-2** Run `scan-secrets-variables.yml` — capture current inventory baseline
   ```bash
   GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
     --repo Aries-Serpent/_codex_ --field include_env_vars=true
-  ```
+ ```
 - [ ] **A-3** Run `test-variables-api.yml` — verify CRUD access works end-to-end
   ```bash
   GH_TOKEN=$CODEX_MASTER_KEY gh workflow run test-variables-api.yml \
     --repo Aries-Serpent/_codex_ --field dry_run=false
-  ```
+ ```
 
 ---
 
 #### Phase B — Token Rotation (Admin action — GitHub UI required)
 
-- [ ] **B-1** Rotate `CODEX_MASTER_KEY` at [Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
-  - Required scopes: `repo`, `workflow`, `security_events` (add `security_events` — closes T-03 gap)
-  - Set expiry: **90 days** from rotation date
+- [ ] **B-1** Rotate `CODEX_MASTER_KEY` at [Settings Secrets CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)
+ - Required scopes: `repo`, `workflow`, `security_events` (add `security_events` — closes T-03 gap)
+ - Set expiry: **90 days** from rotation date
 - [ ] **B-2** Rotate `CODEX_BACKUP_KEY` — same scopes, same expiry window
 - [ ] **B-3** Update `CODEX_GHP_TOKEN_BASE64` / `CODEX_GHP_TOKEN_HEX` / `CODEX_GHP_TOKEN_SHA256`
   ```bash
@@ -574,7 +620,7 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
     --repo Aries-Serpent/_codex_
   printf '%s' "$NEW_TOKEN" | sha256sum | awk '{print $1}' | \
     gh secret set CODEX_GHP_TOKEN_SHA256 --repo Aries-Serpent/_codex_
-  ```
+ ```
 - [ ] **B-4** Run `token-probe.yml` again — confirm new tokens are operational
 - [ ] **B-5** Run `scripts/ci/post_rotation_verify.sh` — 7-step post-rotation check
 
@@ -598,7 +644,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
     "session": "S859"
   }
   EOF
-  ```
+ ```
 
 - [x] **C-2** Create `CODEX_MASTER_KEY_EXPIRY_DATE` — proactive rotation reminder
   ```bash
@@ -612,7 +658,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
     "session": "S859"
   }
   EOF
-  ```
+ ```
 
 - [x] **C-3** Create `CODEX_BACKUP_KEY_EXPIRY_DATE`
   ```bash
@@ -626,7 +672,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
     "session": "S859"
   }
   EOF
-  ```
+ ```
 
 - [x] **C-4** Create `CODEX_AAIS_LAST_SCORE` and `CODEX_AAIS_LAST_SCORED_SHA`
   ```bash
@@ -642,7 +688,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
    "reason":"Track which commit AAIS score was computed on",
    "requested_by":"copilot-swe-agent[bot]","session":"S859"}
   EOF
-  ```
+ ```
 
 - [x] **C-5** Create `CODEX_WEC_TEMPLATE_VERSION`
   ```bash
@@ -651,7 +697,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
    "reason":"Track WEC template version to detect template drift automatically",
    "requested_by":"copilot-swe-agent[bot]","session":"S859"}
   EOF
-  ```
+ ```
 
 - [x] **C-6** Create `CODEX_SECRETS_BASELINE_SHA`
   ```bash
@@ -661,7 +707,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
    "reason":"Detect out-of-band .secrets.baseline modifications between sessions",
    "requested_by":"copilot-swe-agent[bot]","session":"S859"}
   EOF
-  ```
+ ```
 
 - [x] **C-7** Create `COPILOT_MAX_CONCURRENT_SESSIONS`
   ```bash
@@ -670,7 +716,7 @@ Each sub-task below is an **agent-executable unit**. The agent writes intent fil
    "reason":"Enforce single active Copilot session — prevent session collision",
    "requested_by":"copilot-swe-agent[bot]","session":"S859"}
   EOF
-  ```
+ ```
 
 - [x] **C-8** Commit all intent files and push — `process-variable-intents.yml` auto-applies
 
@@ -769,7 +815,7 @@ jobs:
             --body "One or more PATs are expiring soon. See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 ```
 
-- [x] **D-2** Add `token-expiry-monitor.yml` to WEC block in `📄 Opt-In: Documentation` section
+- [x] **D-2** Add `token-expiry-monitor.yml` to WEC block in ` Opt-In: Documentation` section
 - [x] **D-3** Run the workflow immediately after creating `CODEX_MASTER_KEY_EXPIRY_DATE` (Phase C-2)
 
 ---
@@ -781,8 +827,8 @@ jobs:
   # Agent runs:
   grep -r "CODEX_GHP_TOKEN_BASE64\|CODEX_GHP_TOKEN_HEX" \
     /home/runner/work/_codex_/_codex_/.github/workflows/ --include="*.yml" -l
-  ```
-  If no callers found → delete both secrets (close rotation surface).
+ ```
+ If no callers found delete both secrets (close rotation surface).
 
 - [ ] **E-2** Move `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` to file:
   ```bash
@@ -791,7 +837,7 @@ jobs:
     /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS \
     --jq '.value' > .codex/config/firewall_allowlist.txt
   # Update workflows that read this variable to read from file instead
-  ```
+ ```
 
 - [ ] **E-3** Move `COPILOT_BOT_COMMENT_KNOWN_ISSUES` to config file:
   ```bash
@@ -799,7 +845,7 @@ jobs:
     /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_BOT_COMMENT_KNOWN_ISSUES \
     --jq '.value' | python3 -m json.tool \
     > .codex/config/bot_comment_known_issues.json
-  ```
+ ```
 
 - [ ] **E-4** Update `COPILOT_WEC_TEMPLATE_DRIFT` — re-audit items after S859 WEC changes
 
@@ -814,22 +860,29 @@ jobs:
 - [ ] **F-5** Run `copilot-agent-vars-bootstrap.yml` — force-refresh agent context
 - [ ] **F-6** Run `scan-secrets-variables.yml` — generate final post-implementation inventory
 - [ ] **F-7** Update `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §10.6 to reflect any
-  variable removals from Phase E, and update §11 as new workflows are created
+ variable removals from Phase E, and update §11 as new workflows are created
 
 ---
 
-###  Implementation Dependency Graph
+### Implementation Dependency Graph
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "A-1 token-probe.yml\n current tokens valid?", "A-2 scan-secrets-variables.yml\n📸 inventory snapshot"'}}%%
+
 flowchart TD
+
     A1["A-1 token-probe.yml\n current tokens valid?"] --> B1
+
     A2["A-2 scan-secrets-variables.yml\n📸 inventory snapshot"] --> B1
+
     A3["A-3 test-variables-api.yml\n CRUD works?"] --> B1
 
     B1{"Tokens valid?\nAPI accessible?"} -- yes --> C
+
     B1 -- no --> B2["B-1/B-2 Rotate tokens\nGitHub UI"]
+
     B2 --> B4["B-4 token-probe.yml\nverify new tokens"]
+
     B4 --> C
 
     subgraph C["Phase C — New Variables"]
@@ -841,19 +894,26 @@ flowchart TD
         C6["C-6 SECRETS_BASELINE_SHA"]
         C7["C-7 MAX_CONCURRENT_SESSIONS"]
         C8["C-8 Push → process-variable-intents.yml"]
+
         C1 & C2 & C3 & C4 & C5 & C6 & C7 --> C8
     end
 
     C2 & C3 --> D1["D-1 Create token-expiry-monitor.yml\n⏰ daily expiry check"]
+
     C8 --> D1
 
     D1 --> E["Phase E — Clean-up\nAudit encoded secrets\nMove large vars to files"]
 
     E --> F1["F-1 admin_setup_verification.yml"]
+
     F1 --> F2["F-2 vars-guide-sync.yml"]
+
     F2 --> F3["F-3 repo-var-sync-schedule.yml"]
+
     F3 --> F4["F-4 validate.yml"]
+
     F4 --> F5["F-5 scan-secrets-variables.yml\nfinal inventory"]
+
     F5 --> DONE[" Variable & Secret\nGovernance Complete"]
 
     style DONE fill:#27ae60,color:#fff
@@ -863,7 +923,7 @@ flowchart TD
 
 ---
 
-###  Agent Prompt — Phase C+D Kickoff
+### Agent Prompt — Phase C+D Kickoff
 
 When ready to implement Phases C and D, use this prompt:
 
@@ -903,26 +963,26 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 ---
 
-### ��️ Section Status
+### �� Section Status
 
 | Phase | Status | Assigned To | ETA |
 |-------|--------|-------------|-----|
-| A — Pre-flight |  Pending admin action | @mbaetiong | Before token rotation | <!-- pragma: allowlist secret -->
-| B — Token rotation |  Pending admin action | @mbaetiong | At refresh time | <!-- pragma: allowlist secret -->
-| C — New variables |  Agent-executable | `copilot-swe-agent[bot]` | After B completes |
-| D — token-expiry-monitor |  Agent-executable | `copilot-swe-agent[bot]` | After C-2/C-3 | <!-- pragma: allowlist secret -->
-| E — Clean-up |  Agent-executable | `copilot-swe-agent[bot]` | After D |
-| F — Verification |  Agent-executable | `copilot-swe-agent[bot]` | After E |
+| A — Pre-flight | Pending admin action | @mbaetiong | Before token rotation | <!-- pragma: allowlist secret -->
+| B — Token rotation | Pending admin action | @mbaetiong | At refresh time | <!-- pragma: allowlist secret -->
+| C — New variables | Agent-executable | `copilot-swe-agent[bot]` | After B completes |
+| D — token-expiry-monitor | Agent-executable | `copilot-swe-agent[bot]` | After C-2/C-3 | <!-- pragma: allowlist secret -->
+| E — Clean-up | Agent-executable | `copilot-swe-agent[bot]` | After D |
+| F — Verification | Agent-executable | `copilot-swe-agent[bot]` | After E |
 
 ---
 
-##  Rate-Limit Awareness — Workflow Improvement Plan
+## Rate-Limit Awareness — Workflow Improvement Plan
 
 > **Reference:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §12
 > **Audit script:** `python3 scripts/ci/github_api_trickle.py --status`
 > **Protocol:** `.codex/docs/RATE_LIMIT_AWARENESS.md`
 
-###  Audit Summary — Workflows Requiring Improvement
+### Audit Summary — Workflows Requiring Improvement
 
 | Priority | Workflow | API Calls | Guards | Gap | Primary Fix |
 |----------|----------|----------:|-------:|----:|-------------|
@@ -935,70 +995,70 @@ CTEP Compliance: Completed = 10, Skipped = 0
 | **P2** | `codeql.yml` + `codeql-analysis.yml` | 4+5 | 0 | 9 | Schedule stagger + dedup |
 | **P3** | `iterative-self-healing-ci.yml` | 4 | 3 | 1 | Add `github_api_trickle.py --status` pre-check |
 
-###  Implementation Checklist
+### Implementation Checklist
 
 #### Phase RL-1 — P1 Workflows (highest blast radius)
 
 - [x] **RL-1a** `workflow-execution-gate.yml` — add Pattern A + D
-  - Insert pre-call check step before `detect-wec-changes` job API steps
-  - Add `GH_TRICKLE_POLITE_SLEEP: "0.3"` and `GH_TRICKLE_MIN_REMAINING: "50"` to job env
-  - Replace paginated comment loops with `github_api_trickle.py` call
-  - Add `continue-on-error: true` on all paginated fetch steps
+ - Insert pre-call check step before `detect-wec-changes` job API steps
+ - Add `GH_TRICKLE_POLITE_SLEEP: "0.3"` and `GH_TRICKLE_MIN_REMAINING: "50"` to job env
+ - Replace paginated comment loops with `github_api_trickle.py` call
+ - Add `continue-on-error: true` on all paginated fetch steps
 
 - [x] **RL-1b** `auto-approve-workflows.yml` — add Pattern D + circuit breaker
-  - Add pre-call check: skip job if `remaining < 100`
-  - Wrap `--paginate` loop with page-by-page remaining check
-  - Add `GH_TRICKLE_POLITE_SLEEP: "1.0"` (scheduled workflow — not time critical)
-  - Set `CODEX_RL_CIRCUIT_BREAKER_ENABLED` check before approving runs
+ - Add pre-call check: skip job if `remaining < 100`
+ - Wrap `--paginate` loop with page-by-page remaining check
+ - Add `GH_TRICKLE_POLITE_SLEEP: "1.0"` (scheduled workflow — not time critical)
+ - Set `CODEX_RL_CIRCUIT_BREAKER_ENABLED` check before approving runs
 
 - [x] **RL-1c** `promote-integration-branch.yml` — add Pattern C (retry + rollback)
-  - Wrap each `gh api PATCH` ref update in `_api_with_retry()` shell function
-  - Track which refs were updated; on failure, revert already-updated refs
-  - Add pre-call check before the entire ref-update sequence
+ - Wrap each `gh api PATCH` ref update in `_api_with_retry()` shell function
+ - Track which refs were updated; on failure, revert already-updated refs
+ - Add pre-call check before the entire ref-update sequence
 
 - [x] **RL-1d** `copilot-agent-session-done.yml` — add GraphQL rate check
-  - Add `rateLimit { remaining resetAt }` inline to each GraphQL query
-  - Add circuit-break logic before page loops: exit loop if `remaining < 20`
-  - Replace bare `gh api --paginate` with trickle-aware equivalent
-  - Set job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
+ - Add `rateLimit { remaining resetAt }` inline to each GraphQL query
+ - Add circuit-break logic before page loops: exit loop if `remaining < 20`
+ - Replace bare `gh api --paginate` with trickle-aware equivalent
+ - Set job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
 
 #### Phase RL-2 — P2 Workflows (scheduled, self-healing)
 
-- [x] **RL-2a** `copilot-iterative-self-healing.yml`  S861
-  - Added Pattern A pre-check step (sparse checkout + `github_api_trickle.py --status`) at job start
-  - Added job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
-  - Rate-limited path sets `RATE_LIMITED=true` in `$GITHUB_ENV`, triage step skips with `if: env.RATE_LIMITED != 'true'`
+- [x] **RL-2a** `copilot-iterative-self-healing.yml` S861
+ - Added Pattern A pre-check step (sparse checkout + `github_api_trickle.py --status`) at job start
+ - Added job-level `GH_TRICKLE_POLITE_SLEEP: "0.5"`
+ - Rate-limited path sets `RATE_LIMITED=true` in `$GITHUB_ENV`, triage step skips with `if: env.RATE_LIMITED != 'true'`
 
-- [x] **RL-2b** `codebase-health-sweep.yml`  S861
-  - Added Pattern D remaining<20 guard before both Active-PR guard API calls (main + 0D_base_)
-  - Graceful skip (pr_skip=false) when rate-limited — sweep push proceeds safely
+- [x] **RL-2b** `codebase-health-sweep.yml` S861
+ - Added Pattern D remaining<20 guard before both Active-PR guard API calls (main + 0D_base_)
+ - Graceful skip (pr_skip=false) when rate-limited — sweep push proceeds safely
 
 - [ ] **RL-2c** `codeql.yml` + `codeql-analysis.yml` — schedule stagger
-  - `codeql.yml`: change schedule to `0 2 * * 1` (Monday 02:00 UTC)
-  - `codeql-analysis.yml`: change schedule to `0 2 * * 4` (Thursday 02:00 UTC)
-  - Add `continue-on-error: true` on all API steps in both
-  - Add pre-check: skip if `CODEX_CI_FAILURE_RATE > 5.0`
+ - `codeql.yml`: change schedule to `0 2 * * 1` (Monday 02:00 UTC)
+ - `codeql-analysis.yml`: change schedule to `0 2 * * 4` (Thursday 02:00 UTC)
+ - Add `continue-on-error: true` on all API steps in both
+ - Add pre-check: skip if `CODEX_CI_FAILURE_RATE > 5.0`
 
 #### Phase RL-3 — Add Rate-Limit Monitoring Variables
 
 - [x] **RL-3a** Add 6 new `CODEX_RL_*` variables via `process-variable-intents.yml`:
 
-  | Variable | Value |
-  |----------|-------|
-  | `CODEX_RL_POLITE_SLEEP_DEFAULT` | `0.5` |
-  | `CODEX_RL_MIN_REMAINING_DEFAULT` | `50` |
-  | `CODEX_RL_MAX_WAIT_DEFAULT` | `120` |
-  | `CODEX_RL_CIRCUIT_BREAKER_ENABLED` | `true` |
-  | `CODEX_RL_LAST_EXHAUSTION_TIME` | `never` |
-  | `CODEX_RL_EXHAUSTION_COUNT_7D` | `0` |
+ | Variable | Value |
+ |----------|-------|
+ | `CODEX_RL_POLITE_SLEEP_DEFAULT` | `0.5` |
+ | `CODEX_RL_MIN_REMAINING_DEFAULT` | `50` |
+ | `CODEX_RL_MAX_WAIT_DEFAULT` | `120` |
+ | `CODEX_RL_CIRCUIT_BREAKER_ENABLED` | `true` |
+ | `CODEX_RL_LAST_EXHAUSTION_TIME` | `never` |
+ | `CODEX_RL_EXHAUSTION_COUNT_7D` | `0` |
 
 - [ ] **RL-3b** Update `artifact-monitoring.yml` to include rate-limit dashboard:
-  - Add a summary table showing all token pool states
-  - Persist to `.codex/artifacts/rate_limit_history/`
+ - Add a summary table showing all token pool states
+ - Persist to `.codex/artifacts/rate_limit_history/`
 
 #### Phase RL-4 — Verification
 
-- [x] Run `python scripts/ci/github_api_trickle.py --status` on the branch —  S860
-- [x] Run `actionlint` on all modified workflows —  0 errors S860
-- [x] Run `validate.yml` to confirm `sync_tracked_files` clean —  S860
+- [x] Run `python scripts/ci/github_api_trickle.py --status` on the branch — S860
+- [x] Run `actionlint` on all modified workflows — 0 errors S860
+- [x] Run `validate.yml` to confirm `sync_tracked_files` clean — S860
 - [ ] Manually trigger `artifact-monitoring.yml` — confirm rate-limit section present in summary

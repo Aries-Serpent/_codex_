@@ -4,9 +4,9 @@
 
 **Last Updated: 2026-06-22
 
-> **Module**: `analysis/intuitive_aptitude.py`  
-> **Status**:  Production Ready  
-> **Tests**: 76 tests, all passing  
+> **Module**: `analysis/intuitive_aptitude.py`
+> **Status**: Production Ready
+> **Tests**: 76 tests, all passing
 > **Type Safety**: mypy compliant
 
 ## Overview
@@ -18,33 +18,33 @@ The `intuitive_aptitude` module provides rich code analysis helpers for Python s
 ### Core Capabilities
 
 1. **AST Parsing & Structure Extraction**
-   - Functions with full metadata (args, decorators, returns, complexity)
-   - Classes with inheritance and methods
-   - Import statements (regular and relative)
-   - Global variables and constants
+ - Functions with full metadata (args, decorators, returns, complexity)
+ - Classes with inheritance and methods
+ - Import statements (regular and relative)
+ - Global variables and constants
 
 2. **Pattern Recognition**
-   - Error handling patterns (try/except/finally)
-   - Iteration patterns (for/while loops)
-   - Conditional patterns (if/elif/else)
-   - Function call patterns
+ - Error handling patterns (try/except/finally)
+ - Iteration patterns (for/while loops)
+ - Conditional patterns (if/elif/else)
+ - Function call patterns
 
 3. **Style Analysis**
-   - Naming conventions (snake_case, camelCase, PascalCase)
-   - Indentation style (spaces vs tabs)
-   - Docstring styles (Google, NumPy, Sphinx)
-   - Programming paradigm (functional vs OOP)
+ - Naming conventions (snake_case, camelCase, PascalCase)
+ - Indentation style (spaces vs tabs)
+ - Docstring styles (Google, NumPy, Sphinx)
+ - Programming paradigm (functional vs OOP)
 
 4. **Code Metrics**
-   - Lines of code (LOC)
-   - Comment ratio
-   - Cyclomatic complexity
-   - Function call analysis
+ - Lines of code (LOC)
+ - Comment ratio
+ - Cyclomatic complexity
+ - Function call analysis
 
 5. **Code Generation & Transformation**
-   - Clone code with identifier renaming
-   - Generate skeleton code from structure
-   - Generate common patterns
+ - Clone code with identifier renaming
+ - Generate skeleton code from structure
+ - Generate common patterns
 
 ## Quickstart
 

@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Generated**: 2026-06-22T00:00:00Z  
-**Session**: S140  
-**PR**: #3610 (`copilot/sub-pr-3606`)  
+**Generated**: 2026-06-22T00:00:00Z
+**Session**: S140
+**PR**: #3610 (`copilot/sub-pr-3606`)
 **Base PR**: #3606 (`0D_base_`)
 
 ---
@@ -15,18 +15,18 @@
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| PatternCompressor /health |  DONE | Phase 4 complete |
-| BrainClient health endpoint |  DONE | Phase 4 complete |
-| Redis RAG + Feast backend |  DONE | Phase 4 complete |
-| CrossEncoderReranker |  DONE | Phase 4 complete |
-| capability_detectors (25 tests) |  DONE | Phase 4 complete |
-| Bot comment upsert (9 types) |  DONE | Race-safe, retry loop |
-| Deferral fence-opener fix |  DONE | Opener buffered in fence_buffer |
-| Comment upsert pagination |  **NEW S140** | All 4 workflow upserts paginate past 100 |
-| Consolidator dedup newest-first |  **NEW S140** | Returns most-recently-updated marker |
-| evaluate_datasets at module scope |  **NEW S140** | Monkeypatch-safe |
-| PooledConnectionProxy backup fix |  **NEW S140** | `_raw_conn()` unwraps for C-extension |
-| Token rotation e2e |  ADMIN NEEDED | Requires real GitHub App from human admin |
+| PatternCompressor /health | DONE | Phase 4 complete |
+| BrainClient health endpoint | DONE | Phase 4 complete |
+| Redis RAG + Feast backend | DONE | Phase 4 complete |
+| CrossEncoderReranker | DONE | Phase 4 complete |
+| capability_detectors (25 tests) | DONE | Phase 4 complete |
+| Bot comment upsert (9 types) | DONE | Race-safe, retry loop |
+| Deferral fence-opener fix | DONE | Opener buffered in fence_buffer |
+| Comment upsert pagination | **NEW S140** | All 4 workflow upserts paginate past 100 |
+| Consolidator dedup newest-first | **NEW S140** | Returns most-recently-updated marker |
+| evaluate_datasets at module scope | **NEW S140** | Monkeypatch-safe |
+| PooledConnectionProxy backup fix | **NEW S140** | `_raw_conn()` unwraps for C-extension |
+| Token rotation e2e | ADMIN NEEDED | Requires real GitHub App from human admin |
 
 ### S140 Changes Applied
 
@@ -45,7 +45,7 @@
 - `test_contracts.py` — `isinstance(item, Path)` fixed via direct `codex_plans` import + `hasattr(item, 'is_file')` fallback
 
 #### Dependabot Cherry-pick
-- PR #3608: `Dockerfile` — nvidia/cuda 12.1.0 → 13.2.0 (Ubuntu 22.04 runtime)
+- PR #3608: `Dockerfile` — nvidia/cuda 12.1.0 13.2.0 (Ubuntu 22.04 runtime)
 
 ---
 
@@ -53,6 +53,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR Comment Upsert<br/>(paginated, race-safe)", "Consolidator Dedup<br/>(newest-first merge)"'}}%%
+
 graph TD
     subgraph "CI/CD Robustness Layer (Phase 5)"
         UPSRT["PR Comment Upsert<br/>(paginated, race-safe)"]
@@ -82,8 +83,11 @@ graph TD
     end
 
     UPSRT --> DEDUP
+
     DEFER --> CACHE
+
     EVAL --> POOL
+
     SORT --> GH
 
     style UPSRT fill:#22c55e,color:#fff
@@ -107,6 +111,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
+
 gantt
     title Cognitive Brain Phase Roadmap
     dateFormat  YYYY-MM-DD
@@ -147,6 +152,7 @@ gantt
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "cost-gate.yml<br/>pip cache ", "branch-rebase-gate.yml<br/>pip cache "'}}%%
+
 graph TB
     subgraph "CI Health — S143 Baseline (2026-03-17)"
         direction LR
@@ -180,8 +186,11 @@ graph TB
     end
 
     A5 --> B1
+
     B1 --> C1
+
     C1 --> C2
+
     C2 --> C3
     C3 -.->|requires admin| D1
 ```
@@ -190,6 +199,7 @@ graph TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing 0.0, 1.0'}}%%
+
 sequenceDiagram
     participant CI as GitHub Actions Job
     participant OTel as otel_metrics.py
@@ -198,10 +208,12 @@ sequenceDiagram
 
     CI->>OTel: import workflow_coherence_score, compute_coherence
     CI->>OTel: compute_coherence(actual_steps, expected_steps)
+
     OTel-->>CI: score: float [0.0, 1.0]
     CI->>OTel: workflow_coherence_score.observe(score)
     OTel->>Reg: _observations.append(score)
     Dash->>Reg: metrics.get("workflow.coherence.score")
+
     Reg-->>Dash: Histogram snapshot {count, sum, avg}
 ```
 
@@ -224,22 +236,22 @@ sequenceDiagram
 
 ### Priority 1 — Admin-Gated
 - [ ] **Token rotation e2e** — Human admin must configure real GitHub App credentials
-  - Guide: `docs/admin/TOKEN_ROTATION_GUIDE.md`
-  - Calendar: Update rotation table after first rotation
+ - Guide: `docs/admin/TOKEN_ROTATION_GUIDE.md`
+ - Calendar: Update rotation table after first rotation
 
 ### Priority 2 — Enhancement
-- [ ] **OTel → live CI wiring** — Instrument `scripts/ci/*.py` to emit `workflow_coherence_score.observe()` at job completion
+- [ ] **OTel live CI wiring** — Instrument `scripts/ci/*.py` to emit `workflow_coherence_score.observe()` at job completion
 - [ ] **Coherence dashboard** — Weekly GitHub Actions step that snapshots coherence histogram and posts to PR
 - [ ] **P2 plans content review** — `@mbaetiong` to validate historical decision records
 
-### Completed in Phase 6 (S141–S143) 
+### Completed in Phase 6 (S141–S143)
 - [x] `src/codex/monitoring/otel_metrics.py` — `workflow_job_duration_seconds` + `workflow_step_duration` + `workflow_coherence_score` histograms
 - [x] `src/codex/monitoring/otel_metrics.py` — `compute_coherence()` helper for policy-alignment scoring
 - [x] `tests/test_otel_metrics.py` — 18 tests (10 existing + 8 coherence)
 - [x] `tests/critical_path/test_auth_flows.py` — `@pytest.mark.slow` on 2 rate-limiter tests
 - [x] `.github/workflows/dependabot-auto-absorb.yml` — single-file bump auto-cherry-pick
 - [x] CB Dashboard v3 — coherence architecture diagram + cumulative metrics table
-- [x] `requirements/lock.txt` — pyasn1 0.6.2 → 0.6.3 (CVE-2026-30922)
+- [x] `requirements/lock.txt` — pyasn1 0.6.2 0.6.3 (CVE-2026-30922)
 - [x] mypy zero-error baseline (S142)
 - [x] TOKEN_ROTATION_GUIDE.md created (S142)
 - [x] 533 stale docs remediated via `update_doc_freshness.py` (S142)

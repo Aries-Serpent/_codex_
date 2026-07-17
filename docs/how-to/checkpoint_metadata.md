@@ -1,12 +1,12 @@
-# [How-to]: Checkpoint Metadata, Integrity & Retention  
+# [How-to]: Checkpoint Metadata, Integrity & Retention
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Overview
-- Atomic writes (tmpfile→fsync→os.replace)
+- Atomic writes (tmpfilefsyncos.replace)
 - Metadata fields: schema_version, created_at, git_sha, config_hash, rng, env, metric_key, metric_value, sha256
 - Best‑k retention via index.json (mode=min|max)
 

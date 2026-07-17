@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.0  
-**Audience**: DevOps engineers, operations teams, support engineers  
+**Last Updated**: 2026-07-08
+**Version**: 1.0
+**Audience**: DevOps engineers, operations teams, support engineers
 **Tier**: Production-Ready
 
 ---
@@ -67,7 +67,7 @@ kubectl get pod <pod-name> -n <namespace> -o yaml | grep -A 20 "env:"
    
    # For Kubernetes
    kubectl set env deployment/codex-ml DATABASE_URL=... API_KEY=...
-   ```
+ ```
 
 2. **Port Already in Use**
    ```bash
@@ -77,7 +77,7 @@ kubectl get pod <pod-name> -n <namespace> -o yaml | grep -A 20 "env:"
    
    # Solution: Use different port or kill conflicting process
    kill -9 <pid>
-   ```
+ ```
 
 3. **Insufficient Disk Space**
    ```bash
@@ -88,7 +88,7 @@ kubectl get pod <pod-name> -n <namespace> -o yaml | grep -A 20 "env:"
    # Solution: Clean up unused containers/images
    docker system prune -a
    docker image prune
-   ```
+ ```
 
 4. **Memory Issues**
    ```bash
@@ -102,7 +102,7 @@ kubectl get pod <pod-name> -n <namespace> -o yaml | grep -A 20 "env:"
    kubectl set resources deployment codex-ml \
      --limits=memory=4Gi,cpu=2 \
      --requests=memory=2Gi,cpu=1
-   ```
+ ```
 
 ### Issue: Service Not Responding
 

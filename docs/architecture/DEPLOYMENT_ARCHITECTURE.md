@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Supported Platforms**: Local, Docker, Kubernetes, Cloud
 
 ---
@@ -12,6 +12,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Deployment Architecture<br/>Local Docker Kubernetes Cloud'}, 'theme': 'base'}}%%
+
 graph TB
     subgraph "Local Development"
         LocalDev["💻 Developer Laptop<br/>• Python venv<br/>• Local SQLite DB<br/>• Local Redis cache"]
@@ -47,26 +48,36 @@ graph TB
 
     %% Deployment flow
     LocalDev --> LocalTools
+
     LocalTools -->|"git push"| Git
     
     Git --> GHActions
+
     GHActions -->|"Run tests"| Tests
+
     Tests -->|"Build image"| BuildStage
+
     BuildStage --> RuntimeStage
+
     RuntimeStage -->|"Push image"| Registry
     
     Registry -->|"Pull image"| K8sCluster
+
     Registry -->|"Pull image"| CloudCompute
     
     K8sCluster --> K8sServices
+
     K8sCluster --> K8sStorage
+
     K8sCluster --> K8sNet
     
     K8sStorage -.connects.-> CloudDB
     K8sServices -.mounts.-> CloudStorage
     
     CloudCompute --> CloudStorage
+
     CloudCompute --> CloudDB
+
     CloudCompute --> CloudMonitor
     
     Publish -->|"Release tag"| Registry
@@ -386,7 +397,7 @@ storage:
 | **Scaling** | Manual | Manual | Auto | Auto |
 | **Monitoring** | Local | Logs | Prometheus | CloudWatch |
 | **Cost** | Free | Free | $100-500/mo | $500-2000/mo |
-| **HA** |  |  |  |  |
+| **HA** | | | | |
 | **Security** | Basic | Good | Excellent | Excellent |
 
 ---

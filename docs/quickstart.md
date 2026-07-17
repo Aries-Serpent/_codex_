@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 This quickstart demonstrates an end-to-end workflow entirely on your local
-machine: tokenizer setup → training → evaluation.  All commands are
+machine: tokenizer setup training evaluation. All commands are
 copy-pasteable and avoid network access by default.
 
 ## 1. Bootstrap the environment
@@ -77,7 +77,7 @@ See [`tests/README.md`](tests/README.md) and [`docs/guides/TESTING_GUIDE.md`](gu
 ## Guarded experiment tracking
 
 Set `CODEX_OFFLINE_MODE=1` to prevent Codex from touching MLflow even when the
-package is installed.  When unset the new `codex_ml.logging.mlflow_guard`
+package is installed. When unset the new `codex_ml.logging.mlflow_guard`
 module initialises a local `file:` tracking URI automatically:
 
 ```bash
@@ -115,7 +115,7 @@ omitted for brevity) so you can quickly orient yourself after cloning the repo.
 ## 2. (Optional) prepare the offline defaults
 
 To follow the offline-first examples you can populate the lightweight catalogue
-bundled with Codex ML.  Copy or symlink the model, tokenizer, dataset and metric
+bundled with Codex ML. Copy or symlink the model, tokenizer, dataset and metric
 artefacts into the directories below (relative to the repository root):
 
 ```text
@@ -126,7 +126,7 @@ data/offline/weighted_accuracy.json
 ```text
 You can also set the environment variables described in
 [`guides/offline_catalogue.md`](guides/offline_catalogue.md) to point
-at alternative locations.  Skip this step entirely if you prefer the minimal
+at alternative locations. Skip this step entirely if you prefer the minimal
 MiniLM baseline – the remaining commands continue to work.
 
 ## 3. Tokenize sample data
@@ -169,7 +169,7 @@ The `+reasoning=baseline` overlay activates trace logging, NDJSON ledgers, and e
 
 ### Data handling essentials
 
-Large JSONL corpora no longer need to be read into memory.  Stream them with
+Large JSONL corpora no longer need to be read into memory. Stream them with
 `codex_ml.data.jsonl_stream.iter_jsonl()` and split deterministically with a
 single seed:
 
@@ -182,7 +182,7 @@ train, val, test = deterministic_split(records, seed=1234, val_fraction=0.15, te
 ```text
 
 When caching shards, call `codex_ml.data.cache.write_jsonl_with_crc()` to emit a
-`.crc32` sidecar.  The checksum is derived from the streaming
+`.crc32` sidecar. The checksum is derived from the streaming
 `codex_ml.data.integrity.crc32_file()` helper and lets you verify cached shards
 before loading them back into memory.
 
@@ -239,7 +239,7 @@ python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config
 
 The helper YAML locks Hydra's output folders under `.codex/hydra/` so you can
 inspect multirun artefacts without touching remote services.
-The script writes checkpoints and NDJSON logs under `runs/examples/`.  Each run
+The script writes checkpoints and NDJSON logs under `runs/examples/`. Each run
 creates a timestamped directory containing:
 
 * `metrics.ndjson` – per-step metrics
@@ -272,7 +272,7 @@ codex evaluate --config configs/evaluation/base.yaml --log-metrics artifacts/eva
 ```text
 
 Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits
-and labels are available).  Adjust the cadence with
+and labels are available). Adjust the cadence with
 `training.eval_every_epochs`.
 
 ### LoRA switch
@@ -298,7 +298,7 @@ The functional trainer exposes the most common loop knobs directly on the
 | `training.metrics_out` | Path to the append-only NDJSON log (defaults to `.codex/metrics.ndjson`). |
 
 > **Effective batch size:** within a single process the trainer applies
-> `gradient_accumulation` batches before stepping the optimiser.  The effective
+> `gradient_accumulation` batches before stepping the optimiser. The effective
 > batch therefore equals `batch_size × gradient_accumulation × world_size`
 > (with `world_size = 1` for this loop).
 
@@ -311,14 +311,14 @@ tail -f .codex/metrics.ndjson
 ### Padding, truncation and caching
 
 Codex ML exposes the Hugging Face-style padding and truncation flags directly
-through `TrainingRunConfig`.  Set `padding` to `True` (default) to pad batches to
+through `TrainingRunConfig`. Set `padding` to `True` (default) to pad batches to
 the longest sequence or to `'max_length'`/`False` to fine-tune behaviour, and
 use `truncation=True` plus `max_length=<int>` to cap overly long prompts during
-training.  When a `DataCollatorWithPadding` dependency is available it is wired
+training. When a `DataCollatorWithPadding` dependency is available it is wired
 automatically for dynamic padding at batch time.
 
 Repeated calls to the same tokenizer inputs are cached in a lightweight
-in-memory LRU keyed by text and padding arguments.  To disable caching for
+in-memory LRU keyed by text and padding arguments. To disable caching for
 debugging or benchmarking set `CODEX_ML_TOKEN_CACHE_DISABLE=1` in the
 environment before launching training.
 
@@ -329,30 +329,30 @@ python examples/mlflow_offline.py runs/examples/<latest-run>
 python examples/evaluate_toy.py
 ```text
 Use the printed `mlflow ui --backend-store-uri ...` command to explore the run
-offline.  TensorBoard summaries are saved alongside the run when enabled.
+offline. TensorBoard summaries are saved alongside the run when enabled.
 
 ## 5b. Logging & Monitoring (optional)
 
 Codex ML keeps telemetry opt-in so you can decide when to light up dashboards.
 
 * **TensorBoard** – pass `tensorboard=true` (or set `TrainConfig.tensorboard = True`)
-  and optionally override `tensorboard_dir` (default `runs/codex`). Launch a
-  dashboard locally with:
+ and optionally override `tensorboard_dir` (default `runs/codex`). Launch a
+ dashboard locally with:
 
   ```bash
   tensorboard --logdir runs/codex
-  ```
+ ```
 
 * **Weights & Biases (offline)** – export `WANDB_MODE=offline`, set
-  `WANDB_PROJECT` if you want a custom namespace, and enable via
-  `TrainConfig.wandb_enable = True`. The shim buffers events locally; run
-  `wandb sync` later to upload if desired.
+ `WANDB_PROJECT` if you want a custom namespace, and enable via
+ `TrainConfig.wandb_enable = True`. The shim buffers events locally; run
+ `wandb sync` later to upload if desired.
 
 * **System metrics NDJSON** – background sampling writes CPU/RAM (and GPU when
-  NVML is present) into `.codex/metrics.ndjson` by default. Adjust with
-  `TrainConfig.metrics_out` or disable by setting
-  `TrainConfig.system_metrics_interval = 0`. TensorBoard/W&B receive the same
-  scalar stream when enabled.
+ NVML is present) into `.codex/metrics.ndjson` by default. Adjust with
+ `TrainConfig.metrics_out` or disable by setting
+ `TrainConfig.system_metrics_interval = 0`. TensorBoard/W&B receive the same
+ scalar stream when enabled.
 
 ## 6. Next steps
 
@@ -364,7 +364,7 @@ Codex ML keeps telemetry opt-in so you can decide when to light up dashboards.
 ## 7. Optional: plug in custom causal LMs
 
 You can register bespoke constructors that sidestep Hugging Face entirely –
-useful for deterministic fixtures or research prototypes.  Registered
+useful for deterministic fixtures or research prototypes. Registered
 constructors receive the same keyword arguments as the default loader, so you
 can react to AMP dtype or LoRA settings.
 
@@ -384,8 +384,8 @@ model = load_causal_lm("toy-causal", device="cuda", dtype="bf16")
 ```text
 
 Passing `dtype="bf16"` or `dtype="fp16"` maps to `torch.bfloat16` /
-`torch.float16` automatically.  Hardware support varies – on CPU the loader
-falls back gracefully when the dtype is unsupported.  LoRA/PEFT dictionaries are
+`torch.float16` automatically. Hardware support varies – on CPU the loader
+falls back gracefully when the dtype is unsupported. LoRA/PEFT dictionaries are
 also forwarded so registries can decide whether to attach adapters.
 
 ## Reproducible sweeps

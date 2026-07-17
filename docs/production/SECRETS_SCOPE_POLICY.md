@@ -4,10 +4,10 @@
 
 **Last Updated: 2026-06-22
 
-**Document**: Security & Compliance Policy  
-**Audience**: DevOps, Security, Platform Engineering  
-**Effective Date**: 2026-06-14  
-**Classification**: Internal  
+**Document**: Security & Compliance Policy
+**Audience**: DevOps, Security, Platform Engineering
+**Effective Date**: 2026-06-14
+**Classification**: Internal
 
 ---
 
@@ -458,19 +458,19 @@ exit 0
 If a secret is compromised:
 
 1. **Immediate (< 5 min)**:
-   - Invalidate compromised secret
-   - Rotate to new value
-   - Alert security team
+ - Invalidate compromised secret
+ - Rotate to new value
+ - Alert security team
 
 2. **Short-term (< 30 min)**:
-   - Investigate scope of compromise
-   - Determine what access was possible
-   - Review audit logs
+ - Investigate scope of compromise
+ - Determine what access was possible
+ - Review audit logs
 
 3. **Resolution (< 4 hours)**:
-   - Update all dependent systems
-   - Verify no unauthorized access
-   - Update incident report
+ - Update all dependent systems
+ - Verify no unauthorized access
+ - Update incident report
 
 ---
 
@@ -479,20 +479,20 @@ If a secret is compromised:
 ### 8.1 Compliance Certification
 
 This policy ensures compliance with:
--  **OWASP Top 10**: A02:2021 – Cryptographic Failures
--  **NIST Framework**: PR.DS (Data Security)
--  **CWE-798**: Use of Hard-Coded Credentials
--  **SOC 2 Type II**: AC (Access Control)
+- **OWASP Top 10**: A02:2021 – Cryptographic Failures
+- **NIST Framework**: PR.DS (Data Security)
+- **CWE-798**: Use of Hard-Coded Credentials
+- **SOC 2 Type II**: AC (Access Control)
 
 ### 8.2 Sign-off
 
-- **Security Lead**: ____________________  Date: _________
-- **Operations Lead**: ____________________  Date: _________
-- **Compliance Officer**: ____________________  Date: _________
+- **Security Lead**: ____________________ Date: _________
+- **Operations Lead**: ____________________ Date: _________
+- **Compliance Officer**: ____________________ Date: _________
 
 ---
 
-**Document Version**: 1.0  
-**Effective Date**: 2026-06-14  
-**Review Frequency**: Quarterly  
+**Document Version**: 1.0
+**Effective Date**: 2026-06-14
+**Review Frequency**: Quarterly
 **Last Updated**: 2026-06-14

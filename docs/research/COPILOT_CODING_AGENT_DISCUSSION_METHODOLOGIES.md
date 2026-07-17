@@ -2,13 +2,13 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Generated**: 2026-06-22  
+> **Generated**: 2026-06-22
 > **Scope**: Methodologies for GitHub Copilot Coding Agent to post discussions, PR comments,
 > code review annotations, and documentation comments — plus this repo's homepage.
 
 ---
 
-## 🏠 Repo Homepage
+## Repo Homepage
 
 | Resource | URL |
 |----------|-----|
@@ -201,9 +201,9 @@ and comments:
 
 - **`generate_manifest.py`** — serialises codebase state into a context manifest
 - **`sanitize_for_injection()`** — enforces a 32,000-token `CONTEXT_WINDOW_BUDGET`
-  before injecting into Copilot sessions (see `scripts/ci/generate_manifest.py`)
+ before injecting into Copilot sessions (see `scripts/ci/generate_manifest.py`)
 - **`session_logger.py`** — records conversation events (roles: `system/user/assistant/tool`)
-  that can be replayed into future sessions for continuity
+ that can be replayed into future sessions for continuity
 
 ---
 

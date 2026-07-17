@@ -3,15 +3,16 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-06-22
-**Version**: 3.0.0  
+**Version**: 3.0.0
 **Purpose**: Visual evolutionary process mapping of the _codex_ AI cognitive agency — from conception through emergence to autonomous operation.
 
 ---
 
-## 🌳 Master Evolution Tree
+## Master Evolution Tree
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🏛️ Foundation Era (2025-Q4)", Phase 1-5: Foundation<br/>Ingestion · Agents · RAG · CI/CD · Security'}}%%
+
 graph TD
     subgraph Foundation["🏛️ Foundation Era (2025-Q4)"]
         P1[Phase 1-5: Foundation<br/>Ingestion · Agents · RAG · CI/CD · Security]
@@ -48,17 +49,29 @@ graph TD
     end
 
     P1 -->|"21,500+ tests"| P6
+
     P6 -->|"Package system"| P7
+
     P7 -->|"Brain online"| P8
+
     P8 -->|"Docs unified"| P9
+
     P9 -->|"Performance"| P10
+
     P10 -->|"Guards active"| P11
+
     P10 -->|"Guards active"| P12
+
     P11 -->|"Features"| P13
+
     P12 -->|"Coordination"| P15
+
     P13 -->|"Interactive"| P14
+
     P15 -->|"Autonomy"| P16
+
     P14 & P16 -->|"Intelligence"| P17
+
     P17 -->|"Scale"| P18
 
     style P1 fill:#2d5a27,color:#fff
@@ -83,10 +96,11 @@ graph TD
 
 ---
 
-##  Planset Dependency Graph
+## Planset Dependency Graph
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Security Plansets", PS-02: IPC Bridge<br/>Hardening'}}%%
+
 graph LR
     subgraph Security[" Security Plansets"]
         PS02[PS-02: IPC Bridge<br/>Hardening]
@@ -119,17 +133,29 @@ graph LR
     end
 
     PS01 -->|"Config foundation"| PS03
+
     PS03 -->|"Unified state"| PS08
+
     PS02 -->|"Secure channels"| PS04
+
     PS04 -->|"PII clean"| PS05
+
     PS06 -->|"Base crawler"| PS06e
+
     PS07 -->|"Business rules"| PS09
+
     PS09 -->|"Training gates"| PS10
+
     PS05 -->|"Security baseline"| PS10
+
     PS08 -->|"Clean architecture"| PS10
+
     PS10 -->|"MCP features"| PS11
+
     PS10 -->|"MCP features"| PS12
+
     PS10 -->|"Agent routing"| PS13
+
     PS13 -->|"Visualization"| PS14
 
     style PS01 fill:#2d5a27,color:#fff
@@ -151,10 +177,11 @@ graph LR
 
 ---
 
-##  Agent Evolution Lineage
+## Agent Evolution Lineage
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Generation 1: Standalone Agents", CI Testing Agent'}}%%
+
 graph TD
     subgraph Gen1["Generation 1: Standalone Agents"]
         A1[CI Testing Agent]
@@ -190,18 +217,31 @@ graph TD
     end
 
     A1 -->|"Specialized"| A4
+
     A2 -->|"Security awareness"| A5
+
     A3 -->|"Config knowledge"| A6
+
     A4 -->|"Coverage patterns"| A8
+
     A5 -->|"Dependency graph"| A9
+
     A6 -->|"Test patterns"| A10
+
     A7 -->|"Doc standards"| A11
+
     A8 -->|"Brain integration"| A12
+
     A9 -->|"Tensor patterns"| A13
+
     A10 -->|"RAG knowledge"| A14
+
     A11 -->|"QA patterns"| A15
+
     A12 & A13 & A14 & A15 -->|"Evolution"| A16
+
     A16 -->|"Self-improve"| A17
+
     A17 -->|"Coordinate"| A18
 
     style A1 fill:#4a90d9,color:#fff
@@ -226,10 +266,11 @@ graph TD
 
 ---
 
-##  Capability Maturity Model
+## Capability Maturity Model
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Level 1: Reactive", Code Suggestions'}}%%
+
 graph LR
     subgraph L1["Level 1: Reactive"]
         L1a[Code Suggestions]
@@ -271,10 +312,11 @@ graph LR
 
 ---
 
-## 🧪 Technology Stack Evolution
+## Technology Stack Evolution
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 timeline
     title _codex_ Technology Evolution
     section Foundation (2025-Q4)
@@ -298,7 +340,7 @@ timeline
 
 ---
 
-##  Cross-References
+## Cross-References
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Detailed phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog

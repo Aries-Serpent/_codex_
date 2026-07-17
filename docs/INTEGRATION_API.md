@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Phase 2 - Master API Documentation  
-**Coverage:** 78+ public functions & classes  
-**Modules:** github/*, auth/*  
+**Status:** Phase 2 - Master API Documentation
+**Coverage:** 78+ public functions & classes
+**Modules:** github/*, auth/*
 **Last Updated: 2026-07-08
 
 ---
@@ -21,8 +21,8 @@
 
 ## GitHub MCP Poster
 
-**File:** `src/codex/github/mcp_poster.py`  
-**Purpose:** Model Context Protocol integration for GitHub interactions  
+**File:** `src/codex/github/mcp_poster.py`
+**Purpose:** Model Context Protocol integration for GitHub interactions
 **LOC:** 686 | **API:** 32 public functions
 
 ### Classes
@@ -188,8 +188,8 @@ markdown = poster.format_markdown("Campaign Status", sections)
 
 ## GitHub Discussion Manager
 
-**File:** `src/codex/github/discussion_manager.py`  
-**Purpose:** GitHub Discussions API integration for community engagement  
+**File:** `src/codex/github/discussion_manager.py`
+**Purpose:** GitHub Discussions API integration for community engagement
 **LOC:** 965 | **API:** 21 public functions
 
 ### Classes
@@ -310,8 +310,8 @@ Mark comment as answer in Q&A discussion.
 
 ## GitHub App Authentication
 
-**File:** `src/codex/auth/github_app.py`  
-**Purpose:** GitHub App authentication and OAuth handling  
+**File:** `src/codex/auth/github_app.py`
+**Purpose:** GitHub App authentication and OAuth handling
 **LOC:** 677 | **API:** 25 public functions
 
 ### Classes
@@ -416,8 +416,8 @@ Refresh an access token.
 
 ## Token Broker
 
-**File:** `src/codex/autonomy/token_broker.py`  
-**Purpose:** Token lifecycle management and authentication coordination  
+**File:** `src/codex/autonomy/token_broker.py`
+**Purpose:** Token lifecycle management and authentication coordination
 **LOC:** 561 | **API:** 28 public functions
 
 ### Classes
@@ -608,11 +608,11 @@ broker.revoke_token(token)
 
 ## Coverage Status
 
-**Documented Signatures:** 18/78 (23%)  
+**Documented Signatures:** 18/78 (23%)
 **Next Phase:** Complete remaining integration functions
 
 ---
 
-**Generated:** 2026-07-08  
-**Campaign:** WS1 API Documentation Expansion  
+**Generated:** 2026-07-08
+**Campaign:** WS1 API Documentation Expansion
 **Phase:** 2 - Master API References

@@ -2,14 +2,14 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0.0  
+> **Version:** 1.0.0
 > **Last Updated: 2026-06-29
-> **Author:** GitHub Copilot Agent  
+> **Author:** GitHub Copilot Agent
 > **Scope:** 10 GitHub API processes, 20+ GitHub API endpoints, all CODEX_MASTER_KEY scopes
 
 ---
 
-##  Overview
+## Overview
 
 This guide documents the comprehensive test suite for GitHub API processes that leverage **CODEX_MASTER_KEY**, a GitHub Personal Access Token (PAT) with the following scopes:
 
@@ -27,9 +27,9 @@ This guide documents the comprehensive test suite for GitHub API processes that 
 
 ---
 
-##  Top 10 Processes Tested
+## Top 10 Processes Tested
 
-### 1️⃣ Repository Variables Management
+### 1⃣ Repository Variables Management
 
 **Scope Required:** `repo`
 
@@ -53,7 +53,7 @@ DELETE /repos/{owner}/{repo}/actions/variables/{name}
 
 ---
 
-### 2️⃣ Organization Variables Management
+### 2⃣ Organization Variables Management
 
 **Scope Required:** `admin:org`
 
@@ -78,7 +78,7 @@ PUT    /orgs/{org}/actions/variables/{name}/repositories
 
 ---
 
-### 3️⃣ Repository Secrets Management (Actions)
+### 3⃣ Repository Secrets Management (Actions)
 
 **Scope Required:** `repo`
 
@@ -102,7 +102,7 @@ DELETE /repos/{owner}/{repo}/actions/secrets/{name}
 
 ---
 
-### 4️⃣ Organization Secrets Management (Actions)
+### 4⃣ Organization Secrets Management (Actions)
 
 **Scope Required:** `admin:org`
 
@@ -127,7 +127,7 @@ PUT    /orgs/{org}/actions/secrets/{name}/repositories
 
 ---
 
-### 5️⃣ Dependabot Secrets Management
+### 5⃣ Dependabot Secrets Management
 
 **Scope Required:** `repo`
 
@@ -149,7 +149,7 @@ DELETE /repos/{owner}/{repo}/dependabot/secrets/{name}
 
 ---
 
-### 6️⃣ Codespaces Secrets Management
+### 6⃣ Codespaces Secrets Management
 
 **Scope Required:** `codespace`
 
@@ -171,7 +171,7 @@ DELETE /repos/{owner}/{repo}/codespaces/secrets/{name}
 
 ---
 
-### 7️⃣ Workflow Dispatch & Execution
+### 7⃣ Workflow Dispatch & Execution
 
 **Scope Required:** `workflow`
 
@@ -194,7 +194,7 @@ GET    /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts
 
 ---
 
-### 8️⃣ Repository Hooks Management
+### 8⃣ Repository Hooks Management
 
 **Scope Required:** `admin:repo_hook`
 
@@ -219,7 +219,7 @@ POST   /repos/{owner}/{repo}/hooks/{hook_id}/tests
 
 ---
 
-### 9️⃣ Organization Hooks Management
+### 9⃣ Organization Hooks Management
 
 **Scope Required:** `admin:org_hook`
 
@@ -244,7 +244,7 @@ POST   /orgs/{org}/hooks/{hook_id}/tests
 
 ---
 
-### 🔟 Audit Log Access & Querying
+### Audit Log Access & Querying
 
 **Scope Required:** `audit_log`
 
@@ -265,7 +265,7 @@ GET    /enterprises/{enterprise}/audit-log
 
 ---
 
-##  Helper Scripts & Utilities
+## Helper Scripts & Utilities
 
 ### `scripts/ci/_secrets_encryption_helper.py`
 
@@ -328,19 +328,19 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json scopes.json
 
 ---
 
-##  Test Coverage Matrix
+## Test Coverage Matrix
 
 ### Scope Coverage
 
 | Scope | Process | Test File | Status |
 |-------|---------|-----------|--------|
-| `repo` | 1, 3, 5 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` |  |
-| `admin:org` | 2, 4 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` |  |
-| `codespace` | 6 | `test_secrets_management_comprehensive.py` |  |
-| `workflow` | 7 | `test_workflow_operations.py` |  |
-| `admin:repo_hook` | 8 | `test_webhook_management.py` |  |
-| `admin:org_hook` | 9 | `test_webhook_management.py` |  |
-| `audit_log` | 10 | `test_audit_log_access.py` |  |
+| `repo` | 1, 3, 5 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` | |
+| `admin:org` | 2, 4 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` | |
+| `codespace` | 6 | `test_secrets_management_comprehensive.py` | |
+| `workflow` | 7 | `test_workflow_operations.py` | |
+| `admin:repo_hook` | 8 | `test_webhook_management.py` | |
+| `admin:org_hook` | 9 | `test_webhook_management.py` | |
+| `audit_log` | 10 | `test_audit_log_access.py` | |
 
 ### API Endpoint Coverage
 
@@ -352,7 +352,7 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json scopes.json
 
 ---
 
-##  Running the Tests
+## Running the Tests
 
 ### Prerequisites
 
@@ -388,7 +388,7 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_rep
 
 ---
 
-##  Security Considerations
+## Security Considerations
 
 ### Token Exposure Prevention
 
@@ -407,7 +407,7 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_rep
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### 403 Forbidden Errors
 
@@ -457,7 +457,7 @@ python -c "import nacl; print(nacl.__version__)"
 
 ---
 
-##  Additional Resources
+## Additional Resources
 
 - [GitHub REST API Documentation](https://docs.github.com/en/rest)
 - [GitHub Actions Variables](https://docs.github.com/en/rest/actions/variables)
@@ -467,7 +467,7 @@ python -c "import nacl; print(nacl.__version__)"
 
 ---
 
-##  Document History
+## Document History
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|

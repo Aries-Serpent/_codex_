@@ -1,12 +1,12 @@
-#  Autonomous Self-Healing Agent — Comprehensive Design Proposal
+# Autonomous Self-Healing Agent — Comprehensive Design Proposal
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 **Last Updated: 2026-06-22
 
-> **Session:** S182 | **PR:** #3724 | **Status:**  PROPOSAL (awaiting owner review)
+> **Session:** S182 | **PR:** #3724 | **Status:** PROPOSAL (awaiting owner review)
 > **Author:** Copilot Coding Agent (claude-opus-4.6) | **Date:2026-07-13
-> **Policy Compliance:**  Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
+> **Policy Compliance:** Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 
@@ -36,10 +36,10 @@ at a time (by default), with an opt-in mechanism to allow multiple concurrent se
 
 | Component | Status | Action |
 |-----------|--------|--------|
-| Iterative Self-Healing CI |  Deployed (S154) | Extend with Copilot escalation |
-| Agent Token Delegation |  Deployed (S110) | Add session concurrency guard | <!-- pragma: allowlist secret -->
-| Session Chain Workflow |  Deployed (S163) | Add lock/unlock mechanism |
-| PR Template |  Deployed | Add "Multiple Sessions" checkbox |
+| Iterative Self-Healing CI | Deployed (S154) | Extend with Copilot escalation |
+| Agent Token Delegation | Deployed (S110) | Add session concurrency guard | <!-- pragma: allowlist secret -->
+| Session Chain Workflow | Deployed (S163) | Add lock/unlock mechanism |
+| PR Template | Deployed | Add "Multiple Sessions" checkbox |
 | Session Concurrency Gate | 🆕 NEW | Design & implement |
 | Copilot Escalation Trigger | 🆕 NEW | Design & implement |
 
@@ -51,21 +51,33 @@ at a time (by default), with an opt-in mechanism to allow multiple concurrent se
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Any Workflow Fails, D-00 Triage'}}%%
+
 flowchart TD
+
     A[Any Workflow Fails] --> B{iterative-self-healing-ci.yml}
+
     B --> C[D-00 Triage]
+
     C --> D{Pattern Classification}
+
     D -->|fixable| E[Auto-Fix Matrix<br/>max 3 iterations]
+
     D -->|non-fixable| F[Escalate to Human]
 
     E --> G{Fix Applied?}
+
     G -->|yes| H[Commit & Push]
+
     G -->|no| I{Iterations Left?}
+
     I -->|yes| E
+
     I -->|no| F
 
     H --> J[Verify Fix]
+
     J -->|pass| K[ Self-Healed]
+
     J -->|fail| I
 
     style A fill:#ff6b6b
@@ -77,16 +89,16 @@ flowchart TD
 
 | Pattern | Auto-Fix | Method |
 |---------|----------|--------|
-| `ruff-*` (F401/F841/I001/F541) |  Full | `ruff --fix` |
-| `import-*` (missing/circular) | ️ Partial | Heuristic rewrite |
-| `yaml-*` (indentation) | ️ Detect only | Manual |
-| `timeout-config` |  Full | Config patch |
-| `mypy-baseline` |  Full | Baseline bump |
-| `changelog-*` |  Full | Auto-append |
-| `policy-gate-*` |  Full | session_wrapup_autofix.py |
-| `branch-diverged` |  Full | Auto-rebase |
-| `self-healing` (cascade) |  Block | Cascade detection |
-| `unknown` |  Escalate | Human required |
+| `ruff-*` (F401/F841/I001/F541) | Full | `ruff --fix` |
+| `import-*` (missing/circular) | Partial | Heuristic rewrite |
+| `yaml-*` (indentation) | Detect only | Manual |
+| `timeout-config` | Full | Config patch |
+| `mypy-baseline` | Full | Baseline bump |
+| `changelog-*` | Full | Auto-append |
+| `policy-gate-*` | Full | session_wrapup_autofix.py |
+| `branch-diverged` | Full | Auto-rebase |
+| `self-healing` (cascade) | Block | Cascade detection |
+| `unknown` | Escalate | Human required |
 
 ### Gap Analysis: Where Auto-Fix Falls Short
 
@@ -103,6 +115,7 @@ fail or are not available.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing copilot/session-*, copilot/sub-pr-*'}}%%
+
 flowchart LR
     subgraph "Agent Sessions"
         S1[copilot/session-*]
@@ -118,7 +131,9 @@ flowchart LR
     end
 
     S1 -->|Sub-PR| OD
+
     S2 -->|Sub-PR| OD
+
     OD -->|Promotion PR #3630| M
 
     style S1 fill:#74c0fc
@@ -145,14 +160,17 @@ sequenceDiagram
     Agent->>SubPR: Create copilot/session-* branch
     Agent->>SubPR: Push commits (code changes)
     CI->>SubPR: Run CI checks
+
     CI-->>SubPR:  All checks pass
 
     SubPR->>OD: Merge sub-PR into 0D_base_
     CI->>OD: Run integration checks
+
     CI-->>OD:  Staging verified
 
     OD->>Main: Promotion PR #3630 merge
     CI->>Main: Run production checks
+
     CI-->>Main:  Production ready
 ```
 
@@ -160,6 +178,7 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR Created/Edited, Workflow Failed'}}%%
+
 flowchart TB
     subgraph "Trigger Layer"
         PR[PR Created/Edited]
@@ -187,18 +206,25 @@ flowchart TB
     end
 
     PR --> AUTH
+
     AUTH --> PREFLIGHT
+
     PREFLIGHT -->|pass| SESSION
+
     PREFLIGHT -->|fail| WRAPUP
 
     WF_FAIL --> SELF_HEAL
+
     SELF_HEAL -->|fixable| AUTO_FIX
+
     SELF_HEAL -->|non-fixable| COPILOT
 
     MANUAL --> SESSION
+
     CHAIN --> SESSION
 
     AUTO_FIX -->|success| SELF_HEAL
+
     AUTO_FIX -->|fail| COPILOT
 
     style COPILOT fill:#74c0fc,stroke:#339af0,stroke-width:2px
@@ -210,15 +236,23 @@ flowchart TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing resolve-push-target, Push to main'}}%%
+
 flowchart TD
+
     START[resolve-push-target] --> A{0D_base_ exists?}
+
     A -->|no| MAIN[Push to main]
+
     A -->|yes| B{Open sub-PR<br/>targeting 0D_base_?}
+
     B -->|yes| SUB[Push to sub-PR branch<br/>reason: sub_pr]
+
     B -->|no| OD[Push to 0D_base_<br/>reason: integration_branch]
 
     MAIN --> END[Output: branch + reason]
+
     SUB --> END
+
     OD --> END
 
     style START fill:#74c0fc
@@ -251,20 +285,29 @@ triggers from spawning parallel sessions on different PRs.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "@copilot continue<br/>or auth-delegation trigger", Set COPILOT_ACTIVE_SESSION<br/>= PR# + timestamp'}}%%
+
 flowchart TD
+
     TRIGGER["@copilot continue<br/>or auth-delegation trigger"] --> CHECK{Check repo var<br/>COPILOT_ACTIVE_SESSION}
 
     CHECK -->|empty/expired| ACQUIRE[Set COPILOT_ACTIVE_SESSION<br/>= PR# + timestamp]
+
     CHECK -->|active session exists| MULTI{COPILOT_MULTI_SESSION<br/>enabled?}
 
     MULTI -->|yes| ACQUIRE
+
     MULTI -->|no| QUEUE[Queue: post comment<br/>'Session queued — PR #N active']
 
     ACQUIRE --> RUN[Start Copilot Session]
+
     RUN --> COMPLETE[Session completes]
+
     COMPLETE --> RELEASE[Clear COPILOT_ACTIVE_SESSION]
+
     RELEASE --> NEXT{Queued sessions?}
+
     NEXT -->|yes| TRIGGER_NEXT["Post @copilot continue<br/>on queued PR"]
+
     NEXT -->|no| DONE[ Done]
 
     style TRIGGER fill:#74c0fc
@@ -285,6 +328,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Gate: empty
+
     Gate'}}%%
 sequenceDiagram
     participant PR1 as PR #3724
@@ -296,14 +340,17 @@ sequenceDiagram
 
     PR1->>Gate: @copilot continue
     Gate->>Var: Check COPILOT_ACTIVE_SESSION
+
     Var-->>Gate: empty
     Gate->>Var: Set = "3724|1774576800|12345"
     Gate->>PR1:  Session started
 
     PR2->>Gate: @copilot continue
     Gate->>Var: Check COPILOT_ACTIVE_SESSION
+
     Var-->>Gate: "3724|..." (active)
     Gate->>Var: Check COPILOT_MULTI_SESSION
+
     Var-->>Gate: "false"
     Gate->>Var: Append "3725" to COPILOT_SESSION_QUEUE
     Gate->>PR2:  Queued (PR #3724 active)
@@ -323,20 +370,31 @@ The session gate integrates into `agent-auth-delegation.yml` at two points:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing detect-checkbox, activate-delegation  always-on'}}%%
+
 flowchart LR
     subgraph "agent-auth-delegation.yml"
+
         A[detect-checkbox] --> B[activate-delegation  always-on]
+
         B --> C[cognitive-preflight]
+
         C --> D[activate-delegation]
+
         D --> E{Session Gate}
+
         E -->|acquired| F["Post @copilot continue"]
+
         E -->|busy| G[Queue PR + post wait comment]
     end
 
     subgraph "session-release (new)"
+
         H[PR merged/closed] --> I[Clear COPILOT_ACTIVE_SESSION]
+
         I --> J{Queue non-empty?}
+
         J -->|yes| K["Trigger auth-delegation<br/>for next PR"]
+
         J -->|no| L[Done]
     end
 
@@ -395,37 +453,52 @@ fi
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Workflow Failure, D-00 Triage<br/>collect_telemetry.py'}}%%
+
 flowchart TD
     subgraph "Layer 1: Detection"
+
         FAIL[Workflow Failure] --> TRIAGE[D-00 Triage<br/>collect_telemetry.py]
+
         TRIAGE --> CLASSIFY{Pattern<br/>Classification}
     end
 
     subgraph "Layer 2: Auto-Fix (existing)"
+
         CLASSIFY -->|known fixable| AUTOFIX[auto_fix_common_issues.py<br/>17 patterns]
+
         AUTOFIX --> VERIFY1{Verify}
+
         VERIFY1 -->|pass| COMMIT1[Commit + Push]
+
         VERIFY1 -->|fail| RETRY{Retries left?}
+
         RETRY -->|yes| AUTOFIX
     end
 
     subgraph "Layer 3: Copilot Escalation (new)"
+
         CLASSIFY -->|unknown/complex| COPILOT_GATE{Session Gate<br/>available?}
+
         RETRY -->|no| COPILOT_GATE
 
         COPILOT_GATE -->|yes| COPILOT_SESSION["@copilot+claude-opus-4.6<br/>Autonomous fix session"]
+
         COPILOT_GATE -->|no/queued| QUEUE_FIX[Queue for next<br/>available session]
 
         COPILOT_SESSION --> VERIFY2{Self-review<br/>5-pass}
+
         VERIFY2 -->|pass| COMMIT2[Commit + Push]
+
         VERIFY2 -->|fail| HUMAN
     end
 
     subgraph "Layer 4: Human Escalation"
+
         CLASSIFY -->|blocked/security| HUMAN[Create Issue<br/>tag @mbaetiong]
     end
 
     COMMIT1 --> DONE[ Self-Healed]
+
     COMMIT2 --> DONE
 
     style FAIL fill:#ff6b6b
@@ -465,32 +538,53 @@ When auto-fix exhausts all iterations, the self-healing workflow posts a structu
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CI Failure Detected, ruff --fix'}}%%
+
 flowchart TD
+
     F[CI Failure Detected] --> T{Triage Pattern}
 
     T -->|ruff-*| R[ruff --fix]
+
     T -->|import-*| I[Import rewrite]
+
     T -->|yaml-*| Y[YAML fix]
+
     T -->|mypy-baseline| M[Baseline bump]
+
     T -->|changelog-*| C[Auto-append]
+
     T -->|policy-gate-*| P[session_wrapup_autofix.py]
+
     T -->|branch-diverged| B[Auto-rebase]
+
     T -->|timeout-config| TC[Config patch]
+
     T -->|self-healing| SH[ Block cascade]
+
     T -->|unknown| U["@copilot escalation"]
 
     R --> V{Verify}
+
     I --> V
+
     Y --> V
+
     M --> V
+
     C --> V
+
     P --> V
+
     B --> V
+
     TC --> V
+
     U --> V
 
     V -->|pass| DONE[ Fixed]
+
     V -->|fail, retries left| T
+
     V -->|fail, no retries| U
 
     style F fill:#ff6b6b
@@ -519,20 +613,20 @@ flowchart TD
 ### Known Limitations
 
 1. **Session gate is advisory, not blocking** — GitHub's Copilot agent can be triggered
-   by any `@copilot` comment, regardless of our gate. The gate posts a "queued" message
-   but cannot prevent the agent from starting. Workaround: the gate sets a repo variable
-   that the cognitive-preflight check reads, causing the session to self-terminate early.
+ by any `@copilot` comment, regardless of our gate. The gate posts a "queued" message
+ but cannot prevent the agent from starting. Workaround: the gate sets a repo variable
+ that the cognitive-preflight check reads, causing the session to self-terminate early.
 
 2. **Cross-PR merge conflicts** — Multiple sessions modifying shared files
-   (e.g., `CHANGELOG.md`, `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`) will conflict.
-   Workaround: sequential session model (default) prevents this. See
-   **Section 7b: Merge Conflict Handling Strategy** for full details.
+ (e.g., `CHANGELOG.md`, `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`) will conflict.
+ Workaround: sequential session model (default) prevents this. See
+ **Section 7b: Merge Conflict Handling Strategy** for full details.
 
 3. **Copilot session timeout** — Sessions have a maximum runtime. Complex fixes
-   may exceed the timeout. Workaround: session chain auto-continues.
+ may exceed the timeout. Workaround: session chain auto-continues.
 
 4. **Self-healing loop depth** — Maximum 3 iterations per failure event to prevent
-   infinite loops. If 3 iterations fail, escalation to Copilot or human is required.
+ infinite loops. If 3 iterations fail, escalation to Copilot or human is required.
 
 ---
 
@@ -546,6 +640,7 @@ infrastructure that handles them, and the new mechanisms this proposal adds.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h, Concurrent agent sessions<br/>Two sessions edit same file'}}%%
+
 flowchart TD
     subgraph "Conflict Sources"
         CS1[Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h]
@@ -562,10 +657,15 @@ flowchart TD
     end
 
     CS1 --> CT1
+
     CS2 --> CT2
+
     CS3 --> CT2
+
     CS4 --> CT2
+
     CS5 --> CT2
+
     CS5 --> CT3
 
     style CS1 fill:#ffd43b
@@ -583,22 +683,31 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR push/synchronize,  REQ-10 PASS'}}%%
+
 flowchart TD
+
     PR[PR push/synchronize] --> CHECK{Compare base vs head}
 
     CHECK -->|up-to-date| PASS[ REQ-10 PASS]
+
     CHECK -->|ahead only| PASS
+
     CHECK -->|behind / diverged| GAP[Fetch gap commits]
 
     GAP --> CLASSIFY{All gap commits are<br/>bot skip-ci?}
+
     CLASSIFY -->|yes| AUTO[GitHub Merges API<br/>auto-merge base into head]
+
     CLASSIFY -->|no| MANUAL[Post rich helper comment<br/>with conflict analysis]
 
     AUTO --> MERGED{Merge succeeded?}
+
     MERGED -->|yes| RESOLVED[ Auto-merged<br/>BRANCH_REBASE_RESOLVED posted]
+
     MERGED -->|no| MANUAL
 
     MANUAL --> RISK[detect_conflict_risk:<br/>file overlap analysis]
+
     RISK --> COMMENT["Post PR comment:<br/>• Gap commit table<br/>• Conflict-risk files<br/>• CLI instructions<br/>• @copilot prompt"]
 
     style PASS fill:#51cf66
@@ -612,14 +721,14 @@ flowchart TD
 1. **`branch-rebase-gate.yml`** runs on every `push`/`synchronize` to a PR
 2. Calls `branch_rebase_check.py` which compares the PR branch against its base
 3. If the branch is behind:
-   - **Bot-only gap** (all `[skip ci]` from `github-actions[bot]`): Auto-merges
-     via the GitHub Merges API — no local git operations required
-   - **Functional gap** (human commits in gap): Posts a rich helper comment with:
-     - Conflict risk assessment (`detect_conflict_risk()` — file overlap)
-     - Step-by-step CLI rebase instructions
-     - Copy-pasteable `@copilot` prompt for automated resolution
+ - **Bot-only gap** (all `[skip ci]` from `github-actions[bot]`): Auto-merges
+ via the GitHub Merges API — no local git operations required
+ - **Functional gap** (human commits in gap): Posts a rich helper comment with:
+ - Conflict risk assessment (`detect_conflict_risk()` — file overlap)
+ - Step-by-step CLI rebase instructions
+ - Copy-pasteable `@copilot` prompt for automated resolution
 4. **REQ-10 in `agent-auth-delegation.yml`** reads the marker comment and
-   **hard-blocks** the agent session until the rebase is resolved
+ **hard-blocks** the agent session until the rebase is resolved
 
 **Conflict risk detection (`detect_conflict_risk()`):**
 ```python
@@ -629,7 +738,7 @@ def detect_conflict_risk(pr_files: list[str], gap_files: set[str]) -> list[str]:
 ```
 
 When overlapping files are detected, the comment includes:
--  **HIGH** risk badge
+- **HIGH** risk badge
 - Explicit list of conflicting files
 - Warning that manual conflict resolution may be required
 
@@ -698,15 +807,24 @@ The **Session Concurrency Gate** (Section 4) prevents the most common conflict s
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Session A starts, Acquires lock'}}%%
+
 flowchart TD
     subgraph "Single-Session Mode (default)"
+
         S1[Session A starts] --> LOCK[Acquires lock]
+
         LOCK --> EDIT_A[Edits sentinel files]
+
         S2[Session B triggered] --> QUEUE[Queued — lock held by A]
+
         EDIT_A --> PUSH_A[Push without conflicts]
+
         PUSH_A --> RELEASE[Release lock]
+
         RELEASE --> DEQUEUE[Session B starts]
+
         DEQUEUE --> EDIT_B[Edits sentinel files<br/>from latest HEAD]
+
         EDIT_B --> PUSH_B[Push without conflicts]
     end
 
@@ -719,14 +837,22 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Session A starts, Edits files'}}%%
+
 flowchart TD
     subgraph "Multi-Session Mode (opt-in)"
+
         M1[Session A starts] --> EDIT_MA[Edits files]
+
         M2[Session B starts] --> EDIT_MB[Edits same files]
+
         EDIT_MA --> PUSH_MA[Push]
+
         EDIT_MB --> PUSH_MB{Push}
+
         PUSH_MB -->|conflict| REBASE["Auto-rebase:<br/>git pull --rebase origin branch"]
+
         REBASE -->|success| RETRY[Retry push]
+
         REBASE -->|conflict| ESCALATE["Post conflict comment<br/>for Copilot/human resolution"]
     end
 
@@ -743,6 +869,7 @@ agent work. The proposal adds a **pre-push conflict check**:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>SH: "3724|timestamp|run_id"
+
 '}}%%
 sequenceDiagram
     participant SH as Self-Healing CI
@@ -750,6 +877,7 @@ sequenceDiagram
     participant Agent as Active Agent Session
 
     SH->>API: Check COPILOT_ACTIVE_SESSION
+
     API-->>SH: "3724|timestamp|run_id"
 
     alt Agent session active on same branch
@@ -812,16 +940,23 @@ structured `@copilot` comment with conflict context:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Merge conflict detected, Identify conflicting files'}}%%
+
 flowchart TD
+
     CONFLICT[Merge conflict detected] --> ANALYZE[Identify conflicting files]
+
     ANALYZE --> CLASSIFY{Conflict type}
 
     CLASSIFY -->|Sentinel files only<br/>CHANGELOG, accountability| AUTO_RESOLVE["Auto-resolve:<br/>Accept both, append"]
+
     CLASSIFY -->|Code files| COPILOT_FIX["Post @copilot prompt:<br/>• Conflicting files list<br/>• Both versions shown<br/>• Resolution strategy"]
+
     CLASSIFY -->|Workflow/config files| HUMAN["Escalate to human:<br/>@mbaetiong"]
 
     AUTO_RESOLVE --> PUSH[Push resolved]
+
     COPILOT_FIX --> SESSION[Copilot session resolves]
+
     SESSION --> PUSH
 
     style CONFLICT fill:#ff6b6b
@@ -856,34 +991,51 @@ Codebase Agency Policy and enforced via `copilot-setup-steps.yml`.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "@copilot continue triggers", copilot-setup-steps.yml runs'}}%%
+
 flowchart TD
     subgraph "Session START"
+
         A1["@copilot continue triggers"] --> A2[copilot-setup-steps.yml runs]
+
         A2 --> A3{Check PR mergeable<br/>via GitHub API}
+
         A3 -->|CONFLICTING| A4["::warning:: annotation<br/>COPILOT_MERGE_CONFLICT=true"]
+
         A3 -->|MERGEABLE| A5[" No conflicts<br/>COPILOT_MERGE_CONFLICT=false"]
+
         A3 -->|UNKNOWN| A6["ℹ️ Status pending"]
 
         A2 --> A7{Check branch<br/>behind count}
+
         A7 -->|behind > 0| A8["::warning:: annotation<br/>COPILOT_BRANCH_BEHIND=N"]
+
         A7 -->|behind = 0| A9[" Up-to-date"]
 
         A2 --> A10{git merge-tree<br/>dry-run}
+
         A10 -->|conflicts| A11["::warning:: N file(s)<br/>with potential conflicts"]
+
         A10 -->|clean| A12[" No file-level conflicts"]
 
         A4 --> A13[Agent resolves conflicts<br/>BEFORE any other work]
+
         A8 --> A13
     end
 
     subgraph "Session END"
+
         B1[Agent about to conclude] --> B2[Fetch latest base branch]
+
         B2 --> B3{Re-check mergeable<br/>status}
+
         B3 -->|CONFLICTING| B4[Resolve before final commit]
+
         B3 -->|MERGEABLE| B5[" Session ends clean"]
 
         B1 --> B6{Check for new commits<br/>on base since session start}
+
         B6 -->|new commits| B7[Rebase/merge base into head]
+
         B6 -->|no new commits| B8[" No drift"]
     end
 
@@ -900,9 +1052,9 @@ flowchart TD
 **Implementation (already deployed in `copilot-setup-steps.yml`):**
 
 The setup workflow now runs three checks at session start:
-1. **GitHub API check** — `gh pr view --json mergeable` → sets `COPILOT_MERGE_CONFLICT` env var
-2. **Branch divergence check** — `git rev-list --count HEAD..origin/BASE` → sets `COPILOT_BRANCH_BEHIND`
-3. **merge-tree dry-run** — `git merge-tree <merge-base> HEAD origin/BASE` → detects file-level conflicts
+1. **GitHub API check** — `gh pr view --json mergeable` sets `COPILOT_MERGE_CONFLICT` env var
+2. **Branch divergence check** — `git rev-list --count HEAD..origin/BASE` sets `COPILOT_BRANCH_BEHIND`
+3. **merge-tree dry-run** — `git merge-tree <merge-base> HEAD origin/BASE` detects file-level conflicts
 
 All three emit `::warning::` annotations that appear in the GitHub Actions UI and are
 visible to the Copilot agent when it reads CI check results per §0.2.
@@ -937,28 +1089,44 @@ relevant failure patterns. Two issue labels are monitored:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing copilot-setup-steps.yml, "gh issue list --label ci-failure"'}}%%
+
 flowchart TD
     subgraph "Session Start — CI Issue Check"
+
         S1[copilot-setup-steps.yml] --> S2["gh issue list --label ci-failure"]
+
         S1 --> S3["gh issue list --label ci-health-alert"]
+
         S2 --> S4{Open issues?}
+
         S3 --> S4
+
         S4 -->|yes| S5["::warning:: annotation<br/>Lists issue titles<br/>Sets COPILOT_CI_FAILURE_ISSUES=N"]
+
         S4 -->|no| S6[" No open CI failure issues"]
     end
 
     subgraph "Agent Action"
+
         S5 --> A1[Agent reads CI failure issues]
+
         A1 --> A2{Pattern affects<br/>this PR?}
+
         A2 -->|yes| A3[Fix as part of session work]
+
         A2 -->|no| A4[Document in accountability report]
     end
 
     subgraph "CI Issue Lifecycle"
+
         FAIL[Workflow fails on main] --> CREATE[ci-failure-issue-creator.yml<br/>creates issue + fix branch]
+
         CREATE --> ISSUE["Issue #N with<br/>label 'ci-failure'"]
+
         ISSUE --> AGENT[Agent reads + fixes]
+
         AGENT --> PASS[Workflow passes on main]
+
         PASS --> CLOSE[ci-failure-issue-creator.yml<br/>auto-closes issue]
     end
 
@@ -979,19 +1147,20 @@ check whether CI failure issues exist.
 
 | Conflict Source | Detection | Resolution | Automation Level |
 |----------------|-----------|------------|-----------------|
-| Bot metadata drift (main → branch) | `branch_rebase_check.py` (REQ-10) | Auto-merge via GitHub Merges API |  Fully automatic |
-| Functional commits in gap | `branch_rebase_check.py` (REQ-10) | Rich helper comment + `@copilot` prompt | ️ Semi-automatic |
-| Concurrent agent sessions — sentinel files | Session Concurrency Gate (new) | Sequential execution prevents conflict |  Fully automatic |
-| Concurrent agent sessions — code files | Multi-session mode warning | `git pull --rebase` + Copilot escalation | ️ Semi-automatic |
-| Self-healing push vs active session | Active-session check (new) | Skip push, defer to active session |  Fully automatic |
-| `report_progress` push failure | `git pull --rebase` (auto-stash) | Automatic rebase before push |  Fully automatic |
-| Promotion merge (0D_base_ → main) | PR mergeable status check | Manual review + human approval |  Manual (by design) |
-| Semantic conflict (compiles but breaks) | CI test suite on merged code | Copilot escalation for test fix | ️ Semi-automatic |
+| Bot metadata drift (main branch) | `branch_rebase_check.py` (REQ-10) | Auto-merge via GitHub Merges API | Fully automatic |
+| Functional commits in gap | `branch_rebase_check.py` (REQ-10) | Rich helper comment + `@copilot` prompt | Semi-automatic |
+| Concurrent agent sessions — sentinel files | Session Concurrency Gate (new) | Sequential execution prevents conflict | Fully automatic |
+| Concurrent agent sessions — code files | Multi-session mode warning | `git pull --rebase` + Copilot escalation | Semi-automatic |
+| Self-healing push vs active session | Active-session check (new) | Skip push, defer to active session | Fully automatic |
+| `report_progress` push failure | `git pull --rebase` (auto-stash) | Automatic rebase before push | Fully automatic |
+| Promotion merge (0D_base_ main) | PR mergeable status check | Manual review + human approval | Manual (by design) |
+| Semantic conflict (compiles but breaks) | CI test suite on merged code | Copilot escalation for test fix | Semi-automatic |
 
 ### Conflict Prevention Architecture (Full Picture)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Session Concurrency Gate<br/>Single session default, Workflow concurrency groups<br/>cancel-in-progress: true'}}%%
+
 flowchart TB
     subgraph "Prevention Layer"
         P1[Session Concurrency Gate<br/>Single session default]
@@ -1016,15 +1185,23 @@ flowchart TB
     end
 
     P1 --> D1
+
     P2 --> D2
+
     P3 --> D3
+
     P4 --> D4
 
     D1 --> R1
+
     D1 --> R4
+
     D2 --> R2
+
     D3 --> R3
+
     D4 --> R4
+
     D4 --> R5
 
     style P1 fill:#51cf66
@@ -1043,44 +1220,67 @@ flowchart TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #1 checks gate, PR #2 checks gate'}}%%
+
 flowchart TD
     subgraph "Edge Case 1: Race Condition"
+
         EC1A[PR #1 checks gate] --> EC1B[PR #2 checks gate]
+
         EC1B --> EC1C{Both see 'empty'?}
+
         EC1C -->|possible| EC1D[Both acquire lock]
+
         EC1D --> EC1E[Mitigation: atomic<br/>check-and-set via API]
     end
 
     subgraph "Edge Case 2: Stale Lock"
+
         EC2A[Session starts] --> EC2B[Session crashes/times out]
+
         EC2B --> EC2C[Lock never released]
+
         EC2C --> EC2D[Mitigation: TTL on lock<br/>4-hour expiry]
     end
 
     subgraph "Edge Case 3: Cascade Prevention"
+
         EC3A[Self-heal commits fix] --> EC3B[Triggers workflow_run]
+
         EC3B --> EC3C{Pattern = self-healing?}
+
         EC3C -->|yes| EC3D[Block re-entry]
+
         EC3C -->|no| EC3E[Allow — genuine new failure]
     end
 
     subgraph "Edge Case 4: Queue Overflow"
+
         EC4A[5 PRs queued] --> EC4B{Queue limit exceeded?}
+
         EC4B -->|yes| EC4C[Drop oldest + notify]
+
         EC4B -->|no| EC4D[Add to queue]
     end
 
     subgraph "Edge Case 5: Merge Conflict During Promotion"
+
         EC5A[0D_base_ accumulates<br/>sub-PR merges] --> EC5B[Promotion PR to main]
+
         EC5B --> EC5C{Conflicts with main?}
+
         EC5C -->|yes| EC5D[Human resolves —<br/>never auto-merge to main]
+
         EC5C -->|no| EC5E[Clean promotion]
     end
 
     subgraph "Edge Case 6: Rebase During Active Session"
+
         EC6A[Agent working on branch] --> EC6B[Bot commit lands on main]
+
         EC6B --> EC6C[Branch now 'behind']
+
         EC6C --> EC6D[REQ-10 fires on next push]
+
         EC6D --> EC6E["Auto-merge if bot-only gap<br/>Agent continues uninterrupted"]
     end
 
@@ -1109,12 +1309,13 @@ flowchart TD
 
 ## 9. Implementation Roadmap
 
-### Phase 1: Session Concurrency Gate ~~(S183)~~  COMPLETE (S182)
+### Phase 1: Session Concurrency Gate ~~(S183)~~ COMPLETE (S182)
 
 > **Updated:** All Phase 1–3 items implemented in S182. Phase 4 (verification) pending.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
+
 gantt
     title Implementation Roadmap
     dateFormat YYYY-MM-DD
@@ -1246,7 +1447,7 @@ triggers the next queued session.
 | Lock expiry | Wait 4+ hours | Lock auto-clears |
 | Session completion | Close/merge PR | Lock released, next PR triggered |
 | Cascade prevention | Self-heal commit triggers re-entry | Blocked by pattern detection |
-| Auto-fix → Copilot escalation | Exhaust 3 iterations | @copilot comment posted |
+| Auto-fix Copilot escalation | Exhaust 3 iterations | @copilot comment posted |
 
 ### Smoke Test Script
 
@@ -1272,7 +1473,7 @@ grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && 
 | `iterative-self-healing-ci.yml` | Auto-fix CI failures | workflow_run (any failure) | Branch-based, cancel-in-progress |
 | `copilot-session-chain.yml` | Auto-open next session | PR closed+merged, dispatch | Per-PR, no cancel |
 | `create-sub-pr-to-0D_base_.yml` | Manual sub-PR creation | dispatch | Per-branch, no cancel |
-| `promote-integration-branch.yml` | 0D_base_ → main promotion | dispatch | Single |
+| `promote-integration-branch.yml` | 0D_base_ main promotion | dispatch | Single |
 | `copilot-evolution-suite.yml` | Self-evolution pipeline | schedule, PR, dispatch | Branch-based, cancel-in-progress |
 | `validate.yml` | Fast validation pipeline | push, PR | Branch-based, cancel-in-progress |
 | `pre-merge-validation.yml` | Pre-merge gate | PR, dispatch | Branch-based |
@@ -1284,6 +1485,7 @@ grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing orchestrator-agent, cognitive-brain-manager'}}%%
+
 flowchart TD
     subgraph "Orchestration Layer"
         ORCH[orchestrator-agent]
@@ -1316,21 +1518,29 @@ flowchart TD
     end
 
     ORCH --> CI_TEST
+
     ORCH --> CI_FIX
+
     ORCH --> SEC_AUDIT
+
     ORCH --> QA
 
     BRAIN --> ORCH
+
     BRAIN --> SESSION_ANALYSIS
 
     CI_FIX --> CI_HEAL
+
     CI_HEAL --> HEAL
+
     CI_HEAL --> WF_FIX
 
     SEC_AUDIT --> CODEQL
+
     SEC_AUDIT --> SEC_SCAN
 
     QA --> COV
+
     QA --> DOC
 
     style ORCH fill:#ff922b
@@ -1343,7 +1553,9 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing E Model<br/>Advisory Only, D_CAPABLE<br/>Autonomous'}}%%
+
 flowchart LR
+
     E[E Model<br/>Advisory Only] -->|5-gate check| D[D_CAPABLE<br/>Autonomous]
 
     subgraph "E→D Gate Conditions"
@@ -1355,9 +1567,13 @@ flowchart LR
     end
 
     C1 --> D
+
     C2 --> D
+
     C3 --> D
+
     C4 --> D
+
     C5 --> D
 
     style E fill:#74c0fc

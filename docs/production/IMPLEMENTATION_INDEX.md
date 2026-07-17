@@ -4,64 +4,64 @@
 
 **Last Updated: 2026-06-22
 
-**Date**: 2026-06-14 | **Status**:  COMPLETE & READY FOR DEPLOYMENT
+**Date**: 2026-06-14 | **Status**: COMPLETE & READY FOR DEPLOYMENT
 
 ---
 
-## 📑 Quick Navigation
+## Quick Navigation
 
 ### Core Documentation (Read in this order)
 
 1. **[Framework Specification](../../.codex/BATCH_1_MONITORING_CONFIG.md)** (START HERE)
-   - Complete framework overview
-   - Architecture and design decisions
-   - All 5 components specified in detail
-   - Deployment checklist
+ - Complete framework overview
+ - Architecture and design decisions
+ - All 5 components specified in detail
+ - Deployment checklist
 
 2. **[Health Checks Specification](HEALTH_CHECKS_SPECIFICATION.md)**
-   - Liveness, readiness, and detailed health checks
-   - 15+ services monitored
-   - SLA targets and failure scenarios
-   - Testing procedures
+ - Liveness, readiness, and detailed health checks
+ - 15+ services monitored
+ - SLA targets and failure scenarios
+ - Testing procedures
 
 3. **[Metrics Schema](METRICS_SCHEMA.md)**
-   - 8 core metrics defined
-   - Collection pipeline architecture
-   - Data retention policies
-   - Alerting thresholds
+ - 8 core metrics defined
+ - Collection pipeline architecture
+ - Data retention policies
+ - Alerting thresholds
 
 4. **[Alert Runbooks](../operations/ALERT_RUNBOOKS.md)** (FOR ON-CALL TEAMS)
-   - 5 detailed alert runbooks
-   - Step-by-step troubleshooting procedures
-   - Escalation contacts
-   - Incident tracking template
+ - 5 detailed alert runbooks
+ - Step-by-step troubleshooting procedures
+ - Escalation contacts
+ - Incident tracking template
 
 5. **[Dashboard Configuration](MONITORING_DASHBOARD_CONFIG.yaml)**
-   - 4 production dashboards
-   - Kubernetes manifests
-   - Prometheus alerting rules
-   - Grafana provisioning configs
+ - 4 production dashboards
+ - Kubernetes manifests
+ - Prometheus alerting rules
+ - Grafana provisioning configs
 
 6. **[Validation Report](../../.codex/aftermath/batch1_monitoring_metrics.json)**
-   - Implementation checklist
-   - Success metrics
-   - Expected impact projections
-   - Sign-off documentation
+ - Implementation checklist
+ - Success metrics
+ - Expected impact projections
+ - Sign-off documentation
 
 ---
 
-##  Implementation Sections
+## Implementation Sections
 
 ### 1. Structured Logging
 **Files**:
-- `.codex/BATCH_1_MONITORING_CONFIG.md` → Section 1️⃣
-- `docs/production/HEALTH_CHECKS_SPECIFICATION.md` → Not applicable
+- `.codex/BATCH_1_MONITORING_CONFIG.md` Section 1⃣
+- `docs/production/HEALTH_CHECKS_SPECIFICATION.md` Not applicable
 
 **Key Points**:
 - JSON format with 15 required fields
 - 5 log levels with adaptive sampling
 - Retention: 7 days (DEBUG) to 1 year (CRITICAL)
-- Aggregation pipeline: App → Buffer → Formatter → Sink → Fluentd → Archive
+- Aggregation pipeline: App Buffer Formatter Sink Fluentd Archive
 
 **Implementation Steps**:
 1. Update logging configuration (see logging.yaml schema)
@@ -75,7 +75,7 @@
 ### 2. Health Checks
 **Files**:
 - `docs/production/HEALTH_CHECKS_SPECIFICATION.md` (PRIMARY)
-- `.codex/BATCH_1_MONITORING_CONFIG.md` → Section 2️⃣
+- `.codex/BATCH_1_MONITORING_CONFIG.md` Section 2⃣
 
 **Key Endpoints**:
 - `/health/live` - Liveness probe (10s interval, 2s timeout)
@@ -99,7 +99,7 @@
 ### 3. Performance Metrics
 **Files**:
 - `docs/production/METRICS_SCHEMA.md` (PRIMARY)
-- `.codex/BATCH_1_MONITORING_CONFIG.md` → Section 3️⃣
+- `.codex/BATCH_1_MONITORING_CONFIG.md` Section 3⃣
 
 **Core Metrics** (8):
 1. Request Latency - Histogram (p50-p99.9)
@@ -112,7 +112,7 @@
 8. Business Metrics - Orders, users, conversions
 
 **Collection Pipeline**:
-OpenTelemetry SDK → Prometheus Exporter → Prometheus Scraper (15s) → TSDB → Grafana
+OpenTelemetry SDK Prometheus Exporter Prometheus Scraper (15s) TSDB Grafana
 
 **Implementation Steps**:
 1. Integrate OpenTelemetry SDK in all services
@@ -126,8 +126,8 @@ OpenTelemetry SDK → Prometheus Exporter → Prometheus Scraper (15s) → TSDB 
 ### 4. Alerting & Escalation
 **Files**:
 - `docs/operations/ALERT_RUNBOOKS.md` (PRIMARY)
-- `.codex/BATCH_1_MONITORING_CONFIG.md` → Section 4️⃣
-- `docs/production/MONITORING_DASHBOARD_CONFIG.yaml` → Alerting rules
+- `.codex/BATCH_1_MONITORING_CONFIG.md` Section 4⃣
+- `docs/production/MONITORING_DASHBOARD_CONFIG.yaml` Alerting rules
 
 **Alert Tiers**:
 1. **CRITICAL** - Page on-call (PagerDuty, Slack, Email)
@@ -166,7 +166,7 @@ Notify Director
 ### 5. Dashboard Configuration
 **Files**:
 - `docs/production/MONITORING_DASHBOARD_CONFIG.yaml` (PRIMARY)
-- `.codex/BATCH_1_MONITORING_CONFIG.md` → Section 5️⃣
+- `.codex/BATCH_1_MONITORING_CONFIG.md` Section 5⃣
 
 **4 Dashboards**:
 
@@ -207,7 +207,7 @@ Notify Director
 
 ---
 
-## 🏥 Health Dimension Monitoring
+## Health Dimension Monitoring
 
 All 5 dimensions monitored across all metrics:
 
@@ -221,7 +221,7 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -234,7 +234,7 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-##  Deployment Timeline
+## Deployment Timeline
 
 **Week 1**: Structured Logging
 - Deploy to critical services
@@ -259,7 +259,7 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-##  Deployment Checklist
+## Deployment Checklist
 
 **Logging**:
 - [ ] All services have JSON logging configured
@@ -297,7 +297,7 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-## 🎓 Training Materials
+## Training Materials
 
 **For Operations Team**:
 - [Alert Runbooks](../operations/ALERT_RUNBOOKS.md)
@@ -316,7 +316,7 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-##  Related Files
+## Related Files
 
 **Configuration Files**:
 - `configs/production/monitoring.yaml` - Production monitoring config
@@ -330,7 +330,7 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-## 📞 Support & Questions
+## Support & Questions
 
 **Slack**: #monitoring-infrastructure
 **Email**: monitoring-team@company.com
@@ -338,9 +338,9 @@ All 5 dimensions monitored across all metrics:
 
 ---
 
-##  Sign-Off
+## Sign-Off
 
-**Framework Status**:  COMPLETE & READY FOR PRODUCTION DEPLOYMENT
+**Framework Status**: COMPLETE & READY FOR PRODUCTION DEPLOYMENT
 
 - [x] All 5 components specified
 - [x] 6 comprehensive documents created

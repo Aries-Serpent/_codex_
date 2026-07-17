@@ -18,15 +18,15 @@ endpoints, feature stores, A/B experiment APIs, and downstream enrichment APIs.
 These calls exhibit the following failure modes in production:
 
 1. **Transient failures** — network hiccups, brief endpoint restarts, or momentary
-   overload that resolve within seconds.
+ overload that resolve within seconds.
 2. **Sustained failures** — a dependency enters a degraded state for minutes or
-   longer (rolling deployment, region failover, capacity event).
+ longer (rolling deployment, region failover, capacity event).
 3. **Cascading failures** — upstream slowness causes the caller to hold open
-   connections, consuming thread pool and memory, which then causes the caller's
-   own latency to spike and triggers failures in its callers.
+ connections, consuming thread pool and memory, which then causes the caller's
+ own latency to spike and triggers failures in its callers.
 4. **Silent quality degradation** — when a dependency is unavailable, the system
-   must continue returning useful (possibly lower-quality) responses rather than
-   hard-failing.
+ must continue returning useful (possibly lower-quality) responses rather than
+ hard-failing.
 
 A single fault-tolerance mechanism cannot address all four modes simultaneously.
 Timeout-only approaches do not prevent cascading failures from consuming
@@ -52,11 +52,11 @@ HALF-OPEN → (probe failure) → OPEN
 ```
 
 - In `OPEN` state, calls fail fast without hitting the downstream service, giving
-  it time to recover.
+ it time to recover.
 - The `HALF-OPEN` probe allows graceful recovery without requiring manual
-  intervention.
+ intervention.
 - Configurable `failure_threshold`, `recovery_timeout`, and `success_threshold`
-  (number of consecutive successes in HALF-OPEN required to reset to CLOSED).
+ (number of consecutive successes in HALF-OPEN required to reset to CLOSED).
 
 ### Layer 2: RetryWithBackoff — handles transient failures
 
@@ -79,9 +79,9 @@ When a feature group or downstream call is unavailable, `GracefulDegradation`
 returns a typed fallback value instead of propagating an exception:
 
 - Fallback values are typed and domain-specific (e.g., neutral feature vector,
-  default probability, cached last-known-good response).
+ default probability, cached last-known-good response).
 - Degradation events are logged and counted so on-call engineers are alerted
-  even when end-users experience no hard failure.
+ even when end-users experience no hard failure.
 
 ### Composition
 
@@ -103,20 +103,20 @@ or model prediction block that may rely on the call's result.
 
 **Positive:**
 - Each layer is independently testable and replaceable; swapping the retry policy
-  does not require changes to circuit-breaker or degradation logic.
+ does not require changes to circuit-breaker or degradation logic.
 - The three layers address all four failure modes identified in the context.
 - Full jitter prevents retry storms in multi-instance deployments.
 - Typed fallbacks make graceful degradation explicit and verifiable in tests.
 
 **Negative / Trade-offs:**
 - Three layers add wrapping overhead; developers must understand which layer to
-  apply at which abstraction boundary.
+ apply at which abstraction boundary.
 - Circuit breaker state is **per-process** in the current implementation; a
-  multi-replica deployment will have independent breaker states. Shared state
-  (e.g., Redis-backed breaker) is not implemented and would require additional
-  infrastructure.
+ multi-replica deployment will have independent breaker states. Shared state
+ (e.g., Redis-backed breaker) is not implemented and would require additional
+ infrastructure.
 - Graceful degradation hides real errors from end-users; monitoring and alerting
-  must be in place or silent degradation accumulates undetected.
+ must be in place or silent degradation accumulates undetected.
 
 ---
 

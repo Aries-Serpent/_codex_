@@ -116,8 +116,8 @@ fixes:
 **Purpose**: Improve system performance and resource efficiency.
 
 **Common Areas**:
-- Build parallelization (25 min → 8 min)
-- Cache optimization (cache hit: 20% → 85%)
+- Build parallelization (25 min 8 min)
+- Cache optimization (cache hit: 20% 85%)
 - Dependency resolution
 - Test suite optimization
 - Database query optimization

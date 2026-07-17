@@ -12,11 +12,11 @@ Archive standardization adds **cryptographic integrity** and **compliance tracki
 
 ## Key Features
 
- **SLSA L3 Compliance** - Cryptographic signatures on all evidence records  
- **Schema Versioning** - Explicit v1/v2 schema support with auto-detection  
- **Sigstore Keyless Signing** - No key management, uses GitHub OIDC  
- **Backward Compatible** - Existing v1 records work unchanged  
- **Zero Breaking Changes** - Opt-in via environment variables  
+ **SLSA L3 Compliance** - Cryptographic signatures on all evidence records
+ **Schema Versioning** - Explicit v1/v2 schema support with auto-detection
+ **Sigstore Keyless Signing** - No key management, uses GitHub OIDC
+ **Backward Compatible** - Existing v1 records work unchanged
+ **Zero Breaking Changes** - Opt-in via environment variables
 
 ## Quickstart
 
@@ -195,12 +195,12 @@ pytest tests/archive/test_standardization.py::TestBackwardCompatibility -v
 
 ## Next Steps
 
-1.  Review ADRs for architectural decisions
-2.  Run tests to verify installation
-3.  Enable in development environment
-4.  Enable in GitHub Actions
-5.  Monitor performance in production
-6.  Plan Phase 3 (Merkle trees, transparency logs)
+1. Review ADRs for architectural decisions
+2. Run tests to verify installation
+3. Enable in development environment
+4. Enable in GitHub Actions
+5. Monitor performance in production
+6. Plan Phase 3 (Merkle trees, transparency logs)
 
 ## Support
 

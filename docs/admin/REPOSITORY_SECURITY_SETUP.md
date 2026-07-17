@@ -11,7 +11,7 @@
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Repository Settings](#repository-settings)
@@ -48,7 +48,7 @@ This guide provides complete instructions for repository administrators to confi
 
 ### 1. General Settings
 
-Navigate to: **Settings** → **General**
+Navigate to: **Settings** **General**
 
 #### Required Configurations:
 
@@ -74,7 +74,7 @@ Security:
 
 ### 2. Security & Analysis
 
-Navigate to: **Settings** → **Security & analysis**
+Navigate to: **Settings** **Security & analysis**
 
 #### Enable All Security Features:
 
@@ -130,7 +130,7 @@ EOF
 
 ## GitHub Actions Secrets
 
-Navigate to: **Settings** → **Secrets and variables** → **Actions**
+Navigate to: **Settings** **Secrets and variables** **Actions**
 
 ### Required Secrets
 
@@ -148,7 +148,7 @@ gh secret set ENCRYPTION_KEY --body "$(python3 -c 'from cryptography.fernet impo
 
 ### Add Secret via Web UI:
 
-1. Go to **Settings** → **Secrets and variables** → **Actions**
+1. Go to **Settings** **Secrets and variables** **Actions**
 2. Click **New repository secret**
 3. Name: `ENCRYPTION_KEY`
 4. Value: Paste generated key
@@ -158,7 +158,7 @@ gh secret set ENCRYPTION_KEY --body "$(python3 -c 'from cryptography.fernet impo
 
 ## Branch Protection Rules
 
-Navigate to: **Settings** → **Branches** → **Add branch protection rule**
+Navigate to: **Settings** **Branches** **Add branch protection rule**
 
 ### Protect `main` Branch
 
@@ -246,7 +246,7 @@ jobs:
 
 Already enabled in repository settings. Configure alerts:
 
-Navigate to: **Settings** → **Code security** → **Secret scanning**
+Navigate to: **Settings** **Code security** **Secret scanning**
 
 ```yaml
 Push protection:  Enabled
@@ -373,19 +373,19 @@ repos:
 ### Security Workflows to Monitor
 
 1. **Security Scan** (`.github/workflows/security-scan.yml`)
-   - Runs pip-audit
-   - Scans for secrets with gitleaks
-   - Runs Semgrep security rules
+ - Runs pip-audit
+ - Scans for secrets with gitleaks
+ - Runs Semgrep security rules
 
 2. **CodeQL Analysis** (`.github/workflows/codeql-analysis.yml`)
-   - Runs on push to main/0D_base_
-   - per-phase scheduled scan
-   - Blocks merge on Critical/High findings
+ - Runs on push to main/0D_base_
+ - per-phase scheduled scan
+ - Blocks merge on Critical/High findings
 
 3. **Dependency Audit** (`.github/workflows/scheduled-dependency-audit.yml`)
-   - Weekly Monday 6am UTC
-   - Checks for new vulnerabilities
-   - Auto-creates issues for updates
+ - Weekly Monday 6am UTC
+ - Checks for new vulnerabilities
+ - Auto-creates issues for updates
 
 ### Workflow Permissions
 
@@ -408,14 +408,14 @@ permissions:
 Navigate to: **Security** tab
 
 Monitor:
--  Dependabot alerts
--  CodeQL scanning alerts
--  Secret scanning alerts
--  Security advisories
+- Dependabot alerts
+- CodeQL scanning alerts
+- Secret scanning alerts
+- Security advisories
 
 ### 2. Email Notifications
 
-Configure in: **Settings** → **Notifications**
+Configure in: **Settings** **Notifications**
 
 ```yaml
 Security alerts:
@@ -455,7 +455,7 @@ Add webhook to `.github/workflows/security-scan.yml`:
 
 ### Recommended Team Structure
 
-Navigate to: **Settings** → **Collaborators and teams**
+Navigate to: **Settings** **Collaborators and teams**
 
 | Team | Role | Access Level | Responsibilities |
 |------|------|--------------|------------------|
@@ -657,17 +657,17 @@ For questions or updates, contact: security@localhost
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Establish comprehensive security infrastructure for repository including encryption, scanning, monitoring, and compliance enforcement.
 
-**Energy Level**:  (5/5 - Security Critical)
+**Energy Level**: (5/5 - Security Critical)
 
-**Status**:  Active
+**Status**: Active
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 ### Security Features Configuration
 - [ ] Dependabot alerts enabled and monitored
@@ -699,60 +699,60 @@ For questions or updates, contact: security@localhost
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Security Scan Coverage | 100% | 100% |  |
-| Critical Vulnerability SLA | <24h response | <24h |  |
-| High Vulnerability SLA | <48h response | <48h |  |
-| Pre-commit Hook Adoption | Team-wide | 100% |  |
-| Secret Detection Rate | 100% | 100% |  | <!-- pragma: allowlist secret -->
-| Encryption Algorithm Support | 3 algorithms | ≥3 |  |
-| Branch Protection Compliance | main + 0D_base_ | 100% critical branches |  |
-| Quarterly Security Audit | Scheduled | 4/year |  |
+| Security Scan Coverage | 100% | 100% | |
+| Critical Vulnerability SLA | <24h response | <24h | |
+| High Vulnerability SLA | <48h response | <48h | |
+| Pre-commit Hook Adoption | Team-wide | 100% | |
+| Secret Detection Rate | 100% | 100% | | <!-- pragma: allowlist secret -->
+| Encryption Algorithm Support | 3 algorithms | ≥3 | |
+| Branch Protection Compliance | main + 0D_base_ | 100% critical branches | |
+| Quarterly Security Audit | Scheduled | 4/year | |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path ️ | Systematic security hardening progression | 10-phase setup: Settings → Secrets → Branch Protection → Scanning → Monitoring | <!-- pragma: allowlist secret -->
-| Fields  | Repository state transformation to secure baseline | Unsecured → Monitoring enabled → Secrets protected → Compliance enforced | <!-- pragma: allowlist secret -->
-| Patterns ️ | Continuous security posture observation | Iteration-cycle scans, continuous alert monitoring, milestone audits |
-| Redundancy  | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning | <!-- pragma: allowlist secret -->
-| Balance ️ | Security rigor vs developer velocity | Automated security checks with clear bypass procedures for emergencies |
+| Path | Systematic security hardening progression | 10-phase setup: Settings Secrets Branch Protection Scanning Monitoring | <!-- pragma: allowlist secret -->
+| Fields | Repository state transformation to secure baseline | Unsecured Monitoring enabled Secrets protected Compliance enforced | <!-- pragma: allowlist secret -->
+| Patterns | Continuous security posture observation | Iteration-cycle scans, continuous alert monitoring, milestone audits |
+| Redundancy | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning | <!-- pragma: allowlist secret -->
+| Balance | Security rigor vs developer velocity | Automated security checks with clear bypass procedures for emergencies |
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Initial Repository Configuration |  | Foundation - incorrect settings undermine all other security |
-| Encryption Key Generation |  | Critical - protects all encrypted data at rest |
-| Branch Protection Setup |  | Essential - prevents unauthorized/unreviewed changes to production |
-| Security Scanning Configuration |  | High priority - automated detection of vulnerabilities |
-| Pre-commit Hook Deployment |  | Important - prevents secrets from entering repository | <!-- pragma: allowlist secret -->
-| Monitoring & Alerting |  | Critical for incident response |
-| Team Permissions & CODEOWNERS |  | Ensures human oversight of sensitive changes |
-| Dependency Management |  | Ongoing maintenance task |
+| Initial Repository Configuration | | Foundation - incorrect settings undermine all other security |
+| Encryption Key Generation | | Critical - protects all encrypted data at rest |
+| Branch Protection Setup | | Essential - prevents unauthorized/unreviewed changes to production |
+| Security Scanning Configuration | | High priority - automated detection of vulnerabilities |
+| Pre-commit Hook Deployment | | Important - prevents secrets from entering repository | <!-- pragma: allowlist secret -->
+| Monitoring & Alerting | | Critical for incident response |
+| Team Permissions & CODEOWNERS | | Ensures human oversight of sensitive changes |
+| Dependency Management | | Ongoing maintenance task |
 
 **Total Energy Investment**: 31/40 units
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Rollback Strategy**: All configuration changes made via Infrastructure-as-Code (YAML files). Rollback by reverting commits to `.github/` directory.
 
 **Parallel Paths**:
-- If CodeQL analysis times out → Switch to `security-only` queries instead of `security-and-quality`
-- If Dependabot PRs not merging → Enable manual merge workflow with security team approval
-- If pre-commit hooks block valid commits → Temporary bypass with `--no-verify` (logged and reviewed)
-- If encryption library unavailable → Use environment variable encryption key (with warning)
-- If GitHub Actions secrets unavailable → Support local `.env` file for development (not committed)
+- If CodeQL analysis times out Switch to `security-only` queries instead of `security-and-quality`
+- If Dependabot PRs not merging Enable manual merge workflow with security team approval
+- If pre-commit hooks block valid commits Temporary bypass with `--no-verify` (logged and reviewed)
+- If encryption library unavailable Use environment variable encryption key (with warning)
+- If GitHub Actions secrets unavailable Support local `.env` file for development (not committed)
 
 **Recovery Procedures**:
 1. **Encryption Key Lost**: Generate new key, re-encrypt all secrets, update `ENCRYPTION_KEY` in GitHub, rotate immediately

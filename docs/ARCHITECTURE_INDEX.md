@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status**: Master index for all architecture documentation 
-**Last Updated**: 2026-06-20 
+**Status**: Master index for all architecture documentation
+**Last Updated**: 2026-06-20
 **Maintainer**: @mbaetiong
 
 ## Overview
@@ -31,7 +31,7 @@ The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML
 
 ---
 
-## ️ Architecture Layers
+## Architecture Layers
 
 The _codex_ system is organized in the following layers:
 
@@ -77,15 +77,25 @@ The _codex_ system is organized in the following layers:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
+
 flowchart LR
+
  A[Ingestion] --> B[Tokenizer]
+
  B --> C[Datasets]
+
  C --> D[Model Loader]
+
  D --> E{Training Engine}
+
  E --> F[Metrics]
+
  F --> G[Logging]
+
  G --> H[Experiment Tracking]
+
  E --> I[Checkpoint Manager]
+
  I --> J[Model Registry]
 ```
 
@@ -141,6 +151,7 @@ _codex_/
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Class Diagram: > DataHandling
+
  TrainingEng'}}%%
 classDiagram
  class TrainingEngine {
@@ -173,10 +184,15 @@ classDiagram
  +load_model()
  +list_versions()
  }
+
  TrainingEngine --> DataHandling
+
  TrainingEngine --> Metrics
+
  TrainingEngine --> Checkpointing
+
  TrainingEngine --> Logging
+
  TrainingEngine --> ModelRegistry
 ```
 
@@ -279,7 +295,7 @@ data:
 
 ---
 
-## ️ Development Workflows
+## Development Workflows
 
 ### Feature Development
 
@@ -356,21 +372,21 @@ The system includes native support for AI agents:
 
 ### Common Issues
 
-**Q: Which architecture document should I read?** 
+**Q: Which architecture document should I read?**
 A: Start with [architecture.md](./human-facing/architecture.md) for quick overview, then [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) for detailed information.
 
-**Q: How is the data flow organized?** 
+**Q: How is the data flow organized?**
 A: See [Runtime Data Flow](#-runtime-data-flow) section above.
 
-**Q: Where do I find deployment information?** 
+**Q: Where do I find deployment information?**
 A: See [docs/deployment/](./deployment/) directory.
 
-**Q: How is security implemented?** 
+**Q: How is security implemented?**
 A: See [Security & Compliance](#-security--compliance) section and [docs/security/](./security/) directory.
 
 ---
 
-## ️ Future Roadmap
+## Future Roadmap
 
 ### Short Term (1-3 months)
 - [ ] Improve test coverage to ≥50%

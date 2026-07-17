@@ -7,45 +7,45 @@
 - [Current State](#current-state)
 - [Issues with Current State](#issues-with-current-state)
 - [Consolidation Strategy](#consolidation-strategy)
-  - [Phase 1: Quick Wins (Immediate)](#phase-1-quick-wins-immediate)
-    - [1.1 Test Workflows → Unified Test Suite](#11-test-workflows--unified-test-suite)
-    - [1.2 Security Workflows → Unified Security Suite](#12-security-workflows--unified-security-suite)
-    - [1.3 Audit Workflows → Unified Audit Pipeline](#13-audit-workflows--unified-audit-pipeline)
-  - [Recommended Consolidations](#recommended-consolidations)
-  - [Priority 1 (Do First)](#priority-1-do-first)
-  - [Priority 2 (Do Next)](#priority-2-do-next)
+ - [Phase 1: Quick Wins (Immediate)](#phase-1-quick-wins-immediate)
+ - [1.1 Test Workflows Unified Test Suite](#11-test-workflows--unified-test-suite)
+ - [1.2 Security Workflows Unified Security Suite](#12-security-workflows--unified-security-suite)
+ - [1.3 Audit Workflows Unified Audit Pipeline](#13-audit-workflows--unified-audit-pipeline)
+ - [Recommended Consolidations](#recommended-consolidations)
+ - [Priority 1 (Do First)](#priority-1-do-first)
+ - [Priority 2 (Do Next)](#priority-2-do-next)
 - [Success Metrics](#success-metrics)
 - [Implementation Plan](#implementation-plan)
-  - [Pre-commit 1-2: Test Suite Consolidation](#pre-commit-1-2-test-suite-consolidation)
-  - [Pre-commit 3-4: Security Suite Consolidation](#pre-commit-3-4-security-suite-consolidation)
+ - [Pre-commit 1-2: Test Suite Consolidation](#pre-commit-1-2-test-suite-consolidation)
+ - [Pre-commit 3-4: Security Suite Consolidation](#pre-commit-3-4-security-suite-consolidation)
 - [Next Steps](#next-steps)
 - [Related Documents](#related-documents)
 - [Session Update: 2026-07-13](#session-update-workflow-portfolio-triage-2026-05-21)
 - [Session Actions Completed](#session-actions-completed)
 - [Full Archive Review Decision Matrix (41 Workflows)](#full-archive-review-decision-matrix-41-workflows)
-  - [⛔ Orphan Stubs Created (3)](#-orphan-stubs-created-3)
-  - [📦 Archived (2)](#-archived-2)
-  - [ Dynamic / GitHub-Managed (7) — No file-level action possible](#-dynamic--github-managed-7--no-file-level-action-possible)
-  - [️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed](#-orphan-equivalent-pending-3--no-backing-file-not-yet-stubbed)
-  - [ Keep Active (26)](#-keep-active-26)
+ - [ Orphan Stubs Created (3)](#-orphan-stubs-created-3)
+ - [ Archived (2)](#-archived-2)
+ - [ Dynamic / GitHub-Managed (7) — No file-level action possible](#-dynamic--github-managed-7--no-file-level-action-possible)
+ - [ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed](#-orphan-equivalent-pending-3--no-backing-file-not-yet-stubbed)
+ - [ Keep Active (26)](#-keep-active-26)
 - [Phase 2 Consolidation Targets](#phase-2-consolidation-targets)
 - [Phase 3 Consolidation Decisions (2026-05-21)](#phase-3-consolidation-decisions-2026-05-21)
-  - [P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml ](#p31--security-sast-semgrep_sarifyml--security-scanning-suiteyml-)
-  - [P3.2 — Discussion Poster Pair: KEEP as separate workflows](#p32--discussion-poster-pair-keep-as-separate-workflows)
-  - [P3.3 — Validation Cluster: KEEP as separate workflows](#p33--validation-cluster-keep-as-separate-workflows)
+ - [P3.1 — Security SAST: semgrep_sarif.yml security-scanning-suite.yml ](#p31--security-sast-semgrep_sarifyml--security-scanning-suiteyml-)
+ - [P3.2 — Discussion Poster Pair: KEEP as separate workflows](#p32--discussion-poster-pair-keep-as-separate-workflows)
+ - [P3.3 — Validation Cluster: KEEP as separate workflows](#p33--validation-cluster-keep-as-separate-workflows)
 - [Investigation Report: Workflow Portfolio Triage (Phase 1-2)](#investigation-report-workflow-portfolio-triage-phase-1-2)
-  - [Summary Table](#summary-table)
-  - [Phase 1 Evidence (Completed)](#phase-1-evidence-completed)
-    - [Files Inspected](#files-inspected)
-  - [Phase 2 Solution Scoring](#phase-2-solution-scoring)
-  - [Phase 3 Verification & Completion](#phase-3-verification--completion)
-    - [Success Criteria Met](#success-criteria-met)
-    - [Final Portfolio State](#final-portfolio-state)
-    - [Archive-Review Backlog](#archive-review-backlog)
-  - [Phase 4 Trigger Remediation (Issue #4524)](#phase-4-trigger-remediation-issue-4524)
+ - [Summary Table](#summary-table)
+ - [Phase 1 Evidence (Completed)](#phase-1-evidence-completed)
+ - [Files Inspected](#files-inspected)
+ - [Phase 2 Solution Scoring](#phase-2-solution-scoring)
+ - [Phase 3 Verification & Completion](#phase-3-verification--completion)
+ - [Success Criteria Met](#success-criteria-met)
+ - [Final Portfolio State](#final-portfolio-state)
+ - [Archive-Review Backlog](#archive-review-backlog)
+ - [Phase 4 Trigger Remediation (Issue #4524)](#phase-4-trigger-remediation-issue-4524)
 - [Phase 5 — Coverage + Agent + Cache Consolidation Iteration (2026-05-24)](#phase-5--coverage--agent--cache-consolidation-iteration-2026-05-24)
-  - [Phase 5 cache-aware workflow goals](#phase-5-cache-aware-workflow-goals)
-  - [Phase 5 deferrals](#phase-5-deferrals)
+ - [Phase 5 cache-aware workflow goals](#phase-5-cache-aware-workflow-goals)
+ - [Phase 5 deferrals](#phase-5-deferrals)
 
 **Last Updated: 2026-06-22
 
@@ -77,7 +77,7 @@ The repository contains **60+ GitHub Actions workflows**, creating complexity an
 
 Merge workflows with significant overlap:
 
-#### 1.1 Test Workflows → Unified Test Suite
+#### 1.1 Test Workflows Unified Test Suite
 
 **Current**:
 - `ci.yml`
@@ -116,7 +116,7 @@ jobs:
 - Clearer test organization
 - Easier to add new Python versions
 
-#### 1.2 Security Workflows → Unified Security Suite
+#### 1.2 Security Workflows Unified Security Suite
 
 **Current**:
 - `security.yml`
@@ -150,7 +150,7 @@ jobs:
 - Single security status check
 - Easier to add new security tools
 
-#### 1.3 Audit Workflows → Unified Audit Pipeline
+#### 1.3 Audit Workflows Unified Audit Pipeline
 
 **Current**:
 - `audit_chain.yml`
@@ -172,28 +172,28 @@ jobs:
 
 | Current Workflows | New Workflow | Reduction |
 |------------------|--------------|-----------|
-| 6 test workflows | `test-suite.yml` | 6→1 |
-| 6 security workflows | `security-suite.yml` | 6→1 |
-| 5 audit workflows | `audit-pipeline.yml` | 5→1 |
+| 6 test workflows | `test-suite.yml` | 61 |
+| 6 security workflows | `security-suite.yml` | 61 |
+| 5 audit workflows | `audit-pipeline.yml` | 51 |
 
-**Total**: 17 → 3 workflows (-14 workflows, 82% reduction)
+**Total**: 17 3 workflows (-14 workflows, 82% reduction)
 
 ### Priority 2 (Do Next)
 
 | Current Workflows | New Workflow | Reduction |
 |------------------|--------------|-----------|
-| 5 doc workflows | `doc-pipeline.yml` | 5→1 |
-| 4 validation workflows | `validation-suite.yml` | 4→1 |
-| Various status/check workflows | `status-checks.yml` | ~5→1 |
+| 5 doc workflows | `doc-pipeline.yml` | 51 |
+| 4 validation workflows | `validation-suite.yml` | 41 |
+| Various status/check workflows | `status-checks.yml` | ~51 |
 
-**Total**: 14 → 3 workflows (-11 workflows)
+**Total**: 14 3 workflows (-11 workflows)
 
 ## Success Metrics
 
 **Target Reductions**:
-- Workflows: 60 → ~25 (58% reduction)
-- Lines of YAML: ~9,000 → ~3,500 (61% reduction)
-- Duplicate code: 70% → 20%
+- Workflows: 60 ~25 (58% reduction)
+- Lines of YAML: ~9,000 ~3,500 (61% reduction)
+- Duplicate code: 70% 20%
 
 **Improved Metrics**:
 - CI minutes/month: -40% expected
@@ -206,7 +206,7 @@ jobs:
 
 1. Create new `test-suite.yml`
 2. Test on feature branch
-3. Disable old workflows (rename .yml → .yml.disabled)
+3. Disable old workflows (rename .yml .yml.disabled)
 4. Monitor for 1 phase
 5. Delete old workflows
 
@@ -236,21 +236,21 @@ jobs:
 # Session Update: 2026-07-13
 
 > **Session:** Workflow Portfolio Triage (PR copilot/review-and-assess-workflows)
-> **Scope:** 41 Archive Review + 3 Orphan workflows → explicit disposition
+> **Scope:** 41 Archive Review + 3 Orphan workflows explicit disposition
 > **Total portfolio at time of analysis:** 99 workflows (26 Already Disabled + 3 Orphan + 41 Archive Review + 69 Active Keep)
 
 ## Session Actions Completed
 
 | Action | Workflows | Status |
 |---|---|---|
-| Created orphan stub files (no triggers) | `cache-health-monitor.yml`, `cache-validation.yml`, `documentation-quality-check.yml` |  Done |
-| Archived dispatch shim | `self-healing.yml` → `.github/workflow-archive/disabled/` |  Done |
-| Archived test simulator | `test-analytics-failure-sim.yml` → `.github/workflow-archive/disabled/` |  Done |
-| Full 41-workflow analysis | All decisions documented in table below |  Done |
+| Created orphan stub files (no triggers) | `cache-health-monitor.yml`, `cache-validation.yml`, `documentation-quality-check.yml` | Done |
+| Archived dispatch shim | `self-healing.yml` `.github/workflow-archive/disabled/` | Done |
+| Archived test simulator | `test-analytics-failure-sim.yml` `.github/workflow-archive/disabled/` | Done |
+| Full 41-workflow analysis | All decisions documented in table below | Done |
 
 ## Full Archive Review Decision Matrix (41 Workflows)
 
-### ⛔ Orphan Stubs Created (3)
+### Orphan Stubs Created (3)
 
 | Workflow ID | File | Reason |
 |---|---|---|
@@ -258,14 +258,14 @@ jobs:
 | 232765010 | `cache-validation.yml` | Backing file absent from `main`; 0 lifetime runs. |
 | 232765053 | `documentation-quality-check.yml` | Backing file absent from `main`; superseded by documentation-quality-agent. |
 
-### 📦 Archived (2)
+### Archived (2)
 
 | Workflow ID | File | Reason |
 |---|---|---|
 | 225897127 | `test-analytics-failure-sim.yml` | Auto-generated test simulator; intentionally fails; no production CI path uses it. |
 | 223032333 | `self-healing.yml` | Pure dispatch shim for `iterative-self-healing-ci.yml`; file header said "Manual trigger alias". |
 
-###  Dynamic / GitHub-Managed (7) — No file-level action possible
+### Dynamic / GitHub-Managed (7) — No file-level action possible
 
 | Workflow ID | Name | Notes |
 |---|---|---|
@@ -277,7 +277,7 @@ jobs:
 | 198731352 | Dependabot Updates | Core GitHub dependency management. Keep. |
 | 223327346 | Dependency Graph | Core security feature. Keep. |
 
-### ️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed
+### Orphan-Equivalent Pending (3) — No backing file, not yet stubbed
 
 | Workflow ID | File | Action Needed |
 |---|---|---|
@@ -285,17 +285,17 @@ jobs:
 | 218151123 | `maturity-check.yml` | File absent from `main`. Create disabled stub in Phase 2. |
 | 218151122 | `benchmarks.yml` | File absent from `main`. Create disabled stub in Phase 2. |
 
-###  Keep Active (26)
+### Keep Active (26)
 
 | Workflow ID | Name | File | Keep Reason |
 |---|---|---|---|
-| 256293350 |  Fast-Forward Safe Files to Main | `fast-forward-safe-files.yml` | Critical agent utility for PR → main file promotion. |
-| 249744244 |  Post Accountability Report | `post-accountability-to-discussion.yml` | Audit trail + cognitive brain feed. |
-| 249908045 |  Create Sub-PR | `create-sub-pr-to-0D_base_.yml` | Core branch-management in session pipeline. |
-| 256293349 |  Doc Refresh Gate (AAIS) | `doc-refresh-gate.yml` | AAIS doc governance gate. |
-| 251020901 |  Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | PRIORITY 0 cognitive brain feed. |
-| 249908046 |  Promote Integration Branch | `promote-integration-branch.yml` | Gated `0D_base_` → `main` promotion. |
-| 239988735 | 🚿 Flush Queued Runs | `flush-queued-runs.yml` | CI queue management during high-volume sessions. |
+| 256293350 | Fast-Forward Safe Files to Main | `fast-forward-safe-files.yml` | Critical agent utility for PR main file promotion. |
+| 249744244 | Post Accountability Report | `post-accountability-to-discussion.yml` | Audit trail + cognitive brain feed. |
+| 249908045 | Create Sub-PR | `create-sub-pr-to-0D_base_.yml` | Core branch-management in session pipeline. |
+| 256293349 | Doc Refresh Gate (AAIS) | `doc-refresh-gate.yml` | AAIS doc governance gate. |
+| 251020901 | Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | PRIORITY 0 cognitive brain feed. |
+| 249908046 | Promote Integration Branch | `promote-integration-branch.yml` | Gated `0D_base_` `main` promotion. |
+| 239988735 | Flush Queued Runs | `flush-queued-runs.yml` | CI queue management during high-volume sessions. |
 | 234039814 | App Package Download | `app-package-download.yml` | User-facing packaging utility with maintained docs. |
 | 223917608 | Authentication Tests | `auth-tests.yml` | Auth module path-triggered tests. |
 | 242908432 | Autonomy Phase CI Matrix | `autonomy-phase-ci-matrix.yml` | CI for confirmed-existing autonomy scripts. |
@@ -323,16 +323,16 @@ jobs:
 
 | Cluster | Merge Path | Priority | Est. Savings | Status |
 |---|---|---|---|---|
-| Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` |  Quick | 3 stubs |  Done (2026-05-21) |
-| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` |  Medium | −1 workflow |  Done (2026-05-21) |
-| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) |  Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
-| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) |  Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
+| Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | Quick | 3 stubs | Done (2026-05-21) |
+| Security SAST | `semgrep_sarif.yml` absorbed by `security-scanning-suite.yml` | Medium | −1 workflow | Done (2026-05-21) |
+| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) | Medium | −0 workflows | Resolved: KEEP (2026-05-21) |
+| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) | Medium | −0 workflows | Resolved: KEEP (2026-05-21) |
 
 ---
 
 ## Phase 3 Consolidation Decisions (2026-05-21)
 
-### P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml 
+### P3.1 — Security SAST: semgrep_sarif.yml security-scanning-suite.yml
 
 **Decision: CONSOLIDATE**
 
@@ -344,7 +344,7 @@ The standalone file was replaced with a disabled stub and the original archived 
 **Changes:**
 - Added `semgrep` job to `security-scanning-suite.yml` (chunked-SARIF, fallback config, artifact upload)
 - Updated `security-suite-summary` to include semgrep in `needs` and output
-- `semgrep_sarif.yml` → disabled stub; original in archive
+- `semgrep_sarif.yml` disabled stub; original in archive
 
 ### P3.2 — Discussion Poster Pair: KEEP as separate workflows
 
@@ -354,14 +354,14 @@ The standalone file was replaced with a disabled stub and the original archived 
 merged because:
 
 1. **Incompatible trigger paths:** accountability fires on `docs/accountability/**`; CI-status fires
-   on `scripts/cognitive/**`, `CODEX_MANIFEST.json`, `.codex/docs/COGNITIVE_BRAIN_STATUS_*.md`.
+ on `scripts/cognitive/**`, `CODEX_MANIFEST.json`, `.codex/docs/COGNITIVE_BRAIN_STATUS_*.md`.
 2. **Incompatible job logic:** accountability uses a full GitHub App JWT auth chain with dedup
-   markers and per-PR discussion creation; CI-status uses cognitive brain scripts
-   (`continuation_chain.py`, `mcp_poster`) with pattern-DB summarization.
+ markers and per-PR discussion creation; CI-status uses cognitive brain scripts
+ (`continuation_chain.py`, `mcp_poster`) with pattern-DB summarization.
 3. **Independent failure domains:** merging would cause accountability to fail if CI-status
-   scripts are unavailable, violating the PRIORITY 0 guarantee on accountability posting.
+ scripts are unavailable, violating the PRIORITY 0 guarantee on accountability posting.
 
-**Disposition:** Both workflows reclassified from `archive-review-candidate` → `active-keep`.
+**Disposition:** Both workflows reclassified from `archive-review-candidate` `active-keep`.
 
 ### P3.3 — Validation Cluster: KEEP as separate workflows
 
@@ -380,7 +380,7 @@ A matrix job would require a union trigger set, causing all three validators to 
 path change — defeating the purpose of path-scoped CI. Each workflow must retain its own
 trigger definition.
 
-**Disposition:** All three workflows reclassified from `archive-review-candidate` → `active-keep`.
+**Disposition:** All three workflows reclassified from `archive-review-candidate` `active-keep`.
 
 ---
 
@@ -437,14 +437,14 @@ trigger definition.
 
 | Category | Count |
 |---|---|
-|  Active — Keep | 74 (previously 69; +5 reclassified from archive-review-candidate: 2 discussion posters + 3 validation cluster) |
-| ⛔ Already Disabled (pre-existing) | 26 |
-| ⛔ Orphan stubs created (Phase 1) | 3 |
-| ⛔ Orphan-equivalent stubs created (Phase 2) | 3 |
-| ⛔ Semgrep stub (Phase 3, consolidated) | 1 |
-| 📦 Archived (Phase 1) | 2 |
-| 📦 Archived (Phase 3, semgrep source) | 1 |
-|  Dynamic/GitHub-managed | 7 |
+| Active — Keep | 74 (previously 69; +5 reclassified from archive-review-candidate: 2 discussion posters + 3 validation cluster) |
+| Already Disabled (pre-existing) | 26 |
+| Orphan stubs created (Phase 1) | 3 |
+| Orphan-equivalent stubs created (Phase 2) | 3 |
+| Semgrep stub (Phase 3, consolidated) | 1 |
+| Archived (Phase 1) | 2 |
+| Archived (Phase 3, semgrep source) | 1 |
+| Dynamic/GitHub-managed | 7 |
 | **Total** | **117** |
 
 > Note: Active-keep count rose because discussion poster pair (2) and validation cluster (3)
@@ -474,8 +474,8 @@ trigger definition.
 **Hand-off agents:** `workflow-management-agent` (primary); supporting: `workflow-optimization-agent`, `cache-management-agent`, `ci-pattern-guardian`, `workflow-compliance-guardian`.
 **Inputs produced this iteration:**
 
-- `.codex/COVERAGE_GAP_REPORT.md` — static src↔tests cross-reference, ranked gaps, stepped coverage roadmap (10 → 12 → 15 → 20%).
-- `agents/AGENT_CONSOLIDATION_MATRIX.md` — Keep / Merge / Archive decisions for 6 agent families (net −10 agents → 143).
+- `.codex/COVERAGE_GAP_REPORT.md` — static srctests cross-reference, ranked gaps, stepped coverage roadmap (10 12 15 20%).
+- `agents/AGENT_CONSOLIDATION_MATRIX.md` — Keep / Merge / Archive decisions for 6 agent families (net −10 agents 143).
 - `docs/workflows/CACHE_POLICY.md` — 4-layer cache hierarchy specification and skip-rescan policy.
 
 ### Phase 5 cache-aware workflow goals

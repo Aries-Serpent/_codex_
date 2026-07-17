@@ -605,13 +605,13 @@ metrics = {
 ## Summary
 
 **Key Points:**
--  Configure experiments with traffic splits
--  Record results for all variants
--  Check statistical significance
--  Use gradual rollout for safety
--  Calculate required sample sizes
--  Apply multiple testing corrections
--  Integrate with continuous learning
+- Configure experiments with traffic splits
+- Record results for all variants
+- Check statistical significance
+- Use gradual rollout for safety
+- Calculate required sample sizes
+- Apply multiple testing corrections
+- Integrate with continuous learning
 
 **Next Steps:**
 - See [Continuous Learning Guide](continuous_learning_guide.md)

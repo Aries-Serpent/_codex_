@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Estimated time:** 20 minutes  
+**Estimated time:** 20 minutes
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`
 
 ---
@@ -13,7 +13,7 @@
 
 A model trained on historical data silently degrades when the real-world
 distribution it sees at inference time diverges from the distribution it was
-trained on.  This is called **drift**.
+trained on. This is called **drift**.
 
 There are two kinds:
 
@@ -23,7 +23,7 @@ There are two kinds:
 | **Model / concept drift** | The *model output* distribution changes | Predictions cluster differently, confidence drops |
 
 Undetected drift leads to silent accuracy loss — the model keeps running but
-returns increasingly wrong answers.  The `_codex_` monitoring stack catches
+returns increasingly wrong answers. The `_codex_` monitoring stack catches
 drift early so you can trigger retraining before users are affected.
 
 ---
@@ -49,7 +49,7 @@ detector = DataDriftDetector(psi_threshold=0.2, kl_threshold=0.5)
 
 ## Step 2: Prepare distributions
 
-Both methods accept plain Python lists (or any `Sequence[float]`).  Each list
+Both methods accept plain Python lists (or any `Sequence[float]`). Each list
 represents a binned probability distribution — values are **automatically
 normalised**, so you can pass raw counts or proportions.
 
@@ -190,10 +190,10 @@ if result.drift_detected:
 When drift is detected you typically want to retrain automatically.
 **[Tutorial 03 — Setting Up Continuous Learning](03_continuous_learning.md)**
 shows you how to wire `DataDriftDetector` and `ModelDriftDetector` into a
-`ContinuousLearningPipeline` that handles the full detect → retrain → evaluate
-→ promote loop.
+`ContinuousLearningPipeline` that handles the full detect retrain evaluate
+ promote loop.
 
 ---
 
-> **See also:**  
+> **See also:**
 > `src/codex_ml/monitoring/data_drift.py` · `src/codex_ml/monitoring/model_drift.py`

@@ -6,7 +6,7 @@
 ## _codex_ Repository - Phase 5 Planning
 
 **Date:2026-07-13
-**Audit Scope:** Complete repository documentation analysis  
+**Audit Scope:** Complete repository documentation analysis
 **Purpose:** Phase 5 (8 phase) planning and remediation strategy
 
 ---
@@ -22,7 +22,7 @@
 - 95.1% CLI documentation
 - Exemplary packages: cognitive_brain (97.7%), context_management (99.6%)
 
-**️ GAPS:**
+** GAPS:**
 - 50.9% function coverage (1,549 undocumented)
 - 67.1% method coverage (1,388 undocumented)
 - Only 3 tutorials (need 10+)
@@ -43,11 +43,11 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 
 | Category | Current | Gap | Target |
 |----------|---------|-----|--------|
-| Module Docstrings | 100.0% | 0 |  100% |
-| Function Docstrings | 50.9% | 1,549 |  80% |
-| Class Docstrings | 82.7% | 253 |  90% |
-| Method Docstrings | 67.1% | 1,388 |  85% |
-| Public APIs | 74.8% | 1,516 |  90% |
+| Module Docstrings | 100.0% | 0 | 100% |
+| Function Docstrings | 50.9% | 1,549 | 80% |
+| Class Docstrings | 82.7% | 253 | 90% |
+| Method Docstrings | 67.1% | 1,388 | 85% |
+| Public APIs | 74.8% | 1,516 | 90% |
 
 **Total Undocumented: 3,190 items**
 
@@ -61,7 +61,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - 16 architecture files
 - 2,141 internal links
 
-️ **Gap: Only 3 tutorials** (need 10)
+ **Gap: Only 3 tutorials** (need 10)
 
 ### 3. CLI Documentation (20% weight): **95.1/100**
 
@@ -91,43 +91,43 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 ## PHASE 5 EXECUTION PLAN
 
 ### Week 1-2: Quick Wins & Foundation (40 hours)
--  10 CLI commands help text (20 min)
--  codex_audit: 0% → 90% (3 hrs)
--  codex_harness: 6% → 90% (3 hrs)
--  codex_cli: 8% → 95% (2 hrs)
--  training package: 36% → 80% (11 hrs)
-- 🔨 Start codex_ml/data/ (20 hrs)
+- 10 CLI commands help text (20 min)
+- codex_audit: 0% 90% (3 hrs)
+- codex_harness: 6% 90% (3 hrs)
+- codex_cli: 8% 95% (2 hrs)
+- training package: 36% 80% (11 hrs)
+- Start codex_ml/data/ (20 hrs)
 
 **Deliverable:** 4 packages improved, training to 80%
 
 ### Week 3-4: codex_ml Core (100 hours)
-- 🔨 codex_ml/modeling/ (40 hrs)
-- 🔨 codex_ml/training/ (30 hrs)
-- 🔨 codex_ml/data/ continued (30 hrs)
+- codex_ml/modeling/ (40 hrs)
+- codex_ml/training/ (30 hrs)
+- codex_ml/data/ continued (30 hrs)
 
 **Deliverable:** Core ML components 70%+ documented
 
 ### Week 5-6: Main Packages & Tutorials (66 hours)
-- 🔨 codex/rag/ (15 hrs)
-- 🔨 codex/zendesk/ (10 hrs)
-- 🔨 mcp/ (10 hrs)
--  Create 7 tutorials (21 hrs):
-  - Quick Start Guide
-  - RAG Pipeline Tutorial
-  - Model Training Guide
-  - CLI Reference
-  - MCP Server Setup
-  - Configuration Guide
-  - Troubleshooting Guide
-- 🔨 Remaining codex/ (10 hrs)
+- codex/rag/ (15 hrs)
+- codex/zendesk/ (10 hrs)
+- mcp/ (10 hrs)
+- Create 7 tutorials (21 hrs):
+ - Quick Start Guide
+ - RAG Pipeline Tutorial
+ - Model Training Guide
+ - CLI Reference
+ - MCP Server Setup
+ - Configuration Guide
+ - Troubleshooting Guide
+- Remaining codex/ (10 hrs)
 
 **Deliverable:** Main packages 90%+, 10 tutorials total
 
 ### Week 7-8: Polish & Completion (67 hours)
-- 🔨 codex_ml remaining (30 hrs)
-- 🔨 Small packages (12 hrs)
--  Fix 108 broken links (5 hrs)
--  Generate API reference with Sphinx (20 hrs)
+- codex_ml remaining (30 hrs)
+- Small packages (12 hrs)
+- Fix 108 broken links (5 hrs)
+- Generate API reference with Sphinx (20 hrs)
 
 **Deliverable:** Phase 5 complete, 90-95/100 score
 
@@ -167,7 +167,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 
 ### Feasibility Options
 
-####  Option 3: Prioritized Scope (RECOMMENDED)
+#### Option 3: Prioritized Scope (RECOMMENDED)
 - **Timeline:** 8 phases @ 20hrs/week = 160 hours
 - **Approach:** Focus on P0/P1 items only
 - **Coverage:** 80% of gaps addressed
@@ -194,17 +194,17 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 ## CRITICAL SUCCESS FACTORS
 
 ### Must Complete (P0)
-1.  codex_ml to 80%+ (from 51.5%)
-2.  codex to 90%+ (from 75.5%)
-3.  training to 85%+ (from 36%)
-4.  Zero-coverage packages to 90%+ (codex_audit, codex_harness, codex_cli)
-5.  Public API coverage to 90%+ (from 74.8%)
+1. codex_ml to 80%+ (from 51.5%)
+2. codex to 90%+ (from 75.5%)
+3. training to 85%+ (from 36%)
+4. Zero-coverage packages to 90%+ (codex_audit, codex_harness, codex_cli)
+5. Public API coverage to 90%+ (from 74.8%)
 
 ### Should Complete (P1)
-1.  Create 10 tutorials (from 3)
-2.  mcp to 85%+ (from 62.6%)
-3.  Fix broken links (<50 remaining)
-4.  Generate API reference docs
+1. Create 10 tutorials (from 3)
+2. mcp to 85%+ (from 62.6%)
+3. Fix broken links (<50 remaining)
+4. Generate API reference docs
 
 ### Nice to Have (P2)
 1. Architecture diagrams
@@ -353,10 +353,10 @@ The _codex_ repository has a **solid documentation foundation (85.5/100)** with 
 ### Key Contacts
 - **Phase 5 Lead:** [Assign]
 - **Package Owners:**
-  - codex_ml: [Assign]
-  - codex: [Assign]
-  - training: [Assign]
-  - mcp: [Assign]
+ - codex_ml: [Assign]
+ - codex: [Assign]
+ - training: [Assign]
+ - mcp: [Assign]
 
 ### Next Steps
 1. Review audit findings
@@ -368,5 +368,5 @@ The _codex_ repository has a **solid documentation foundation (85.5/100)** with 
 ---
 
 **Audit Completed:2026-07-13
-**Next Review:** Week 4 (February 15, 2026)  
+**Next Review:** Week 4 (February 15, 2026)
 **Final Review:** Week 8 (March 15, 2026)

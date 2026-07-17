@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document Type:** Architecture & Design Guide 
-**Audience:** Architects, Senior Developers, DevOps Engineers 
+**Document Type:** Architecture & Design Guide
+**Audience:** Architects, Senior Developers, DevOps Engineers
 **Last Updated: 2026-07-16
 
 ## System Overview
@@ -12,16 +12,20 @@ Aries-Serpent is a modular AI agent framework with three main components:
 
 ```mermaid
 graph TB
+
  CB[" Cognitive Brain<br/>(Pattern Recognition & Memory)"]
  CORE[" Core<br/>(OODA Loop & Protocol Engine)"]
  ML[" ML Components<br/>(Inference & Training)"]
  API[" API Layer<br/>(FastAPI Services)"]
  
  CB -->|Patterns| CORE
+
  CORE -->|Strategies| ML
+
  ML -->|Results| API
  
  API -->|Requests| CORE
+
  CORE -->|Queries| CB
  
  style CB fill:#ff9999
@@ -55,7 +59,7 @@ graph TB
 **Purpose:** Autonomous action orchestration and protocol-based integration
 
 **Components:**
-- `OODALoop` - Observe → Orient → Decide → Act cycle
+- `OODALoop` - Observe Orient Decide Act cycle
 - `ProtocolEngine` - Message routing and transformation
 - `ActionQueue` - Async action execution
 
@@ -103,13 +107,17 @@ graph TB
 
 ```mermaid
 sequenceDiagram
+
  Client->>API: POST /api/v1/query
  API->>CORE: Process query
  CORE->>CB: Request pattern match
+
  CB-->>CORE: Matched patterns
  CORE->>ML: Generate strategy
+
  ML-->>CORE: Model prediction
  CORE->>API: Action & result
+
  API-->>Client: Response
 ```
 
@@ -117,11 +125,14 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+
  System->>CORE: Action result
  CORE->>CB: Record outcome
+
  CB-->>CORE: Updated patterns
  CORE->>ML: Training signal
  ML->>ML: Update model
+
  ML-->>CORE: New checkpoint
  CORE->>CORE: Update strategy
 ```
@@ -238,6 +249,7 @@ Improves decision quality
 
 ```mermaid
 graph LR
+
  A["API Layer<br/>FastAPI"]
  B["Core<br/>OODA Loop"]
  C["Cognitive Brain<br/>Pattern Engine"]
@@ -247,11 +259,17 @@ graph LR
  G["Cache<br/>Redis"]
  
  A -->|routes| B
+
  B -->|patterns| C
+
  B -->|inference| D
+
  B -->|config| E
+
  C -->|memory| F
+
  B -->|cache| G
+
  D -->|models| F
  
  style E fill:#e1f5ff
@@ -390,5 +408,5 @@ graph LR
 
 ---
 
-**Status:** COMPLETE 
+**Status:** COMPLETE
 **Last Updated: 2026-07-16

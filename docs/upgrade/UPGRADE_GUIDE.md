@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version:** 0.1.0  
+**Version:** 0.1.0
 **Last Updated: 2026-07-09
 **Audience:** DevOps, Platform Engineers, Developers
 
@@ -10,7 +10,7 @@
 
 ## Migration Paths
 
-### From beta1 → 0.1.0 (Final)
+### From beta1 0.1.0 (Final)
 
 #### Breaking Changes
 
@@ -52,7 +52,7 @@ pipeline = Pipeline(cfg)
 
 ---
 
-### From beta2 → 0.1.0 (Final)
+### From beta2 0.1.0 (Final)
 
 #### Configuration Format
 
@@ -87,7 +87,7 @@ cache:
 
 ---
 
-### From beta3 → 0.1.0 (Final)
+### From beta3 0.1.0 (Final)
 
 #### Minor API Changes
 
@@ -358,13 +358,13 @@ pytest tests/compatibility/ -v
 
 Upgrade is successful when:
 
--  All tests passing
--  Zero downtime (for rolling upgrades)
--  Performance baseline met
--  No error spikes
--  All features working
--  Health checks passing
--  Monitoring stable
+- All tests passing
+- Zero downtime (for rolling upgrades)
+- Performance baseline met
+- No error spikes
+- All features working
+- Health checks passing
+- Monitoring stable
 
 ---
 

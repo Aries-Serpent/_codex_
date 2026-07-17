@@ -1,4 +1,4 @@
-#  Campaign Execution Guide
+# Campaign Execution Guide
 
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
@@ -37,7 +37,7 @@ python -m codex campaign run production-readiness-v1
 
 Executes the production readiness campaign:
 1. Activates campaign
-2. Executes phases sequentially (Phase 1 → Phase 2 → ... → Phase 5)
+2. Executes phases sequentially (Phase 1 Phase 2 ... Phase 5)
 3. Within each phase, agents run in parallel
 4. Verifies gates after each phase
 5. Collects artifacts
@@ -190,7 +190,7 @@ campaigns:
 
 ## Production Readiness Campaign (Phases 1-5)
 
-### Phase 1: Security Hardening  COMPLETE
+### Phase 1: Security Hardening COMPLETE
 
 **Agents:** unified-security-scanner
 
@@ -216,7 +216,7 @@ campaigns:
 └── SECURITY_PHASE1_COMPLETE.md
 ```
 
-### Phase 2: Coverage Expansion  COMPLETE
+### Phase 2: Coverage Expansion COMPLETE
 
 **Agents:** unified-coverage-agent, test-enhancement-agent (parallel)
 
@@ -240,7 +240,7 @@ campaigns:
 └── ... (6 new test files)
 ```
 
-### Phase 3: CI Stability  COMPLETE
+### Phase 3: CI Stability COMPLETE
 
 **Agents:** ci-auto-healer-agent, workflow-compliance-guardian (parallel)
 
@@ -255,7 +255,7 @@ campaigns:
 - 100% REQ compliance
 - 0 deprecated actions
 
-### Phase 4: Agent Architecture  IN PROGRESS
+### Phase 4: Agent Architecture IN PROGRESS
 
 **Agents:** agent-orchestrator
 
@@ -270,7 +270,7 @@ campaigns:
 - Memory sync < 80% capacity
 - Pattern index complete
 
-### Phase 5: Final Validation  IN PROGRESS
+### Phase 5: Final Validation IN PROGRESS
 
 **Agents:** security-alert-verification-agent, unified-coverage-agent, workflow-compliance-guardian (parallel)
 
@@ -533,7 +533,7 @@ jobs:
 ## FAQ
 
 **Q: How many campaigns can run concurrently?**
-A: Max 1 campaign per session (due to artifact isolation). Multiple campaigns can chain (Phase A → Phase B).
+A: Max 1 campaign per session (due to artifact isolation). Multiple campaigns can chain (Phase A Phase B).
 
 **Q: What happens if an agent times out?**
 A: Agent marked as "timeout", phase gate fails, retry logic triggered (up to escalation_threshold).

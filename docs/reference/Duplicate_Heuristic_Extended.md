@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
-> Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+> Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## 1. Original Duplication (Pre-P4)
 
@@ -16,7 +16,7 @@
 | 1 | Tokenize evidence file contents (min length filter) |
 | 2 | Build TF vectors per file |
 | 3 | Compute pairwise cosine similarities |
-| 4 | Average similarity → similarity_avg |
+| 4 | Average similarity similarity_avg |
 | 5 | similarity_index = 1 - similarity_avg |
 
 ## 3. Combined Consistency Metric

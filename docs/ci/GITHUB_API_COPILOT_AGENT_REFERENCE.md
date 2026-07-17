@@ -2,17 +2,17 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Scope:** Aries-Serpent/_codex_ repository  
-> **Audience:** GitHub Copilot Coding agent (Web UI)  
-> **Authority:** Acting on behalf of maintainer `@mbaetiong`  
+> **Scope:** Aries-Serpent/_codex_ repository
+> **Audience:** GitHub Copilot Coding agent (Web UI)
+> **Authority:** Acting on behalf of maintainer `@mbaetiong`
 > **Last Updated: 2026-07-11
-> **Full Secrets/Variables Reference:** [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)  
-> **CB Knowledge Entry:** [`.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md`](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)  
+> **Full Secrets/Variables Reference:** [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)
+> **CB Knowledge Entry:** [`.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md`](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)
 > **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` §0–§4
 
 ---
 
-##  TOKEN HIERARCHY — WHICH TOKEN TO USE WHEN
+## TOKEN HIERARCHY — WHICH TOKEN TO USE WHEN
 
 Every GitHub API call requires the correct token. Using the wrong token causes silent
 permission errors. Follow this hierarchy **exactly**:
@@ -24,7 +24,7 @@ permission errors. Follow this hierarchy **exactly**:
 | 3rd | `secrets._GITHUB_APP_PRIVATE_KEY` + `_GITHUB_APP_ID` | App installation scopes | Cognitive Brain App — commit signing, PR creation as App identity |
 | 4th | `github.token` / `secrets.GITHUB_TOKEN` | `contents:read`, `pull-requests:write` (limited) | Read-only operations, posting comments |
 
-> ️ `GITHUB_TOKEN` **cannot** approve workflow runs, write Actions variables, or push
+> `GITHUB_TOKEN` **cannot** approve workflow runs, write Actions variables, or push
 > to protected branches. Always use `CODEX_MASTER_KEY` for those operations.
 
 ### Fallback Pattern (canonical)
@@ -35,7 +35,7 @@ env:
 
 ---
 
-##  REPOSITORY VARIABLES — READ/WRITE REFERENCE
+## REPOSITORY VARIABLES — READ/WRITE REFERENCE
 
 These variables are the Cognitive Brain's persistent state. Read them to understand
 current session context; write them to record outcomes.
@@ -77,7 +77,7 @@ gh api PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
 
 ---
 
-##  PR BODY — WEC READ/WRITE PROTOCOL
+## PR BODY — WEC READ/WRITE PROTOCOL
 
 The Workflow Execution Checklist (WEC) lives in the PR body. The agent MUST read
 it before every write to preserve maintainer checkbox state.
@@ -140,7 +140,7 @@ report_progress(prDescription=checklist_only)
 
 ---
 
-## 📣 POSTING COMMENTS — PATTERNS
+## POSTING COMMENTS — PATTERNS
 
 ### Post a plain comment to PR
 ```bash
@@ -190,7 +190,7 @@ await github.rest.reactions.createForIssueComment({
 
 ---
 
-##  WORKFLOW RUNS — APPROVE / CANCEL / TRIGGER
+## WORKFLOW RUNS — APPROVE / CANCEL / TRIGGER
 
 ### List pending (action_required) runs for a SHA
 ```bash
@@ -251,7 +251,7 @@ gh api \
 
 ---
 
-## 🔑 TOKEN DELEGATION — ACTING ON BEHALF OF MAINTAINER
+## TOKEN DELEGATION — ACTING ON BEHALF OF MAINTAINER
 
 The `agent-auth-delegation.yml` workflow implements a secure provenance chain that
 grants the Copilot Coding agent maintainer-equivalent authority within a TTL window.
@@ -354,7 +354,7 @@ installation_token = resp.json()["token"]
 
 ---
 
-## 🛡️ DEFERRAL LANGUAGE GATE — WHAT TRIGGERS IT
+## DEFERRAL LANGUAGE GATE — WHAT TRIGGERS IT
 
 `scripts/ci/check_deferral_language.py` scans every PR body, commit message, and
 comment for forbidden phrases. CI fails on any match **not covered by an exemption**.
@@ -390,14 +390,14 @@ python scripts/ci/check_deferral_language.py \
 
 ---
 
-##  PR COMMENT REVIEW GATE — BLOCKING COMMENT DETECTION
+## PR COMMENT REVIEW GATE — BLOCKING COMMENT DETECTION
 
 `comment-review-gate.yml` scans PR review comments and inline comments for
 **unresolved blocking items** before allowing merge.
 
 ### How the Gate Works
 1. Lists all review threads via `github.rest.pulls.listReviewComments`
-2. Filters for threads containing keywords: `MUST`, `REQUIRED`, `BLOCKING`, ``, `🚫`
+2. Filters for threads containing keywords: `MUST`, `REQUIRED`, `BLOCKING`, ``, ``
 3. Checks if each flagged thread is `resolved: true`
 4. Fails CI if any blocking thread is unresolved
 
@@ -420,7 +420,7 @@ gh pr view "$PR_NUMBER" \
 
 ---
 
-##  CI STATUS — CHECKING AND REACTING
+## CI STATUS — CHECKING AND REACTING
 
 ### Get all check runs for a commit SHA
 ```bash
@@ -456,7 +456,7 @@ gh api "/repos/Aries-Serpent/_codex_/actions/jobs/${JOB_ID}/logs" > job.log
 
 ---
 
-##  COGNITIVE BRAIN CONNECTED APP — API SURFACE
+## COGNITIVE BRAIN CONNECTED APP — API SURFACE
 
 The Cognitive Brain app exposes a FastAPI server (default: `http://localhost:8765`
 or `$CODEX_CLI_API_URL` / `$COGNITIVE_APP_API_URL`).
@@ -517,7 +517,7 @@ httpx.post(f"{base_url}/api/v1/patterns/record", json={
 
 ---
 
-## 🔁 CODEBASE-WIDE CHANGES — SAFE PATTERNS
+## CODEBASE-WIDE CHANGES — SAFE PATTERNS
 
 ### Pattern: Find-and-replace across all workflow files
 ```bash
@@ -569,7 +569,7 @@ report_progress(
 
 ---
 
-##  PRE-CONCLUSION CHECKLIST (§0 CODEBASE_AGENCY_POLICY.md)
+## PRE-CONCLUSION CHECKLIST (§0 CODEBASE_AGENCY_POLICY.md)
 
 Before ending any session the agent MUST verify:
 
@@ -587,7 +587,7 @@ Before ending any session the agent MUST verify:
 
 ---
 
-## 🗂️ CANONICAL WEC BLOCK (copy verbatim into every report_progress)
+## CANONICAL WEC BLOCK (copy verbatim into every report_progress)
 
 ```markdown
 ---
@@ -631,7 +631,7 @@ Before ending any session the agent MUST verify:
 
 ---
 
-## 🚦 STARTUP FAILURE PATTERNS — QUICK DIAGNOSIS
+## STARTUP FAILURE PATTERNS — QUICK DIAGNOSIS
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
@@ -648,23 +648,23 @@ Before ending any session the agent MUST verify:
 
 ---
 
-## 📦 SECRETS & VARIABLES — ALL SCOPES (S-3876)
+## SECRETS & VARIABLES — ALL SCOPES (S-3876)
 
-> **Full reference with all REST API endpoints, CLI patterns, MCP gaps:**  
-> [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)  
-> **Live test script:** `scripts/ci/test_variables_api.py`  
+> **Full reference with all REST API endpoints, CLI patterns, MCP gaps:**
+> [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)
+> **Live test script:** `scripts/ci/test_variables_api.py`
 > **Test workflow:** `.github/workflows/test-variables-api.yml`
 
 ### Scope Coverage Quick-Reference
 
 | Scope | Variables | Actions Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| repository |  `repo` PAT |  `repo` PAT |  `repo` PAT |  `repo` PAT |
-| Organization |  `admin:org` |  `admin:org` |  `admin:org` |  `admin:org` |
-| Environment |  `repo` PAT |  `repo` PAT |  |  |
-| User (Codespaces) |  |  |  |  `codespace` |
+| repository | `repo` PAT | `repo` PAT | `repo` PAT | `repo` PAT |
+| Organization | `admin:org` | `admin:org` | `admin:org` | `admin:org` |
+| Environment | `repo` PAT | `repo` PAT | | |
+| User (Codespaces) | | | | `codespace` |
 
-### ️ Why `GITHUB_TOKEN` Returns 403 on Variables API
+### Why `GITHUB_TOKEN` Returns 403 on Variables API
 
 ```
 GITHUB_TOKEN = GitHub Actions installation token
@@ -688,8 +688,8 @@ gh api POST /repositories/$REPO_ID/environments/production/variables \
 
 ## MCP Server Gap — Secrets/Variables
 
-The GitHub MCP Server (`/mcp/readonly` in this repo's agent sessions) does **not**  
-support secret or variable CRUD. All write operations must use REST API or `gh` CLI  
+The GitHub MCP Server (`/mcp/readonly` in this repo's agent sessions) does **not**
+support secret or variable CRUD. All write operations must use REST API or `gh` CLI
 with `CODEX_MASTER_KEY || CODEX_BACKUP_KEY`.
 
 ```

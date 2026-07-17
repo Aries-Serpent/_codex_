@@ -1,10 +1,10 @@
-# Quickstart: Local CPU Training → Evaluation → Checkpoint → Report
+# Quickstart: Local CPU Training Evaluation Checkpoint Report
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Doc Author], [Secondary: Verifier]  Energy: 5/5  
-⚛️ Physics: Path️ [Tokenize → Data → Model → Train → Eval → Ckpt → Report] Fields [CPU-only, Offline] Patterns️ [Determinism, NDJSON] Redundancy [Golden outputs] Balance️ [Minimal steps, reproducible]
+> Generated: 2026-06-22 (audited) | Author: mbaetiong
+ Roles: [Primary: Doc Author], [Secondary: Verifier] Energy: 5/5
+ Physics: Path [Tokenize Data Model Train Eval Ckpt Report] Fields [CPU-only, Offline] Patterns [Determinism, NDJSON] Redundancy [Golden outputs] Balance [Minimal steps, reproducible]
 
 Prereqs
 - Python 3.12+, nox installed

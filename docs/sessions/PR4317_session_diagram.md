@@ -4,22 +4,24 @@
 
 > **Last updated: 2026-07-11
 > **Stats: 62+ commits · 3 Dependabot PRs consolidated · 0 CI failures · all blocking gates **
-> **Sessions: S305 → S306 → S307 → S308 → S309 → S310 → S311 → S312 → S313 (active)**
+> **Sessions: S305 S306 S307 S308 S309 S310 S311 S312 S313 (active)**
 >
 > **S313 completed tasks:**
-> -  Task 1a: PBKDF2 iterations 100_000 → 600_000 (OWASP 2024 min) — `services/ita/app/security.py`
-> -  Task 1b: CodeQL push trigger — already configured for `main`, `0D_base_`, `develop`, `copilot/**` — no change needed
-> -  Task 1c: bandit HIGH triage — **0 HIGH findings** in `src/` and `services/` 
-> -  Task 2: mypy baseline updated 170 → 126 (locked in 44-error improvement)
-> -  ruff: 0 violations · sync_tracked_files: all consistent · auto_fix: 0 issues
+> - Task 1a: PBKDF2 iterations 100_000 600_000 (OWASP 2024 min) — `services/ita/app/security.py`
+> - Task 1b: CodeQL push trigger — already configured for `main`, `0D_base_`, `develop`, `copilot/**` — no change needed
+> - Task 1c: bandit HIGH triage — **0 HIGH findings** in `src/` and `services/`
+> - Task 2: mypy baseline updated 170 126 (locked in 44-error improvement)
+> - ruff: 0 violations · sync_tracked_files: all consistent · auto_fix: 0 issues
 
 ---
 
-## 1. End-to-End Problem → Fix Flow
+## 1. End-to-End Problem Fix Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge, "Wave 1 — Initial Branch Setup (auto-generated)"'}}%%
+
 flowchart TD
+
     START([PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge]) --> WAVE1
 
     subgraph WAVE1["Wave 1 — Initial Branch Setup (auto-generated)"]
@@ -94,14 +96,22 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow", "Branch / Repo Resolution\n$GITHUB_REF_NAME or git rev-parse"'}}%%
+
 flowchart TD
     ENTRY["CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow"]
+
     ENTRY --> RESOLVE["Branch / Repo Resolution\n$GITHUB_REF_NAME or git rev-parse"]
+
     RESOLVE --> STATE["Per-branch state file\n.codex/wqm_state_<branch>.json"]
+
     STATE --> RATE["Rate-Limit Check\nGET /rate_limit pre-call\ncore.remaining < MIN_REMAINING\n→ rotate token / wait"]
+
     RATE --> WINDOW["Sliding Window Tracker\nper-minute cap: 20\nper-hour cap: 300"]
+
     WINDOW --> ACTION["Mutation Actions\ncancel / dispatch / list"]
+
     ACTION --> DRY["--dry-run mode\nsafe for diagnosis"]
+
     DRY --> LOG[".codex/wqm_mutations.jsonl\nper-run audit trail"]
 ```
 
@@ -111,8 +121,10 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR Title on GitHub\n'0 d base ' — trailing space", "autonomous_rag_context.py\ngenerates session_context_latest.md\nevery CI run"'}}%%
+
 flowchart TD
     TITLE["PR Title on GitHub\n'0 d base ' — trailing space"]
+
     TITLE --> SCRIPT["autonomous_rag_context.py\ngenerates session_context_latest.md\nevery CI run"]
 
     subgraph BUG["🐛 Bug: 3 f-string literals with trailing  "]
@@ -122,8 +134,11 @@ flowchart TD
     end
 
     SCRIPT --> BUG
+
     BUG --> FILE[".codex/session_context_latest.md\n3 lines with trailing spaces\nevery CI regeneration"]
+
     FILE --> HOOK["pre-commit trailing-whitespace hook\nmodifies file → exits 2"]
+
     HOOK --> FAIL["Fast Validation FAIL\nPR Auto-Fix Check FAIL\nPre-Merge Validation FAIL"]
 
     subgraph FIX[" Fix (this commit)"]
@@ -134,6 +149,7 @@ flowchart TD
     end
 
     FAIL -.->|"fixed in"| FIX
+
     FIX --> CLEAN["pre-commit hook passes\nFast Validation \nPR Auto-Fix Check \nPre-Merge Validation "]
 ```
 
@@ -143,14 +159,22 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
     direction LR
+
     [*] --> BranchPush : Agent pushes commit
+
     BranchPush --> MergePreview : GitHub merge preview\nGITHUB_SHA ≠ HEAD SHA
+
     MergePreview --> FalsePositive : sync_tracked sees stale state
+
     FalsePositive --> Pattern17 : Pattern 17/28 detected
+
     Pattern17 --> FreshPush : re-anchor commit pushed
+
     FreshPush --> AllGreen : CI re-evaluates real HEAD\n Pattern 17/28 resolved
+
     AllGreen --> [*]
 ```
 
@@ -160,6 +184,7 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: check
+
     STF'}}%%
 sequenceDiagram
     autonumber
@@ -171,26 +196,33 @@ sequenceDiagram
 
     Agent->>CI: 1b889c6 RP-004 sync fix
     CI->>STF: sync_tracked_files --check
+
     STF-->>CI:  consistent
 
     Agent->>CI: 504c2d4 WQM tooling
     CI->>Ruff: ruff check src/
+
     Ruff-->>CI:  0 violations
 
     Agent->>CI: 2f079c7 mistune 3.2.1
     Agent->>CI: 5dcbf61 uv.lock aligned
 
     Agent->>CI: a732ed27 RAG path fix
+
     CI-->>Agent:  26/26 Resilient Validation pass
 
     Agent->>CI: 6c2a160 PR title .strip()
     CI->>Hook: trailing-whitespace check
+
     Hook-->>CI:  3 lines still bad (source not fixed)
 
     Agent->>CI: S312 autonomous_rag_context fix + docs
     CI->>Hook: trailing-whitespace check
+
     Hook-->>CI:  0 trailing spaces
+
     CI-->>Agent:  Fast Validation PASS
+
     CI-->>Agent:  All gates green
 ```
 
@@ -200,16 +232,20 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR #4320\npip/mistune-3.2.1\nrequirements/lock.txt", "PR #4321\nuv/uv-b8ada8e151 prev\nrequirements/lock.txt"'}}%%
+
 flowchart LR
     DEP4320["PR #4320\npip/mistune-3.2.1\nrequirements/lock.txt"]
     DEP4321["PR #4321\nuv/uv-b8ada8e151 prev\nrequirements/lock.txt"]
     DEP4322["PR #4322\nuv/uv-b8ada8e151 latest\nuv.lock + requirements"]
 
     DEP4320 --> CHERRY["Cherry-picked\n2f079c7 + 5dcbf61"]
+
     DEP4321 --> CHERRY
+
     DEP4322 --> CHERRY
 
     CHERRY --> VERIFY["requirements/lock.txt  3.2.1\nuv.lock  3.2.1\nPR-4322-followup.md "]
+
     VERIFY --> PR4317["PR #4317\nAll Dependabot changes\nconsolidated "]
 ```
 
@@ -219,6 +255,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title PR #4317 — Files Changed by Category (57 commits)
     "CI Tooling (WQM + rag_context fix)" : 9
     "Sync / Accountability / Pattern 25" : 18
@@ -234,30 +271,43 @@ pie title PR #4317 — Files Changed by Category (57 commits)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "git push 0D_base_", "pre-merge-validation.yml "'}}%%
+
 flowchart TD
+
     PUSH["git push 0D_base_"] --> PRE["pre-merge-validation.yml "]
+
     PUSH --> COMMENT["comment-review-gate.yml "]
+
     PUSH --> DEFERRAL["deferral-language-gate.yml "]
+
     PUSH --> AUTH["agent-auth-delegation.yml "]
+
     PUSH --> WEC["workflow-execution-gate.yml "]
 
     WEC --> VALIDATE["validate.yml\nFast Validation  after fix"]
+
     WEC --> AUTOFIX["auto-fix-pr-check.yml  after fix"]
+
     WEC --> CODEQL["codeql-analysis.yml\n0 alerts "]
+
     WEC --> SEMGREP["semgrep_sarif.yml\n0 issues "]
+
     WEC --> QA["qa-walkthrough.yml "]
+
     WEC --> ETOD["E→D Transition 5/5 \nD_CAPABLE "]
 
     PRE & COMMENT & DEFERRAL & AUTH & WEC --> CHECKIN["copilot-agent-checkin.yml "]
+
     VALIDATE & AUTOFIX & CODEQL & SEMGREP & QA & ETOD --> READY[" Merge Ready\n100/100 after this push"]
 ```
 
 ---
 
-## 9.  Security & CodeQL Resolution Map
+## 9. Security & CodeQL Resolution Map
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " All CodeQL Alerts Resolved — PR #4289", "py/path-injection (9 alerts 13385–13393)\nragapi.py: intra-procedural fullmatch\n+ safe_vars + realpath + commonpath"'}}%%
+
 flowchart TD
     subgraph RESOLVED[" All CodeQL Alerts Resolved — PR #4289"]
         R1["py/path-injection (9 alerts 13385–13393)\nragapi.py: intra-procedural fullmatch\n+ safe_vars + realpath + commonpath"]
@@ -280,6 +330,7 @@ flowchart TD
     end
 
     RESOLVED --> BACKLOG
+
     BACKLOG --> NEXT
 ```
 
@@ -332,35 +383,37 @@ flowchart TD
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| `ruff check src/ tests/` |  0 violations | Verified locally |
-| `sync_tracked_files --check` |  consistent | Verified locally |
-| `mypy baseline` |  126 < 170 baseline | 44 errors below baseline |
-| `merge-tree` conflicts |  0 | No conflicts with main |
-| `secrets baseline` |  12,712 entries | Last scan 2026-05-05 |
-| Pattern 22 tracked sync |  passing | SHA-drift resolved |
-| Pattern 25 accountability |  S312 entry | 2026-05-06 |
-| Pattern 31 stale type:ignore |  0 | dal.py cleaned |
-| WEC block in PR body |  present | Every report_progress |
-| Dependabot #4320 |  done | mistune 3.2.1 requirements |
-| Dependabot #4321 |  done | mistune 3.2.1 uv group |
-| Dependabot #4322 |  done | mistune 3.2.1 uv.lock |
-| CodeQL open alerts |  0 | Inherited from PR #4289 |
-| Semgrep SAST |  0 issues | Last run 20:07 UTC |
-| E→D Transition |  5/5 D_CAPABLE | Unlocked  |
-| Fast Validation |  fixed | trailing-space source eliminated |
-| PR Auto-Fix Check |  fixed | same root cause |
-| Pre-Merge Validation |  fixed | cascades from above |
-| Living docs |  every session | roadmap + session diagram |
+| `ruff check src/ tests/` | 0 violations | Verified locally |
+| `sync_tracked_files --check` | consistent | Verified locally |
+| `mypy baseline` | 126 < 170 baseline | 44 errors below baseline |
+| `merge-tree` conflicts | 0 | No conflicts with main |
+| `secrets baseline` | 12,712 entries | Last scan 2026-05-05 |
+| Pattern 22 tracked sync | passing | SHA-drift resolved |
+| Pattern 25 accountability | S312 entry | 2026-05-06 |
+| Pattern 31 stale type:ignore | 0 | dal.py cleaned |
+| WEC block in PR body | present | Every report_progress |
+| Dependabot #4320 | done | mistune 3.2.1 requirements |
+| Dependabot #4321 | done | mistune 3.2.1 uv group |
+| Dependabot #4322 | done | mistune 3.2.1 uv.lock |
+| CodeQL open alerts | 0 | Inherited from PR #4289 |
+| Semgrep SAST | 0 issues | Last run 20:07 UTC |
+| ED Transition | 5/5 D_CAPABLE | Unlocked |
+| Fast Validation | fixed | trailing-space source eliminated |
+| PR Auto-Fix Check | fixed | same root cause |
+| Pre-Merge Validation | fixed | cascades from above |
+| Living docs | every session | roadmap + session diagram |
 | **Overall** | ** MERGE READY** | **100/100 after CI re-run** |
 
 
 ---
 
-## 1. End-to-End Problem → Fix Flow
+## 1. End-to-End Problem Fix Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge, "Wave 1 — Initial Branch Setup (auto-generated)"'}}%%
+
 flowchart TD
+
     START([PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge]) --> WAVE1
 
     subgraph WAVE1["Wave 1 — Initial Branch Setup (auto-generated)"]
@@ -435,6 +488,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow", "Branch / Repo Resolution\n$GITHUB_REF_NAME\nor git rev-parse --abbrev-ref HEAD\nor git remote get-url origin"'}}%%
+
 flowchart TD
     ENTRY["CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow"]
 
@@ -459,6 +513,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
     direction LR
 
@@ -487,6 +542,7 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: check
+
     STF'}}%%
 sequenceDiagram
     autonumber
@@ -498,29 +554,37 @@ sequenceDiagram
 
     Agent->>CI: push commit (1b889c6 RP-004 fix)
     CI->>STF: sync_tracked_files --check
+
     STF-->>CI:  all consistent
 
     Agent->>CI: push commit (504c2d4 WQM tooling)
     CI->>WQM: --scan --branch 0D_base_
+
     WQM-->>CI: lists queued runs
     Note over WQM: rate-limit check before any mutation
 
     Agent->>CI: push commit (2f079c7 mistune 3.2.1)
     CI->>Ruff: ruff check src/
+
     Ruff-->>CI:  0 violations
 
     Agent->>CI: push commit (a732ed27 RAG path fix)
+
     CI-->>Agent:  Resilient Validation 26/26 pass
 
     Agent->>CI: push commit (9730258 stale type-ignore)
+
     CI-->>Agent:  Pattern 31 resolved
 
     Agent->>CI: push commit (6c2a160 PR title strip)
+
     CI-->>Agent:  Fast Validation passes
 
     Agent->>CI: push commit (S312 PR #4322 + docs)
     CI->>STF: sync_tracked_files --check
+
     STF-->>CI:  consistent on real HEAD
+
     CI-->>Agent:  All gates green 100/100
 ```
 
@@ -530,13 +594,16 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 → 3.2.1\nrequirements/lock.txt", "PR #4321\ndependabot/uv/uv-b8ada8e151 (prev)\nBump uv group 2 directories\nrequirements/lock.txt"'}}%%
+
 flowchart LR
     DEP4320["PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 → 3.2.1\nrequirements/lock.txt"]
     DEP4321["PR #4321\ndependabot/uv/uv-b8ada8e151 (prev)\nBump uv group 2 directories\nrequirements/lock.txt"]
     DEP4322["PR #4322\ndependabot/uv/uv-b8ada8e151 (latest)\nBump uv group across 2 dirs\nuv.lock + requirements/lock.txt"]
 
     DEP4320 --> CHERRY["Cherry-picked changes\ninto PR #4317 branch\ncommit 2f079c7 / 5dcbf61"]
+
     DEP4321 --> CHERRY
+
     DEP4322 --> CHERRY
 
     CHERRY --> VERIFY["Verification\nmistune==3.2.1 in requirements/lock.txt \nmistune==3.2.1 in uv.lock \nPR-4322-followup.md created "]
@@ -550,6 +617,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title PR #4317 — Files Changed by Category (57 commits)
     "CI Tooling (workflow_queue_manager.py)" : 8
     "Sync / Accountability / Pattern 25" : 18
@@ -566,18 +634,29 @@ pie title PR #4317 — Files Changed by Category (57 commits)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "git push\n0D_base_", "pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"'}}%%
+
 flowchart TD
+
     PUSH["git push\n0D_base_"] --> PRE["pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"]
+
     PUSH --> COMMENT["comment-review-gate.yml\nunresolved threads\n ALL ADDRESSED"]
+
     PUSH --> DEFERRAL["deferral-language-gate.yml\nno forbidden phrases\n CLEAN"]
+
     PUSH --> AUTH["agent-auth-delegation.yml\nCODEX_MASTER_KEY chain\n AUTHORIZED"]
+
     PUSH --> WEC["workflow-execution-gate.yml\nWEC block present\n ALL CHECKED"]
 
     WEC --> VALIDATE["validate.yml\ndetect-secrets · ruff · sync\n PASSING"]
+
     WEC --> AUTOFIX["auto-fix-pr-check.yml\n0 auto-fixable issues\n PASSING"]
+
     WEC --> CODEQL["codeql-analysis.yml\n0 alerts (inherited from PR #4289)\n CLEAN"]
+
     WEC --> SEMGREP["semgrep_sarif.yml\n0 security issues\n CLEAN"]
+
     WEC --> QA["qa-walkthrough.yml\n0 issues\n CLEAN"]
+
     WEC --> ETOD["E→D Transition\n5/5 Score\nD_CAPABLE unlocked "]
 
     PRE & COMMENT & DEFERRAL & AUTH & WEC --> CHECKIN["copilot-agent-checkin.yml\nS312 guard\n PASSING"]
@@ -591,30 +670,32 @@ flowchart TD
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| `ruff check src/` |  0 violations | Verified locally |
-| `sync_tracked_files --check` |  consistent | Verified locally |
-| Pattern 22 (tracked file sync) |  passing | SHA-drift resolved |
-| Pattern 25 (accountability entry) |  today's date 2026-07-13
-| Pattern 30 (merge readiness) |  100/100 | All dimensions green |
-| Pattern 31 (stale type:ignore) |  0 stale | `dal.py` cleaned |
-| WEC block in PR body |  present | Every report_progress call |
-| Dependabot PR #4320 |  consolidated | mistune 3.2.1 requirements/lock.txt |
-| Dependabot PR #4321 |  consolidated | mistune 3.2.1 uv group |
-| Dependabot PR #4322 |  consolidated | mistune 3.2.1 uv.lock + follow-up prompt |
-| CodeQL alerts |  0 open | Inherited from PR #4289 |
-| Semgrep |  0 issues | Scan 20:07 UTC |
-| E→D Transition |  5/5 D_CAPABLE | Unlocked  |
-| Living docs updated |  every session | roadmap + session diagram |
-| Fast Validation |  passing | Root cause fixed in 6c2a160 (PR title .strip()) |
+| `ruff check src/` | 0 violations | Verified locally |
+| `sync_tracked_files --check` | consistent | Verified locally |
+| Pattern 22 (tracked file sync) | passing | SHA-drift resolved |
+| Pattern 25 (accountability entry) | today's date 2026-07-13
+| Pattern 30 (merge readiness) | 100/100 | All dimensions green |
+| Pattern 31 (stale type:ignore) | 0 stale | `dal.py` cleaned |
+| WEC block in PR body | present | Every report_progress call |
+| Dependabot PR #4320 | consolidated | mistune 3.2.1 requirements/lock.txt |
+| Dependabot PR #4321 | consolidated | mistune 3.2.1 uv group |
+| Dependabot PR #4322 | consolidated | mistune 3.2.1 uv.lock + follow-up prompt |
+| CodeQL alerts | 0 open | Inherited from PR #4289 |
+| Semgrep | 0 issues | Scan 20:07 UTC |
+| ED Transition | 5/5 D_CAPABLE | Unlocked |
+| Living docs updated | every session | roadmap + session diagram |
+| Fast Validation | passing | Root cause fixed in 6c2a160 (PR title .strip()) |
 
 
 ---
 
-## 1. End-to-End Problem → Fix Flow
+## 1. End-to-End Problem Fix Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge, "Wave 1 — Initial Branch Setup (auto-generated)"'}}%%
+
 flowchart TD
+
     START([PR #4317 opened\n0D_base_ branch\nbased on PR #4289 merge]) --> WAVE1
 
     subgraph WAVE1["Wave 1 — Initial Branch Setup (auto-generated)"]
@@ -672,6 +753,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow", "Branch / Repo Resolution\n$GITHUB_REF_NAME\nor git rev-parse --abbrev-ref HEAD\nor git remote get-url origin"'}}%%
+
 flowchart TD
     ENTRY["CLI Entry\nworkflow_queue_manager.py\n--scan | --cancel-excess\n--cancel-run | --cancel-workflow"]
 
@@ -696,6 +778,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
     direction LR
 
@@ -724,6 +807,7 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: check
+
     STF'}}%%
 sequenceDiagram
     autonumber
@@ -735,26 +819,32 @@ sequenceDiagram
 
     Agent->>CI: push commit (1b889c6 RP-004 fix)
     CI->>STF: sync_tracked_files --check
+
     STF-->>CI:  all consistent
 
     Agent->>CI: push commit (504c2d4 WQM tooling)
     CI->>WQM: --scan --branch 0D_base_
+
     WQM-->>CI: lists queued runs
     Note over WQM: rate-limit check before any mutation
 
     Agent->>CI: push commit (2f079c7 mistune 3.2.1)
     CI->>Ruff: ruff check src/
+
     Ruff-->>CI:  0 violations
 
     Agent->>CI: push commit (56aa456 re-anchor)
+
     CI-->>Agent: Pattern 17 SHA drift → stale
     Note over Agent: CI ran on merge-preview SHA\nnot actual HEAD → false positive
 
     Agent->>CI: push commit (25d9af3 re-anchor 2)
     CI->>STF: sync_tracked_files --check
+
     STF-->>CI:  consistent on real HEAD
 
     Agent->>CI: push commit (87a1937 priority tasks)
+
     CI-->>Agent:  All gates green\nPattern 22/25/30 pass
 ```
 
@@ -764,14 +854,17 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 → 3.2.1\nrequirements/lock.txt", "PR #4321\ndependabot/uv/uv-b8ada8e151\nBump uv group 2 directories\nrequirements/lock.txt"'}}%%
+
 flowchart LR
     DEP4320["PR #4320\ndependabot/pip/mistune-3.2.1\nbump mistune 3.2.0 → 3.2.1\nrequirements/lock.txt"]
     DEP4321["PR #4321\ndependabot/uv/uv-b8ada8e151\nBump uv group 2 directories\nrequirements/lock.txt"]
 
     DEP4320 --> CLOSED4320["PR #4320 CLOSED\n(not merged to main)"]
+
     DEP4321 --> CLOSED4321["PR #4321 CLOSED\n(not merged to main)"]
 
     CLOSED4320 --> CHERRY["Cherry-picked changes\ninto PR #4317 branch\ncommit 2f079c7"]
+
     CLOSED4321 --> CHERRY
 
     CHERRY --> VERIFY["Verification commit 330fa4e\nmistune==3.2.1 confirmed\nin requirements/lock.txt"]
@@ -785,6 +878,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title PR #4317 — Files Changed by Category (Commits)
     "CI Tooling (workflow_queue_manager.py)" : 8
     "Sync / Accountability / Pattern 25" : 15
@@ -800,15 +894,23 @@ pie title PR #4317 — Files Changed by Category (Commits)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "git push\n0D_base_", "pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"'}}%%
+
 flowchart TD
+
     PUSH["git push\n0D_base_"] --> PRE["pre-merge-validation.yml\nruff · sync_tracked · baseline\n PASSING"]
+
     PUSH --> COMMENT["comment-review-gate.yml\nunresolved threads\n ALL ADDRESSED"]
+
     PUSH --> DEFERRAL["deferral-language-gate.yml\nno forbidden phrases\n CLEAN"]
+
     PUSH --> AUTH["agent-auth-delegation.yml\nCODEX_MASTER_KEY chain\n AUTHORIZED"]
+
     PUSH --> WEC["workflow-execution-gate.yml\nWEC block present\n ALL CHECKED"]
 
     WEC --> VALIDATE["validate.yml\ndetect-secrets · ruff · sync\n PASSING"]
+
     WEC --> AUTOFIX["auto-fix-pr-check.yml\n0 auto-fixable issues\n PASSING"]
+
     WEC --> CODEQL["codeql-analysis.yml\n0 alerts (inherited from PR #4289)\n CLEAN"]
 
     PRE & COMMENT & DEFERRAL & AUTH & WEC --> CHECKIN["copilot-agent-checkin.yml\nS310 guard\n PASSING"]
@@ -822,16 +924,16 @@ flowchart TD
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| `ruff check src/` |  0 violations | Verified locally |
-| `sync_tracked_files --check` |  consistent | Verified locally |
-| Pattern 22 (tracked file sync) |  passing | SHA-drift resolved |
-| Pattern 25 (accountability entry) |  today's date 2026-07-13
-| Pattern 30 (merge readiness) |  100/100 | All dimensions green |
-| WEC block in PR body |  present | Every report_progress call |
-| Dependabot PRs #4320/#4321 |  consolidated | mistune 3.2.1 in lock.txt |
-| CodeQL alerts |  0 open | Inherited from PR #4289 |
-| Comment review gate |  all addressed | 5/5 comments addressed |
-| uv.lock mistune alignment | ️ pending | uv.lock=3.2.0 vs lock.txt=3.2.1 |
+| `ruff check src/` | 0 violations | Verified locally |
+| `sync_tracked_files --check` | consistent | Verified locally |
+| Pattern 22 (tracked file sync) | passing | SHA-drift resolved |
+| Pattern 25 (accountability entry) | today's date 2026-07-13
+| Pattern 30 (merge readiness) | 100/100 | All dimensions green |
+| WEC block in PR body | present | Every report_progress call |
+| Dependabot PRs #4320/#4321 | consolidated | mistune 3.2.1 in lock.txt |
+| CodeQL alerts | 0 open | Inherited from PR #4289 |
+| Comment review gate | all addressed | 5/5 comments addressed |
+| uv.lock mistune alignment | pending | uv.lock=3.2.0 vs lock.txt=3.2.1 |
 
 ---
 
@@ -841,19 +943,33 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " S313+1 Start\nPR #4323", "Semgrep p/flask+p/sqlalchemy added"'}}%%
+
 flowchart TD
+
     A[" S313+1 Start\nPR #4323"] --> B["Semgrep p/flask+p/sqlalchemy added"]
+
     A --> C["Comment Review Gate\n1 blocking comment"]
+
     C --> C1[" Replied to #4392507496\nCHANGELOG + AGENT_ACCOUNTABILITY updated"]
+
     B --> D["pip-audit: 0 HIGH/CRITICAL"]
+
     D --> E["Dependabot Alerts Triage"]
+
     E --> E1["Alert 241: Mako 1.3.10 → 1.3.12\nGHSA-v92g-xgxw-vvmm / CVE-2026-41205\nrequirements/lock.txt  FIXED"]
+
     E --> E2["Alert 242: Mako uv.lock\nAlready at 1.3.12 — STALE "]
+
     E --> E3["Alert 239: GitPython 3.1.45 → 3.1.50\nGHSA-7545-fcxq-7j24\nrequirements/lock.txt  FIXED"]
+
     E --> E4["Alert 240: GitPython uv.lock\n3.1.49 → 3.1.50  UPDATED"]
+
     E1 & E2 & E3 & E4 --> F["Cherry-pick PR #4330\npython-multipart 0.0.26 → 0.0.27 "]
+
     F --> G["Investigation Reports\nreports/investigation_alert_{239,240,241,242}.md"]
+
     G --> H["Living Docs Updated\nWave 9 appended"]
+
     H --> I[" All gates addressed\nReady for CI validation"]
 ```
 
@@ -861,8 +977,8 @@ flowchart TD
 
 | File | Change |
 |------|--------|
-| `requirements/lock.txt` | gitpython 3.1.45→3.1.50, mako 1.3.10→1.3.12, python-multipart 0.0.26→0.0.27 |
-| `uv.lock` | gitpython 3.1.49→3.1.50 |
+| `requirements/lock.txt` | gitpython 3.1.453.1.50, mako 1.3.101.3.12, python-multipart 0.0.260.0.27 |
+| `uv.lock` | gitpython 3.1.493.1.50 |
 | `CODEX_MANIFEST.json` | generated_at + integrity_sha256 updated (from PR #4330) |
 | `.github/copilot-prompts/active/PR-4330-followup.md` | Cherry-picked from PR #4330 |
 | `reports/investigation_alert_{239,240,241,242}.md` | New investigation reports |
@@ -877,21 +993,22 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title CI Results on 7a989c6 (PR #4323 HEAD)
     "success" : 5
     "startup_failure (opt-in)" : 3
     "skipped" : 2
 ```
 
-**Merge verdict:  READY**
+**Merge verdict: READY**
 
 | Check | Status |
 |-------|--------|
-| Required workflow gates |  5/5 green |
-| startup_failure runs | ️ 3 — all opt-in, expected |
-| Blocking failures |  0 |
-| `.secrets.baseline` sync |  fixed by `sync_tracked_files --fix` |
-| ruff `src/` |  0 violations |
+| Required workflow gates | 5/5 green |
+| startup_failure runs | 3 — all opt-in, expected |
+| Blocking failures | 0 |
+| `.secrets.baseline` sync | fixed by `sync_tracked_files --fix` |
+| ruff `src/` | 0 violations |
 
 ---
 
@@ -899,20 +1016,21 @@ pie title CI Results on 7a989c6 (PR #4323 HEAD)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title Final CI — Merge Commit c99058248e34
     "success" : 10
     "cancelled (dedup)" : 18
     "in_progress (followup-prompt)" : 1
 ```
 
-**Verdict:  MERGE READY**
+**Verdict: MERGE READY**
 
 | Validation | Result |
 |------------|--------|
-| Code Review |  Clean — 0 comments |
-| CodeQL Security Scan |  Clean — 0 alerts |
-| Required workflow gates |  10/10 green |
-| Blocking failures |  0 |
-| Dependabot alerts 239–242 |  All resolved |
-| python-multipart DoS (PR #4330) |  Cherry-picked |
-| `.secrets.baseline` sync |  Consistent |
+| Code Review | Clean — 0 comments |
+| CodeQL Security Scan | Clean — 0 alerts |
+| Required workflow gates | 10/10 green |
+| Blocking failures | 0 |
+| Dependabot alerts 239–242 | All resolved |
+| python-multipart DoS (PR #4330) | Cherry-picked |
+| `.secrets.baseline` sync | Consistent |

@@ -9,13 +9,13 @@
 
 ---
 
-##  Metrics Overview
+## Metrics Overview
 
 This document defines all production metrics, their schema, collection methods, and retention policies.
 
 ---
 
-##  Core Metrics
+## Core Metrics
 
 ### 1. Request Latency
 
@@ -426,7 +426,7 @@ order_processing_duration_seconds_bucket{le="5"} 8000
 
 ---
 
-##  Metrics Collection Pipeline
+## Metrics Collection Pipeline
 
 **Architecture**:
 ```
@@ -460,7 +460,7 @@ scrape_configs:
 
 ---
 
-## 🗄️ Data Retention
+## Data Retention
 
 | Granularity | Retention | Storage | Notes |
 |-------------|-----------|---------|-------|
@@ -485,7 +485,7 @@ prometheus:
 
 ---
 
-## 🧪 Metrics Validation
+## Metrics Validation
 
 ### Sanity Checks
 
@@ -514,7 +514,7 @@ absent(up) > 120  # Alert if no metrics for 2+ minutes
 
 ---
 
-##  Dashboard Metrics
+## Dashboard Metrics
 
 **Primary Production Dashboard** includes:
 
@@ -535,7 +535,7 @@ panels:
 
 ---
 
-##  Deployment Checklist
+## Deployment Checklist
 
 - [ ] OpenTelemetry SDK integrated in all services
 - [ ] Prometheus scrape endpoints configured

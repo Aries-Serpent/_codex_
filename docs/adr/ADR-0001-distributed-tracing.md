@@ -11,8 +11,8 @@
 
 ## Context
 
-The _codex_ ML training platform runs multi-step pipelines (data preparation → training →
-evaluation → export) across multiple services (CLI, REST API, orchestrator, LLM clients).
+The _codex_ ML training platform runs multi-step pipelines (data preparation training
+evaluation export) across multiple services (CLI, REST API, orchestrator, LLM clients).
 As the system scales, diagnosing latency and correlating failures across service boundaries
 requires end-to-end request tracing.
 
@@ -26,12 +26,12 @@ OpenTelemetry (OTEL) is the industry-standard vendor-neutral tracing framework o
 **Distributed tracing implementation is deferred** pending infrastructure prerequisites:
 
 1. **No OTEL collector deployed** — No Jaeger, Zipkin, or OTLP endpoint is configured in
-   current CI or production environments.
+ current CI or production environments.
 2. **No trace storage backend** — No Tempo, Jaeger, or equivalent service to receive traces.
 3. **No service mesh** — Services communicate directly; sidecar proxies that auto-inject
-   trace context are not present.
+ trace context are not present.
 4. **Priority ordering** — Alerting (Gap 12/13) and dashboards (Gap 15) are prerequisites
-   for meaningful trace-based observability.
+ for meaningful trace-based observability.
 
 ## Considered Options
 
@@ -76,7 +76,7 @@ Revisit when any of the following are true:
    opentelemetry-sdk>=1.24
    opentelemetry-instrumentation-requests>=0.45b0
    opentelemetry-exporter-otlp-proto-grpc>=1.24
-   ```
+ ```
 2. Replace stub in `src/codex_ml/observability/tracing.py` with real `TracerProvider`
 3. Instrument: `train_loop.py`, `orchestrator.py`, `llm_client.py`, REST API routes
 4. Set env: `OTEL_SERVICE_NAME=codex-ml`, `OTEL_EXPORTER_OTLP_ENDPOINT=<collector>`

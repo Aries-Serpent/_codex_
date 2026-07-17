@@ -4,7 +4,7 @@
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
- Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor]  Energy: 5
+ Roles: [Primary: Knowledge Ops], [Secondary: ML Platform Auditor] Energy: 5
 
 ## 1. Objective
 Codify a reproducible, explainable capability maturity assessment pipeline with deterministic outputs.
@@ -42,9 +42,9 @@ Weights normalized if Σ != 1.0 (warning added to manifest).
 ### 3.1 Component Caps (New, Optional)
 - Per-component caps allow bounding influence of any component before weighting.
 - Formula:
-  - v_i_raw = clamp(v_i, 0, 1)
-  - v_i' = min(v_i_raw, cap_i), where cap_i ∈ (0,1], default cap_i = 1 if unspecified
-  - score = Σ_i (weight_i * v_i')
+ - v_i_raw = clamp(v_i, 0, 1)
+ - v_i' = min(v_i_raw, cap_i), where cap_i ∈ (0,1], default cap_i = 1 if unspecified
+ - score = Σ_i (weight_i * v_i')
 - YAML:
 ```yaml
 scoring:
@@ -58,8 +58,8 @@ scoring:
 
 ### 3.2 Duplication Heuristic Switch (Optional)
 - scoring.dup.heuristic:
-  - simple: file-stem duplication ratio (default)
-  - token_similarity: token Jaccard similarity over stems (scaffolded; offline)
+ - simple: file-stem duplication ratio (default)
+ - token_similarity: token Jaccard similarity over stems (scaffolded; offline)
 - Fallback: if token_similarity is selected but module unavailable, pipeline warns and uses simple.
 
 ## 4. Evidence Prioritization Heuristics
@@ -88,7 +88,7 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 | Sorted traversal | Use `sorted(Path.rglob())` |
 | Read truncation | Cap file read length (200KB) |
 | Hash chain | Manifest collects per-artifact SHA |
-| Template fingerprint | Concatenate `.j2` files → SHA |
+| Template fingerprint | Concatenate `.j2` files SHA |
 | Weight normalization | Auto-correct + record warning |
 
 ## 8. Diff Usage

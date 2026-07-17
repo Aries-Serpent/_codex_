@@ -25,7 +25,7 @@ bash scripts/runner/drain_queue_ephemeral.sh --owner "Aries-Serpent" --repo "_co
 ```text
 
 4) Watch Actions UI:
-- Each queued run should be picked up one-by-one and transition from Queued → In progress → Completed.
+- Each queued run should be picked up one-by-one and transition from Queued In progress Completed.
 
 Expected results
 - Queued runs decrement to zero.

@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Production Ready  
-**Version:** 1.0.0  
+**Status:** Production Ready
+**Version:** 1.0.0
 **Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
@@ -55,7 +55,7 @@ This separation ensures RBAC adds Codex domain knowledge on top of battle-tested
 
 ### Immutable Permission Matrix
 
-The role→permission mapping is defined as a single source-of-truth Python dictionary:
+The rolepermission mapping is defined as a single source-of-truth Python dictionary:
 
 ```python
 _ROLE_PERMISSION_MATRIX: dict[CodexRole, dict[ResourceType, set[Action]]] = {
@@ -802,5 +802,5 @@ def audit_role_assignments():
 ---
 
 **Last Updated: 2026-07-08
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Status:** Production Ready

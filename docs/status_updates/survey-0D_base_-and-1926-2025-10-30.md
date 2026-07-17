@@ -2090,22 +2090,22 @@ When modifying the topology, update both the diagram and `docs/guides/serving_re
 ## Hosting bespoke reasoning models
 
 1. **Bootstrap the project**
-   ```bash
-   uv sync --extra reasoning --extra cli --frozen
-   source .venv/bin/activate
-   codex repo-map --reasoning
+ ```bash
+ uv sync --extra reasoning --extra cli --frozen
+ source .venv/bin/activate
+ codex repo-map --reasoning
    ```
 2. **Select a template** using `codex reasoning-templates list` (see [`codex_cli`](../src/codex_cli/app.py)). Templates
    live under `configs/training/reasoning/` and ship default datasets plus evaluator bindings.
 3. **Materialise runtime overlays**
-   ```bash
-   codex-train +reasoning=baseline curriculum.phase_schedule=starter
+ ```bash
+ codex-train +reasoning=baseline curriculum.phase_schedule=starter
    ```
    This composes reasoning overrides on top of the legacy defaults so classical experiments keep working.
 4. **Register the artifact** with deterministic metadata before handoff:
-   ```bash
-   codex register --bundle artifacts/runs/reasoning-baseline \
-     --expect manifest.sha256 --tag reasoning/m0/bespoke
+ ```bash
+ codex register --bundle artifacts/runs/reasoning-baseline \
+ --expect manifest.sha256 --tag reasoning/m0/bespoke
    ```
 
 For service integrations, adopt the PodSpec defined in
@@ -2128,10 +2128,10 @@ Follow the deep dives in the new guides:
 
 ```bash
 codex-train +reasoning=baseline \
-  curriculum.phase_schedule=starter \
-  training.max_steps=500 \
-  logging.reasoning_trace=true \
-  training.output_dir=artifacts/runs/reasoning-starter
+ curriculum.phase_schedule=starter \
+ training.max_steps=500 \
+ logging.reasoning_trace=true \
+ training.output_dir=artifacts/runs/reasoning-starter
 ```text
 
 The `+reasoning=baseline` defaults hook into `configs/training/reasoning/baseline.yaml` and emit trace artefacts that downstream
@@ -2141,8 +2141,8 @@ analysis notebooks can load. Curricula definitions are stored as YAML fragments 
 
 ```bash
 codex evaluate --config configs/evaluation/reasoning.yaml \
-  --log-metrics .codex/metrics/reasoning.ndjson \
-  --run-id reasoning-milestone-m1
+ --log-metrics .codex/metrics/reasoning.ndjson \
+ --run-id reasoning-milestone-m1
 ```text
 
 Every evaluation appends to the NDJSON ledger with per-phase metrics. Use `codex metrics summarize` for quick trend
@@ -2152,7 +2152,7 @@ checks when preparing milestone readouts.
 
 ```bash
 codex deploy --config configs/deploy/reasoning_pod.yaml \
-  --dry-run
+ --dry-run
 
 # Optional: if your train loop emits run metadata to a non-default path:
 # codex deploy --config configs/deploy/reasoning_pod.yaml \
@@ -2168,7 +2168,7 @@ and runtime allowances required by bespoke hosts. Redeployments should always be
 
 ```bash
 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 CODEX_MLFLOW_ENABLE=0 WANDB_MODE=offline \
-  nox -s tests_offline
+ nox -s tests_offline
 ```text
 
 This run exports standard offline toggles and keeps artefacts under `.codex/` for reproducibility (metrics, checkpoints,
@@ -2252,9 +2252,9 @@ run a dry-run deploy. Example:
 
 ```bash
 codex deploy \
-  --config configs/deploy/reasoning_pod.yaml \
-  --model artifacts/runs/reasoning-starter:last \
-  --dry-run
+ --config configs/deploy/reasoning_pod.yaml \
+ --model artifacts/runs/reasoning-starter:last \
+ --dry-run
 ```text
 
 This renders the "reasoning pod" manifest for inspection. It does **not**
@@ -2346,15 +2346,15 @@ rationale in `status_updates/`.
 
 1. Select a template: `codex reasoning-templates list` → choose an entry (for example `baseline`).
 2. Compose overrides:
-   ```bash
-   codex-train +reasoning=baseline \
-     curriculum.phase_schedule=starter \
-     training.max_steps=500
+ ```bash
+ codex-train +reasoning=baseline \
+ curriculum.phase_schedule=starter \
+ training.max_steps=500
    ```
 3. Inspect traces:
-   ```bash
-   codex metrics summarize --metric reasoning.trace_coverage \
-     --source .codex/metrics/reasoning.ndjson
+ ```bash
+ codex metrics summarize --metric reasoning.trace_coverage \
+ --source .codex/metrics/reasoning.ndjson
    ```
 4. Promote artifacts via `codex register --bundle ... --tag reasoning/<milestone>`.
 
@@ -2365,10 +2365,10 @@ variant name in `training.output_dir` so trace comparisons remain legible.
 
 1. Generate evaluation inputs with `codex datasets materialize --preset reasoning/baseline`.
 2. Run the evaluator:
-   ```bash
-   codex evaluate --config configs/evaluation/reasoning.yaml \
-     --run-id reasoning-milestone-m1 \
-     --log-metrics .codex/metrics/reasoning.ndjson
+ ```bash
+ codex evaluate --config configs/evaluation/reasoning.yaml \
+ --run-id reasoning-milestone-m1 \
+ --log-metrics .codex/metrics/reasoning.ndjson
    ```
 3. Append commentary to `status_updates/<milestone>.md` summarising regressions or deltas.
 4. Trigger the optional smoke: `codex evaluate --config ... --metrics-only` for dashboard-friendly output.
@@ -2376,10 +2376,10 @@ variant name in `training.output_dir` so trace comparisons remain legible.
 ## Deployment pipeline
 
 1. Validate manifests:
-   ```bash
-   codex deploy --config configs/deploy/reasoning_pod.yaml \
-     --model artifacts/runs/reasoning-starter:last \
-     --dry-run
+ ```bash
+ codex deploy --config configs/deploy/reasoning_pod.yaml \
+ --model artifacts/runs/reasoning-starter:last \
+ --dry-run
    ```
 2. Shadow host in the target environment and confirm p95 latency ≤700 ms.
 3. Update [`../deployment/reasoning_pod.md`](../deployment/reasoning_pod.md) with any override notes.
@@ -2425,26 +2425,26 @@ Phase definitions live in `configs/training/reasoning/curricula/`. Each YAML fil
 
 ```yaml
 phase_schedule:
-  - id: warmup
-    dataset: datasets/reasoning/warmup.jsonl
-    steps: 200
-  - id: first_principles
-    dataset: datasets/reasoning/first_principles.jsonl
-    steps: 400
-  - id: challenge
-    dataset: datasets/reasoning/challenge.jsonl
-    steps: 300
+ - id: warmup
+ dataset: datasets/reasoning/warmup.jsonl
+ steps: 200
+ - id: first_principles
+ dataset: datasets/reasoning/first_principles.jsonl
+ steps: 400
+ - id: challenge
+ dataset: datasets/reasoning/challenge.jsonl
+ steps: 300
 ```text
 
 ## Training pipeline
 
 1. **Select** a curriculum file (for example `curriculum=first_principles`).
 2. **Launch** training with explicit overrides:
-   ```bash
-   codex-train +reasoning=baseline \
-     curriculum=first_principles \
-     logging.reasoning_trace=true \
-     training.output_dir=artifacts/runs/first-principles
+ ```bash
+ codex-train +reasoning=baseline \
+ curriculum=first_principles \
+ logging.reasoning_trace=true \
+ training.output_dir=artifacts/runs/first-principles
    ```
 3. **Monitor** traces with `codex metrics summarize --metric reasoning.trace_coverage`.
 4. **Record** qualitative notes (prompt outliers, judge disagreements) in `status_updates/first_principles.md`.
@@ -2452,14 +2452,14 @@ phase_schedule:
 ## Evaluation pipeline
 
 1. Materialise evaluation packs:
-   ```bash
-   codex datasets materialize --preset reasoning/first_principles
+ ```bash
+ codex datasets materialize --preset reasoning/first_principles
    ```
 2. Run evaluators with curriculum tags:
-   ```bash
-   codex evaluate --config configs/evaluation/reasoning.yaml \
-     curriculum.id=first_principles \
-     --log-metrics .codex/metrics/reasoning.ndjson
+ ```bash
+ codex evaluate --config configs/evaluation/reasoning.yaml \
+ curriculum.id=first_principles \
+ --log-metrics .codex/metrics/reasoning.ndjson
    ```
 3. Compare against baselines via `codex metrics compare --metric reasoning.win_rate --reference baseline`.
 4. Capture feedback loops in `status_updates/first_principles.md`.
@@ -2467,17 +2467,17 @@ phase_schedule:
 ## Deployment pipeline
 
 1. Verify the bundle:
-   ```bash
-   codex deploy --config configs/deploy/reasoning_pod.yaml \
-     --model artifacts/runs/first-principles:last \
-     --dry-run
+ ```bash
+ codex deploy --config configs/deploy/reasoning_pod.yaml \
+ --model artifacts/runs/first-principles:last \
+ --dry-run
    ```
 2. Shadow host until latency and judge deltas meet the milestone gate.
 3. Register the model with curriculum metadata:
-   ```bash
-   codex register --bundle artifacts/runs/first-principles:last \
-     --tag reasoning/m1/first-principles \
-     --notes "Curriculum M1 rollout"
+ ```bash
+ codex register --bundle artifacts/runs/first-principles:last \
+ --tag reasoning/m1/first-principles \
+ --notes "Curriculum M1 rollout"
    ```
 4. Update rollout docs under [`../deployment/`](../deployment/) with observed risks or mitigations.
 
@@ -2517,23 +2517,23 @@ This guide defines the **dry-run** flow for a reasoning pod. All steps are **loc
 
 ## Dry-Run Steps
 1) **Repo Map (Reasoning)**
-   ```bash
-   codex repo-map --reasoning > docs/status_updates/repo_map_reasoning.txt
+ ```bash
+ codex repo-map --reasoning > docs/status_updates/repo_map_reasoning.txt
    ```
 
 2) **Status Report (Artifacts)**
-   ```bash
-   python tools/status_report.py \
-     --emit-md docs/status_updates/status_report.md \
-     --emit-json docs/status_updates/status_report.json
+ ```bash
+ python tools/status_report.py \
+ --emit-md docs/status_updates/status_report.md \
+ --emit-json docs/status_updates/status_report.json
    ```
 
 3) **Compose Deployment (Dry-Run)**
-   ```bash
-   python tools/selection_report.py --config configs/deploy/reasoning_pod.yaml \
-     --dry-run \
-     --emit-md docs/status_updates/deploy_dry_run.md \
-     --emit-json docs/status_updates/deploy_dry_run.json
+ ```bash
+ python tools/selection_report.py --config configs/deploy/reasoning_pod.yaml \
+ --dry-run \
+ --emit-md docs/status_updates/deploy_dry_run.md \
+ --emit-json docs/status_updates/deploy_dry_run.json
    ```
 
 4) **Link in PR**
@@ -2835,8 +2835,8 @@ The canonical topology is captured in [`docs/diagrams/architecture.svg`](diagram
 Mermaid source (`architecture.mmd`) when proposing changes so reviewers can diff rendered assets and source together.
 
 ```bash
-   codex register --bundle artifacts/runs/reasoning-baseline \
-     --expect manifest.sha256 --tag reasoning/m0/bespoke
+ codex register --bundle artifacts/runs/reasoning-baseline \
+ --expect manifest.sha256 --tag reasoning/m0/bespoke
    ```
 
 For service integrations, adopt the PodSpec defined in

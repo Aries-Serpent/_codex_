@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-This guide covers building container images, validating Helm releases, and promoting builds through dev → staging → production.
+This guide covers building container images, validating Helm releases, and promoting builds through dev staging production.
 
 ## Multi-Stage Docker Images
 The primary `Dockerfile` now uses a three-stage build:
@@ -46,7 +46,7 @@ Override values per environment using `--values` or `--set` flags. For productio
 2. Execute targeted deployment tests:
    ```bash
    pytest tests/deployment/ -k "health or orchestrate"
-   ```
+ ```
 3. Build and push container via orchestrator script with `--dry-run` in CI to validate commands.
 
 ## Runbooks & Architecture

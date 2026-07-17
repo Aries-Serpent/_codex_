@@ -4,38 +4,38 @@
 
 ## Table of Contents
 
-- [Assumptions ( confirmed, ? uncertain, ️ needs clarification)](#assumptions--confirmed--uncertain--needs-clarification)
-- [Open Questions → Resolved Answers (based on your feedback)](#open-questions--resolved-answers-based-on-your-feedback)
+- [Assumptions ( confirmed, ? uncertain, needs clarification)](#assumptions--confirmed--uncertain--needs-clarification)
+- [Open Questions Resolved Answers (based on your feedback)](#open-questions--resolved-answers-based-on-your-feedback)
 - [Finalized Specs (frozen for Iterations 1–3)](#finalized-specs-frozen-for-iterations-13)
 - [Phases of Action](#phases-of-action)
-  - [Phase 0 — Research & Alignment (no code, research artifacts included below)](#phase-0--research--alignment-no-code-research-artifacts-included-below)
-  - [Phase 1 — Iteration 1 (Eval loop + logging wiring + pip‑audit + best‑k retention)](#phase-1--iteration-1-eval-loop--logging-wiring--pipaudit--bestk-retention)
-  - [Phase 2 — Iteration 2 (Quickstart + config schema + AST CLI integration)](#phase-2--iteration-2-quickstart--config-schema--ast-cli-integration)
-  - [Phase 3 — Iteration 3 (Style normalization + determinism polish + CPU Dockerfile)](#phase-3--iteration-3-style-normalization--determinism-polish--cpu-dockerfile)
+ - [Phase 0 — Research & Alignment (no code, research artifacts included below)](#phase-0--research--alignment-no-code-research-artifacts-included-below)
+ - [Phase 1 — Iteration 1 (Eval loop + logging wiring + pip‑audit + best‑k retention)](#phase-1--iteration-1-eval-loop--logging-wiring--pipaudit--bestk-retention)
+ - [Phase 2 — Iteration 2 (Quickstart + config schema + AST CLI integration)](#phase-2--iteration-2-quickstart--config-schema--ast-cli-integration)
+ - [Phase 3 — Iteration 3 (Style normalization + determinism polish + CPU Dockerfile)](#phase-3--iteration-3-style-normalization--determinism-polish--cpu-dockerfile)
 - [Risks and Mitigations](#risks-and-mitigations)
 - [Deliverables](#deliverables)
 - [Acceptance Criteria](#acceptance-criteria)
 - [Research Notes (Deep web search; reused patterns with citations)](#research-notes-deep-web-search-reused-patterns-with-citations)
-  - [Robust PyTorch evaluation loop and metrics logging](#robust-pytorch-evaluation-loop-and-metrics-logging)
-  - [1. Core Evaluation Loop Structure](#1-core-evaluation-loop-structure)
-  - [2. Best Practices for Metrics Logging](#2-best-practices-for-metrics-logging)
-  - [3. Additional Recommendations](#3-additional-recommendations)
-  - [Resources & References](#resources--references)
-  - [pip-audit in Nox; fail on High/Critical](#pip-audit-in-nox-fail-on-highcritical)
-  - [Notes:](#notes)
-  - [Why This Works & Best Practices](#why-this-works--best-practices)
-  - [Documentation & References](#documentation--references)
-  - [Safe best‑k checkpoint retention (atomic deletion pattern)](#safe-bestk-checkpoint-retention-atomic-deletion-pattern)
-  - [Key Principles](#key-principles)
-  - [Safe Implementation Steps](#safe-implementation-steps)
-    - [1. Save Checkpoint](#1-save-checkpoint)
-    - [2. Update Index/Metadata](#2-update-indexmetadata)
-    - [3. Find Top k](#3-find-top-k)
-    - [4. Delete Excess (Atomically)](#4-delete-excess-atomically)
-  - [Framework Examples](#framework-examples)
-  - [Additional Context and Best Practices](#additional-context-and-best-practices)
-  - [References and More Reading](#references-and-more-reading)
-  - [Typer CLI structure with subcommands](#typer-cli-structure-with-subcommands-best-practices)
+ - [Robust PyTorch evaluation loop and metrics logging](#robust-pytorch-evaluation-loop-and-metrics-logging)
+ - [1. Core Evaluation Loop Structure](#1-core-evaluation-loop-structure)
+ - [2. Best Practices for Metrics Logging](#2-best-practices-for-metrics-logging)
+ - [3. Additional Recommendations](#3-additional-recommendations)
+ - [Resources & References](#resources--references)
+ - [pip-audit in Nox; fail on High/Critical](#pip-audit-in-nox-fail-on-highcritical)
+ - [Notes:](#notes)
+ - [Why This Works & Best Practices](#why-this-works--best-practices)
+ - [Documentation & References](#documentation--references)
+ - [Safe best‑k checkpoint retention (atomic deletion pattern)](#safe-bestk-checkpoint-retention-atomic-deletion-pattern)
+ - [Key Principles](#key-principles)
+ - [Safe Implementation Steps](#safe-implementation-steps)
+ - [1. Save Checkpoint](#1-save-checkpoint)
+ - [2. Update Index/Metadata](#2-update-indexmetadata)
+ - [3. Find Top k](#3-find-top-k)
+ - [4. Delete Excess (Atomically)](#4-delete-excess-atomically)
+ - [Framework Examples](#framework-examples)
+ - [Additional Context and Best Practices](#additional-context-and-best-practices)
+ - [References and More Reading](#references-and-more-reading)
+ - [Typer CLI structure with subcommands](#typer-cli-structure-with-subcommands-best-practices)
 - [1. Modular Structure: Split Commands Into Separate Modules](#1-modular-structure-split-commands-into-separate-modules)
 - [commands/create.py](#commandscreatepy)
 - [main.py](#mainpy)
@@ -46,23 +46,23 @@
 - [6. Group Related Commands and Use Consistent Naming](#6-group-related-commands-and-use-consistent-naming)
 - [7. Testing and Error Handling](#7-testing-and-error-handling)
 - [8. Common Patterns](#8-common-patterns)
-  - [Validate TOML and JSON against JSON Schema](#validate-toml-and-json-against-json-schema)
-  - [1. Load TOML and JSON Configurations into Python Dictionaries](#1-load-toml-and-json-configurations-into-python-dictionaries)
-  - [2. Load the JSON Schema](#2-load-the-json-schema)
-  - [3. Validate Configurations Using jsonschema](#3-validate-configurations-using-jsonschema)
-  - [4. Using Multi-Format Validators (Optional for Automation)](#4-using-multi-format-validators-optional-for-automation)
-  - [References and Further Reading](#references-and-further-reading)
-    - [Summary](#summary)
-  - [Deterministic ML experiments (PyTorch/Numpy/Seeds)](#deterministic-ml-experiments-pytorchnumpyseeds)
-  - [1. Seed All Random Generators](#1-seed-all-random-generators)
-  - [2. Control cuDNN Behavior (for GPU)](#2-control-cudnn-behavior-for-gpu)
-  - [3. Consistent Data Loading](#3-consistent-data-loading)
-  - [4. Log All Hyperparameters and Initial States](#4-log-all-hyperparameters-and-initial-states)
-  - [5. Version and Save Code and Data](#5-version-and-save-code-and-data)
-  - [6. Hardware and Environment Consistency](#6-hardware-and-environment-consistency)
-  - [7. Performance Trade-offs](#7-performance-trade-offs)
-  - [8. Use Comprehensive Deterministic Mode in Modern PyTorch](#8-use-comprehensive-deterministic-mode-in-modern-pytorch)
-    - [Example Starter Script for Deterministic PyTorch Experiments](#example-starter-script-for-deterministic-pytorch-experiments)
+ - [Validate TOML and JSON against JSON Schema](#validate-toml-and-json-against-json-schema)
+ - [1. Load TOML and JSON Configurations into Python Dictionaries](#1-load-toml-and-json-configurations-into-python-dictionaries)
+ - [2. Load the JSON Schema](#2-load-the-json-schema)
+ - [3. Validate Configurations Using jsonschema](#3-validate-configurations-using-jsonschema)
+ - [4. Using Multi-Format Validators (Optional for Automation)](#4-using-multi-format-validators-optional-for-automation)
+ - [References and Further Reading](#references-and-further-reading)
+ - [Summary](#summary)
+ - [Deterministic ML experiments (PyTorch/Numpy/Seeds)](#deterministic-ml-experiments-pytorchnumpyseeds)
+ - [1. Seed All Random Generators](#1-seed-all-random-generators)
+ - [2. Control cuDNN Behavior (for GPU)](#2-control-cudnn-behavior-for-gpu)
+ - [3. Consistent Data Loading](#3-consistent-data-loading)
+ - [4. Log All Hyperparameters and Initial States](#4-log-all-hyperparameters-and-initial-states)
+ - [5. Version and Save Code and Data](#5-version-and-save-code-and-data)
+ - [6. Hardware and Environment Consistency](#6-hardware-and-environment-consistency)
+ - [7. Performance Trade-offs](#7-performance-trade-offs)
+ - [8. Use Comprehensive Deterministic Mode in Modern PyTorch](#8-use-comprehensive-deterministic-mode-in-modern-pytorch)
+ - [Example Starter Script for Deterministic PyTorch Experiments](#example-starter-script-for-deterministic-pytorch-experiments)
 - [For newer PyTorch releases](#for-newer-pytorch-releases)
 - [When creating DataLoader](#when-creating-dataloader)
 - [CPU-only Dockerfile mirroring local dev (nox/pytest) with caching](#cpu-only-dockerfile-mirroring-local-dev-noxpytest-with-caching)
@@ -71,74 +71,74 @@
 - [For local dev (nox/pytest)](#for-local-dev-noxpytest)
 - [Environment variables](#environment-variables)
 - [Default: run tests (for CI), or override as needed](#default-run-tests-for-ci-or-override-as-needed)
-- [Tailored Copilot Prompt (Next Iteration: push coverage from 95% → 96–99%)](#tailored-copilot-prompt-next-iteration-push-coverage-from-95--9699)
+- [Tailored Copilot Prompt (Next Iteration: push coverage from 95% 96–99%)](#tailored-copilot-prompt-next-iteration-push-coverage-from-95--9699)
 - [Rollback / Fallback Plan](#rollback--fallback-plan)
 
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
->  Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator]
->  Energy: 5
-> ⚛️ Physics:
-> Path️ [Assess → Plan → Execute → Verify]
+> Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator]
+> Energy: 5
+> Physics:
+> Path [Assess Plan Execute Verify]
 > Fields [Eval/Train, Logging, Security, Docs]
-> Patterns️ [Determinism, Offline-first, “No need to reinvent the wheel”]
+> Patterns [Determinism, Offline-first, “No need to reinvent the wheel”]
 > Redundancy [Unit+Integration+Artifacts]
-> Balance️ [Score gain vs. change risk]
+> Balance [Score gain vs. change risk]
 
 ---
 
-## Assumptions ( confirmed, ? uncertain, ️ needs clarification)
--  Offline-first remains the default; deep web search is for research only (no network in runtime paths).
--  Local gates (nox tests/lint/typecheck/docs/security) are canonical; CI changes out-of-scope.
--  PR #2201 will merge or rebase to 0D_base_ before Iteration 1 to avoid drift.
--  Scoring rubric: audit v0.2.1 (weights: functionality 0.25, consistency 0.20, tests 0.25, safeguards 0.15, documentation 0.15).
--  Minimum coverage thresholds for new/updated modules this cycle: 95% lines/branches for Iterations 1–2; later target 96–99%.
--  Dependency policy for pip-audit findings: fix where feasible; fail on High/Critical; warn-only + JSON artifact for others with documented allowlist and expiry.
+## Assumptions ( confirmed, ? uncertain, needs clarification)
+- Offline-first remains the default; deep web search is for research only (no network in runtime paths).
+- Local gates (nox tests/lint/typecheck/docs/security) are canonical; CI changes out-of-scope.
+- PR #2201 will merge or rebase to 0D_base_ before Iteration 1 to avoid drift.
+- Scoring rubric: audit v0.2.1 (weights: functionality 0.25, consistency 0.20, tests 0.25, safeguards 0.15, documentation 0.15).
+- Minimum coverage thresholds for new/updated modules this cycle: 95% lines/branches for Iterations 1–2; later target 96–99%.
+- Dependency policy for pip-audit findings: fix where feasible; fail on High/Critical; warn-only + JSON artifact for others with documented allowlist and expiry.
 
 ---
 
-## Open Questions → Resolved Answers (based on your feedback)
+## Open Questions Resolved Answers (based on your feedback)
 1) CLI framework for new evaluation/utility commands:
-   - Selected: D) Hybrid — Typer primary (built on Click) with lightweight argparse adapters where embedding is needed.
+ - Selected: D) Hybrid — Typer primary (built on Click) with lightweight argparse adapters where embedding is needed.
 
 2) Minimum coverage threshold for new modules (loop/eval/registry/CLI):
-   - Selected: C) 95% (lines and branches).
+ - Selected: C) 95% (lines and branches).
 
 3) pip-audit policy for non-exploitable or pinned transitive CVEs:
-   - Selected: B) Warn-only with JSON artifact; fail on High/Critical.
+ - Selected: B) Warn-only with JSON artifact; fail on High/Critical.
 
 4) Experiment config format for schema validation:
-   - Selected: D) Support JSON + TOML (with JSONSchema as the single source of truth).
+ - Selected: D) Support JSON + TOML (with JSONSchema as the single source of truth).
 
 5) System metrics in logging registry (CPU/RAM/ETA) default behavior:
-   - Selected: A) Disabled by default; enable via flag (e.g., --sys-metrics).
+ - Selected: A) Disabled by default; enable via flag (e.g., --sys-metrics).
 
 6) AST CLI target audience for outputs:
-   - Selected: C) Hybrid (human-readable by default; --json produces machine-readable JSON/NDJSON).
+ - Selected: C) Hybrid (human-readable by default; --json produces machine-readable JSON/NDJSON).
 
 7) Style normalization strategy for E501/E402/E741:
-   - Selected: D) One-shot repo-wide autofix PR + opportunistic per-module fixes.
+ - Selected: D) One-shot repo-wide autofix PR + opportunistic per-module fixes.
 
 8) Docker baseline target:
-   - Selected: A) CPU-only Dockerfile mirroring nox env.
+ - Selected: A) CPU-only Dockerfile mirroring nox env.
 
 ---
 
 ## Finalized Specs (frozen for Iterations 1–3)
 - Modules and Entrypoints:
-  - Evaluation loop: src/codex_ml/evaluation/loop.py (pure-Python, CPU-safe, lazy heavy imports).
-  - CLI: Typer application “codex-eval” with subcommands run, report; human by default; --json flag.
-  - Logging: src/codex_ml/logging/registry.py integrated into train/eval loops; NDJSON default; MLflow optional/offline guarded via flags.
-  - Checkpoint retention: best‑k implementation with atomic metadata writes and safe deletion.
-  - Security gate: nox -s security runs pip-audit; emits artifacts/security_report.json; fails on High/Critical; documents allowlist with expiry tags.
-  - Config schema: configs/experiments/*.json and *.toml supported; JSONSchema in configs/schemas/experiments.schema.json; tools/validate_experiments.py validates both formats; nox session validate-configs.
-  - Determinism: tests/repro/* for cross-process reproducibility with seeded loaders; env snapshot captured.
-  - CPU Docker: docker/Dockerfile.cpu mirrors nox env; docs/deploy/cpu_local.md; default CMD runs pytest or nox.
+ - Evaluation loop: src/codex_ml/evaluation/loop.py (pure-Python, CPU-safe, lazy heavy imports).
+ - CLI: Typer application “codex-eval” with subcommands run, report; human by default; --json flag.
+ - Logging: src/codex_ml/logging/registry.py integrated into train/eval loops; NDJSON default; MLflow optional/offline guarded via flags.
+ - Checkpoint retention: best‑k implementation with atomic metadata writes and safe deletion.
+ - Security gate: nox -s security runs pip-audit; emits artifacts/security_report.json; fails on High/Critical; documents allowlist with expiry tags.
+ - Config schema: configs/experiments/*.json and *.toml supported; JSONSchema in configs/schemas/experiments.schema.json; tools/validate_experiments.py validates both formats; nox session validate-configs.
+ - Determinism: tests/repro/* for cross-process reproducibility with seeded loaders; env snapshot captured.
+ - CPU Docker: docker/Dockerfile.cpu mirrors nox env; docs/deploy/cpu_local.md; default CMD runs pytest or nox.
 
 - Coverage Targets:
-  - Iterations 1–2: ≥95% lines/branches on new/modified modules (loop/eval/registry/CLI/checkpointing/schema/AST CLI).
-  - Post-Iteration Prompt (next cycle): 96–99% focus via additional integration and edge-case tests.
+ - Iterations 1–2: ≥95% lines/branches on new/modified modules (loop/eval/registry/CLI/checkpointing/schema/AST CLI).
+ - Post-Iteration Prompt (next cycle): 96–99% focus via additional integration and edge-case tests.
 
 ---
 
@@ -147,37 +147,37 @@
 ### Phase 0 — Research & Alignment (no code, research artifacts included below)
 Objective: Curate “no-reinventing” OSS patterns and finalize execution specs.
 - Steps:
-  - Deep web research on: robust PyTorch evaluation loops; pip-audit + nox policy; atomic best‑k retention; Typer modular CLI; JSON/TOML + JSONSchema validation; determinism recipes; CPU-only Docker mirroring local nox/pytest.
-  - Freeze module names, flags, CLI interface, schema layout, and acceptance criteria.
+ - Deep web research on: robust PyTorch evaluation loops; pip-audit + nox policy; atomic best‑k retention; Typer modular CLI; JSON/TOML + JSONSchema validation; determinism recipes; CPU-only Docker mirroring local nox/pytest.
+ - Freeze module names, flags, CLI interface, schema layout, and acceptance criteria.
 - Decision gate: This document approved with resolved answers and specs.
 - Effort/deps: 0.5–1 iteration.
 
 ### Phase 1 — Iteration 1 (Eval loop + logging wiring + pip‑audit + best‑k retention)
 Objective: Land core execution path upgrades with tests and security gates (≥95% coverage).
 - Tasks:
-  - Implement evaluation.loop and Typer CLI (“codex-eval run …”; “codex-eval report …”).
-  - Wire logging registry into train/eval loops; add optional system metrics via flag.
-  - Implement best‑k retention with atomic metadata (write temp + os.replace) and safe deletions.
-  - Add nox -s security: pip-audit; JSON artifact; fail on High/Critical; allowlist with expiry.
-  - Tests: unit + integration for eval loop; logging wiring; best‑k pruning; golden JSON outputs; coverage ≥95%.
-  - Docs: docs/api/loop_eval.md; docs/security/safeguards.md.
+ - Implement evaluation.loop and Typer CLI (“codex-eval run …”; “codex-eval report …”).
+ - Wire logging registry into train/eval loops; add optional system metrics via flag.
+ - Implement best‑k retention with atomic metadata (write temp + os.replace) and safe deletions.
+ - Add nox -s security: pip-audit; JSON artifact; fail on High/Critical; allowlist with expiry.
+ - Tests: unit + integration for eval loop; logging wiring; best‑k pruning; golden JSON outputs; coverage ≥95%.
+ - Docs: docs/api/loop_eval.md; docs/security/safeguards.md.
 - Decision gate: All new tests ≥95%; nox security gate produces artifact; zero breaking changes; updated audit artifacts committed.
 
 ### Phase 2 — Iteration 2 (Quickstart + config schema + AST CLI integration)
 Objective: Make the system discoverable and reproducible end-to-end (≥95% coverage).
 - Tasks:
-  - Write docs/quickstart_local_training.md covering tokenization → data → model → train → eval → checkpoint → report.
-  - Add JSON+TOML experiment configs; JSONSchema + validator tool; nox validate-configs.
-  - Enhance AST CLI subcommands (analyze/audit/diff), add --json output; stable exit codes; integration tests.
-  - Update docs/ops/promotion_checklist.md to reflect new gates.
+ - Write docs/quickstart_local_training.md covering tokenization data model train eval checkpoint report.
+ - Add JSON+TOML experiment configs; JSONSchema + validator tool; nox validate-configs.
+ - Enhance AST CLI subcommands (analyze/audit/diff), add --json output; stable exit codes; integration tests.
+ - Update docs/ops/promotion_checklist.md to reflect new gates.
 - Decision gate: Docs approved; schema validator green on samples; AST CLI tests pass; artifacts updated; coverage ≥95%.
 
 ### Phase 3 — Iteration 3 (Style normalization + determinism polish + CPU Dockerfile)
 Objective: Maximize consistency and reproducibility; reduce friction to run.
 - Tasks:
-  - One-shot style pass: E501 (line length), targeted E402, E741 rename; update ruff config if needed.
-  - Determinism tests: cross-process reproducibility suite; env snapshot gates; manifest hash chain proved.
-  - Add docker/Dockerfile.cpu; docs/deploy/cpu_local.md; smoke test Quickstart inside container.
+ - One-shot style pass: E501 (line length), targeted E402, E741 rename; update ruff config if needed.
+ - Determinism tests: cross-process reproducibility suite; env snapshot gates; manifest hash chain proved.
+ - Add docker/Dockerfile.cpu; docs/deploy/cpu_local.md; smoke test Quickstart inside container.
 - Decision gate: Lint/typecheck clean; determinism tests pass; Docker build + Quickstart run OK.
 
 ---
@@ -287,7 +287,7 @@ metrics['loss'].append(batch_loss)
 
 ---
 
-Summary:  
+Summary:
 A minimal and robust PyTorch evaluation loop requires correct mode setting, efficient metric computation, and systematic logging. For many metrics or complex workflows, leveraging libraries like torchmetrics or frameworks like PyTorch Lightning can reduce boilerplate and keep your code extensible and maintainable.[1](https://www.compilenrun.com/docs/library/pytorch/pytorch-training-loop/pytorch-validation-loop/)[[5]](https://www.codegenes.net/blog/pytorch-validation-loop/)[[6]](https://apxml.com/courses/getting-started-with-pytorch/chapter-8-monitoring-debugging-models/logging-metrics-training-evaluation)[[9]](https://discuss.pytorch.org/t/best-practices-for-collecting-metrics/181881)[[8]](https://stackoverflow.com/questions/56643503/efficient-metrics-evaluation-in-pytorch)
 
 ---
@@ -308,14 +308,14 @@ A minimal and robust PyTorch evaluation loop requires correct mode setting, effi
 
 To use pip-audit in a Nox session and fail the session if high or critical vulnerabilities are found, you need to do the following:
 
-1. Install pip-audit inside the Nox session:  
-   Ensure pip-audit is installed in the Nox-managed environment, so you can call its CLI.
+1. Install pip-audit inside the Nox session:
+ Ensure pip-audit is installed in the Nox-managed environment, so you can call its CLI.
 
-2. Run pip-audit and output results in JSON:  
-   Use the -f json argument for machine-readable results.
+2. Run pip-audit and output results in JSON:
+ Use the -f json argument for machine-readable results.
 
-3. Parse the JSON to check severity levels:  
-   Since pip-audit itself does not have a built-in "fail on severity" option, you must parse the output to look for vulnerabilities with severity "high" or "critical". If found, fail the session.
+3. Parse the JSON to check severity levels:
+ Since pip-audit itself does not have a built-in "fail on severity" option, you must parse the output to look for vulnerabilities with severity "high" or "critical". If found, fail the session.
 
 Below is a practical example noxfile.py illustrating these steps:
 
@@ -342,8 +342,8 @@ def audit(session):
 ### Notes:
 
 - You may need to adjust subprocess usage, depending on your Nox version (stdout=subprocess.PIPE is an example).
-- You can also run against a requirements.txt file with:  
-  session.run("pip-audit", "-r", "requirements.txt", "-f", "json", external=True, ...)
+- You can also run against a requirements.txt file with:
+ session.run("pip-audit", "-r", "requirements.txt", "-f", "json", external=True, ...)
 - session.error() will terminate and fail the session if vulnerabilities of specified severity are found.
 
 ### Why This Works & Best Practices
@@ -624,7 +624,7 @@ If you want to validate TOML, JSON, and even YAML configs automatically (e.g., i
 - CLI Example:
     ```shell
     check-jsonschema --schemafile schema.json config.toml config.json
-    ```
+ ```
 This tool supports JSON, YAML, TOML, and JSON5 files, and integrates with pre-commit for development workflows[4](https://deepwiki.com/python-jsonschema/check-jsonschema/1-overview)[[5]](https://deepwiki.com/python-jsonschema/check-jsonschema/3-command-line-interface).
 
 ---
@@ -669,12 +669,12 @@ To achieve deterministic machine learning (ML) experiments in Python and PyTorch
 - PyTorch (GPU): torch.cuda.manual_seed_all(SEED) (for all GPUs)[1](https://www.codegenes.net/blog/how-to-train-a-model-deterministic-pytorch/)[[2]](https://docs.pytorch.org/docs/stable/notes/randomness.html)[[3]](https://pieriantraining.com/how-to-set-the-seed-in-pytorch-for-reproducible-results/)[[4]](https://www.codegenes.net/blog/deterministic-pytorch/)
 
 ### 2. Control cuDNN Behavior (for GPU)
-- Set deterministic convolution algorithms:  
+- Set deterministic convolution algorithms:
 ```python
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 ```
-  This disables the dynamic benchmarking of cuDNN algorithms, forcing PyTorch to select deterministic ones at a trade-off of speed for reproducibility[5](https://runebook.dev/en/articles/pytorch/backends/torch.backends.cudnn.deterministic)[[6]](https://www.codegenes.net/blog/different-result-with-deterministic-setting-in-pytorch/)[[7]](https://gist.github.com/Guitaricet/28fbb2a753b1bb888ef0b2731c03c031)[[8]](https://stackoverflow.com/questions/56354461/reproducibility-and-performance-in-pytorch).
+ This disables the dynamic benchmarking of cuDNN algorithms, forcing PyTorch to select deterministic ones at a trade-off of speed for reproducibility[5](https://runebook.dev/en/articles/pytorch/backends/torch.backends.cudnn.deterministic)[[6]](https://www.codegenes.net/blog/different-result-with-deterministic-setting-in-pytorch/)[[7]](https://gist.github.com/Guitaricet/28fbb2a753b1bb888ef0b2731c03c031)[[8]](https://stackoverflow.com/questions/56354461/reproducibility-and-performance-in-pytorch).
 
 ### 3. Consistent Data Loading
 - When using DataLoader, pass a fixed seed to its generator argument for reproducible shuffling:
@@ -683,7 +683,7 @@ from torch.utils.data import DataLoader
 generator = torch.Generator().manual_seed(SEED)
 loader = DataLoader(dataset, shuffle=True, generator=generator)
 ```
-  This prevents randomness in the order of mini-batches[1](https://www.codegenes.net/blog/how-to-train-a-model-deterministic-pytorch/)[[9]](https://www.geeksforgeeks.org/deep-learning/reproducibility-in-pytorch/).
+ This prevents randomness in the order of mini-batches[1](https://www.codegenes.net/blog/how-to-train-a-model-deterministic-pytorch/)[[9]](https://www.geeksforgeeks.org/deep-learning/reproducibility-in-pytorch/).
 
 ### 4. Log All Hyperparameters and Initial States
 - Record hyperparameters, dataset splits (especially if randomized), model initialization, and optimizer state at the start. Use tools like W&B or TensorBoard for comprehensive experiment tracking[7](https://gist.github.com/Guitaricet/28fbb2a753b1bb888ef0b2731c03c031).
@@ -729,7 +729,7 @@ loader = DataLoader(dataset, shuffle=True, generator=generator)
 ```text
 ---
 
-Key Takeaways:  
+Key Takeaways:
 - Set all relevant seeds and control hardware-dependent randomness.
 - Accept performance reductions in favor of experiment reproducibility.
 - Log and version everything: code, data, parameters, initializations.
@@ -766,11 +766,11 @@ Here are best practices for creating an efficient, CPU-only Python Dockerfile th
 - Copy dependency files before the rest of your code; this leverages cache if requirements haven’t changed.
 - Example:
 
-  COPY requirements.txt ./
+ COPY requirements.txt ./
 
-  RUN pip install --no-cache-dir -r requirements.txt
+ RUN pip install --no-cache-dir -r requirements.txt
 
-  COPY . .
+ COPY . .
 - For nox: copy your noxfile.py and test requirements first for caching test dependencies.
 
 4. Multi-Stage Builds (Recommended for Production)
@@ -787,40 +787,40 @@ Here are best practices for creating an efficient, CPU-only Python Dockerfile th
   COPY --from=builder /wheels /wheels
   RUN pip install --no-cache-dir --find-links=/wheels -r requirements.txt
   COPY . .
-  ```
-  For local dev/test, you can combine stages, but production should separate build/runtime[5](https://testdriven.io/blog/docker-best-practices/)[[4]](https://dev.to/rajeshgheware/dockerfile-best-practices-the-ultimate-guide-to-optimizing-your-container-builds-2d0p)[[6]](https://support.tools/dockerfile-best-practices-guide/).
+ ```
+ For local dev/test, you can combine stages, but production should separate build/runtime[5](https://testdriven.io/blog/docker-best-practices/)[[4]](https://dev.to/rajeshgheware/dockerfile-best-practices-the-ultimate-guide-to-optimizing-your-container-builds-2d0p)[[6]](https://support.tools/dockerfile-best-practices-guide/).
 
 5. Non-Root User
 - Improve security by creating and switching to a non-root user:
   ```dockerfile
   RUN useradd --create-home appuser
   USER appuser
-  ```
+ ```
 
 6. Set WORKDIR
 - Ensures your application runs from a predictable location:
 
-  WORKDIR /app
+ WORKDIR /app
 
 7. Environment Variables
 - For development, set envs like PYTHONUNBUFFERED=1 and PIP_NO_CACHE_DIR=off to see logs in real-time.
 
-  ENV PYTHONUNBUFFERED=1
+ ENV PYTHONUNBUFFERED=1
 
-  ENV PIP_NO_CACHE_DIR=off
+ ENV PIP_NO_CACHE_DIR=off
 
 8. Integrating Nox/Pytest
 - To run tests inside the container:
-  - Copy your test files and noxfile.py.
-  - Add a build stage (or entrypoint) for running nox:
+ - Copy your test files and noxfile.py.
+ - Add a build stage (or entrypoint) for running nox:
     ```dockerfile
     RUN pip install nox pytest
     CMD ["nox", "-s", "tests"]
-    ```
-  Or, for CI, invoke pytest directly in an override entrypoint:
+ ```
+ Or, for CI, invoke pytest directly in an override entrypoint:
     ```dockerfile
     CMD ["pytest"]
-    ```
+ ```
 - For local dev “mirroring,” you might mount your code into the container (using volumes), so code changes are reflected without rebuilds.
 
 9. Caching and Layer Order
@@ -878,7 +878,7 @@ If you need a docker-compose setup for matching local dev flow further, you can 
 
 ---
 
-## Tailored Copilot Prompt (Next Iteration: push coverage from 95% → 96–99%)
+## Tailored Copilot Prompt (Next Iteration: push coverage from 95% 96–99%)
 
 Goal: Raise test coverage on evaluation loop, logging registry integration, checkpoint best‑k retention, AST CLI, and config schema validator to 96–99% without altering public contracts.
 
@@ -890,11 +890,11 @@ Context:
 
 Request to Copilot:
 - Generate additional tests that:
-  - Cover edge cases: empty dataloaders; single-batch; large-batch; metric exceptions; logger backpressure; file I/O errors in best‑k.
-  - Simulate failures: corrupted checkpoint metadata; atomic rename failures (use monkeypatch); permission errors.
-  - Validate CLI behaviors: Typer command parsing (human and --json outputs), exit codes, help text; invalid option handling.
-  - Validate schema tooling: invalid configs (type mismatches, missing required fields), TOML/JSON parity; JSONSchema draft compliance errors.
-  - Reproducibility: run the same evaluation twice with seeded environment and assert identical outputs (hash or equality).
+ - Cover edge cases: empty dataloaders; single-batch; large-batch; metric exceptions; logger backpressure; file I/O errors in best‑k.
+ - Simulate failures: corrupted checkpoint metadata; atomic rename failures (use monkeypatch); permission errors.
+ - Validate CLI behaviors: Typer command parsing (human and --json outputs), exit codes, help text; invalid option handling.
+ - Validate schema tooling: invalid configs (type mismatches, missing required fields), TOML/JSON parity; JSONSchema draft compliance errors.
+ - Reproducibility: run the same evaluation twice with seeded environment and assert identical outputs (hash or equality).
 - Add golden files (small JSON/NDJSON) where appropriate for stable outputs.
 - Provide coverage reports and annotate any lines intentionally excluded (pragma: no cover) with rationale.
 - Do not modify public function signatures or CLI flags.

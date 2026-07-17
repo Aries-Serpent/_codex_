@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document**: Production Operations Guide  
-**Audience**: DevOps Engineers, Security Team, Platform Operations  
-**Last Updated**: 2026-06-14  
-**Severity**: CRITICAL - Follow exactly  
+**Document**: Production Operations Guide
+**Audience**: DevOps Engineers, Security Team, Platform Operations
+**Last Updated**: 2026-06-14
+**Severity**: CRITICAL - Follow exactly
 
 ---
 
@@ -239,7 +239,7 @@ echo " Staging environment healthy"
 
 ## Phase 3: Production Cutover (T+1:00 to T+1:30, CRITICAL)
 
-**️ CRITICAL PHASE - Follow exactly, no deviations**
+** CRITICAL PHASE - Follow exactly, no deviations**
 
 **Step 3a: Create rotation audit entry**
 ```bash
@@ -536,13 +536,13 @@ gh api repos/Aries-Serpent/_codex_/events --limit 10 --jq '.[] | .created_at + "
 
 ## Sign-off
 
-- **Security Lead**: ____________________  Date: _________
-- **Operations Lead**: ____________________  Date: _________
-- **On-call Engineer**: ____________________  Date: _________
+- **Security Lead**: ____________________ Date: _________
+- **Operations Lead**: ____________________ Date: _________
+- **On-call Engineer**: ____________________ Date: _________
 
 ---
 
-**Document Version**: 1.0  
-**Severity**: CRITICAL  
-**Last Updated**: 2026-06-14  
+**Document Version**: 1.0
+**Severity**: CRITICAL
+**Last Updated**: 2026-06-14
 **Training Required**: Yes (annual)

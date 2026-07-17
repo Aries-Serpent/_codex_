@@ -4,13 +4,13 @@
 
 **Purpose**: Standards and guidelines for AI agent prompt templates in the `_codex_` repository.
 
-**Last Updated**: 2026-06-22  
-**Version**: 2.0.0  
-**Status**:  Active
+**Last Updated**: 2026-06-22
+**Version**: 2.0.0
+**Status**: Active
 
 ---
 
-##  Available Prompts
+## Available Prompts
 
 ### Active Prompts
 
@@ -31,7 +31,7 @@
 
 ---
 
-##  Prompt Template Standard (v2.0)
+## Prompt Template Standard (v2.0)
 
 ### Required Structure
 
@@ -104,7 +104,7 @@ All prompts should follow this standard format:
 
 ---
 
-## 🎨 Prompt Design Guidelines
+## Prompt Design Guidelines
 
 ### 1. Context First
 
@@ -190,7 +190,7 @@ mypy src/
 
 ---
 
-##  Version Control
+## Version Control
 
 ### Semantic Versioning
 
@@ -209,25 +209,25 @@ mypy src/
 
 ---
 
-## 🧪 Testing Prompts
+## Testing Prompts
 
 ### Before Committing
 
 1. **Test with target agent**:
    ```
    Copy prompt → Paste in agent interface → Execute
-   ```
+ ```
 
 2. **Verify cognitive brain links**:
    ```bash
    # Check all markdown links
    python scripts/maintenance/check_doc_links.py --report /tmp/prompt_links.md
-   ```
+ ```
 
 3. **Validate examples**:
    ```bash
    # Run any code examples in prompt
-   python -c "$(grep -A 5 '```python' prompt.md | grep -v '```')"
+ python -c "$(grep -A 5 '```python' prompt.md | grep -v '```')"
    ```
 
 ### After Deployment

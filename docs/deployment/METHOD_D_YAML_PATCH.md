@@ -71,9 +71,9 @@ run: |
 
 | Method | Form | Status |
 |--------|------|--------|
-| Flow scalar direct | `run: python3 script.py \|\| { ... }` |  YAML parse failure |
-| Method B — if/fi | `run: \|` + `if ! python3; then ... fi` | ️ Agents revert 8+ times |
-| **Method D** | `run: \|` + `\|\| { }` inside block |  **Never regressed** |
+| Flow scalar direct | `run: python3 script.py \|\| { ... }` | YAML parse failure |
+| Method B — if/fi | `run: \|` + `if ! python3; then ... fi` | Agents revert 8+ times |
+| **Method D** | `run: \|` + `\|\| { }` inside block | **Never regressed** |
 
 Method D is proven because it is already active in the Session Access Probe
 step (lines ~166–184) in the same workflow file.

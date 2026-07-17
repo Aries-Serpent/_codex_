@@ -6,50 +6,50 @@
 
 - [ 5-minute quick-start checklist](#-5-minute-quick-start-checklist)
 - [Section 1 — Create `CODEX_MASTER_KEY` (Fine-Grained PAT)](#section-1--create-codex_master_key-fine-grained-pat)
-  - [Step 1.1 — Generate the token](#step-11--generate-the-token)
-  - [Step 1.2 — Inject the secret into the repository](#step-12--inject-the-secret-into-the-repository)
-  - [Step 1.3 — Create `CODEX_BACKUP_KEY` (recommended)](#step-13--create-codex_backup_key-recommended)
+ - [Step 1.1 — Generate the token](#step-11--generate-the-token)
+ - [Step 1.2 — Inject the secret into the repository](#step-12--inject-the-secret-into-the-repository)
+ - [Step 1.3 — Create `CODEX_BACKUP_KEY` (recommended)](#step-13--create-codex_backup_key-recommended)
 - [Section 2 — Repository Actions Permissions](#section-2--repository-actions-permissions)
-  - [Step 2.1 — Allow all actions](#step-21--allow-all-actions)
-  - [Step 2.2 — Set GITHUB_TOKEN permissions to read/write](#step-22--set-github_token-permissions-to-readwrite)
-  - [Step 2.3 — Fork / outside-contributor workflow approval](#step-23--fork--outside-contributor-workflow-approval)
+ - [Step 2.1 — Allow all actions](#step-21--allow-all-actions)
+ - [Step 2.2 — Set GITHUB_TOKEN permissions to read/write](#step-22--set-github_token-permissions-to-readwrite)
+ - [Step 2.3 — Fork / outside-contributor workflow approval](#step-23--fork--outside-contributor-workflow-approval)
 - [Section 3 — Branch Protection Rules](#section-3--branch-protection-rules)
-  - [Step 3.1 — Update `main` branch protection](#step-31--update-main-branch-protection)
-  - [Step 3.2 — Update `0D_base_` branch protection](#step-32--update-0d_base_-branch-protection)
+ - [Step 3.1 — Update `main` branch protection](#step-31--update-main-branch-protection)
+ - [Step 3.2 — Update `0D_base_` branch protection](#step-32--update-0d_base_-branch-protection)
 - [Section 4 — Copilot Coding Agent (Organisation Settings)](#section-4--copilot-coding-agent-organisation-settings)
-  - [Step 4.1 — Enable Copilot Coding Agent for the org](#step-41--enable-copilot-coding-agent-for-the-org)
-  - [Step 4.2 — Enable Copilot in the repository](#step-42--enable-copilot-in-the-repository)
-  - [Step 4.3 — Allow Copilot to edit files and open PRs (Copilot plan setting)](#step-43--allow-copilot-to-edit-files-and-open-prs-copilot-plan-setting)
+ - [Step 4.1 — Enable Copilot Coding Agent for the org](#step-41--enable-copilot-coding-agent-for-the-org)
+ - [Step 4.2 — Enable Copilot in the repository](#step-42--enable-copilot-in-the-repository)
+ - [Step 4.3 — Allow Copilot to edit files and open PRs (Copilot plan setting)](#step-43--allow-copilot-to-edit-files-and-open-prs-copilot-plan-setting)
 - [Section 5 — Repository Variables (13 required)](#section-5--repository-variables-13-required)
-  - [Step 5.1 — Batch create via GitHub CLI (fastest, ~2 minutes)](#step-51--batch-create-via-github-cli-fastest-2-minutes)
-  - [Step 5.2 — Verify variables were created](#step-52--verify-variables-were-created)
-  - [Step 5.3 — UI alternative (if CLI not available)](#step-53--ui-alternative-if-cli-not-available)
+ - [Step 5.1 — Batch create via GitHub CLI (fastest, ~2 minutes)](#step-51--batch-create-via-github-cli-fastest-2-minutes)
+ - [Step 5.2 — Verify variables were created](#step-52--verify-variables-were-created)
+ - [Step 5.3 — UI alternative (if CLI not available)](#step-53--ui-alternative-if-cli-not-available)
 - [Section 6 — `agent-auth-delegation` Environment](#section-6--agent-auth-delegation-environment)
-  - [Step 6.1 — Remove required reviewers from the environment](#step-61--remove-required-reviewers-from-the-environment)
-  - [Step 6.2 — Create the environment if it doesn't exist](#step-62--create-the-environment-if-it-doesnt-exist)
+ - [Step 6.1 — Remove required reviewers from the environment](#step-61--remove-required-reviewers-from-the-environment)
+ - [Step 6.2 — Create the environment if it doesn't exist](#step-62--create-the-environment-if-it-doesnt-exist)
 - [Section 7 — Dependabot Access to `CODEX_MASTER_KEY`](#section-7--dependabot-access-to-codex_master_key)
 - [Section 8 — Enable Auto-Merge on the Repository](#section-8--enable-auto-merge-on-the-repository)
 - [Section 9 — Notification & Monitoring Setup](#section-9--notification--monitoring-setup)
-  - [Step 9.1 — Watch the repository](#step-91--watch-the-repository)
-  - [Step 9.2 — Subscribe to GitHub Actions failure notifications](#step-92--subscribe-to-github-actions-failure-notifications)
+ - [Step 9.1 — Watch the repository](#step-91--watch-the-repository)
+ - [Step 9.2 — Subscribe to GitHub Actions failure notifications](#step-92--subscribe-to-github-actions-failure-notifications)
 - [Section 10 — One-Time Genesis Bootstrap](#section-10--one-time-genesis-bootstrap)
-  - [Step 10.1 — Trigger the genesis workflow](#step-101--trigger-the-genesis-workflow)
-  - [Step 10.2 — Verify genesis completed](#step-102--verify-genesis-completed)
+ - [Step 10.1 — Trigger the genesis workflow](#step-101--trigger-the-genesis-workflow)
+ - [Step 10.2 — Verify genesis completed](#step-102--verify-genesis-completed)
 - [Section 11 — Verify Everything Works End-to-End](#section-11--verify-everything-works-end-to-end)
 - [Run from any directory with gh CLI authenticated](#run-from-any-directory-with-gh-cli-authenticated)
-- [↑ This should print NOTHING. Any "action_required" runs still need approval.](#-this-should-print-nothing-any-action_required-runs-still-need-approval)
+- [ This should print NOTHING. Any "action_required" runs still need approval.](#-this-should-print-nothing-any-action_required-runs-still-need-approval)
 - [Section 12 — Troubleshooting](#section-12--troubleshooting)
-  - ["action_required" runs still appearing](#action_required-runs-still-appearing)
+ - ["action_required" runs still appearing](#action_required-runs-still-appearing)
 - [Approve all pending runs for the current branch in bulk](#approve-all-pending-runs-for-the-current-branch-in-bulk)
 - [API](#http-403-when-workflows-call-the-rest-api)
-  - [Branch protection blocking merge](#branch-protection-blocking-merge)
-  - [Copilot doesn't respond to `@copilot` mentions](#copilot-doesnt-respond-to-copilot-mentions)
-  - [`agent-auth-delegation` waits indefinitely](#agent-auth-delegation-waits-indefinitely)
+ - [Branch protection blocking merge](#branch-protection-blocking-merge)
+ - [Copilot doesn't respond to `@copilot` mentions](#copilot-doesnt-respond-to-copilot-mentions)
+ - [`agent-auth-delegation` waits indefinitely](#agent-auth-delegation-waits-indefinitely)
 - [Architecture Diagrams](#architecture-diagrams)
-  - [Auth Flow — How Copilot self-authorises (always-on, no human gates)](#auth-flow--how-copilot-self-authorises-always-on-no-human-gates)
-  - [Auto-Approve — Same-repo PR action_required clearance](#auto-approve--same-repo-pr-action_required-clearance)
-  - [WEC State — Workflow Execution Checklist (always-on)](#wec-state--workflow-execution-checklist-always-on)
-  - [PDA Loop — AfterMath auth-state logging](#pda-loop--aftermath-auth-state-logging)
+ - [Auth Flow — How Copilot self-authorises (always-on, no human gates)](#auth-flow--how-copilot-self-authorises-always-on-no-human-gates)
+ - [Auto-Approve — Same-repo PR action_required clearance](#auto-approve--same-repo-pr-action_required-clearance)
+ - [WEC State — Workflow Execution Checklist (always-on)](#wec-state--workflow-execution-checklist-always-on)
+ - [PDA Loop — AfterMath auth-state logging](#pda-loop--aftermath-auth-state-logging)
 - [Summary Table — All Human Actions](#summary-table--all-human-actions)
 
 **Last Updated: 2026-06-22
@@ -65,7 +65,7 @@
 
 ---
 
-##  5-minute quick-start checklist
+## 5-minute quick-start checklist
 
 Use this as your "did I do everything?" reference. Tick each box as you complete it.
 
@@ -98,54 +98,54 @@ Use this as your "did I do everything?" reference. Tick each box as you complete
 ### Step 1.1 — Generate the token
 
 1. Open: **https://github.com/settings/personal-access-tokens/new**
-   *(GitHub top-right avatar →  Settings → Developer settings → Personal access tokens →
-   Fine-grained tokens → Generate new token)*
+ *(GitHub top-right avatar Settings Developer settings Personal access tokens
+ Fine-grained tokens Generate new token)*
 2. Fill in the form:
 
-   | Field | Value |
-   |-------|-------|
-   | **Token name** | `CODEX_MASTER_KEY_codex_2026` |
-   | **Expiration** | `90 days` (set a calendar reminder to rotate) |
-   | **Description** | `Full repo+workflow access for copilot-swe-agent autonomous ops` |
-   | **Resource owner** | `Aries-Serpent` |
-   | **Repository access** | ● Only selected repositories → select `_codex_` |
+ | Field | Value |
+ |-------|-------|
+ | **Token name** | `CODEX_MASTER_KEY_codex_2026` |
+ | **Expiration** | `90 days` (set a calendar reminder to rotate) |
+ | **Description** | `Full repo+workflow access for copilot-swe-agent autonomous ops` |
+ | **Resource owner** | `Aries-Serpent` |
+ | **Repository access** | Only selected repositories select `_codex_` |
 
 3. Scroll to **Repository permissions** and set **each** of these to **Read and write**:
 
-   | Permission | Level |
-   |-----------|-------|
-   | Actions | Read and write |
-   | Administration | Read and write |
-   | Checks | Read and write |
-   | Code scanning alerts | Read and write |
-   | Commit statuses | Read and write |
-   | Contents | Read and write |
-   | Deployments | Read and write |
-   | Environments | Read and write |
-   | Issues | Read and write |
-   | Metadata | Read (mandatory — cannot change) |
-   | Pages | Read and write |
-   | Pull requests | Read and write |
-   | Repository Advisories | Read and write |
-   | Secrets | Read and write |
-   | Variables | Read and write |
-   | Webhooks | Read and write |
-   | Workflows | Write |
+ | Permission | Level |
+ |-----------|-------|
+ | Actions | Read and write |
+ | Administration | Read and write |
+ | Checks | Read and write |
+ | Code scanning alerts | Read and write |
+ | Commit statuses | Read and write |
+ | Contents | Read and write |
+ | Deployments | Read and write |
+ | Environments | Read and write |
+ | Issues | Read and write |
+ | Metadata | Read (mandatory — cannot change) |
+ | Pages | Read and write |
+ | Pull requests | Read and write |
+ | Repository Advisories | Read and write |
+ | Secrets | Read and write |
+ | Variables | Read and write |
+ | Webhooks | Read and write |
+ | Workflows | Write |
 
 4. Click **Generate token**.
 5. **Copy the token immediately** — GitHub will never show it again.
-   Store it in your password manager as `CODEX_MASTER_KEY`.
+ Store it in your password manager as `CODEX_MASTER_KEY`.
 
 ---
 
 ### Step 1.2 — Inject the secret into the repository
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/secrets/actions**
-   *(Repo →  Settings → Secrets and variables → Actions)*
+ *(Repo Settings Secrets and variables Actions)*
 2. Click **New repository secret**.
 3. Fill in:
-   - **Name:** `CODEX_MASTER_KEY`
-   - **Secret:** paste the token from Step 1.1
+ - **Name:** `CODEX_MASTER_KEY`
+ - **Secret:** paste the token from Step 1.1
 4. Click **Add secret**.
 
  **Verification:** The secret should appear in the list as `CODEX_MASTER_KEY`.
@@ -175,9 +175,9 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 ### Step 2.1 — Allow all actions
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/actions**
-   *(Repo →  Settings → Actions → General)*
+ *(Repo Settings Actions General)*
 2. Under **Actions permissions**, select:
-   - ● **Allow all actions and reusable workflows**
+ - **Allow all actions and reusable workflows**
 3. Click **Save**.
 
 ---
@@ -185,11 +185,11 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 ### Step 2.2 — Set GITHUB_TOKEN permissions to read/write
 
 1. Remain on the same page
-   (**https://github.com/Aries-Serpent/_codex_/settings/actions**)
+ (**https://github.com/Aries-Serpent/_codex_/settings/actions**)
 2. Scroll to **Workflow permissions**.
 3. Select:
-   - ● **Read and write permissions**
-4. Check the box: **☑ Allow GitHub Actions to create and approve pull requests**
+ - **Read and write permissions**
+4. Check the box: ** Allow GitHub Actions to create and approve pull requests**
 5. Click **Save**.
 
 ---
@@ -202,15 +202,15 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 > so the correct setting here is "first-time contributors only."
 
 1. Remain on the same page
-   (**https://github.com/Aries-Serpent/_codex_/settings/actions**)
+ (**https://github.com/Aries-Serpent/_codex_/settings/actions**)
 2. Scroll to **Fork pull request workflows from outside collaborators**.
 3. Select:
-   - ● **Require approval for first-time contributors who are new to GitHub**
-   *(This is the most permissive safe option — it only gates brand-new GitHub accounts,
-   not established bots like `copilot-swe-agent[bot]`.)*
+ - **Require approval for first-time contributors who are new to GitHub**
+ *(This is the most permissive safe option — it only gates brand-new GitHub accounts,
+ not established bots like `copilot-swe-agent[bot]`.)*
 
-   > If you see the option **"Allow all actions"** in this drop-down — select it instead.
-   > That fully removes the gate. The exact label varies by GitHub plan.
+ > If you see the option **"Allow all actions"** in this drop-down — select it instead.
+ > That fully removes the gate. The exact label varies by GitHub plan.
 
 4. Click **Save**.
 
@@ -225,16 +225,16 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 ### Step 3.1 — Update `main` branch protection
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/branches**
-   *(Repo →  Settings → Branches)*
+ *(Repo Settings Branches)*
 2. Find the rule for `main` and click **Edit** (pencil icon).
 3. Scroll to **Allow specified actors to bypass required pull requests**.
 4. In the search box, type `copilot-swe-agent` and select
-   **copilot-swe-agent[bot]** from the dropdown.
+ **copilot-swe-agent[bot]** from the dropdown.
 5. Also add: **github-actions[bot]**
 6. Scroll up — under **Require a pull request before merging**, confirm:
-   - ☑ **Allow auto-merge** is checked (or leave it unchecked — either is fine)
-   - **Required approvals:** can be `1` — the agent will request its own review via
-     the `copilot-pull-request-reviewer` bot which auto-approves
+ - **Allow auto-merge** is checked (or leave it unchecked — either is fine)
+ - **Required approvals:** can be `1` — the agent will request its own review via
+ the `copilot-pull-request-reviewer` bot which auto-approves
 7. Click **Save changes**.
 
 ---
@@ -243,7 +243,7 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 
 Repeat Step 3.1 for the `0D_base_` branch:
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/branches**
-2. Find the rule for `0D_base_` → **Edit**.
+2. Find the rule for `0D_base_` **Edit**.
 3. Add bypass actors: `copilot-swe-agent[bot]` and `github-actions[bot]`.
 4. Click **Save changes**.
 
@@ -258,12 +258,12 @@ Repeat Step 3.1 for the `0D_base_` branch:
 ### Step 4.1 — Enable Copilot Coding Agent for the org
 
 1. Open: **https://github.com/organizations/Aries-Serpent/settings/copilot/policies**
-   *(GitHub top-right avatar → Your organisations → Aries-Serpent →
-    Settings → Copilot → Policies)*
+ *(GitHub top-right avatar Your organisations Aries-Serpent
+ Settings Copilot Policies)*
 2. Find **Copilot coding agent** (or **"Allow Copilot to create pull requests"**).
 3. Set it to **Enabled** (toggle on).
 4. Under **Operator access**, choose **Allow all repositories** (or select `_codex_`
-   specifically).
+ specifically).
 5. Click **Save**.
 
 ---
@@ -271,7 +271,7 @@ Repeat Step 3.1 for the `0D_base_` branch:
 ### Step 4.2 — Enable Copilot in the repository
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/copilot**
-   *(Repo →  Settings → Copilot)*
+ *(Repo Settings Copilot)*
 2. Ensure Copilot is **enabled** for this repository.
 3. Under **Coding agent**, set to **Enabled**.
 
@@ -280,11 +280,11 @@ Repeat Step 3.1 for the `0D_base_` branch:
 ### Step 4.3 — Allow Copilot to edit files and open PRs (Copilot plan setting)
 
 1. Open: **https://github.com/settings/copilot** (your personal settings)
-   *(GitHub avatar →  Settings → GitHub Copilot)*
+ *(GitHub avatar Settings GitHub Copilot)*
 2. Scroll to **Copilot coding agent**.
 3. Confirm both toggles are **On**:
-   - **Allow Copilot coding agent to edit files**
-   - **Allow Copilot coding agent to open pull requests**
+ - **Allow Copilot coding agent to edit files**
+ - **Allow Copilot coding agent to open pull requests**
 
 ---
 
@@ -344,7 +344,7 @@ For each variable in the table above:
 ### Step 6.1 — Remove required reviewers from the environment
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/environments**
-   *(Repo →  Settings → Environments)*
+ *(Repo Settings Environments)*
 2. Click **agent-auth-delegation** (create it if it doesn't exist — see Step 6.2).
 3. Under **Required reviewers**, remove any names in the list (click the `×` next to each).
 4. Ensure the list is empty.
@@ -369,8 +369,8 @@ For each variable in the table above:
 > a workflow that needs `CODEX_MASTER_KEY`, the secret must be explicitly shared.
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/secrets/actions**
-2. Click **CODEX_MASTER_KEY** → **Edit**.
-3. Scroll to **Accessible from** → tick **☑ Dependabot secrets**.
+2. Click **CODEX_MASTER_KEY** **Edit**.
+3. Scroll to **Accessible from** tick ** Dependabot secrets**.
 4. Click **Save**.
 
 ---
@@ -381,10 +381,10 @@ For each variable in the table above:
 > without waiting for a human. This must be enabled at the repo level.
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings**
-   *(Repo →  Settings → General)*
+ *(Repo Settings General)*
 2. Scroll to **Pull Requests**.
-3. Check **☑ Allow auto-merge**.
-4. Check **☑ Automatically delete head branches** (keeps the repo clean).
+3. Check ** Allow auto-merge**.
+4. Check ** Automatically delete head branches** (keeps the repo clean).
 5. Click **Save** (if prompted).
 
 ---
@@ -398,18 +398,18 @@ For each variable in the table above:
 
 1. Open: **https://github.com/Aries-Serpent/_codex_**
 2. Click **Watch** (top-right, next to Star).
-3. Select **Custom** → tick:
-   - ☑ Issues
-   - ☑ Pull requests
-   - ☑ Releases
-   - ☑ Security alerts
+3. Select **Custom** tick:
+ - Issues
+ - Pull requests
+ - Releases
+ - Security alerts
 4. Click **Apply**.
 
 ### Step 9.2 — Subscribe to GitHub Actions failure notifications
 
 1. Open: **https://github.com/settings/notifications**
 2. Under **Actions**, ensure:
-   - ☑ **Failed workflows only** is selected for repositories you own.
+ - **Failed workflows only** is selected for repositories you own.
 3. Click **Save**.
 
 ---
@@ -542,18 +542,31 @@ If `copilot-swe-agent[bot]` is absent, re-do Steps 3.1–3.2.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Push to PR branch, copilot-agent-checkin.yml'}}%%
+
 flowchart TD
+
     A[Push to PR branch] --> B[copilot-agent-checkin.yml]
+
     B --> C{COPILOT_AGENT_AUTH_ENABLED\nrepo var = true?}
+
     C -- yes --> D[always-approve-and-arm job]
+
     C -- no  --> D
+
     D --> E[session_wrapup_autofix.py\n--activate-workflows]
+
     E --> F[WEC: all core items set to  WILL RUN]
+
     F --> G[workflow-execution-gate.yml dispatched]
+
     G --> H[agent-auth-delegation.yml triggered]
+
     H --> I{cognitive-preflight\nchecks pass?}
+
     I -- success OR failure --> J[activate-delegation job]
+
     J --> K[CODEX_AGENT_DELEGATED = true\nrepo variable written]
+
     K --> L[ Copilot fully authorised\nno human approval needed]
 ```
 
@@ -561,15 +574,25 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Schedule: every 5 min, auto-approve-workflows.yml'}}%%
+
 flowchart TD
+
     S[Schedule: every 5 min] --> AA[auto-approve-workflows.yml]
+
     P[PR push event] --> AA
+
     AA --> B[Enumerate all open PRs]
+
     B --> C[For each PR HEAD SHA:\nfind action_required runs]
+
     C --> D{Run type?}
+
     D -- fork PR --> E[approveWorkflowRun API\n works for forks]
+
     D -- same-repo PR\n'not from a fork' --> F[gh run rerun {run_id}\n clears action_required\nfor same-repo branches]
+
     E --> G[Run unblocked]
+
     F --> G
 ```
 
@@ -577,6 +600,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Always Required (auto-checked by Copilot)", validate.yml'}}%%
+
 flowchart LR
     subgraph ALWAYS_REQUIRED[" Always Required (auto-checked by Copilot)"]
         V[validate.yml]
@@ -596,6 +620,7 @@ flowchart LR
     subgraph COPILOT_MANAGED[" Managed by session_wrapup_autofix.py"]
         SW[--activate-workflows flag\nsets all above to x on every push]
     end
+
     COPILOT_MANAGED --> ALWAYS_REQUIRED
 ```
 
@@ -603,6 +628,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: pr'}}%%
+
 sequenceDiagram
     participant C as Copilot Session
     participant S as session_wrapup_autofix.py
@@ -616,6 +642,7 @@ sequenceDiagram
     S->>W: dispatch delegation workflow
     W->>P: append: CODEX_AGENT_DELEGATED=true
     W->>A: update last_delegation_at timestamp
+
     A-->>C: "This is an agentic repo.\nCopilot is self-managing.\nNo human approval required."
 ```
 
@@ -629,7 +656,7 @@ sequenceDiagram
 | B | 1.3 | Create & inject `CODEX_BACKUP_KEY` PAT | github.com/settings/tokens | 3 min |
 | C | 2.1 | Allow all actions | `/settings/actions` | 30 sec |
 | D | 2.2 | GITHUB_TOKEN read/write + allow PRs | `/settings/actions` | 30 sec |
-| E | 2.3 | Fork/outside-contributor approval → first-time only | `/settings/actions` | 30 sec |
+| E | 2.3 | Fork/outside-contributor approval first-time only | `/settings/actions` | 30 sec |
 | F | 3.1 | `main` branch protection — add bot as bypass actor | `/settings/branches` | 2 min |
 | G | 3.2 | `0D_base_` branch protection — add bot as bypass actor | `/settings/branches` | 2 min |
 | H | 4.1 | Enable Copilot Coding Agent in org | org settings/copilot | 1 min |

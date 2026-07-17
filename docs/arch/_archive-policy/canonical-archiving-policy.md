@@ -8,7 +8,7 @@
 
 > Purpose: keep the working tree lean while preserving auditability and supply-chain integrity.
 
-**Method:** remove live code/docs by replacing them with small *tombstone* stubs that include stable IDs and hashes which link to an **append-only evidence log** (JSONL). Reviewers verify provenance through the stub→log trail in pull requests. For repo-wide end-of-life, set the repository **read-only (Archived)**.
+**Method:** remove live code/docs by replacing them with small *tombstone* stubs that include stable IDs and hashes which link to an **append-only evidence log** (JSONL). Reviewers verify provenance through the stublog trail in pull requests. For repo-wide end-of-life, set the repository **read-only (Archived)**.
 @-- References:
 CODEOWNERS (GitHub): https://docs.github.com/articles/about-code-owners
 Repo archival (GitHub): https://docs.github.com/en/repositories/archiving-a-github-repository/archiving-repositories
@@ -28,7 +28,7 @@ git-filter-repo: https://github.com/newren/git-filter-repo
 - **Change log:** Use **Conventional Commits** for commits and **Keep a Changelog** for releases; record deprecations/removals.
 
 ## 2. Cadence
-- Run “archive hygiene” each release cycle and **at least quarterly**: *plan → execute → summarize → vacuum*.
+- Run “archive hygiene” each release cycle and **at least quarterly**: *plan execute summarize vacuum*.
 - Maintain a predictable deprecation window; publish outcomes in the CHANGELOG.
 
 ## 3. Identification (What is “dead/pruned”?)
@@ -38,7 +38,7 @@ A unit is a candidate when all are true:
 3. **Coverage/Ownership** low or orphaned; or explicitly **deprecated**.
 4. **Planner score** rates it in the removal band.
 
-> Symbolic policy:  Candidate(p) = 𝟙{age(p)≥τ} · 𝟙{refs(p)≤r_min} · 𝟙{owner(p)∈CODEOWNERS}.
+> Symbolic policy: Candidate(p) = 𝟙{age(p)≥τ} · 𝟙{refs(p)≤r_min} · 𝟙{owner(p)∈CODEOWNERS}.
 > Decision(p) = Archive with tombstone+attestation if Candidate and ADR approved; else Rescue with ADR + owner.
 
 ## 4. Evidence Log (append-only)

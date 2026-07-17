@@ -5,7 +5,7 @@
 
 **Last Updated: 2026-06-22
 
-**Ref:** branch `0D_base_`  commit `a2deb8e0`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926`
+**Ref:** branch `0D_base_` commit `a2deb8e0` • **Artifacts:** `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926`
 
 ---
 
@@ -435,7 +435,7 @@ Let readiness be \( R = \alpha \cdot E + \beta \cdot T + \gamma \cdot D \).
 - T (Trace quality): `0.80`
 - D (Docs parity): `1.00`
 - Weights: α=`0.40`, β=`0.30`, γ=`0.30`
-- **R = 0.90*0.40 + 0.80*0.30 + 1.00*0.30 = 0.90** → **Recommendation:** `Proceed`
+- **R = 0.90*0.40 + 0.80*0.30 + 1.00*0.30 = 0.90** **Recommendation:** `Proceed`
 
 ## 7) Artifacts
 - `docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md`

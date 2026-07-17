@@ -224,4 +224,4 @@ See Jupyter notebooks in `examples/notebooks/`:
 
 ---
 
-**Next**: [Architecture →](../../architecture/ARCHITECTURE_CONSOLIDATED.md)
+**Next**: [Architecture ](../../architecture/ARCHITECTURE_CONSOLIDATED.md)

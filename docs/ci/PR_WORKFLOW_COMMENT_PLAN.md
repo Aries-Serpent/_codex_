@@ -34,21 +34,31 @@ acts as the canonical thread for a given commit. All other comment types append
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing New push — HEAD_SHA = sha12, post_rescue_comment.py: CREATE\n<!-- ci-rescue-sha:PR:sha12 -->'}}%%
+
 flowchart TD
+
     A[New push — HEAD_SHA = sha12] --> B{ci-rescue-sha comment exists?}
+
     B -- No --> C[post_rescue_comment.py: CREATE\n<!-- ci-rescue-sha:PR:sha12 -->]
+
     B -- Yes --> D[Append <details> section]
 
     E[ci_rescue.py RCA] --> F{rescue-sha anchor exists?}
+
     F -- Yes --> G[Append RCA as <details>\nto rescue-sha comment]
+
     F -- No --> H[Create ci-rescue-rca comment\n as fallback]
 
     I[copilot-healing result] --> J[SECTION_TITLE+SECTION_CONTENT\nto post_rescue_comment.py\nAPPEND_ONLY=true]
+
     J --> K[Append to rescue-sha anchor]
 
     C --> D
+
     G --> D
+
     K --> D
+
     D --> L[Single unified thread\nper commit SHA]
 ```
 
@@ -141,16 +151,27 @@ anchor instead of spawning separate comments.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CI failure detected, post_rescue_comment.py runs'}}%%
+
 flowchart TD
+
     A[CI failure detected] --> B[post_rescue_comment.py runs]
+
     B --> C{rescue-sha anchor exists?}
+
     C -- Yes --> D[Append <details> section to anchor]
+
     C -- No --> E[Create anchor comment]
+
     E --> D
+
     D --> F[Single thread per SHA]
+
     G[ci_rescue.py RCA] --> H{rescue-sha anchor exists?}
+
     H -- Yes --> I[_find_rescue_sha_comment + PATCH]
+
     H -- No --> J[Fallback: create ci-rescue-rca]
+
     I --> F
 ```
 
@@ -187,22 +208,39 @@ drives the checkbox-triggered workflow lifecycle (trigger on check, cancel on un
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR body edited, detect-wec-changes job'}}%%
+
 flowchart TD
+
     A[PR body edited] --> B[detect-wec-changes job]
+
     B --> C{Any changes?}
+
     C -- No --> D[Exit — no action needed]
+
     C -- Yes --> E[newly_checked list]
+
     C -- Yes --> F[newly_unchecked list]
+
     E --> G[dispatch-checked job]
+
     F --> H[cancel-unchecked job]
+
     G --> I[wec_enforcer.py --dispatch-checked]
+
     H --> J[wec_enforcer.py --cancel-unchecked]
+
     I --> K[Workflow runs dispatched]
+
     J --> L[In-progress runs cancelled]
+
     A --> M[validate-wec-integrity job]
+
     M --> N[wec_enforcer.py --validate-body]
+
     N --> O{Always-required items checked?}
+
     O -- Yes --> P[ WEC valid]
+
     O -- No --> Q[ Fail — missing required items]
 ```
 

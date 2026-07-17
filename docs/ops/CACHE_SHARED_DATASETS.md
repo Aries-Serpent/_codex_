@@ -32,6 +32,7 @@ tiers never collide.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback", "Layer 2 — PyTorch CPU wheels\n~/.cache/torch-whl\nKeyed on torch major slot (2.x)\nOnly when install-torch=true\nSurvives pyproject.toml edits"'}}%%
+
 graph TD
     subgraph "setup-python-cached composite action"
         L1["Layer 1 — pip download cache\n~/.cache/pip\nShared across ALL workflows\nKey: {OS}-{tier}-pip-{VER}-py{ver}-{hash}\nRestore: live fallback"]
@@ -41,8 +42,11 @@ graph TD
     end
 
     L1 -->|"seeds venv build on miss"| L3
+
     L2 -->|"find-links feed"| L3
+
     L3 -->|"skip venv rebuild on hit"| FAST[" Fast CI (no pip install)"]
+
     L4 -->|"markdown-link-check"| DOCS["📄 Doc link checking"]
 
     style L1 fill:#10b981,color:#fff
@@ -90,6 +94,7 @@ L1/L3 keys, not just informational.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " LIVE Tier (permanent)", "copilot-setup-steps.yml"'}}%%
+
 graph LR
     subgraph LIVE[" LIVE Tier (permanent)"]
         WF1["copilot-setup-steps.yml"]
@@ -113,6 +118,7 @@ graph LR
     end
 
     LIVE -->|restore-key fallback| COMMON
+
     COMMON -->|restore-key fallback| EPHEMERAL
     LIVE -.->|"live tier fallback\n(always available)"| EPHEMERAL
 
@@ -140,6 +146,7 @@ shared state across runs.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER", "ci-health-monitor.yml\nWrites: CODEX_CI_FAILURE_RATE,\nCODEX_CI_LAST_GREEN_SHA"'}}%%
+
 graph TB
     subgraph "Producers (write)"
         P1["copilot-setup-steps.yml\nWrites: CODEX_SESSION_ID,\nCOGNITIVE_BRAIN_SESSION_NUMBER"]
@@ -163,15 +170,23 @@ graph TB
     end
 
     P1 --> S2
+
     P2 --> S2
+
     P3 --> S2
+
     P4 --> S3
 
     S1 --> C1
+
     S2 --> C2
+
     S2 --> C3
+
     S2 --> C4
+
     S3 --> C4
+
     S4 --> C4
 ```
 
@@ -192,8 +207,8 @@ graph TB
 |---------|------|--------|-----------|
 | Cognitive brain patterns | `.codex/cognitive_brain/pattern_learning_store.json` | JSON | All Copilot agents, `cognitive_brain_ci_feedback.yml` |
 | Workflow patterns | `.codex/cognitive_brain/workflow_patterns.jsonl` | NDJSON | `cognitive_brain_ci_feedback.yml`, cognitive agents |
-| Agent registry | `.github/agents/AGENT_REGISTRY.yaml` | YAML | `agent-registry-validation.yml`, E→D gate, all agents |
-| CODEX manifest | `CODEX_MANIFEST.json` | JSON (sha256-signed) | `agent-registry-validation.yml`, E→D gate |
+| Agent registry | `.github/agents/AGENT_REGISTRY.yaml` | YAML | `agent-registry-validation.yml`, ED gate, all agents |
+| CODEX manifest | `CODEX_MANIFEST.json` | JSON (sha256-signed) | `agent-registry-validation.yml`, ED gate |
 | CI failure patterns | `.codex/patterns/ci_failure_patterns.yaml` | YAML | `iterative-self-healing-ci.yml`, ci-testing-agent |
 | Webhook config | `.codex/webhook_config.json` | JSON | `webhook_configurator.py`, `agent_infrastructure_manager.yml` |
 | Webhook registry | `.codex/webhook_registry.json` | JSON | `webhook_configurator.py` (live hook IDs) |
@@ -210,6 +225,7 @@ like topology maps, pattern query results, and embedding lookups.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT", "L2: Cold entries\n(SQLite DB)\nCODEX_LOG_DB_PATH\nPersisted across runs"'}}%%
+
 graph LR
     subgraph "In-Process (CacheIntelligence)"
         M1["L1: Hot entries\n(in-memory dict, LRU)\nTTL: configurable\nLimit: CODEX_HOT_ENTRIES_LIMIT"]
@@ -224,7 +240,9 @@ graph LR
     end
 
     U1 --> M1
+
     U2 --> M1 --> M2
+
     U3 --> M2
     M2 -.->|"cache miss"| M3
 
@@ -284,6 +302,7 @@ How caches are kept coherent across concurrent workflow runs:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF:  Cache hit → skip venv '}}%%
+
 sequenceDiagram
     participant WF as Workflow (any tier)
     participant L1 as L1 pip cache
@@ -292,12 +311,15 @@ sequenceDiagram
 
     WF->>L3: Restore attempt (exact key)
     alt Exact hit
+
         L3-->>WF:  Cache hit → skip venv rebuild
     else Restore-key partial hit
+
         L3-->>WF: ️ Partial hit → refresh venv (pip install -e . --upgrade)
         WF->>L1: Use pip download cache for fresh packages
         WF->>L3: Save refreshed venv (new exact key)
     else Miss
+
         L3-->>WF:  Cache miss → full venv build
         WF->>L1: Restore pip download cache
         WF->>L3: Save new venv
@@ -312,8 +334,8 @@ sequenceDiagram
 
 | Trigger | Effect | Recovery |
 |---------|--------|---------|
-| `pyproject.toml` changed | L3 partial hit (restore-key) → venv refresh | Automatic (pip upgrade) |
-| `requirements/lock.txt` changed | L3 exact miss → full venv rebuild | Automatic |
+| `pyproject.toml` changed | L3 partial hit (restore-key) venv refresh | Automatic (pip upgrade) |
+| `requirements/lock.txt` changed | L3 exact miss full venv rebuild | Automatic |
 | `CODEX_CACHE_VERSION` bumped | L1+L3 full miss (all tiers) | Automatic rebuild on next run |
 | GitHub 10 GB limit hit | LRU eviction of oldest entries | `cache-pruning.yml` prevents this |
 | Manual branch cache delete | Only that branch's caches deleted | Next run rebuilds |

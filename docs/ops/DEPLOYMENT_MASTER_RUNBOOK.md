@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Consolidated Master Document** for Codex Deployment  
-> **Created**: 2026-07-08  
-> **Consolidation Campaign**: Phase 12 WS3  
-> **Status**:  Active Master Document
+> **Consolidated Master Document** for Codex Deployment
+> **Created**: 2026-07-08
+> **Consolidation Campaign**: Phase 12 WS3
+> **Status**: Active Master Document
 
 **Consolidated from** 10 source files:
 - docs/docs/release/ISOLATED_DEPLOYMENT.md
@@ -63,11 +63,11 @@
 
 | Model | Use Case | Infrastructure | Readiness |
 |-------|----------|-----------------|-----------|
-| **Standard** | Cloud deployment | AWS/GCP/Azure |  Ready |
-| **Docker** | Container-based | Docker/Podman |  Ready |
-| **Kubernetes** | Orchestrated | K8s 1.20+ |  Ready |
-| **Offline** | Air-gapped networks | Local + USB drives |  Ready |
-| **Isolated** | Sandboxed environment | Local VM/Container |  Ready |
+| **Standard** | Cloud deployment | AWS/GCP/Azure | Ready |
+| **Docker** | Container-based | Docker/Podman | Ready |
+| **Kubernetes** | Orchestrated | K8s 1.20+ | Ready |
+| **Offline** | Air-gapped networks | Local + USB drives | Ready |
+| **Isolated** | Sandboxed environment | Local VM/Container | Ready |
 
 ---
 
@@ -568,4 +568,4 @@ helm rollback codex 1
 **This document is the authoritative deployment and operations guide for Codex.**
 
 *Last Updated: 2026-07-08
-*Consolidation Status:  Complete (10 files merged)*
+*Consolidation Status: Complete (10 files merged)*

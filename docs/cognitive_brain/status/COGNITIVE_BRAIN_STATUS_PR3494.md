@@ -4,7 +4,7 @@
 
 # First D_CAPABLE Promotion + AUTO_PROMOTE_TIER_ENABLED Write Path
 
-**Status:**  COMPLETE
+**Status:** COMPLETE
 **PR:** #3494
 **Branch:** `copilot/continue-bec-objective`
 **Date:2026-07-13
@@ -17,14 +17,14 @@
 
 | Work Item | Deliverable | Status |
 |-----------|-------------|--------|
-| W-096a | ADR-20260303-first-d-capable-promotion.md — criteria + decision |  Done |
-| W-096b | AGENT_REGISTRY.yaml v0.2.1 — `ci-testing-agent` promoted to `D_CAPABLE` |  Done |
-| W-096c | `auto_promote_tier.py` — `AUTO_PROMOTE_TIER_ENABLED` guard + write path |  Done |
-| W-096d | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 → 1 |  Done |
-| W-096e | This status file — cognitive brain continuity |  Done |
-| W-096f | FOLLOWUP_PROMPT_PR3494.md — chain prompt for next session |  Done |
-| REQ-4 | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated |  Done |
-| REQ-5 | CHANGELOG.md updated |  Done |
+| W-096a | ADR-20260303-first-d-capable-promotion.md — criteria + decision | Done |
+| W-096b | AGENT_REGISTRY.yaml v0.2.1 — `ci-testing-agent` promoted to `D_CAPABLE` | Done |
+| W-096c | `auto_promote_tier.py` — `AUTO_PROMOTE_TIER_ENABLED` guard + write path | Done |
+| W-096d | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 1 | Done |
+| W-096e | This status file — cognitive brain continuity | Done |
+| W-096f | FOLLOWUP_PROMPT_PR3494.md — chain prompt for next session | Done |
+| REQ-4 | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated | Done |
+| REQ-5 | CHANGELOG.md updated | Done |
 
 ---
 
@@ -32,6 +32,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "PR #3494 Deliverables", " ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"'}}%%
+
 graph TB
     subgraph PR3494["PR #3494 Deliverables"]
         ADR[" ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"]
@@ -46,21 +47,23 @@ graph TB
     end
 
     PR3494 --> AGENTS
+
     DCAP --> REG
+
     MAN --> GATES
 ```
 
 ---
 
-## E→D Gate State (Post PR #3494)
+## ED Gate State (Post PR #3494)
 
 | Condition | Status |
 |-----------|--------|
-| C1: AGENT_REGISTRY.yaml valid |  |
-| C2: CODEX_MANIFEST.json < 24h |  (just refreshed) |
-| C3: SOFT count ≤ 2 (current: 2) |  |
-| C4: agent-handoff-gate.yml deployed |  |
-| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) |  |
+| C1: AGENT_REGISTRY.yaml valid | |
+| C2: CODEX_MANIFEST.json < 24h | (just refreshed) |
+| C3: SOFT count ≤ 2 (current: 2) | |
+| C4: agent-handoff-gate.yml deployed | |
+| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) | |
 | **Total** | **5/5** |
 
 ---
@@ -127,7 +130,7 @@ Fixes Pre-Merge Validation run 22681530883.
 Two ruff violations introduced in W-098a fixed:
 - **F401**: removed unused `import pytest`
 - **I001**: added `I001` to `# noqa: E402,I001` on `auto_promote_tier` import line
-  (ruff/isort flags it as out-of-order because it follows a mandatory `sys.path.insert()`)
+ (ruff/isort flags it as out-of-order because it follows a mandatory `sys.path.insert()`)
 
 Fixes Pre-Merge Validation run 22681530852. All 15 tests continue to pass, ruff CLEAN.
 
@@ -142,9 +145,9 @@ Owner @mbaetiong re-confirmed Agent Token Delegation via workflow run
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` |
 
 **Delegated agent coverage:**
--  `copilot-swe-agent[bot]` — GitHub Copilot coding agent
--  `github-copilot[bot]` — Copilot custom agents
--  `github-actions[bot]` — CI/AI workflow agents
+- `copilot-swe-agent[bot]` — GitHub Copilot coding agent
+- `github-copilot[bot]` — Copilot custom agents
+- `github-actions[bot]` — CI/AI workflow agents
 
 ---
 
@@ -185,7 +188,7 @@ Credentials saved to `.codex/github_app/app_credentials.json`.
 
 **Step 6 — Install the App**
 1. Go to: `https://github.com/apps/<app-slug>/installations/new`
-2. Select `Aries-Serpent` org → `_codex_` repo → Click **"Install"**
+2. Select `Aries-Serpent` org `_codex_` repo Click **"Install"**
 
 **Step 7 — Verify**
 ```bash
@@ -199,11 +202,11 @@ Should print App ID, installation ID, and permissions.
 
 | Priority | Item | Status |
 |----------|------|--------|
-| P4 | 2-sprint observation of ci-testing-agent D_CAPABLE behaviour |  Complete — zero violations |
-| P5 | Promote second D_CAPABLE agent (workflow-ci-fixer) |  Complete — W-104 |
-| P6 | Set AUTO_PROMOTE_TIER_ENABLED=true after Domain 8 owner sign-off | 🔮 Future |
-| P7 | FAISS index freshness check (codex_index_meta.json age) | 🔮 Future |
-| P8 | GitHub App registration (admin action — steps above) | 🔮 Admin action required |
+| P4 | 2-sprint observation of ci-testing-agent D_CAPABLE behaviour | Complete — zero violations |
+| P5 | Promote second D_CAPABLE agent (workflow-ci-fixer) | Complete — W-104 |
+| P6 | Set AUTO_PROMOTE_TIER_ENABLED=true after Domain 8 owner sign-off | Future |
+| P7 | FAISS index freshness check (codex_index_meta.json age) | Future |
+| P8 | GitHub App registration (admin action — steps above) | Admin action required |
 
 ---
 
@@ -211,24 +214,24 @@ Should print App ID, installation ID, and permissions.
 
 | Item | Description | Status |
 |------|-------------|--------|
-| W-096a | ADR-20260303-first-d-capable-promotion.md |  |
-| W-096b | AGENT_REGISTRY.yaml v0.2.1 — ci-testing-agent D_CAPABLE |  |
-| W-096c | auto_promote_tier.py — guard + write path |  |
-| W-096d | CODEX_MANIFEST.json refreshed |  |
-| W-097a | CODEX_MANIFEST.json EOF newline |  |
-| W-097b | .secrets.baseline CODEX_MANIFEST entry updated |  | <!-- pragma: allowlist secret -->
-| W-097c | auto_promote_tier.py docstring correction |  |
-| W-098a | test_auto_promote_tier.py — 15 tests |  |
-| W-098b–e | Agent Token Delegation + GitHub App gap analysis |  | <!-- pragma: allowlist secret -->
-| W-099 | agent-auth-delegation.yml checkout ref fix |  |
-| W-100 | test_auto_promote_tier.py ruff lint fix |  |
-| W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added |  |
-| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) |  | <!-- pragma: allowlist secret -->
-| W-104a | AGENT_REGISTRY.yaml v0.2.1 — workflow-ci-fixer D_CAPABLE |  |
-| W-104b | ADR-20260304-second-d-capable-promotion.md |  |
-| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated |  | <!-- pragma: allowlist secret -->
-| W-104d | Status / follow-up prompt updated (P2 →  COMPLETE) |  |
-| W-104e | REQ-4 + REQ-5 updated |  |
+| W-096a | ADR-20260303-first-d-capable-promotion.md | |
+| W-096b | AGENT_REGISTRY.yaml v0.2.1 — ci-testing-agent D_CAPABLE | |
+| W-096c | auto_promote_tier.py — guard + write path | |
+| W-096d | CODEX_MANIFEST.json refreshed | |
+| W-097a | CODEX_MANIFEST.json EOF newline | |
+| W-097b | .secrets.baseline CODEX_MANIFEST entry updated | | <!-- pragma: allowlist secret -->
+| W-097c | auto_promote_tier.py docstring correction | |
+| W-098a | test_auto_promote_tier.py — 15 tests | |
+| W-098b–e | Agent Token Delegation + GitHub App gap analysis | | <!-- pragma: allowlist secret -->
+| W-099 | agent-auth-delegation.yml checkout ref fix | |
+| W-100 | test_auto_promote_tier.py ruff lint fix | |
+| W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added | |
+| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | | <!-- pragma: allowlist secret -->
+| W-104a | AGENT_REGISTRY.yaml v0.2.1 — workflow-ci-fixer D_CAPABLE | |
+| W-104b | ADR-20260304-second-d-capable-promotion.md | |
+| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 2 + .secrets.baseline updated | | <!-- pragma: allowlist secret -->
+| W-104d | Status / follow-up prompt updated (P2 COMPLETE) | |
+| W-104e | REQ-4 + REQ-5 updated | |
 
 ---
 
@@ -274,15 +277,15 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.
 
 | Candidate | Tier | Handoff | Rank | Decision |
 |-----------|------|---------|------|----------|
-| `ci-emergency-response-agent` | PARTIAL (no structured handoff) | none | unranked |  Not promoted |
-| `workflow-ci-fixer` | GROUNDED | structured | 13 |  **PROMOTED** |
+| `ci-emergency-response-agent` | PARTIAL (no structured handoff) | none | unranked | Not promoted |
+| `workflow-ci-fixer` | GROUNDED | structured | 13 | **PROMOTED** |
 
-**Registry changes (v0.2.1 → v0.2.1):**
-- `workflow-ci-fixer`: `enforcement_tier` PARTIAL → GROUNDED, `autonomy_model` E → D_CAPABLE
+**Registry changes (v0.2.1 v0.2.1):**
+- `workflow-ci-fixer`: `enforcement_tier` PARTIAL GROUNDED, `autonomy_model` E D_CAPABLE
 - `has_tests: true`, `has_docs: true`, `violations_30d: 0` added
 - ADR: `docs/arch/ADR-20260304-second-d-capable-promotion.md` created
 
-**Manifest:** regenerated 2026-03-04T19:08:27Z — D_CAPABLE count: 1 → 2.
+**Manifest:** regenerated 2026-03-04T19:08:27Z — D_CAPABLE count: 1 2.
 **`.secrets.baseline`:** updated 2026-07-13
 
 ---
@@ -301,15 +304,15 @@ Both are **code**, not secrets. Added to `.secrets.baseline` with correct `hashe
 
 | Variable | Value | Status | Notes |
 |----------|-------|--------|-------|
-| `AUTO_PROMOTE_TIER_ENABLED` | `true` |  **NEWLY ENABLED** | Domain 8 sign-off complete (~1h before review). Write path in `auto_promote_tier.py` now active. **Action**: run `generate_manifest.py` after any auto-promotion. |
-| `CODEX_ENV_PYTHON_VERSION` | `,3.12` | ️ display artifact | Leading comma in Variables Summary data extraction; env-level value confirmed `3.12`. No action required. |
-| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` |  | Correct |
-| `COPILOT_AGENT_AUTH_ENABLED` | `true` |  | Correct (3rd delegation run 22683350353) |
-| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | correct set |  | Correct |
-| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` |  | Correct |
-| `COGNITIVE_BRAIN_SESSION_NUMBER` | `110` |  | Correct |
-| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` |  | Correct |
-| All other variables (~28) | various |  | Confirmed correct |
+| `AUTO_PROMOTE_TIER_ENABLED` | `true` | **NEWLY ENABLED** | Domain 8 sign-off complete (~1h before review). Write path in `auto_promote_tier.py` now active. **Action**: run `generate_manifest.py` after any auto-promotion. |
+| `CODEX_ENV_PYTHON_VERSION` | `,3.12` | display artifact | Leading comma in Variables Summary data extraction; env-level value confirmed `3.12`. No action required. |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | | Correct |
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | | Correct (3rd delegation run 22683350353) |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | correct set | | Correct |
+| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | | Correct |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `110` | | Correct |
+| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | | Correct |
+| All other variables (~28) | various | | Confirmed correct |
 
 **3rd token delegation activation**: run 22683350353, owner @mbaetiong — `COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed.
 

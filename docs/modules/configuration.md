@@ -109,18 +109,18 @@ execution. The `codex evaluate` command writes both a summary JSON report and an
 NDJSON file containing per-example records. Additional observability toggles:
 
 - `evaluation.split` controls the `split` field emitted in `metrics.ndjson`
-  (defaults to `eval`).
+ (defaults to `eval`).
 - `evaluation.run_id` overrides the deterministic hash used to populate
-  `run_id` in `metrics.ndjson` when parity with training runs is required.
+ `run_id` in `metrics.ndjson` when parity with training runs is required.
 
 ## Troubleshooting
 
 - **`ConfigError` mentioning a nested path** – inspect the YAML field referenced
-  in the message. Dataclasses provide descriptive errors such as
-  `data.split_ratios: values must sum to 1.0`.
+ in the message. Dataclasses provide descriptive errors such as
+ `data.split_ratios: values must sum to 1.0`.
 - **Override not applied** – ensure the override matches the dataclass path
-  (`training.learning_rate=...`). Invalid keys surface as `ConfigError`
-  exceptions before any work is performed.
+ (`training.learning_rate=...`). Invalid keys surface as `ConfigError`
+ exceptions before any work is performed.
 - **Optional dependencies** – evaluation metrics such as BLEU require
-  `sacrebleu` or `nltk`, and ROUGE-L requires `rouge_score`. Install them locally
-  if those metrics are requested.
+ `sacrebleu` or `nltk`, and ROUGE-L requires `rouge_score`. Install them locally
+ if those metrics are requested.

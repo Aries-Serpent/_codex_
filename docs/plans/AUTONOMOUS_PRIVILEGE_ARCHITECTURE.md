@@ -4,10 +4,10 @@
 
 **Last Updated: 2026-06-22
 
-> **Document:** `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`  
-> **Status:**  Living document — 2026-05-08  
+> **Document:** `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`
+> **Status:** Living document — 2026-05-08
 > **Scope:** How every surface (PR template, WEC, GitHub Actions, Discussions, Webhooks) is wired
-> together via elevated token privileges to achieve full codebase-wide agentic autonomy.  
+> together via elevated token privileges to achieve full codebase-wide agentic autonomy.
 > **Policy anchor:** [`ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`](../reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md) · [`CODEBASE_AGENCY_POLICY.md`](../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
@@ -33,6 +33,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🏗️ Five Autonomy Surfaces", " PR Template\n• Agent context metadata\n• WEC checkbox block\n• Cost governance\n• Token delegation gate\n• Safety confirmations"'}}%%
+
 graph TD
     subgraph SURFACES["🏗️ Five Autonomy Surfaces"]
         PR[" PR Template\n• Agent context metadata\n• WEC checkbox block\n• Cost governance\n• Token delegation gate\n• Safety confirmations"]
@@ -51,12 +52,17 @@ graph TD
     end
 
     PR -->|"CODEX_MASTER_KEY\nPR body edits"| T1
+
     WEC -->|"CODEX_MASTER_KEY\ndispatch + cancel + approve"| T1
+
     WF -->|"Token chain cascade"| T1
+
     DISC -->|"GitHub App JWT"| T4
+
     WH -->|"CODEX_ADMIN_KEY\nWebhooks:write"| T3
 
     T1 -->|"|| fallback"| T2
+
     T2 -->|"|| fallback"| T5
     T4 -.->|"separate auth"| T5
 
@@ -73,24 +79,36 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing /"Agent needs to perform an operation"/, "Use CODEX_MASTER_KEY\n Variables API\n Secrets API"'}}%%
+
 flowchart TD
     OP[/"Agent needs to perform an operation"/]
 
     OP --> Q1{"Operation type?"}
 
     Q1 -->|"Create/update repo variable\nor secret"| USE_MK["Use CODEX_MASTER_KEY\n Variables API\n Secrets API"]
+
     Q1 -->|"Approve pending workflow run\n(action_required)"| USE_MK
+
     Q1 -->|"Dispatch workflow\n(workflow_dispatch)"| USE_MK
+
     Q1 -->|"Force-push to protected branch"| USE_MK
+
     Q1 -->|"Create/update/delete webhook"| USE_AK["Use CODEX_ADMIN_KEY\n Webhooks:write\nor CODEX_MASTER_KEY\n(admin:repo_hook)"]
+
     Q1 -->|"Fetch CodeQL / security alerts"| USE_SEC["Use CODEX_MASTER_KEY\n+ security_events scope\n️ T-03: scope not yet added"]
+
     Q1 -->|"Post to Discussion\nas App identity"| USE_APP["Mint GitHub App token\n_GITHUB_APP_PRIVATE_KEY\n→ JWT → installation token"]
+
     Q1 -->|"Edit PR body\n(WEC, scorecard, metadata)"| USE_MK
+
     Q1 -->|"Post PR comment\n(review, @copilot continue)"| USE_BK["CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY\n|| github.token"]
+
     Q1 -->|"Read files / checkout"| USE_GT["github.token\n(safe — read-only)"]
+
     Q1 -->|"Rate-limit status check"| USE_BK
 
     USE_MK -->|"403 / expired"| USE_BK
+
     USE_BK -->|"403 / exhausted"| USE_GT
 
     style USE_MK fill:#2d9c2d,color:#fff
@@ -111,6 +129,7 @@ The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) is the **single source of t
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " PR Template (v0.2.1)", " Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"'}}%%
+
 graph LR
     subgraph TEMPLATE[" PR Template (v0.2.1)"]
         META[" Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"]
@@ -125,6 +144,7 @@ graph LR
     end
 
     META --> PRE --> P045
+
     CHANGE --> SAFETY --> COST --> RATELIMIT --> WEC_BLOCK --> DELEGATION
 ```
 
@@ -149,6 +169,7 @@ The WEC block is the **runtime control plane** for all 41 optional workflows. Ch
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "WEC Checkbox Classes", " ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"'}}%%
+
 graph TD
     subgraph WEC_CLASSES["WEC Checkbox Classes"]
         AR[" ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"]
@@ -161,13 +182,18 @@ graph TD
     end
 
     subgraph WEC_FLOW["WEC Processing Flow"]
+
         EDIT["PR body edited"] --> DETECT["wec_enforcer.py\n--detect-changes\nBODY_BEFORE vs BODY_AFTER"]
+
         DETECT --> NEWLY_CHECKED["newly_checked\n→ dispatch-checked job\n→ POST /workflows/FILENAME/dispatches\n→ Poll action_required (45s)\n→ POST /runs/ID/approve"]
+
         DETECT --> NEWLY_UNCHECKED["newly_unchecked\n→ cancel-unchecked job\n→ POST /runs/ID/cancel\n→ Bot-reset protection\n→ Remove wec:auto-approve label if owner unchecked"]
     end
 
     AR & AUT -->|"Token: CODEX_MASTER_KEY"| WEC_FLOW
+
     OPT -->|"Token: CODEX_MASTER_KEY"| WEC_FLOW
+
     AA -->|"BLOCKED — never dispatched"| WEC_FLOW
 ```
 
@@ -175,10 +201,10 @@ graph TD
 
 | Invariant | Formula | Status |
 |-----------|---------|--------|
-| Never-check workflows never in merge-required | `_WEC_NEVER_CHECK ∩ _MERGE_REQUIRED_WORKFLOWS = ∅` |  Verified |
-| Always-required never in never-check | `_WEC_ALWAYS_REQUIRED ∩ _WEC_NEVER_CHECK = ∅` |  Verified |
-| Autonomous auto-check not in never-check | `_WEC_AUTONOMOUS_AUTO_CHECK ∩ _WEC_NEVER_CHECK = ∅` |  Verified |
-| All merge-required items exist in WEC_ITEMS | subset check |  Verified |
+| Never-check workflows never in merge-required | `_WEC_NEVER_CHECK ∩ _MERGE_REQUIRED_WORKFLOWS = ∅` | Verified |
+| Always-required never in never-check | `_WEC_ALWAYS_REQUIRED ∩ _WEC_NEVER_CHECK = ∅` | Verified |
+| Autonomous auto-check not in never-check | `_WEC_AUTONOMOUS_AUTO_CHECK ∩ _WEC_NEVER_CHECK = ∅` | Verified |
+| All merge-required items exist in WEC_ITEMS | subset check | Verified |
 
 ---
 
@@ -186,6 +212,7 @@ graph TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Tier 1 — Full Autonomous Authority (CODEX_MASTER_KEY)", "agent-auth-delegation.yml\n• Sets COPILOT_AGENT_AUTH_ENABLED\n• Adds agents to ALLOWED_ACTORS\n• Manages COPILOT_ACTIVE_SESSION lock\n• Dispatches sub-workflows"'}}%%
+
 graph TD
     subgraph TIER1["Tier 1 — Full Autonomous Authority (CODEX_MASTER_KEY)"]
         W1["agent-auth-delegation.yml\n• Sets COPILOT_AGENT_AUTH_ENABLED\n• Adds agents to ALLOWED_ACTORS\n• Manages COPILOT_ACTIVE_SESSION lock\n• Dispatches sub-workflows"]
@@ -238,6 +265,7 @@ Discussions serve two roles: **accountability surface** and **async command inbo
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing Discussion Bridge'}}%%
+
 sequenceDiagram
     participant Agent as Copilot Agent
     participant WF as post-accountability-to-discussion.yml
@@ -250,6 +278,7 @@ sequenceDiagram
     WF->>WF: Extract latest session entry\nfrom .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
     WF->>WF: Mint GitHub App token\n(_GITHUB_APP_PRIVATE_KEY → JWT)
     WF->>D3673: POST GraphQL mutation addDiscussionComment\nas App identity (trusted author)
+
     D3673-->>WF: comment_id
 
     Note over D3756: Maintainer @mbaetiong posts\ninstruction or feedback
@@ -261,12 +290,12 @@ sequenceDiagram
     PR->>Agent: Instruction visible in\nnext session's PR context
 ```
 
-### 6.2 Discussion ↔ PR Privilege Routing
+### 6.2 Discussion PR Privilege Routing
 
 | Operation | Token | Why |
 |-----------|-------|-----|
 | Post accountability to Discussion #3673 | GitHub App token (JWT mint) | Posts as trusted App identity, not anonymous bot |
-| Bridge Discussion comment → PR notification | `CODEX_MASTER_KEY ‖ CODEX_BACKUP_KEY ‖ github.token` | PR comment write needs `issues:write` |
+| Bridge Discussion comment PR notification | `CODEX_MASTER_KEY ‖ CODEX_BACKUP_KEY ‖ github.token` | PR comment write needs `issues:write` |
 | Read Discussion thread (agent in-session) | MCP GitHub server (read) | `list_workflow_runs` / REST `GET /discussions` |
 | Clean up stale discussion threads | `github.token` | `discussion-cleanup.yml` — no write escalation needed |
 
@@ -280,6 +309,7 @@ Webhooks close the **feedback loop latency** from ~5 minutes (polling) to **<2 s
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "GitHub Events", "push"'}}%%
+
 graph LR
     subgraph GH["GitHub Events"]
         E1["push"]
@@ -312,9 +342,13 @@ graph LR
     end
 
     E1 & E2 & E3 & E4 & E5 & E6 & E7 --> H1
+
     E5 --> H2 & H3
+
     H1 & H2 & H3 -->|"HMAC-signed POST"| B1
+
     B1 --> B2 --> B3 --> B4
+
     B1 -->|"agent-var-writer dispatch"| VARS
 ```
 
@@ -323,21 +357,28 @@ graph LR
 | Blocker | Current State | Required Action | Token Needed |
 |---------|--------------|-----------------|-------------|
 | `WEBHOOK_RECEIVER_URL` not set | Placeholder `your-cognitive-brain-server.com` | Deploy CB API server; auto-set by `post-start.sh` in Codespace | — (auto-set) |
-| `WEBHOOK_SECRET` org secret missing | Not configured | Create org secret via Settings → Secrets (HMAC key must match server) | Admin console |
+| `WEBHOOK_SECRET` org secret missing | Not configured | Create org secret via Settings Secrets (HMAC key must match server) | Admin console |
 | `CODEX_ADMIN_KEY` missing | Not configured | Create fine-grained PAT with `Webhooks: write` for `Aries-Serpent/_codex_` | GitHub PAT settings |
 | `active=false` on all 3 webhooks | Intentional | After WEBHOOK_RECEIVER_URL set: run `python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json` | `CODEX_ADMIN_KEY` |
 | Port 8765 not public in Codespace | Manual step | Run `gh codespace ports visibility 8765:org` (done by `post-start.sh`) | Codespace token |
 
-### 7.3 Webhook → Repo Variable Feedback Loop
+### 7.3 Webhook Repo Variable Feedback Loop
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "GitHub webhook\n(workflow_run event)", "Cognitive Brain\nPOST /webhook/github"'}}%%
+
 flowchart LR
+
     HOOK["GitHub webhook\n(workflow_run event)"] --> CB["Cognitive Brain\nPOST /webhook/github"]
+
     CB --> CLASSIFY["Classify event\n(success/failure/rate-limit)"]
+
     CLASSIFY --> DISPATCH["repository_dispatch\nagent-var-writer.yml\nwith new variable values"]
+
     DISPATCH -->|"CODEX_MASTER_KEY"| VARAPI["Variables API\nPATCH /repos/.../variables/\nCODEX_CI_FAILURE_RATE\nCODEX_SESSION_ACCESS_STRATEGY\nCOPILOT_AGENT_STATE"]
+
     VARAPI --> INJECT["copilot-setup-steps.yml\nInject cascade-control vars\ninto GITHUB_ENV"]
+
     INJECT --> AGENT["Next Copilot session\nstarts with fresh\nvariable values"]
 ```
 
@@ -382,14 +423,23 @@ Variables are the **persistent shared state** between sessions. The agent reads 
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Source of change\n(workflow / probe / admin)", "gh variable set NAME --body VALUE\n--repo Aries-Serpent/_codex_\nenv: GH_TOKEN=CODEX_MASTER_KEY"'}}%%
+
 flowchart LR
+
     SOURCE["Source of change\n(workflow / probe / admin)"] --> METHOD{"Write method"}
+
     METHOD -->|"Workflow step"| GH_CLI["gh variable set NAME --body VALUE\n--repo Aries-Serpent/_codex_\nenv: GH_TOKEN=CODEX_MASTER_KEY"]
+
     METHOD -->|"Python script"| REST["PATCH /repos/.../actions/variables/NAME\nAuthorization: Bearer CODEX_MASTER_KEY"]
+
     METHOD -->|"Codespace post-start"| CODESPACE["gh variable set WEBHOOK_RECEIVER_URL\nauth: Codespace token (auto-injected)"]
+
     METHOD -->|"Admin browser"| BROWSER["github.com/Aries-Serpent/_codex_\n/settings/variables/actions"]
+
     GH_CLI & REST & CODESPACE & BROWSER --> VAR["Repo Variable\n(persists across sessions)"]
+
     VAR --> CTX[".codex/agent_context.json\n(synced by repo-var-sync-agent)"]
+
     CTX --> ENV["GITHUB_ENV in copilot-setup-steps.yml\n(visible to all session steps)"]
 ```
 
@@ -399,6 +449,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Copilot: GITHUB_ENV + sessio'}}%%
+
 sequenceDiagram
     participant Dev as Developer / Maintainer
     participant PR as GitHub PR
@@ -421,6 +472,7 @@ sequenceDiagram
 
     PR->>Setup: Copilot session triggered
     Setup->>Setup: Phase 1-14 (context injection)
+
     Setup-->>Copilot: GITHUB_ENV + session_context_latest.md
 
     Copilot->>Copilot: Execute tasks per pre-load checklist
@@ -454,7 +506,9 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Autonomous operation needed", "Use CODEX_MASTER_KEY\n→ 125 workflows pre-armed\n→ auto-approve fires on push\n→ action_required → approved instantly"'}}%%
+
 flowchart TD
+
     START(["Autonomous operation needed"]) --> AUTH_CHECK{"COPILOT_AGENT_AUTH_ENABLED\n= true? (permanent — always yes)"}
 
     AUTH_CHECK -- " Always true" --> CHECK_TOKEN{"Which token does\nthis operation need?"}
@@ -470,8 +524,11 @@ flowchart TD
     CHECK_TOKEN -->|"PR comment / read"| USE_GT["github.token\n→ Always available\n→ No approval needed"]
 
     USE_MK --> RATE_CHECK{"Rate limit OK?\n≥ GH_TRICKLE_MIN_REMAINING"}
+
     RATE_CHECK -- " Yes" --> EXECUTE[" Execute\nPolite sleep 0.3s\nLog to .codex/healing_attempts/"]
+
     RATE_CHECK -- "️ Low" --> BACKOFF["rate_limit_orchestrator.py\nExponential backoff\nSwitch token if available"]
+
     BACKOFF --> EXECUTE
 
     USE_MK -->|"403 / expired"| ESCALATE_TOKEN[" ESCALATE\nCreate ci-health-alert issue\nTag @mbaetiong\n→ token-expiry-monitor.yml\n→ already configured"]
@@ -489,6 +546,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Token Failure Cascade", "CODEX_MASTER_KEY expires\n→ 403 on Variables API\n→ 403 on workflow approve\n→ 403 on push\n→ ALL autonomous ops blocked"'}}%%
+
 graph TD
     subgraph FAILURE["Token Failure Cascade"]
         F1["CODEX_MASTER_KEY expires\n→ 403 on Variables API\n→ 403 on workflow approve\n→ 403 on push\n→ ALL autonomous ops blocked"]
@@ -507,8 +565,11 @@ graph TD
     end
 
     F1 --> M1
+
     F2 & F3 --> M2 & M3
+
     F4 --> M4
+
     F5 --> M5
 ```
 
@@ -629,6 +690,6 @@ python scripts/ci/rate_limit_orchestrator.py \
 
 ---
 
-*Document maintained by the Copilot Cloud Agent autonomous system.*  
-*Last verified: 2026-05-08 | Token inventory: 5 tiers | WEC items: 41 | Workflows: 154 | Invariants: 5/5 *  
+*Document maintained by the Copilot Cloud Agent autonomous system.*
+*Last verified: 2026-05-08 | Token inventory: 5 tiers | WEC items: 41 | Workflows: 154 | Invariants: 5/5 *
 *Next action: Apply `.codex/pending_var_updates.json` via agent-var-writer after PR merge.*

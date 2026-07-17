@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
-**Status**: Production-Ready  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
+**Status**: Production-Ready
 **CVEs Fixed**: 48
 
 ---
@@ -13,6 +13,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Security Architecture<br/>Authentication + Authorization + Scanning + Encryption'}, 'theme': 'base'}}%%
+
 graph TB
     subgraph "Authentication & Authorization"
         OAuth["🔓 OAuth2/GitHub<br/>• GitHub login<br/>• Token exchange<br/>• Session creation"]
@@ -58,36 +59,52 @@ graph TB
 
     %% Request flow
     Incoming --> Input
+
     Input --> Auth
+
     Auth --> AuthZ
+
     AuthZ -->|" Allowed"| Process
+
     AuthZ -->|" Denied"| Denied["Return 403<br/>Forbidden"]
+
     Process --> Output
+
     Output --> Response["📥 Response<br/>HTTPS"]
 
     %% Security checks feeding into request processing
     OAuth --> Auth
+
     JWT --> Auth
+
     MFA --> Auth
+
     RBAC --> AuthZ
 
     SecStore --> Auth
     SecRotate -.audit.-> SecAccess
+
     SecAccess --> AuditLog
 
     Static --> Input
+
     Bandit --> Input
+
     SAST --> Input
+
     Secrets --> AuditLog
 
     TLS --> Incoming
+
     TLS --> Response
     DataEnc -.protects.-> SecStore
     Transit -.protects.-> Incoming
     Transit -.protects.-> Response
 
     AnomalyDetect --> Alerts
+
     RateLimit --> Input
+
     AuditLog --> Alerts
 
     %% Styling
@@ -222,12 +239,19 @@ graph TB
 
 ```mermaid
 graph LR
+
     Discover[" Discover CVE"] -->|"Alert"| Assess[" Assess<br/>Severity: High"]
+
     Assess --> Patch[" Create Patch"]
+
     Patch --> Test[" Test Fix"]
+
     Test --> Review["👀 Code Review"]
+
     Review --> Merge[" Merge"]
+
     Merge --> Deploy[" Deploy"]
+
     Deploy --> Verify["✔️ Verify<br/>Fixed"]
 
     style Discover fill:#f59e0b,stroke:#d97706,stroke-width:2px
@@ -246,11 +270,11 @@ graph LR
 
 | Standard | Coverage | Status |
 |----------|----------|--------|
-| **OWASP Top 10** | XSS, CSRF, Injection |  Mitigated |
-| **CWE** | 25 most dangerous |  Covered |
-| **NIST Cybersecurity** | Core functions |  Implemented |
-| **GDPR** | Data privacy |  Compliant |
-| **SOC 2** | Security controls |  Ready |
+| **OWASP Top 10** | XSS, CSRF, Injection | Mitigated |
+| **CWE** | 25 most dangerous | Covered |
+| **NIST Cybersecurity** | Core functions | Implemented |
+| **GDPR** | Data privacy | Compliant |
+| **SOC 2** | Security controls | Ready |
 
 ---
 

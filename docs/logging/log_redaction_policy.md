@@ -9,7 +9,7 @@
 - Maintain actionable audit trails with minimal exposure.
 
 ## Redaction Rules
-- Tokens, API keys, secrets → redact to `"***"`.
+- Tokens, API keys, secrets redact to `"***"`.
 - File paths may be truncated to basename in user-facing logs.
 - Request/response bodies: log schema-only summaries for PII-prone endpoints.
 

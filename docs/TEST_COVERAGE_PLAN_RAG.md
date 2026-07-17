@@ -10,28 +10,28 @@
 
 #### Test Files Created:
 1. **tests/test_rag_indexer.py** (16+ tests)
-   - Text chunking with various inputs
-   - Embedding generation
-   - Index persistence and loading
-   - File-based index building
-   - Error handling
-   - Edge cases
+ - Text chunking with various inputs
+ - Embedding generation
+ - Index persistence and loading
+ - File-based index building
+ - Error handling
+ - Edge cases
 
 2. **tests/test_rag_retriever.py** (25+ tests)
-   - Retriever initialization
-   - Query functionality
-   - Multi-index retrieval
-   - Provenance tracking
-   - Statistics
-   - Edge cases
+ - Retriever initialization
+ - Query functionality
+ - Multi-index retrieval
+ - Provenance tracking
+ - Statistics
+ - Edge cases
 
 3. **tests/test_rag_embeddings.py** (30+ tests)
-   - Local provider tests
-   - OpenAI provider tests (mocked)
-   - Cache behavior
-   - Factory function
-   - Integration tests
-   - Edge cases
+ - Local provider tests
+ - OpenAI provider tests (mocked)
+ - Cache behavior
+ - Factory function
+ - Integration tests
+ - Edge cases
 
 ### Coverage Gaps for 100%
 
@@ -43,12 +43,12 @@ The following areas need additional tests to reach 100% coverage:
 
 #### Uncovered Lines/Branches:
 - **Line 323-325**: Error path when file_metadata shows all zero chunks
-  - **Test needed**: Create files that produce empty chunks after processing
+ - **Test needed**: Create files that produce empty chunks after processing
 
 - **Exception handlers in build_index_from_files**:
-  - Non-UTF-8 file encoding errors
-  - Permission denied errors
-  - Disk full errors during persistence
+ - Non-UTF-8 file encoding errors
+ - Permission denied errors
+ - Disk full errors during persistence
 
 #### Missing Test Cases:
 ```python
@@ -77,14 +77,14 @@ def test_concurrent_index_building():
 
 ### Uncovered Lines/Branches:
 - **Line 87-92**: Exception handling in `_load_index`
-  - **Test needed**: Trigger various load failures
+ - **Test needed**: Trigger various load failures
 
 - **Line 195-200**: Edge case in `_extract_file_from_metadata`
-  - **Test needed**: Various metadata structures
+ - **Test needed**: Various metadata structures
 
 - **MultiIndexRetriever error recovery**:
-  - Partial index failures
-  - Query errors on subset of indices
+ - Partial index failures
+ - Query errors on subset of indices
 
 #### Missing Test Cases:
 ```python
@@ -115,17 +115,17 @@ def test_extract_file_with_malformed_metadata():
 
 ### Uncovered Lines/Branches:
 - **OpenAI error handling**:
-  - API rate limits
-  - Network timeouts
-  - Invalid responses
+ - API rate limits
+ - Network timeouts
+ - Invalid responses
 
 - **Cache corruption scenarios**:
-  - Partial writes
-  - Metadata JSON corruption
+ - Partial writes
+ - Metadata JSON corruption
 
 - **Provider initialization errors**:
-  - Import errors for optional dependencies
-  - Model download failures
+ - Import errors for optional dependencies
+ - Model download failures
 
 #### Missing Test Cases:
 ```python
@@ -205,47 +205,47 @@ def test_performance_benchmarks():
 ### Priority 1: Critical Path Coverage (Target: 95%)
 
 1. **Error handling in all three modules**
-   - File I/O errors
-   - Network errors (OpenAI)
-   - Corruption scenarios
-   - Estimated effort: 8 tests, 2 hours
+ - File I/O errors
+ - Network errors (OpenAI)
+ - Corruption scenarios
+ - Estimated effort: 8 tests, 2 hours
 
 2. **Edge cases in metadata handling**
-   - Malformed metadata
-   - Missing fields
-   - Type mismatches
-   - Estimated effort: 6 tests, 1 hour
+ - Malformed metadata
+ - Missing fields
+ - Type mismatches
+ - Estimated effort: 6 tests, 1 hour
 
 3. **Cache behavior edge cases**
-   - Corruption
-   - Concurrent access
-   - Partial writes
-   - Estimated effort: 5 tests, 1.5 hours
+ - Corruption
+ - Concurrent access
+ - Partial writes
+ - Estimated effort: 5 tests, 1.5 hours
 
 ### Priority 2: Integration & Stress Tests (Target: 98%)
 
 4. **Multi-tenant scenarios**
-   - Isolation tests
-   - Concurrent operations
-   - Estimated effort: 4 tests, 1 hour
+ - Isolation tests
+ - Concurrent operations
+ - Estimated effort: 4 tests, 1 hour
 
 5. **Performance edge cases**
-   - Very large files
-   - Many small files
-   - Extreme parameters
-   - Estimated effort: 6 tests, 2 hours
+ - Very large files
+ - Many small files
+ - Extreme parameters
+ - Estimated effort: 6 tests, 2 hours
 
 ### Priority 3: Complete Coverage (Target: 100%)
 
 6. **Rare code paths**
-   - Import errors
-   - Platform-specific behaviors
-   - Deprecation warnings
-   - Estimated effort: 8 tests, 2 hours
+ - Import errors
+ - Platform-specific behaviors
+ - Deprecation warnings
+ - Estimated effort: 8 tests, 2 hours
 
 7. **Documentation examples**
-   - All code examples in docs should be tested
-   - Estimated effort: 10 tests, 2 hours
+ - All code examples in docs should be tested
+ - Estimated effort: 10 tests, 2 hours
 
 ## Test Execution Plan
 

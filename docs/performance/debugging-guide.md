@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Complete guide to profiling, benchmarking, and optimizing Python applications  
-> **Level**: Intermediate to Advanced | **Prerequisites**: Python profiling knowledge  
+> Complete guide to profiling, benchmarking, and optimizing Python applications
+> **Level**: Intermediate to Advanced | **Prerequisites**: Python profiling knowledge
 > **Last Updated**: 2026-06-22 | **Version**: 2.0
 
 ---
@@ -598,7 +598,7 @@ def get_cached_data():
     return fetch_and_process_data()
 ```
 
-**Improvement**: 5s → 50ms (100x faster)
+**Improvement**: 5s 50ms (100x faster)
 
 ## Case 2: Memory Leak in Batch Processing
 
@@ -664,4 +664,4 @@ def batch_processor():
 ---
 
 **Word Count**: 2,458 | **Examples**: 20 | **Patterns**: 6
-**Last Updated**: 2026-06-22 | **Status**:  Complete
+**Last Updated**: 2026-06-22 | **Status**: Complete

@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Status:**  Foundation Complete  
+**Status:** Foundation Complete
 **Date:2026-07-13
 **Part of:** MLOps Architecture Remediation Plan - Phase 2
 
@@ -102,11 +102,11 @@ temp/bridge_codex_copilot_bridge/
 ```
 
 **Issues:**
--  World-readable files expose sensitive data
--  No locking mechanism (race conditions)
--  File-based polling inefficient
--  No message validation
--  Ephemeral storage
+- World-readable files expose sensitive data
+- No locking mechanism (race conditions)
+- File-based polling inefficient
+- No message validation
+- Ephemeral storage
 
 ### After (Secure Bridge)
 ```
@@ -117,11 +117,11 @@ temp/bridge_codex_copilot_bridge/
 ```
 
 **Improvements:**
--  Owner-only permissions (0o600)
--  fcntl-based locking prevents races
--  Event-driven communication (no polling)
--  Typed message validation
--  Persistent connection handling
+- Owner-only permissions (0o600)
+- fcntl-based locking prevents races
+- Event-driven communication (no polling)
+- Typed message validation
+- Persistent connection handling
 
 ---
 
@@ -291,5 +291,5 @@ python -m timeit -s "from src.bridge_manager import BridgeManager, ContextMessag
 
 ---
 
-**Status:**  Phase 2 Foundation Complete  
+**Status:** Phase 2 Foundation Complete
 **Next:** Migrate existing bridge usage, then Phase 3

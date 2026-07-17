@@ -66,11 +66,11 @@ RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder check
 
 | Workflow | Tier | Reason | Added |
 |----------|------|--------|-------|
-| `build-preview-image.yml` |  RED | `ubuntu-latest-m` × 30 min × 2 matrix + GHCR push = 120 eff-min + transfer cost | PR #3575 |
-| `data-quality-suite.yml` |  RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
-| `scheduled-archival.yml` |  RED | 3 jobs × 60 min = 180 eff-min, runs on schedule | PR #3575 |
-| `rust_swarm_ci.yml` |  RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
-| `embedding-index-rebuild.yml` | ️ YELLOW | 15 min, scheduled (frequent trigger risk) | PR #3575 |
+| `build-preview-image.yml` | RED | `ubuntu-latest-m` × 30 min × 2 matrix + GHCR push = 120 eff-min + transfer cost | PR #3575 |
+| `data-quality-suite.yml` | RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
+| `scheduled-archival.yml` | RED | 3 jobs × 60 min = 180 eff-min, runs on schedule | PR #3575 |
+| `rust_swarm_ci.yml` | RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
+| `embedding-index-rebuild.yml` | YELLOW | 15 min, scheduled (frequent trigger risk) | PR #3575 |
 
 **Workflows intentionally not gated (GREEN tier, < 30 effective min):**
 
@@ -87,6 +87,7 @@ RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder check
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR opened / push to branch", " cost-gate job\ncost_estimator.py calculates tier"'}}%%
+
 flowchart TD
     PR["PR opened / push to branch"]
     COST[" cost-gate job\ncost_estimator.py calculates tier"]
@@ -99,13 +100,21 @@ flowchart TD
     TIMEOUT[" Gate timed out\n(10 min with no approval)\nJob fails — re-run after ticking"]
 
     PR --> COST
+
     COST --> GREEN --> APPROVED
+
     COST --> YELLOW --> APPROVED
+
     COST --> RED
+
     RED -->|"checkbox detected"| APPROVED
+
     RED -->|"workflow_dispatch"| APPROVED
+
     DISPATCHER[Owner] --> DISPATCH --> APPROVED
+
     STAKEHOLDER[Stakeholder] --> CHECKBOX --> APPROVED
+
     RED -->|"10 min timeout"| TIMEOUT
 
     style GREEN fill:#98fb98
@@ -119,20 +128,20 @@ flowchart TD
 
 ## 6 — Stakeholder Approval Instructions
 
-When the Cost Gate posts a  RED comment on your PR:
+When the Cost Gate posts a RED comment on your PR:
 
 1. **Read the comment** — it shows the estimated effective minutes and cost tier reason
 2. **Decide** — is the spend justified for this PR?
 3. **Approve** — in the PR description, find the Cost Governance section and change:
    ```
    - [ ]  Cost Proposal Approved
-   ```
-   to:
+ ```
+ to:
    ```
    - [x]  Cost Proposal Approved
-   ```
+ ```
 4. **Wait** — the gate polls every 60 seconds and unblocks within ~60 s of your tick
-5. **Alternative** — trigger the workflow manually via `Actions → Run workflow` to bypass the PR gate
+5. **Alternative** — trigger the workflow manually via `Actions Run workflow` to bypass the PR gate
 
 ---
 
@@ -147,7 +156,7 @@ When the Cost Gate posts a  RED comment on your PR:
 | GHAS (CodeQL on branches) | **Not purchased** | CodeQL on feature branches = expected failure, not a bug |
 
 **To increase limits without upgrading plan:**
-- Reduce matrix job count from 3 → 2 where test isolation allows
+- Reduce matrix job count from 3 2 where test isolation allows
 - Move scheduled workflows from `schedule:` to `workflow_dispatch:` only
 - Set `cancel-in-progress: true` on all PR-triggered workflows
 

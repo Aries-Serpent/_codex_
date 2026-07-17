@@ -4,31 +4,31 @@
 
 > **Generated**: 2026-06-22 | Aries-Serpent/_codex_
 >
-> **Scope**: Soft→GROUNDED conversion, Phases 1–6 (complete)
+> **Scope**: SoftGROUNDED conversion, Phases 1–6 (complete)
 > **Registry**: v0.2.1 · 152 agents · GROUNDED: 8 · PARTIAL: 142 · SOFT: 2
-> **E→D Gate Score**: 5/5  D_CAPABLE threshold met
+> **ED Gate Score**: 5/5 D_CAPABLE threshold met
 
 ---
 
 ## Executive Summary
 
-The Soft→GROUNDED conversion is **complete**. All 6 phases have been implemented,
-the E→D transition gate passes 5/5 conditions, and the agentic repository system
+The SoftGROUNDED conversion is **complete**. All 6 phases have been implemented,
+the ED transition gate passes 5/5 conditions, and the agentic repository system
 now operates with hard enforcement on critical agent behaviors.
 
 | Metric | Before (v0.2.1) | After (v0.2.1) | Target | Status |
 |--------|:---------------:|:--------------:|:------:|:------:|
-| Total agents registered | 128 | 152 | 151+ |  |
-| GROUNDED (Tier-1) agents | 0 | 8 | ≥8 |  |
-| SOFT (Tier-3) agents | 128 | 2 | ≤2 |  |
-| Schema fields per agent | 0 | 4+ | 4 |  |
-| JSON Schemas present | 0 | 3 | 3 |  |
-| Tier-1 CI gates active | 5 | 9 | ≥8 |  |
-| Manifest integrity | absent | SHA-256 | present |  |
-| E→D gate score | — | 5/5 | 5/5 |  |
-| Agent handoff protocol | none | v1.1 | v1.1 |  |
-| Orchestrator agent | none | active | active |  |
-| FAISS corpus builder | none | ready | ready |  |
+| Total agents registered | 128 | 152 | 151+ | |
+| GROUNDED (Tier-1) agents | 0 | 8 | ≥8 | |
+| SOFT (Tier-3) agents | 128 | 2 | ≤2 | |
+| Schema fields per agent | 0 | 4+ | 4 | |
+| JSON Schemas present | 0 | 3 | 3 | |
+| Tier-1 CI gates active | 5 | 9 | ≥8 | |
+| Manifest integrity | absent | SHA-256 | present | |
+| ED gate score | — | 5/5 | 5/5 | |
+| Agent handoff protocol | none | v1.1 | v1.1 | |
+| Orchestrator agent | none | active | active | |
+| FAISS corpus builder | none | ready | ready | |
 
 ---
 
@@ -41,9 +41,9 @@ now operates with hard enforcement on critical agent behaviors.
 | AGENT_REGISTRY.yaml version | v0.2.1 |
 | Total agents | 152 (128 original + 23 FS-only + orchestrator) |
 | New schema fields added | 4 (`enforcement_tier`, `autonomy_model`, `handoff_protocol`, `accepts_handoff_from`) |
-| Schema validation passing |  All 152 agents |
+| Schema validation passing | All 152 agents |
 | Consolidation-priority agents | 20 (top-20 by activation frequency) |
-| CODEX_MANIFEST.json integrity |  SHA-256 embedded |
+| CODEX_MANIFEST.json integrity | SHA-256 embedded |
 
 ### Phase 2 — Handoff Gate (C4)
 
@@ -61,49 +61,49 @@ now operates with hard enforcement on critical agent behaviors.
 | Embedding model | `all-MiniLM-L6-v2` (offline, Apache 2.0) |
 | Chunk size | 512 words with 64-word overlap |
 | Source directories | 4 (`.codex/docs/`, `.github/agents/`, `src/codex/cognitive/`, registry) |
-| Nightly rebuild |  `embedding-index-rebuild.yml` (2AM UTC) |
-| On-push rebuild |  Triggered by `agent-registry-validation.yml` on push to main |
-| REQ-10 health annotation |  Tier-1 GROUNDED (exit 1 on chunk count < 100) |
+| Nightly rebuild | `embedding-index-rebuild.yml` (2AM UTC) |
+| On-push rebuild | Triggered by `agent-registry-validation.yml` on push to main |
+| REQ-10 health annotation | Tier-1 GROUNDED (exit 1 on chunk count < 100) |
 
-### Phase 4 — E→D Transition Gate (C3, C5)
+### Phase 4 — ED Transition Gate (C3, C5)
 
 | KPI | Value |
 |-----|-------|
-| FSM conditions | 5/5  |
+| FSM conditions | 5/5 |
 | `e-to-d-transition-gate.yml` tier | Tier-1 GROUNDED (promoted from Tier-2 canary) |
 | Orchestrator agent | `orchestrator-agent.md` active |
-| Routing strategies | 3 (FAISS semantic → keyword → safe default) |
+| Routing strategies | 3 (FAISS semantic keyword safe default) |
 | D_CAPABLE agents | 0 (awaiting first promotion) |
 
 ### Phase 5 — Self-Healing CI
 
 | KPI | Value |
 |-----|-------|
-| Tier auto-promote | `auto_promote_tier.py` dry-run-only  |
-| Accountability auto-append | `auto_append_accountability.py` with UTC timestamps  |
-| Enforcement gap scan | Added to `ci-health-monitor.yml`  |
+| Tier auto-promote | `auto_promote_tier.py` dry-run-only |
+| Accountability auto-append | `auto_append_accountability.py` with UTC timestamps |
+| Enforcement gap scan | Added to `ci-health-monitor.yml` |
 | `ci-health-monitor.yml` steps | +1 (enforcement gap scan + KPI dashboard) |
 
 ### Phase 6 — Governance
 
 | KPI | Value |
 |-----|-------|
-| Workflow linting | `actionlint-audit.yml` Tier-1 hard gate  |
-| Operating guide | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` (12 sections)  |
-| Canonical KPI report | This document  |
-| Semgrep rules | `semgrep/soft_enforcement.yaml`  |
+| Workflow linting | `actionlint-audit.yml` Tier-1 hard gate |
+| Operating guide | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` (12 sections) |
+| Canonical KPI report | This document |
+| Semgrep rules | `semgrep/soft_enforcement.yaml` |
 
 ---
 
-## E→D Transition Readiness: 5/5 
+## ED Transition Readiness: 5/5
 
 | ID | Condition | Status | Notes |
 |----|-----------|:------:|-------|
-| C1 | `AGENT_REGISTRY.yaml` present |  | v0.2.1, 152 agents |
-| C2 | `CODEX_MANIFEST.json` valid + current |  | Refreshed in CI on each registry PR |
-| C3 | SOFT tier count ≤ 2 |  | 2 SOFT agents (codex_reviewer, zendesk-architect-agent) |
-| C4 | `agent-handoff-gate.yml` deployed |  | Promoted to Tier-1 |
-| C5 | GROUNDED count ≥ 8 |  | 8 GROUNDED agents |
+| C1 | `AGENT_REGISTRY.yaml` present | | v0.2.1, 152 agents |
+| C2 | `CODEX_MANIFEST.json` valid + current | | Refreshed in CI on each registry PR |
+| C3 | SOFT tier count ≤ 2 | | 2 SOFT agents (codex_reviewer, zendesk-architect-agent) |
+| C4 | `agent-handoff-gate.yml` deployed | | Promoted to Tier-1 |
+| C5 | GROUNDED count ≥ 8 | | 8 GROUNDED agents |
 
 **Operating model**: `E` for all 152 agents.
 `d_capable_agents: 0` — `autonomy_model: "D_CAPABLE"` not yet assigned to any agent.
@@ -139,19 +139,19 @@ First D_CAPABLE promotion requires owner approval + `e-to-d-transition-gate.yml`
 
 | Risk | Severity | Mitigation |
 |------|:--------:|------------|
-| C2 (manifest age) fails if `generate_manifest.py` not run in CI | Medium |  Added to `agent-registry-validation.yml` |
-| `e-to-d-transition-gate.yml` promoted to Tier-1 | Resolved |  Promoted from Tier-2 canary after observation |
-| FAISS index populated in CI | Resolved |  Manual `workflow_dispatch` completed successfully |
+| C2 (manifest age) fails if `generate_manifest.py` not run in CI | Medium | Added to `agent-registry-validation.yml` |
+| `e-to-d-transition-gate.yml` promoted to Tier-1 | Resolved | Promoted from Tier-2 canary after observation |
+| FAISS index populated in CI | Resolved | Manual `workflow_dispatch` completed successfully |
 | 0 `D_CAPABLE` agents — no autonomous promotion path defined | Low | Define `autonomy_model: "D_CAPABLE"` criteria per agent |
 
 ---
 
 ## Next Steps
 
-1. **Tier-1 promotions complete**: `e-to-d-transition-gate.yml` , `embedding-index-rebuild.yml` REQ-10 
+1. **Tier-1 promotions complete**: `e-to-d-transition-gate.yml` , `embedding-index-rebuild.yml` REQ-10
 2. **FAISS index active**: Seeded via manual `workflow_dispatch`; nightly rebuild at 2AM UTC; on-push rebuild via `agent-registry-validation.yml`
 3. **First D_CAPABLE promotion**: Define criteria for `autonomy_model: "D_CAPABLE"` assignment per agent
-4. **ADR documentation**:  Created `docs/arch/ADR-20260302-*.md` for each phase decision
+4. **ADR documentation**: Created `docs/arch/ADR-20260302-*.md` for each phase decision
 5. **Semgrep**: Run `semgrep/soft_enforcement.yaml` in CI to detect SOFT pattern regressions
 
 ---

@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Comprehensive guide to managing secrets securely across development, staging, and production  
-> **Level**: Intermediate | **Prerequisites**: Basic security knowledge  
+> Comprehensive guide to managing secrets securely across development, staging, and production
+> **Level**: Intermediate | **Prerequisites**: Basic security knowledge
 > **Last Updated**: 2026-06-22 | **Version**: 2.0
 
 ---
@@ -737,7 +737,7 @@ logger.info(f"Auth: {api_key}")  #  Never  # pragma: allowlist secret
 
    #  Bad
    API_KEY = "hardcoded_key_here"  # In config file <!-- pragma: allowlist secret -->
-   ```
+ ```
 
 3. **Implement automatic rotation**: Every 30-90 days
 4. **Use least privilege**: Service only needs its own secret
@@ -780,4 +780,4 @@ gh secret set MY_SECRET --body "$(aws secretsmanager get-secret-value ...)" --en
 ---
 
 **Word Count**: 2,156 | **Examples**: 15 | **Runbooks**: 6
-**Last Updated**: 2026-06-22 | **Status**:  Complete
+**Last Updated**: 2026-06-22 | **Status**: Complete

@@ -6,18 +6,18 @@
 
 **Version**: 1.0.0
 **Created**: 2025-12-31
-**Target**: 72% → 85% test coverage
-**Status**:  In Progress (10%)
+**Target**: 72% 85% test coverage
+**Status**: In Progress (10%)
 
 ---
 
-##  Mission
+## Mission
 
 Add 150-200 targeted tests to cover critical business logic paths, achieving 85% test coverage.
 
 ---
 
-##  Analysis Summary
+## Analysis Summary
 
 ### Current State
 - **Source Files**: 938 files (src/, agents/, scripts/)
@@ -27,14 +27,14 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 - **Gap**: 13 percentage points = ~150-200 tests
 
 ### Test Infrastructure
-- **Frameworks**: pytest , pytest-cov , hypothesis 
+- **Frameworks**: pytest , pytest-cov , hypothesis
 - **Patterns**: Unit, integration, property-based, e2e
 - **Standards**: Documented in test files
 - **CI**: Automated via GitHub Actions
 
 ---
 
-## 🗺️ Module Priority Matrix
+## Module Priority Matrix
 
 ### Priority 1: HIGH (Immediate) - 110-130 tests
 
@@ -45,26 +45,26 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 **Test Targets**:
 - `select_components.py` (20-25 tests)
-  - Topic-based file selection
-  - Glob pattern matching with **
-  - Recursive directory traversal
-  - Edge cases: empty dirs, symlinks, large files
-  - Error handling: missing topics.json, invalid patterns
+ - Topic-based file selection
+ - Glob pattern matching with **
+ - Recursive directory traversal
+ - Edge cases: empty dirs, symlinks, large files
+ - Error handling: missing topics.json, invalid patterns
 
 - `package_flatten.sh` (10-15 tests)
-  - Flat filename generation (path → flat)
-  - Duplicate name handling
-  - Manifest generation accuracy
-  - ZIP archive integrity
-  - Edge cases: special chars, long paths
+ - Flat filename generation (path flat)
+ - Duplicate name handling
+ - Manifest generation accuracy
+ - ZIP archive integrity
+ - Edge cases: special chars, long paths
 
 - `mcp-package` CLI (10 tests)
-  - --list flag validation
-  - --topic parameter
-  - --custom with glob_filters
-  - --dry-run behavior
-  - --output path handling
-  - Error messages and exit codes
+ - --list flag validation
+ - --topic parameter
+ - --custom with glob_filters
+ - --dry-run behavior
+ - --output path handling
+ - Error messages and exit codes
 
 **Test Files to Create**:
 - `tests/scripts/test_mcp_select_components.py`
@@ -78,22 +78,22 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 **Test Targets**:
 - `workflow_navigator.py` (15-20 tests)
-  - Workflow state transitions
-  - create_workflow → get_workflow flow
-  - Step execution and tracking
-  - Error recovery in workflows
-  - Concurrent workflow handling
+ - Workflow state transitions
+ - create_workflow get_workflow flow
+ - Step execution and tracking
+ - Error recovery in workflows
+ - Concurrent workflow handling
 
 - `quantum_game_theory.py` (10-15 tests)
-  - Strategy state management
-  - Decision state coherence calculations
-  - Nash equilibrium computation
-  - Edge cases: empty strategies, invalid probabilities
+ - Strategy state management
+ - Decision state coherence calculations
+ - Nash equilibrium computation
+ - Edge cases: empty strategies, invalid probabilities
 
 - Integration patterns (5 tests)
-  - Agent composition
-  - Cross-agent communication
-  - State synchronization
+ - Agent composition
+ - Cross-agent communication
+ - State synchronization
 
 **Test Files to Create**:
 - `tests/agents/test_workflow_navigator_extended.py`
@@ -107,22 +107,22 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 **Test Targets**:
 - Code ingestion (15-20 tests)
-  - File parsing and validation
-  - AST generation
-  - Syntax error handling
-  - Multi-language support
+ - File parsing and validation
+ - AST generation
+ - Syntax error handling
+ - Multi-language support
 
 - AST transformation (15-20 tests)
-  - Node transformations
-  - Pattern matching
-  - Tree mutations
-  - Optimization passes
+ - Node transformations
+ - Pattern matching
+ - Tree mutations
+ - Optimization passes
 
 - RAG retrieval (10 tests)
-  - Query processing
-  - Similarity search
-  - Result ranking
-  - Edge cases: empty corpus, no matches
+ - Query processing
+ - Similarity search
+ - Result ranking
+ - Edge cases: empty corpus, no matches
 
 **Test Files to Create**:
 - `tests/src/test_code_ingestion.py`
@@ -138,16 +138,16 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 **Test Targets**:
 - Config validation (10-15 tests)
-  - Schema validation
-  - Type checking
-  - Required field enforcement
-  - Default value application
+ - Schema validation
+ - Type checking
+ - Required field enforcement
+ - Default value application
 
 - Config edge cases (10-15 tests)
-  - Missing config files
-  - Malformed JSON/YAML
-  - Environment variable override
-  - Merge behavior
+ - Missing config files
+ - Malformed JSON/YAML
+ - Environment variable override
+ - Merge behavior
 
 **Test Files to Create**:
 - `tests/config/test_config_validation.py`
@@ -160,16 +160,16 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 **Test Targets**:
 - Exception paths (10 tests)
-  - ValueError handling
-  - IOError recovery
-  - Type errors
-  - Custom exceptions
+ - ValueError handling
+ - IOError recovery
+ - Type errors
+ - Custom exceptions
 
 - Error recovery (10 tests)
-  - Retry logic
-  - Fallback mechanisms
-  - Graceful degradation
-  - Error logging
+ - Retry logic
+ - Fallback mechanisms
+ - Graceful degradation
+ - Error logging
 
 **Test Files to Create**:
 - `tests/error_handling/test_exception_paths.py`
@@ -177,7 +177,7 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 ---
 
-##  Implementation Strategy
+## Implementation Strategy
 
 ### Phase 1: MCP System Tests (Session 1, 40-50 tests)
 1. Create test file structure
@@ -198,7 +198,7 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 ---
 
-##  Success Criteria
+## Success Criteria
 
 ### Phase 9.1 Complete When:
 - [ ] 150-200 new tests added
@@ -219,20 +219,20 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 
 ---
 
-##  Progress Tracking
+## Progress Tracking
 
 | Priority | Module | Tests Planned | Tests Added | Coverage | Status |
 |----------|--------|---------------|-------------|----------|--------|
-| HIGH | MCP System | 40-50 | 0 | 60% → 90% |  Not Started |
-| HIGH | Agent Orchestration | 30-40 | 0 | 75% → 92% |  Not Started |
-| HIGH | Core Pipeline | 40-50 | 0 | 70% → 88% |  Not Started |
-| MEDIUM | Configuration | 20-30 | 0 | 65% → 85% |  Not Started |
-| MEDIUM | Error Handling | 20 | 0 | 50% → 80% |  Not Started |
-| **TOTAL** | **All Modules** | **150-200** | **0** | **72% → 85%** | ** 10% (Plan)** |
+| HIGH | MCP System | 40-50 | 0 | 60% 90% | Not Started |
+| HIGH | Agent Orchestration | 30-40 | 0 | 75% 92% | Not Started |
+| HIGH | Core Pipeline | 40-50 | 0 | 70% 88% | Not Started |
+| MEDIUM | Configuration | 20-30 | 0 | 65% 85% | Not Started |
+| MEDIUM | Error Handling | 20 | 0 | 50% 80% | Not Started |
+| **TOTAL** | **All Modules** | **150-200** | **0** | **72% 85%** | ** 10% (Plan)** |
 
 ---
 
-##  Testing Patterns & Best Practices
+## Testing Patterns & Best Practices
 
 ### Test Structure
 ```python
@@ -295,7 +295,7 @@ def test_end_to_end_workflow():
 
 ---
 
-##  Reference Documents
+## Reference Documents
 
 - [Coverage 100% Roadmap](../ROADMAP.md)
 - [Testing Guide](../guides/TESTING_GUIDE.md)
@@ -304,6 +304,6 @@ def test_end_to_end_workflow():
 
 ---
 
-**Status**: Execution plan complete 
+**Status**: Execution plan complete
 **Next**: Implement MCP system tests (Priority 1, HIGH)
 **Created**: 2025-12-31 00:55 UTC

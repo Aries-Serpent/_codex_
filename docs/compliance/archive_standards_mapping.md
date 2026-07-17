@@ -16,14 +16,14 @@ This document maps the _codex_ archive standardization implementation to industr
 
 | SLSA L3 Requirement | _codex_ Implementation | Evidence Location |
 |---------------------|------------------------|-------------------|
-| **Provenance exists** |  Evidence records created for all operations | `.codex/evidence/archive_ops.jsonl` |
-| **Provenance is authentic** |  Cryptographic signatures via Sigstore | `standardizationMetadata.signature` |
-| **Provenance completeness** |  All required fields captured | `schemaVersion: "2.0"` records |
-| **Hermetic builds** |  Archive operations isolated, deterministic | Archive DAL + blob storage |
-| **Ephemeral credentials** |  GitHub OIDC tokens (short-lived) | Fulcio certificates |
-| **Signed provenance** |  Keyless signing via Sigstore | Certificate chain in metadata |
-| **Non-falsifiable provenance** |  Append-only JSONL + signatures | Immutable evidence log |
-| **Dependency completeness** |  Phase 3 (SBOM) | Future: SBOM generation |
+| **Provenance exists** | Evidence records created for all operations | `.codex/evidence/archive_ops.jsonl` |
+| **Provenance is authentic** | Cryptographic signatures via Sigstore | `standardizationMetadata.signature` |
+| **Provenance completeness** | All required fields captured | `schemaVersion: "2.0"` records |
+| **Hermetic builds** | Archive operations isolated, deterministic | Archive DAL + blob storage |
+| **Ephemeral credentials** | GitHub OIDC tokens (short-lived) | Fulcio certificates |
+| **Signed provenance** | Keyless signing via Sigstore | Certificate chain in metadata |
+| **Non-falsifiable provenance** | Append-only JSONL + signatures | Immutable evidence log |
+| **Dependency completeness** | Phase 3 (SBOM) | Future: SBOM generation |
 
 ### Implementation Details
 
@@ -60,12 +60,12 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
 
 | in-toto Component | _codex_ Implementation | Status |
 |-------------------|------------------------|--------|
-| **Layout** | Defined in canonical policy |  Complete |
-| **Link Metadata** | Evidence records structure |  Compatible |
-| **Step Definition** | Archive operations (store/restore/purge) |  Defined |
-| **Functionary Keys** | GitHub OIDC identity |  Implemented |
-| **Inspection** | Validation commands |  Available |
-| **Verification** | Automated PR checklist |  Active |
+| **Layout** | Defined in canonical policy | Complete |
+| **Link Metadata** | Evidence records structure | Compatible |
+| **Step Definition** | Archive operations (store/restore/purge) | Defined |
+| **Functionary Keys** | GitHub OIDC identity | Implemented |
+| **Inspection** | Validation commands | Available |
+| **Verification** | Automated PR checklist | Active |
 
 ### Step Mapping
 
@@ -121,14 +121,14 @@ link = generate_link_metadata(
 
 | SAA Requirement | _codex_ Implementation | Compliance |
 |-----------------|------------------------|------------|
-| **Artifact Identity** | SHA256 hash + UUID tombstone |  Yes |
-| **Actor Identity** | GitHub OIDC claims |  Yes |
-| **Timestamp** | UTC ISO8601 |  Yes |
-| **Operation Type** | ARCHIVE/RESTORE/REFERENCE/PURGE |  Yes |
-| **Provenance** | Evidence record + signature |  Yes |
-| **Retention Policy** | Documented in policy |  Yes |
-| **Access Control** | CODEOWNERS + dual-control |  Yes |
-| **Audit Trail** | Immutable JSONL log |  Yes |
+| **Artifact Identity** | SHA256 hash + UUID tombstone | Yes |
+| **Actor Identity** | GitHub OIDC claims | Yes |
+| **Timestamp** | UTC ISO8601 | Yes |
+| **Operation Type** | ARCHIVE/RESTORE/REFERENCE/PURGE | Yes |
+| **Provenance** | Evidence record + signature | Yes |
+| **Retention Policy** | Documented in policy | Yes |
+| **Access Control** | CODEOWNERS + dual-control | Yes |
+| **Audit Trail** | Immutable JSONL log | Yes |
 
 ### Attestation Format
 
@@ -184,16 +184,16 @@ EOF
 
 | Standard | Requirement | Implementation | Evidence | Status |
 |----------|-------------|----------------|----------|--------|
-| **SLSA L3** | Signed provenance | Sigstore keyless | `standardizationMetadata.signature` |  |
-| **SLSA L3** | Hermetic process | Isolated archive ops | DAL + blob storage |  |
-| **SLSA L3** | Non-falsifiable | Append-only log | JSONL format |  |
-| **in-toto** | Link metadata | Compatible structure | Evidence records |  |
-| **in-toto** | Layout definition | Policy document | `canonical-archiving-policy.md` |  |
-| **in-toto** | Functionary auth | GitHub OIDC | OIDC token → Fulcio cert |  |
-| **SAA** | Artifact identity | SHA256 + tombstone | `sha256` + `tombstone` fields |  |
-| **SAA** | Actor identity | OIDC claims | `actor` + `issuer` fields |  |
-| **SAA** | Audit trail | Immutable log | `.codex/evidence/archive_ops.jsonl` |  |
-| **SAA** | Retention policy | Documented | `docs/ops/retention.md` |  |
+| **SLSA L3** | Signed provenance | Sigstore keyless | `standardizationMetadata.signature` | |
+| **SLSA L3** | Hermetic process | Isolated archive ops | DAL + blob storage | |
+| **SLSA L3** | Non-falsifiable | Append-only log | JSONL format | |
+| **in-toto** | Link metadata | Compatible structure | Evidence records | |
+| **in-toto** | Layout definition | Policy document | `canonical-archiving-policy.md` | |
+| **in-toto** | Functionary auth | GitHub OIDC | OIDC token Fulcio cert | |
+| **SAA** | Artifact identity | SHA256 + tombstone | `sha256` + `tombstone` fields | |
+| **SAA** | Actor identity | OIDC claims | `actor` + `issuer` fields | |
+| **SAA** | Audit trail | Immutable log | `.codex/evidence/archive_ops.jsonl` | |
+| **SAA** | Retention policy | Documented | `docs/ops/retention.md` | |
 
 ---
 

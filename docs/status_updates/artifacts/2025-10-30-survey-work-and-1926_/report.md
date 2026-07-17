@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Ref:** branch `work`  commit `6404edf9`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_`
+**Ref:** branch `work` commit `6404edf9` • **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_`
 
 ---
 
@@ -84,10 +84,10 @@ class ReasoningHead(nn.Module):
      and logs traces / checkpoints.
 ...
 1. Validate manifests:
-   ```bash
-   codex deploy --config configs/deploy/reasoning_pod.yaml \
-     --model artifacts/runs/reasoning-starter:last \
-     --dry-run
+ ```bash
+ codex deploy --config configs/deploy/reasoning_pod.yaml \
+ --model artifacts/runs/reasoning-starter:last \
+ --dry-run
 
 
 - `configs/training/reasoning/baseline.yaml`
@@ -185,10 +185,10 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
 ## 6) Promotion Signal
 # Symbolic: R = α·E + β·T + γ·D, with α+β+γ=1
 - E (Eval completeness): 0.6
-- T (Trace quality):     0.7
+- T (Trace quality): 0.7
 - D (Docs/deploy parity):0.9
 - Weights: α=0.2, β=0.2, γ=0.6
-- R = α·E + β·T + γ·D → 0.80
+- R = α·E + β·T + γ·D 0.80
 
 ## 7) Artifacts
 - docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md

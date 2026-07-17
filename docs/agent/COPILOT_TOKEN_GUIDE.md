@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-> **Status:**  CURRENT (PR #3499 W-125, 2026-03-05 — webhook token requirements added)
+> **Status:** CURRENT (PR #3499 W-125, 2026-03-05 — webhook token requirements added)
 > **Audience:** Copilot Coding Agent sessions, CI/CD pipeline authors
 > **Related:** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`, `scripts/tools/variable_manager.py`
 
@@ -22,14 +22,14 @@ how it reaches your session, how to use it, and what it can and cannot do.
 
 | Priority | Token | Set in workflow | Exported to `GITHUB_ENV` | Scope / Capability |
 |----------|-------|----------------|--------------------------|-------------------|
-| **1** | `CODEX_MASTER_KEY` | Job `env:` → `secrets.CODEX_MASTER_KEY` |  "🔑 Export Auth Tokens" step | Full PAT (classic) — `repo` scope. Can read/write **all** GitHub API resources including **variables**, secrets, and settings. **Required for variables API.** |
-| **2** | `CODEX_BACKUP_KEY` | Job `env:` → `secrets.CODEX_BACKUP_KEY` |  same step | Fallback PAT — same capability as above, used when master key is absent. |
-| **3** | `AGENT_GITHUB_TOKEN` | Derived from `GITHUB_TOKEN` |  same step | Alias for `GITHUB_TOKEN`; stable env var name for agent code. **Cannot access variables API.** |
+| **1** | `CODEX_MASTER_KEY` | Job `env:` `secrets.CODEX_MASTER_KEY` | " Export Auth Tokens" step | Full PAT (classic) — `repo` scope. Can read/write **all** GitHub API resources including **variables**, secrets, and settings. **Required for variables API.** |
+| **2** | `CODEX_BACKUP_KEY` | Job `env:` `secrets.CODEX_BACKUP_KEY` | same step | Fallback PAT — same capability as above, used when master key is absent. |
+| **3** | `AGENT_GITHUB_TOKEN` | Derived from `GITHUB_TOKEN` | same step | Alias for `GITHUB_TOKEN`; stable env var name for agent code. **Cannot access variables API.** |
 | **4** | `GITHUB_TOKEN` | Auto-provided by GitHub Actions | Already in env | Scoped installation token. Can push code, comment on PRs, dispatch workflows. **Cannot access the Actions Variables API** (requires PAT `repo` scope). |
 
 > **Webhook operations also accept `CODEX_ADMIN_KEY`** (a fine-grained PAT with Webhooks:write)
 > as the highest-priority auth source. `webhook_configurator.py` resolves tokens in the order:
-> `CODEX_ADMIN_KEY` → `CODEX_MASTER_KEY`. `GITHUB_TOKEN` **cannot** manage webhooks.
+> `CODEX_ADMIN_KEY` `CODEX_MASTER_KEY`. `GITHUB_TOKEN` **cannot** manage webhooks.
 
 All four tokens are resolved automatically by `BrainClient._auth_header()` and
 `VariableManager._resolve_token()` — **no manual header construction needed**.
@@ -59,7 +59,7 @@ copilot-setup-steps.yml
 ```
 
 > **Why two steps?** Job-level `env:` values are available to setup steps but
-> are **not automatically added to `GITHUB_ENV`**. The "🔑 Export Auth Tokens"
+> are **not automatically added to `GITHUB_ENV`**. The " Export Auth Tokens"
 > step bridges this gap by explicitly writing the values to the GITHUB_ENV file
 > that the agent process reads.
 
@@ -69,20 +69,20 @@ copilot-setup-steps.yml
 
 | API Operation | `CODEX_MASTER_KEY` | `CODEX_BACKUP_KEY` | `AGENT_GITHUB_TOKEN` / `GITHUB_TOKEN` |
 |---------------|:-----------------:|:-----------------:|:-------------------------------------:|
-| **Repo variables** — list |  |  |  requires PAT `repo` scope |
-| **Repo variables** — create/update/delete |  |  |  requires PAT `repo` scope |
-| **Environment variables** — list |  |  |  requires PAT `repo` scope |
-| **Environment variables** — create/update/delete |  |  |  requires PAT `repo` scope |
-| **Org variables** — list |  |  |  |
-| **Org variables** — create/update/delete |  |  |  |
-| **Repo secrets** — read/write |  |  |  |
-| **Org secrets** — read/write |  (if org admin) |  (if org admin) |  |
-| **Code push / commits** |  |  |  (contents:write) |
-| **Issues / PRs** |  |  |  (issues/pull-requests:write) |
-| **Workflow dispatch** |  |  |  (actions:write) |
-| **GitHub API (read-only)** — repos, runs, PRs |  |  |  |
-| **Webhooks** — list |  (`admin:repo_hook`) |  (`admin:repo_hook`) |  403 — requires PAT with `admin:repo_hook` or fine-grained Webhooks:read |
-| **Webhooks** — create/update/delete |  (`admin:repo_hook`) |  (`admin:repo_hook`) |  403 — requires `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (`admin:repo_hook`) |
+| **Repo variables** — list | | | requires PAT `repo` scope |
+| **Repo variables** — create/update/delete | | | requires PAT `repo` scope |
+| **Environment variables** — list | | | requires PAT `repo` scope |
+| **Environment variables** — create/update/delete | | | requires PAT `repo` scope |
+| **Org variables** — list | | | |
+| **Org variables** — create/update/delete | | | |
+| **Repo secrets** — read/write | | | |
+| **Org secrets** — read/write | (if org admin) | (if org admin) | |
+| **Code push / commits** | | | (contents:write) |
+| **Issues / PRs** | | | (issues/pull-requests:write) |
+| **Workflow dispatch** | | | (actions:write) |
+| **GitHub API (read-only)** — repos, runs, PRs | | | |
+| **Webhooks** — list | (`admin:repo_hook`) | (`admin:repo_hook`) | 403 — requires PAT with `admin:repo_hook` or fine-grained Webhooks:read |
+| **Webhooks** — create/update/delete | (`admin:repo_hook`) | (`admin:repo_hook`) | 403 — requires `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (`admin:repo_hook`) |
 
 > **Key constraint:** GitHub's Actions Variables API requires a classic PAT with `repo` scope
 > OR a fine-grained PAT with `Variables: read/write`. **`GITHUB_TOKEN` cannot access

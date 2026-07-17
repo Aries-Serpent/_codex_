@@ -367,7 +367,7 @@ print(f"Config types: {result['meta']['config_types']}")
    .env.*.local
    *secret*
    *key*
-   ```
+ ```
 
 2. **Use Environment Variables for Secrets**
    ```text
@@ -376,7 +376,7 @@ print(f"Config types: {result['meta']['config_types']}")
 
    # Avoid
    api_key = "hardcoded-secret-key" <!-- pragma: allowlist secret -->
-   ```
+ ```
 
 3. **Encrypt Sensitive Configuration**
 ```python
@@ -500,5 +500,5 @@ diff config.production.json config.baseline.json
 
 ---
 
-**Last Updated**: 2025-12-09  
+**Last Updated**: 2025-12-09
 **Capability ID**: mcp-configuration

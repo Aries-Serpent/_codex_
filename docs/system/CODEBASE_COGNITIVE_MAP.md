@@ -7,13 +7,13 @@
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Provide a high-level cognitive map of the `_codex_` repository including components, flows, dependencies, and operational context for AI agents and human contributors.
 
-**Energy Level**:  (4/5 - High Priority Reference Document)
+**Energy Level**: (4/5 - High Priority Reference Document)
 
-**Status**:  Active
+**Status**: Active
 
 **Last Updated**: 2026-06-22T00:00:00Z | **Version**: 2.1.0 | **Last Reviewed**: 2026-06-22T18:02:00Z
 
@@ -60,7 +60,7 @@ python -m codex.cli transform <snapshot-id> --tier A # Apply transformations
 python -m codex.cli verify <snapshot-id> # Behavior verification
 ```
 
-**Flow**: Source → Ingest → Analyze → Transform → Verify → PR
+**Flow**: Source Ingest Analyze Transform Verify PR
 
 ### 2. agent System (`agents/`)
 **Purpose**: Autonomous AI agents with physics-inspired optimization
@@ -79,6 +79,7 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing unified-coverage-agent, unified-doc-agent'}}%%
+
 graph LR
     subgraph "Unified Agents (canonical entry points)"
         UC[unified-coverage-agent]
@@ -90,11 +91,17 @@ graph LR
         SH[self-healing-orchestrator-agent]
     end
     subgraph "Deprecated → Merged"
+
         D1[coverage-gapfill / -maintenance / -roadmap / test-coverage-agent / -monitor] --> UC
+
         D2[documentation-quality-agent / documentation-consolidator] --> UD
+
         D3[secret-detection / dep-vuln-scanner / dep-sec-review / security-audit] --> US
+
         D4[ci-failure-resolution-agent] --> SH
+
         D5[ci-resilience-emergency-response-agent] --> CMR[ci-emergency-response-agent]
+
         D6[cache-manager-integration] --> CM
     end
     UG --- WM
@@ -198,6 +205,7 @@ Test Execution → Cache Management → Artifact Generation
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing CODEX_MASTER_KEY, CODEX_BACKUP_KEY'}}%%
+
 graph TB
     subgraph "Org Secrets (13)"
         OM[CODEX_MASTER_KEY]
@@ -228,8 +236,11 @@ graph TB
     subgraph "Env Secrets (3) — Sandbox"
         ES[CODEX_RUNNER_TOKEN, CODEX_ENVIRONMENT_RUNNER]
     end
+
     OM --> |token_chain| RS
+
     OB --> |fallback| RS
+
     RV2 --> |controls| EV
 ```
 
@@ -374,7 +385,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 ## Navigation for AI Agents
 
 ## Getting Started
-1. **Architecture**: This doc → `docs/ARCHITECTURE.md`
+1. **Architecture**: This doc `docs/ARCHITECTURE.md`
 2. **Capabilities**: `docs/capabilities/*.md`
 3. **Workflows**: `agents/TOKENIZED_WORKFLOWS.md`
 4. **MCP**: `docs/mcp/QUICK_START.md`
@@ -412,7 +423,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 ### Architecture Accuracy
 - [x] component structure matches current repository layout
@@ -433,30 +444,30 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Documentation freshness | <30 iterations | 0 iterations |  |
-| Broken links | 0 | 0 |  |
-| Outdated references | 0 | 0 |  |
-| Table rendering issues | 0 | 0 |  |
+| Documentation freshness | <30 iterations | 0 iterations | |
+| Broken links | 0 | 0 | |
+| Outdated references | 0 | 0 | |
+| Table rendering issues | 0 | 0 | |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
 | Principle | Application | Section |
 |-----------|-------------|---------|
-| Path ️ | Clear navigation from overview to detailed components | All sections |
-| Fields  | Data flows show transformation through pipeline | Data Flows |
-| Patterns ️ | Architecture patterns visible and documented | Components |
-| Redundancy  | Multiple entry points and cross-references | Navigation |
-| Balance ️ | Balanced detail across all major components | All sections |
+| Path | Clear navigation from overview to detailed components | All sections |
+| Fields | Data flows show transformation through pipeline | Data Flows |
+| Patterns | Architecture patterns visible and documented | Components |
+| Redundancy | Multiple entry points and cross-references | Navigation |
+| Balance | Balanced detail across all major components | All sections |
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Navigation Redundancy**:
 - Multiple access paths: By component, by workflow, by role
@@ -470,16 +481,16 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 | Section | Energy | Rationale |
 |---------|--------|-----------|
-| Architecture Overview |  | Critical for understanding system structure |
-| Core Components |  | Essential for development and maintenance |
-| Data Flows |  | Important for troubleshooting and optimization |
-| CI/CD Pipeline |  | Key for deployment and automation |
-| Quick Reference |  | Utility section for common tasks |
+| Architecture Overview | | Critical for understanding system structure |
+| Core Components | | Essential for development and maintenance |
+| Data Flows | | Important for troubleshooting and optimization |
+| CI/CD Pipeline | | Key for deployment and automation |
+| Quick Reference | | Utility section for common tasks |
 
 ---
 
-**Questions?** → [Dashboard](./CODEBASE_DASHBOARD.md)
+**Questions?** [Dashboard](./CODEBASE_DASHBOARD.md)

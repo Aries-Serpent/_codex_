@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0  
-**Last Updated**: 2026-06-22  
-**Maintainer**: Security Engineer  
-**Classification**: Confidential - Internal Use Only  
+**Version**: 1.0
+**Last Updated**: 2026-06-22
+**Maintainer**: Security Engineer
+**Classification**: Confidential - Internal Use Only
 
 ---
 
@@ -70,34 +70,34 @@ Security Alert Detected
 **Sources of Security Alerts**:
 
 1. **WAF (Web Application Firewall)**
-   - SQL injection attempts
-   - Cross-site scripting (XSS) attempts
-   - Path traversal attacks
+ - SQL injection attempts
+ - Cross-site scripting (XSS) attempts
+ - Path traversal attacks
 
 2. **IDS/IPS (Intrusion Detection/Prevention)**
-   - Malicious traffic patterns
-   - Port scanning activity
-   - DDoS signatures
+ - Malicious traffic patterns
+ - Port scanning activity
+ - DDoS signatures
 
 3. **SIEM (Security Information & Event Management)**
-   - Failed authentication bursts
-   - Privilege escalation attempts
-   - Suspicious API calls
+ - Failed authentication bursts
+ - Privilege escalation attempts
+ - Suspicious API calls
 
 4. **Application Logs**
-   - Unhandled exceptions
-   - Authentication failures
-   - Authorization failures
+ - Unhandled exceptions
+ - Authentication failures
+ - Authorization failures
 
 5. **Infrastructure Monitoring**
-   - Unusual process execution
-   - Unexpected network connections
-   - File integrity changes
+ - Unusual process execution
+ - Unexpected network connections
+ - File integrity changes
 
 6. **Third-party Services**
-   - HaveiBeenPwned database breach notification
-   - GitHub secret scanning alerts
-   - Dependency vulnerability warnings
+ - HaveiBeenPwned database breach notification
+ - GitHub secret scanning alerts
+ - Dependency vulnerability warnings
 
 ### 1.2 Alert Configuration
 
@@ -572,31 +572,31 @@ Security Team
 **Review Agenda**:
 
 1. **Timeline Review** (15 min)
-   - When was incident detected?
-   - When was it contained?
-   - When was it resolved?
-   - Identify gaps in response time
+ - When was incident detected?
+ - When was it contained?
+ - When was it resolved?
+ - Identify gaps in response time
 
 2. **Root Cause Analysis** (20 min)
-   - What was the vulnerability?
-   - Why wasn't it caught in testing?
-   - Why didn't monitoring detect it earlier?
+ - What was the vulnerability?
+ - Why wasn't it caught in testing?
+ - Why didn't monitoring detect it earlier?
 
 3. **Response Effectiveness** (15 min)
-   - Were procedures effective?
-   - What worked well?
-   - What could be improved?
+ - Were procedures effective?
+ - What worked well?
+ - What could be improved?
 
 4. **Prevention Actions** (20 min)
-   - How do we prevent this in future?
-   - What additional testing/scanning needed?
-   - What monitoring improvements needed?
-   - Who owns action items and when?
+ - How do we prevent this in future?
+ - What additional testing/scanning needed?
+ - What monitoring improvements needed?
+ - Who owns action items and when?
 
 5. **Communication Review** (10 min)
-   - Was communication timely?
-   - Were stakeholders properly informed?
-   - Any communication improvements?
+ - Was communication timely?
+ - Were stakeholders properly informed?
+ - Any communication improvements?
 
 ### 7.2 Post-Incident Report
 
@@ -706,6 +706,6 @@ kubectl get networkpolicies -n production
 
 ---
 
-**Document Version**: 1.0  
-**Last Reviewed**: 2024-01-15  
+**Document Version**: 1.0
+**Last Reviewed**: 2024-01-15
 **Next Review Date**: 2024-02-15

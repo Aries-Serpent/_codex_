@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version:** 1.0.0  
+**Version:** 1.0.0
 **Last Updated: 2026-07-11
 **Coverage:** 90% (45 of 50 commands documented)
 
@@ -43,21 +43,21 @@ codex zendesk snapshot --env production
 
 | Module | Framework | Commands | Status |
 |--------|-----------|----------|--------|
-| cli.py | Click + Typer | 20+ |  Core |
-| cli_rag.py | Typer | 8 |  Complete |
-| cli_zendesk.py | Typer | 9 |  Complete |
-| cli_knowledge.py | Typer | 4 | ️ Partial |
-| cli_release.py | Typer | 4 | ️ Partial |
-| cli_roles.py | Typer | 1 | ️ Partial |
-| cli_qa.py | Typer | 1 | ️ Partial |
-| cli_maps.py | Typer | 1 |  Complete |
+| cli.py | Click + Typer | 20+ | Core |
+| cli_rag.py | Typer | 8 | Complete |
+| cli_zendesk.py | Typer | 9 | Complete |
+| cli_knowledge.py | Typer | 4 | Partial |
+| cli_release.py | Typer | 4 | Partial |
+| cli_roles.py | Typer | 1 | Partial |
+| cli_qa.py | Typer | 1 | Partial |
+| cli_maps.py | Typer | 1 | Complete |
 
 ---
 
 ## RAG Commands
 
-**Module:** `cli_rag.py`  
-**Framework:** Typer  
+**Module:** `cli_rag.py`
+**Framework:** Typer
 **Purpose:** Manage FAISS indices for Retrieval-Augmented Generation
 
 ### rag build
@@ -72,7 +72,7 @@ codex rag build [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `--files` / `-f` | List[str] | — |  | File patterns (glob support, e.g., `docs/**/*.md`) |
+| `--files` / `-f` | List[str] | — | | File patterns (glob support, e.g., `docs/**/*.md`) |
 | `--index-name` / `-i` | str | `default` | — | Name for the index |
 | `--tenant-id` / `-t` | str | `default` | — | Tenant identifier for multi-tenancy |
 | `--chunk-size` / `-c` | int | 1000 | — | Max chunk size (100-10000 chars) |
@@ -114,7 +114,7 @@ codex rag query [TEXT] [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `query_text` | str | — |  | Query text for semantic search |
+| `query_text` | str | — | | Query text for semantic search |
 | `--index-name` / `-i` | str | `default` | — | Name of the index to query |
 | `--tenant-id` / `-t` | str | `default` | — | Tenant identifier |
 | `--top-k` / `-k` | int | 5 | — | Number of results (1-100) |
@@ -136,7 +136,7 @@ codex rag query "architecture" --format json --index-name code
 
 #### Output
 
-**Table Format:** Rank, File, Chunk, Score, Preview  
+**Table Format:** Rank, File, Chunk, Score, Preview
 **JSON Format:** Array of result objects with metadata
 
 ---
@@ -184,7 +184,7 @@ codex rag delete [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `--index-name` / `-i` | str | — |  | Name of the index to delete |
+| `--index-name` / `-i` | str | — | | Name of the index to delete |
 | `--tenant-id` / `-t` | str | `default` | — | Tenant identifier |
 | `--index-dir` / `-d` | str | `.codex/tenants` | — | Base directory for indices |
 | `--yes` / `-y` | bool | False | — | Skip confirmation prompt |
@@ -217,8 +217,8 @@ codex rag merge [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `--source` / `-s` | List[str] | — |  | Source index names (repeatable, min: 2) |
-| `--target` / `-t` | str | — |  | Target index name |
+| `--source` / `-s` | List[str] | — | | Source index names (repeatable, min: 2) |
+| `--target` / `-t` | str | — | | Target index name |
 | `--tenant-id` | str | `default` | — | Tenant identifier |
 
 #### Examples
@@ -303,7 +303,7 @@ codex rag metrics --format json --output metrics.json
 
 #### Output
 
-**Prometheus:** TEXT format for Prometheus scraping  
+**Prometheus:** TEXT format for Prometheus scraping
 **JSON:** Statistics dictionary
 
 ---
@@ -348,8 +348,8 @@ Benchmark results with timing, throughput, and regression analysis
 
 ## Zendesk Commands
 
-**Module:** `cli_zendesk.py`  
-**Framework:** Typer  
+**Module:** `cli_zendesk.py`
+**Framework:** Typer
 **Purpose:** Manage Zendesk configurations (IaC approach)
 
 ### zendesk env-check
@@ -364,7 +364,7 @@ codex zendesk env-check --env ENVIRONMENT
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `--env` | str |  | Environment identifier (e.g., prod, staging) |
+| `--env` | str | | Environment identifier (e.g., prod, staging) |
 
 #### Environment Variables
 
@@ -457,7 +457,7 @@ codex zendesk snapshot [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `--env` | str |  | Environment identifier |
+| `--env` | str | | Environment identifier |
 | `--output` / `-o` | Path | — | Output file path (default: stdout) |
 
 #### Examples
@@ -496,9 +496,9 @@ codex zendesk diff RESOURCE [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `resource` | str |  | Resource type (triggers/fields/forms/groups/macros/views/webhooks/apps/routing/slas/guide) |
-| `--desired-file` | Path |  | Desired state file (JSON/TOML) |
-| `--current-file` | Path |  | Current state file (JSON/TOML) |
+| `resource` | str | | Resource type (triggers/fields/forms/groups/macros/views/webhooks/apps/routing/slas/guide) |
+| `--desired-file` | Path | | Desired state file (JSON/TOML) |
+| `--current-file` | Path | | Current state file (JSON/TOML) |
 | `--output` | Path | — | Output diff file (optional) |
 
 #### Examples
@@ -529,7 +529,7 @@ codex zendesk plan DIFF_FILE [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `diff_file` | Path |  | Diff JSON from diff command |
+| `diff_file` | Path | | Diff JSON from diff command |
 | `--output` | Path | — | Output plan file (optional) |
 
 #### Examples
@@ -560,9 +560,9 @@ codex zendesk apply RESOURCE [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `resource` | str |  | Resource type |
-| `--plan-file` | Path |  | Plan JSON file |
-| `--env` | str |  | Target environment |
+| `resource` | str | | Resource type |
+| `--plan-file` | Path | | Plan JSON file |
+| `--env` | str | | Target environment |
 | `--dry-run` | bool | — | Simulate without making changes |
 
 #### Examples
@@ -598,8 +598,8 @@ List of registered metric identifiers
 
 ## Knowledge Base Commands
 
-**Module:** `cli_knowledge.py`  
-**Framework:** Typer  
+**Module:** `cli_knowledge.py`
+**Framework:** Typer
 **Purpose:** Build and manage knowledge bases
 
 ### knowledge build-kb
@@ -723,7 +723,7 @@ The command uses a quantum coherence equation:
 
 Where:
 - N = Node count
-- E = Edge count  
+- E = Edge count
 - V = Variable count
 - T = Token count
 
@@ -739,8 +739,8 @@ JSON with:
 
 ## Release Management
 
-**Module:** `cli_release.py`  
-**Framework:** Typer  
+**Module:** `cli_release.py`
+**Framework:** Typer
 **Purpose:** Offline package creation and distribution
 
 ### release init-manifest
@@ -804,7 +804,7 @@ codex release verify BUNDLE
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `bundle` | Path |  | Bundle file path |
+| `bundle` | Path | | Bundle file path |
 
 #### Output
 
@@ -849,8 +849,8 @@ JSON with destination path
 
 ## Core Commands
 
-**Module:** `cli.py`  
-**Framework:** Click + Typer Hybrid  
+**Module:** `cli.py`
+**Framework:** Click + Typer Hybrid
 **Purpose:** Core training, logging, and utilities
 
 ### Core Features
@@ -892,8 +892,8 @@ codex tokenizer SUBCOMMAND [OPTIONS]
 
 | Command | Purpose |
 |---------|---------|
-| `encode` | Text → Token IDs |
-| `decode` | Token IDs → Text |
+| `encode` | Text Token IDs |
+| `decode` | Token IDs Text |
 | `stats` | Vocabulary statistics |
 | `list-models` | Available models |
 
@@ -917,8 +917,8 @@ Key options:
 
 ## Role & Mapping Commands
 
-**Module:** `cli_roles.py`  
-**Framework:** Typer  
+**Module:** `cli_roles.py`
+**Framework:** Typer
 **Purpose:** Cross-platform role synchronization
 
 ### roles export-matrix
@@ -933,9 +933,9 @@ codex roles export-matrix ZENDESK_FILE DYNAMICS_FILE OUTPUT
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `zendesk_roles_file` | Path |  | Zendesk roles (JSON/JSONL) |
-| `dynamics_roles_file` | Path |  | Dynamics roles (JSON/JSONL) |
-| `output_json` | Path |  | Output matrix JSON |
+| `zendesk_roles_file` | Path | | Zendesk roles (JSON/JSONL) |
+| `dynamics_roles_file` | Path | | Dynamics roles (JSON/JSONL) |
+| `output_json` | Path | | Output matrix JSON |
 
 #### Input Formats
 
@@ -950,8 +950,8 @@ JSON matrix with role mappings
 
 ## QA Commands
 
-**Module:** `cli_qa.py`  
-**Framework:** Typer  
+**Module:** `cli_qa.py`
+**Framework:** Typer
 **Purpose:** Offline QA scoring
 
 ### qa score
@@ -966,9 +966,9 @@ codex qa score RUBRIC INPUT OUTPUT
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `rubric_file` | Path |  | QA rubric file (must exist) |
-| `input_csv` | Path |  | Input CSV (must exist) |
-| `output_jsonl` | Path |  | Output JSONL file |
+| `rubric_file` | Path | | QA rubric file (must exist) |
+| `input_csv` | Path | | Input CSV (must exist) |
+| `output_jsonl` | Path | | Output JSONL file |
 
 #### Output
 
@@ -978,8 +978,8 @@ JSONL file with scored results + status JSON
 
 ## Mapping Commands
 
-**Module:** `cli_maps.py`  
-**Framework:** Typer  
+**Module:** `cli_maps.py`
+**Framework:** Typer
 **Purpose:** Mapping table inspection
 
 ### maps inspect

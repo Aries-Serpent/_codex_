@@ -4,9 +4,9 @@
 
 **Last Updated: 2026-06-22
 
-**Status**: Active  
-**Pattern ID**: P-PROC-001  
-**PDA**: Plan → Do → Assess
+**Status**: Active
+**Pattern ID**: P-PROC-001
+**PDA**: Plan Do Assess
 
 This guide documents the PDA (Plan-Do-Assess) loop used by agents in this repository.
 Every agent session MUST follow this loop to ensure consistent, high-quality output.
@@ -183,13 +183,13 @@ A session is complete ONLY when:
 
 The PDA loop terminates when ALL of the following are true:
 
-1.  All tasks in the plan are checked off
-2.  5+ self-review iterations completed with zero concerns
-3.  CI shows 0 errors, 0 warnings on the branch
-4.  Cognitive brain status updated with patterns/learnings
-5.  Follow-up `@copilot` prompt posted on the PR
+1. All tasks in the plan are checked off
+2. 5+ self-review iterations completed with zero concerns
+3. CI shows 0 errors, 0 warnings on the branch
+4. Cognitive brain status updated with patterns/learnings
+5. Follow-up `@copilot` prompt posted on the PR
 
-If any criterion is not met → loop back to **PLAN** with updated context.
+If any criterion is not met loop back to **PLAN** with updated context.
 
 ---
 

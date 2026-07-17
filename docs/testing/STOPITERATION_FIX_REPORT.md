@@ -6,7 +6,7 @@
 
 **Date**: 2026-02-08
 **CI Job**: 62875310963
-**Status**:  FIXED
+**Status**: FIXED
 
 ## Problem Summary
 
@@ -121,34 +121,34 @@ except StopIteration:
 ### 1. tests/unit/interpretability/test_attention_scorer.py
 
 **Changes:**
--  Added graceful import handling for torch and numpy
--  Set torch/np to None on ImportError
--  Added pytestmark for early skip registration
--  Wrapped `MockTransformerModel` class in `if HAS_DEPS` block
--  Added dummy class for when torch unavailable
+- Added graceful import handling for torch and numpy
+- Set torch/np to None on ImportError
+- Added pytestmark for early skip registration
+- Wrapped `MockTransformerModel` class in `if HAS_DEPS` block
+- Added dummy class for when torch unavailable
 
 **Lines changed:** ~20 insertions, ~10 modifications
 
 ### 2. tests/unit/interpretability/test_mlp_scorer.py
 
 **Changes:**
--  Added graceful import handling for torch and numpy
--  Set torch/np to None on ImportError
--  Added pytestmark for early skip registration
--  Wrapped `MockTransformerWithMLP` class in `if HAS_DEPS` block
--  Added dummy class for when torch unavailable
+- Added graceful import handling for torch and numpy
+- Set torch/np to None on ImportError
+- Added pytestmark for early skip registration
+- Wrapped `MockTransformerWithMLP` class in `if HAS_DEPS` block
+- Added dummy class for when torch unavailable
 
 **Lines changed:** ~20 insertions, ~10 modifications
 
 ### 3. tests/training/test_train_loop_coverage.py
 
 **Changes:**
--  Enhanced existing HAS_TORCH check with None assignments
--  Added fallback values (Dataset=object, DataLoader=None, Adam=None)
--  Wrapped `SimpleDataset` and `SimpleModel` in `if HAS_TORCH` block
--  Added dummy classes for when torch unavailable
--  Added StopIteration exception handling in `test_single_training_step`
--  Added StopIteration exception handling in `test_gradient_accumulation_equivalence`
+- Enhanced existing HAS_TORCH check with None assignments
+- Added fallback values (Dataset=object, DataLoader=None, Adam=None)
+- Wrapped `SimpleDataset` and `SimpleModel` in `if HAS_TORCH` block
+- Added dummy classes for when torch unavailable
+- Added StopIteration exception handling in `test_single_training_step`
+- Added StopIteration exception handling in `test_gradient_accumulation_equivalence`
 
 **Lines changed:** ~30 insertions, ~15 modifications
 
@@ -156,7 +156,7 @@ except StopIteration:
 
 ### Verification Steps
 
-1. **Syntax Check**:  All files compile without errors
+1. **Syntax Check**: All files compile without errors
 2. **Import Test**: Verify modules can be imported with/without torch
 3. **Collection Test**: Run `pytest --collect-only` on modified files
 4. **Execution Test**: Run tests with torch installed (should pass/skip gracefully)
@@ -198,12 +198,12 @@ pytest tests/training/test_train_loop_coverage.py -v
 
 ## Best Practices Applied
 
-1.  **Early Dependency Checks**: Check for dependencies before using them
-2.  **Graceful Degradation**: Provide fallbacks for missing dependencies
-3.  **Conditional Class Definitions**: Only define classes when base classes exist
-4.  **Explicit Skip Markers**: Use pytestmark for module-level skips
-5.  **Safe Iterator Usage**: Always handle StopIteration from next()
-6.  **Clear Error Messages**: Provide context when failures occur
+1. **Early Dependency Checks**: Check for dependencies before using them
+2. **Graceful Degradation**: Provide fallbacks for missing dependencies
+3. **Conditional Class Definitions**: Only define classes when base classes exist
+4. **Explicit Skip Markers**: Use pytestmark for module-level skips
+5. **Safe Iterator Usage**: Always handle StopIteration from next()
+6. **Clear Error Messages**: Provide context when failures occur
 
 ## References
 
@@ -226,10 +226,10 @@ pytest tests/training/test_train_loop_coverage.py -v
 The StopIteration errors were caused by module-level class definitions that attempted to inherit from `torch.nn.Module` before verifying torch was available. The fix implements conditional class definitions and graceful import handling, ensuring tests are properly skipped when dependencies are missing while maintaining full functionality when dependencies are available.
 
 **All 20+ tests affected should now:**
--  Collect without StopIteration errors
--  Skip gracefully when torch/numpy unavailable
--  Run successfully when dependencies present
--  Work correctly in Python 3.12+
+- Collect without StopIteration errors
+- Skip gracefully when torch/numpy unavailable
+- Run successfully when dependencies present
+- Work correctly in Python 3.12+
 
 ---
 

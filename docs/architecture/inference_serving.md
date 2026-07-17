@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 2.0.0  
+> **Version**: 2.0.0
 > **Last Updated**: 2026-06-22
 
 ---
@@ -17,6 +17,7 @@ This document describes the architecture of the inference serving system, includ
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Web Client, API Client'}}%%
+
 graph TB
     subgraph "Client Layer"
         C1[Web Client]
@@ -54,7 +55,9 @@ graph TB
     end
 
     C1 --> LB
+
     C2 --> LB
+
     C3 --> LB
 
     LB --> TS
@@ -64,21 +67,31 @@ graph TB
     TS -.20%.-> G2
 
     B1 --> MS
+
     B2 --> MS
+
     G1 --> MS
+
     G2 --> MS
 
     B1 --> MC
+
     B2 --> MC
+
     G1 --> MC
+
     G2 --> MC
 
     B1 --> PM
+
     B2 --> PM
+
     G1 --> PM
+
     G2 --> PM
 
     PM --> GF
+
     PM --> AL
 ```
 
@@ -88,6 +101,7 @@ graph TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Client: 401 Unauthorized
+
    '}}%%
 sequenceDiagram
     participant Client
@@ -102,6 +116,7 @@ sequenceDiagram
     Auth->>Auth: Validate API Key
 
     alt Invalid API Key
+
         Auth-->>Client: 401 Unauthorized
     end
 
@@ -109,12 +124,14 @@ sequenceDiagram
     RateLimit->>RateLimit: Sliding Window Check
 
     alt Rate Limit Exceeded
+
         RateLimit-->>Client: 429 Too Many Requests
     end
 
     RateLimit->>CircuitBreaker: Check Circuit State
 
     alt Circuit Open
+
         CircuitBreaker-->>Client: 503 Service Unavailable
     end
 
@@ -130,17 +147,20 @@ sequenceDiagram
     end
 
     ModelLoader->>Model: predict(input)
+
     Model-->>ModelLoader: prediction
 
     alt Prediction Success
         ModelLoader->>CircuitBreaker: Record Success
         ModelLoader->>Metrics: Update Metrics
+
         ModelLoader-->>Client: 200 OK + prediction
     end
 
     alt Prediction Failure
         ModelLoader->>CircuitBreaker: Record Failure
         ModelLoader->>Metrics: Update Error Metrics
+
         ModelLoader-->>Client: 500 Internal Error
     end
 ```
@@ -151,12 +171,17 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
+
 stateDiagram-v2
+
     [*] --> Closed
 
     Closed --> Open: failures >= threshold
+
     Open --> HalfOpen: after backoff delay
+
     HalfOpen --> Closed: health probe success
+
     HalfOpen --> Open: health probe failure
 
     note right of Closed
@@ -183,31 +208,43 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Request arrives, Cache Hit'}}%%
+
 flowchart TD
+
     Start([Request arrives]) --> CheckCache{Model in cache?}
 
     CheckCache -->|Yes| CacheHit[Cache Hit]
+
     CheckCache -->|No| CacheMiss[Cache Miss]
 
     CacheHit --> Return[Return cached model]
 
     CacheMiss --> CheckRegistry{Model in registry?}
+
     CheckRegistry -->|Yes| Download[Download model]
+
     CheckRegistry -->|No| Error[Return 404]
 
     Download --> Validate[Validate checksum]
+
     Validate --> Load[Load into memory]
+
     Load --> Warmup[Run warmup predictions]
+
     Warmup --> AddCache[Add to LRU cache]
 
     AddCache --> CheckSize{Cache full?}
+
     CheckSize -->|Yes| Evict[Evict LRU model]
+
     CheckSize -->|No| Store[Store in cache]
 
     Evict --> Store
+
     Store --> Return
 
     Return --> End([Model ready])
+
     Error --> End
 ```
 
@@ -219,6 +256,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Load Balancer, Blue v1.0'}}%%
+
 graph LR
     subgraph "Initial State (All traffic to Blue)"
         LB1[Load Balancer] -.100%.-> Blue1[Blue v1.0]
@@ -263,6 +301,7 @@ sequenceDiagram
     Note over Splitter: Rollout in progress (60% Green)
 
     Monitor->>Green: Health Check
+
     Green-->>Monitor: Error Rate: 8%
 
     Monitor->>Monitor: Error rate > 5% threshold
@@ -273,6 +312,7 @@ sequenceDiagram
     Note over Splitter: All traffic to Blue
 
     Splitter->>Blue: Route all requests
+
     Blue-->>Splitter: Healthy responses
 
     Note over Green: Green deployment retired
@@ -284,29 +324,43 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Server 1, Prometheus'}}%%
+
 graph TB
     subgraph "Inference Servers"
+
         IS1[Server 1] -->|/metrics| PM[Prometheus]
+
         IS2[Server 2] -->|/metrics| PM
+
         IS3[Server 3] -->|/metrics| PM
     end
 
     subgraph "Monitoring Stack"
+
         PM -->|scrape| PM
+
         PM -->|query| GF[Grafana]
+
         PM -->|alert| AL[Alertmanager]
     end
 
     subgraph "Alerting"
+
         AL -->|email| EM[Email]
+
         AL -->|slack| SL[Slack]
+
         AL -->|pagerduty| PD[PagerDuty]
     end
 
     subgraph "Visualization"
+
         GF -->|dashboard| DB1[Request Dashboard]
+
         GF -->|dashboard| DB2[Error Dashboard]
+
         GF -->|dashboard| DB3[Latency Dashboard]
+
         GF -->|dashboard| DB4[Resource Dashboard]
     end
 ```
@@ -429,7 +483,7 @@ else:
 2. **Deployment manager** initiates blue-green rollout
 3. **Green deployment** loads new model
 4. **Health checks** validate green
-5. **Traffic** gradually shifts to green (0% → 100%)
+5. **Traffic** gradually shifts to green (0% 100%)
 6. **Monitoring** tracks error rates
 7. **Rollback** if error rate exceeds threshold
 8. **Promotion** if rollout successful
@@ -442,17 +496,27 @@ else:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Load Balancer, Server 1'}}%%
+
 graph LR
+
     LB[Load Balancer] --> S1[Server 1]
+
     LB --> S2[Server 2]
+
     LB --> S3[Server 3]
+
     LB --> S4[Server 4]
+
     LB --> Sn[Server N]
 
     S1 --> MR[(Model Registry)]
+
     S2 --> MR
+
     S3 --> MR
+
     S4 --> MR
+
     Sn --> MR
 ```
 
@@ -480,6 +544,7 @@ graph LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing TLS Termination, Authentication'}}%%
+
 graph TB
     subgraph "Security Layers"
         TLS[TLS Termination]
@@ -490,10 +555,15 @@ graph TB
     end
 
     Client --> TLS
+
     TLS --> Auth
+
     Auth --> RateLimit
+
     RateLimit --> Validation
+
     Validation --> Isolation
+
     Isolation --> Model[Model Execution]
 ```
 

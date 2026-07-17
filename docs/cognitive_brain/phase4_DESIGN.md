@@ -17,9 +17,9 @@ each behind a feature flag defaulting to **false** to ensure zero production reg
 
 | Enhancement | Flag | Est. Benefit | Status |
 |-------------|------|-------------|--------|
-| Bayesian Networks | `CODEX_BAYESIAN_MODE` | 30% FP reduction |  PoC |
-| Fuzzy Logic | `CODEX_FUZZY_MODE` | 12% FN reduction |  PoC |
-| Active Learning | `CODEX_ACTIVE_LEARNING` | 30%+ ongoing FP reduction |  Hook |
+| Bayesian Networks | `CODEX_BAYESIAN_MODE` | 30% FP reduction | PoC |
+| Fuzzy Logic | `CODEX_FUZZY_MODE` | 12% FN reduction | PoC |
+| Active Learning | `CODEX_ACTIVE_LEARNING` | 30%+ ongoing FP reduction | Hook |
 
 ---
 
@@ -211,26 +211,26 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 
 **Actual validation results (200 scenarios × 5 seeds):**
 
-| Seed | Accuracy | k₁    | Coherence | Notes |
+| Seed | Accuracy | k₁ | Coherence | Notes |
 |------|----------|-------|-----------|-------|
-| 42   | 91.4%    | 0.41  | 0.796     | Scenario generation beyond 110 GT reduces accuracy |
-| 123  | 93.6%    | 0.39  | 0.796     | Cross-seed generalisation |
-| 456  | 92.7%    | 0.39  | 0.778     | Cross-seed generalisation |
-| 789  | 94.1%    | 0.39  | 0.760     | Cross-seed generalisation |
-| 1000 | 92.7%    | 0.39  | 0.759     | Cross-seed generalisation |
+| 42 | 91.4% | 0.41 | 0.796 | Scenario generation beyond 110 GT reduces accuracy |
+| 123 | 93.6% | 0.39 | 0.796 | Cross-seed generalisation |
+| 456 | 92.7% | 0.39 | 0.778 | Cross-seed generalisation |
+| 789 | 94.1% | 0.39 | 0.760 | Cross-seed generalisation |
+| 1000 | 92.7% | 0.39 | 0.759 | Cross-seed generalisation |
 
 **Interpretation:**
-- Primary benchmark (seed=42, 110 GT scenarios): **100% accuracy, k₁ ≤ 0.35** 
+- Primary benchmark (seed=42, 110 GT scenarios): **100% accuracy, k₁ ≤ 0.35**
 - Cross-seed generalisation (200 scenarios): **91–94% accuracy** — above the 84% production minimum
 - k₁ increase at scale is expected: k₁ was optimised for the 110 GT scenario set; timing
-  variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
-- Coherence ≥ 0.650 maintained across all seeds 
-- No errors, no crashes, no memory leaks 
+ variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
+- Coherence ≥ 0.650 maintained across all seeds
+- No errors, no crashes, no memory leaks
 
 **Success criteria update:**
-- Primary benchmark accuracy: 100% 
-- Cross-seed accuracy: ≥84% (production minimum) 
-- System stability: no errors across 5 seeds 
+- Primary benchmark accuracy: 100%
+- Cross-seed accuracy: ≥84% (production minimum)
+- System stability: no errors across 5 seeds
 
 ---
 
@@ -239,7 +239,7 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 See `docs/ops/HMAC_rotation.md` for the complete KMS rotation runbook.
 
 **Summary:**
-- Development: empty key → SHA-256 fallback chain (safe, not tamper-proof)
+- Development: empty key SHA-256 fallback chain (safe, not tamper-proof)
 - Staging: 180-day rotation via Secrets Manager
 - Production: 90-day automatic KMS rotation + WORM persistence
 

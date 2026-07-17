@@ -10,7 +10,7 @@
 
 ---
 
-## ️ Navigation
+## Navigation
 
 ### Quickstart
 - **New Users**: Start with [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
@@ -27,7 +27,7 @@
 
 ## Documentation by Category
 
-### ️ Architecture & System Design
+### Architecture & System Design
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -125,7 +125,7 @@
 | [runbooks/zendesk_e2e_support_workflows_plan.md](runbooks/zendesk_e2e_support_workflows_plan.md) | Support workflows | Support Eng | <!-- pragma: allowlist secret -->
 | [runbooks/zendesk_admin_workflow.md](runbooks/zendesk_admin_workflow.md) | Admin workflows | Admins | <!-- pragma: allowlist secret -->
 
-### ️ Planning & Status
+### Planning & Status
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -137,7 +137,7 @@
 | [plans/](plans/) | Project plans | PM, Leads |
 | [status_updates/README.md](status_updates/README.md) | Status reports | All |
 
-### 🧪 Examples & Templates
+### Examples & Templates
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -169,11 +169,11 @@
 - **ML/AI**: [INTERPRETABILITY_GUIDE.md](INTERPRETABILITY_GUIDE.md)
 
 ### By Audience
-- **New Contributors**: Start → [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
-- **Developers**: See → [dev/CODE_STYLE_GUIDE.md](dev/CODE_STYLE_GUIDE.md)
-- **ML Engineers**: Check → [INTERPRETABILITY_GUIDE.md](INTERPRETABILITY_GUIDE.md)
-- **DevOps**: Visit → [runbooks/](runbooks/)
-- **AI Agents**: Use → [system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)
+- **New Contributors**: Start [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
+- **Developers**: See [dev/CODE_STYLE_GUIDE.md](dev/CODE_STYLE_GUIDE.md)
+- **ML Engineers**: Check [INTERPRETABILITY_GUIDE.md](INTERPRETABILITY_GUIDE.md)
+- **DevOps**: Visit [runbooks/](runbooks/)
+- **AI Agents**: Use [system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)
 
 ---
 
@@ -216,7 +216,7 @@ Obsolete docs moved to [archive/](archive/) with redirect notice.
 
 ---
 
-## 🤝 Contributing to Documentation
+## Contributing to Documentation
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on:
 - Writing clear, concise documentation

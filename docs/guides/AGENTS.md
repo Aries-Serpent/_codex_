@@ -2,18 +2,18 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-06-22  
+**Last Updated**: 2026-06-22
 **Scope**: docs/guides/**
 
 ---
 
-##  Guide Categories
+## Guide Categories
 
 This directory contains comprehensive guides for using the repository.
 
 ---
 
-##  Security Guides (2025-12-23)
+## Security Guides (2025-12-23)
 
 ### Reference
 
@@ -30,7 +30,7 @@ from codex.security.storage import SecureStorage
 
 ---
 
-##  Additional Guides
+## Additional Guides
 
 - AST implementation guides
 - Deployment guides
@@ -43,9 +43,9 @@ from codex.security.storage import SecureStorage
 
 ---
 
-## 📂 Module Reference Paths
+## Module Reference Paths
 
-**Security Module**: `src/codex/security/` - Already documented above  
-**AST Module**: `src/codex/ast/` - Code analysis and parsing  
-**Agent Directory**: `agents/` - Agent implementations  
+**Security Module**: `src/codex/security/` - Already documented above
+**AST Module**: `src/codex/ast/` - Code analysis and parsing
+**Agent Directory**: `agents/` - Agent implementations
 **Agent Scripts**: `scripts/agent/` - Agent automation

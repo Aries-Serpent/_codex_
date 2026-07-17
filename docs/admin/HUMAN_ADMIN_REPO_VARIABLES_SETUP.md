@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **For:** Human administrator (mbaetiong) — manual GitHub UI / CLI actions required  
-> **Source:** [PR #3483 comment #issuecomment-3988416714](https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714)  
-> **Technical reference:** [`REPO_VARIABLES_IMPLEMENTATION_GUIDE.md`](./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md)  
-> **Version:** 1.0.0  
+> **For:** Human administrator (mbaetiong) — manual GitHub UI / CLI actions required
+> **Source:** [PR #3483 comment #issuecomment-3988416714](https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714)
+> **Technical reference:** [`REPO_VARIABLES_IMPLEMENTATION_GUIDE.md`](./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md)
+> **Version:** 1.0.0
 > **Last Updated: 2026-07-11
 
 ---
@@ -15,13 +15,13 @@
 This guide contains **every action needed to implement the repository variable recommendations**
 from PR #3483. Each section has:
 
-- ☐ checkboxes to track completion
--  copy-paste ready code blocks
--  direct URLs — no searching required
-- 👆 exact click-by-click steps
+- checkboxes to track completion
+- copy-paste ready code blocks
+- direct URLs — no searching required
+- exact click-by-click steps
 
-**Total variables to create: 13**  
-**Variables to convert to placeholder (auto-managed): 1**  
+**Total variables to create: 13**
+**Variables to convert to placeholder (auto-managed): 1**
 **Estimated time: ~20 minutes**
 
 ---
@@ -30,15 +30,25 @@ from PR #3483. Each section has:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing  Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
+
 flowchart TD
+
     START([ Start]) --> PREREQ{Prerequisites\nmet?}
+
     PREREQ -->|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
+
     FIX_PREREQ --> PREREQ
+
     PREREQ -->|Yes| CHOICE{Setup method?}
+
     CHOICE -->|Fast — CLI| BATCH["§1 Batch CLI\n~5 minutes"]
+
     CHOICE -->|Careful — UI| UI_METHOD["§2 GitHub UI\n~20 minutes"]
+
     BATCH --> VERIFY["§3 Verify\nAll 13 variables present"]
+
     UI_METHOD --> VERIFY
+
     VERIFY --> DONE([ Complete])
 
     style START fill:#22c55e,color:#fff
@@ -57,8 +67,8 @@ Before starting, confirm all prerequisites:
 - [ ] You are logged in as **mbaetiong** (repository owner)
 - [ ] `gh` CLI is installed — run `gh --version` to confirm
 - [ ] `gh auth status` shows `Aries-Serpent/_codex_` in scope
-- [ ] `CODEX_MASTER_KEY` secret exists with `variables: read+write` permission  
-  → Check: <https://github.com/Aries-Serpent/_codex_/settings/secrets/actions>
+- [ ] `CODEX_MASTER_KEY` secret exists with `variables: read+write` permission
+ Check: <https://github.com/Aries-Serpent/_codex_/settings/secrets/actions>
 - [ ] You have at least 20 minutes uninterrupted
 
 ---
@@ -122,12 +132,12 @@ echo "────────────────────────�
 
 ### Navigate to the variables page
 
-👆 **Click this link:** <https://github.com/Aries-Serpent/_codex_/settings/variables/actions>
+ **Click this link:** <https://github.com/Aries-Serpent/_codex_/settings/variables/actions>
 
 Or navigate manually:
 1. Open <https://github.com/Aries-Serpent/_codex_>
 2. Click **Settings** tab (top of the page, requires owner access)
-3. In the left sidebar, scroll to **Security** → click **Secrets and variables**
+3. In the left sidebar, scroll to **Security** click **Secrets and variables**
 4. Click **Actions** in the sub-menu
 5. Click the **Variables** tab (next to Secrets)
 
@@ -139,6 +149,7 @@ You should see the existing variables list. You will click **New repository vari
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
+
 mindmap
   root((Variables\nto Create))
     Cognitive Brain
@@ -339,8 +350,8 @@ E
 
 > **Purpose:** Runtime cap on agent autonomy tier. `E` = advisory only (current safe default).
 > Change to `D` only after `e-to-d-transition-gate.yml` confirms 5/5 conditions AND you have
-> reviewed the E→D Transition Map.  
-> ️ **Do not set to `D` without explicit owner review.**
+> reviewed the ED Transition Map.
+> **Do not set to `D` without explicit owner review.**
 
 ---
 
@@ -452,14 +463,14 @@ false
 ```
 
 > **Purpose:** Gates `scripts/ci/auto_promote_tier.py`. Start at `false` — automation will
-> not promote agent tiers autonomously.  
-> ️ **Only set to `true` after thorough validation of the promotion script logic.**
+> not promote agent tiers autonomously.
+> **Only set to `true` after thorough validation of the promotion script logic.**
 
 ---
 
 ### Group D — Update Existing Variable (1 action)
 
-#### D1 — `COGNITIVE_BRAIN_SESSION_NUMBER` → Convert to Auto-Increment
+#### D1 — `COGNITIVE_BRAIN_SESSION_NUMBER` Convert to Auto-Increment
 
 This variable should no longer be manually set. A workflow step should increment it
 automatically on each session open.
@@ -471,7 +482,7 @@ automatically on each session open.
 **To update manually right now** (temporary — increment by 1):
 1. Click <https://github.com/Aries-Serpent/_codex_/settings/variables/actions>
 2. Find `COGNITIVE_BRAIN_SESSION_NUMBER` in the list
-3. Click the **pencil ✏️ edit icon** to the right
+3. Click the **pencil edit icon** to the right
 4. Change the value to the current value + 1
 5. Click **Save variable**
 
@@ -510,7 +521,7 @@ EMBEDDING_INDEX_AUTO_REBUILD         true
 
 ## Verify via GitHub UI
 
-👆 Click: <https://github.com/Aries-Serpent/_codex_/settings/variables/actions>
+ Click: <https://github.com/Aries-Serpent/_codex_/settings/variables/actions>
 
 Confirm all 13 variable names appear in the list. The page does not show values by default —
 click the variable name to expand it and confirm the value.
@@ -583,6 +594,7 @@ repository variable. To use it in a CI build:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 timeline
     title Variable Setup Impact Timeline
     section Immediately

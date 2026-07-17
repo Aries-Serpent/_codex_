@@ -4,10 +4,10 @@
 
 **Last Updated: 2026-06-22
 
-**Created:** 2026-01-08  
-**Current Coverage:** 95%+  
-**Target:** 100% (line and branch coverage)  
-**Status:**  Ready for Execution
+**Created:** 2026-01-08
+**Current Coverage:** 95%+
+**Target:** 100% (line and branch coverage)
+**Status:** Ready for Execution
 
 ---
 
@@ -15,7 +15,7 @@
 
 This document provides a detailed, actionable plan to achieve 100% test coverage for all RAG modules (`src/codex/rag/`). The plan is divided into 4 iterations with specific test cases, coverage targets, and validation steps.
 
-**Estimated Effort:** 2-3 pre-commit cycles  
+**Estimated Effort:** 2-3 pre-commit cycles
 **Expected Completion:** Next session (Pre-commits 9-10)
 
 ---
@@ -34,33 +34,33 @@ This document provides a detailed, actionable plan to achieve 100% test coverage
 ### Gap Categories
 
 1. **Exception Handling** (~40% of gaps)
-   - Import errors (missing dependencies)
-   - File I/O errors (partial reads, disk full)
-   - Network timeouts (OpenAI API)
-   - Corrupted data edge cases
+ - Import errors (missing dependencies)
+ - File I/O errors (partial reads, disk full)
+ - Network timeouts (OpenAI API)
+ - Corrupted data edge cases
 
 2. **Edge Cases** (~30% of gaps)
-   - Empty/None parameter handling
-   - Extreme values (very large/small)
-   - Concurrent access patterns
-   - Platform-specific code paths
+ - Empty/None parameter handling
+ - Extreme values (very large/small)
+ - Concurrent access patterns
+ - Platform-specific code paths
 
 3. **Rare Code Paths** (~20% of gaps)
-   - Fallback mechanisms
-   - Cleanup/destructor code
-   - Warning/logging branches
-   - Validation edge cases
+ - Fallback mechanisms
+ - Cleanup/destructor code
+ - Warning/logging branches
+ - Validation edge cases
 
 4. **Documentation Examples** (~10% of gaps)
-   - Code snippets in docs not tested
-   - Example usage patterns uncovered
+ - Code snippets in docs not tested
+ - Example usage patterns uncovered
 
 ---
 
 ## Iteration 1: Missing Exception Handlers
 
-**Goal:** Cover all exception handling paths  
-**Target:** +3-4% coverage  
+**Goal:** Cover all exception handling paths
+**Target:** +3-4% coverage
 **Duration:** 1 pre-commit cycle
 
 ### Test Cases to Add
@@ -199,8 +199,8 @@ pytest tests/test_rag_edge_cases.py -v --cov=src/codex/rag --cov-report=term-mis
 
 ## Iteration 2: Edge Case Parameters
 
-**Goal:** Cover all parameter validation and edge cases  
-**Target:** +2-3% coverage  
+**Goal:** Cover all parameter validation and edge cases
+**Target:** +2-3% coverage
 **Duration:** 1 pre-commit cycle
 
 ### Test Cases to Add
@@ -339,8 +339,8 @@ pytest tests/test_rag_edge_cases.py::TestExtremeParameters -v --cov=src/codex/ra
 
 ## Iteration 3: Rare Code Paths & Cleanup
 
-**Goal:** Cover destructors, fallbacks, and rare branches  
-**Target:** +1-2% coverage  
+**Goal:** Cover destructors, fallbacks, and rare branches
+**Target:** +1-2% coverage
 **Duration:** 0.5 pre-commit cycles
 
 ### Test Cases to Add
@@ -491,8 +491,8 @@ pytest tests/test_rag_edge_cases.py::TestRareCodePaths -v --cov=src/codex/rag --
 
 ## Iteration 4: Documentation Examples & Final Gaps
 
-**Goal:** Cover all code examples and remaining gaps  
-**Target:** +1-2% coverage (achieve 100%)  
+**Goal:** Cover all code examples and remaining gaps
+**Target:** +1-2% coverage (achieve 100%)
 **Duration:** 0.5 pre-commit cycles
 
 ### Test Cases to Add
@@ -698,11 +698,11 @@ pytest tests/test_rag_*.py \
 
 | Iteration | After Coverage | Increase | Status |
 |-----------|----------------|----------|--------|
-| Current | 95%+ | - |  Complete |
-| Iteration 1 | 96-97% | +1-2% |  Next |
-| Iteration 2 | 97-98% | +1% |  Planned |
-| Iteration 3 | 98-99% | +1% |  Planned |
-| Iteration 4 | 100% | +1-2% |  Target |
+| Current | 95%+ | - | Complete |
+| Iteration 1 | 96-97% | +1-2% | Next |
+| Iteration 2 | 97-98% | +1% | Planned |
+| Iteration 3 | 98-99% | +1% | Planned |
+| Iteration 4 | 100% | +1-2% | Target |
 
 ### Test Count Targets
 
@@ -839,17 +839,17 @@ python scripts/generate_coverage_tests.py
          entry: pytest tests/test_rag_*.py --cov=src/codex/rag --cov-fail-under=100
          language: system
          pass_filenames: false
-   ```
+ ```
 
 2. **CI Enforcement**:
-   - Already configured in `.github/workflows/test-rag.yml`
-   - Fails if coverage <90%
-   - Update threshold to 100% after achievement
+ - Already configured in `.github/workflows/test-rag.yml`
+ - Fails if coverage <90%
+ - Update threshold to 100% after achievement
 
 3. **New Code Requirements**:
-   - All new functions must have tests
-   - All new branches must be covered
-   - Documentation examples must be validated
+ - All new functions must have tests
+ - All new branches must be covered
+ - Documentation examples must be validated
 
 ---
 
@@ -858,7 +858,7 @@ python scripts/generate_coverage_tests.py
 This plan provides a systematic, executable path to 100% test coverage through 4 focused iterations. Each iteration targets specific coverage gaps with concrete test cases. Expected completion within 2 pre-commit cycles (3-5 hours).
 
 **Key Success Factors:**
-- Systematic approach (exception → edge → rare → docs)
+- Systematic approach (exception edge rare docs)
 - Specific test cases provided
 - Clear validation steps
 - Automation support

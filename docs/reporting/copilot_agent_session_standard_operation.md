@@ -18,34 +18,55 @@ reference; the machine-readable canonical planset lives at
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Session Start, Pre-load Context'}}%%
+
 flowchart TD
+
   A[Session Start] --> B[Pre-load Context]
+
   B --> B2[Session Access Probe + Drift Severity]
+
   B2 --> B3[RAG Context Build + Bootstrap Health Score]
+
   B3 --> C[Baseline Checks]
+
   C --> D[Task Planning + Checklist]
+
   D --> E[Implementation Iterations]
+
   E --> F[Validation + Security Review]
+
   F --> G[Living Docs Refresh - Auto-Populate]
+
   G --> H[Progress Commit/Push]
+
   H --> I[Session Handoff / Next Prompt]
 
   B3 -- health < 80 --> MUST_FIX[Must-Fix Before Editing List]
+
   MUST_FIX --> C
 ```
 
-## 🧭 AI-Friendly Codeless Depiction of Intended Copilot Design
+## AI-Friendly Codeless Depiction of Intended Copilot Design
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Load session packet, Assess drift + health'}}%%
+
 flowchart TD
+
   A[Load session packet] --> B[Assess drift + health]
+
   B --> C{Risk posture}
+
   C -->|LOW| D[Execute scoped task plan]
+
   C -->|MEDIUM/HIGH| E[Apply conflict mitigations + rebase gate]
+
   E --> D
+
   D --> F[Validate]
+
   F --> G[Auto-populate living docs]
+
   G --> H[Handoff with tokenized state]
 ```
 
@@ -115,15 +136,15 @@ Use tokenized variable aliases in living docs and session handoffs to keep refer
 
 - **Hard rule:** do not start broad workflow fanout after minute 50 of a session.
 - **Reserve the final 5 minutes** for wrap-up progress, WEC preservation, and the next-session
-  handoff prompt.
+ handoff prompt.
 - Prefer read-only MCP inventory calls first; only use direct GitHub REST/CLI writes when the
-  action is necessary and the session has the correct token scope.
+ action is necessary and the session has the correct token scope.
 - Approval-gated runs count against rate-limit and session time; only arm workflows that are
-  actually needed for the active task.
+ actually needed for the active task.
 
-##  Branch-Update Conflict — Session Quick Reference
+## Branch-Update Conflict — Session Quick Reference
 
-> Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md → Branch-Update Conflict Dashboard`](workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard)
+> Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md Branch-Update Conflict Dashboard`](workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard)
 
 ```
 Detect drift:  git log main..HEAD --oneline | wc -l
@@ -135,7 +156,7 @@ Detect drift:  git log main..HEAD --oneline | wc -l
 
 **HIGH-risk workflows to guard (write-capable; conflict immediately if main drifts):**
 
-|  Workflow | Runs/7d | Required mitigation |
+| Workflow | Runs/7d | Required mitigation |
 |---|---:|---|
 | `iterative-self-healing-ci.yml` | 413 | `CODEX_SWEEP_SKIP_MAIN=true` + `CODEX_MAX_HEALER_RUNS_PER_HOUR≤3` + `CODEX_HEALER_SKIP_SKIPCI=true` |
 | `copilot-evolution-suite.yml` | 10 | `CODEX_SWEEP_SKIP_MAIN=true`; do not trigger during HIGH drift |
@@ -147,7 +168,7 @@ Detect drift:  git log main..HEAD --oneline | wc -l
 ## Expected Entry Checklist (Streamlined)
 
 1. Load mandatory context files + latest PDA entries.
-2. Check branch drift: `git log main..HEAD --oneline | wc -l` → apply conflict protocol above.
+2. Check branch drift: `git log main..HEAD --oneline | wc -l` apply conflict protocol above.
 3. Check bootstrap health score (`SESSION_BOOTSTRAP_HEALTH` in `GITHUB_ENV`); if < 80, resolve "Must-Fix" list first.
 4. Read unresolved maintainer/bot comments and failing checks.
 5. Run baseline validation (`nox -s precommit`, `nox -s tests`) and capture pre-existing failures.

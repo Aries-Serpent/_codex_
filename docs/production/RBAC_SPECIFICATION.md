@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0.0  
-**Effective Date**: 2026-06-14  
-**Classification**: Internal — Security Sensitive  
-**Owner**: Security & Access Management Team  
+**Version**: 1.0.0
+**Effective Date**: 2026-06-14
+**Classification**: Internal — Security Sensitive
+**Owner**: Security & Access Management Team
 **Last Updated**: 2026-06-14
 
 ---
@@ -126,21 +126,21 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Editor | Reviewer | Operator | Viewer | Service |
 |---|---|---|---|---|---|---|---|---|
-| `repo:read` | Read repository |  |  |  |  |  |  | * |
-| `repo:write` | Write to repository |  |  |  |  |  |  |  |
-| `repo:admin` | Repository administration |  |  |  |  |  |  |  |
-| `branch:protect:write` | Modify branch protection |  |  |  |  |  |  |  |
-| `branch:protect:bypass` | Bypass protection |  |  |  |  |  |  |  |
+| `repo:read` | Read repository | | | | | | | * |
+| `repo:write` | Write to repository | | | | | | | |
+| `repo:admin` | Repository administration | | | | | | | |
+| `branch:protect:write` | Modify branch protection | | | | | | | |
+| `branch:protect:bypass` | Bypass protection | | | | | | | |
 
 ### Deployment Permissions
 
 | Permission | Description | Owner | Admin | Editor | Operator |
 |---|---|---|---|---|---|
-| `deploy:read` | View deployments |  |  |  |  |
-| `deploy:write` | Deploy (staging) |  |  |  |  |
-| `deploy:prod` | Deploy to production |  | * |  | * |
-| `deploy:rollback` | Rollback deployment |  | * |  | * |
-| `deploy:approve` | Approve deployment |  |  |  |  |
+| `deploy:read` | View deployments | | | | |
+| `deploy:write` | Deploy (staging) | | | | |
+| `deploy:prod` | Deploy to production | | * | | * |
+| `deploy:rollback` | Rollback deployment | | * | | * |
+| `deploy:approve` | Approve deployment | | | | |
 
 *Requires secondary approval
 
@@ -148,19 +148,19 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Others |
 |---|---|---|---|---|
-| `secret:read` | Read secrets |  |  |  | <!-- pragma: allowlist secret -->
-| `secret:write` | Create/update secrets |  |  |  | <!-- pragma: allowlist secret -->
-| `secret:rotate` | Rotate secrets |  |  |  | <!-- pragma: allowlist secret -->
-| `secret:delete` | Delete secrets |  |  |  | <!-- pragma: allowlist secret -->
+| `secret:read` | Read secrets | | | | <!-- pragma: allowlist secret -->
+| `secret:write` | Create/update secrets | | | | <!-- pragma: allowlist secret -->
+| `secret:rotate` | Rotate secrets | | | | <!-- pragma: allowlist secret -->
+| `secret:delete` | Delete secrets | | | | <!-- pragma: allowlist secret -->
 
 ### Security & Compliance
 
 | Permission | Description | Owner | Admin |
 |---|---|---|---|
-| `security:audit` | View audit logs |  |  |
-| `security:config` | Update security policies |  |  |
-| `security:incident` | Create incidents |  |  |
-| `security:keys:manage` | Manage encryption keys |  |  |
+| `security:audit` | View audit logs | | |
+| `security:config` | Update security policies | | |
+| `security:incident` | Create incidents | | |
+| `security:keys:manage` | Manage encryption keys | | |
 
 ---
 
@@ -170,14 +170,14 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 #### 1. `codex-ci-deploy`
 
-**Purpose**: CI/CD deployment automation  
+**Purpose**: CI/CD deployment automation
 **Permissions**:
 - `repo:read` (all branches)
 - `deploy:write` (staging + production)
 - `logs:read` (CI/CD logs only)
 
-**Token Expiry**: 90 days  
-**Rotation**: Quarterly  
+**Token Expiry**: 90 days
+**Rotation**: Quarterly
 **Scope**: GitHub Actions workflows only
 
 **Usage**:
@@ -191,50 +191,50 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 ## 2. `codex-security-scan`
 
-**Purpose**: Security scanning and compliance  
+**Purpose**: Security scanning and compliance
 **Permissions**:
 - `repo:read` (all branches)
 - `code:scan:read` (CodeQL)
 - `security:audit` (log access)
 
-**Token Expiry**: 90 days  
-**Rotation**: Quarterly  
+**Token Expiry**: 90 days
+**Rotation**: Quarterly
 **Scope**: Security scanning workflows only
 
 ### 3. `codex-monitoring`
 
-**Purpose**: Observability and alerting  
+**Purpose**: Observability and alerting
 **Permissions**:
 - `logs:read` (application logs)
 - `metrics:read` (Prometheus/Grafana)
 - `alerts:read|write` (alert management)
 
-**Token Expiry**: 180 days  
-**Rotation**: Semi-annually  
+**Token Expiry**: 180 days
+**Rotation**: Semi-annually
 **Scope**: Monitoring systems only
 
 #### 4. `codex-backup`
 
-**Purpose**: Data archival and backup  
+**Purpose**: Data archival and backup
 **Permissions**:
 - `data:read` (database snapshots)
 - `storage:write` (backup storage)
 - `logs:read` (backup logs)
 
-**Token Expiry**: 180 days  
-**Rotation**: Semi-annually  
+**Token Expiry**: 180 days
+**Rotation**: Semi-annually
 **Scope**: Backup infrastructure only
 
 #### 5. `codex-api-internal`
 
-**Purpose**: Internal service-to-service calls  
+**Purpose**: Internal service-to-service calls
 **Permissions**:
 - `api:call` (internal APIs only)
 - Restricted to internal IP ranges
 - Cannot access external systems
 
-**Token Expiry**: 30 days  
-**Rotation**: Monthly  
+**Token Expiry**: 30 days
+**Rotation**: Monthly
 **Scope**: Internal service communication
 
 ### Service Account Creation
@@ -506,9 +506,9 @@ Permissions automatically removed when:
 
 ---
 
-**Approved By**: Security & Access Management Team  
-**Effective Date**: 2026-06-14  
-**Review Frequency**: Semi-annually  
+**Approved By**: Security & Access Management Team
+**Effective Date**: 2026-06-14
+**Review Frequency**: Semi-annually
 **Next Review**: 2026-12-14
 
 ---

@@ -93,9 +93,9 @@ docs/
 - Security considerations
 
 **Key Diagrams**:
-- System architecture (client → API → storage)
-- Decision recording flow (client → API → SQLite)
-- Memory retrieval flow (API → cache → LTM)
+- System architecture (client API storage)
+- Decision recording flow (client API SQLite)
+- Memory retrieval flow (API cache LTM)
 - Workflow gate check flow (parallel checkers)
 
 **Target Audience**: Architects, Tech Leads, DevOps

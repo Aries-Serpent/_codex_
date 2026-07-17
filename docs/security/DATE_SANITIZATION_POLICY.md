@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Module:** `scripts/security/date_sanitizer.py`  
-**Purpose:** Smart date pattern detection and replacement for documentation  
-**Created:** 2026-01-07  
+**Module:** `scripts/security/date_sanitizer.py`
+**Purpose:** Smart date pattern detection and replacement for documentation
+**Created:** 2026-01-07
 **Status:** Production Ready
 
 ---
@@ -26,47 +26,47 @@ Previously, over-aggressive date 2026-07-13
 Dates are **preserved** when they appear in these contexts:
 
 1. **Version Information**
-   - `Version: 1.2.3 Released: 2026-01-05`
-   - `v0.2.1 (2026-01-03)`
-   - `aiohttp 3.13.3 (released 2026-01-03)`
+ - `Version: 1.2.3 Released: 2026-01-05`
+ - `v0.2.1 (2026-01-03)`
+ - `aiohttp 3.13.3 (released 2026-01-03)`
 
 2. **Session Metadata**
-   - `**Session Date:2026-07-13`
-   - `Session Completed: 2026-01-06 05:30 UTC`
-   - `**Created:** 2026-01-05 (Session 9)`
+ - `**Session Date:2026-07-13`
+ - `Session Completed: 2026-01-06 05:30 UTC`
+ - `**Created:** 2026-01-05 (Session 9)`
 
 3. **Timestamps**
-   - `Timestamp: 2026-01-06T12:34:56Z`
-   - `**Completion Date:2026-07-13T05:30:00Z`
-   - ISO format: `2026-01-05T00:00:00Z`
+ - `Timestamp: 2026-01-06T12:34:56Z`
+ - `**Completion Date:2026-07-13T05:30:00Z`
+ - ISO format: `2026-01-05T00:00:00Z`
 
 4. **Document Metadata**
-   - `**Last Updated: 2026-07-11
-   - `**Report Generated**: 2026-01-04 05:39:00 UTC`
-   - `**Published:** 2026-01-05`
+ - `**Last Updated: 2026-07-11
+ - `**Report Generated**: 2026-01-04 05:39:00 UTC`
+ - `**Published:** 2026-01-05`
 
 5. **Historical Records**
-   - `Updated: 2026-06-22
-   - `Committed: 2026-01-04`
-   - `Date: 2026-01-06`
+ - `Updated: 2026-06-22
+ - `Committed: 2026-01-04`
+ - `Date: 2026-01-06`
 
 ### SANITIZED Contexts (Planning/Roadmap)
 
 Dates are **sanitized** when they appear in these contexts:
 
 1. **Quarter References**
-   - `Q1 2026` → `Current Cycle Q[n]`
-   - `Q2 2026` → `Current Cycle Q[n]`
-   - `by Q4 2026` → `by Current Cycle Q[n]`
+ - `Q1 2026` `Current Cycle Q[n]`
+ - `Q2 2026` `Current Cycle Q[n]`
+ - `by Q4 2026` `by Current Cycle Q[n]`
 
 2. **Phase/Cycle Planning**
-   - `Phase 2 (Q2 2026)` → `Phase [n] (Current Cycle)`
-   - `(Phase 2 (Q2 2026))` → `(Phase [n] (Current Cycle))`
-   - `through Phase 6 Q4 2026` → `through Phase [n] Current Cycle`
+ - `Phase 2 (Q2 2026)` `Phase [n] (Current Cycle)`
+ - `(Phase 2 (Q2 2026))` `(Phase [n] (Current Cycle))`
+ - `through Phase 6 Q4 2026` `through Phase [n] Current Cycle`
 
 3. **Month Names in Planning**
-   - `January 2026` → `Current Cycle [Month]`
-   - `Project deadline: March 2026` → `Project deadline: Current Cycle [Month]`
+ - `January 2026` `Current Cycle [Month]`
+ - `Project deadline: March 2026` `Project deadline: Current Cycle [Month]`
 
 ---
 
@@ -250,12 +250,12 @@ pytest tests/security/test_date_sanitizer.py -v
 
 ### Test Coverage
 
--  8 tests for preserved contexts
--  5 tests for planning terminology replacement
--  2 tests for mixed content
--  4 tests for edge cases
--  4 tests for preservation functions
--  3 tests for real-world examples
+- 8 tests for preserved contexts
+- 5 tests for planning terminology replacement
+- 2 tests for mixed content
+- 4 tests for edge cases
+- 4 tests for preservation functions
+- 3 tests for real-world examples
 
 **Total: 26 tests, all passing**
 
@@ -391,7 +391,7 @@ def on_page_markdown(markdown, **kwargs):
 Tested on typical documents:
 
 - **Small (1KB):** ~1ms
-- **Medium (10KB):** ~5ms  
+- **Medium (10KB):** ~5ms
 - **Large (100KB):** ~50ms
 - **XL (1MB):** ~500ms
 
@@ -457,6 +457,6 @@ for repl in replacements:
 
 ---
 
-**Status:** Production Ready  
-**Maintainer:** GitHub Copilot  
+**Status:** Production Ready
+**Maintainer:** GitHub Copilot
 **Next Review:** 2026-02-07 (Monthly)

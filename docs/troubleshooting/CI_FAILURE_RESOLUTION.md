@@ -1,4 +1,4 @@
-#  CI Failure Resolution Guide
+# CI Failure Resolution Guide
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -58,11 +58,11 @@ from typing import List, Tuple
 
 This single missing import caused a cascade of failures:
 
-1.  `rust_tests` - FAILED (script crashed)
-2. ⏭️ `code_coverage` - SKIPPED (depends on rust_tests)
-3. ⏭️ `python_integration` - SKIPPED (depends on rust_tests)
-4.  `status_check` - FAILED (depends on skipped jobs)
-5. 🚫 **Deployment blocked**
+1. `rust_tests` - FAILED (script crashed)
+2. `code_coverage` - SKIPPED (depends on rust_tests)
+3. `python_integration` - SKIPPED (depends on rust_tests)
+4. `status_check` - FAILED (depends on skipped jobs)
+5. **Deployment blocked**
 
 ### Solution Implemented
 
@@ -243,10 +243,10 @@ If you encounter a CI failure not covered in this guide:
 2. Search existing issues for similar problems
 3. Create a new issue with the `ci-failure` label
 4. Include:
-   - Workflow name and job name
-   - Error message
-   - Steps to reproduce
-   - Any relevant logs
+ - Workflow name and job name
+ - Error message
+ - Steps to reproduce
+ - Any relevant logs
 
 ---
 
@@ -318,21 +318,21 @@ This incident established a reusable pattern for preventing similar Rust feature
 
 **Implementation:**
 1. **Validation Script** (`scripts/ci/validate_cargo_features.py`):
-   - Parses `Cargo.toml` to extract declared features
-   - Scans `src/lib.rs` for `#[cfg(feature = "X")]` usages
-   - Reports any undeclared features as errors
+ - Parses `Cargo.toml` to extract declared features
+ - Scans `src/lib.rs` for `#[cfg(feature = "X")]` usages
+ - Reports any undeclared features as errors
 
 2. **CI Integration** (`.github/workflows/rust_swarm_ci.yml`):
    ```yaml
    - name: Validate Cargo.toml features
      run: python scripts/ci/validate_cargo_features.py
-   ```
+ ```
 
 3. **Key Validations:**
-   - `[features]` section exists
-   - `python` feature declared (for PyO3 bindings)
-   - `extension-module` feature depends on `pyo3/extension-module`
-   - All `#[cfg(feature = "X")]` features in source code are declared
+ - `[features]` section exists
+ - `python` feature declared (for PyO3 bindings)
+ - `extension-module` feature depends on `pyo3/extension-module`
+ - All `#[cfg(feature = "X")]` features in source code are declared
 
 **When to Apply:**
 - Any Rust project using conditional compilation

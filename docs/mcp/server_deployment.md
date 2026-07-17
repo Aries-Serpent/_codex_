@@ -11,22 +11,33 @@ This guide covers low/no-cost hosting for the MCP HTTP prototype and how to alig
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Source Code, Cloudflare Workers'}}%%
+
 graph TB
+
     A[Source Code] --> B{Deployment Target}
+
     B -->|Edge| C[Cloudflare Workers]
+
     B -->|Container| D[Fly.io]
+
     B -->|Local| E[Docker Compose]
 
     C --> F[Durable Objects]
+
     C --> G[KV Storage]
+
     C --> H[Edge Network]
 
     D --> I[Persistent Volumes]
+
     D --> J[Redis Instance]
+
     D --> K[SQLite DB]
 
     E --> L[Local Chroma]
+
     E --> M[Local Redis]
+
     E --> N[Dev Environment]
 ```
 
@@ -40,15 +51,15 @@ graph TB
 - **Best For**: Read-heavy workloads, global distribution
 
 **Pros:**
--  Free tier generous
--  Global edge network (low latency)
--  Auto-scaling
--  Built-in DDoS protection
+- Free tier generous
+- Global edge network (low latency)
+- Auto-scaling
+- Built-in DDoS protection
 
 **Cons:**
--  CPU time limits (50ms per request)
--  Limited to JavaScript/WASM
--  No persistent storage (use KV/Durable Objects)
+- CPU time limits (50ms per request)
+- Limited to JavaScript/WASM
+- No persistent storage (use KV/Durable Objects)
 
 ### Fly.io (persistent container)
 - **Runtime**: Python 3.12 (FastAPI `src/mcp/server/http.py`)
@@ -58,15 +69,15 @@ graph TB
 - **Best For**: Python workloads, stateful services
 
 **Pros:**
--  Free tier includes 3 VMs + 3GB storage
--  Native Python/container support
--  Persistent volumes
--  Easy scaling
+- Free tier includes 3 VMs + 3GB storage
+- Native Python/container support
+- Persistent volumes
+- Easy scaling
 
 **Cons:**
--  Cold start latency
--  Manual scaling (not auto-scale on free tier)
--  Regional (not global edge)
+- Cold start latency
+- Manual scaling (not auto-scale on free tier)
+- Regional (not global edge)
 
 ### Local Compose
 - **Runtime**: Docker Compose
@@ -76,14 +87,14 @@ graph TB
 - **Best For**: Development workflow
 
 **Pros:**
--  Full control
--  Fast iteration
--  Matches production environment
+- Full control
+- Fast iteration
+- Matches production environment
 
 **Cons:**
--  Not accessible externally (without tunneling)
--  Requires Docker installed
--  Local resources only
+- Not accessible externally (without tunneling)
+- Requires Docker installed
+- Local resources only
 
 ## Deployment Architecture Comparison
 
@@ -92,10 +103,10 @@ graph TB
 | **Cost (Free Tier)** | 100k req/day | 3 VMs + 3GB | Unlimited (local) |
 | **Latency** | <50ms (edge) | 50-200ms (regional) | <10ms (local) |
 | **Scaling** | Auto (millions RPS) | Manual (3 VMs max free) | Manual (local resources) |
-| **Python Support** | No (Node/WASM) |  Native |  Native |
-| **Persistent Storage** | KV/Durable Objects |  Volumes |  Volumes |
+| **Python Support** | No (Node/WASM) | Native | Native |
+| **Persistent Storage** | KV/Durable Objects | Volumes | Volumes |
 | **Cold Start** | None (edge) | ~1-2s | None (always on) |
-| **TLS/HTTPS** |  Automatic |  Automatic | Manual (self-signed) |
+| **TLS/HTTPS** | Automatic | Automatic | Manual (self-signed) |
 
 ## Deployment Steps (FastAPI on Fly.io)
 
@@ -225,7 +236,7 @@ fly secrets set CODEX_ITA_API_KEY=<ita-key>
 fly secrets list
 ```
 
-**️ WARNING**: `<ita-key>` is a placeholder only. Replace with your actual secret value. Real keys must be stored only as Fly secrets or in a secure secrets manager, never committed to code or documentation.
+** WARNING**: `<ita-key>` is a placeholder only. Replace with your actual secret value. Real keys must be stored only as Fly secrets or in a secure secrets manager, never committed to code or documentation.
 
 ## 4. Deploy Application
 
@@ -733,15 +744,15 @@ fly autoscale set min=1 max=10
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective:** Provide production-ready deployment options for MCP servers across edge (Cloudflare Workers), container (Fly.io), and local (Docker Compose) environments with cost-effective free tiers.
 
 **Energy Level:** 4/5 (High Priority - Deployment Infrastructure)
 
-**Operational Status:**  **ACTIVE** - Production deployments running on Fly.io and Workers
+**Operational Status:** **ACTIVE** - Production deployments running on Fly.io and Workers
 
-## ️ Verification Checklist
+## Verification Checklist
 
 - [x] Fly.io deployment guide (Python/FastAPI)
 - [x] Cloudflare Workers deployment guide (TypeScript)
@@ -762,33 +773,33 @@ fly autoscale set min=1 max=10
 - Cloudflare account (free tier)
 - Domain name (optional, for custom domains)
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Deployment Time (Fly.io)** | <5 minutes | 3-4 minutes |  |
-| **Deployment Time (Workers)** | <2 minutes | 1-2 minutes |  |
-| **Cold Start (Fly.io)** | <2s | 1-1.5s |  |
-| **Cold Start (Workers)** | 0ms (edge) | 0ms |  |
-| **Uptime (Fly.io)** | >99.9% | 99.95% |  |
-| **Uptime (Workers)** | >99.99% | 99.99% |  |
-| **Cost (Free Tier)** | $0/month | $0/month |  |
-| **TLS Certificate Renewal** | Automatic |  Automatic |  |
+| **Deployment Time (Fly.io)** | <5 minutes | 3-4 minutes | |
+| **Deployment Time (Workers)** | <2 minutes | 1-2 minutes | |
+| **Cold Start (Fly.io)** | <2s | 1-1.5s | |
+| **Cold Start (Workers)** | 0ms (edge) | 0ms | |
+| **Uptime (Fly.io)** | >99.9% | 99.95% | |
+| **Uptime (Workers)** | >99.99% | 99.99% | |
+| **Cost (Free Tier)** | $0/month | $0/month | |
+| **TLS Certificate Renewal** | Automatic | Automatic | |
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
-### Path ️
+### Path
 **Deployment Flow:**
-1. Code → Build (Docker/TypeScript) → Deploy → Health Check → Serve Traffic
-2. Secret management → Environment variables → Application configuration
-3. Persistent storage → Volume/KV → Application state
+1. Code Build (Docker/TypeScript) Deploy Health Check Serve Traffic
+2. Secret management Environment variables Application configuration
+3. Persistent storage Volume/KV Application state
 
 **Sequential Dependencies:**
-- Build → Deploy → Health check → Traffic routing
+- Build Deploy Health check Traffic routing
 - Secrets set before deployment
 - Storage provisioned before first request
 
-### Fields 
+### Fields
 **Deployment State:**
 - **Source state**: Git repository
 - **Build state**: Docker image or Worker bundle
@@ -796,10 +807,10 @@ fly autoscale set min=1 max=10
 - **Storage state**: Persistent volumes/KV
 
 **State Transitions:**
-- Inactive → Building → Deploying → Healthy → Serving
-- Rollback: Serving → Draining → Stopped → Previous version
+- Inactive Building Deploying Healthy Serving
+- Rollback: Serving Draining Stopped Previous version
 
-### Patterns ️
+### Patterns
 **Observability:**
 - Health checks (startup, liveness, readiness)
 - Logs (Fly logs, Wrangler tail)
@@ -812,30 +823,30 @@ fly autoscale set min=1 max=10
 - Zero-downtime deployment
 - Canary releases
 
-### Redundancy 
+### Redundancy
 **Failure Modes:**
-1. **Build failure** → Fix Dockerfile/code, redeploy
-2. **Health check failure** → Auto-rollback to previous version
-3. **Storage unavailable** → Retry with backoff, alert
-4. **Secret missing** → Deployment fails, manual intervention
+1. **Build failure** Fix Dockerfile/code, redeploy
+2. **Health check failure** Auto-rollback to previous version
+3. **Storage unavailable** Retry with backoff, alert
+4. **Secret missing** Deployment fails, manual intervention
 
 **Recovery:**
 - Automatic rollback on health check failure
 - Manual rollback: `fly releases rollback`, `wrangler rollback`
 - Recreate from source if instance corrupted
 
-### Balance ️
+### Balance
 **Cost vs Performance:**
--  Free tiers for MVP/preview
-- ️ Trade-off: Cold starts (Fly.io) vs instant (Workers)
--  Pay-as-you-grow pricing
+- Free tiers for MVP/preview
+- Trade-off: Cold starts (Fly.io) vs instant (Workers)
+- Pay-as-you-grow pricing
 
 **Simplicity vs Features:**
 - Workers: Simple, limited features
 - Fly.io: Complex, full features
 - Docker Compose: Full control, manual setup
 
-##  Energy Distribution
+## Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|
@@ -845,7 +856,7 @@ fly autoscale set min=1 max=10
 | **P1** | Docker Compose | 15% | Local development |
 | **P2** | Monitoring setup | 5% | Operational visibility |
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 ### Rollback Strategies
 

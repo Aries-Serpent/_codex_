@@ -4,9 +4,9 @@
 
 **Last Updated: 2026-06-22
 
-**Version:** 1.0.0  
-**Session:** S115 (2026-02-28)  
-**Owner:** mbaetiong  
+**Version:** 1.0.0
+**Session:** S115 (2026-02-28)
+**Owner:** mbaetiong
 **Primary Agent:** copilot-swe-agent[bot]
 
 ---
@@ -61,25 +61,25 @@ COPILOT_AGENT_AUTH_ENABLED=true          ← repo variable
 Once mbaetiong approves the `agent-auth-delegation` environment gate, the agent
 can autonomously perform ALL of the following **without further manual approval**:
 
-###  Already Working (S108–S114)
+### Already Working (S108–S114)
 - Write, commit, and push code changes
 - Bypass `owner_approval_guard.sh` for cost-gated tools (S112)
 - Scope bypass to specific TOOL_KEYs (S113)
 - Post PR/issue comments via `mcp_poster.py` (S108)
 - Store cross-session memory via `store_memory` tool
 
-###  New in S115
+### New in S115
 - **Session token bypass**: All sessions within 4h TTL skip the guard without
-  needing `COPILOT_AGENT_AUTH_ENABLED` to be re-set
-- **Autonomous variable writes**: Agent posts `@agent-var-writer apply` →
-  `agent-var-writer.yml` reads `.codex/pending_var_updates.json` and sets
-  allowlisted variables using the provenance chain
+ needing `COPILOT_AGENT_AUTH_ENABLED` to be re-set
+- **Autonomous variable writes**: Agent posts `@agent-var-writer apply`
+ `agent-var-writer.yml` reads `.codex/pending_var_updates.json` and sets
+ allowlisted variables using the provenance chain
 - **Self-renewing auth**: Agent can trigger `agent-auth-delegation` dispatch
-  to renew the session token before it expires
+ to renew the session token before it expires
 
-### 🔜 Next — Full Autonomous PR Creation (S116)
-- Agent posts `@agent-create-pr title="..." base="0D_base_"` →
-  `agent-pr-creator.yml` opens the PR using `CODEX_MASTER_KEY`
+### Next — Full Autonomous PR Creation (S116)
+- Agent posts `@agent-create-pr title="..." base="0D_base_"`
+ `agent-pr-creator.yml` opens the PR using `CODEX_MASTER_KEY`
 - Gated by: session token valid + TOOL_KEY=create-pr in BYPASS_TOOLS
 
 ---
@@ -175,7 +175,7 @@ via `workflow_dispatch` using `CODEX_MASTER_KEY` (if `_CODEX_ACTION_RUNNER` has
 
 | File | Purpose |
 |------|---------|
-| `.github/workflows/agent-auth-delegation.yml` | Root approval → sets vars + session token |
+| `.github/workflows/agent-auth-delegation.yml` | Root approval sets vars + session token |
 | `.github/workflows/agent-var-writer.yml` | Autonomous variable writes (NEW S115) |
 | `scripts/ci/owner_approval_guard.sh` | Cost-gate with session token + env bypass |
 | `.codex/agent_auth_session.json` | Session token (written by GHA, read by guard) |

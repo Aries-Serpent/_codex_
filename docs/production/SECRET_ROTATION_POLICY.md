@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0.0  
-**Effective Date**: 2026-06-14  
-**Classification**: Internal — Security Sensitive  
-**Owner**: Security Team  
+**Version**: 1.0.0
+**Effective Date**: 2026-06-14
+**Classification**: Internal — Security Sensitive
+**Owner**: Security Team
 **Last Updated**: 2026-06-14
 
 ---
@@ -68,11 +68,11 @@ This policy applies to:
 - **Annually (365 days)**: TLS certificates (shorter expiry recommended)
 
 **Triggers for Immediate Rotation**:
--  Credential compromise detected
--  Employee separation
--  Unauthorized access attempt
--  Policy violation
--  Regular security audit findings
+- Credential compromise detected
+- Employee separation
+- Unauthorized access attempt
+- Policy violation
+- Regular security audit findings
 
 ---
 
@@ -80,8 +80,8 @@ This policy applies to:
 
 ### 1. CODEX_MASTER_KEY Rotation
 
-**Frequency**: Quarterly (90 days)  
-**Owner**: Security Lead  
+**Frequency**: Quarterly (90 days)
+**Owner**: Security Lead
 **Duration**: 72 hours total (24h dual-write + 48h grace)
 
 #### Standard Quarterly Rotation
@@ -214,17 +214,17 @@ python scripts/security/invalidate_sessions.py \
 ```
 
 **Test Coverage**: `tests/security/test_key_rotation.py`
--  `test_quarterly_rotation_success`
--  `test_emergency_rotation_immediate`
--  `test_dual_write_phase_integrity`
--  `test_old_key_revocation`
+- `test_quarterly_rotation_success`
+- `test_emergency_rotation_immediate`
+- `test_dual_write_phase_integrity`
+- `test_old_key_revocation`
 
 ---
 
 ## 2. GitHub OAuth Token Rotation
 
-**Frequency**: Monthly (30 days)  
-**Owner**: CI/CD Lead  
+**Frequency**: Monthly (30 days)
+**Owner**: CI/CD Lead
 **Duration**: 48 hours total (24h fallback + 24h revocation)
 
 ### Standard Rotation
@@ -266,8 +266,8 @@ echo "OAuth Token: $(date +%Y-%m-%d)" >> .codex/rotation.log
 
 ## 3. Database Credentials Rotation
 
-**Frequency**: Quarterly (90 days)  
-**Owner**: Database Administrator  
+**Frequency**: Quarterly (90 days)
+**Owner**: Database Administrator
 **Duration**: 72 hours (24h dual + 48h grace)
 
 ### Rotation Procedure
@@ -320,8 +320,8 @@ python scripts/manage_db_credentials.py \
 
 ## 4. API Keys (External Services)
 
-**Frequency**: Monthly (30 days)  
-**Owner**: Service Owner (specific API)  
+**Frequency**: Monthly (30 days)
+**Owner**: Service Owner (specific API)
 **Duration**: 24 hours
 
 ### Rotation by Service
@@ -349,8 +349,8 @@ gh secret set API_KEY_<SERVICE>_NEW --body="$NEW_KEY"
 
 ## 5. JWT Signing Key Rotation
 
-**Frequency**: Quarterly (90 days)  
-**Owner**: Authentication Team  
+**Frequency**: Quarterly (90 days)
+**Owner**: Authentication Team
 **Duration**: 7 days (key algorithm transition period)
 
 ### Procedure
@@ -373,8 +373,8 @@ python scripts/rotate_jwt_key.py --generate
 
 ## 6. TLS Certificates
 
-**Frequency**: Annually (365 days) / Before Expiry  
-**Owner**: DevOps Team  
+**Frequency**: Annually (365 days) / Before Expiry
+**Owner**: DevOps Team
 **Duration**: Depends on certificate type
 
 ### Procedure
@@ -433,16 +433,16 @@ openssl s_client -connect api.example.com:443 -tls1_3
 ### Monitoring During Rotation
 
 **Metrics to Track**:
--  Authentication success rate (should remain >99.9%)
--  Authorization check latency
--  Secret cache hit rate
--  Decryption error count (should be 0)
--  Failed decrypt attempts (investigate any)
+- Authentication success rate (should remain >99.9%)
+- Authorization check latency
+- Secret cache hit rate
+- Decryption error count (should be 0)
+- Failed decrypt attempts (investigate any)
 
 **Alert Thresholds**:
-- ️ Authentication failures > 1% → Rollback
-- ️ Decryption errors > 0 → Investigation
-- ️ Latency spike > 500ms → Review
+- Authentication failures > 1% Rollback
+- Decryption errors > 0 Investigation
+- Latency spike > 500ms Review
 
 ### Post-Rotation Verification
 
@@ -469,12 +469,12 @@ echo "Secret rotated: $TYPE, date: $(date), status: SUCCESS" >> .codex/rotation.
 
 ### When to Trigger
 
--  Credential found in public repository
--  Unauthorized access detected
--  Disgruntled employee departing
--  Security policy violation
--  Audit findings
--  Suspected compromise
+- Credential found in public repository
+- Unauthorized access detected
+- Disgruntled employee departing
+- Security policy violation
+- Audit findings
+- Suspected compromise
 
 ### Emergency Procedure
 
@@ -531,13 +531,13 @@ date,secret_type,old_key_id,new_key_id,reason,status,duration_hours  # pragma: a
 ### Audit Logging
 
 All rotation events logged to immutable audit trail:
--  Who performed rotation (user/service account)
--  When rotation occurred
--  Which secret was rotated
--  Old and new key IDs
--  Reason for rotation
--  Status (success/failed)
--  Any errors or warnings
+- Who performed rotation (user/service account)
+- When rotation occurred
+- Which secret was rotated
+- Old and new key IDs
+- Reason for rotation
+- Status (success/failed)
+- Any errors or warnings
 
 ### Compliance Checks
 
@@ -635,9 +635,9 @@ Configure in `SERVICE_ACCOUNT_ROTATION_SCHEDULE.yaml`
 
 ---
 
-**Approved By**: Security Team  
-**Effective Date**: 2026-06-14  
-**Review Frequency**: Quarterly  
+**Approved By**: Security Team
+**Effective Date**: 2026-06-14
+**Review Frequency**: Quarterly
 **Next Review**: 2026-09-14
 
 ---

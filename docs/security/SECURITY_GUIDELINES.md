@@ -17,7 +17,7 @@
 
 ## Sensitive Data Handling
 
-###  DO: Mask Sensitive Data in Logs
+### DO: Mask Sensitive Data in Logs
 
 ```python
 from codex.security import mask_token, mask_email, mask_password
@@ -35,7 +35,7 @@ logger.info(f"Password validation: {mask_password(password)}")
 # Output: "Password validation: ***"
 ```
 
-##  DON'T: Log Sensitive Data in Plain Text
+## DON'T: Log Sensitive Data in Plain Text
 
 ```python
 # NEVER DO THIS
@@ -48,7 +48,7 @@ print(f"Secret: {secret_token}")  #  may appear in console logs
 
 ## Log Injection Prevention
 
-###  DO: Sanitize User-Controlled Input
+### DO: Sanitize User-Controlled Input
 
 ```python
 from src.utils.sanitize import sanitize_prompt
@@ -71,7 +71,7 @@ safe_output = sanitize_prompt(dangerous_input)  # Removes control chars, ANSI, H
 logger.info(f"Processed: {safe_output}")
 ```
 
-##  DON'T: Use Unsanitized User Input in Logs
+## DON'T: Use Unsanitized User Input in Logs
 
 ```python
 # NEVER DO THIS
@@ -89,16 +89,16 @@ logger.info(f"User provided: {user_input}")  #  Log injection vulnerability
 # - HTML/XSS: "<script>alert(1)</script>" → If logs are viewed in browser
 ```
 
-## 🛡️ Defense-in-Depth Strategy
+## Defense-in-Depth Strategy
 
 The `sanitize_prompt()` function provides multiple layers of protection:
 
 | Layer | Attack Vector | Protection |
 |-------|---------------|-----------|
-| 1️⃣ Control Char Removal | Null bytes, carriage returns | `[\x00-\x1F\x7F]` regex |
-| 2️⃣ ANSI Stripping | Terminal escape sequences | `\x1B(?:[@-Z\\-_]\|\[[0-?]*[ -/]*[@-~])` |
-| 3️⃣ HTML Escaping | XSS in web-viewable logs | `<` → `&lt;`, etc. |
-| 4️⃣ Truncation | Buffer overflow, DoS | `max_length` parameter |
+| 1⃣ Control Char Removal | Null bytes, carriage returns | `[\x00-\x1F\x7F]` regex |
+| 2⃣ ANSI Stripping | Terminal escape sequences | `\x1B(?:[@-Z\\-_]\|\[[0-?]*[ -/]*[@-~])` |
+| 3⃣ HTML Escaping | XSS in web-viewable logs | `<` `&lt;`, etc. |
+| 4⃣ Truncation | Buffer overflow, DoS | `max_length` parameter |
 
 **Example Attack Scenarios:**
 
@@ -130,7 +130,7 @@ safe = sanitize_prompt(malicious)
 #  HTML escaped, prevents XSS execution
 ```
 
-##  When to Use `sanitize_prompt()`
+## When to Use `sanitize_prompt()`
 
 **ALWAYS sanitize before:**
 - Writing to logs
@@ -163,7 +163,7 @@ def process_user_action(username: str, action: str, details: str):
 
 ## Secure Storage
 
-###  DO: Use Encrypted Storage for Secrets
+### DO: Use Encrypted Storage for Secrets
 
 ```python
 from codex.security.storage import SecureStorage
@@ -183,7 +183,7 @@ storage.store_secret("secrets/db_password.enc", db_password)
 api_key = storage.load_secret("secrets/api_key.enc")
 ```
 
-##  Key Management Best Practices
+## Key Management Best Practices
 
 ```bash
 # Generate encryption key
@@ -198,7 +198,7 @@ key, salt = derive_key_from_password("my_secure_password")
 # Store salt securely, regenerate key when needed
 ```
 
-##  DON'T: Store Secrets in Plain Text
+## DON'T: Store Secrets in Plain Text
 
 ```python
 # NEVER DO THIS
@@ -218,7 +218,7 @@ API_KEY=sk_live_abc123  #  Plain text (add .env to .gitignore!)
 
 ## Dependency Management
 
-###  DO: Keep Dependencies Updated
+### DO: Keep Dependencies Updated
 
 ```bash
 # Check for vulnerabilities
@@ -233,13 +233,13 @@ pip install --upgrade nbconvert>=7.16.6
 pip freeze > requirements/lock.txt
 ```
 
-##  Security Requirements
+## Security Requirements
 
 - **Critical/High CVEs**: Must be fixed within 7 iterations
 - **Moderate CVEs**: Should be fixed within 30 iterations
 - **Low CVEs**: Review and fix within 90 iterations
 
-###  DON'T: Ignore Dependabot Alerts
+### DON'T: Ignore Dependabot Alerts
 
 ```yaml
 # In dependabot.yml - Keep this enabled
@@ -403,5 +403,5 @@ Include:
 
 ---
 
-**Last Updated**: 2025-12-23  
+**Last Updated**: 2025-12-23
 **Maintained By**: Security Team

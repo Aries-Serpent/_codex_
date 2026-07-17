@@ -161,12 +161,12 @@ jobs:
 ```
 
 **GitHub Configuration:**
-1. Go to Settings → Variables (repository level)
+1. Go to Settings Variables (repository level)
 2. Add all 8 CODEX_* variables
 3. For different environments (dev/staging/prod):
-   - Create GitHub Environments
-   - Set environment-specific variables
-   - Reference in workflows: `environment: name: production`
+ - Create GitHub Environments
+ - Set environment-specific variables
+ - Reference in workflows: `environment: name: production`
 
 ---
 
@@ -224,7 +224,7 @@ python -m codex.cli serve
 ```
 error: Connection refused: CODEX_REDIS_HOST=localhost:6379
 ```
-**Solution:** 
+**Solution:**
 ```bash
 # Start Redis in another terminal
 redis-server
@@ -244,7 +244,7 @@ ERROR: for ollama  Cannot start service ollama: driver failed...
 **Solution:** Ensure docker-compose.yml has `ollama` service defined and service names match env vars
 
 **Issue:** Container can't reach host services
-**Solution:** 
+**Solution:**
 - Mac/Windows: Use `host.docker.internal` in place of `localhost`
 - Linux: Use `--network host` or add services to docker-compose
 
@@ -259,10 +259,10 @@ ERROR: for ollama  Cannot start service ollama: driver failed...
 ### CI/CD Pipeline Operator
 
 **Issue:** Variables not injected into workflow
-**Solution:** Confirm variables are set in Settings → Variables and job doesn't have `environment` restriction blocking them
+**Solution:** Confirm variables are set in Settings Variables and job doesn't have `environment` restriction blocking them
 
 **Issue:** Different values needed for different branches
-**Answer:** Use GitHub Environments (Settings → Environments) and configure branch rules
+**Answer:** Use GitHub Environments (Settings Environments) and configure branch rules
 
 ### Enterprise User
 

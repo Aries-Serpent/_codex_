@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-07-16 02:35:00 | Author: mbaetiong
-Roles: [Primary], [Secondary]  Energy: [5]
+Roles: [Primary], [Secondary] Energy: [5]
 
 ## Overview
 This document outlines how training runs in the `_codex_` project preserve reproducibility and how to restore or continue experiments deterministically. It has been updated to include: CUDNN determinism helper, checkpoint SHA256 hashing, config snapshot persistence, and checkpoint retention utilities.
@@ -13,7 +13,7 @@ This document outlines how training runs in the `_codex_` project preserve repro
 | Pillar | Mechanism | Location / Artifact |
 |--------|-----------|---------------------|
 | Seeding | Unified `_set_seed` applying Python, NumPy, Torch | `codex_ml/train_loop.py` |
-| Deterministic Default | `seed=None or 0` → fixed `1234` | `train_loop._DEFAULT_SEED` |
+| Deterministic Default | `seed=None or 0` fixed `1234` | `train_loop._DEFAULT_SEED` |
 | CUDNN Determinism (opt-in) | `set_cudnn_deterministic(True)` | `utils/determinism.py` |
 | Checkpointing | Model, optimizer, scheduler, metadata | `checkpoint.pt`, `metadata.json` |
 | Latest Pointer | Fast resume discovery | `latest.json` |
@@ -131,7 +131,7 @@ Overwritten each run (future enhancement: versioning / hashing).
 
 | Scenario | Behavior |
 |----------|----------|
-| Corrupt `latest.json` | Warn → start epoch 1 |
+| Corrupt `latest.json` | Warn start epoch 1 |
 | Missing checkpoint file | Ignore resume; continue fresh |
 | Model mismatch | Warning; continue without state restore |
 | Partial epoch crash | Previous epoch safe |
@@ -172,15 +172,15 @@ print(result["checkpoint_sha256_last"])
 
 | Item | Status | Action |
 |------|--------|--------|
-| Fixed seed default |  | Use / override `seed` |
-| CUDNN deterministic toggle |  | Pass `deterministic_cudnn=True` |
-| Full LR trace |  | Inspect `learning_rate_history` |
-| State continuity after resume |  | See `resumed_from_epoch` |
-| Checkpoint integrity hash |  | Verify `checkpoint_sha256_last` |
-| Config capture |  | `config.snapshot.json` |
-| Atomic latest pointer |  | Future: temp + rename |
-| Retention pruning |  | Configure `training.checkpoint.best_k` (defaults to 2) and inspect JSON metadata sidecars |
-| Integrity hash in pointer |  | In `latest.json` |
+| Fixed seed default | | Use / override `seed` |
+| CUDNN deterministic toggle | | Pass `deterministic_cudnn=True` |
+| Full LR trace | | Inspect `learning_rate_history` |
+| State continuity after resume | | See `resumed_from_epoch` |
+| Checkpoint integrity hash | | Verify `checkpoint_sha256_last` |
+| Config capture | | `config.snapshot.json` |
+| Atomic latest pointer | | Future: temp + rename |
+| Retention pruning | | Configure `training.checkpoint.best_k` (defaults to 2) and inspect JSON metadata sidecars |
+| Integrity hash in pointer | | In `latest.json` |
 
 ## Roadmap Enhancements
 1. Atomic write + backup for `latest.json`.

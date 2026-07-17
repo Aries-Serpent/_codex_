@@ -4,7 +4,7 @@
 
 > Generated: 2026-06-22 16:17:26 | Author: mbaetiong
 
- Roles: [Primary] Educator, [Secondary] Navigator   Energy: 5/5
+ Roles: [Primary] Educator, [Secondary] Navigator Energy: 5/5
 
 This guide distills the core limitations when building with Zendesk App Builder’s AI agent variant and maps each to recommended mitigations using the Codex codebase. It extends the Zendesk App Builder: Complete Known Limitations Outline with AI-specific considerations.
 
@@ -56,7 +56,7 @@ Define a small set of high-value, safe tools the AI agent can call. Back each wi
 | ops.metrics | Expose counters/histograms | GET /ops/metrics?namespace=zendesk | Surfaces `zendesk_*` instruments |
 
 Design rules:
-- One tool → one deterministic endpoint.
+- One tool one deterministic endpoint.
 - Strict JSON schemas; reject unknown fields.
 - Return compact payloads plus optional evidence URIs.
 
@@ -64,7 +64,7 @@ Design rules:
 
 | Pattern | Rationale | Example |
 |---|---|---|
-| Tool-first intent | Reduce hallucination, encourage structured actions | “If change is requested, call zendesk.diff → zendesk.plan → zendesk.apply(dry_run=true)” |
+| Tool-first intent | Reduce hallucination, encourage structured actions | “If change is requested, call zendesk.diff zendesk.plan zendesk.apply(dry_run=true)” |
 | Chunked context | Avoid long messages in Sidebar; keep latency predictable | “Summarize changes in ≤8 bullets; attach evidence link” |
 | Strict function args | Protect from prompt injection | “Only accept resource ∈ {triggers, views, …}. Reject otherwise.” |
 | Idempotent retries | Handle transient failures | Client retries on 429/5xx; ITA dedupes via request-id |
@@ -104,9 +104,9 @@ Design rules:
 
 | Task | Owner | Due |
 |---|---|---|
-| Define AI tools spec and JSON schemas | App Team |  |
-| Stand up ITA endpoints (diff/plan/apply/snapshot) | Platform Eng |  |
-| Wire metrics to dashboard | Ops |  |
-| Add redaction layer + evidence store | Sec / Platform Eng |  |
-| Create Sidebar UX for small-step flows | App Team |  |
-| Draft QA plan for rate limits and rollback | QA |  |
+| Define AI tools spec and JSON schemas | App Team | |
+| Stand up ITA endpoints (diff/plan/apply/snapshot) | Platform Eng | |
+| Wire metrics to dashboard | Ops | |
+| Add redaction layer + evidence store | Sec / Platform Eng | |
+| Create Sidebar UX for small-step flows | App Team | |
+| Draft QA plan for rate limits and rollback | QA | |

@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-06-22  
+**Version**: 1.0.0
+**Last Updated**: 2026-06-22
 **Owner**: ML Engineering Team
 
 ---
@@ -155,12 +155,12 @@ print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
 1. Check if MLflow is enabled in config:
    ```yaml
    tracking.mlflow.enabled: true
-   ```
+ ```
 
 2. Verify MLflow is installed:
    ```bash
    python -c "import mlflow; print(mlflow.__version__)"
-   ```
+ ```
 
 3. Check tracking URI:
 ```python
@@ -176,12 +176,12 @@ print(mlflow.get_tracking_uri())
 1. Verify server is running:
    ```bash
    curl http://mlflow-server:5000/health
-   ```
+ ```
 
 2. Check network connectivity:
    ```bash
    ping mlflow-server
-   ```
+ ```
 
 3. Fall back to local tracking:
 ```python
@@ -201,14 +201,14 @@ tracker = MLflowTracker(
    tracking:
      mlflow:
        async_logging: true
-   ```
+ ```
 
 2. Batch metrics:
    ```yaml
    tracking:
      mlflow:
        batch_metrics: true
-   ```
+ ```
 
 3. Reduce logging frequency:
 ```python
@@ -223,10 +223,10 @@ if epoch % 10 == 0:  # Log every 10 epochs
 ### 1. Naming Conventions
 
 - **Experiments**: Use descriptive names: `{model_type}_{dataset}_{date}`
-  - Example: `transformer_squad_20251207`
+ - Example: `transformer_squad_20251207`
 
 - **Runs**: Include key parameters: `{variant}_{key_param}`
-  - Example: `baseline_lr0.001`
+ - Example: `baseline_lr0.001`
 
 - **Tags**: Use for categorization:
 ```python
@@ -350,19 +350,19 @@ jobs:
 
 ## FAQ
 
-**Q: Can I use MLflow with existing training code?**  
+**Q: Can I use MLflow with existing training code?**
 A: Yes! MLflow integration is opt-in and backward compatible.
 
-**Q: What's the performance overhead?**  
+**Q: What's the performance overhead?**
 A: <1% with default settings, <5% with full logging.
 
-**Q: Can I disable MLflow temporarily?**  
+**Q: Can I disable MLflow temporarily?**
 A: Yes, set `tracking.mlflow.enabled: false` in config.
 
-**Q: How long are experiments retained?**  
+**Q: How long are experiments retained?**
 A: Indefinitely by default. Set up retention policies as needed.
 
-**Q: Can multiple people share experiments?**  
+**Q: Can multiple people share experiments?**
 A: Yes, use a centralized MLflow server.
 
 ---

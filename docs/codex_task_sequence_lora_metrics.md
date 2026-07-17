@@ -12,39 +12,39 @@
 
 ## Phase 2 — Search & Mapping
 2.1 Enumerate candidate modules/scripts for each requirement:
-    - LoRA CLI + docs/tests → `src/codex_cli/`, `training/`, `docs/guides`, `tests/`.
-    - Metrics registry/aggregator → `codex_ml/eval`, `analysis/metrics`, `tools/`, `scripts/`.
-    - Secret scanning gates → `noxfile.py`, `requirements-dev.txt`, `docs/modules/safety.md`.
-    - Packaging + Docker → root `pyproject.toml`/`setup.cfg`, `Dockerfile*`, `docs/runbook*`.
-    - Reproducibility → `docs/repro*`, `training/`, `codex_utils/environment`.
-    Persist findings to `logs/codex_tasks/mapping.json`.
+ - LoRA CLI + docs/tests `src/codex_cli/`, `training/`, `docs/guides`, `tests/`.
+ - Metrics registry/aggregator `codex_ml/eval`, `analysis/metrics`, `tools/`, `scripts/`.
+ - Secret scanning gates `noxfile.py`, `requirements-dev.txt`, `docs/modules/safety.md`.
+ - Packaging + Docker root `pyproject.toml`/`setup.cfg`, `Dockerfile*`, `docs/runbook*`.
+ - Reproducibility `docs/repro*`, `training/`, `codex_utils/environment`.
+ Persist findings to `logs/codex_tasks/mapping.json`.
 2.2 For each module, compare current purpose with task requirements and document adaptation viability notes (`logs/codex_tasks/adaptation_notes.json`).
 2.3 Identify related tooling (Hydra configs, scripts, templates) that could be reused. Record path, description, and reuse strategy.
 
 ## Phase 3 — Best-Effort Construction
 3.1 LoRA CLI & docs/tests
-    a. Modify CLI (Typer) to expose LoRA parameters (`lora_r`, `lora_alpha`, `lora_dropout`, `target_modules`).
-    b. Update model loading to consume CLI-specified LoRA settings and ensure defaults disable LoRA gracefully.
-    c. Extend docs with CLI usage examples and add pytest covering CLI parameter plumbing.
+ a. Modify CLI (Typer) to expose LoRA parameters (`lora_r`, `lora_alpha`, `lora_dropout`, `target_modules`).
+ b. Update model loading to consume CLI-specified LoRA settings and ensure defaults disable LoRA gracefully.
+ c. Extend docs with CLI usage examples and add pytest covering CLI parameter plumbing.
 3.2 Metrics registry & aggregator
-    a. Create registry module supporting registration and computation of metrics (accuracy, precision, recall, F1).
-    b. Implement NDJSON → aggregated NDJSON/CSV scripts under `tools/` with CLI entry points.
-    c. Integrate registry with evaluator configuration and add unit tests.
-    d. Update docs with metric registration/aggregation instructions.
+ a. Create registry module supporting registration and computation of metrics (accuracy, precision, recall, F1).
+ b. Implement NDJSON aggregated NDJSON/CSV scripts under `tools/` with CLI entry points.
+ c. Integrate registry with evaluator configuration and add unit tests.
+ d. Update docs with metric registration/aggregation instructions.
 3.3 Secret scanning gates
-    a. Update `noxfile.py` (gates session) to run `detect-secrets` and `bandit` with offline-only flags.
-    b. Record scan baselines/config (e.g., `.secrets.baseline`) without enabling GitHub Actions.
-    c. Document workflow in safety guide and add gating tests.
+ a. Update `noxfile.py` (gates session) to run `detect-secrets` and `bandit` with offline-only flags.
+ b. Record scan baselines/config (e.g., `.secrets.baseline`) without enabling GitHub Actions.
+ c. Document workflow in safety guide and add gating tests.
 3.4 Packaging & Docker
-    a. Ensure `pyproject.toml`/`setup.cfg` defines CLI entry points and pinned dependency metadata.
-    b. Implement hardened `Dockerfile` following docs (non-root, multi-stage, offline wheels).
-    c. Update runbook with packaging and deployment instructions; add smoke test script for container build.
+ a. Ensure `pyproject.toml`/`setup.cfg` defines CLI entry points and pinned dependency metadata.
+ b. Implement hardened `Dockerfile` following docs (non-root, multi-stage, offline wheels).
+ c. Update runbook with packaging and deployment instructions; add smoke test script for container build.
 3.5 Reproducibility improvements
-    a. Capture runtime environment (OS, Python, CUDA, package hashes) during training/eval runs.
-    b. Enforce lockfile installation (`uv.lock`/`requirements-lock.txt`) in tooling (nox sessions/Makefile).
-    c. Document deterministic settings (seeds, torch deterministic flags, dataset checksums) and add validation tests.
-    d. Emit reproducibility manifest per run.
-    Execute sub-steps sequentially, recording successes in change log before considering pruning.
+ a. Capture runtime environment (OS, Python, CUDA, package hashes) during training/eval runs.
+ b. Enforce lockfile installation (`uv.lock`/`requirements-lock.txt`) in tooling (nox sessions/Makefile).
+ c. Document deterministic settings (seeds, torch deterministic flags, dataset checksums) and add validation tests.
+ d. Emit reproducibility manifest per run.
+ Execute sub-steps sequentially, recording successes in change log before considering pruning.
 
 ## Phase 4 — Controlled Pruning
 4.1 For any sub-step where best-effort implementation fails, document exhaustive rationale in `reports/codex_tasks/pruning_report.md` (include explored paths and blockers).
@@ -53,8 +53,8 @@
 
 ## Phase 5 — Error Capture
 5.1 Wrap each numbered step in structured try/except. On failure, append research question to `logs/codex_tasks/error_captures.ndjson` using the format:
-    > Question from ChatGPT @codex {{timestamp}}:
-    > While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE] Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?
+ > Question from ChatGPT @codex {{timestamp}}:
+ > While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE] Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?
 5.2 After logging, continue if subsequent steps remain safe; otherwise halt with non-zero exit code.
 
 ## Phase 6 — Finalization

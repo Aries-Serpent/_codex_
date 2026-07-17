@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---
@@ -14,6 +14,7 @@ The Aries-Serpent/_codex_ system operates within a broader ecosystem of users an
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'System Context Diagram<br/>Users and External Systems'}, 'theme': 'base'}}%%
+
 graph TB
     subgraph "External Systems"
         GH["🐙 GitHub<br/>PR Management<br/>Issue Tracking<br/>Workflows"]
@@ -40,16 +41,24 @@ graph TB
 
     %% User interactions with system
     DEV -->|"CLI Commands<br/>API Calls"| CORE
+
     DEV -->|"Configure<br/>Trigger"| AGENTS
+
     DS -->|"Query<br/>Analyze"| INFRA
+
     OPS -->|"Deploy<br/>Monitor"| INFRA
+
     LEAD -->|"Metrics<br/>Reports"| BRAIN
 
     %% System internal flows
     CORE -->|"Execute<br/>Tasks"| AGENTS
+
     AGENTS -->|"Request<br/>Context"| BRAIN
+
     BRAIN -->|"Decision<br/>Feedback"| AGENTS
+
     CORE -->|"Persist<br/>State"| INFRA
+
     AGENTS -->|"Log<br/>Metrics"| INFRA
 
     %% External system integrations
@@ -96,7 +105,7 @@ graph TB
 - **Feedback Loop**: Learn from outcomes
 
 ### Cognitive Brain
-- **OODA Loops**: Observe → Orient → Decide → Act
+- **OODA Loops**: Observe Orient Decide Act
 - **Pattern Recognition**: Identify recurring issues
 - **Decision Making**: Choose optimal actions
 - **Quantum Orchestration**: Coordinate complex workflows
@@ -127,21 +136,21 @@ graph TB
 | **GitHub** | PR automation, workflows | Bidirectional | Per-commit |
 | **Zendesk** | Support ticket sync | Bidirectional | Per-ticket |
 | **Hugging Face** | Model sharing | Bidirectional | Per-release |
-| **MLflow** | Experiment tracking | Unidirectional (→) | Per-run |
+| **MLflow** | Experiment tracking | Unidirectional () | Per-run |
 | **Cloud Storage** | Model/data persistence | Bidirectional | On-demand |
-| **Benchmarks** | Performance tracking | Unidirectional (→) | Per-release |
+| **Benchmarks** | Performance tracking | Unidirectional () | Per-release |
 
 ---
 
 ## Key Boundary Crossings
 
-### Incoming (Users → System)
+### Incoming (Users System)
 1. **CLI Commands** - User runs `codex train --config config.yaml`
 2. **API Calls** - Programmatic model requests: `POST /api/predict`
-3. **GitHub Triggers** - PR opened → Automated checks
-4. **Configuration Changes** - Update `configs/` → System reloads
+3. **GitHub Triggers** - PR opened Automated checks
+4. **Configuration Changes** - Update `configs/` System reloads
 
-### Outgoing (System → External)
+### Outgoing (System External)
 1. **Model Upload** - Push trained models to Hugging Face
 2. **PR Comments** - Agent post findings to GitHub PR
 3. **Support Tickets** - Update customer issues in Zendesk
@@ -168,9 +177,9 @@ Level 4: Code (see source files)
 
 ## Next Steps
 
-- 👉 See [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) for internal layer structure
-- 👉 See [End-to-End Request Flow](E2E_REQUEST_FLOW.md) for request lifecycle
-- 👉 See [Component Dependencies](COMPONENT_DEPENDENCIES.md) for module relationships
+- See [5-Layer Architecture](5_LAYER_ARCHITECTURE.md) for internal layer structure
+- See [End-to-End Request Flow](E2E_REQUEST_FLOW.md) for request lifecycle
+- See [Component Dependencies](COMPONENT_DEPENDENCIES.md) for module relationships
 
 ---
 

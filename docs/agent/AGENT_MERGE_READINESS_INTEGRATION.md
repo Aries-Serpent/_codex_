@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:**  Production Ready  
-**Audience:** Copilot coding agents, CI/CD automation  
+**Status:** Production Ready
+**Audience:** Copilot coding agents, CI/CD automation
 **Last Updated: 2026-06-25
 
 ---
@@ -61,9 +61,9 @@ engine_tools_report_progress(
 
 ## Operational Rules (Mandatory)
 
-### Rule 1: Read-Before-Write Pattern 
+### Rule 1: Read-Before-Write Pattern
 
-**When:** Every `report_progress` call  
+**When:** Every `report_progress` call
 **What:** Extract maintainer WEC state from live PR body before rebuilding
 
 ```python
@@ -77,9 +77,9 @@ pr_description = build_pr_description_with_wec(
 pr_description = my_checklist + "\n" + hardcoded_wec_template
 ```
 
-### Rule 2: Always Append WEC 
+### Rule 2: Always Append WEC
 
-**When:** Every `report_progress` call  
+**When:** Every `report_progress` call
 **What:** WEC block MUST be included in `prDescription` — never omit
 
 ```python
@@ -96,9 +96,9 @@ report_progress(
 )
 ```
 
-### Rule 3: Never Uncheck Always-Required Items 
+### Rule 3: Never Uncheck Always-Required Items
 
-**When:** Building/updating WEC  
+**When:** Building/updating WEC
 **What:** These 6 items MUST stay `[x]` (enforced automatically):
 
 1. `pre-merge-validation.yml`
@@ -120,9 +120,9 @@ existing_state = {
 }
 ```
 
-### Rule 4: Document Your WEC Choices 
+### Rule 4: Document Your WEC Choices
 
-**When:** Setting optional items to checked  
+**When:** Setting optional items to checked
 **What:** Explain in PR body why you're enabling optional workflows
 
 ```markdown
@@ -143,9 +143,9 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 **Session Note:** Enabled self-healing for test failures in test_module.py:45-67
 ```
 
-### Rule 5: Track Merge Readiness Score 
+### Rule 5: Track Merge Readiness Score
 
-**When:** Each `report_progress` turn  
+**When:** Each `report_progress` turn
 **What:** Calculate and record the 10-gate readiness score
 
 ```python
@@ -182,7 +182,7 @@ checklist = f"""##  Merge Readiness Progress
 
 ### Integration Point 1: PR Creation
 
-**Workflow:** Manual (human creates PR)  
+**Workflow:** Manual (human creates PR)
 **Agent Responsibility:** On first turn, create PR body using template
 
 ```markdown
@@ -207,7 +207,7 @@ checklist = f"""##  Merge Readiness Progress
 
 ### Integration Point 2: Session Progress Updates
 
-**Workflow:** `engine-tools-report_progress`  
+**Workflow:** `engine-tools-report_progress`
 **Agent Responsibility:** Include WEC in every update
 
 ```python
@@ -239,7 +239,7 @@ for turn in range(1, num_turns + 1):
 
 ### Integration Point 3: Workflow Dispatch on WEC Change
 
-**Workflow:** `workflow-execution-gate.yml` (automatic)  
+**Workflow:** `workflow-execution-gate.yml` (automatic)
 **Agent Responsibility:** Document workflow choices in PR
 
 When you check an optional workflow item (e.g., `copilot-iterative-self-healing.yml`), the workflow automatically:
@@ -252,7 +252,7 @@ When you check an optional workflow item (e.g., `copilot-iterative-self-healing.
 
 ### Integration Point 4: Pre-Merge Validation
 
-**Workflow:** `pre-merge-validation.yml` (automatic on push)  
+**Workflow:** `pre-merge-validation.yml` (automatic on push)
 **Agent Responsibility:** Monitor workflow results and remediate failures
 
 The workflow runs all 10 gates. For each failing gate:
@@ -366,8 +366,8 @@ engine_tools_report_progress(
 ```
 
 **Expected Result:**
-- Code Quality gate:  Pass
-- Test Coverage gate:  Pass
+- Code Quality gate: Pass
+- Test Coverage gate: Pass
 - Merge readiness: 68/100 (+38 from setup)
 - `comment-review-gate.yml` + `deferral-language-gate.yml` still running
 
@@ -421,7 +421,7 @@ engine_tools_report_progress(
 ```
 
 **Expected Result:**
-- All 10 gates:  Pass
+- All 10 gates: Pass
 - Merge readiness: **100/100**
 - WEC: All 9 items present with always-required checked
 - Accountability: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
@@ -497,6 +497,6 @@ python -m json.tool .codex/wec_state.json
 
 ---
 
-**Status:**  Ready for Agent Deployment  
-**Last Tested:** 2026-06-25  
+**Status:** Ready for Agent Deployment
+**Last Tested:** 2026-06-25
 **Validation:** All integration points verified

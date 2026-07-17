@@ -4,10 +4,10 @@
 
 **Last Updated: 2026-06-22
 
-**Service:** Zendesk Knowledge Synchronization  
-**Version:** 2.0  
-**Status:** Production Ready  
-**Created:** 2026-01-09 (PS-06)  
+**Service:** Zendesk Knowledge Synchronization
+**Version:** 2.0
+**Status:** Production Ready
+**Created:** 2026-01-09 (PS-06)
 
 ---
 
@@ -17,11 +17,11 @@ The Zendesk Knowledge Crawler Service implements "Check and Pull" synchronizatio
 
 ### Key Features
 
- **Incremental Sync** - Only fetch changed articles (80% bandwidth reduction)  
- **Drift Detection** - ETag and Last-Modified tracking  
- **PII Scrubbing** - Mandatory before disk writes  
- **State Management** - Persistent cache  
- **Error Handling** - Retry logic with exponential backoff  
+ **Incremental Sync** - Only fetch changed articles (80% bandwidth reduction)
+ **Drift Detection** - ETag and Last-Modified tracking
+ **PII Scrubbing** - Mandatory before disk writes
+ **State Management** - Persistent cache
+ **Error Handling** - Retry logic with exponential backoff
  **JSON Dataset Export** - Structured data for ML pipelines
 
 ---
@@ -100,8 +100,8 @@ docs/vendors/zendesk/
 
 PII scrubbing is **mandatory**. All content automatically scrubbed before disk writes.
 
-Detection: Email, phone, credit cards, SSN, API keys  
-Action: Automatic redaction with `[REDACTED]` markers  
+Detection: Email, phone, credit cards, SSN, API keys
+Action: Automatic redaction with `[REDACTED]` markers
 Audit: All detections logged
 
 ---

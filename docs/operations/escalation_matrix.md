@@ -17,18 +17,18 @@
 
 ### P0 - Critical
 1. Page on-call engineer immediately
-2. If no response in 5 min → Page team lead
-3. If no response in 10 min → Page engineering manager
-4. After 15 min → Notify VP Engineering + executives
+2. If no response in 5 min Page team lead
+3. If no response in 10 min Page engineering manager
+4. After 15 min Notify VP Engineering + executives
 
 ### P1 - High
 1. Contact on-call engineer (Slack + email)
-2. If no response in 15 min → Contact team lead
-3. If no response in 30 min → Contact engineering manager
+2. If no response in 15 min Contact team lead
+3. If no response in 30 min Contact engineering manager
 
 ### P2 - Medium
 1. Create ticket and assign to on-call
-2. If no action in 2 hours → Notify team lead
+2. If no action in 2 hours Notify team lead
 
 ### P3 - Low
 1. Create ticket for next business day

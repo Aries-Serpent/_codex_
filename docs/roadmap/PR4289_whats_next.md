@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 > **Status as of 2026-05-06T02:00Z** · S295 final · All CodeQL alerts addressed
-> **62 commits · 117 files · 2,015 ins · 384 del · 68 alerts → 0**
+> **62 commits · 117 files · 2,015 ins · 384 del · 68 alerts 0**
 
 ---
 
@@ -13,6 +13,7 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
+
 gantt
     title _codex_ Roadmap — Post PR #4289
     dateFormat  YYYY-MM-DD
@@ -53,15 +54,22 @@ gantt
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " Priority 1 — S295 Session Tasks", "Resolve merge conflicts\nCODEX_MANIFEST.json timestamp divergence\n DONE — no conflict markers in working tree"'}}%%
+
 flowchart TD
     P1([" Priority 1 — S295 Session Tasks"])
 
     P1 --> MC["Resolve merge conflicts\nCODEX_MANIFEST.json timestamp divergence\n DONE — no conflict markers in working tree"]
+
     P1 --> EE["Fix CodeQL empty-except\nalerts 13377–13382\n6 locations in 4 test files\n DONE — explanatory comments added"]
+
     P1 --> CQ["Verify GitHub Security tab\nall alerts 13330–13391\nshown as Closed / Fixed\n Awaiting next CodeQL re-scan"]
+
     P1 --> RF["ruff check src/ tests/\n0 violations\n DONE — confirmed clean"]
+
     P1 --> SC["sync_tracked_files.py --check\nall hashes consistent\n DONE — all consistent"]
+
     P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated 2026-07-13
+
     P1 --> DD["Update session diagram\n+ roadmap docs\n DONE — comprehensive expansion"]
 
     MC & EE & CQ & RF & SC & P25 & DD --> MERGE_READY[" PR #4289\nReady for Merge Review"]
@@ -73,6 +81,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
+
 mindmap
   root((Quality Backlog\nPost PR 4289))
     Security
@@ -128,12 +137,16 @@ mindmap
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Current Suite\n18 auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30", "P33 — BLE001 src/\nEnable ruff BLE001\nnarrow broad handlers\nin production modules"'}}%%
+
 flowchart LR
     CURRENT["Current Suite\n18 auto-fixable patterns\nP1 P4 P6 P7 P8 P9 P10\nP11 P12 P13 P14 P16 P18\nP23 P25 P26 P27 P29 P30"]
 
     CURRENT --> P33["P33 — BLE001 src/\nEnable ruff BLE001\nnarrow broad handlers\nin production modules"]
+
     CURRENT --> P34["P34 — mypy strict\nAuto-annotate return types\nwhere mypy reports missing"]
+
     CURRENT --> P35["P35 — YAML Multiline\nAuto-convert multiline bash\nto printf pipeline pattern"]
+
     CURRENT --> P36["P36 — Src Imports\nAuto-rewrite from src.X\nto from codex.X"]
 
     P33 & P34 & P35 & P36 --> FUTURE["Future Suite\n22 auto-fixable patterns\nzero mechanical manual-review\npatterns remaining"]
@@ -147,7 +160,9 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
+
 stateDiagram-v2
+
     [*] --> PreGenesis : PR 4289 merged
 
     PreGenesis : Pre-Genesis\nSAFE_MODE=true\nAdvisory only\nNo autonomous commits
@@ -171,31 +186,42 @@ stateDiagram-v2
 
 ---
 
-## 6. Dependency Chain — PR #4289 → Future Gates
+## 6. Dependency Chain — PR #4289 Future Gates
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR #4289 merged\n68 alerts → 0\n117 files\n0 CI issues", "CodeQL baseline\nclean on main"'}}%%
+
 flowchart TD
     MERGED(["PR #4289 merged\n68 alerts → 0\n117 files\n0 CI issues"])
 
     MERGED --> SEC_CLEAN["CodeQL baseline\nclean on main"]
+
     MERGED --> FIX_CLEAN["0 auto-fix issues\nbaseline established"]
+
     MERGED --> DEPS_CLEAN["10 Dependabot PRs\nconsolidated"]
+
     MERGED --> EXCEPT_CLEAN["113 broad handlers\nnarrowed in tests"]
 
     SEC_CLEAN --> DUAL_SAST["Dual SAST gate\nSemgrep + CodeQL\non every PR"]
+
     FIX_CLEAN --> P33_36["Patterns 33–36\nauto-fix expansion\n22 total patterns"]
+
     DEPS_CLEAN --> FRESH_DEPS["Dependency freshness\ngate via Dependabot\nautomation"]
+
     EXCEPT_CLEAN --> BLE001["BLE001 ruff rule\nenabled for src/\nPattern 33"]
 
     DUAL_SAST --> SEC_HIGH["Security posture: HIGH\n0 open SAST alerts\nall branches"]
+
     P33_36 --> QUAL_HIGH["Code quality: HIGH\nFull auto-heal CI\nzero manual patterns"]
+
     FRESH_DEPS --> DEP_HIGH["Dependency health: HIGH\nno vulnerable packages"]
+
     BLE001 --> TYPE_HIGH["Type safety ramp\nmypy 328 → 215"]
 
     SEC_HIGH & QUAL_HIGH & DEP_HIGH & TYPE_HIGH --> ETOD["E-to-D\ntransition gate\neligibility"]
 
     ETOD --> DCAP["D_CAPABLE\npromotion"]
+
     DCAP --> GEN2["Genesis Phase 2\nhuman admin activation"]
 ```
 
@@ -205,6 +231,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
+
 pie title PR #4289 — Work Breakdown by Category (Commits)
     "CodeQL Security Fixes" : 22
     "CI / Auto-Fix Patterns" : 12
@@ -221,19 +248,29 @@ pie title PR #4289 — Work Breakdown by Category (Commits)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "git push\nPR branch", "pre-merge-validation.yml\nruff · sync_tracked · baseline"'}}%%
+
 flowchart TD
+
     PUSH["git push\nPR branch"] --> PRE_MERGE["pre-merge-validation.yml\nruff · sync_tracked · baseline"]
+
     PUSH --> COMMENT_GATE["comment-review-gate.yml\nunresolved threads check"]
+
     PUSH --> DEFERRAL["deferral-language-gate.yml\nforbidden phrases scan"]
+
     PUSH --> AUTH["agent-auth-delegation.yml\nCODEX_MASTER_KEY token chain"]
+
     PUSH --> WEC_GATE["workflow-execution-gate.yml\nparse WEC checklist\narm allowed workflows"]
 
     WEC_GATE --> VALIDATE["validate.yml\ndetect-secrets · ruff\npre-commit · sync-tracked"]
+
     WEC_GATE --> CODEQL["codeql-analysis.yml\nPython SAST\nall alert rules"]
+
     WEC_GATE --> AUTO_FIX["auto-fix-pr-check.yml\nauto_fix_common_issues.py\n--check-only exit code"]
+
     WEC_GATE --> RESILIENT["resilient_validation.yml\nfull pytest 4 shards\ncoverage report"]
 
     AUTH --> COST["cost-gate.yml\ntoken spend limits"]
+
     AUTH --> CLEANUP["cleanup-stale-pr-comments.yml\ndelete_stale_pr_comments.py\nissues:write permission"]
 
     PRE_MERGE & COMMENT_GATE & DEFERRAL --> CHECKIN["copilot-agent-checkin.yml\nS221 guard\nPR health summary"]
@@ -249,6 +286,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'User Journey'}}%%
+
 journey
     title PR #4289 Merge Readiness Journey
     section S293 Open
@@ -283,9 +321,11 @@ journey
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "PR open", "S293-review", "S293-warnings", "S293-security", "S294-open", "S294-fix", "S294-late", "S295-final", 78, 80, 83, 85, 83, 90, 93, 95'}}%%
+
 xychart-beta
     title "Merge Readiness Score Over PR Lifetime"
     x-axis ["PR open", "S293-review", "S293-warnings", "S293-security", "S294-open", "S294-fix", "S294-late", "S295-final"]
+
     y-axis "Merge Readiness / 100" 0 --> 100
     bar  [78, 80, 83, 85, 83, 90, 93, 95]
     line [78, 80, 83, 85, 83, 90, 93, 95]
@@ -297,7 +337,7 @@ xychart-beta
 
 ### 11a. PBKDF2 Upgrade — Energy Barrier Scaling
 
-The next-session task of upgrading PBKDF2 from 100k → 600k iterations is modelled as raising the activation energy barrier:
+The next-session task of upgrading PBKDF2 from 100k 600k iterations is modelled as raising the activation energy barrier:
 
 ```
   Work function ratio:
@@ -414,7 +454,7 @@ Agent authority transitions are modelled as **quantum phase transitions** — ab
 | `Tc` | Critical temperature | Gate threshold |
 | `F(Φ)` | Landau free energy | System stability at autonomy level |
 | `a(T−Tc)` | Control parameter | Distance from threshold |
-| Phase transition | Symmetry breaking | Pre-Genesis → E-model jump |
+| Phase transition | Symmetry breaking | Pre-Genesis E-model jump |
 
 ---
 
@@ -422,18 +462,18 @@ Agent authority transitions are modelled as **quantum phase transitions** — ab
 
 | Metric | PR Open | S295 Final | Target | Pattern |
 |--------|---------|------------|--------|---------|
-| `auto_fix --check-only` exit | `1` (116 issues) | **`0`**  | 0 forever | P1–P32 |
-| CodeQL open alerts | `68` | **`0`**  | 0 forever | SAST |
-| Merge Readiness Score | `78/100` | **`~95/100`**  | ≥ 95 | P30 |
-| ruff violations `src/` | unknown | **`0`**  | 0 forever | P8 |
-| sync_tracked_files | stale | **consistent**  | always clean | P22 |
+| `auto_fix --check-only` exit | `1` (116 issues) | **`0`** | 0 forever | P1–P32 |
+| CodeQL open alerts | `68` | **`0`** | 0 forever | SAST |
+| Merge Readiness Score | `78/100` | **`~95/100`** | ≥ 95 | P30 |
+| ruff violations `src/` | unknown | **`0`** | 0 forever | P8 |
+| sync_tracked_files | stale | **consistent** | always clean | P22 |
 | mypy error count | ~282 | ~282 | ≤ 215 | P15 |
 | Test coverage overall | ~70% | ~70% | ≥ 80% | coverage-wt |
 | RAG module coverage | unknown | unknown | ≥ 95% | test-rag.yml |
 | `except Exception:` in `src/` | unknown | unknown | 0 | P33 (new) |
 | PBKDF2 iterations | 100,000 | 100,000 | ≥ 600,000 | OWASP 2024 |
-| auto-fix patterns | 16 | **18**  | 22 | P33–P36 |
-| Dependabot PRs open | 10 | **0**  | 0 | dep-fresh |
+| auto-fix patterns | 16 | **18** | 22 | P33–P36 |
+| Dependabot PRs open | 10 | **0** | 0 | dep-fresh |
 
 ---
 
@@ -441,15 +481,23 @@ Agent authority transitions are modelled as **quantum phase transitions** — ab
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Conflict Detected\nCODEX_MANIFEST.json\norigin/main 7fea715e1, "Strategy: git merge origin/main -X ours\n(preserve PR branch changes)"'}}%%
+
 flowchart TD
+
     CONFLICT([Conflict Detected\nCODEX_MANIFEST.json\norigin/main 7fea715e1]) --> ANALYZE
     ANALYZE{Root Cause?}
+
     ANALYZE --> |"auto-refresh by CI\ngenerated_at + integrity_sha"| STRATEGY
     STRATEGY["Strategy: git merge origin/main -X ours\n(preserve PR branch changes)"]
+
     STRATEGY --> MERGE[Merge succeeds\nAuto-merging CODEX_MANIFEST.json]
+
     MERGE --> SYNC[sync_tracked_files --fix\nbaseline regenerated]
+
     SYNC --> VERIFY{All consistent?}
+
     VERIFY --> |yes| CLEAN([0 conflicts \n0 ruff violations \nbaseline clean ])
+
     VERIFY --> |no| SYNC
 ```
 
@@ -494,19 +542,19 @@ The `-X ours` merge strategy applies zero energy to resolve — it selects the P
 
 | Metric | PR Open | S295 Final | S296 Final | Target |
 |--------|---------|------------|------------|--------|
-| `auto_fix --check-only` exit | `1` (116 issues) | **`0`**  | **`0`**  | 0 always |
-| CodeQL open alerts | `68` | **`0`**  | **`0`**  | 0 always |
-| Merge Readiness Score | `78/100` | `~88/100` | **`~95/100`**  | ≥ 95 |
-| ruff violations `src/` | unknown | **`0`**  | **`0`**  | 0 always |
-| sync_tracked_files | stale | **consistent**  | **consistent**  | always |
-| Merge conflicts | 1 (CODEX_MANIFEST) | 1 remaining | **0**  | 0 always |
-| empty-except alerts | 6 new | fixed  | **confirmed**  | 0 always |
+| `auto_fix --check-only` exit | `1` (116 issues) | **`0`** | **`0`** | 0 always |
+| CodeQL open alerts | `68` | **`0`** | **`0`** | 0 always |
+| Merge Readiness Score | `78/100` | `~88/100` | **`~95/100`** | ≥ 95 |
+| ruff violations `src/` | unknown | **`0`** | **`0`** | 0 always |
+| sync_tracked_files | stale | **consistent** | **consistent** | always |
+| Merge conflicts | 1 (CODEX_MANIFEST) | 1 remaining | **0** | 0 always |
+| empty-except alerts | 6 new | fixed | **confirmed** | 0 always |
 | Session diagrams | 0 | 15 types, 1036 lines | **19 types, 1300+ lines** | grow |
 | Quantum models | 0 | 6 | **10** | grow |
 
 ---
 
-## 16. Active-PR Guard — Implementation Complete 
+## 16. Active-PR Guard — Implementation Complete
 
 **Problem solved:** All scheduled/triggered auto-push workflows now check for active PRs before pushing to `main` or `0D_base_`. This permanently eliminates the recurring merge-conflict pattern where CI auto-commits created divergence while a PR was in progress.
 
@@ -514,12 +562,12 @@ The `-X ours` merge strategy applies zero energy to resolve — it selects the P
 
 | Workflow | Guard Status Before | Guard Status After |
 |----------|--------------------|--------------------|
-| `codex-manifest-refresh.yml` | ️ File-overlap only (missed non-touching PRs) |  Any open/draft PR → skip |
-| `codebase-health-sweep.yml` (main) | ️ File-overlap only |  Any open/draft PR → skip |
-| `codebase-health-sweep.yml` (0D_base_) | ️ File-overlap only |  Any open/draft PR → skip |
-| `embedding-index-rebuild.yml` |  No guard |  Any open/draft PR → skip |
-| `model-drift-retrain.yml` |  No guard |  Any open/draft PR → skip |
-| `forward-sync-autogen.yml` |  No guard |  Any open/draft PR → skip |
+| `codex-manifest-refresh.yml` | File-overlap only (missed non-touching PRs) | Any open/draft PR skip |
+| `codebase-health-sweep.yml` (main) | File-overlap only | Any open/draft PR skip |
+| `codebase-health-sweep.yml` (0D_base_) | File-overlap only | Any open/draft PR skip |
+| `embedding-index-rebuild.yml` | No guard | Any open/draft PR skip |
+| `model-drift-retrain.yml` | No guard | Any open/draft PR skip |
+| `forward-sync-autogen.yml` | No guard | Any open/draft PR skip |
 
 **Composite action:** `.github/actions/active-pr-guard/action.yml`
 - Single O(1) API call: `GET /pulls?base={branch}&state=open&per_page=1`

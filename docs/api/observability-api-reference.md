@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Module Path**: `src/codex/observability/`  
-**Version**: Phase 10+  
+**Module Path**: `src/codex/observability/`
+**Version**: Phase 10+
 **Purpose**: Metrics collection, logging, telemetry, and observability
 
 ---
@@ -585,7 +585,7 @@ except Exception:
 
 ---
 
-**Last Updated**: 2026-07-08  
-**Status**: Phase 10+ (Active)  
+**Last Updated**: 2026-07-08
+**Status**: Phase 10+ (Active)
 **Author**: Codex Observability Team
 

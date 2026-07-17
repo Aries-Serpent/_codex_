@@ -83,7 +83,7 @@ python3 scripts/ci/patch_session_preload.py
 
 ## Agent Instruction
 
-> ️ **If you are a Copilot coding agent reading this:**
+> **If you are a Copilot coding agent reading this:**
 > Do NOT refactor, simplify, or touch the session preload step in `copilot-setup-steps.yml`.
 > If a CI failure led you here, identify and fix the **other** file that is failing.
 > If `copilot-setup-steps.yml` itself is failing, run the restore procedure above.

@@ -4,15 +4,17 @@
 
 > **Last updated: 2026-07-11
 > **Stats: 64 commits · 118 files changed · 2,050 insertions(+) · 384 deletions(-)**
-> **Sessions: S293 (initial) → S294 → S295 → S296 (current)**
+> **Sessions: S293 (initial) S294 S295 S296 (current)**
 
 ---
 
-## 1. End-to-End Problem → Fix Flow
+## 1. End-to-End Problem Fix Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4289 opened\ndocs+deps+security\n265e11a, "Wave 1 — Initial Commit (74335117)"'}}%%
+
 flowchart TD
+
     START([PR #4289 opened\ndocs+deps+security\n265e11a]) --> WAVE1
 
     subgraph WAVE1["Wave 1 — Initial Commit (74335117)"]
@@ -95,6 +97,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
     direction LR
 
@@ -138,10 +141,11 @@ stateDiagram-v2
 
 ---
 
-## 3. Security Fix — Sequence Diagram (HTTP Request → Safe File Access)
+## 3. Security Fix — Sequence Diagram (HTTP Request Safe File Access)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing A-Za-z0-9._-, TAINT BROKEN'}}%%
+
 sequenceDiagram
     autonumber
     actor Client
@@ -154,19 +158,26 @@ sequenceDiagram
     Client->>FastAPI: DELETE /index/{index_name}?tenant_id=../../etc
     FastAPI->>Validator: _validate_path_segment("../../etc", "tenant_id")
     Note over Validator: os.path.basename("../../etc") = "etc"<br/>BUT "etc" != "../../etc" → mismatch
+
     Validator-->>FastAPI: HTTPException(400) "Invalid tenant_id"
+
     FastAPI-->>Client: 400 Bad Request  BLOCKED
 
     Client->>FastAPI: DELETE /index/my-index?tenant_id=valid_tenant
     FastAPI->>Validator: _validate_path_segment("valid_tenant", "tenant_id")
     Note over Validator: basename("valid_tenant") = "valid_tenant" <br/>re.fullmatch([A-Za-z0-9._-]+) matches <br/>not in {".", ".."} 
+
     Validator-->>FastAPI: m.group() = "valid_tenant" [TAINT BROKEN]
     FastAPI->>Resolver: realpath(join(base, "valid_tenant"))
+
     Resolver-->>FastAPI: /rag-files/valid_tenant (canonical)
     FastAPI->>Guard: commonpath(["/rag-files", "/rag-files/valid_tenant"])
+
     Guard-->>FastAPI: "/rag-files" == base  CONTAINED
     FastAPI->>FS: rmtree("/rag-files/valid_tenant")
+
     FS-->>FastAPI: success
+
     FastAPI-->>Client: 200 OK  ALLOWED
 ```
 
@@ -176,6 +187,7 @@ sequenceDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Class Diagram showing A-Za-z0-9._-'}}%%
+
 classDiagram
     direction TB
 
@@ -254,6 +266,7 @@ classDiagram
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "All Alerts at PR Open — 68 Total", " py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"'}}%%
+
 flowchart LR
     subgraph OPEN["All Alerts at PR Open — 68 Total"]
         A1[" py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"]
@@ -280,9 +293,13 @@ flowchart LR
     end
 
     A1 --> F1 --> R1
+
     A2 --> F2 --> R2
+
     A3 --> F3 --> R3
+
     A4 --> F4 --> R4
+
     A5 --> F5 --> R5
 ```
 
@@ -292,7 +309,9 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "113 × bare\nexcept Exception:\npass", "except\n(ImportError,\nAttributeError,\nModuleNotFoundError):\npass  # optional dep"'}}%%
+
 flowchart LR
+
     INPUT["113 × bare\nexcept Exception:\npass"] --> CLASSIFY{"Context\nClassifier\nff5b6a5"}
 
     CLASSIFY -->|optional dep · import setup| N1["except\n(ImportError,\nAttributeError,\nModuleNotFoundError):\npass  # optional dep"]
@@ -318,6 +337,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "auto_fix_common_issues.py — Before PR", "16 auto-fixable patterns"'}}%%
+
 flowchart TD
     subgraph BEFORE["auto_fix_common_issues.py — Before PR"]
         B_N["16 auto-fixable patterns"]
@@ -346,6 +366,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Before PR — Failing / Broken", " Cleanup Stale PR Comments\nSyntaxError Python 3.12\nglobal-before-use"'}}%%
+
 flowchart LR
     subgraph BEFORE["Before PR — Failing / Broken"]
         direction TB
@@ -384,6 +405,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
+
 timeline
     title PR #4289 — Commit Activity by Phase
     2026-05-04 S293 Open  : 265e11a Initial plan
@@ -422,6 +444,7 @@ timeline
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
+
 mindmap
   root((PR 4289\nNew Artifacts\n117 files touched))
     Workflows
@@ -466,13 +489,18 @@ mindmap
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "10 open Dependabot PRs\nat PR open time", "transformers\nversion bump"'}}%%
+
 flowchart TD
     DEP_IN(["10 open Dependabot PRs\nat PR open time"])
 
     DEP_IN --> T1["transformers\nversion bump"]
+
     DEP_IN --> T2["filelock\nversion bump"]
+
     DEP_IN --> T3["hypothesis\nversion bump"]
+
     DEP_IN --> T4["opentelemetry-\nexporter-prometheus\nversion bump"]
+
     DEP_IN --> T5["6 additional\npackages"]
 
     T1 & T2 & T3 & T4 & T5 --> FILES
@@ -500,9 +528,12 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing 0.75, 0.95, 0.55, 0.90'}}%%
+
 quadrantChart
     title Fix Complexity vs Security Impact
+
     x-axis Low Complexity --> High Complexity
+
     y-axis Low Impact --> High Impact
     quadrant-1 High Impact · High Effort
     quadrant-2 High Impact · Low Effort
@@ -529,9 +560,11 @@ quadrantChart
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "S293 open", "Wave3-warnings", "Wave5-security", "S294-open", "S294-mid", "S294-late", "S295", 68, 28, 22, 19, 16, 7, 0'}}%%
+
 xychart-beta
     title "CodeQL Alert Count — Reduction Over Sessions"
     x-axis ["S293 open", "Wave3-warnings", "Wave5-security", "S294-open", "S294-mid", "S294-late", "S295"]
+
     y-axis "Open CodeQL Alerts" 0 --> 70
     bar  [68, 28, 22, 19, 16, 7, 0]
     line [68, 28, 22, 19, 16, 7, 0]
@@ -737,6 +770,7 @@ Merge readiness evolves toward a ground state `E₀ = 100` as each failing dimen
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Git Graph'}}%%
+
 gitGraph
    commit id: "265e11a initial-plan"
    commit id: "74335117 docs+10-deps"
@@ -775,11 +809,13 @@ gitGraph
 
 ---
 
-## 1. End-to-End Problem → Fix Flow
+## 1. End-to-End Problem Fix Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4289 opened\ndocs+deps+security, "Wave 1 — Initial PR (ad96c9422)"'}}%%
+
 flowchart TD
+
     START([PR #4289 opened\ndocs+deps+security]) --> WAVE1
 
     subgraph WAVE1["Wave 1 — Initial PR (ad96c9422)"]
@@ -863,6 +899,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "CodeQL Alerts at PR Open", "py/path-injection\n13339-13344\n13355-13357\n13359-13361\n13385-13391\n(18 alerts)"'}}%%
+
 flowchart LR
     subgraph CODEQL_OPEN["CodeQL Alerts at PR Open"]
         A1["py/path-injection\n13339-13344\n13355-13357\n13359-13361\n13385-13391\n(18 alerts)"]
@@ -881,9 +918,13 @@ flowchart LR
     end
 
     A1 --> F1
+
     A2 --> F2
+
     A3 --> F3
+
     A4 --> F4
+
     A5 --> F5
 
     subgraph RESULT["Result"]
@@ -895,9 +936,13 @@ flowchart LR
     end
 
     F1 --> R1
+
     F2 --> R2
+
     F3 --> R3
+
     F4 --> R4
+
     F5 --> R5
 ```
 
@@ -907,23 +952,37 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "except Exception:\n(113 instances)", "ImportError, AttributeError,\nModuleNotFoundError"'}}%%
+
 flowchart LR
+
     INPUT["except Exception:\n(113 instances)"] --> CLASSIFY{Classify\ntry-block context}
 
     CLASSIFY -->|optional dep / import| N1["ImportError, AttributeError,\nModuleNotFoundError"]
+
     CLASSIFY -->|torch / GPU cleanup| N2["AttributeError,\nRuntimeError, TypeError"]
+
     CLASSIFY -->|stdout/stderr restore| N3["AttributeError,\nOSError, RuntimeError"]
+
     CLASSIFY -->|psutil / resource leak| N4["ImportError, AttributeError,\nOSError, RuntimeError"]
+
     CLASSIFY -->|close / teardown| N5["AttributeError,\nOSError, RuntimeError"]
+
     CLASSIFY -->|branch-cov test| N6["except Exception as _err:\nintentional comment"]
+
     CLASSIFY -->|functional body| N7["except Exception as _err:"]
 
     N1 --> RESULT["Specific type\nno silent swallow\n 113 fixed"]
+
     N2 --> RESULT
+
     N3 --> RESULT
+
     N4 --> RESULT
+
     N5 --> RESULT
+
     N6 --> RESULT
+
     N7 --> RESULT
 ```
 
@@ -933,6 +992,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Before This PR", "auto_fixable_patterns\n16 entries"'}}%%
+
 flowchart TD
     subgraph BEFORE["Before This PR"]
         B_AUTO["auto_fixable_patterns\n16 entries"]
@@ -957,6 +1017,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Before PR — Failing", "Cleanup Stale PR Comments\nSyntaxError Python 3.12"'}}%%
+
 flowchart LR
     subgraph BEFORE["Before PR — Failing"]
         B1["Cleanup Stale PR Comments\nSyntaxError Python 3.12"]
@@ -989,6 +1050,7 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
+
 mindmap
   root((PR #4289\nNew Artifacts))
     Workflows
@@ -1011,13 +1073,18 @@ mindmap
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "10 Dependabot PRs\npending at PR open", "transformers — version bump"'}}%%
+
 flowchart TD
     DEP_IN["10 Dependabot PRs\npending at PR open"]
 
     DEP_IN --> T1["transformers — version bump"]
+
     DEP_IN --> T2["filelock — version bump"]
+
     DEP_IN --> T3["hypothesis — version bump"]
+
     DEP_IN --> T4["opentelemetry-exporter-prometheus\nversion bump"]
+
     DEP_IN --> T5["6 additional packages\nrequirements*.txt + lockfiles"]
 
     T1 & T2 & T3 & T4 & T5 --> DEP_OUT["All bumped in:\nrequirements.txt\nrequirements-minimal.txt\nrequirements-ml-cpu.txt\nrequirements-ml-lite.txt\nrequirements-optional.txt\nrequirements-test.txt\nrequirements/base.txt\nrequirements/dev.txt\nrequirements/lock.txt\nrequirements/lock-ml.txt\npyproject.toml"]
@@ -1029,6 +1096,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Git Graph'}}%%
+
 gitGraph
    commit id: "265e11a — Initial plan"
    commit id: "74335117 — docs+deps initial commit"
@@ -1065,7 +1133,9 @@ gitGraph
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing S296 Start\n2026-05-06T02:11Z\ncomment 4384471249, "Verification Pass"'}}%%
+
 flowchart LR
+
     S296_START([S296 Start\n2026-05-06T02:11Z\ncomment 4384471249]) --> VERIFY
 
     subgraph VERIFY["Verification Pass"]
@@ -1101,44 +1171,63 @@ flowchart LR
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
+
 stateDiagram-v2
+
     [*] --> P1_ACTIVE : session start
 
     state P1_ACTIVE {
+
         [*] --> P1_sync : check sync_tracked_files
+
         P1_sync --> P1_ruff : all consistent 
+
         P1_ruff --> P1_conflicts : 0 violations 
+
         P1_conflicts --> P1_done : 0 conflicts 
+
         P1_done --> [*]
     }
 
     P1_ACTIVE --> P2_ACTIVE : P1 complete
 
     state P2_ACTIVE {
+
         [*] --> P2_codeql : verify CodeQL alerts
+
         P2_codeql --> P2_baseline : all addressed 
+
         P2_baseline --> P2_done : baseline consistent 
+
         P2_done --> [*]
     }
 
     P2_ACTIVE --> P3_ACTIVE : P2 complete
 
     state P3_ACTIVE {
+
         [*] --> P3_stale : stale-comment workflow
+
         P3_stale --> P3_done : monitoring active 
+
         P3_done --> [*]
     }
 
     P3_ACTIVE --> P4_ACTIVE : P3 complete
 
     state P4_ACTIVE {
+
         [*] --> P4_genesis : Genesis E-to-D gate
+
         P4_genesis --> P4_mcp : transition readiness
+
         P4_mcp --> P4_done : MCP health gate
+
         P4_done --> [*]
     }
 
     P4_ACTIVE --> ALL_DONE
+
     ALL_DONE --> [*]
 ```
 
@@ -1181,17 +1270,19 @@ S(rho) = -Tr[rho * ln(rho)]  →  0   as system reaches DFS
 
 | CI Dimension | Lindblad Operator | S296 Eigenvalue |
 |--------------|------------------|----------------|
-| ruff violations | `Gamma_ruff` | 0 (in DFS)  |
-| sync_tracked drift | `Gamma_sync` | 0 (in DFS)  |
-| CodeQL open alerts | `Gamma_CodeQL` | 0 (in DFS)  |
-| Pattern 25 freshness | `Gamma_P25` | 0 days (in DFS)  |
-| Merge conflicts | `Gamma_merge` | 0 (in DFS)  |
+| ruff violations | `Gamma_ruff` | 0 (in DFS) |
+| sync_tracked drift | `Gamma_sync` | 0 (in DFS) |
+| CodeQL open alerts | `Gamma_CodeQL` | 0 (in DFS) |
+| Pattern 25 freshness | `Gamma_P25` | 0 days (in DFS) |
+| Merge conflicts | `Gamma_merge` | 0 (in DFS) |
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "S293", "S294-W1", "S294-W2", "S294-W3", "S294-W4", "S295", "S296", 3.8, 2.9, 2.1, 1.4, 0.8, 0.2, 0.0'}}%%
+
 xychart-beta
     title "CI Entropy vs Session (von Neumann S(rho))"
     x-axis ["S293", "S294-W1", "S294-W2", "S294-W3", "S294-W4", "S295", "S296"]
+
     y-axis "Entropy" 0 --> 4
     line [3.8, 2.9, 2.1, 1.4, 0.8, 0.2, 0.0]
 ```
@@ -1246,13 +1337,15 @@ where `t` is measured in sessions and `N(t)` is the open alert count.
 | `N(S293)` | 68 |
 | `N(S294)` | ~30 |
 | `N(S295)` | ~6 |
-| `N(S296)` | **0**  |
+| `N(S296)` | **0** |
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "S293", "S294-W1", "S294-W3", "S294-W5", "S294-W7", "S295", "S296", 68, 50, 35, 20, 10, 6, 0'}}%%
+
 xychart-beta
     title "Alert Count — Quantum Decay Model"
     x-axis ["S293", "S294-W1", "S294-W3", "S294-W5", "S294-W7", "S295", "S296"]
+
     y-axis "Open Alerts" 0 --> 70
     line [68, 50, 35, 20, 10, 6, 0]
     bar [68, 50, 35, 20, 10, 6, 0]
@@ -1264,6 +1357,7 @@ xychart-beta
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Root Cause Identified\ncodex-manifest-refresh.yml\nscheduled run @ 00:33Z\npushed to main while PR active, "Impact\nCODEX_MANIFEST.json generated_at\n+ integrity_sha256 diverge\nGitHub shows merge conflict on PR"'}}%%
+
 flowchart TD
     ROOT_CAUSE([Root Cause Identified\ncodex-manifest-refresh.yml\nscheduled run @ 00:33Z\npushed to main while PR active])
 
@@ -1281,6 +1375,7 @@ flowchart TD
     end
 
     FIX --> BEFORE
+
     FIX --> AFTER
 
     BEFORE["Before\nFile-overlap O(PRs × files) API calls\nmissed PRs not yet touching these files\n→ conflict still happens"]
@@ -1294,6 +1389,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Workflow: count=1 (PR #4289 '}}%%
+
 sequenceDiagram
     participant Scheduler as ⏱ Scheduler (cron)
     participant Workflow as  Auto-Push Workflow
@@ -1304,17 +1400,20 @@ sequenceDiagram
     Scheduler->>Workflow: trigger (schedule/workflow_run)
     Workflow->>Workflow: regenerate files (manifest/sweep/index)
     Workflow->>GH_API: GET /pulls?base=main&state=open&per_page=1
+
     GH_API-->>Workflow: count=1 (PR #4289 is open)
     Workflow->>Workflow: pr_skip=true ⛔
+
     Workflow-->>Main: push SKIPPED
     note over PR,Main: No divergence created 
 
     note over Scheduler,PR: After PR merges:
     Scheduler->>Workflow: next scheduled trigger
     Workflow->>GH_API: GET /pulls?base=main&state=open&per_page=1
+
     GH_API-->>Workflow: count=0 (no active PRs)
     Workflow->>Workflow: pr_skip=false 
-    Workflow->>Main: git push origin HEAD:main 
+    Workflow->>Main: git push origin HEAD:main
 ```
 
 ---

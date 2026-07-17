@@ -119,24 +119,24 @@ Include HAR files in `determinism-audit-*.zip`:
 ### Key Components
 
 1. **HAR Recorder**
-   - Captures HTTP/HTTPS traffic
-   - Integrates with existing tools (requests, httpx)
-   - Optional: Browser-based capture via Playwright
+ - Captures HTTP/HTTPS traffic
+ - Integrates with existing tools (requests, httpx)
+ - Optional: Browser-based capture via Playwright
 
 2. **HAR Cache Storage**
-   - Indexed HAR files for fast lookup
-   - Cache invalidation strategies
-   - Compression for large responses
+ - Indexed HAR files for fast lookup
+ - Cache invalidation strategies
+ - Compression for large responses
 
 3. **HAR Playback Engine**
-   - Serves cached responses
-   - Mock server for testing
-   - Offline mode support
+ - Serves cached responses
+ - Mock server for testing
+ - Offline mode support
 
 4. **HAR Integration Layer**
-   - Hooks into audit pipeline
-   - Dashboard generation
-   - API client wrappers
+ - Hooks into audit pipeline
+ - Dashboard generation
+ - API client wrappers
 
 ---
 
@@ -619,24 +619,24 @@ class SecureHARRecorder(HARRecorder):
 ### Optimization Strategies
 
 1. **Selective Recording**
-   - Only record relevant requests
-   - Skip large binary responses
-   - Filter by content type
+ - Only record relevant requests
+ - Skip large binary responses
+ - Filter by content type
 
 2. **Compression**
-   - gzip compression for storage
-   - Brotli for transmission
-   - Automatic compression >1MB
+ - gzip compression for storage
+ - Brotli for transmission
+ - Automatic compression >1MB
 
 3. **Indexing**
-   - SQLite index for fast lookup
-   - URL-based hashing
-   - LRU cache eviction
+ - SQLite index for fast lookup
+ - URL-based hashing
+ - LRU cache eviction
 
 4. **Chunking**
-   - Split large HAR files
-   - Per-page HAR files
-   - Lazy loading
+ - Split large HAR files
+ - Per-page HAR files
+ - Lazy loading
 
 ---
 
@@ -782,35 +782,35 @@ har:
 ### Phase 5+: Advanced Features
 
 1. **HAR Diff Tool**
-   - Compare HAR files across audit runs
-   - Detect API changes
-   - Performance regression detection
+ - Compare HAR files across audit runs
+ - Detect API changes
+ - Performance regression detection
 
 2. **HAR Merge**
-   - Combine multiple HAR files
-   - De-duplicate entries
-   - Create master archive
+ - Combine multiple HAR files
+ - De-duplicate entries
+ - Create master archive
 
 3. **HAR Analytics**
-   - Request distribution analysis
-   - Response time trends
-   - Cache efficiency metrics
-   - Dashboard visualizations
+ - Request distribution analysis
+ - Response time trends
+ - Cache efficiency metrics
+ - Dashboard visualizations
 
 4. **HAR Replay Testing**
-   - Automated replay of HAR sessions
-   - Regression testing
-   - Load testing from HAR
+ - Automated replay of HAR sessions
+ - Regression testing
+ - Load testing from HAR
 
 5. **Browser Integration**
-   - Chrome DevTools export
-   - Firefox HAR export
-   - Playwright HAR capture
+ - Chrome DevTools export
+ - Firefox HAR export
+ - Playwright HAR capture
 
 6. **HAR to Mock Server**
-   - Generate mock API from HAR
-   - Dynamic response generation
-   - Scenario-based testing
+ - Generate mock API from HAR
+ - Dynamic response generation
+ - Scenario-based testing
 
 ---
 
@@ -818,26 +818,26 @@ har:
 
 ### Functional Requirements
 
--  HAR recording works for HTTP/HTTPS requests
--  HAR caching reduces API calls by 50%+
--  Offline mode works with cached HAR
--  Sensitive data properly redacted
--  HAR files included in audit artifacts
+- HAR recording works for HTTP/HTTPS requests
+- HAR caching reduces API calls by 50%+
+- Offline mode works with cached HAR
+- Sensitive data properly redacted
+- HAR files included in audit artifacts
 
 ### Non-Functional Requirements
 
--  HAR file size <10MB per audit run
--  Cache hit rate >60%
--  Performance overhead <10%
--  Storage <100MB per month
--  Compatible with existing workflows
+- HAR file size <10MB per audit run
+- Cache hit rate >60%
+- Performance overhead <10%
+- Storage <100MB per month
+- Compatible with existing workflows
 
 ### Documentation Requirements
 
--  Usage guide published
--  API documentation complete
--  Examples provided
--  Troubleshooting guide available
+- Usage guide published
+- API documentation complete
+- Examples provided
+- Troubleshooting guide available
 
 ---
 

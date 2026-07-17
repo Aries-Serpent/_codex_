@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 2.0.0  
-**Effective Date**: 2026-06-14  
-**Classification**: Internal — Operations  
-**Owner**: Security & Operations Team  
+**Version**: 2.0.0
+**Effective Date**: 2026-06-14
+**Classification**: Internal — Operations
+**Owner**: Security & Operations Team
 **Last Updated**: 2026-06-14
 
 ---
@@ -202,13 +202,13 @@ STABILIZE SERVICE
 
 ### Detection Signals
 
--  Credential found in public repository
--  API key detected in logs or metrics
--  Suspicious token usage from unknown IP
--  Failed authentication attempts spike
--  External security report of leaked credential
--  Audit log shows credential in logs
--  Pre-commit hook alert (credential pattern)
+- Credential found in public repository
+- API key detected in logs or metrics
+- Suspicious token usage from unknown IP
+- Failed authentication attempts spike
+- External security report of leaked credential
+- Audit log shows credential in logs
+- Pre-commit hook alert (credential pattern)
 
 ### P0 Response (< 15 minutes)
 
@@ -386,12 +386,12 @@ echo "Credential compromise contained and remediated" >> incident.log
 
 ### Detection Signals
 
--  100+ failed login attempts (brute force)
--  Successful login from unusual location
--  Access to sensitive operations (escalation)
--  Suspicious API calls from unknown source
--  Privilege escalation detection
--  Policy violation alert
+- 100+ failed login attempts (brute force)
+- Successful login from unusual location
+- Access to sensitive operations (escalation)
+- Suspicious API calls from unknown source
+- Privilege escalation detection
+- Policy violation alert
 
 ### P0 Response (< 15 minutes)
 
@@ -490,12 +490,12 @@ curl -H "Authorization: ******" \
 
 ### Detection Signals
 
--  Unusual data access patterns
--  Large data downloads detected
--  Exfiltration to external system
--  Data modification timestamp anomaly
--  External report of leaked data
--  Unauthorized database query
+- Unusual data access patterns
+- Large data downloads detected
+- Exfiltration to external system
+- Data modification timestamp anomaly
+- External report of leaked data
+- Unauthorized database query
 
 ### P0 Response (< 15 minutes)
 
@@ -601,12 +601,12 @@ EOF
 
 ### Detection Signals
 
--  Error rate > 5% (alert threshold)
--  Response latency > 5 seconds
--  Health check failures
--  Resource exhaustion (CPU > 90%, memory > 85%)
--  Database connection pool exhausted
--  Dependency service unreachable
+- Error rate > 5% (alert threshold)
+- Response latency > 5 seconds
+- Health check failures
+- Resource exhaustion (CPU > 90%, memory > 85%)
+- Database connection pool exhausted
+- Dependency service unreachable
 
 ### P1 Response (< 1 hour)
 
@@ -685,11 +685,11 @@ echo " Service stable"
 
 ### Detection Signals
 
--  Unknown dependency version in lock file
--  Malicious code in dependency (SBOM scan)
--  Dependency with unusual activity
--  Security advisory for dependency
--  Build artifact hash mismatch
+- Unknown dependency version in lock file
+- Malicious code in dependency (SBOM scan)
+- Dependency with unusual activity
+- Security advisory for dependency
+- Build artifact hash mismatch
 
 ### P0 Response
 
@@ -832,10 +832,10 @@ Developer accidentally committed SSH key during rebasing. Key was live for 15 mi
 
 ---
 
-**Document Version**: 2.0.0  
-**Created**: 2026-06-14  
-**Owner**: Security & Operations Team  
-**Review Frequency**: Quarterly  
+**Document Version**: 2.0.0
+**Created**: 2026-06-14
+**Owner**: Security & Operations Team
+**Review Frequency**: Quarterly
 **Next Review**: 2026-09-14
 
 ---

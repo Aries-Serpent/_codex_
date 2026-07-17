@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Total Setup Time:** 5 minutes (local) or 15 minutes (Docker) 
-> **Audience:** New developers, ML engineers, AI researchers 
+> **Total Setup Time:** 5 minutes (local) or 15 minutes (Docker)
+> **Audience:** New developers, ML engineers, AI researchers
 > **Updated: 2026-06-27
 
 ---
@@ -146,40 +146,40 @@ python -c "from codex.cli import app; print('Import successful!')"
 
 ---
 
-## 🧭 What to Do Next?
+## What to Do Next?
 
 ### Interested in Agents & Automation?
-→ Read [Cognitive Brain Guide](./cognitive_brain/README.md)
+ Read [Cognitive Brain Guide](./cognitive_brain/README.md)
 - 145+ autonomous agents
 - Decision-making patterns
 - Self-healing CI/CD
 
 ### Interested in Machine Learning?
-→ Read [ML Training Guide](./training/README.md)
+ Read [ML Training Guide](./training/README.md)
 - Distributed training with PyTorch
 - Hyperparameter tuning with Hydra
 - Evaluation & benchmarking
 
-### ️ Interested in Infrastructure & Deployment?
-→ Read [Infrastructure Guide](./infrastructure/README.md)
+### Interested in Infrastructure & Deployment?
+ Read [Infrastructure Guide](./infrastructure/README.md)
 - Ray Serve for model serving
 - Kubernetes deployment
 - Cloud storage integration
 
 ### Interested in Configuration & Customization?
-→ Read [Configuration Guide](./configuration/HYDRA_GUIDE.md)
+ Read [Configuration Guide](./configuration/HYDRA_GUIDE.md)
 - Hydra defaults and sweeps
 - Environment variables
 - Plugin architecture
 
 ### Want to Understand the Architecture?
-→ Read [Architecture Deep Dive](./architecture/INDEX.md)
+ Read [Architecture Deep Dive](./architecture/INDEX.md)
 - 5-layer architecture
 - Design patterns
 - Extension points
 
-### 🤝 Ready to Contribute?
-→ Read [Contributing Guide](../CONTRIBUTING.md)
+### Ready to Contribute?
+ Read [Contributing Guide](../CONTRIBUTING.md)
 - Development workflow
 - Code standards
 - PR process
@@ -255,14 +255,14 @@ chmod +x .venv/bin/activate
 source .venv/bin/activate
 ```
 
-**More issues?** → See [Troubleshooting Guide](./TROUBLESHOOTING.md)
+**More issues?** See [Troubleshooting Guide](./TROUBLESHOOTING.md)
 
 ---
 
 ## Next Steps: Learning Paths
 
 ### Beginner Path (2-4 hours)
-1. **Installation & First Run** ← You are here
+1. **Installation & First Run** You are here
 2. **[Navigate the Codebase](./LEARNING_PATHS.md#beginner-path)**
 3. **Run the First Example**
 4. **Understand Hydra Configuration**
@@ -279,7 +279,7 @@ source .venv/bin/activate
 3. **Performance Optimization**
 4. **Security & Hardening**
 
-→ Full paths: [Learning Paths](./LEARNING_PATHS.md)
+ Full paths: [Learning Paths](./LEARNING_PATHS.md)
 
 ---
 
@@ -311,20 +311,20 @@ source .venv/bin/activate
 
 ## Getting Help
 
-- **Setup issues?** → [Troubleshooting Guide](./TROUBLESHOOTING.md)
-- **Architecture questions?** → [Architecture Guide](./architecture/INDEX.md)
-- **Configuration help?** → [Configuration Guide](./configuration/HYDRA_GUIDE.md)
-- **Contributing?** → [Contributing Guide](../CONTRIBUTING.md)
-- **Found a bug?** → [Open an Issue](https://github.com/Aries-Serpent/_codex_/issues)
+- **Setup issues?** [Troubleshooting Guide](./TROUBLESHOOTING.md)
+- **Architecture questions?** [Architecture Guide](./architecture/INDEX.md)
+- **Configuration help?** [Configuration Guide](./configuration/HYDRA_GUIDE.md)
+- **Contributing?** [Contributing Guide](../CONTRIBUTING.md)
+- **Found a bug?** [Open an Issue](https://github.com/Aries-Serpent/_codex_/issues)
 
 ---
 
 ## You're Ready!
 
-You've successfully set up Codex ML! 
+You've successfully set up Codex ML!
 
 **Next:** Pick a path above based on your interests and start exploring.
 
 **Questions?** Check [Troubleshooting](./TROUBLESHOOTING.md) or open an issue.
 
-**Happy coding!** 
+**Happy coding!**

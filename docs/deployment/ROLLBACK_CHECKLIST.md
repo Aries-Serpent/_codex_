@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status Indicator**:  **EMERGENCY** |  **WARNING** |  **NORMAL**
+**Status Indicator**: **EMERGENCY** | **WARNING** | **NORMAL**
 
-**Current Time**: [To be filled during rollback]  
-**Release Version**: [e.g., v0.2.1]  
+**Current Time**: [To be filled during rollback]
+**Release Version**: [e.g., v0.2.1]
 **Target Rollback Version**: [e.g., v0.2.1]
 
 ---
@@ -53,51 +53,51 @@ START
 
 | Issue Severity | Decision Timeline | Escalation |
 |---|---|---|
-|  **Critical** (imports fail, crashes) | < 15 min | Immediate |
-|  **High** (smoke tests fail, CVE) | < 1 hour | VP Engineering |
-|  **Medium** (performance issue, partial failure) | < 4 hours | Engineering Lead |
-|  **Low** (minor bugs, non-blocking issues) | 24+ hours | Team discussion |
+| **Critical** (imports fail, crashes) | < 15 min | Immediate |
+| **High** (smoke tests fail, CVE) | < 1 hour | VP Engineering |
+| **Medium** (performance issue, partial failure) | < 4 hours | Engineering Lead |
+| **Low** (minor bugs, non-blocking issues) | 24+ hours | Team discussion |
 
 ---
 
 ## Pre-Rollback Verification
 
-**Timeline**: < 5 minutes  
+**Timeline**: < 5 minutes
 **Owner**: Release manager (with engineering lead approval for non-critical issues)
 
-###  Verify Issue Severity
+### Verify Issue Severity
 
 **Checklist**:
 
 - [ ] **Reproduction confirmed**: Issue reproducible in 2+ environments
-  - Test environment 1: `[system/Python/profile]`
-  - Test environment 2: `[system/Python/profile]`
-  - Edge case: `[description]`
+ - Test environment 1: `[system/Python/profile]`
+ - Test environment 2: `[system/Python/profile]`
+ - Edge case: `[description]`
 
 - [ ] **Scope understood**: Number of affected users
-  - % of users affected: `___`
-  - Impact type: Core / Runtime / Full / All profiles
-  - Critical customer impact: Yes / No
+ - % of users affected: `___`
+ - Impact type: Core / Runtime / Full / All profiles
+ - Critical customer impact: Yes / No
 
 - [ ] **Root cause identified** (if time permits)
-  - Root cause: `[description]`
-  - Quick fix possible: Yes / No
-  - Would fix take > 1 hour: Yes / No
+ - Root cause: `[description]`
+ - Quick fix possible: Yes / No
+ - Would fix take > 1 hour: Yes / No
 
 - [ ] **Alternative mitigation explored**
-  - Workaround available: Yes / No (if yes, describe: `___`)
-  - Can wait for v0.2.1 patch: Yes / No
-  - Requires immediate action: Yes / No
+ - Workaround available: Yes / No (if yes, describe: `___`)
+ - Can wait for v0.2.1 patch: Yes / No
+ - Requires immediate action: Yes / No
 
-###  Decision Documentation
+### Decision Documentation
 
-**Rollback Decision**: 
+**Rollback Decision**:
 - [ ] Yes, proceed with rollback
 - [ ] No, proceed with fix (patch release)
 - [ ] Hold, under investigation
 
-**Decision Made By**: `[Name]`  
-**Approval From**: `[Name]` (if non-critical)  
+**Decision Made By**: `[Name]`
+**Approval From**: `[Name]` (if non-critical)
 **Timestamp**: `[ISO8601]`
 
 **Rationale**:
@@ -335,10 +335,10 @@ echo " Deployment pipeline resumed"
 
 ## Post-Rollback Validation
 
-**Timeline**: 10-15 minutes total  
+**Timeline**: 10-15 minutes total
 **Owner**: Release manager + QA
 
-###  Verify Previous Version Works
+### Verify Previous Version Works
 
 ```bash
 # Test all three profiles from PyPI
@@ -357,7 +357,7 @@ done
 echo " All profiles verified"
 ```
 
-###  Verify PyPI State
+### Verify PyPI State
 
 ```bash
 # Confirm v0.2.1 is latest
@@ -371,7 +371,7 @@ curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | jq .info.yanked
 echo " PyPI state verified"
 ```
 
-###  Verify GitHub State
+### Verify GitHub State
 
 ```bash
 # Confirm tag deleted
@@ -385,7 +385,7 @@ gh release list | grep rollback
 echo " GitHub state verified"
 ```
 
-###  Monitor Download Recovery
+### Monitor Download Recovery
 
 ```bash
 # Check downloads resume
@@ -496,37 +496,37 @@ BUSINESS IMPACT:
 
 ## Incident Post-Mortem
 
-**Timeline**: 24-48 hours after rollback  
-**Owner**: Release manager + engineering lead  
+**Timeline**: 24-48 hours after rollback
+**Owner**: Release manager + engineering lead
 **Participants**: Everyone involved in release
 
-###  Post-Mortem Meeting
+### Post-Mortem Meeting
 
 1. **Gather facts** (15 min)
-   - What was released? `v0.2.1`
-   - When did issue occur? `[TIME]`
-   - How long to detect? `[DURATION]`
-   - How long to rollback? `[DURATION]`
-   - Who helped? `[NAMES]`
+ - What was released? `v0.2.1`
+ - When did issue occur? `[TIME]`
+ - How long to detect? `[DURATION]`
+ - How long to rollback? `[DURATION]`
+ - Who helped? `[NAMES]`
 
 2. **Timeline reconstruction** (15 min)
-   - Create detailed timeline from logs
-   - Identify key decision points
-   - Note any delays or obstacles
+ - Create detailed timeline from logs
+ - Identify key decision points
+ - Note any delays or obstacles
 
 3. **Root cause analysis** (20 min)
-   - What was the bug?
-   - Why did it pass testing?
-   - How can we detect it earlier?
+ - What was the bug?
+ - Why did it pass testing?
+ - How can we detect it earlier?
 
 4. **Contributing factors** (15 min)
-   - Did testing miss something?
-   - Was there a process gap?
-   - Were communication breakdowns?
+ - Did testing miss something?
+ - Was there a process gap?
+ - Were communication breakdowns?
 
 5. **Action items** (15 min)
 
-###  Post-Mortem Document
+### Post-Mortem Document
 
 Create `.codex/incidents/rollback-v0.2.1-postmortem.md`:
 
@@ -640,12 +640,12 @@ pip show codex-ml
 
 ## Approval & Sign-Off
 
-**Rollback Approved By**: `[Name]` (Release Manager)  
-**Timestamp**: `[ISO8601]`  
-**Final Status**:  Complete /  In Progress
+**Rollback Approved By**: `[Name]` (Release Manager)
+**Timestamp**: `[ISO8601]`
+**Final Status**: Complete / In Progress
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-07-07  
+**Document Version**: 1.0
+**Last Updated**: 2026-07-07
 **Next Review**: 2026-08-07

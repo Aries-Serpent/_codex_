@@ -356,7 +356,7 @@ python -m codex.cli archive validate-standardization --check-schema-version
 3. Run with `--repair` to attempt automatic fix:
    ```bash
    python -m codex.cli archive validate-standardization --check-schema-version --repair
-   ```
+ ```
 
 ### Issue: Module not found
 
@@ -386,19 +386,19 @@ RuntimeError: Cannot obtain OIDC token
    permissions:
      id-token: write  # ← Must be present
      contents: read
-   ```
+ ```
 
 2. Verify environment variable:
    ```yaml
    env:
      CODEX_ENABLE_SIGNING: "true"
-   ```
+ ```
 
 3. Check Sigstore availability:
    ```bash
    curl -I https://fulcio.sigstore.dev
    curl -I https://rekor.sigstore.dev
-   ```
+ ```
 
 ### Issue: Performance degradation
 
@@ -409,12 +409,12 @@ Archive operations significantly slower after enabling standardization.
 1. Check if signing is enabled (adds ~5-10ms per operation):
    ```bash
    python -m codex.cli archive show-standardization-status
-   ```
+ ```
 
 2. Disable signing for development:
    ```bash
    export CODEX_ENABLE_SIGNING=false
-   ```
+ ```
 
 3. Monitor with benchmarks:
 ```python

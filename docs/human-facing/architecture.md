@@ -10,6 +10,7 @@ This document describes the high-level architecture of the _codex_ system.
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Agent Core, Tool Orchestrator'}}%%
+
 graph TB
     subgraph "Agent Layer"
         AC[Agent Core]
@@ -30,11 +31,17 @@ graph TB
     end
 
     AC --> TO
+
     AC --> RP
+
     TO --> CV
+
     RP --> VS
+
     CV --> AU
+
     MCP --> EMB
+
     EMB --> VS
 ```
 

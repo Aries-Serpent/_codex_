@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document Status**: STABLE 
+**Document Status**: STABLE
 **Last Updated**: 2026-06-27
 **Agent**: autonomous-test-healer-agent v0.2.1-s228
 **Scope**: Phase 4, Lane 1 — Test Foundation Hardening
@@ -502,24 +502,24 @@ async def test_async_operation():
 ### Validation Methodology
 
 1. **Run Tests 3 Consecutive Times**
-   - Ensures no transient failures
-   - Target: 100% pass rate
+ - Ensures no transient failures
+ - Target: 100% pass rate
 
 2. **Monitor CI Pipeline**
-   - Track pass rate over time
-   - Alert on flakiness regression
+ - Track pass rate over time
+ - Alert on flakiness regression
 
 3. **Periodic Audit**
-   - Review existing flaky markers
-   - Apply patterns to new tests
+ - Review existing flaky markers
+ - Apply patterns to new tests
 
 ### Success Criteria
 
--  100% pass rate on 3 consecutive runs
--  Reduced flaky markers (reruns: 2→1 where applicable)
--  No timing-based test failures
--  No file system race conditions
--  No async state leaks
+- 100% pass rate on 3 consecutive runs
+- Reduced flaky markers (reruns: 21 where applicable)
+- No timing-based test failures
+- No file system race conditions
+- No async state leaks
 
 ---
 
@@ -537,9 +537,9 @@ grep -r "reason=" tests/ --include="*.py" | grep flaky
 
 ### Step 2: Apply Appropriate Pattern
 
-- **Timing issues** → Use polling-based validation
-- **File operations** → Add retry loops with sleep
-- **Async operations** → Add autouse fixture for cleanup
+- **Timing issues** Use polling-based validation
+- **File operations** Add retry loops with sleep
+- **Async operations** Add autouse fixture for cleanup
 
 ### Step 3: Reduce Reruns
 
@@ -595,6 +595,6 @@ done
 ---
 
 **Document Version**: 1.0.0
-**Stability**: STABLE 
+**Stability**: STABLE
 **Last Reviewed**: 2026-06-27
 **Next Review**: 2026-07-27 (one month)

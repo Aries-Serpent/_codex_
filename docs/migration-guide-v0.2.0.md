@@ -1,8 +1,8 @@
 # Migration Guide: v0.1.x to v0.2.0
 
-**Version**: v0.2.0  
-**Release Date**: 2026-07-20T02:00Z  
-**Compatibility**: Python 3.12+  
+**Version**: v0.2.0
+**Release Date**: 2026-07-20T02:00Z
+**Compatibility**: Python 3.12+
 **Breaking Changes**: None - Full backward compatibility maintained
 
 ---
@@ -334,9 +334,9 @@ EOF
 
 | Version | Supported | Status |
 |---------|-----------|--------|
-| 3.11    | No        | Use v0.1.x |
-| 3.12    | Yes       | Recommended |
-| 3.13    | Yes       | Beta support |
+| 3.11 | No | Use v0.1.x |
+| 3.12 | Yes | Recommended |
+| 3.13 | Yes | Beta support |
 
 ### Dependency Compatibility
 
@@ -352,9 +352,9 @@ EOF
 
 | OS | v0.1.x | v0.2.0 | Status |
 |----|--------|--------|--------|
-| Linux (x86_64) | ✓ | ✓ | Fully supported |
-| macOS (ARM/Intel) | ✓ | ✓ | Fully supported |
-| Windows (x86_64) | ✓ | ✓ | Fully supported |
+| Linux (x86_64) | | | Fully supported |
+| macOS (ARM/Intel) | | | Fully supported |
+| Windows (x86_64) | | | Fully supported |
 
 ---
 
@@ -516,6 +516,6 @@ If you encounter issues not covered in this guide:
 
 ---
 
-**Migration Guide Version**: 1.0  
-**Last Updated**: 2026-07-20T02:00Z  
+**Migration Guide Version**: 1.0
+**Last Updated**: 2026-07-20T02:00Z
 **Status**: Production Ready

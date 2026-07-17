@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Location:** Use this as a reference when creating new PRs to ensure all required sections are present.  
-**Status:**  Mandatory for PRs targeting 100% merge readiness  
+**Location:** Use this as a reference when creating new PRs to ensure all required sections are present.
+**Status:** Mandatory for PRs targeting 100% merge readiness
 **Last Updated: 2026-06-25
 
 ---
@@ -309,5 +309,5 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 ---
 
-**Status:**  Ready for use in all Copilot coding agent sessions  
+**Status:** Ready for use in all Copilot coding agent sessions
 **Last Validated:** 2026-06-25T15:50:00Z

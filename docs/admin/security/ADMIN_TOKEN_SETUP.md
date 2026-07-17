@@ -1,13 +1,13 @@
-#  Admin Token Setup Guide for _codex_
+# Admin Token Setup Guide for _codex_
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 > **Generated**: 2026-06-22
 > **Repository**: Aries-Serpent/_codex_
-> **Security Level**:  (5/5)
+> **Security Level**: (5/5)
 > **Roles**: [Org Admin], [Security Officer]
 
-##  Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
@@ -24,9 +24,9 @@ This guide walks administrators through setting up **secure GitHub token storage
 
 | Method | Security | Complexity | Recommended |
 |--------|----------|------------|-------------|
-| **AES-256-GCM** |  | Medium |  Production |
-| **Base64** |  | Low | Development/Testing |
-| **Hex** |  | Low | Alternative encoding |
+| **AES-256-GCM** | | Medium | Production |
+| **Base64** | | Low | Development/Testing |
+| **Hex** | | Low | Alternative encoding |
 
 ---
 
@@ -58,12 +58,12 @@ pip3 install cryptography
 
 1. Navigate to: https://github.com/settings/tokens/new
 2. Configure token:
-   - **Note**: `_codex_ Copilot Agent Token`
-   - **Expiration**: 90 days (recommended)
-   - **Scopes**: Select:
-     - [x] `repo` (Full control of private repositories)
-     - [x] `workflow` (Update GitHub Action workflows)
-     - [x] `admin:org` (if org-level operations needed)
+ - **Note**: `_codex_ Copilot Agent Token`
+ - **Expiration**: 90 days (recommended)
+ - **Scopes**: Select:
+ - [x] `repo` (Full control of private repositories)
+ - [x] `workflow` (Update GitHub Action workflows)
+ - [x] `admin:org` (if org-level operations needed)
 3. Click **Generate token**
 4. **COPY THE TOKEN** (you won't see it again)
 
@@ -134,9 +134,9 @@ gh secret set CODEX_GHP_TOKEN_AES_KEY --body "YOUR_AES_KEY" --repo Aries-Serpent
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 2. Click **New repository secret**
 3. For each secret:
-   - **Name**: (from encryption tool output)
-   - **Value**: (from encryption tool output)
-   - Click **Add secret**
+ - **Name**: (from encryption tool output)
+ - **Value**: (from encryption tool output)
+ - Click **Add secret**
 
 ---
 
@@ -235,12 +235,12 @@ python3 scripts/security/token_encryption_tool.py
 1. Install cryptography library:
    ```bash
    pip3 install cryptography
-   ```
+ ```
 2. Add to workflow:
    ```yaml
    - name: Install cryptography
      run: pip install cryptography
-   ```
+ ```
 3. Use Base64 encoding as fallback
 
 ---
@@ -249,25 +249,25 @@ python3 scripts/security/token_encryption_tool.py
 
 ### Token Permissions
 
--  Use **least privilege principle** (minimum required scopes)
--  Set **expiration date** (90 days recommended)
--  Enable **SSO/SAML** if available
--  Use **fine-grained tokens** when possible
+- Use **least privilege principle** (minimum required scopes)
+- Set **expiration date** (90 days recommended)
+- Enable **SSO/SAML** if available
+- Use **fine-grained tokens** when possible
 
 ### Secret Management
 
--  Never commit tokens to repository
--  Use repository secrets (not hardcoded in workflows)
--  Rotate tokens regularly
--  Revoke compromised tokens immediately
--  Enable audit logging for secret access
+- Never commit tokens to repository
+- Use repository secrets (not hardcoded in workflows)
+- Rotate tokens regularly
+- Revoke compromised tokens immediately
+- Enable audit logging for secret access
 
 ### Access Control
 
--  Limit repository admin access
--  Review secret access logs regularly
--  Use environment protection rules
--  Enable branch protection with required reviews
+- Limit repository admin access
+- Review secret access logs regularly
+- Use environment protection rules
+- Enable branch protection with required reviews
 
 ---
 
@@ -294,17 +294,17 @@ python3 scripts/security/token_encryption_tool.py
 
 ---
 
-##  Mission Overview
+## Mission Overview
 
 **Objective**: Enable secure token management for AI agents through AES-256-GCM encryption with zero plaintext exposure.
 
-**Energy Level**:  (5/5 - Security Critical)
+**Energy Level**: (5/5 - Security Critical)
 
-**Status**:  Active
+**Status**: Active
 
 ---
 
-## ️ Verification Checklist
+## Verification Checklist
 
 ### Configuration Validation
 - [ ] GitHub Personal Access Token generated with correct scopes
@@ -322,53 +322,53 @@ python3 scripts/security/token_encryption_tool.py
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Token Encryption Method | AES-256-GCM | AES-256-GCM |  | <!-- pragma: allowlist secret -->
-| Token Rotation Frequency | 90 iterations | 90 iterations |  | <!-- pragma: allowlist secret -->
-| Plaintext Exposure | 0 instances | 0 instances |  |
-| Secret Validation | SHA-256 | SHA-256 |  | <!-- pragma: allowlist secret -->
-| Setup Completion Time | 30-45 min | <60 min |  |
+| Token Encryption Method | AES-256-GCM | AES-256-GCM | | <!-- pragma: allowlist secret -->
+| Token Rotation Frequency | 90 iterations | 90 iterations | | <!-- pragma: allowlist secret -->
+| Plaintext Exposure | 0 instances | 0 instances | |
+| Secret Validation | SHA-256 | SHA-256 | | <!-- pragma: allowlist secret -->
+| Setup Completion Time | 30-45 min | <60 min | |
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path ️ | Clear progression from token generation to secure storage | 5-phase setup: Generate → Encrypt → Configure → Verify → Cleanup | <!-- pragma: allowlist secret -->
-| Fields  | Token transformation from plaintext to encrypted state | Multiple encoding layers: Plaintext → AES-256-GCM → Base64 → GitHub Secret | <!-- pragma: allowlist secret -->
-| Patterns ️ | Recognition of security best practices | SHA-256 verification, expiration dates, automated rotation reminders |
-| Redundancy  | Fallback encryption methods if primary fails | Fallback chain: AES-256-GCM → Base64 → Hex → Manual entry |
-| Balance ️ | Security strength vs operational usability | Military-grade encryption with automated setup scripts |
+| Path | Clear progression from token generation to secure storage | 5-phase setup: Generate Encrypt Configure Verify Cleanup | <!-- pragma: allowlist secret -->
+| Fields | Token transformation from plaintext to encrypted state | Multiple encoding layers: Plaintext AES-256-GCM Base64 GitHub Secret | <!-- pragma: allowlist secret -->
+| Patterns | Recognition of security best practices | SHA-256 verification, expiration dates, automated rotation reminders |
+| Redundancy | Fallback encryption methods if primary fails | Fallback chain: AES-256-GCM Base64 Hex Manual entry |
+| Balance | Security strength vs operational usability | Military-grade encryption with automated setup scripts |
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Token Generation |  | Foundation - incorrect scopes render system non-functional | <!-- pragma: allowlist secret -->
-| Encryption Process |  | Critical - protects token from compromise | <!-- pragma: allowlist secret -->
-| Secret Configuration |  | High priority - enables retrieval by automation | <!-- pragma: allowlist secret -->
-| Verification Testing |  | Essential - confirms end-to-end functionality |
-| Security Cleanup |  | Critical - eliminates plaintext exposure vectors |
+| Token Generation | | Foundation - incorrect scopes render system non-functional | <!-- pragma: allowlist secret -->
+| Encryption Process | | Critical - protects token from compromise | <!-- pragma: allowlist secret -->
+| Secret Configuration | | High priority - enables retrieval by automation | <!-- pragma: allowlist secret -->
+| Verification Testing | | Essential - confirms end-to-end functionality |
+| Security Cleanup | | Critical - eliminates plaintext exposure vectors |
 
 **Total Energy Investment**: 23/25 units
 
 ---
 
-##  Redundancy Patterns
+## Redundancy Patterns
 
 **Rollback Strategy**: If encrypted token fails, immediately generate new token and re-run encryption process with verified parameters.
 
 **Parallel Paths**:
-- If AES-256-GCM decryption fails → Use Base64 encoding fallback
-- If automated setup script fails → Use manual GitHub CLI commands
-- If GitHub CLI unavailable → Use web UI manual configuration
-- If token verification fails → Regenerate encryption with same token and update secrets
+- If AES-256-GCM decryption fails Use Base64 encoding fallback
+- If automated setup script fails Use manual GitHub CLI commands
+- If GitHub CLI unavailable Use web UI manual configuration
+- If token verification fails Regenerate encryption with same token and update secrets
 
 **Recovery Procedures**:
 1. **Token Retrieval Failure**: Export `CODEX_GHP_TOKEN_BASE64` locally, test decoder module, verify secret names match exactly

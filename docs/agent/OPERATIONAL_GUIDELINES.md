@@ -55,72 +55,72 @@ This document defines operational guidelines, constraints, and decision-making f
 These operations can be performed without human approval:
 
 1. **Maintenance Operations**
-   - Code formatting and style fixes
-   - Dependency updates (non-breaking)
-   - Documentation typo fixes
-   - Log rotation and cleanup
-   - Cache management
+ - Code formatting and style fixes
+ - Dependency updates (non-breaking)
+ - Documentation typo fixes
+ - Log rotation and cleanup
+ - Cache management
 
 2. **Testing Operations**
-   - Running existing test suites
-   - Generating test reports
-   - Code coverage analysis
-   - Performance benchmarking
-   - Test result documentation
+ - Running existing test suites
+ - Generating test reports
+ - Code coverage analysis
+ - Performance benchmarking
+ - Test result documentation
 
 3. **Documentation Operations**
-   - README updates (non-breaking)
-   - Comment additions for clarity
-   - Documentation generation
-   - Change log updates
-   - API documentation sync
+ - README updates (non-breaking)
+ - Comment additions for clarity
+ - Documentation generation
+ - Change log updates
+ - API documentation sync
 
 ### Approval-Required Operations
 
 These operations require human approval via PR review:
 
 1. **Optimization Tasks**
-   - Algorithm improvements
-   - Performance enhancements
-   - Resource usage optimization
-   - Database query optimization
+ - Algorithm improvements
+ - Performance enhancements
+ - Resource usage optimization
+ - Database query optimization
 
 2. **Refactoring Operations**
-   - Code structure changes
-   - Module reorganization
-   - Interface modifications
-   - Dependency architecture changes
+ - Code structure changes
+ - Module reorganization
+ - Interface modifications
+ - Dependency architecture changes
 
 3. **Dependency Updates**
-   - Major version upgrades
-   - New dependency additions
-   - Dependency removal
-   - License changes
+ - Major version upgrades
+ - New dependency additions
+ - Dependency removal
+ - License changes
 
 ### Forbidden Operations (Must Escalate)
 
 These operations are **NEVER** performed autonomously:
 
 1. **Security-Sensitive**
-   - Secret rotation or modification
-   - Access control changes
-   - Authentication mechanism changes
-   - Encryption key operations
-   - Security policy modifications
+ - Secret rotation or modification
+ - Access control changes
+ - Authentication mechanism changes
+ - Encryption key operations
+ - Security policy modifications
 
 2. **Configuration-Sensitive**
-   - workflow file modifications
-   - Branch protection rule changes
-   - repository settings changes
-   - Environment configuration changes
-   - Network/firewall rule changes
+ - workflow file modifications
+ - Branch protection rule changes
+ - repository settings changes
+ - Environment configuration changes
+ - Network/firewall rule changes
 
 3. **High-Risk**
-   - Force pushes
-   - Branch deletions (protected branches)
-   - Tag deletions
-   - Release modifications
-   - Data migrations
+ - Force pushes
+ - Branch deletions (protected branches)
+ - Tag deletions
+ - Release modifications
+ - Data migrations
 
 ---
 
@@ -167,10 +167,10 @@ These operations are **NEVER** performed autonomously:
 - **Operation**: Improve sorting algorithm performance
 - **Risk Level**: MEDIUM
 - **Action**: Create PR with:
-  - Performance benchmarks
-  - Before/after comparison
-  - Test results
-  - Risk assessment
+ - Performance benchmarks
+ - Before/after comparison
+ - Test results
+ - Risk assessment
 - **Approval**: Wait for human review
 
 **Scenario 3: Secret Rotation**
@@ -196,27 +196,27 @@ These operations are **NEVER** performed autonomously:
 ### Escalation Protocol
 
 1. **Identify Issue Severity**
-   - Assess impact (data, security, availability)
-   - Classify using risk matrix
-   - Determine urgency
+ - Assess impact (data, security, availability)
+ - Classify using risk matrix
+ - Determine urgency
 
 2. **Document Context**
-   - Operation attempted
-   - Current state
-   - Error messages/logs
-   - Recommended actions
+ - Operation attempted
+ - Current state
+ - Error messages/logs
+ - Recommended actions
 
 3. **Notify Human Admin**
-   - Create issue with severity label
-   - Log to action_log.ndjson
-   - Send notification (if configured)
-   - Await human response
+ - Create issue with severity label
+ - Log to action_log.ndjson
+ - Send notification (if configured)
+ - Await human response
 
 4. **Await Resolution**
-   - Do NOT attempt autonomous remediation
-   - Monitor for human response
-   - Provide additional context if requested
-   - Execute approved actions only
+ - Do NOT attempt autonomous remediation
+ - Monitor for human response
+ - Provide additional context if requested
+ - Execute approved actions only
 
 ### Escalation Template
 
@@ -258,22 +258,22 @@ Relevant log excerpts or references to full logs.
 All agent operations MUST be logged to appropriate audit trails:
 
 1. **Action Log** (`.codex/action_log.ndjson`)
-   - All autonomous actions
-   - Decision rationales
-   - Risk assessments
-   - Outcomes
+ - All autonomous actions
+ - Decision rationales
+ - Risk assessments
+ - Outcomes
 
 2. **Change Log** (`.codex/change_log.md`)
-   - File modifications
-   - Configuration changes
-   - Deployment records
-   - Human approvals
+ - File modifications
+ - Configuration changes
+ - Deployment records
+ - Human approvals
 
 3. **Results** (`.codex/results.md`)
-   - Operation summaries
-   - Performance metrics
-   - Test results
-   - Validation outcomes
+ - Operation summaries
+ - Performance metrics
+ - Test results
+ - Validation outcomes
 
 ### Log Entry Format
 
@@ -413,70 +413,70 @@ print(f"AAIS: {score.total:.3f}")
 ### Communication
 
 1. **Be Transparent**
-   - state what actions will be taken
-   - Explain rationale and risk assessment
-   - Provide context for decisions
+ - state what actions will be taken
+ - Explain rationale and risk assessment
+ - Provide context for decisions
 
 2. **Be Concise**
-   - Use clear, technical language
-   - Avoid unnecessary verbosity
-   - Focus on actionable information
+ - Use clear, technical language
+ - Avoid unnecessary verbosity
+ - Focus on actionable information
 
 3. **Be Respectful**
-   - Acknowledge human authority
-   - Defer to human judgment on unclear cases
-   - Accept feedback and corrections
+ - Acknowledge human authority
+ - Defer to human judgment on unclear cases
+ - Accept feedback and corrections
 
 ### Decision Making
 
 1. **Default to Caution**
-   - When in doubt, escalate
-   - Prefer approval-required over autonomous
-   - Prioritize safety over efficiency
+ - When in doubt, escalate
+ - Prefer approval-required over autonomous
+ - Prioritize safety over efficiency
 
 2. **Consider Impact**
-   - Assess blast radius of changes
-   - Consider rollback complexity
-   - Evaluate testing coverage
+ - Assess blast radius of changes
+ - Consider rollback complexity
+ - Evaluate testing coverage
 
 3. **Document Rationale**
-   - Explain why action was chosen
-   - List alternatives considered
-   - Cite relevant guardrails/policies
+ - Explain why action was chosen
+ - List alternatives considered
+ - Cite relevant guardrails/policies
 
 ### Code Quality
 
 1. **Maintain Standards**
-   - Follow repository style guides
-   - Ensure test coverage
-   - Validate before committing
+ - Follow repository style guides
+ - Ensure test coverage
+ - Validate before committing
 
 2. **Test Thoroughly**
-   - Run all relevant tests
-   - Validate edge cases
-   - Check for regressions
+ - Run all relevant tests
+ - Validate edge cases
+ - Check for regressions
 
 3. **Document Changes**
-   - Update relevant documentation
-   - Add inline comments where needed
-   - Update change logs
+ - Update relevant documentation
+ - Add inline comments where needed
+ - Update change logs
 
 ### Security
 
 1. **Never Expose Secrets**
-   - Do not log secret values
-   - Do not include secrets in PR descriptions
-   - Do not commit secrets to repository
+ - Do not log secret values
+ - Do not include secrets in PR descriptions
+ - Do not commit secrets to repository
 
 2. **Respect Permissions**
-   - Only access what is necessary
-   - Follow principle of least privilege
-   - Log all access attempts
+ - Only access what is necessary
+ - Follow principle of least privilege
+ - Log all access attempts
 
 3. **Validate Inputs**
-   - Sanitize user-provided data
-   - Validate file paths
-   - Check for malicious content
+ - Sanitize user-provided data
+ - Validate file paths
+ - Check for malicious content
 
 ---
 
@@ -524,19 +524,19 @@ When approaching limits:
 ### Learning Mechanisms
 
 1. **Pattern Recognition**
-   - Identify recurring issues
-   - Suggest process improvements
-   - Optimize common workflows
+ - Identify recurring issues
+ - Suggest process improvements
+ - Optimize common workflows
 
 2. **Success Metrics**
-   - Track operation success rates
-   - Measure human approval rates
-   - Monitor escalation frequency
+ - Track operation success rates
+ - Measure human approval rates
+ - Monitor escalation frequency
 
 3. **Feedback Integration**
-   - Incorporate human feedback
-   - Adjust decision thresholds
-   - Update risk assessments
+ - Incorporate human feedback
+ - Adjust decision thresholds
+ - Update risk assessments
 
 ### Review Cadence
 
@@ -560,22 +560,22 @@ When approaching limits:
    # Enable safe mode
    # Edit scripts/autonomous_agent.py
    SAFE_MODE = True
-   ```
+ ```
 
 2. **Investigate**
-   - Review recent action logs
-   - Identify problematic operations
-   - Document findings
+ - Review recent action logs
+ - Identify problematic operations
+ - Document findings
 
 3. **Remediate**
-   - Revert problematic changes
-   - Update guardrails if needed
-   - Test before re-enabling
+ - Revert problematic changes
+ - Update guardrails if needed
+ - Test before re-enabling
 
 4. **Document**
-   - Add incident report to change_log.md
-   - Create issue for post-mortem
-   - Update operational guidelines
+ - Add incident report to change_log.md
+ - Create issue for post-mortem
+ - Update operational guidelines
 
 ---
 

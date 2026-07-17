@@ -2,14 +2,14 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version**: 2.0.0  
-> **Last Updated**: 2026-06-20  
-> **Scope**: Complete Model Context Protocol (MCP) system documentation  
+> **Version**: 2.0.0
+> **Last Updated**: 2026-06-20
+> **Scope**: Complete Model Context Protocol (MCP) system documentation
 > **Audience**: Developers, operators, system administrators
 
 ---
 
-##  Quick Navigation
+## Quick Navigation
 
 | Topic | Purpose | Time |
 |-------|---------|------|
@@ -91,7 +91,7 @@ Retrieved: {"doc_id": "doc_1", "embedding": [0.1, 0.2, 0.3, 0.4]}
 - **For Production Vector Search**: Use `PineconeBackend`
 - **For Custom Data**: Use `CustomBackend` or build your own
 
-→ Continue to [Backend Configuration](#backend-configuration)
+ Continue to [Backend Configuration](#backend-configuration)
 
 ---
 

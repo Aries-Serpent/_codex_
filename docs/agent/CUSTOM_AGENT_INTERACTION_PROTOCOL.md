@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Document:** Multi-Agent Interaction & Handoff Protocol  
-> **Version:** 1.0.0  
-> **Generated:** 2026-06-26  
-> **Purpose:** Define standards for agent-to-agent communication, state handoff, and delegation workflows  
+> **Document:** Multi-Agent Interaction & Handoff Protocol
+> **Version:** 1.0.0
+> **Generated:** 2026-06-26
+> **Purpose:** Define standards for agent-to-agent communication, state handoff, and delegation workflows
 
 ---
 
@@ -127,7 +127,7 @@ Exceptional paths:
 
 ## Communication Channels
 
-### Channel 1: Task Delegation (Delegator → Target)
+### Channel 1: Task Delegation (Delegator Target)
 
 **Structure:**
 
@@ -205,7 +205,7 @@ Exceptional paths:
 
 ---
 
-### Channel 2: Result Return (Target → Delegator)
+### Channel 2: Result Return (Target Delegator)
 
 **Structure:**
 
@@ -393,7 +393,7 @@ Agent B (dependent)
 [Return Results]
 ```
 
-**Example: Config Migration → Validation**
+**Example: Config Migration Validation**
 
 ```
 1. config-migration-assistant

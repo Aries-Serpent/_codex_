@@ -6,7 +6,7 @@
 
 - [Executive Summary](#executive-summary)
 - [Timeline of Recent Runs (progression and outcomes)](#timeline-of-recent-runs-progression-and-outcomes)
-- [Versioned Enhancements (v0.2.1 → v0.2.1)](#versioned-enhancements-v150--v154)
+- [Versioned Enhancements (v0.2.1 v0.2.1)](#versioned-enhancements-v150--v154)
 - [Latest Run Metrics (representative)](#latest-run-metrics-representative)
 - [Conclusive Vendor Findings](#conclusive-vendor-findings)
 - [Egress/Network Posture](#egressnetwork-posture)
@@ -38,13 +38,13 @@
 | 5 | Setup | PASS | v0.2.1/1.5.4: fixed ordering; expanded datapoints; structured error artifact added | Full JSON persisted |
 | 6 | Maintenance | PASS | Matching v0.2.1/1.5.4 parity; stronger disk write | Full JSON persisted |
 
-## Versioned Enhancements (v0.2.1 → v0.2.1)
+## Versioned Enhancements (v0.2.1 v0.2.1)
 
 | Version | Area | Change |
 | ------- | ---- | ------ |
 | v0.2.1 | Bench | Standardize CPU bench buffer via CODEX_CPU_BENCH_BUF_KB (default 8192 KB) |
 | v0.2.1 | Recon | Add cgroup cpu.stat, io.stat; network sysctls; TLS CA paths; inode totals |
-| v0.2.1 | Shell | Safer env sanitization under set -u; restructure here-doc → write-to-file pattern |
+| v0.2.1 | Shell | Safer env sanitization under set -u; restructure here-doc write-to-file pattern |
 | v0.2.1 | Recon | Add cpuset.cpus.effective, memory.current, swap limits, pids.{max,current}, resolv.conf, default route, IO schedulers |
 | v0.2.1 | Stability | Fix function ordering (psi_caps) and ensure completeness before use |
 | v0.2.1 | Stability | Restore/move os_info; add structured error artifacts (.error.json) and top-level try/except |
@@ -137,34 +137,34 @@ Notes:
 
 ## Artifacts and Schema (What to expect)
 - Files
-  - `.codex/cache/vendor_audit.setup.json`
-  - `.codex/cache/vendor_audit.maintenance.json`
-  - On failure: `.codex/cache/vendor_audit.setup.error.json` (or `maintenance.error.json`)
+ - `.codex/cache/vendor_audit.setup.json`
+ - `.codex/cache/vendor_audit.maintenance.json`
+ - On failure: `.codex/cache/vendor_audit.setup.error.json` (or `maintenance.error.json`)
 - Top-level schema (selected highlights)
-  - `phase`: `setup`|`maintenance`
-  - `policy`: `allow_triton_cpu`, `max_packages`, `max_size_kb`, `vendor_log_agg`, `bootstrap`, `sample_enable` (setup), `net_trials`, `cpu_trials`, `cpu_target_s`, `cpu_buf_kb`, `disk_bytes`, `disk_trials`, `net_urls`
-  - `torch`: `version`, `cpu_tag`, `cuda_build`, `cuda_available`, `source`
-  - `bootstrap_status`: `attempted`, `rc`, `note`, `used`
-  - `vendors[]`: `{name, version, total_kb, roots[]}`
-  - `minmax_installed`: `{count_total, size_total_kb, size_min_kb, size_max_kb}`
-  - `lock_scan_names[]`
-  - `sync_vendor_downloads`: `{nvidia_downloads, triton_downloads}`
-  - `system_caps`:
-    - `cpu`: `{cores_logical, cores_quota, cpuset_cpus, cpuset_effective, cpu_shares, min_mhz, max_mhz, model, vendor, flags_count, loadavg}`
-    - `cpu_stat`: `{nr_periods, nr_throttled, throttled_usec, proc_stat_steal}`
-    - `memory`: `{mem_total_bytes, mem_available_bytes, cgroup_mem_max_bytes, mem_current_bytes, swap_max_bytes, swap_current_bytes}`
-    - `disk`: `{root_total_bytes, root_used_bytes, root_free_bytes, inode_total, inode_free, schedulers{}}`
-    - `cgroup_io`: `{devices{…}, aggregate{rbytes,wbytes,rios,wios}}`
-    - `pids`: `{pids_max, pids_current}`
-    - `caches`: `{uv_cache_bytes, pip_cache_bytes, hf_cache_bytes, codex_cache_bytes, apt_cache_bytes, npm_cache_bytes, cargo_registry_bytes, cargo_git_bytes, gomod_cache_bytes, yarn_cache_bytes}`
-    - `network`: `{dns_ok, https_443_ok, http_80_ok, outbound_ip, notes, proxies{}, urls{}, summary{}, ifaces[], sysctls{}, tls{}, resolv_conf{}, route_default}`
-    - `tools`: `{python,node,npm,ruby,rust,go,swift,php}`
-    - `os`: `{os_release{}, kernel, dockerenv, cgroup_1}`
-    - `limits`: `{raw}`
-  - `bench`:
-    - `cpu_MBps`: `{trials, speeds_MBps[], min, median, max}`
-    - `disk_MBps`: `{write_MBps[], read_MBps[], write_stats{}, read_stats{}}`
-  - `verdict`: `{ok, violations[]}`
+ - `phase`: `setup`|`maintenance`
+ - `policy`: `allow_triton_cpu`, `max_packages`, `max_size_kb`, `vendor_log_agg`, `bootstrap`, `sample_enable` (setup), `net_trials`, `cpu_trials`, `cpu_target_s`, `cpu_buf_kb`, `disk_bytes`, `disk_trials`, `net_urls`
+ - `torch`: `version`, `cpu_tag`, `cuda_build`, `cuda_available`, `source`
+ - `bootstrap_status`: `attempted`, `rc`, `note`, `used`
+ - `vendors[]`: `{name, version, total_kb, roots[]}`
+ - `minmax_installed`: `{count_total, size_total_kb, size_min_kb, size_max_kb}`
+ - `lock_scan_names[]`
+ - `sync_vendor_downloads`: `{nvidia_downloads, triton_downloads}`
+ - `system_caps`:
+ - `cpu`: `{cores_logical, cores_quota, cpuset_cpus, cpuset_effective, cpu_shares, min_mhz, max_mhz, model, vendor, flags_count, loadavg}`
+ - `cpu_stat`: `{nr_periods, nr_throttled, throttled_usec, proc_stat_steal}`
+ - `memory`: `{mem_total_bytes, mem_available_bytes, cgroup_mem_max_bytes, mem_current_bytes, swap_max_bytes, swap_current_bytes}`
+ - `disk`: `{root_total_bytes, root_used_bytes, root_free_bytes, inode_total, inode_free, schedulers{}}`
+ - `cgroup_io`: `{devices{…}, aggregate{rbytes,wbytes,rios,wios}}`
+ - `pids`: `{pids_max, pids_current}`
+ - `caches`: `{uv_cache_bytes, pip_cache_bytes, hf_cache_bytes, codex_cache_bytes, apt_cache_bytes, npm_cache_bytes, cargo_registry_bytes, cargo_git_bytes, gomod_cache_bytes, yarn_cache_bytes}`
+ - `network`: `{dns_ok, https_443_ok, http_80_ok, outbound_ip, notes, proxies{}, urls{}, summary{}, ifaces[], sysctls{}, tls{}, resolv_conf{}, route_default}`
+ - `tools`: `{python,node,npm,ruby,rust,go,swift,php}`
+ - `os`: `{os_release{}, kernel, dockerenv, cgroup_1}`
+ - `limits`: `{raw}`
+ - `bench`:
+ - `cpu_MBps`: `{trials, speeds_MBps[], min, median, max}`
+ - `disk_MBps`: `{write_MBps[], read_MBps[], write_stats{}, read_stats{}}`
+ - `verdict`: `{ok, violations[]}`
 
 ## Dedicated VM Hardware Inventory (`system_caps.hardware`)
 
@@ -218,19 +218,19 @@ spawn or match a dedicated Codex Ubuntu VM.
 
 ## Operations Runbook
 - Typical run (online posture detection):
-  - `bash scripts/audit_setup.sh`
-  - `bash scripts/audit_maintenance.sh`
+ - `bash scripts/audit_setup.sh`
+ - `bash scripts/audit_maintenance.sh`
 - Restricted CI (no egress):
-  - `CODEX_OFFLINE=1 bash scripts/audit_setup.sh`
-  - `CODEX_OFFLINE=1 bash scripts/audit_maintenance.sh`
+ - `CODEX_OFFLINE=1 bash scripts/audit_setup.sh`
+ - `CODEX_OFFLINE=1 bash scripts/audit_maintenance.sh`
 - Review results:
-  - `cat .codex/cache/vendor_audit.setup.json | jq`
-  - `cat .codex/cache/vendor_audit.maintenance.json | jq`
+ - `cat .codex/cache/vendor_audit.setup.json | jq`
+ - `cat .codex/cache/vendor_audit.maintenance.json | jq`
 - If failures occur:
-  - Inspect `.codex/cache/vendor_audit.*.error.json` for `{type, message, traceback}` and policy snapshot.
+ - Inspect `.codex/cache/vendor_audit.*.error.json` for `{type, message, traceback}` and policy snapshot.
 - Stress validation:
-  - Refer to `vendor_audit_stress_validation.md` for the 2025-09-18 offline stress run configuration and datapoints that
-    corroborate these conclusive findings.
+ - Refer to `vendor_audit_stress_validation.md` for the 2025-09-18 offline stress run configuration and datapoints that
+ corroborate these conclusive findings.
 
 ## Troubleshooting Decision Tree
 

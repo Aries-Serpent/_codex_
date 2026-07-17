@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document**: Operations & Investigation Guide  
-**Audience**: Security Team, Incident Responders, Auditors  
-**Last Updated**: 2026-06-14  
-**Classification**: Internal  
+**Document**: Operations & Investigation Guide
+**Audience**: Security Team, Incident Responders, Auditors
+**Last Updated**: 2026-06-14
+**Classification**: Internal
 
 ---
 
@@ -334,5 +334,5 @@ echo "Invalidate artifacts created: 2026-06-14T12:34:56Z to $(date -u +%Y-%m-%dT
 
 ---
 
-**Document Version**: 1.0  
+**Document Version**: 1.0
 **Last Updated**: 2026-06-14

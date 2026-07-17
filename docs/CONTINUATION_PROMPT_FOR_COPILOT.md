@@ -8,27 +8,27 @@
 
 ## Context & Current Status
 
-**Branch**: `copilot/sub-pr-2750-again`  
-**PR**: #2750  
-**Last Commit**: `a637594` - "Fix test failures and address all PR review feedback"  
+**Branch**: `copilot/sub-pr-2750-again`
+**PR**: #2750
+**Last Commit**: `a637594` - "Fix test failures and address all PR review feedback"
 **Review Document**: `docs/PHASE3_PR2750_COMPREHENSIVE_REVIEW.md`
 
-### Completed (Phases 1-2) 
+### Completed (Phases 1-2)
 - Fixed all 6 test failures (OpenAI patches, error messages, MultiIndexRetriever filtering)
 - Addressed all 7 PR review comments (security, logging, error messages, pytest config)
 - Comprehensive self-review completed
 - Cognitive brain updated with 18 patterns
 - Production-ready custom agents documented
 
-### Current Blockers 
+### Current Blockers
 1. **Disk Space**: 96% usage (69G/72G) - prevents installing test dependencies
 2. **Coverage**: 46.02% overall (need 90%+)
-   - `monitoring.py`: 16.67% coverage
-   - `indexer.py`: 52.42% coverage
+ - `monitoring.py`: 16.67% coverage
+ - `indexer.py`: 52.42% coverage
 
 ---
 
-##  Phase 3: Coverage Improvement (Priority: P0)
+## Phase 3: Coverage Improvement (Priority: P0)
 **Estimated**: 4-6 hours | **Status**: Not Started
 
 ### Step 1: Clean Disk Space
@@ -43,7 +43,7 @@ df -h  # Verify >10GB available
 ```
 
 ## Step 2: Create Monitoring Tests
-**File**: `tests/test_rag_monitoring.py`  
+**File**: `tests/test_rag_monitoring.py`
 **Target**: 90%+ coverage of `src/codex/rag/monitoring.py`
 
 ```python
@@ -177,7 +177,7 @@ class TestRAGMetrics:
 ```
 
 ## Step 3: Expand Indexer Tests
-**File**: `tests/test_rag_indexer.py` (expand existing)  
+**File**: `tests/test_rag_indexer.py` (expand existing)
 **Target**: 90%+ coverage of `src/codex/rag/indexer.py` lines 447-738
 
 ```python
@@ -338,43 +338,43 @@ git push origin copilot/sub-pr-2750-again
 ```
 
 **Success Criteria**:
--  All tests pass (0 failures)
--  Coverage ≥90% overall
--  `monitoring.py` ≥90% coverage
--  `indexer.py` ≥90% coverage
--  CI build passes
+- All tests pass (0 failures)
+- Coverage ≥90% overall
+- `monitoring.py` ≥90% coverage
+- `indexer.py` ≥90% coverage
+- CI build passes
 
 ---
 
-##  Phase 4: Respond to PR Comments (Priority: P1)
+## Phase 4: Respond to PR Comments (Priority: P1)
 **Estimated**: 1-2 hours
 
 Use `reply_to_comment` tool to respond to all actionable comments on PR #2750. Reference commit `a637594` where fixes were applied.
 
 ---
 
-##  Phase 5: Iteration 5 - Load Testing (Priority: P1)
+## Phase 5: Iteration 5 - Load Testing (Priority: P1)
 **Estimated**: 6-8 hours | **Reference**: `prompts/ITERATION_5_LOAD_TESTING.md`
 
 **Objective**: Execute 1M+ queries to validate production-scale performance
 
 ### Tasks:
 1. Create load test framework (`tests/load/test_rag_load.py`)
-2. Execute progressive tests (10K → 100K → 1M queries)
+2. Execute progressive tests (10K 100K 1M queries)
 3. Run memory leak detection
 4. Validate cache effectiveness (>70% hit rate)
 5. Generate comprehensive report
 
 **Success Criteria**:
--  1M queries executed (<1% error rate)
--  Throughput >1000 qps (cached)
--  P99 latency <10ms (cached), <200ms (fresh)
--  No memory leaks detected
--  Peak memory <500MB
+- 1M queries executed (<1% error rate)
+- Throughput >1000 qps (cached)
+- P99 latency <10ms (cached), <200ms (fresh)
+- No memory leaks detected
+- Peak memory <500MB
 
 ---
 
-##  Phase 6: Iteration 6 - Multi-Region Deployment (Priority: P1)
+## Phase 6: Iteration 6 - Multi-Region Deployment (Priority: P1)
 **Estimated**: 8-12 hours | **Reference**: `prompts/ITERATION_6_MULTI_REGION.md`
 
 **Objective**: Deploy across 3 regions with automatic failover
@@ -387,15 +387,15 @@ Use `reply_to_comment` tool to respond to all actionable comments on PR #2750. R
 5. Create monitoring dashboards
 
 **Success Criteria**:
--  Infrastructure in 3+ regions
--  GeoDNS routing functional
--  Index replication <5 min
--  Automatic failover tested
--  P99 latency <100ms regional
+- Infrastructure in 3+ regions
+- GeoDNS routing functional
+- Index replication <5 min
+- Automatic failover tested
+- P99 latency <100ms regional
 
 ---
 
-##  Phase 7: Iteration 7 - Monitoring Dashboards (Priority: P2)
+## Phase 7: Iteration 7 - Monitoring Dashboards (Priority: P2)
 **Estimated**: 6-8 hours | **Reference**: `prompts/ITERATION_7_MONITORING_DASHBOARDS.md`
 
 **Objective**: Create 5 Grafana dashboards with 10+ alert rules
@@ -408,14 +408,14 @@ Use `reply_to_comment` tool to respond to all actionable comments on PR #2750. R
 5. Deploy and validate
 
 **Success Criteria**:
--  5+ dashboards deployed
--  10+ alert rules configured
--  SLO tracking operational
--  Alerts firing correctly
+- 5+ dashboards deployed
+- 10+ alert rules configured
+- SLO tracking operational
+- Alerts firing correctly
 
 ---
 
-##  Expected Final Deliverables
+## Expected Final Deliverables
 
 ### Code:
 - 50+ new tests (monitoring, indexer)
@@ -440,9 +440,9 @@ Use `reply_to_comment` tool to respond to all actionable comments on PR #2750. R
 
 ---
 
-##  Execution Instructions
+## Execution Instructions
 
-**Execute phases in order: 3 → 4 → 5 → 6 → 7**
+**Execute phases in order: 3 4 5 6 7**
 
 Use `report_progress` after each phase completion. Update cognitive brain with learnings. Create production-ready deliverables. Document any blockers with solutions.
 
@@ -456,6 +456,6 @@ Use `report_progress` after each phase completion. Update cognitive brain with l
 
 ---
 
-**Posted**: 2026-01-08 20:30 UTC  
-**Estimated Total**: 24-36 hours  
+**Posted**: 2026-01-08 20:30 UTC
+**Estimated Total**: 24-36 hours
 **Expected Completion**: Multiple sessions

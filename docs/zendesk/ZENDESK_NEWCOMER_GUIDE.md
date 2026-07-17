@@ -107,9 +107,9 @@ Every operation generates evidence:
 
 1. **Configure Zendesk credentials**:
 
-   Create `.env` file (or use environment variables). The CLI expects
-   environment-scoped variables, so set credentials for each environment you
-   plan to manage:
+ Create `.env` file (or use environment variables). The CLI expects
+ environment-scoped variables, so set credentials for each environment you
+ plan to manage:
 
    ```bash
    ZENDESK_DEV_SUBDOMAIN=your-dev-subdomain
@@ -121,12 +121,12 @@ Every operation generates evidence:
    ZENDESK_PROD_SUBDOMAIN=your-prod-subdomain
    ZENDESK_PROD_EMAIL=admin@example.com
    ZENDESK_PROD_TOKEN=your-prod-token
-   ```
+ ```
 
 2. **Verify connectivity**:
    ```bash
    codex zendesk snapshot --env=dev --dry-run
-   ```
+ ```
 
 3. **Create directory structure**:
    ```bash
@@ -136,7 +136,7 @@ Every operation generates evidence:
    mkdir -p snapshot/prod
    mkdir -p diffs
    mkdir -p plans
-   ```
+ ```
 
 ### First Snapshot
 
@@ -437,12 +437,12 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 1. **Get current triggers**:
    ```bash
    codex zendesk snapshot --env=dev --objects triggers
-   ```
+ ```
 
 2. **Edit desired state**:
    ```bash
    # Add new trigger to configs/desired/zendesk/triggers.json
-   ```
+ ```
 
 3. **Preview changes**:
    ```bash
@@ -453,27 +453,27 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
    # Review the diff
    cat diffs/triggers_diff.json | jq
-   ```
+ ```
 
 4. **Apply**:
    ```bash
    codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
    codex zendesk apply triggers plans/triggers_plan.json --env=dev
-   ```
+ ```
 
 ### Task 2: Update Multiple Macros
 
 1. **Snapshot**:
    ```bash
    codex zendesk snapshot --env=dev --objects macros
-   ```
+ ```
 
 2. **Bulk edit** `configs/desired/zendesk/macros.json`
 
 3. **Validate syntax**:
    ```bash
    cat configs/desired/zendesk/macros.json | jq . > /dev/null
-   ```
+ ```
 
 4. **Diff and apply**:
    ```bash
@@ -484,7 +484,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
    codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
    codex zendesk apply macros plans/macros_plan.json --env=dev
-   ```
+ ```
 
 ### Task 3: Promote Configuration from Dev to Prod
 
@@ -493,12 +493,12 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
    # Apply and verify in dev first
    codex zendesk apply triggers plans/triggers_plan.json --env=dev
    codex zendesk metrics
-   ```
+ ```
 
 2. **Snapshot prod**:
    ```bash
    codex zendesk snapshot --env=prod
-   ```
+ ```
 
 3. **Generate prod plan**:
    ```bash
@@ -510,7 +510,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
    codex zendesk plan triggers \
      --diff-file diffs/triggers_prod_diff.json \
      --output plans/triggers_prod_plan.json
-   ```
+ ```
 
 4. **Review and apply to prod**:
    ```bash
@@ -522,7 +522,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
    # Apply
    codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod
-   ```
+ ```
 
 ### Task 4: Rollback Changes
 
@@ -536,19 +536,19 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
      --desired-file snapshot/dev/2024-01-15_10-30-00/triggers.json \
      --current-file snapshot/dev/latest/triggers.json \
      --output diffs/rollback_diff.json
-   ```
+ ```
 
 2. **Generate rollback plan**:
    ```bash
    codex zendesk plan triggers \
      --diff-file diffs/rollback_diff.json \
      --output plans/rollback_plan.json
-   ```
+ ```
 
 3. **Apply rollback**:
    ```bash
    codex zendesk apply triggers plans/rollback_plan.json --env=dev
-   ```
+ ```
 
 ### Task 5: Bulk Import Macros
 
@@ -585,7 +585,7 @@ with open('configs/desired/zendesk/macros.json', 'w') as f:
      --output diffs/macros_diff.json
    codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
    codex zendesk apply macros plans/macros_plan.json --env=dev
-   ```
+ ```
 
 ## Monitoring and Metrics
 
@@ -959,4 +959,4 @@ update_all_triggers('configs/desired/zendesk/triggers.json', add_tag_action)
 
 **You're now ready to manage Zendesk Support as code!** Start with a simple trigger or view, and gradually expand to more complex workflows. Remember to test thoroughly in dev before promoting to production.
 
-Happy automating! 🎫
+Happy automating!

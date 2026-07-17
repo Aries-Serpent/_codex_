@@ -9,13 +9,13 @@
 
 ---
 
-## 📞 Critical Alert Runbooks
+## Critical Alert Runbooks
 
 All CRITICAL alerts require immediate action. These runbooks are designed to restore service within 15 minutes.
 
 ---
 
-##  CRITICAL: High Error Rate (>5% for 5 min)
+## CRITICAL: High Error Rate (>5% for 5 min)
 
 **Alert Trigger**:
 - Error rate exceeds 5% for 5 consecutive minutes
@@ -25,20 +25,20 @@ All CRITICAL alerts require immediate action. These runbooks are designed to res
 1. **Verify the alert** is real (not a dashboarding glitch)
    ```bash
    curl -s http://metrics:9090/api/v1/query?query='rate(http_requests_errors_total[5m])' | jq
-   ```
+ ```
 
 2. **Check which service is failing**
    ```bash
    # Check error distribution by service
    kubectl logs -n production -l app=user-service --tail=50 | grep ERROR
    kubectl logs -n production -l app=order-service --tail=50 | grep ERROR
-   ```
+ ```
 
 3. **Identify error type** from logs
-   - Database errors?
-   - Timeout errors?
-   - Validation errors?
-   - Authentication errors?
+ - Database errors?
+ - Timeout errors?
+ - Validation errors?
+ - Authentication errors?
 
 **Triage** (Next 3 minutes):
 
@@ -118,7 +118,7 @@ kubectl scale deployment payment-service -n production --replicas=5
 
 ---
 
-##  CRITICAL: Response Latency p99 > 2 seconds
+## CRITICAL: Response Latency p99 > 2 seconds
 
 **Alert Trigger**:
 - p99 latency exceeds 2 seconds for 5 consecutive minutes
@@ -128,19 +128,19 @@ kubectl scale deployment payment-service -n production --replicas=5
 1. **Confirm latency spike**
    ```bash
    kubectl logs -n production -l app=api-gateway | tail -20 | grep "latency"
-   ```
+ ```
 
 2. **Identify affected endpoints**
    ```promql
    # In Prometheus
    topk(5, rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]))
-   ```
+ ```
 
 3. **Check resource availability**
    ```bash
    kubectl top nodes
    kubectl top pods -n production
-   ```
+ ```
 
 **Investigation** (Next 5 minutes):
 
@@ -196,8 +196,8 @@ watch "kubectl logs metrics | grep p99"
 ```
 
 **Escalation**:
-- If latency still >1.5s after 10 min → Page on-call
-- If latency still >2.5s after 5 min → Page engineering lead
+- If latency still >1.5s after 10 min Page on-call
+- If latency still >2.5s after 5 min Page engineering lead
 
 **Recovery Validation**:
 ```
@@ -209,7 +209,7 @@ watch "kubectl logs metrics | grep p99"
 
 ---
 
-##  CRITICAL: Health Check Failed (>3 consecutive failures)
+## CRITICAL: Health Check Failed (>3 consecutive failures)
 
 **Alert Trigger**:
 - Service health check fails 3+ consecutive times (>30 seconds)
@@ -220,18 +220,18 @@ watch "kubectl logs metrics | grep p99"
 1. **Check service status**
    ```bash
    kubectl describe pod -n production -l app=user-service | tail -20
-   ```
+ ```
 
 2. **Check pod logs for startup errors**
    ```bash
    kubectl logs -n production -l app=user-service --tail=50
-   ```
+ ```
 
 3. **Check resource availability**
    ```bash
    kubectl top nodes
    kubectl describe events -n production
-   ```
+ ```
 
 **Diagnosis** (Next 1-2 minutes):
 
@@ -309,7 +309,7 @@ kubectl delete pod pod-name -n production
 
 ---
 
-##  WARNING: Resource Utilization High (CPU/Memory >80%)
+## WARNING: Resource Utilization High (CPU/Memory >80%)
 
 **Alert Trigger**:
 - CPU > 80% for 5 minutes
@@ -378,7 +378,7 @@ kubectl delete pod pod-name -n production
 
 ---
 
-##  WARNING: Error Rate Elevated (>1% for 10 min)
+## WARNING: Error Rate Elevated (>1% for 10 min)
 
 **Alert Trigger**:
 - Error rate 1-5% for 10+ minutes
@@ -405,7 +405,7 @@ kubectl logs -n production -l app=user-service | grep ERROR | head -20
 
 ---
 
-##  Runbook Index
+## Runbook Index
 
 | Alert | Severity | Response Time | Escalation |
 |-------|----------|--------------|------------|
@@ -419,7 +419,7 @@ kubectl logs -n production -l app=user-service | grep ERROR | head -20
 
 ---
 
-## 🧪 Drill Procedures
+## Drill Procedures
 
 **Weekly Drill: Test Alert Notification**
 ```bash
@@ -448,7 +448,7 @@ kubectl scale deployment user-service -n production --replicas=3
 
 ---
 
-## 📞 Escalation Contacts
+## Escalation Contacts
 
 ```yaml
 escalation_path:
@@ -466,7 +466,7 @@ escalation_timing:
 
 ---
 
-##  Incident Tracking Template
+## Incident Tracking Template
 
 ```markdown
 ## Incident: [Alert Name]

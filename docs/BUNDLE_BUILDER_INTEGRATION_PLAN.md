@@ -8,7 +8,7 @@
 
 **Purpose:** Integrate the Bundle Builder mathematical framework into _codex_ cognitive brain for systematic agent creation with explicit completeness guarantees.
 
-**Status:**  PLAN READY FOR EXECUTION
+**Status:** PLAN READY FOR EXECUTION
 
 ---
 
@@ -248,7 +248,7 @@ const manifest = exportBundleManifest(bundle);
 - **Template library** accelerates creation
 
 ### 4. Integration with Existing Framework
-- **Quantum Agent Framework:** Bundle → Agent configuration (θ)
+- **Quantum Agent Framework:** Bundle Agent configuration (θ)
 - **Energy Minimization:** Shared optimization approach
 - **Hilbert Spaces:** Bundle subspaces align with agent architecture
 
@@ -259,43 +259,71 @@ const manifest = exportBundleManifest(bundle);
 ### Bundle Builder Architecture
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Requirements |R⟩, Generator'}}%%
+
 graph TB
+
     R[Requirements |R⟩] --> G[Generator]
+
     G --> B0[Initial Bundle |B₀⟩]
+
     B0 --> M[Measurement]
+
     M --> |Complete?| E{Energy < ε?}
+
     E --> |No| Repair[Defect Repair]
+
     Repair --> B1[Updated Bundle |B₁⟩]
+
     B1 --> M
+
     E --> |Yes| P[UI Projection P̂_UI]
+
     P --> C[Create Agent Config |C⟩]
+
     C --> Export[Export Manifest]
 ```
 
 ### Energy Optimization Loop
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Bundle |B⟩, Compute Energy E(B)'}}%%
+
 graph LR
+
     B[Bundle |B⟩] --> E[Compute Energy E(B)]
+
     E --> Missing[L_missing]
+
     E --> UIMap[L_ui_map]
+
     E --> Source[L_source]
+
     E --> Format[L_format]
+
     E --> Test[L_test_fail]
+
     Missing --> Total[Total Energy]
+
     UIMap --> Total
+
     Source --> Total
+
     Format --> Total
+
     Test --> Total
+
     Total --> |< ε?| Done[Complete ]
+
     Total --> |≥ ε| Find[Find Max ΔE Repair]
+
     Find --> Apply[Apply Patch]
+
     Apply --> B
 ```
 
 ### Cognitive Brain Integration
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing Quantum Agent, Energy Minimization'}}%%
+
 graph TB
     subgraph "Existing Framework"
         QA[Quantum Agent]
@@ -316,10 +344,15 @@ graph TB
     end
 
     BB --> |creates| QA
+
     BB --> |uses| Energy
+
     Manifest --> |exports to| Agents
+
     UI --> |validates against| CB
+
     QA --> |managed by| CB
+
     Templates --> |seed| BB
 ```
 
@@ -342,11 +375,11 @@ graph TB
 
 ## Implementation Status
 
-**Current Iteration:** Planning complete  
-**Next Iteration:** Core implementation  
+**Current Iteration:** Planning complete
+**Next Iteration:** Core implementation
 **Estimated Total:** 10 iterations for full integration
 
-**Ready to Execute:**  YES
+**Ready to Execute:** YES
 
 ---
 

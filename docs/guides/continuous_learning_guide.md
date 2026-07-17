@@ -585,13 +585,13 @@ def update_metrics():
 ## Summary
 
 **Key Points:**
--  Monitor drift continuously
--  Auto-retrain when thresholds exceeded
--  Compare new models with baselines
--  Gradual rollout for safety
--  Automated rollback on degradation
--  Track all experiments
--  Integrate with A/B testing
+- Monitor drift continuously
+- Auto-retrain when thresholds exceeded
+- Compare new models with baselines
+- Gradual rollout for safety
+- Automated rollback on degradation
+- Track all experiments
+- Integrate with A/B testing
 
 **Next Steps:**
 - See [A/B Testing Guide](TESTING_GUIDE.md) for testing strategies

@@ -354,8 +354,8 @@ sha256sum -c SHA256SUMS.txt
 ### Network Policy
 
 Codex ML is fail-closed by default:
--  localhost only (ports 8000-9999)
--  External network blocked until explicitly configured
+- localhost only (ports 8000-9999)
+- External network blocked until explicitly configured
 
 To allow external network:
 

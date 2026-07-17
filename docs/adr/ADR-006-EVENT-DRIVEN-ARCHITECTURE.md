@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Accepted  
-**Date:** 2026-07-10  
-**Author:** @mbaetiong  
-**Session:** S250-doc-arch  
+**Status:** Accepted
+**Date:** 2026-07-10
+**Author:** @mbaetiong
+**Session:** S250-doc-arch
 
 ---
 
@@ -132,6 +132,7 @@ event_bus.subscribe("data.ingestion.completed", on_data_ready)
 
 ```mermaid
 graph LR
+
     subgraph Layer1["Config Layer"]
         A["Config Manager"]
     end
@@ -145,12 +146,15 @@ graph LR
     end
     
     A -->|config.validated| EventBus["Event Bus<br/>(Central Hub)"]
+
     EventBus -->|subscribe| B
     
     B -->|data.ingestion.completed| EventBus
+
     EventBus -->|subscribe| C
     
     C -->|model.checkpoint.saved| EventBus
+
     EventBus -->|subscribe| Monitor["Monitoring"]
 ```
 
@@ -159,17 +163,17 @@ graph LR
 ## Consequences
 
 ### Positive
- Loose coupling between layers — easy to modify individual layers  
- Asynchronous processing — non-blocking operations  
- Natural audit trail — all events logged  
- Easy to add monitoring and alerting  
- Testing easier — mock event bus  
- Future-proof for distributed systems  
+ Loose coupling between layers — easy to modify individual layers
+ Asynchronous processing — non-blocking operations
+ Natural audit trail — all events logged
+ Easy to add monitoring and alerting
+ Testing easier — mock event bus
+ Future-proof for distributed systems
 
 ### Negative
-️ Learning curve for event-driven patterns  
-️ Harder to debug — flow is implicit rather than explicit  
-️ Eventual consistency rather than immediate consistency  
+ Learning curve for event-driven patterns
+ Harder to debug — flow is implicit rather than explicit
+ Eventual consistency rather than immediate consistency
 
 ### Mitigations
 - Comprehensive event documentation

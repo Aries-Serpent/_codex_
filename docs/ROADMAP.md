@@ -93,7 +93,7 @@
 
 | Capability | Status | Completion | Notes |
 |------------|--------|------------|-------|
-| **Codex Ingestion Pipeline** | Complete | 100% | Ingest → Analyze → Transform → Verify |
+| **Codex Ingestion Pipeline** | Complete | 100% | Ingest Analyze Transform Verify |
 | **agent System Core** | Complete | 100% | workflow, quantum, physics orchestration |
 | **RAG & Verification** | Complete | 100% | CoVe, MCP adapters, embeddings |
 | **MCP Package System** | Complete | 100% | 9 topics, workflow automation, 93+ KB docs |
@@ -121,7 +121,7 @@
 | Resource | Purpose | Status |
 |----------|---------|--------|
 | [Evolution Timeline](evolution/EVOLUTION_TIMELINE.md) | Phase-by-phase verified history | Active |
-| [Planset Registry](evolution/PLANSET_REGISTRY.md) | Queryable PS-01→PS-10 catalog | Active |
+| [Planset Registry](evolution/PLANSET_REGISTRY.md) | Queryable PS-01PS-10 catalog | Active |
 | [Evolution Tree](evolution/COGNITIVE_EVOLUTION_TREE.md) | Mermaid process mapping | Active |
 | [AI Storyboard](evolution/AI_EMERGENCE_STORYBOARD.md) | Emergence narrative | Active |
 
@@ -185,7 +185,7 @@
 1. Consolidated fragmented documentation (693+ files cataloged)
 2. Created cross-reference index (`docs/DOCUMENTATION_INDEX.md`)
 3. Normalized agent file structure (`.github/agents/` — 287 files)
-4. Microservice root cleanup (audio service → `src/services/audio/`)
+4. Microservice root cleanup (audio service `src/services/audio/`)
 5. Configs centralized (`configs/services/`)
 
 **Deliverable**: Unified documentation system, normalized agent architecture
@@ -218,7 +218,7 @@
 4. Audit trail system (`.codex/evidence/`)
 5. Genesis bootstrap template created
 6. Secret injection (CODEX_MASTER_KEY) — awaiting human admin
-7. Full activation (SAFE_MODE → False) — blocked on secret injection
+7. Full activation (SAFE_MODE False) — blocked on secret injection
 
 **Deliverable**: Genesis foundation ready; activation awaiting human admin
 
@@ -321,8 +321,8 @@
 ### High Priority
 
 #### 1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) IN PROGRESS
-**Timeline**: Current cycle (live schedule maintained in `docs/ops/SAR_METHODOLOGY.md`) 
-**Status**: In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31 
+**Timeline**: Current cycle (live schedule maintained in `docs/ops/SAR_METHODOLOGY.md`)
+**Status**: In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
 
 | Gap | Owner | Playbook | ETA |
@@ -331,7 +331,7 @@
 | SAR-G02: Feature store — SQLite production backend | @copilot | feast_compat.py + SQLiteBackend (S116) | Complete (P1 gap, 2026-03-07); enhancement ETA 2026-06-30 (Redis/Feast swap) |
 | SAR-G03: Auto-retrain GHA workflow OPEN — Partial (75/100) | @copilot | model-drift-retrain.yml | 2026-06-30 (prod data source) |
 
-**Success criterion:** All 3 gaps resolved → ROADMAP MLOps level updated to **Level 4** → `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md` approval updated.
+**Success criterion:** All 3 gaps resolved ROADMAP MLOps level updated to **Level 4** `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md` approval updated.
 
 #### 2. **MCP Package Merge & Diff Tools** (Phase 14)
 **Timeline**: 2026-04-01 to 2026-04-30

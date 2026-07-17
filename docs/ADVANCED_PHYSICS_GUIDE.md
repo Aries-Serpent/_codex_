@@ -522,6 +522,6 @@ For questions or issues:
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-12  
+**Version**: 1.0.0
+**Last Updated**: 2025-12-12
 **Maintainer**: Codex Development Team

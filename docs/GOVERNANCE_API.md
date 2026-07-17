@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status:** Phase 2 - Master API Documentation  
-**Coverage:** 52+ public functions & classes  
-**Modules:** governance/*, cognitive/brain_interface.py, brain/memory_sync.py  
+**Status:** Phase 2 - Master API Documentation
+**Coverage:** 52+ public functions & classes
+**Modules:** governance/*, cognitive/brain_interface.py, brain/memory_sync.py
 **Last Updated: 2026-07-08
 
 ---
@@ -20,8 +20,8 @@
 
 ## Governance & Approval Service
 
-**File:** `src/codex/governance/approval_service.py`  
-**Purpose:** RBAC and approval workflow management  
+**File:** `src/codex/governance/approval_service.py`
+**Purpose:** RBAC and approval workflow management
 **LOC:** 544 | **API:** 24 public functions
 
 ### Classes
@@ -182,8 +182,8 @@ Check if user has permission for action.
 
 ## Cognitive Brain Interface
 
-**File:** `src/codex/cognitive/brain_interface.py`  
-**Purpose:** High-level interface to cognitive brain subsystem  
+**File:** `src/codex/cognitive/brain_interface.py`
+**Purpose:** High-level interface to cognitive brain subsystem
 **LOC:** 729 | **API:** 18 public functions
 
 ### Classes
@@ -318,14 +318,14 @@ Get memory statistics.
 
 ## Memory Synchronization
 
-**File:** `src/codex/brain/memory_sync.py`  
-**Purpose:** Short-term to long-term memory synchronization  
+**File:** `src/codex/brain/memory_sync.py`
+**Purpose:** Short-term to long-term memory synchronization
 **LOC:** 558 | **API:** 9 public functions
 
 ### Classes
 
 #### `MemorySyncEngine`
-**Description:** Manages STM↔LTM synchronization and persistence.
+**Description:** Manages STMLTM synchronization and persistence.
 
 **Methods:**
 
@@ -443,7 +443,7 @@ Restore memory from checkpoint.
 | `forget()` | brain | Delete memory | `(str) -> bool` |
 | `search_memory()` | brain | Search | `(str, int) -> list` |
 | `analyze()` | brain | Analyze | `(dict) -> dict` |
-| `sync()` | memory_sync | Sync STM↔LTM | `(str) -> dict` |
+| `sync()` | memory_sync | Sync STMLTM | `(str) -> dict` |
 | `prune_stm()` | memory_sync | Clean STM | `(int) -> dict` |
 | `compact_ltm()` | memory_sync | Compact LTM | `() -> dict` |
 | `create_checkpoint()` | memory_sync | Save state | `(str, str) -> str` |
@@ -536,11 +536,11 @@ if error_occurred:
 
 ## Coverage Status
 
-**Documented Signatures:** 16/52 (31%)  
+**Documented Signatures:** 16/52 (31%)
 **Next Phase:** Phase 3 - Identify gaps and Phase 4 - Integration
 
 ---
 
-**Generated:** 2026-07-08  
-**Campaign:** WS1 API Documentation Expansion  
+**Generated:** 2026-07-08
+**Campaign:** WS1 API Documentation Expansion
 **Phase:** 2 - Master API References

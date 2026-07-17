@@ -1,11 +1,11 @@
-# GitHub App ↔ cognitive_app CLI — Integration Mapping Guide
+# GitHub App cognitive_app CLI — Integration Mapping Guide
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 **Last Updated: 2026-06-22
 
-> **Status:**  NEW (PR #3503 W-126, 2026-03-05)  
-> **Audience:** Copilot Coding Agent sessions, integration engineers  
+> **Status:** NEW (PR #3503 W-126, 2026-03-05)
+> **Audience:** Copilot Coding Agent sessions, integration engineers
 > **Related:** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`, `src/codex/auth/github_app.py`,
 > `cognitive_app/src/server/cli_api_server.py`, `src/codex/agents/brain_client.py`
 
@@ -20,7 +20,7 @@ The `cognitive_app` CLI API server (`localhost:8765`) and the new GitHub App pac
 |-------|-----------|---------------|
 | **Inbound** | `WebhookVerifier` | Validates `X-Hub-Signature-256` on every GitHub delivery |
 | **Outbound auth** | `GitHubApp.generate_jwt()` | RS256-signed JWT used to call the GitHub REST API as the App |
-| **Outbound auth fallback** | `GitHubApp.pat_api_get()` | PAT-authenticated GET with automatic `CODEX_MASTER_KEY → CODEX_BACKUP_KEY` retry |
+| **Outbound auth fallback** | `GitHubApp.pat_api_get()` | PAT-authenticated GET with automatic `CODEX_MASTER_KEY CODEX_BACKUP_KEY` retry |
 | **Proxy gateway** | `POST /api/request` (`BrainClient.proxy_request()`) | All external API calls from Copilot Agent sessions |
 | **Memory + OODA** | `POST /api/ooda/process` | Routes GitHub event data through the cognitive loop |
 | **Shell execution** | `POST /api/cli/run` | Runs follow-up git/gh commands in response to events |
@@ -67,7 +67,7 @@ All components in the platform resolve GitHub tokens in the same order:
 | 4 | `GITHUB_TOKEN` | Installation token | Last resort |
 
 > **GitHub App JWT auth** (used by `GitHubApp.generate_jwt()` /
-> `get_installation_token()`) is **separate** from PAT auth.  
+> `get_installation_token()`) is **separate** from PAT auth.
 > The RSA private key (`GITHUB_APP_PRIVATE_KEY` env var) is used exclusively
 > for JWT signing — it never falls through to PAT tokens.
 
@@ -149,7 +149,7 @@ result = brain.proxy_request(
 
 ---
 
-## 3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY → CODEX_BACKUP_KEY)
+## 3 · Calling GitHub with PAT fallback (CODEX_MASTER_KEY CODEX_BACKUP_KEY)
 
 For endpoints that require PAT scope (e.g. Actions Variables API):
 
@@ -207,7 +207,7 @@ print(json.dumps(manifest, indent=2))
 
 ---
 
-## 5 · CLI ↔ GitHub App — Session Quick-Start
+## 5 · CLI GitHub App — Session Quick-Start
 
 ```bash
 # 1. Verify CLI server is up

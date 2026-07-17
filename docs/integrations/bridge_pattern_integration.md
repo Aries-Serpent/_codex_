@@ -2,7 +2,7 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 
 ---
 
-# Bridge Pattern: Codex ↔ (shared tools) ↔ Copilot
+# Bridge Pattern: Codex (shared tools) Copilot
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -14,10 +14,10 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 * **Codex side**: call ITA via **OpenAI tool calling** (Responses API / Agents SDK). Keep stable schemas; stream; backoff; rate-limit. ([OpenAI Platform][1])
 * **Copilot side** (two official paths):
 
-  1. **Copilot Extensions**: build a Copilot “agent” backed by a **GitHub App** + your hosted service; Copilot Chat users invoke tools that call your ITA. ([GitHub Docs][2])
-  2. **MCP (Model Context Protocol)**: ship an **MCP server** that exposes tools mapping 1:1 to your ITA. Register it in VS Code / Visual Studio so Copilot can call those tools. Note current constraints (e.g., Copilot coding agent supports **tools only**, not MCP “resources/prompts”; **no remote MCP servers that use OAuth**). Design auth accordingly (non-OAuth secrets or app-issued tokens). ([GitHub Docs][3])
+ 1. **Copilot Extensions**: build a Copilot “agent” backed by a **GitHub App** + your hosted service; Copilot Chat users invoke tools that call your ITA. ([GitHub Docs][2])
+ 2. **MCP (Model Context Protocol)**: ship an **MCP server** that exposes tools mapping 1:1 to your ITA. Register it in VS Code / Visual Studio so Copilot can call those tools. Note current constraints (e.g., Copilot coding agent supports **tools only**, not MCP “resources/prompts”; **no remote MCP servers that use OAuth**). Design auth accordingly (non-OAuth secrets or app-issued tokens). ([GitHub Docs][3])
 
-**Why GitHub App over OAuth?** Fine-grained permissions, repo-scoped access, short-lived tokens → least privilege by default. Use OAuth only where you truly need user-scoped access. ([GitHub Docs][4])
+**Why GitHub App over OAuth?** Fine-grained permissions, repo-scoped access, short-lived tokens least privilege by default. Use OAuth only where you truly need user-scoped access. ([GitHub Docs][4])
 
 ---
 
@@ -25,25 +25,25 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 
 * **Contract first**: publish an **OpenAPI** spec for endpoints like:
 
-  * `POST /kb/search` → RAG search over internal docs
-  * `POST /repo/hygiene` → lint/format/secret-scan a diff
-  * `POST /tests/run` → run focused tests; return JUnit summary
-  * `POST /git/create-pr` → create/update PR with labels/checklists
-  * `GET /catalog/tools` → tool discovery for agents
+ * `POST /kb/search` RAG search over internal docs
+ * `POST /repo/hygiene` lint/format/secret-scan a diff
+ * `POST /tests/run` run focused tests; return JUnit summary
+ * `POST /git/create-pr` create/update PR with labels/checklists
+ * `GET /catalog/tools` tool discovery for agents
 * **Operational gates**:
 
-  * **Idempotency keys** and **dry-run** mode for destructive ops.
-  * **Safety confirmations** (e.g., “requires ‘confirm=true’” for `git/create-pr`).
-  * **Rate limits + backoff headers** (mirror OpenAI’s retry discipline).
+ * **Idempotency keys** and **dry-run** mode for destructive ops.
+ * **Safety confirmations** (e.g., “requires ‘confirm=true’” for `git/create-pr`).
+ * **Rate limits + backoff headers** (mirror OpenAI’s retry discipline).
 * **Auth**:
 
-  * Server-to-server: **GitHub App** installation tokens for repo actions. ([GitHub Docs][4])
-  * From Copilot (MCP): avoid OAuth (per constraint); issue **short-lived API keys** bound to org & repo. ([GitHub Docs][5])
+ * Server-to-server: **GitHub App** installation tokens for repo actions. ([GitHub Docs][4])
+ * From Copilot (MCP): avoid OAuth (per constraint); issue **short-lived API keys** bound to org & repo. ([GitHub Docs][5])
 * **Observability**: correlation IDs, structured logs, per-tool metrics & audit events.
 
 ---
 
-## 3) Codex → ITA: tool calling patterns
+## 3) Codex ITA: tool calling patterns
 
 * Use **OpenAI Responses API / Agents SDK tools** to describe each ITA endpoint (JSON Schema params; narrow, well-typed). Favor few, composable tools over mega-tools. ([OpenAI Platform][1])
 * **Streaming** + **exponential backoff with jitter**; cap concurrency with a semaphore; raise `max_output_tokens` only when needed. (Same wrapper you’re already using.)
@@ -51,7 +51,7 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 
 ---
 
-## 4) Copilot → ITA, two supported routes
+## 4) Copilot ITA, two supported routes
 
 ### A) Copilot Extensions (GitHub-native)
 
@@ -78,7 +78,7 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 ## 6) Acceptance tests (minimum)
 
 1. **Read-only flow** (both agents): `/kb/search` returns top-k with citations; latency < X ms P95.
-2. **Repo-write flow** (both agents): propose PR → human confirm → `git/create-pr` opens PR with labels; PR body includes provenance (“via Codex” / “via Copilot”).
+2. **Repo-write flow** (both agents): propose PR human confirm `git/create-pr` opens PR with labels; PR body includes provenance (“via Codex” / “via Copilot”).
 3. **Safety**: attempt disallowed repo; expect 403 + guidance.
 4. **Resilience**: kill ITA mid-call; both agents retry per policy; surface user-safe error.
 
@@ -90,9 +90,9 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 > Implement a **bridge-pattern “Codex & Copilot co-op”** so both agents call the **same Internal Tools API (ITA)**. Deliver a working skeleton with contracts, clients, configs, and tests.
 >
 > Constraints
-> 1) Use **Copilot Extensions** or **MCP** for Copilot; no direct Copilot inference API.  
-> 2) If using MCP: coding agent supports tools only; no remote OAuth; use short-lived keys.  
-> 3) Use a **GitHub App** for repo ops, not OAuth where possible.  
+> 1) Use **Copilot Extensions** or **MCP** for Copilot; no direct Copilot inference API.
+> 2) If using MCP: coding agent supports tools only; no remote OAuth; use short-lived keys.
+> 3) Use a **GitHub App** for repo ops, not OAuth where possible.
 > 4) Codex calls ITA via **OpenAI tool calling**.
 >
 > Deliverables

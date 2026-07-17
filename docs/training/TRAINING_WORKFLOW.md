@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-01-20  
-**Version**: v0.2.1  
+**Last Updated**: 2026-01-20
+**Version**: v0.2.1
 **Reference**: [E2E Request Flow](../architecture/E2E_REQUEST_FLOW.md)
 
 ---
@@ -12,11 +12,15 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Model Training Workflow<br/>Configuration to Checkpoint'}, 'theme': 'base'}}%%
+
 graph TD
+
     Start([" Training Start"]) --> LoadCfg[" Load Configuration<br/>• config.yaml<br/>• defaults resolution<br/>• override application"]
     
     LoadCfg --> ValidCfg{"Config<br/>Valid?"}
+
     ValidCfg -->|" Error"| CfgError["Return Error<br/>Fix and retry"]
+
     ValidCfg -->|" OK"| PrepData["📥 Data Preparation<br/>• Load dataset<br/>• Tokenize text<br/>• Create batches<br/>• Compute statistics"]
     
     PrepData --> SplitData[" Train/Val/Test Split<br/>• training: 70%<br/>• validation: 15%<br/>• test: 15%"]
@@ -55,6 +59,7 @@ graph TD
     LogBatch --> BatchCheck{"More<br/>Batches?"}
     
     BatchCheck -->|" Yes"| BatchNum
+
     BatchCheck -->|" No"| EvalVal[" Evaluate Validation<br/>• Forward on val set<br/>• Compute val loss<br/>• Compute metrics<br/>• No backprop"]
     
     EvalVal --> ValMetrics[" Validation Metrics<br/>• Val loss: Y.YYY<br/>• Val accuracy: YY%<br/>• Best so far?"]
@@ -76,6 +81,7 @@ graph TD
     LRSchedule --> EpochCheck{"More<br/>Epochs?"}
     
     EpochCheck -->|" Yes"| EpochNum
+
     EpochCheck -->|" No"| EpochDone[" Training Done"]
     
     StopEpoch --> EpochDone
@@ -100,6 +106,7 @@ graph TD
     
     %% Error handling
     Forward -.catch.-> ErrorHandle[" Handle Error<br/>• Log error<br/>• Save checkpoint<br/>• Alert user<br/>• Cleanup"]
+
     ErrorHandle --> End
     
     %% Styling
@@ -140,17 +147,17 @@ graph TD
 
 ### 2. Training Loop
 - **Per Epoch**:
-  - Process batches with forward/backward
-  - Accumulate gradients
-  - Apply optimizer step
-  
+ - Process batches with forward/backward
+ - Accumulate gradients
+ - Apply optimizer step
+
 - **Per Batch**:
-  - Load data to device
-  - Forward pass
-  - Compute loss
-  - Backward pass
-  - Gradient clipping
-  - Optimizer step
+ - Load data to device
+ - Forward pass
+ - Compute loss
+ - Backward pass
+ - Gradient clipping
+ - Optimizer step
 
 ### 3. Validation & Checkpointing
 - Evaluate on validation set
@@ -268,7 +275,7 @@ Final Test Results:
 
 - Review evaluation workflow implementation in the codebase
 - Explore model serving configuration
-- 👉 See [E2E Request Flow](../architecture/E2E_REQUEST_FLOW.md) for full request lifecycle
+- See [E2E Request Flow](../architecture/E2E_REQUEST_FLOW.md) for full request lifecycle
 
 ---
 

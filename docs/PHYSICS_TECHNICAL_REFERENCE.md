@@ -304,33 +304,33 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 ## Known Issues and Mitigations
 
 ### Fixed Issues
-1.  **Local maxima detection bug** (EMFieldRouter)
-   - **Issue**: Compared value to itself
-   - **Fix**: Exclude center point using `np.delete(neighborhood, 4)`
-   - **Commit**: fbd5baa
+1. **Local maxima detection bug** (EMFieldRouter)
+ - **Issue**: Compared value to itself
+ - **Fix**: Exclude center point using `np.delete(neighborhood, 4)`
+ - **Commit**: fbd5baa
 
-2.  **Division by zero** (WavePropagator)
-   - **Issue**: expected_power could be zero
-   - **Fix**: Add epsilon `expected_power + 1e-10`
-   - **Commit**: fbd5baa
+2. **Division by zero** (WavePropagator)
+ - **Issue**: expected_power could be zero
+ - **Fix**: Add epsilon `expected_power + 1e-10`
+ - **Commit**: fbd5baa
 
-3.  **O(n²) complexity** (FluidFlowScheduler)
-   - **Issue**: Pairwise iteration over all channels
-   - **Fix**: Max/min approach for O(n)
-   - **Commit**: fbd5baa
+3. **O(n²) complexity** (FluidFlowScheduler)
+ - **Issue**: Pairwise iteration over all channels
+ - **Fix**: Max/min approach for O(n)
+ - **Commit**: fbd5baa
 
 ### Residual Limitations
 1. **Numpy dependency**: Required for all physics calculations
-   - **Mitigation**: Graceful degradation with NUMPY_AVAILABLE flag
-   - **User guidance**: Clear error messages with install instructions
+ - **Mitigation**: Graceful degradation with NUMPY_AVAILABLE flag
+ - **User guidance**: Clear error messages with install instructions
 
 2. **Grid resolution trade-off**: Higher resolution = more accuracy but slower
-   - **Mitigation**: Configurable resolution with sensible defaults
-   - **Defaults**: EM=20x20, Waves=50x50
+ - **Mitigation**: Configurable resolution with sensible defaults
+ - **Defaults**: EM=20x20, Waves=50x50
 
 3. **Numerical stability**: Wave and EM calculations can become unstable
-   - **Mitigation**: Damping in waves, singularity avoidance in EM
-   - **Parameters**: γ=0.05 damping, r+0.01 singularity offset
+ - **Mitigation**: Damping in waves, singularity avoidance in EM
+ - **Parameters**: γ=0.05 damping, r+0.01 singularity offset
 
 ---
 
@@ -369,51 +369,51 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 
 ### Priority 1 (High Impact)
 1. **GPU Acceleration**
-   - Target: EM fields and wave propagation
-   - Expected speedup: 10-100x for large grids
-   - Library: CuPy or PyTorch
+ - Target: EM fields and wave propagation
+ - Expected speedup: 10-100x for large grids
+ - Library: CuPy or PyTorch
 
 2. **Adaptive Grid Resolution**
-   - Auto-adjust based on field complexity
-   - Refine around high-gradient regions
-   - Expected: Better accuracy with same performance
+ - Auto-adjust based on field complexity
+ - Refine around high-gradient regions
+ - Expected: Better accuracy with same performance
 
 3. **Parallel Chaos Exploration**
-   - Run multiple chaotic networks simultaneously
-   - Explore different parameter spaces
-   - Expected: Wider solution coverage
+ - Run multiple chaotic networks simultaneously
+ - Explore different parameter spaces
+ - Expected: Wider solution coverage
 
 ### Priority 2 (Medium Impact)
 1. **3D Field Visualization**
-   - Real-time plotting of EM and wave fields
-   - Interactive exploration tools
-   - Library: Plotly or Mayavi
+ - Real-time plotting of EM and wave fields
+ - Interactive exploration tools
+ - Library: Plotly or Mayavi
 
 2. **Physics-Informed Neural Networks (PINNs)**
-   - Train networks to satisfy physics equations
-   - Hybrid symbolic-neural solvers
-   - Library: DeepXDE
+ - Train networks to satisfy physics equations
+ - Hybrid symbolic-neural solvers
+ - Library: DeepXDE
 
 3. **Advanced Wavelet Families**
-   - Beyond Haar wavelets
-   - Daubechies, Morlet, etc.
-   - Library: PyWavelets
+ - Beyond Haar wavelets
+ - Daubechies, Morlet, etc.
+ - Library: PyWavelets
 
 ### Priority 3 (Nice to Have)
 1. **Distributed Physics Simulations**
-   - Multi-node wave propagation
-   - Distributed EM field calculations
-   - Library: Ray or Dask
+ - Multi-node wave propagation
+ - Distributed EM field calculations
+ - Library: Ray or Dask
 
 2. **Automatic Parameter Tuning**
-   - Optimize physics parameters for specific use cases
-   - Bayesian optimization
-   - Library: Optuna
+ - Optimize physics parameters for specific use cases
+ - Bayesian optimization
+ - Library: Optuna
 
 3. **Physics Equation Verification**
-   - Symbolic math validation
-   - Automatic unit testing of equations
-   - Library: SymPy
+ - Symbolic math validation
+ - Automatic unit testing of equations
+ - Library: SymPy
 
 ---
 
@@ -461,7 +461,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 
 ---
 
-**Document Version**: 1.1.0  
-**Last Updated**: 2025-12-12  
-**Maintained By**: Codex AI Development Team  
-**Status**: Production Ready 
+**Document Version**: 1.1.0
+**Last Updated**: 2025-12-12
+**Maintained By**: Codex AI Development Team
+**Status**: Production Ready

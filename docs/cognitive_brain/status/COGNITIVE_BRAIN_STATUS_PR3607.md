@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Generated:** 2026-03-17T08:38Z  
-**PR:** #3607 — `0D_base` — CI workflow robustness, PR comment upsert race-safety, reviewer fix batch  
-**Branch:** `copilot/sub-pr-3606`  
-**Status:**  COMPLETE — All S138 deliverables done; Phase 5 active  
+**Generated:** 2026-03-17T08:38Z
+**PR:** #3607 — `0D_base` — CI workflow robustness, PR comment upsert race-safety, reviewer fix batch
+**Branch:** `copilot/sub-pr-3606`
+**Status:** COMPLETE — All S138 deliverables done; Phase 5 active
 **Agent:** copilot-swe-agent[bot]
 
 ---
@@ -14,12 +14,12 @@
 
 | # | Deliverable | File | Status |
 |---|-------------|------|--------|
-| 1 | Deferral fence-opener bypass prevention | `scripts/ci/check_deferral_language.py` |  |
-| 2 | `run_validation.sh` PRECOMMIT augmentation after `doc_metrics_sync` | `scripts/run_validation.sh` |  |
-| 3 | `root-org-validation.yml` template indentation fix (array-join) | `.github/workflows/root-org-validation.yml` |  |
-| 4 | Cognitive Brain DEAD_CODE_IMPROVEMENT_PLAN Phase 5 plan + mermaid | `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md` |  |
-| 5 | New CB status doc for PR #3607 | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3607.md` |  |
-| 6 | Architecture mermaid diagram updated to Phase 5 state | `docs/ARCHITECTURE.md` |  |
+| 1 | Deferral fence-opener bypass prevention | `scripts/ci/check_deferral_language.py` | |
+| 2 | `run_validation.sh` PRECOMMIT augmentation after `doc_metrics_sync` | `scripts/run_validation.sh` | |
+| 3 | `root-org-validation.yml` template indentation fix (array-join) | `.github/workflows/root-org-validation.yml` | |
+| 4 | Cognitive Brain DEAD_CODE_IMPROVEMENT_PLAN Phase 5 plan + mermaid | `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md` | |
+| 5 | New CB status doc for PR #3607 | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3607.md` | |
+| 6 | Architecture mermaid diagram updated to Phase 5 state | `docs/ARCHITECTURE.md` | |
 
 ---
 
@@ -27,25 +27,38 @@
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR body submitted", "check_deferral_language.scan()"'}}%%
+
 flowchart TD
+
     PR["PR body submitted"] --> DL["check_deferral_language.scan()"]
 
     subgraph DL["Deferral Scanner — S138 hardened"]
         direction TB
         L1["Line iteration"]
+
         L1 --> FO{"Fence opener\n(\`\`\` or ~~~)?"}
+
         FO -- yes --> BUF["fence_buffer.append(opener_line)\n⬆ NEW S138 fix"]
+
         FO -- no --> SCAN["lines_to_scan.append(line)"]
+
         BUF --> INSIDE["Scan inside-fence lines\nto fence_buffer"]
+
         INSIDE --> CLOSE{"Matching close?"}
+
         CLOSE -- yes --> DISCARD["fence_buffer.clear()\n(real code — safe)"]
+
         CLOSE -- no / EOF --> BYPASS["lines_to_scan.extend(fence_buffer)\n(bypass prevention — scans opener too)"]
     end
 
     SCAN --> REGEX["DEFERRAL_TRIGGERS regex"]
+
     BYPASS --> REGEX
+
     REGEX --> EXEMPT{"Exempt?"}
+
     EXEMPT -- yes --> PASS[" PASS"]
+
     EXEMPT -- no --> FAIL[" violation reported"]
 
     style BUF fill:#ffd700,color:#000
@@ -60,6 +73,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing @'}}%%
+
 sequenceDiagram
     participant SH as run_validation.sh
     participant PC as PRECOMMIT_FILES[]
@@ -70,8 +84,10 @@ sequenceDiagram
     SH->>PC: Build from HEAD tracked + untracked changes
     SH->>SYNC: python scripts/tools/doc_metrics_sync.py --fix
     Note over SYNC: May modify docs/ROADMAP.md,<br/>docs/CHANGELOG.md, etc.
+
     SYNC-->>SH: exit 0 (or non-zero warning only)
     SH->>GIT: git diff --name-only (detect sync-modified files)
+
     GIT-->>SH: list of newly modified files
     SH->>PC: Augment PRECOMMIT_FILES with new files (dedup via SEEN_FILES)
     SH->>PRE: pre-commit run --files ${PRECOMMIT_FILES[@]}
@@ -102,6 +118,7 @@ All 9 PR bot comment marker types now have race-safe upsert:
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing "Input Layer", "GitHub Events\n(PR, Push, Issue)"'}}%%
+
 graph TB
     subgraph INPUT["Input Layer"]
         GH["GitHub Events\n(PR, Push, Issue)"]
@@ -132,20 +149,35 @@ graph TB
     end
 
     GH --> PDA
+
     CI --> PDA
+
     SEC --> PDA
+
     PDA --> QS
+
     QS --> PC
+
     PC --> MEM
+
     MEM --> PAT
+
     PAT --> AGENTS
+
     DSCN --> FIX
+
     CMNT --> STAT
+
     RVAL --> FIX
+
     AUTH --> LOGS
+
     BRAI --> MEM
+
     FIX --> OUT
+
     STAT --> OUT
+
     LOGS --> OUT
 
     style CB fill:#8b5cf6,color:#fff
@@ -161,6 +193,7 @@ graph TB
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
+
 gantt
     title Cognitive Brain Phase Roadmap
     dateFormat  YYYY-MM-DD
