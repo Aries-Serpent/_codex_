@@ -7,7 +7,7 @@ and anomaly-resistant fitting.
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -19,7 +19,7 @@ try:
     HAS_SKLEARN = True
 except ImportError:
     HAS_SKLEARN = False
-    HuberRegressor = None
+    HuberRegressor = None  # type: ignore[assignment]
 
 try:
     from statsmodels.tsa.seasonal import seasonal_decompose
@@ -30,10 +30,10 @@ except ImportError:
 try:
     from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
 except ImportError:
-    ARIMAModel = None  # type: ignore[misc]
-    ProphetModel = None  # type: ignore[misc]
-    EnsembleForecaster = None  # type: ignore[misc]
-    EnsembleConfig = None  # type: ignore[misc]
+    ARIMAModel = None  # type: ignore[assignment]
+    ProphetModel = None  # type: ignore[assignment]
+    EnsembleForecaster = None  # type: ignore[assignment]
+    EnsembleConfig = None  # type: ignore[assignment]
 
 
 @dataclass

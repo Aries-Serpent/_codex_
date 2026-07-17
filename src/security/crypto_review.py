@@ -14,7 +14,7 @@ import logging
 import os
 import re
 from enum import Enum
-from typing import Optional, Set
+from typing import Any, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -274,7 +274,7 @@ class CryptographicReviewer:
         return (len(missing) == 0, missing)
 
 
-def get_crypto_strength_assessment(algorithms: dict[str, str]) -> dict:
+def get_crypto_strength_assessment(algorithms: dict[str, str]) -> dict[str, Any]:
     """Get overall cryptographic strength assessment.
 
     Parameters
@@ -288,7 +288,7 @@ def get_crypto_strength_assessment(algorithms: dict[str, str]) -> dict:
         Assessment with recommendations
     """
     reviewer = CryptographicReviewer()
-    assessment = {
+    assessment: dict[str, Any] = {
         "overall_strength": CryptoStrength.EXCELLENT,
         "algorithms": {},
         "recommendations": [],

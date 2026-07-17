@@ -217,7 +217,7 @@ class ValidationLoop:
             Dict with cascade detection info
         """
         # Analyze for cascade patterns
-        cascade_info = {
+        cascade_info: Dict[str, Any] = {
             "detected": True,
             "patterns": [],
             "affected_tests": [],

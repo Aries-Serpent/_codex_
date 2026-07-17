@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +79,7 @@ def sanitize_query(query: str) -> str:
     return sanitized
 
 
-def validate_filters(filters: Optional[dict]) -> dict:
+def validate_filters(filters: Optional[dict]) -> dict[str, Any]:
     """
     Validate and sanitize filter parameters.
 
@@ -101,7 +101,7 @@ def validate_filters(filters: Optional[dict]) -> dict:
     if len(filters) > MAX_FILTER_KEYS:
         raise ValueError(f"Filters exceed maximum key count of {MAX_FILTER_KEYS}")
 
-    validated_filters = {}
+    validated_filters: dict[str, Any] = {}
     for key, value in filters.items():
         # Validate filter key
         if not isinstance(key, str):
@@ -138,7 +138,7 @@ def validate_filters(filters: Optional[dict]) -> dict:
     return validated_filters
 
 
-def validate_metadata(metadata: Optional[dict]) -> dict:
+def validate_metadata(metadata: Optional[dict]) -> dict[str, Any]:
     """
     Validate and sanitize metadata dictionary.
 
@@ -164,7 +164,7 @@ def validate_metadata(metadata: Optional[dict]) -> dict:
     if metadata_size > MAX_METADATA_SIZE:
         raise ValueError(f"Metadata exceeds maximum size of {MAX_METADATA_SIZE} bytes")
 
-    validated_metadata = {}
+    validated_metadata: dict[str, Any] = {}
     for key, value in metadata.items():
         if not isinstance(key, str):
             raise ValueError("Metadata key must be a string")
