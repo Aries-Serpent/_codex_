@@ -313,6 +313,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Check SECURITY.md
       run: "if [ ! -f SECURITY.md ]; then\n  echo \"\u274C SECURITY.md not found\"\
         \n  exit 1\nfi\necho \"\u2713 SECURITY.md exists\"\ngrep -E \"email|report|contact\"\
