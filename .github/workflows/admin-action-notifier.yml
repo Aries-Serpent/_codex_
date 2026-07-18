@@ -47,7 +47,7 @@ permissions:
   issues: write
   security-events: read
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 jobs:
   probe-and-notify:

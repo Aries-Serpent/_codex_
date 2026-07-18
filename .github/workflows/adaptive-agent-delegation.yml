@@ -35,7 +35,7 @@ on:
         description: Maximum agents to run in parallel
         required: false
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 permissions:
   actions: read

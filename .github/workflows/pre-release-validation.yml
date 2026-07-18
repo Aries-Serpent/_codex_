@@ -26,7 +26,7 @@ permissions:
   pull-requests: write
 concurrency:
   cancel-in-progress: true
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
 env:
   PYTHON_VERSION: '3.12'
 jobs:

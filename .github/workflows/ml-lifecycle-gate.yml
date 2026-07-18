@@ -1,6 +1,6 @@
 name: ML Lifecycle E2E Gate
 on:
-  workflow_dispatch: null
+  workflow_dispatch:
   schedule:
   - cron: 0 4 * * 1
   push:
