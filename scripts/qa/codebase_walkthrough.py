@@ -43,13 +43,6 @@ class CodebaseQAWalker:
                 with open(py_file, encoding='utf-8', errors='replace') as f:
                     code = f.read()
                 ast.parse(code)
-            except UnicodeDecodeError as e:
-                self.warnings.append({
-                    'file': str(py_file),
-                    'type': 'UnicodeDecodeError',
-                    'message': f"Encoding error: {str(e)}",
-                    'severity': 'warning'
-                })
             except SyntaxError as e:
                 syntax_errors += 1
                 self.critical_issues.append({
@@ -102,11 +95,13 @@ class CodebaseQAWalker:
                             issue_code = issue.get('code', '')
                             is_critical = False
                             
-                            # E9xx: syntax errors (E901-E999)
-                            if issue_code.startswith('E9') and len(issue_code) >= 4 and issue_code[2:].isdigit():
+                            # E9xx: syntax errors (E901-E999) - exactly 4 characters
+                            if (issue_code.startswith('E9') and len(issue_code) == 4 and 
+                                issue_code[2:4].isdigit()):
                                 is_critical = True
-                            # F8xx: runtime errors (F821, F822, F823, F831, F841, etc.)
-                            elif issue_code.startswith('F8') and len(issue_code) >= 4 and issue_code[2:].isdigit():
+                            # F8xx: runtime errors (F821, F822, F823, F831, F841, etc.) - exactly 4 characters
+                            elif (issue_code.startswith('F8') and len(issue_code) == 4 and 
+                                  issue_code[2:4].isdigit()):
                                 is_critical = True
                             
                             if is_critical:
