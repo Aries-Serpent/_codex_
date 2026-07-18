@@ -35,12 +35,12 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -78,7 +78,7 @@ jobs:
 
       - name: Upload scan results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: fragile-tests-scan
           path: .codex/fragile_tests.json
@@ -96,12 +96,12 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -186,7 +186,7 @@ jobs:
 
       - name: Upload flaky detection results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: unhandled-flaky-tests
           path: .codex/phase5_unhandled_flaky.json
@@ -205,12 +205,12 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -281,7 +281,7 @@ jobs:
 
       - name: Upload coverage results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: docstring-coverage
           path: .codex/phase5_docstring_coverage.json
@@ -297,7 +297,7 @@ jobs:
     
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v5
 
       - name: Generate violation report
         id: report
@@ -348,7 +348,7 @@ jobs:
 
       - name: Comment on PR
         if: env.violation_summary != ''
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const violations = process.env.violation_summary || "No violations detected";
@@ -369,7 +369,7 @@ For details, see:
             });
 
       - name: Set status
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const fragile = '${{ needs.detect-fragile-imports.outputs.has_violations }}' === 'true';
