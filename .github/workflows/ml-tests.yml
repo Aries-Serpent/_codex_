@@ -1,5 +1,5 @@
 name: ML Components Test Suite
-on:
+true:
   push:
     branches:
     - main
@@ -75,7 +75,6 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
         continue-on-error: true
-    timeout-minutes: 30
   test-integration-slow:
     permissions:
       contents: read
@@ -103,7 +102,6 @@ jobs:
     - name: Run integration tests
       run: "pytest tests/integration/ \\\n  -v \\\n  -m \"integration\" \\\n  --timeout=600\
         \ || true\n"
-    timeout-minutes: 30
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -129,4 +127,3 @@ jobs:
       with:
         path: htmlcov/
         name: coverage-report
-    timeout-minutes: 30
