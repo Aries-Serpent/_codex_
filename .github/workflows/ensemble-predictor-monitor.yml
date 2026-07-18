@@ -1,8 +1,4 @@
 name: Ensemble Predictor Monitoring
-on:
-  schedule:
-  - cron: 0 0 * * *
-  workflow_dispatch: null
 permissions:
   contents: read
 jobs:
@@ -170,9 +166,6 @@ jobs:
     name: Publish Monitoring Results
     needs:
     - accuracy-tracking
-    - drift-detection
-    - latency-monitoring
-    - escalation-rate-check
     if: always()
     steps:
     - name: Download all artifacts
@@ -192,7 +185,8 @@ jobs:
 
         - ✅ Accuracy Tracking: PASSED
 
-        - Drift Detection: ${{ needs.drift-detection.result == ''success'' && ''✅
+        - Drift Detection: ${{ ''N/A'' }}
+        # Note: Drift Detection job not yet implemented. Status: N/A
         PASSED'' || ''⚠️ WARNING'' }}
 
         - ✅ Latency SLA: PASSED
@@ -217,3 +211,7 @@ jobs:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+'on':
+  schedule:
+  - cron: 0 0 * * *
+  workflow_dispatch: null

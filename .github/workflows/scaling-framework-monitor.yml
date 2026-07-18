@@ -1,14 +1,4 @@
 name: Scaling Framework Monitor
-on:
-  schedule:
-  - cron: 0 * * * *
-  - cron: 0 9 * * 0
-  - cron: 0 10 * * 1
-  workflow_dispatch: null
-  push:
-    paths:
-    - src/codex/scaling/**
-    - .github/workflows/scaling-framework-monitor.yml
 permissions:
   contents: read
 env:
@@ -342,7 +332,6 @@ jobs:
     - failover_health
     - load_balancer_health
     - auto_scaling_health
-    - sla_compliance
     - test_coverage
     if: always()
     steps:
@@ -362,7 +351,7 @@ jobs:
 
         echo "- Gate 4 (Auto-Scaling): ${{ needs.auto_scaling_health.result }}"
 
-        echo "- Gate 6 (SLA Compliance): ${{ needs.sla_compliance.result }}"
+        # Note: SLA Compliance job not yet implemented
 
         echo "- Gate 7 (Test Coverage): ${{ needs.test_coverage.result }}"
 
@@ -382,7 +371,7 @@ jobs:
         FAILOVER_RESULT: ${{ needs.failover_health.result }}
         LB_RESULT: ${{ needs.load_balancer_health.result }}
         AS_RESULT: ${{ needs.auto_scaling_health.result }}
-        SLA_RESULT: ${{ needs.sla_compliance.result }}
+        # Note: SLA Compliance job not yet implemented
         COVERAGE_RESULT: ${{ needs.test_coverage.result }}
     - name: Check all tests passed
       if: failure()
@@ -407,3 +396,13 @@ jobs:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+'on':
+  schedule:
+  - cron: 0 * * * *
+  - cron: 0 9 * * 0
+  - cron: 0 10 * * 1
+  workflow_dispatch: null
+  push:
+    paths:
+    - src/codex/scaling/**
+    - .github/workflows/scaling-framework-monitor.yml
