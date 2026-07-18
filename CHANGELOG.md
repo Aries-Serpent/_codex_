@@ -1,5 +1,28 @@
 ## [Unreleased]
 
+### PR #5337 CI Rescue: YAML Syntax Fixes (2026-07-18T23:51Z)
+
+#### Fixes
+- Fixed YAML indentation in `.github/workflows/codeql-ga-gate.yml` (lines 263-288)
+  - Multi-line JavaScript template string had lost proper indentation
+  - Restored to correct YAML literal block scalar format
+- Fixed YAML indentation in `.github/workflows/fragile-test-guardian.yml` (lines 362-368)
+  - Multi-line JavaScript template string had lost proper indentation
+  - Restored to correct YAML literal block scalar format
+- Both files now parse correctly without YAML ScannerError exceptions
+
+#### Verification
+- ✅ YAML syntax validation: both files pass `yaml.safe_load()`
+- ✅ Pattern 3 (YAML Indentation): "No issues found"
+- ✅ Merge readiness dimension "auto_fix (0 auto-fixable)": RESOLVED
+- ✅ CI Rescue response posted to PR #5337 with commit verification
+
+#### Impact
+- Resolves 25+ failing CI checks caused by workflow YAML parsing errors
+- Enables workflows: CodeQL GA gate, Quality metrics collection, other dependent workflows
+
+---
+
 ### Phase 6 Completion: Security & Compliance Consolidation (2026-07-18T23:42Z)
 
 #### Multi-Lane Parallel Execution — 4 Lanes Complete ✅
