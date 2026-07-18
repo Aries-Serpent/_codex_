@@ -114,6 +114,7 @@ jobs:
   lane-metadata-contract:
     name: Lane Metadata Contract
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       lane_id: ${{ steps.meta.outputs.lane_id }}
       shard_id: ${{ steps.meta.outputs.shard_id }}
@@ -210,6 +211,7 @@ jobs:
       - name: Upload lane contract artifact
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-lane-contract
           path: |
             .codex/contracts/lane-manifest.json
             .codex/contracts/input-lock.json
@@ -217,7 +219,6 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-          name: security-suite-lane-contract
   codeql-scan:
     name: CodeQL Analysis (${{ matrix.language }})
     runs-on: ubuntu-latest
@@ -317,6 +318,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-codeql-${{ matrix.language }}
           path: |
             codeql-sarif/${{ matrix.language }}/
             codeql-reports/codeql-${{ matrix.language }}-summary.md
@@ -324,11 +326,11 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-codeql-${{ matrix.language }}
   semgrep:
     name: Semgrep SAST (SARIF Upload)
     runs-on: ubuntu-latest
     needs: lane-metadata-contract
+    timeout-minutes: 30
     if: |
       (github.event_name == 'push') ||
       (github.event_name == 'pull_request') ||
@@ -464,6 +466,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-semgrep
           path: |
             semgrep-results.sarif
             semgrep-results.json
@@ -477,7 +480,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-semgrep
   container-scan:
     name: Container Security Scan (Trivy)
     runs-on: ubuntu-latest
@@ -583,6 +585,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-container-${{ strategy.job-index }}
           path: |
             trivy-fs-results-${{ strategy.job-index }}.sarif
             trivy-image-results-${{ strategy.job-index }}.sarif
@@ -592,7 +595,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-container-${{ strategy.job-index }}
   cve-scan:
     name: CVE & Dependency Audit
     runs-on: ubuntu-latest
@@ -694,6 +696,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-cve-${{ matrix.ecosystem }}
           path: |
             *-cve-audit.json
             cve-scan-summary-${{ matrix.ecosystem }}.md
@@ -701,7 +704,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-cve-${{ matrix.ecosystem }}
   dependency-scan:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
@@ -780,6 +782,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-dependency
           path: |
             pip-audit.json
             pip-audit-cyclonedx.json
@@ -795,7 +798,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-dependency
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
@@ -882,6 +884,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-secrets
           path: |
             .secrets.baseline
             detect-secrets-summary.json
@@ -891,7 +894,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-secrets
   sbom-generation:
     name: SBOM Generation
     runs-on: ubuntu-latest
@@ -962,6 +964,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-sbom
           path: |
             sbom.json
             sbom.xml
@@ -973,7 +976,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
 
-          name: security-suite-sbom
   security-suite-summary:
     name: Security Suite Summary
     runs-on: ubuntu-latest
@@ -987,6 +989,7 @@ jobs:
       - sbom-generation
       - semgrep
     if: always()
+    timeout-minutes: 60
     steps:
       - name: Download all security-suite artifacts
         uses: actions/download-artifact@v5
@@ -994,7 +997,8 @@ jobs:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
-        continue-on-error: true
+          continue-on-error: true
+
       - name: Build consolidated security summary
         if: always()
         shell: bash
@@ -1052,13 +1056,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-summary
           path: |
             security-suite-summary/
             .codex/contracts/output-contract-summary.json
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-summary
   aggregate-all-findings:
     name: Aggregate All Security Findings
     runs-on: ubuntu-latest
@@ -1066,6 +1070,7 @@ jobs:
       - lane-metadata-contract
       - security-suite-summary
     if: always()
+    timeout-minutes: 40
     permissions:
       contents: read
     steps:
@@ -1080,8 +1085,8 @@ jobs:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
+          continue-on-error: true
 
-      continue-on-error: true
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -1206,6 +1211,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-comprehensive-findings
           path: |
             .codex/security-findings-comprehensive.json
             security-findings-comprehensive.md
@@ -1218,7 +1224,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
 
-          name: security-suite-comprehensive-findings
       - name: Summary
         if: always()
         run: |
@@ -1239,14 +1244,15 @@ jobs:
       - lane-metadata-contract
       - aggregate-all-findings
     if: always()
+    timeout-minutes: 20
     steps:
       - name: Download comprehensive findings artifact
         uses: actions/download-artifact@v5
         with:
-          path: contract-input/
-
           name: security-suite-comprehensive-findings
-      continue-on-error: false
+          path: contract-input/
+          continue-on-error: false
+
       - name: Debug contract input file listing
         if: always()
         run: |
@@ -1311,17 +1317,18 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
+          name: security-suite-artifact-contract-report
           path: security-artifact-contract-report.md
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-suite-artifact-contract-report
   cache-findings:
     name: Cache Security Findings
     runs-on: ubuntu-latest
     needs:
       - validate-security-artifact-contract
     if: ${{ needs.validate-security-artifact-contract.result == 'success' }}
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -1337,10 +1344,10 @@ jobs:
       - name: Download comprehensive findings
         uses: actions/download-artifact@v5
         with:
-          path: .
-
           name: security-suite-comprehensive-findings
-      continue-on-error: true
+          path: .
+          continue-on-error: true
+
       - name: Cache Findings
         run: |
           set -euo pipefail
@@ -1360,20 +1367,20 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v5
         with:
+          name: security-cache
           path: .codex/security-cache/
           if-no-files-found: warn
           retention-days: 90
 
-          name: security-cache
       - name: Upload Trend Report
         if: success()
         uses: actions/upload-artifact@v5
         with:
+          name: security-findings-trend-report
           path: .codex/security-findings-trend-report.md
           if-no-files-found: warn
           retention-days: 30
 
-          name: security-findings-trend-report
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
