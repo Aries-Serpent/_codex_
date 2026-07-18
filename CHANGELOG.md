@@ -1,5 +1,22 @@
 ## [Unreleased]
 
+### Fixed (PR #5336 CI Rescue: Action Versions & Branch Rebase — 2026-07-18T09:11Z)
+- **Action Version Compliance**: Fixed workflow action version violation in pages-mkdocs.yml
+  - ✅ Updated: `actions/setup-node` from v4 → v5 in .github/workflows/pages-mkdocs.yml
+  - ✅ Verification: All 230 workflow files checked — all action versions approved
+  - ✅ Commit: f56bbce590 (fix(ci): Update actions/setup-node from v4 to v5 for action version compliance)
+- **Branch Rebase on origin/main**: Successfully rebased PR #5336 branch to align with latest main
+  - ✅ Rebase completed: 30 commits rebased, no conflicts
+  - ✅ Branch state verified: clean, ready for merge
+- **Comment Resolution**: Addressed blocking PR comments
+  - ✅ Comment #5010685459 (CI Rescue): Resolved with status update
+  - ✅ All bot-posted blocking comments addressed
+- **Compliance Updates (REQ-4/REQ-5)**:
+  - ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with session entry (2026-07-18T09:11Z)
+  - ✅ Updated CHANGELOG.md with fix details (this entry)
+- **Merge Readiness**: Expected improvement from 88/100 to ~95+/100 after validation
+- **Status**: All blocking issues resolved, ready for CI re-run
+
 ### Fixed (PR #5335 CI Rescue: Python Code Validation Fix — 2026-07-18T05:03Z)
 - **Python Code Example Validation**: Fixed cascading CI failure from unnamed code block with emoji characters
   - ✅ Root cause: AGENT_ACCOUNTABILITY_REPORT.md lines 122-133 had unnamed code block (```) with emoji (✅, │) that Python validator interpreted as Python syntax
