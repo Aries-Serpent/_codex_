@@ -68,8 +68,7 @@ jobs:
       - name: Dispatch Validation Pipeline (validate.yml)
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ validate.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\

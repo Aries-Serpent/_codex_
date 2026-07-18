@@ -82,7 +82,7 @@ jobs:
       run: |
         # Calculate shard parameters
         SHARD_INDEX=${{ matrix.shard }}
-        TOTAL_SHARDS=${{\
+        TOTAL_SHARDS=4
     - name: Check for timeouts
       if: steps.coverage.outputs.coverage_failed == 'true'
       run: 'echo '::warning::Coverage collection encountered issues (timeout or test
