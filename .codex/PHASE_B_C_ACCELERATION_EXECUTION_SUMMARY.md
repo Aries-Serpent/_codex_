@@ -157,13 +157,15 @@ Lane 4: ESCALATION STANDBY
 
 ### Workflow Approval Strategy
 
-**Primary Path**: Direct Approval
+**Primary Path**: Direct Approval (Workflow Run)
 ```
 POST /repos/Aries-Serpent/_codex_/actions/runs/{run_id}/approve-deployment
+Method: GitHub Actions Workflow Run Approval (NOT environment deployment approval)
 Headers:
   Authorization: token <CODEX_MASTER_KEY>
   Accept: application/vnd.github.v3+json
 Scope: Required by actions:write in token
+Reference: https://docs.github.com/en/rest/actions/workflow-runs#approve-a-workflow-run-for-a-pull-request
 ```
 
 **Fallback Path**: Rerun Workflow

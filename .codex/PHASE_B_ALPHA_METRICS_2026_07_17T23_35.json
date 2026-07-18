@@ -6,9 +6,11 @@
     "monitoring_start": "2026-07-17T23:05:00Z",
     "monitoring_end": "2026-07-17T23:35:00Z",
     "report_generated": "2026-07-17T23:13:29Z",
+    "report_type": "PRELIMINARY_SNAPSHOT (T+8 minutes - not final package)",
     "monitoring_duration_minutes": 30,
     "sampling_interval_seconds": 60,
-    "expected_samples": 30
+    "expected_samples": 30,
+    "note": "Filename contains end-time (T23:35) but this is a preliminary snapshot generated at T+8. Final report will be generated at 2026-07-17T23:35:00Z with all 30 samples."
   },
   
   "collected_metrics": [
