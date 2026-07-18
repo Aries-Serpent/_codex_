@@ -38,6 +38,12 @@ jobs:
       with:
         python-version: 3.12.13
         cache-tier: common
+    - name: Set up Node.js 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: cognitive_app/package-lock.json
     - name: Cache MkDocs plugins
       uses: actions/cache@v5
       with:
@@ -115,19 +121,26 @@ jobs:
 
         '
     - name: Build cognitive_app dashboard
-      continue-on-error: true
+      working-directory: cognitive_app
       env:
         VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
         VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
-      run: "if [ -f cognitive_app/package.json ]; then\n  cd cognitive_app\n  npm\
-        \ ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts 2>/dev/null\
-        \ || true\n  npm run build 2>/dev/null || true\n  if [ -d dist ]; then\n \
-        \   mkdir -p ../site/cognitive_app\n    cp -r dist/* ../site/cognitive_app/\n\
-        \    echo \"✅ cognitive_app built and merged into site/cognitive_app/\"\n\
-        \    echo \"   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not\
-        \ set>}\"\n  else\n    echo \"⚠️ cognitive_app build did not produce dist/\
-        \ directory\"\n  fi\n  cd ..\nelse\n  echo \"⚠️ cognitive_app/package.json\
-        \ not found — skipping\"\nfi\n"
+      run: |
+        echo "📦 Building cognitive_app dashboard..."
+        echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
+        
+        npm ci
+        npm run build
+        
+        if [ -d dist ]; then
+          mkdir -p ../site/cognitive_app
+          cp -r dist/* ../site/cognitive_app/
+          echo "✅ cognitive_app built and deployed to site/cognitive_app/"
+          ls -la ../site/cognitive_app/ | head -15
+        else
+          echo "❌ ERROR: cognitive_app build did not produce dist/ directory"
+          exit 1
+        fi
     - name: Cache health report
       if: always()
       continue-on-error: true

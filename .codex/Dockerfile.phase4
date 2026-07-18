@@ -6,6 +6,7 @@
 # Target size: <2GB optimized, <3GB unoptimized
 # Setup time reduction: 7.5 min → 3 min (60% reduction)
 # Supported workflows: 219 CI/CD workflows
+# Base image: python:3.12-slim-bookworm (Debian Bookworm with Python 3.12 pre-installed)
 #
 # Security: Minimal layers, explicit ownership (root), signing-ready
 # Build: docker build -f .codex/Dockerfile.phase4 -t codex-base:v1.0 .
@@ -13,7 +14,7 @@
 #        docker push ghcr.io/aries-serpent/codex-base:v1.0
 # ============================================================================
 
-FROM ubuntu:22.04
+FROM python:3.12-slim-bookworm
 
 # ============================================================================
 # LAYER 0: System Package Cache & Metadata
@@ -33,25 +34,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # ============================================================================
-# LAYER 1: Python 3.12+ Runtime & Build Tools
-# Purpose: Install Python 3.12+ (required by 180+ workflows) with dev headers
-# and pip upgrade for ML stack installation
-# Impact: ~450 MB (Python 3.12.x + stdlib + dev)
+# LAYER 1: Python 3.12+ Runtime is Pre-Installed
+# Purpose: Base image python:3.12-slim-bookworm already includes Python 3.12
+# with dev headers and pip. Skip redundant installation steps.
+# Impact: 0 MB (already in base image, ~450 MB savings vs. manual install)
 # Rationale:
-#   - Python 3.12 is the baseline requirement for this repo (PEP 688 enforced)
-#   - dev package includes headers needed for building extensions (scipy, torch)
-#   - pip 24.x supports modern resolver for dependency conflicts
+#   - python:3.12-slim-bookworm comes with Python 3.12, pip, and setuptools
+#   - slim variant removes unnecessary packages (saves 200-300 MB)
+#   - Bookworm (Debian 12) is stable and widely compatible
 # ============================================================================
-RUN add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3.12 \
-    python3.12-dev \
-    python3.12-venv \
-    python3-pip && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
-    python3 -m pip install --upgrade --no-cache-dir pip setuptools wheel && \
-    rm -rf /var/lib/apt/lists/*
+RUN python3 -m pip install --upgrade --no-cache-dir pip setuptools wheel
 
 # ============================================================================
 # LAYER 2: Python ML Stack & Core Dependencies
