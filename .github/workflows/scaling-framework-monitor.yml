@@ -351,8 +351,6 @@ jobs:
 
         echo "- Gate 4 (Auto-Scaling): ${{ needs.auto_scaling_health.result }}"
 
-        # Note: SLA Compliance job not yet implemented
-
         echo "- Gate 7 (Test Coverage): ${{ needs.test_coverage.result }}"
 
         echo ""

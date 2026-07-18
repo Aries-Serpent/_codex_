@@ -40,9 +40,16 @@ class CodebaseQAWalker:
         syntax_errors = 0
         for py_file in py_files:
             try:
-                with open(py_file, encoding='utf-8', errors='ignore') as f:
+                with open(py_file, encoding='utf-8', errors='replace') as f:
                     code = f.read()
                 ast.parse(code)
+            except UnicodeDecodeError as e:
+                self.warnings.append({
+                    'file': str(py_file),
+                    'type': 'UnicodeDecodeError',
+                    'message': f"Encoding error: {str(e)}",
+                    'severity': 'warning'
+                })
             except SyntaxError as e:
                 syntax_errors += 1
                 self.critical_issues.append({
@@ -90,10 +97,19 @@ class CodebaseQAWalker:
                     ruff_issues = json.loads(result.stdout)
                     if isinstance(ruff_issues, list):
                         self.stats['ruff_issues'] = len(ruff_issues)
-                        # Categorize by severity
+                        # Categorize by severity - check for E9xx and known F8xx codes
                         for issue in ruff_issues:
                             issue_code = issue.get('code', '')
-                            if issue_code and (issue_code.startswith('E9') or issue_code.startswith('F8')):  # Critical codes
+                            is_critical = False
+                            
+                            # E9xx: syntax errors (E901-E999)
+                            if issue_code.startswith('E9') and len(issue_code) >= 4 and issue_code[2:].isdigit():
+                                is_critical = True
+                            # F8xx: runtime errors (F821, F822, F823, F831, F841, etc.)
+                            elif issue_code.startswith('F8') and len(issue_code) >= 4 and issue_code[2:].isdigit():
+                                is_critical = True
+                            
+                            if is_critical:
                                 self.critical_issues.append({
                                     'file': issue.get('filename', ''),
                                     'type': f"Ruff:{issue_code}",
