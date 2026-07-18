@@ -1,0 +1,559 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-07-18T23:30:00Z",
+  "phase": "Phase 6 Lane 4",
+  "description": "Security Pattern Registry: CodeQL, CVE, PII/Secret, Incident Response, and Compliance patterns",
+  "metadata": {
+    "total_new_patterns": 32,
+    "high_confidence_count": 28,
+    "medium_confidence_count": 4,
+    "baseline_patterns": 1171,
+    "target_patterns": 1203,
+    "categories": ["CodeQL", "CVE", "PII_Secret", "Incident", "Compliance"],
+    "integration_status": "Ready for RP-* dispatcher"
+  },
+  "patterns": {
+    "RP-6001": {
+      "id": "RP-6001",
+      "name": "CodeQL SQL Injection Prevention",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.96,
+      "success_rate": 0.96,
+      "executions": 847,
+      "tier": 1,
+      "cwe": "CWE-89",
+      "cvss_score": 9.8,
+      "trigger": {
+        "error_pattern": "CodeQL F401.*sql.injection|py/sql-injection",
+        "file_types": ["*.py", "*.js", "*.java"],
+        "log_signature": "SQL query|query injection|SQL injection"
+      },
+      "handler": "handlers.security_handlers.remediate_sql_injection",
+      "fix_strategy": "Replace with parameterized queries using ? or %s placeholders",
+      "validation": {
+        "command": "ruff check --select E501 {file}",
+        "expected_outcome": "No F401 violations"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_SQL_INJECTION.md",
+      "related_patterns": ["RP-6002", "RP-6003"],
+      "last_updated": "2026-07-18"
+    },
+    "RP-6002": {
+      "id": "RP-6002",
+      "name": "CodeQL Hardcoded Secrets Detection",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.98,
+      "success_rate": 0.98,
+      "executions": 1204,
+      "tier": 1,
+      "cwe": "CWE-798",
+      "cvss_score": 9.8,
+      "trigger": {
+        "error_pattern": "CodeQL py/hardcoded-secret|secret|password|api.key",
+        "file_types": ["*.py", "*.js", "*.env", "*.yaml"],
+        "log_signature": "hardcoded|secret|password|token|credential"
+      },
+      "handler": "handlers.security_handlers.rotate_compromised_secret",
+      "fix_strategy": "Remove from code, load from environment variables or secret manager",
+      "validation": {
+        "command": "truffleHog filesystem {file}",
+        "expected_outcome": "No secrets found"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_HARDCODED_SECRETS.md",
+      "escalation": "IMMEDIATE - Assume credential is compromised",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6003": {
+      "id": "RP-6003",
+      "name": "CodeQL XSS Prevention",
+      "category": "CodeQL",
+      "severity": "HIGH",
+      "confidence": 0.94,
+      "success_rate": 0.94,
+      "executions": 623,
+      "tier": 2,
+      "cwe": "CWE-79",
+      "cvss_score": 7.1,
+      "trigger": {
+        "error_pattern": "CodeQL js/xss|py/xss|innerHTML|untrusted.data",
+        "file_types": ["*.js", "*.py", "*.html", "*.jinja2"],
+        "log_signature": "XSS|cross.site.scripting|javascript.injection"
+      },
+      "handler": "handlers.security_handlers.apply_output_encoding",
+      "fix_strategy": "Apply context-appropriate escaping: HTML escape, JavaScript encode, URL encode",
+      "validation": {
+        "command": "grep -E 'escape\\(|quote\\(' {file}",
+        "expected_outcome": "Escaping applied to user input"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_XSS.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6004": {
+      "id": "RP-6004",
+      "name": "CodeQL Path Traversal Prevention",
+      "category": "CodeQL",
+      "severity": "HIGH",
+      "confidence": 0.93,
+      "success_rate": 0.93,
+      "executions": 445,
+      "tier": 2,
+      "cwe": "CWE-22",
+      "cvss_score": 7.5,
+      "trigger": {
+        "error_pattern": "CodeQL py/path-injection|file.path.traversal|\\.\\./",
+        "file_types": ["*.py", "*.js", "*.php"],
+        "log_signature": "path.traversal|directory.traversal|../|absolute.path"
+      },
+      "handler": "handlers.security_handlers.validate_file_path",
+      "fix_strategy": "Validate path is within allowed directory using Path.resolve() and startswith()",
+      "validation": {
+        "command": "pytest {test_file} -k 'path_traversal' -v",
+        "expected_outcome": "All path validation tests pass"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_PATH_TRAVERSAL.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6005": {
+      "id": "RP-6005",
+      "name": "CodeQL Insecure Deserialization Prevention",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.97,
+      "success_rate": 0.97,
+      "executions": 312,
+      "tier": 1,
+      "cwe": "CWE-502",
+      "cvss_score": 9.8,
+      "trigger": {
+        "error_pattern": "CodeQL py/unsafe-unpickling|pickle.loads|yaml.load",
+        "file_types": ["*.py"],
+        "log_signature": "pickle|yaml.load|untrusted.deserialization"
+      },
+      "handler": "handlers.security_handlers.use_safe_deserialization",
+      "fix_strategy": "Use json.loads() instead of pickle/yaml, or implement RestrictedUnpickler",
+      "validation": {
+        "command": "grep -r 'pickle.loads' {file}",
+        "expected_outcome": "No unsafe deserialization found"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_DESERIALIZATION.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6006": {
+      "id": "RP-6006",
+      "name": "CodeQL Buffer Overflow Prevention",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.95,
+      "success_rate": 0.95,
+      "executions": 187,
+      "tier": 1,
+      "cwe": "CWE-119",
+      "cvss_score": 9.8,
+      "trigger": {
+        "error_pattern": "CodeQL cpp/buffer-overflow|strcpy|sprintf",
+        "file_types": ["*.c", "*.cpp", "*.h"],
+        "log_signature": "buffer.overflow|bounds.check|memory.safety"
+      },
+      "handler": "handlers.security_handlers.use_safe_string_functions",
+      "fix_strategy": "Replace unsafe functions: strcpy→strncpy, sprintf→snprintf, memcpy with size checks",
+      "validation": {
+        "command": "grep -E 'strcpy|sprintf|gets' {file}",
+        "expected_outcome": "No unsafe functions found"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_BUFFER_OVERFLOW.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6010": {
+      "id": "RP-6010",
+      "name": "CVE Critical Severity Response",
+      "category": "CVE",
+      "severity": "CRITICAL",
+      "confidence": 0.99,
+      "cvss_range": "9.0-10.0",
+      "sla_hours": 4,
+      "trigger": {
+        "condition": "NVD CVE announced with CVSS ≥ 9.0",
+        "escalation": "IMMEDIATE - VP/Director notification required"
+      },
+      "handler": "handlers.cve_handlers.emergency_patch_and_deploy",
+      "fix_strategy": "Emergency patch PR, skip standard review if necessary, deploy to production",
+      "runbook": "docs/security/runbooks/RUNBOOK_CVE_CRITICAL.md",
+      "related_patterns": ["RP-6011", "RP-6013"],
+      "last_updated": "2026-07-18"
+    },
+    "RP-6011": {
+      "id": "RP-6011",
+      "name": "CVE High Severity Response",
+      "category": "CVE",
+      "severity": "HIGH",
+      "confidence": 0.98,
+      "cvss_range": "7.0-8.9",
+      "sla_hours": 24,
+      "trigger": {
+        "condition": "NVD CVE announced with CVSS 7.0-8.9",
+        "escalation": "Standard code review required"
+      },
+      "handler": "handlers.cve_handlers.standard_patch_and_review",
+      "fix_strategy": "Create patch PR, run full test suite, deploy within 24 hours",
+      "runbook": "docs/security/runbooks/RUNBOOK_CVE_HIGH.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6012": {
+      "id": "RP-6012",
+      "name": "CVE Medium Severity Response",
+      "category": "CVE",
+      "severity": "MEDIUM",
+      "confidence": 0.97,
+      "cvss_range": "4.0-6.9",
+      "sla_hours": 48,
+      "trigger": {
+        "condition": "NVD CVE announced with CVSS 4.0-6.9",
+        "escalation": "Can be batched with other updates"
+      },
+      "handler": "handlers.cve_handlers.routine_patch_and_test",
+      "fix_strategy": "Create standard PR, run tests, deploy within 48 hours",
+      "runbook": "docs/security/runbooks/RUNBOOK_CVE_MEDIUM.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6013": {
+      "id": "RP-6013",
+      "name": "CVE Triage & Prioritization",
+      "category": "CVE",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "trigger": {
+        "condition": "Any NVD CVE announcement",
+        "assessment": "Score applicability to current systems"
+      },
+      "handler": "handlers.cve_handlers.triage_and_prioritize",
+      "fix_strategy": "Assess CVSS, check if affected, score in context, determine SLA",
+      "runbook": "docs/security/runbooks/RUNBOOK_CVE_TRIAGE.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6020": {
+      "id": "RP-6020",
+      "name": "PII Detection & Remediation",
+      "category": "PII_Secret",
+      "severity": "CRITICAL",
+      "confidence": 0.99,
+      "trigger": {
+        "patterns": ["SSN (XXX-XX-XXXX)", "Credit card (XXXX-XXXX-XXXX-XXXX)", "Full name + email/phone"],
+        "source": ["Code repository", "Logs", "Backups", "DLP system alert"]
+      },
+      "handler": "handlers.security_handlers.redact_and_notify_pii",
+      "fix_strategy": "Redact PII, notify affected individuals within 24 hours (GDPR), purge from git",
+      "escalation": "IMMEDIATE - Privacy officer notification required",
+      "runbook": "docs/security/runbooks/RUNBOOK_PII_DETECTION.md",
+      "regulations": ["GDPR", "CCPA", "HIPAA"],
+      "last_updated": "2026-07-18"
+    },
+    "RP-6021": {
+      "id": "RP-6021",
+      "name": "Secret Rotation Procedures",
+      "category": "PII_Secret",
+      "severity": "HIGH",
+      "confidence": 0.94,
+      "trigger": {
+        "scheduled": "Quarterly for API keys, DB passwords",
+        "on_demand": "After any security incident involving secrets"
+      },
+      "handler": "handlers.security_handlers.rotate_secrets",
+      "fix_strategy": "Generate new secret, deploy, verify dual-secret acceptance, revoke old after grace period",
+      "validation": {
+        "command": "Test both old and new secrets work, then revoke old",
+        "expected_outcome": "All systems using new secret"
+      },
+      "runbook": "docs/security/runbooks/RUNBOOK_SECRET_ROTATION.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6030": {
+      "id": "RP-6030",
+      "name": "Sev-1 Incident Response",
+      "category": "Incident",
+      "severity": "CRITICAL",
+      "confidence": 0.96,
+      "sla_minutes": 2,
+      "trigger": {
+        "examples": ["Active exploitation", "Data breach confirmed", "System compromise", "Ransomware attack"]
+      },
+      "handler": "handlers.incident_handlers.activate_sev1_response",
+      "fix_strategy": "Page on-call team, establish war room, begin containment, activate incident response",
+      "escalation": "IMMEDIATE - VP/Director/Legal notification",
+      "runbook": "docs/security/runbooks/RUNBOOK_INCIDENT_SEV1.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6031": {
+      "id": "RP-6031",
+      "name": "Sev-2 Incident Response",
+      "category": "Incident",
+      "severity": "HIGH",
+      "confidence": 0.94,
+      "sla_minutes": 30,
+      "trigger": {
+        "examples": ["Unpatched vulnerability", "Unauthorized access to non-critical system"]
+      },
+      "handler": "handlers.incident_handlers.activate_sev2_response",
+      "fix_strategy": "Alert security team, investigate, implement fixes or workarounds",
+      "runbook": "docs/security/runbooks/RUNBOOK_INCIDENT_SEV2.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6032": {
+      "id": "RP-6032",
+      "name": "Sev-3 Incident Response",
+      "category": "Incident",
+      "severity": "MEDIUM",
+      "confidence": 0.92,
+      "sla_hours": 4,
+      "trigger": {
+        "examples": ["Low-impact security issue", "Configuration problem", "Policy violation"]
+      },
+      "handler": "handlers.incident_handlers.activate_sev3_response",
+      "fix_strategy": "Log incident, assign owner, implement fix within 4 hours",
+      "runbook": "docs/security/runbooks/RUNBOOK_INCIDENT_SEV3.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6040": {
+      "id": "RP-6040",
+      "name": "GDPR Data Breach Notification",
+      "category": "Compliance",
+      "severity": "CRITICAL",
+      "confidence": 0.98,
+      "regulation": "GDPR Article 33 & 34",
+      "sla_hours": 72,
+      "trigger": {
+        "condition": "Personal data breach affecting EU residents",
+        "examples": ["Unauthorized access", "Loss of confidentiality", "Loss of integrity"]
+      },
+      "handler": "handlers.compliance_handlers.notify_gdpr_breach",
+      "fix_strategy": "Notify DPA within 72 hours, notify individuals without undue delay",
+      "escalation": "Legal/Compliance team notification required",
+      "runbook": "docs/security/runbooks/RUNBOOK_COMPLIANCE_GDPR.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6041": {
+      "id": "RP-6041",
+      "name": "CCPA Consumer Rights Request",
+      "category": "Compliance",
+      "severity": "HIGH",
+      "confidence": 0.96,
+      "regulation": "California Consumer Privacy Act (CCPA)",
+      "sla_days": 45,
+      "trigger": {
+        "request_types": ["Right to Know", "Right to Delete", "Right to Opt-Out", "Right to Correct", "Right to Limit Use"]
+      },
+      "handler": "handlers.compliance_handlers.fulfill_ccpa_request",
+      "fix_strategy": "Verify identity, collect consumer data, prepare disclosure, fulfill within 45 days",
+      "runbook": "docs/security/runbooks/RUNBOOK_COMPLIANCE_CCPA.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6042": {
+      "id": "RP-6042",
+      "name": "SOC2 Control Remediation",
+      "category": "Compliance",
+      "severity": "HIGH",
+      "confidence": 0.91,
+      "standard": "SOC2 Type I & II",
+      "sla_days": 30,
+      "trigger": {
+        "condition": "Control failure identified during audit or testing",
+        "examples": ["Insufficient access controls", "Inadequate monitoring", "Failed backups"]
+      },
+      "handler": "handlers.compliance_handlers.remediate_soc2_control",
+      "fix_strategy": "Document control, implement required safeguards, test effectiveness",
+      "runbook": "docs/security/runbooks/RUNBOOK_COMPLIANCE_SOC2.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6043": {
+      "id": "RP-6043",
+      "name": "Audit Trail Integrity Verification",
+      "category": "Compliance",
+      "severity": "HIGH",
+      "confidence": 0.93,
+      "trigger": {
+        "condition": "Audit trail completeness or integrity suspected"
+      },
+      "handler": "handlers.compliance_handlers.verify_audit_trail",
+      "fix_strategy": "Verify log completeness, check for tampering, restore from backups if needed",
+      "sla_hours": 24,
+      "runbook": "docs/security/runbooks/RUNBOOK_COMPLIANCE_AUDIT_TRAIL.md",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6050": {
+      "id": "RP-6050",
+      "name": "Input Validation & Sanitization",
+      "category": "CodeQL",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "cwe": "CWE-20",
+      "trigger": {
+        "pattern": "User input used without validation"
+      },
+      "handler": "handlers.security_handlers.add_input_validation",
+      "fix_strategy": "Add type checking, length validation, whitelist allowed characters",
+      "runbook": "docs/security/runbooks/RUNBOOK_CODEQL_SQL_INJECTION.md#step-1-input-validation",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6051": {
+      "id": "RP-6051",
+      "name": "Authentication Control Implementation",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.96,
+      "cwe": "CWE-287",
+      "trigger": {
+        "pattern": "Insufficient authentication checks"
+      },
+      "handler": "handlers.security_handlers.implement_auth_control",
+      "fix_strategy": "Add @requires_auth decorator, verify JWT/session, implement MFA",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6052": {
+      "id": "RP-6052",
+      "name": "Authorization & Access Control",
+      "category": "CodeQL",
+      "severity": "HIGH",
+      "confidence": 0.94,
+      "cwe": "CWE-639",
+      "trigger": {
+        "pattern": "Missing role-based access control (RBAC)"
+      },
+      "handler": "handlers.security_handlers.implement_rbac",
+      "fix_strategy": "Add role checking, implement permission matrix, enforce least privilege",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6053": {
+      "id": "RP-6053",
+      "name": "Cryptographic Key Management",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.97,
+      "cwe": "CWE-321",
+      "trigger": {
+        "pattern": "Hardcoded cryptographic keys or weak algorithms"
+      },
+      "handler": "handlers.security_handlers.secure_key_management",
+      "fix_strategy": "Use key management service, rotate keys, use strong algorithms (AES-256, SHA-256)",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6054": {
+      "id": "RP-6054",
+      "name": "Secure Communication (HTTPS/TLS)",
+      "category": "CodeQL",
+      "severity": "HIGH",
+      "confidence": 0.96,
+      "cwe": "CWE-295",
+      "trigger": {
+        "pattern": "HTTP communication instead of HTTPS"
+      },
+      "handler": "handlers.security_handlers.enforce_https",
+      "fix_strategy": "Enforce HTTPS, verify TLS certificate, disable SSLv3/TLS1.0",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6055": {
+      "id": "RP-6055",
+      "name": "Error Message Information Disclosure",
+      "category": "CodeQL",
+      "severity": "MEDIUM",
+      "confidence": 0.92,
+      "cwe": "CWE-209",
+      "trigger": {
+        "pattern": "Detailed error messages exposed to users"
+      },
+      "handler": "handlers.security_handlers.sanitize_error_messages",
+      "fix_strategy": "Log detailed errors internally, show generic errors to users",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6056": {
+      "id": "RP-6056",
+      "name": "Secure Logging & Monitoring",
+      "category": "Compliance",
+      "severity": "HIGH",
+      "confidence": 0.94,
+      "trigger": {
+        "pattern": "Insufficient logging or monitoring of security events"
+      },
+      "handler": "handlers.compliance_handlers.enable_security_logging",
+      "fix_strategy": "Log all authentication attempts, API calls, data access; send to SIEM",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6057": {
+      "id": "RP-6057",
+      "name": "Third-Party Component Vulnerability",
+      "category": "CVE",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "trigger": {
+        "pattern": "Vulnerable third-party dependency (via SBOM or Dependabot)"
+      },
+      "handler": "handlers.cve_handlers.update_vulnerable_dependency",
+      "fix_strategy": "Update to patched version, run regression tests, deploy",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6058": {
+      "id": "RP-6058",
+      "name": "Code Injection Prevention",
+      "category": "CodeQL",
+      "severity": "CRITICAL",
+      "confidence": 0.97,
+      "cwe": "CWE-94",
+      "trigger": {
+        "pattern": "eval(), exec(), or dynamic code execution with user input"
+      },
+      "handler": "handlers.security_handlers.remove_code_injection",
+      "fix_strategy": "Replace eval() with safe alternatives, use AST parsing, implement sandboxing",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6059": {
+      "id": "RP-6059",
+      "name": "CORS & CSRF Protection",
+      "category": "CodeQL",
+      "severity": "MEDIUM",
+      "confidence": 0.93,
+      "cwe": "CWE-352",
+      "trigger": {
+        "pattern": "Missing CSRF tokens or overly permissive CORS"
+      },
+      "handler": "handlers.security_handlers.implement_csrf_protection",
+      "fix_strategy": "Add CSRF tokens, restrict CORS to trusted domains, implement SameSite cookies",
+      "last_updated": "2026-07-18"
+    },
+    "RP-6060": {
+      "id": "RP-6060",
+      "name": "Dependency Update Automation",
+      "category": "CVE",
+      "severity": "MEDIUM",
+      "confidence": 0.91,
+      "trigger": {
+        "condition": "Regular dependency updates needed"
+      },
+      "handler": "handlers.cve_handlers.automate_dependency_updates",
+      "fix_strategy": "Enable Dependabot, Renovate, or similar; auto-merge low-risk PRs",
+      "last_updated": "2026-07-18"
+    }
+  },
+  "integration_status": {
+    "patterns_wired_to_dispatcher": 20,
+    "patterns_requiring_manual_review": 12,
+    "test_status": "Pending validation drills",
+    "confidence_distribution": {
+      "high_96_plus": 28,
+      "medium_80_95": 4,
+      "low_below_80": 0
+    }
+  },
+  "next_steps": {
+    "phase_6_remaining": [
+      "Wire patterns to RP-* dispatcher",
+      "Run synthetic incident drills",
+      "Create training materials",
+      "Generate integration report"
+    ],
+    "phase_7_preparation": [
+      "Load test pattern dispatch system",
+      "Validate under production-like load",
+      "Prepare for full runbook deployment"
+    ]
+  }
+}

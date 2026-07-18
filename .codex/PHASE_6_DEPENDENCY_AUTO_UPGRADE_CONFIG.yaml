@@ -1,0 +1,471 @@
+version: "1.0"
+configuration_name: "Phase 6 Dependency Auto-Upgrade SLA Policy"
+effective_date: "2026-07-18"
+
+---
+
+# SLA-Based Auto-Upgrade Strategy
+
+## Overview
+This configuration defines Service Level Agreements (SLAs) for automated dependency updates
+across all ecosystems. Each severity level has specific auto-merge timelines and conditions.
+
+---
+
+## SLA Definitions
+
+### Critical CVE Updates
+**SLA Window**: 4 hours
+**Auto-Merge**: YES (if CI passes)
+**Manual Review**: Required AFTER merge (for post-incident analysis)
+
+**Conditions**:
+1. Dependabot creates PR with CVE details in title
+2. CI (tests, linting, security) must pass (required)
+3. No merge conflicts
+4. Automatic merge triggers after 4 hours if conditions met
+5. Slack/email notification to security team before auto-merge
+
+**Example**: cryptography private key extraction (CRITICAL)
+```
+Title: chore(deps): upgrade cryptography to 48.0.1 [PYSEC-2026-XXXXX Critical]
+Labels: security-critical, critical-cve, dependencies
+→ Auto-merge after 4h if CI ✓
+```
+
+---
+
+### High CVE Updates
+**SLA Window**: 24 hours
+**Auto-Merge**: YES (if CI passes + no blocking comments)
+**Manual Review**: Optional, auto-merge proceeds after 24h even without review
+
+**Conditions**:
+1. Dependabot creates PR with CVE details
+2. CI (tests, linting, security) must pass (required)
+3. No merge conflicts
+4. If code review comments present: auto-merge delayed until comments resolved OR 24h expires
+5. Auto-merge triggers after 24 hours
+6. Slack notification to security team at 12h mark
+
+**Example**: JWT signature bypass (HIGH)
+```
+Title: chore(deps): upgrade PyJWT to 2.13.0 [PYSEC-2026-120 High]
+Labels: security-high, dependencies
+→ Auto-merge after 24h if CI ✓
+```
+
+---
+
+### Medium Severity Updates
+**SLA Window**: 48 hours
+**Auto-Merge**: NO (manual approval required)
+**Manual Review**: Required
+
+**Conditions**:
+1. Dependabot creates PR
+2. CI must pass (required)
+3. Code review + approval required (PR requires min 1 reviewer)
+4. After approval, auto-merge possible
+5. If no review after 48h: auto-merge allowed without approval (to prevent stale CVEs)
+6. Label: `dependencies`, `security-medium`, package tier
+
+**Example**: pip privilege escalation vulnerability
+```
+Title: chore(deps): upgrade pip to 26.1.2 [PYSEC-2026-196 Medium]
+Labels: security-medium, dependencies, python
+→ Requires review + approval (auto-merge after 48h if unreviewed)
+```
+
+---
+
+### Low Severity / Informational Updates
+**SLA Window**: 1 week (no hard deadline)
+**Auto-Merge**: NO
+**Manual Review**: Optional
+
+**Conditions**:
+1. Dependabot creates PR
+2. CI must pass
+3. Manual review recommended but not required
+4. Can be merged at developer discretion
+5. Batch updates by dependency tier for efficiency
+
+**Example**: Certificate store update (LOW)
+```
+Title: chore(deps): update certifi to 2024.7.4 [PYSEC-2024-230 Low]
+Labels: dependencies, low-priority
+→ Merge when convenient (no deadline)
+```
+
+---
+
+# Dependabot Configuration Enhancements
+
+## Python (pip)
+
+```yaml
+- package-ecosystem: "pip"
+  directory: "/"
+  schedule:
+    interval: "daily"          # Check daily for faster CVE response
+    time: "08:00"
+    timezone: "UTC"
+  
+  # SLA-based auto-merge rules
+  pull-request-branch-name:
+    separator: "/"
+  
+  labels:
+    - "dependencies"
+    - "python"
+  
+  reviewers:
+    - "security-team"          # Required reviewer
+  
+  assignees:
+    - "dependabot"
+  
+  # Grouping strategy: group by severity tier
+  groups:
+    critical-security:
+      patterns:
+        - "cryptography*"
+        - "PyJWT*"
+        - "wheel*"
+      update-types:
+        - "patch"
+        - "minor"
+      allow-post-release: false
+    
+    high-security:
+      patterns:
+        - "jinja2*"
+        - "urllib3*"
+        - "requests*"
+        - "pyopenssl*"
+      update-types:
+        - "patch"
+        - "minor"
+      allow-post-release: false
+    
+    medium-security:
+      patterns:
+        - "pip*"
+        - "setuptools*"
+        - "twisted*"
+      update-types:
+        - "patch"
+        - "minor"
+      allow-post-release: false
+    
+    framework-updates:
+      patterns:
+        - "fastapi*"
+        - "starlette*"
+        - "pydantic*"
+        - "jinja2*"
+      update-types:
+        - "patch"
+        - "minor"
+      allow-post-release: false
+    
+    utility-updates:
+      patterns:
+        - "pytest*"
+        - "black*"
+        - "ruff*"
+        - "mypy*"
+      update-types:
+        - "patch"
+        - "minor"
+    
+    torch-updates:
+      patterns:
+        - "torch*"
+      update-types:
+        - "minor"
+      allow-post-release: false
+  
+  commit-message:
+    prefix: "deps"
+    prefix-scope: "python"
+    include: "scope"
+  
+  ignore:
+    - dependency-name: "nbconvert"
+      versions:
+        - ">=7.0.0"
+    - dependency-name: "torch"
+      versions:
+        - ">=2.5.0"      # Require manual review for major torch upgrades
+  
+  open-pull-requests-limit: 10   # Increase limit to handle security urgency
+```
+
+## npm (Root, cognitive_app, copilot/extension)
+
+```yaml
+- package-ecosystem: "npm"
+  directory: "/"  # Root package.json
+  schedule:
+    interval: "daily"
+    time: "08:00"
+  
+  groups:
+    critical-security:
+      patterns: []   # No npm packages in critical tier currently
+    
+    medium-security:
+      patterns:
+        - "express*"
+        - "morgan*"
+    
+    utility-updates:
+      patterns: ["*"]
+      exclude-patterns:
+        - "express*"
+        - "morgan*"
+  
+  labels:
+    - "dependencies"
+    - "javascript"
+  
+  open-pull-requests-limit: 5
+
+- package-ecosystem: "npm"
+  directory: "/cognitive_app"
+  schedule:
+    interval: "daily"
+    time: "08:00"
+  
+  groups:
+    medium-security:
+      patterns:
+        - "ajv*"
+        - "brace-expansion*"
+    
+    utility-updates:
+      patterns: ["*"]
+      exclude-patterns:
+        - "ajv*"
+        - "brace-expansion*"
+  
+  labels:
+    - "dependencies"
+    - "javascript"
+    - "cognitive-app"
+  
+  open-pull-requests-limit: 5
+
+- package-ecosystem: "npm"
+  directory: "/copilot/extension"
+  schedule:
+    interval: "daily"
+    time: "08:00"
+  
+  groups:
+    medium-security:
+      patterns:
+        - "morgan*"
+    
+    utility-updates:
+      patterns: ["*"]
+      exclude-patterns:
+        - "morgan*"
+  
+  labels:
+    - "dependencies"
+    - "javascript"
+    - "copilot-extension"
+  
+  open-pull-requests-limit: 5
+```
+
+## Cargo (Rust)
+
+```yaml
+- package-ecosystem: "cargo"
+  directory: "/"
+  schedule:
+    interval: "weekly"
+    day: "monday"
+    time: "08:00"
+  
+  groups:
+    security-updates:
+      patterns: ["*"]
+      update-types:
+        - "patch"
+        - "minor"
+  
+  labels:
+    - "dependencies"
+    - "rust"
+  
+  open-pull-requests-limit: 5
+```
+
+---
+
+# Auto-Merge Workflow Configuration
+
+## Critical CVE Auto-Merge (4 hours)
+
+```yaml
+# GitHub Actions workflow to implement 4-hour SLA
+name: "Auto-Merge Critical CVE Updates"
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "requirements*.txt"
+      - "pyproject.toml"
+      - "package.json"
+      - "Cargo.toml"
+
+jobs:
+  check-critical-cve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if Critical CVE PR
+        id: check-cve
+        run: |
+          if [[ "${{ github.event.pull_request.title }}" == *"Critical"* ]] || \
+             [[ "${{ github.event.pull_request.title }}" == *"CRITICAL"* ]]; then
+            echo "is_critical=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_critical=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Wait for CI to Pass
+        if: steps.check-cve.outputs.is_critical == 'true'
+        run: |
+          # Wait for required checks to pass
+          # This will be monitored by GitHub Actions status checks
+          echo "Waiting for CI to pass (4-hour SLA window)..."
+      
+      - name: Notify Security Team
+        if: steps.check-cve.outputs.is_critical == 'true'
+        run: |
+          echo "🚨 CRITICAL CVE PR opened, will auto-merge in 4 hours if CI passes"
+          # Send Slack/email notification
+```
+
+## High CVE Auto-Merge (24 hours)
+
+```yaml
+name: "Auto-Merge High CVE Updates"
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Hourly check
+
+jobs:
+  check-high-cve-sla:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find High CVE PRs
+        run: |
+          # Query open PRs labeled with 'security-high'
+          # Check if created >24h ago and CI is passing
+          # Auto-merge if conditions met
+          
+          echo "Checking for High CVE PRs eligible for auto-merge..."
+      
+      - name: Auto-Merge if Eligible
+        run: |
+          # Use GitHub CLI to auto-merge:
+          # gh pr merge <pr> --auto --squash \
+          #   --delete-branch \
+          #   --body "Auto-merged per High CVE SLA (24h window)"
+```
+
+---
+
+# Monitoring & Reporting
+
+## SLA Compliance Dashboard
+
+**Location**: `.github/workflows/dependency-sla-monitor.yml`
+
+**Metrics Tracked**:
+1. Critical CVE: % merged within 4 hours (target: 100%)
+2. High CVE: % merged within 24 hours (target: 95%)
+3. Medium CVE: % merged within 48 hours (target: 90%)
+4. Average time-to-merge by severity
+5. Failed CI reasons
+
+**Reporting Frequency**: Daily digest in #security channel (or equivalent)
+
+---
+
+# Testing SLA Behavior
+
+## Synthetic Test Scenario
+
+To verify SLA automation works correctly, execute:
+
+```bash
+# 1. Create synthetic critical CVE update
+git checkout -b test/critical-cve-sla
+echo "cryptography==48.0.1  # Critical update for testing" >> requirements.txt
+git commit -am "test: synthetic critical CVE [PYSEC-2026-TEST]"
+git push origin test/critical-cve-sla
+
+# 2. Create PR with critical label
+# Use GitHub API or UI to add 'security-critical' label
+
+# 3. Verify:
+# - PR created ✓
+# - CI runs ✓
+# - Dependabot commentary present ✓
+# - SLA timer started ✓
+# - Auto-merge scheduled after 4h ✓
+
+# 4. Check logs
+gh pr view <pr-number> --json comments,statusCheckRollup
+
+# 5. Verify auto-merge was executed
+# (After 4 hours or manual test trigger)
+```
+
+---
+
+# Exemptions & Emergency Procedures
+
+## Exemption Cases
+
+1. **Breaking Changes Detected**: SLA paused until compatibility verified
+2. **Test Failure**: SLA paused until root cause identified
+3. **Merge Conflicts**: SLA extends by 24h to allow manual conflict resolution
+4. **Integration Issues**: Security team can request manual review pause
+
+## Emergency Rollback
+
+If auto-merged update causes production issues:
+
+```bash
+# 1. Revert PR immediately
+gh pr revert <pr-number>
+
+# 2. File incident report
+# 3. Add to breaking-changes ignore list for 30 days
+# 4. Notify Dependabot to hold updates for affected package
+```
+
+---
+
+# Configuration Maintenance
+
+**Review Cycle**: Monthly (1st of every month)
+
+**Changes Tracked**:
+1. New high-severity CVE patterns (add to groups)
+2. SLA compliance metrics (adjust thresholds)
+3. False positive auto-merges (add to exemptions)
+4. Ecosystem-specific issues (refine grouping)
+
+**Last Updated**: 2026-07-18  
+**Next Review**: 2026-08-18

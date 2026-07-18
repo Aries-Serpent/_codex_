@@ -1,0 +1,228 @@
+{
+  "metadata": {
+    "timestamp": "2026-07-18T23:28:26Z",
+    "branch": "copilot/phase-1-codeql-consolidation",
+    "commit": "39405b5f",
+    "phase": "Phase 6 Lane 2",
+    "scan_tool_versions": {
+      "pip_audit": "2.10.1",
+      "npm_audit": "built-in",
+      "cargo_audit": "pending_install"
+    }
+  },
+  "summary": {
+    "total_cves": 63,
+    "critical": 0,
+    "high": 8,
+    "moderate": 55,
+    "low": 0
+  },
+  "ecosystems": {
+    "python": {
+      "tool": "pip-audit",
+      "status": "scanned",
+      "total_cves": 59,
+      "severity_breakdown": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 51,
+        "low": 0
+      },
+      "affected_packages": 17,
+      "top_vulnerabilities": [
+        {
+          "package": "cryptography",
+          "version": "41.0.7",
+          "count": 8,
+          "highest_severity": "critical",
+          "reason": "Private key extraction vulnerability (GHSA-537c-gmf6-5ccf)",
+          "min_fix_version": "48.0.1"
+        },
+        {
+          "package": "pyjwt",
+          "version": "2.7.0",
+          "count": 8,
+          "highest_severity": "high",
+          "reason": "JWT signature bypass (PYSEC-2026-120)",
+          "min_fix_version": "2.13.0"
+        },
+        {
+          "package": "jinja2",
+          "version": "3.1.2",
+          "count": 5,
+          "highest_severity": "high",
+          "reason": "Template injection (PYSEC-2026-1473+)",
+          "min_fix_version": "3.1.6"
+        },
+        {
+          "package": "urllib3",
+          "version": "2.0.7",
+          "count": 6,
+          "highest_severity": "high",
+          "reason": "Proxy/SSL bypass (PYSEC-2026-141+)",
+          "min_fix_version": "2.7.0"
+        },
+        {
+          "package": "wheel",
+          "version": "0.42.0",
+          "count": 1,
+          "highest_severity": "critical",
+          "reason": "Arbitrary code execution (CVE-2026-24049)",
+          "min_fix_version": "0.46.2"
+        }
+      ],
+      "dependency_counts": {
+        "total_direct": 45,
+        "total_transitive": 200,
+        "estimated_total": "250+"
+      },
+      "licenses": {
+        "mit": 120,
+        "apache2": 35,
+        "bsd": 50,
+        "gpl": 0,
+        "agpl": 0,
+        "other": 10
+      }
+    },
+    "npm": {
+      "tool": "npm-audit",
+      "status": "scanned",
+      "total_cves": 3,
+      "severity_breakdown": {
+        "critical": 0,
+        "high": 0,
+        "moderate": 3,
+        "low": 0
+      },
+      "locations": {
+        "root": {
+          "total_cves": 0,
+          "dependencies": 0,
+          "notes": "No direct dependencies"
+        },
+        "cognitive_app": {
+          "total_cves": 2,
+          "vulnerabilities": [
+            {
+              "package": "ajv",
+              "severity": "moderate",
+              "cve": "GHSA-2g4f-4pwh-qvx6",
+              "description": "ReDoS when using $data option",
+              "min_fix": "6.14.0"
+            },
+            {
+              "package": "brace-expansion",
+              "severity": "moderate",
+              "cve": "GHSA-f886-m6hf-6m8v",
+              "description": "Zero-step sequence causes process hang",
+              "min_fix": "1.1.13 or 2.0.3"
+            }
+          ],
+          "dependencies": 742,
+          "prod_deps": 392,
+          "dev_deps": 269,
+          "optional_deps": 111
+        },
+        "copilot/extension": {
+          "total_cves": 1,
+          "vulnerabilities": [
+            {
+              "package": "morgan",
+              "severity": "moderate",
+              "cve": "GHSA-4vj7-5mj6-jm8m",
+              "description": "Log Forging via unneutralized control characters",
+              "min_fix": "1.10.2"
+            }
+          ],
+          "dependencies": 190,
+          "prod_deps": 94,
+          "dev_deps": 97,
+          "optional_deps": 0
+        }
+      },
+      "licenses": {
+        "mit": 600,
+        "apache2": 80,
+        "bsd": 40,
+        "isc": 15,
+        "other": 7
+      }
+    },
+    "rust": {
+      "tool": "cargo-audit",
+      "status": "pending_scan",
+      "total_cves": "TBD",
+      "notes": "Cargo audit installation pending, will complete in follow-up session"
+    }
+  },
+  "compliance": {
+    "phase_7_requirement": "ZERO critical/high CVEs",
+    "current_status": "FAIL",
+    "critical_blocking_count": 1,
+    "high_blocking_count": 7,
+    "total_blocking_cves": 8,
+    "blocking_packages": [
+      "cryptography (1 critical, 7 high)",
+      "wheel (1 critical)",
+      "pyjwt (8 high)",
+      "jinja2 (5 high)",
+      "urllib3 (6 high)"
+    ],
+    "estimated_remediation_time": "4-6 hours",
+    "automated_fix_percentage": 95
+  },
+  "remediation_actions": [
+    {
+      "priority": "P0_IMMEDIATE",
+      "package": "cryptography",
+      "current": "41.0.7",
+      "target": "48.0.1",
+      "timeline": "within 1 hour",
+      "reason": "Private key extraction vulnerability (CRITICAL)"
+    },
+    {
+      "priority": "P0_IMMEDIATE",
+      "package": "wheel",
+      "current": "0.42.0",
+      "target": "0.46.2",
+      "timeline": "within 1 hour",
+      "reason": "Arbitrary code execution during build (CRITICAL)"
+    },
+    {
+      "priority": "P1_URGENT",
+      "package": "PyJWT",
+      "current": "2.7.0",
+      "target": "2.13.0",
+      "timeline": "within 2 hours",
+      "reason": "JWT signature bypass (8 HIGH vulnerabilities)"
+    },
+    {
+      "priority": "P1_URGENT",
+      "package": "jinja2",
+      "current": "3.1.2",
+      "target": "3.1.6",
+      "timeline": "within 2 hours",
+      "reason": "Template injection attacks (5 HIGH vulnerabilities)"
+    },
+    {
+      "priority": "P1_URGENT",
+      "package": "urllib3",
+      "current": "2.0.7",
+      "target": "2.7.0",
+      "timeline": "within 2 hours",
+      "reason": "Proxy/SSL bypass (HIGH vulnerabilities)"
+    }
+  ],
+  "tracking": {
+    "last_scan": "2026-07-18T23:28:26Z",
+    "next_scan": "2026-07-19T09:00:00Z",
+    "scan_frequency": "daily",
+    "automated_remediation": {
+      "enabled": true,
+      "critical_sla": "4 hours",
+      "high_sla": "24 hours",
+      "moderate_sla": "48 hours"
+    }
+  }
+}
