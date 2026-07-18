@@ -1,0 +1,681 @@
+{
+  "timestamp": "2026-07-18T20:22:52.515555",
+  "core_index": {
+    "timestamp": "2026-07-18T20:22:52.234194",
+    "index_profile": "core",
+    "total_queries": 20,
+    "queries_tested": 20,
+    "top_3_accuracy": 95.0,
+    "failing_queries": [
+      "What are the 3 profiles in this system?"
+    ],
+    "detailed_results": [
+      {
+        "query": "What is the Codebase Agency Policy?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "CODEBASE_AGENCY_POLICY",
+          "mandatory",
+          "AI agents"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "How to deploy profiles in the system?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "deploy",
+          "profile",
+          "implementation"
+        ],
+        "retrieved_count": 2,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What are the 3 profiles in this system?",
+        "found": false,
+        "rank": null,
+        "expected_keywords": [
+          "profile",
+          "core",
+          "runtime"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md"
+        ]
+      },
+      {
+        "query": "How does RAG work?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "RAG",
+          "retrieval",
+          "augmented",
+          "generation"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What is the agent registry structure?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "agent",
+          "registry",
+          "structure"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md"
+        ]
+      },
+      {
+        "query": "What are the mandatory pre-session requirements?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "mandatory",
+          "pre-session",
+          "requirements"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "How to handle CI failures?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "CI",
+          "failure",
+          "handle"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What is the emotion-safe urgency guardrail?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "emotion",
+          "safe",
+          "urgency",
+          "guardrail"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "How to maintain code quality standards?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "code",
+          "quality",
+          "standard"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What are the self-review requirements?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "self",
+          "review",
+          "requirement"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "How to use the cognitive brain?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "cognitive",
+          "brain",
+          "use"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What is the AfterMath PDA loop?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "AfterMath",
+          "PDA",
+          "loop"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "How to manage repository variables?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "repository",
+          "variable",
+          "manage"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What are the agentic repo state variables?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "AGENTIC_REPO_STATE",
+          "variable",
+          "auth"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md"
+        ]
+      },
+      {
+        "query": "How to handle merge conflicts?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "merge",
+          "conflict",
+          "handle"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What is the WEC workflow execution checklist?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "WEC",
+          "workflow",
+          "execution",
+          "checklist"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/AGENTIC_REPO_STATE.md"
+        ]
+      },
+      {
+        "query": "How to implement comprehensive issue resolution?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "comprehensive",
+          "issue",
+          "resolution"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What are the documentation standards?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "documentation",
+          "standard"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "How to run integration tests?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "integration",
+          "test",
+          "run"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      },
+      {
+        "query": "What is the non-deferral mandate?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "non-deferral",
+          "mandate",
+          "CI"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".codex/AGENTIC_REPO_STATE.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md",
+          ".codex/CODEBASE_AGENCY_POLICY.md"
+        ]
+      }
+    ]
+  },
+  "runtime_index": {
+    "timestamp": "2026-07-18T20:22:52.264483",
+    "index_profile": "runtime",
+    "total_queries": 20,
+    "queries_tested": 20,
+    "top_3_accuracy": 75.0,
+    "failing_queries": [
+      "What are the 3 profiles in this system?",
+      "How does RAG work?",
+      "What are the self-review requirements?",
+      "What is the AfterMath PDA loop?",
+      "What are the agentic repo state variables?"
+    ],
+    "detailed_results": [
+      {
+        "query": "What is the Codebase Agency Policy?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "CODEBASE_AGENCY_POLICY",
+          "mandatory",
+          "AI agents"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/EmotionSafeUrgencyGuardrails.md",
+          ".github/docs/CTEP_Quick_Reference.md",
+          ".github/docs/Copilot_Task_Execution_Protocol.md"
+        ]
+      },
+      {
+        "query": "How to deploy profiles in the system?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "deploy",
+          "profile",
+          "implementation"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/CRITICAL_ISSUE_ANALYSIS_Copilot_Agents_Autonomous_Deployment.md",
+          ".github/docs/Implementation_LLMAutoFixHook.md",
+          ".github/docs/Security_Session_Copilot.md"
+        ]
+      },
+      {
+        "query": "What are the 3 profiles in this system?",
+        "found": false,
+        "rank": null,
+        "expected_keywords": [
+          "profile",
+          "core",
+          "runtime"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/ARCHIVE_CONFIG_ADR.md",
+          ".github/docs/Remaining_Implementation_Plan_Copilot.md",
+          ".github/docs/PR_v1_3_0_Consolidation_Submission.md"
+        ]
+      },
+      {
+        "query": "How does RAG work?",
+        "found": false,
+        "rank": null,
+        "expected_keywords": [
+          "RAG",
+          "retrieval",
+          "augmented",
+          "generation"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/Implementation_LLMAutoFixHook.md",
+          ".github/docs/Security_Session_Copilot.md",
+          ".github/docs/CRITICAL_ISSUE_ANALYSIS_Copilot_Agents_Autonomous_Deployment.md"
+        ]
+      },
+      {
+        "query": "What is the agent registry structure?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "agent",
+          "registry",
+          "structure"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md",
+          ".github/docs/Remaining_Implementation_Plan_Copilot.md",
+          ".github/docs/SessionContinuityPolicy.md"
+        ]
+      },
+      {
+        "query": "What are the mandatory pre-session requirements?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "mandatory",
+          "pre-session",
+          "requirements"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/EmotionSafeUrgencyGuardrails.md",
+          ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+          ".github/docs/PR2208_CI_Gates_InstructionEnhancement.md"
+        ]
+      },
+      {
+        "query": "How to handle CI failures?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "CI",
+          "failure",
+          "handle"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/CI_Coverage_Implementation_Copilot.md",
+          ".github/docs/CI_PytestCov_Plugin_Fix.md",
+          ".github/docs/CI_Coverage_Implementation.md"
+        ]
+      },
+      {
+        "query": "What is the emotion-safe urgency guardrail?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "emotion",
+          "safe",
+          "urgency",
+          "guardrail"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/EmotionSafeUrgencyGuardrails.md",
+          ".github/docs/EmotionSafeUrgencyGuardrails.md",
+          ".github/docs/EmotionSafeUrgencyGuardrails.md"
+        ]
+      },
+      {
+        "query": "How to maintain code quality standards?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "code",
+          "quality",
+          "standard"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/cli_migration_execution_guide.md",
+          ".github/docs/Implementation_LLMAutoFixHook.md",
+          ".github/docs/Security_Session_Copilot.md"
+        ]
+      },
+      {
+        "query": "What are the self-review requirements?",
+        "found": false,
+        "rank": null,
+        "expected_keywords": [
+          "self",
+          "review",
+          "requirement"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+          ".github/docs/PR2208_CI_Gates_InstructionEnhancement.md",
+          ".github/docs/CI_PytestCov_Plugin_Fix.md"
+        ]
+      },
+      {
+        "query": "How to use the cognitive brain?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "cognitive",
+          "brain",
+          "use"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/Implementation_LLMAutoFixHook.md",
+          ".github/docs/GH_CLI_Resolution_Copilot.md",
+          ".github/docs/DEPLOYMENT_ORCHESTRATION_SECURITY_SUMMARY.md"
+        ]
+      },
+      {
+        "query": "What is the AfterMath PDA loop?",
+        "found": false,
+        "rank": null,
+        "expected_keywords": [
+          "AfterMath",
+          "PDA",
+          "loop"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md",
+          ".github/docs/SessionContinuityPolicy.md",
+          ".github/docs/SessionContinuityPolicy.md"
+        ]
+      },
+      {
+        "query": "How to manage repository variables?",
+        "found": true,
+        "rank": 2,
+        "expected_keywords": [
+          "repository",
+          "variable",
+          "manage"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/Implementation_LLMAutoFixHook.md",
+          ".github/docs/cli_migration_execution_guide.md",
+          ".github/docs/DEPLOYMENT_ORCHESTRATION_SECURITY_SUMMARY.md"
+        ]
+      },
+      {
+        "query": "What are the agentic repo state variables?",
+        "found": false,
+        "rank": null,
+        "expected_keywords": [
+          "AGENTIC_REPO_STATE",
+          "variable",
+          "auth"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/CI_PytestCov_Plugin_Fix.md",
+          ".github/docs/PR2208_CI_Gates_Copilot.md",
+          ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md"
+        ]
+      },
+      {
+        "query": "How to handle merge conflicts?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "merge",
+          "conflict",
+          "handle"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/CRITICAL_ISSUE_ANALYSIS_Copilot_Agents_Autonomous_Deployment.md",
+          ".github/docs/Implementation_LLMAutoFixHook.md",
+          ".github/docs/Security_Session_Copilot.md"
+        ]
+      },
+      {
+        "query": "What is the WEC workflow execution checklist?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "WEC",
+          "workflow",
+          "execution",
+          "checklist"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/PR_v1_3_0_Consolidation_Submission.md",
+          ".github/docs/CTEP_Usage_Examples.md",
+          ".github/docs/Copilot_Task_Execution_Protocol.md"
+        ]
+      },
+      {
+        "query": "How to implement comprehensive issue resolution?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "comprehensive",
+          "issue",
+          "resolution"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/PR_2207_DEPLOYMENT_PLAYBOOK.md",
+          ".github/docs/CASCADE_Workflow_Documentation_Copilot.md",
+          ".github/docs/investigation_report_job_69960506569.md"
+        ]
+      },
+      {
+        "query": "What are the documentation standards?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "documentation",
+          "standard"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/Coverage_Gating_Restoration_Enhanced_Copilot.md",
+          ".github/docs/Copilot_Task_Execution_Protocol.md",
+          ".github/docs/CASCADE_Workflow_Documentation_Copilot.md"
+        ]
+      },
+      {
+        "query": "How to run integration tests?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "integration",
+          "test",
+          "run"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/SBOM_Config_InstructionEnhancement.md",
+          ".github/docs/CTEP_Quick_Reference.md",
+          ".github/docs/Remaining_Implementation_Plan_Copilot.md"
+        ]
+      },
+      {
+        "query": "What is the non-deferral mandate?",
+        "found": true,
+        "rank": 1,
+        "expected_keywords": [
+          "non-deferral",
+          "mandate",
+          "CI"
+        ],
+        "retrieved_count": 3,
+        "retrieved_paths": [
+          ".github/docs/EmotionSafeUrgencyGuardrails.md",
+          ".github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md",
+          ".github/docs/SessionContinuityPolicy.md"
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "core_accuracy": 95.0,
+    "runtime_accuracy": 75.0,
+    "combined_accuracy": 85.0,
+    "target_accuracy": 95.0,
+    "status": "REVIEW"
+  }
+}
