@@ -92,10 +92,11 @@ class CodebaseQAWalker:
                         self.stats['ruff_issues'] = len(ruff_issues)
                         # Categorize by severity
                         for issue in ruff_issues:
-                            if 'code' in issue and issue['code'] in ['E9', 'F8']:  # Critical codes
+                            issue_code = issue.get('code', '')
+                            if issue_code and (issue_code.startswith('E9') or issue_code.startswith('F8')):  # Critical codes
                                 self.critical_issues.append({
                                     'file': issue.get('filename', ''),
-                                    'type': f"Ruff:{issue.get('code', 'unknown')}",
+                                    'type': f"Ruff:{issue_code}",
                                     'message': issue.get('message', ''),
                                     'severity': 'critical',
                                     'line': issue.get('location', {}).get('row', 0)

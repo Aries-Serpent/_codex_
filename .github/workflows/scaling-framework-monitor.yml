@@ -371,7 +371,6 @@ jobs:
         FAILOVER_RESULT: ${{ needs.failover_health.result }}
         LB_RESULT: ${{ needs.load_balancer_health.result }}
         AS_RESULT: ${{ needs.auto_scaling_health.result }}
-        # Note: SLA Compliance job not yet implemented
         COVERAGE_RESULT: ${{ needs.test_coverage.result }}
     - name: Check all tests passed
       if: failure()
