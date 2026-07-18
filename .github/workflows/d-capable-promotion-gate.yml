@@ -41,7 +41,11 @@ jobs:
       id: promotion
       run: |
         # Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).
-        \
+        APPLY_FLAG=""
+        if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.apply_promotions }}" = "true" ]; then
+          APPLY_FLAG="--promote"
+        fi
+        python scripts/cognitive/d_capable_promotion.py ${APPLY_FLAG}
     - name: Commit promotion changes (apply only)
       if: 'steps.promotion.outputs.applied == ''true'' && (github.event_name == ''schedule''
         || github.event.inputs.apply_promotions == ''true'')
@@ -58,9 +62,12 @@ jobs:
       if: always()
       run: |
         {
-        echo \"## \U0001F680 D_CAPABLE Promotion Gate\"
-        echo \"\"
-        echo\
+          echo "## D_CAPABLE Promotion Gate"
+          echo ""
+          echo '```json'
+          cat .codex/promotion_report.json 2>/dev/null || echo "No promotion report generated."
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
     - name: Upload promotion report
       if: always()
       uses: actions/upload-artifact@v5

@@ -82,8 +82,7 @@ jobs:
       run: "AGENTS=$(echo \"$MANIFEST\" | jq -r '.delegation_recommendations[0].recommended_agents[]?'\
         \ 2>/dev/null | tr '\\n' ',' | sed 's/,$//')\n\nif [ -z \"$AGENTS\" ]; then\n\
         \  AGENTS=\"unified-coverage-agent,ci-auto-healer-agent,workflow-health-monitor\"\
-        \nfi\n\nAGENT_COUNT=$(echo \"$AGENTS\" | tr ',' '\\n' | wc -l)\nMAX_AGENTS=\"\
-        $MAX_AGENTS\"\n\nif [ \"$AGENT_COUNT\" -gt \"$MAX_AGENTS\" ]; then\n  AGENTS=$(echo\
+        \nfi\n\nAGENT_COUNT=$(echo \"$AGENTS\" | tr ',' '\\n' | wc -l)\n\nif [ \"$AGENT_COUNT\" -gt \"$MAX_AGENTS\" ]; then\n  AGENTS=$(echo\
         \ \"$AGENTS\" | tr ',' '\\n' | head -n \"$MAX_AGENTS\" | tr '\\n' ',')\nfi\n\
         \necho \"agents=$AGENTS\" >> $GITHUB_OUTPUT\necho \"count=$AGENT_COUNT\" >>\
         \ $GITHUB_OUTPUT\n\nHAS_CRITICAL=$(echo \"$AGENTS\" | grep -c \"security\\\

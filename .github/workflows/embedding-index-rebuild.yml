@@ -101,26 +101,22 @@ jobs:
         id: rebuild
         run: |-
           python scripts/ci/build_embeddings.py
-          python3 -c \"
+          python3 <<'PY' >> "$GITHUB_OUTPUT"
           import json
-          meta\ = json.load(open(".codex/embeddings/codex_index_meta.json"))
-          import os
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f\\\"chunk_count={meta["chunk_count"]}\
-          \\\")
-              f.write(f\\\"build_time={meta["build_time_seconds"]}\
-          \\\")
-          \"
+          meta = json.load(open(".codex/embeddings/codex_index_meta.json"))
+          print(f"chunk_count={meta['chunk_count']}")
+          print(f"build_time={meta['build_time_seconds']}")
+          PY
 
       - name: Emit REQ-10 corpus health annotation (Tier-1 GROUNDED)
         run: |-
-          CHUNK_COUNT=\"${{ steps.rebuild.outputs.chunk_count }}\"
-          BUILD_TIME=\"${{ steps.rebuild.outputs.build_time }}\"
-          if [ -z \"$CHUNK_COUNT\" ] || [\ \"$CHUNK_COUNT\" -lt 100 ]; then
-            echo \"::error::REQ-10 corpus health:\ chunk count ${CHUNK_COUNT} below threshold (expected ≥100)\"
+          CHUNK_COUNT="${{ steps.rebuild.outputs.chunk_count }}"
+          BUILD_TIME="${{ steps.rebuild.outputs.build_time }}"
+          if [ -z "$CHUNK_COUNT" ] || [ "$CHUNK_COUNT" -lt 100 ]; then
+            echo "::error::REQ-10 corpus health: chunk count ${CHUNK_COUNT} below threshold (expected >=100)"
             exit 1
           else
-            echo \"✅ REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed in ${BUILD_TIME}s\"
+            echo "REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed in ${BUILD_TIME}s"
           fi
 
       - name: Active-PR guard — skip push when any open/draft PR targets the push target
@@ -157,13 +153,13 @@ jobs:
           git fetch origin "$_TARGET" --depth=1
           git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
           cp /tmp/_index_meta_sync_ .codex/embeddings/codex_index_meta.json
-          git config user.name \"github-actions[bot]\"
-          git config user.email \"github-actions[bot]@users.noreply.github.com\"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f .codex/embeddings/codex_index_meta.json
-          git diff --staged --quiet\ || \\
-            git commit -m \"chore(phase-3): update embedding index metadata\ [skip ci]\"
-          git push origin HEAD:\"$_TARGET\"
-          echo \"\U0001F4E4 Pushed\ to $_TARGET\"
+          git diff --staged --quiet || \
+            git commit -m "chore(phase-3): update embedding index metadata [skip ci]"
+          git push origin HEAD:"$_TARGET"
+          echo "Pushed to $_TARGET"
 
       - name: Post rebuild summary
         if: always()

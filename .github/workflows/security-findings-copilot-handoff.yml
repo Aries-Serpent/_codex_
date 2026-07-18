@@ -60,7 +60,7 @@ jobs:
           print(f"HIGH={summary.get('high_count', 0)}")
           print(f"TOTAL={summary.get('total_findings', 0)}")
           print(f"AGENTS={len(summary.get('recommended_agent_handoffs', []))}")
-          PYTHON_EOF
+        PYTHON_EOF
 
     - name: Create findings issue
       if: steps.findings.outputs.TOTAL != ''

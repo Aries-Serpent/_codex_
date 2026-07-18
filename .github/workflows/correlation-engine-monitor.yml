@@ -77,6 +77,7 @@ jobs:
           \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
           \ repo: context.repo.repo,\n  body: comment\n});\n"
     - name: Check gate criteria
+      id: gate_check
       run: "python -c \"\nimport json\n\n# Load metrics\nwith open('correlation-metrics.json')\
         \ as f:\n    metrics = json.load(f)\n\ngates = {\n    'temporal_accuracy':\
         \ (metrics['test_run']['temporal_accuracy'], 0.85),\n    'spatial_accuracy':\
@@ -94,8 +95,10 @@ jobs:
         \    exit(1)\n\" 2>&1\n"
     - name: Report results to CODEX
       if: always()
+      env:
+        GATE_OUTCOME: ${{ steps.gate_check.outcome }}
       run: "echo \"## Phase 4E Planset 011 - Correlation Engine Monitor\"\necho \"\
-        \"\necho \"**Status**: $(if [ $? -eq 0 ]; then echo '\u2705 PASSED'; else\
+        \"\necho \"**Status**: $(if [ \"$GATE_OUTCOME\" = 'success' ]; then echo '\u2705 PASSED'; else\
         \ echo '\u274C FAILED'; fi)\"\necho \"\"\necho \"### Monitored Metrics\"\n\
         echo \"- Temporal Correlation Accuracy: >85% \u2705\"\necho \"- Spatial Correlation\
         \ Accuracy: >85% \u2705\"\necho \"- Root Cause ID Success Rate: >80% \u2705\

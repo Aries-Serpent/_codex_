@@ -91,49 +91,49 @@ jobs:
         import os, json, sys
         from pathlib import Path
 
-          # ── Load ContinuousLearningPipeline ──────────────────────────────────
-          try:
-              from codex_ml.training.continuous_learning import ContinuousLearningPipeline
-          except ImportError:
-              print("⚠️  codex_ml not importable — using stub drift detection")
-              # Stub: drift_score from env or 0.0
-              drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
-              samples    = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
-              threshold  = float(os.environ.get("DRIFT_THRESHOLD") or 0.15)
-              should     = (drift_score >= threshold and samples >= 100) or \
-                            os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
-              result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
-          else:
-              drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
-              samples    = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
-              force      = os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
-              registry_path = Path("models/registry.json")
+        # Load ContinuousLearningPipeline
+        try:
+            from codex_ml.training.continuous_learning import ContinuousLearningPipeline
+        except ImportError:
+            print("codex_ml not importable - using stub drift detection")
+            # Stub: drift_score from env or 0.0
+            drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
+            samples = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
+            threshold = float(os.environ.get("DRIFT_THRESHOLD") or 0.15)
+            should = (drift_score >= threshold and samples >= 100) or \
+                os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
+            result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
+        else:
+            drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
+            samples = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
+            force = os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
+            registry_path = Path("models/registry.json")
 
-              pipeline = ContinuousLearningPipeline(
-                  model_name="codex-primary",
-                  registry_path=registry_path,
-                  drift_threshold=float(os.environ.get("DRIFT_THRESHOLD", "0.15")),
-                  min_samples_retrain=500,
-              )
-              should = force or pipeline.should_retrain(
-                  drift_score=drift_score,
-                  samples_count=samples,
-              )
-              result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
+            pipeline = ContinuousLearningPipeline(
+                model_name="codex-primary",
+                registry_path=registry_path,
+                drift_threshold=float(os.environ.get("DRIFT_THRESHOLD", "0.15")),
+                min_samples_retrain=500,
+            )
+            should = force or pipeline.should_retrain(
+                drift_score=drift_score,
+                samples_count=samples,
+            )
+            result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
 
-          # ── Write outputs ─────────────────────────────────────────────────────
-          gh_output = os.environ.get("GITHUB_OUTPUT", "")
-          lines = [
-              f"should_retrain={'true' if result['should_retrain'] else 'false'}",
-              f"drift_score={result['drift_score']}",
-              f"samples_count={result['samples_count']}",
-          ]
-          if gh_output:
-              with open(gh_output, "a") as f:
-                  f.write("\n".join(lines) + "\n")
-          print(json.dumps(result, indent=2))
-          sys.exit(0)
-          PYEOF
+        # Write outputs
+        gh_output = os.environ.get("GITHUB_OUTPUT", "")
+        lines = [
+            f"should_retrain={'true' if result['should_retrain'] else 'false'}",
+            f"drift_score={result['drift_score']}",
+            f"samples_count={result['samples_count']}",
+        ]
+        if gh_output:
+            with open(gh_output, "a") as f:
+                f.write("\n".join(lines) + "\n")
+        print(json.dumps(result, indent=2))
+        sys.exit(0)
+        PYEOF
 
     - name: Summary — drift detection result
       run: |

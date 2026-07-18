@@ -33,8 +33,8 @@ jobs:
         extras: dev
     - name: Run Phase B smoke tests (no GPU required)
       run: |
-        python -m pytest tests/smoke/test_openvino_backend_smoke.py \\
-        -v --tb=short\
+        python -m pytest tests/smoke/test_openvino_backend_smoke.py \
+        -v --tb=short
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

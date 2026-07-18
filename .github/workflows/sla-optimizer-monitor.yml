@@ -16,7 +16,7 @@ jobs:
   sla-compliance-check:
     name: Daily SLA Compliance
     runs-on: ubuntu-latest
-    if: github.event_name != "schedule" || github.event.schedule == "0 0 * * *"
+    if: github.event_name != 'schedule' || github.event.schedule == '0 0 * * *'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -26,16 +26,13 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install numpy scipy pandas pytest pytest-cov
-
-        "
+        run: |-
+          python -m pip install --upgrade pip
+          pip install numpy scipy pandas pytest pytest-cov
       - name: Run SLA compliance tests
         run: |-
-          pytest tests/optimization/test_sla_optimizer.py::TestConstraintSolver\ -v \\
+          pytest tests/optimization/test_sla_optimizer.py::TestConstraintSolver -v \
             --tb=short --junit-xml=artifacts/sla-compliance-results.xml
-
       - name: Upload compliance report
         if: always()
         uses: actions/upload-artifact@v5
@@ -47,7 +44,7 @@ jobs:
   pareto-frontier-update:
     name: Weekly Pareto Frontier
     runs-on: ubuntu-latest
-    if: github.event_name != "schedule" || github.event.schedule == "0 2 * * 1"
+    if: github.event_name != 'schedule' || github.event.schedule == '0 2 * * 1'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -57,73 +54,69 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install numpy scipy pandas pytest
-
-        "
+        run: |-
+          python -m pip install --upgrade pip
+          pip install numpy scipy pandas pytest
       - name: Generate Pareto frontier
         run: |-
-          python -c \"
+          python <<'PY'
           import json
           import time
-          from src.codex.optimization import\ SLAOptimizer, SLASpec
+          from src.codex.optimization import SLAOptimizer, SLASpec
 
           # Create sample SLAs
           slas = [
               SLASpec(
-          \        tenant_id=f"tenant-{i}",
+                  tenant_id=f"tenant-{i}",
                   target_uptime_percent=99.9,
-            \       max_response_time_ms=100,
+                  max_response_time_ms=100,
                   max_error_rate_percent=0.1,
-            \       data_retention_days=30,
+                  data_retention_days=30,
                   peak_qps=1000 * (i + 1),
               )
-          \    for i in range(5)
+              for i in range(5)
           ]
 
           optimizer = SLAOptimizer()
           start = time.time()
           frontier = optimizer.generate_pareto_frontier(slas, num_points=20)
-          elapsed\ = time.time() - start
+          elapsed = time.time() - start
 
           # Export results
           results = {
-              "timestamp":\ time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+              "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
               "num_points": len(frontier),
-          \    "computation_time_seconds": elapsed,
+              "computation_time_seconds": elapsed,
               "frontier_points": [
-              \    {
+                  {
                       "total_cost": cost,
                       "num_allocations": len(allocations),
-          \            "avg_tier_cost_multiplier": sum(a.tier.cost_multiplier for a\ in allocations) / len(allocations),
+                      "avg_tier_cost_multiplier": sum(a.tier.cost_multiplier for a in allocations) / len(allocations),
                   }
-                  for cost, allocations\ in frontier
+                  for cost, allocations in frontier
               ],
           }
 
-          with open("artifacts/pareto-frontier.json", "w")\ as f:
+          with open("artifacts/pareto-frontier.json", "w") as f:
               json.dump(results, f, indent=2)
 
-          print(f"Pareto frontier: {len(frontier)}\ points generated in {elapsed:.2f}s")
-          \"
-
+          print(f"Pareto frontier: {len(frontier)} points generated in {elapsed:.2f}s")
+          PY
       - name: Verify frontier performance
         run: |-
-          python -c \"
+          python <<'PY'
           import json
-          with open("artifacts/pareto-frontier.json")\ as f:
+          with open("artifacts/pareto-frontier.json") as f:
               data = json.load(f)
 
           elapsed = data["computation_time_seconds"]
           num_points = data["num_points"]
 
-          assert elapsed < 10.0, f"Frontier generation\ took {elapsed:.2f}s, expected <10s"
-          assert num_points >= 4, f"Only {num_points}\ points generated, expected ≥4"
+          assert elapsed < 10.0, f"Frontier generation took {elapsed:.2f}s, expected <10s"
+          assert num_points >= 4, f"Only {num_points} points generated, expected >=4"
 
-          print(f"✓ Frontier meets performance criteria:\ {num_points} points in {elapsed:.2f}s")
-          \"
-
+          print(f"Frontier meets performance criteria: {num_points} points in {elapsed:.2f}s")
+          PY
       - name: Upload frontier report
         if: always()
         uses: actions/upload-artifact@v5
@@ -135,7 +128,7 @@ jobs:
   monthly-billing-report:
     name: Monthly Billing Report
     runs-on: ubuntu-latest
-    if: github.event_name != "schedule" || github.event.schedule == "0 3 1 * *"
+    if: github.event_name != 'schedule' || github.event.schedule == '0 3 1 * *'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -145,29 +138,27 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install numpy scipy pandas pytest
-
-        "
+        run: |-
+          python -m pip install --upgrade pip
+          pip install numpy scipy pandas pytest
       - name: Generate billing report
         run: |-
-          python -c \"
+          python <<'PY'
           import json
           from datetime import datetime
-          from src.codex.optimization\ import SLAOptimizer, SLASpec
+          from src.codex.optimization import SLAOptimizer, SLASpec
 
           # Create sample SLAs
           slas = [
               SLASpec(
-          \        tenant_id=f"tenant-{i}",
-                  target_uptime_percent=99.9 - i\ * 0.02,
+                  tenant_id=f"tenant-{i}",
+                  target_uptime_percent=99.9 - i * 0.02,
                   max_response_time_ms=100,
                   max_error_rate_percent=0.1,
-          \        data_retention_days=30,
+                  data_retention_days=30,
                   peak_qps=1000 * (i + 1),
               )
-          \    for i in range(5)
+              for i in range(5)
           ]
 
           optimizer = SLAOptimizer()
@@ -177,9 +168,9 @@ jobs:
           current_month = datetime.now().strftime("%Y-%m")
           reports = optimizer.generate_billing_report(current_month)
 
-          # Export as\ both CSV and JSON
+          # Export as both CSV and JSON
           csv = optimizer.export_billing_csv(reports)
-          with open("artifacts/billing_report.csv",\ "w") as f:
+          with open("artifacts/billing_report.csv", "w") as f:
               f.write(csv)
 
           json_data = optimizer.export_billing_json(reports)
@@ -188,43 +179,41 @@ jobs:
 
           # Generate summary
           summary = optimizer.get_optimization_summary()
-          summary["month"]\ = current_month
+          summary["month"] = current_month
           summary["num_tenants"] = len(reports)
 
-          with open("artifacts/billing_summary.json",\ "w") as f:
+          with open("artifacts/billing_summary.json", "w") as f:
               json.dump(summary, f, indent=2)
 
-          print(f"✓ Monthly billing\ report generated for {current_month}")
+          print(f"Monthly billing report generated for {current_month}")
           print(f"  Tenants: {len(reports)}")
-          print(f"  Total cost: \\${summary[\\\"estimated_monthly_cost\\\"]:,.2f}")
-          \"
-
+          print(f"  Total cost: ${summary['estimated_monthly_cost']:,.2f}")
+          PY
       - name: Verify billing completeness
         run: |-
-          python -c \"
+          python <<'PY'
           import json
           import csv
 
           # Verify CSV
-          with open("artifacts/billing_report.csv")\ as f:
+          with open("artifacts/billing_report.csv") as f:
               reader = csv.DictReader(f)
               rows = list(reader)
-              assert\ len(rows) > 0, "No billing records in CSV"
+              assert len(rows) > 0, "No billing records in CSV"
 
-              # Verify all required\ fields
-              required = ["tenant_id", "cpu_cost", "memory_cost", "disk_cost",\ "network_cost", "total_cost"]
+              # Verify all required fields
+              required = ["tenant_id", "cpu_cost", "memory_cost", "disk_cost", "network_cost", "total_cost"]
               for row in rows:
-                  for field in\ required:
+                  for field in required:
                       assert field in row, f"Missing field: {field}"
 
           # Verify JSON
           with open("artifacts/billing_report.json") as f:
-              data\ = json.load(f)
+              data = json.load(f)
               assert len(data) > 0, "No billing records in JSON"
 
-          print("✓ Billing report meets completeness criteria")
-          \"
-
+          print("Billing report meets completeness criteria")
+          PY
       - name: Upload billing reports
         if: always()
         uses: actions/upload-artifact@v5
@@ -236,7 +225,7 @@ jobs:
   tier-transition-audit:
     name: Tier Transition Audit
     runs-on: ubuntu-latest
-    if: github.event_name != "schedule" || github.event.schedule == "0 0 * * 0"
+    if: github.event_name != 'schedule' || github.event.schedule == '0 0 * * 0'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -246,30 +235,27 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install numpy scipy pandas pytest
-
-        "
+        run: |-
+          python -m pip install --upgrade pip
+          pip install numpy scipy pandas pytest
       - name: Run tier transition tests
         run: |-
-          pytest tests/optimization/test_sla_optimizer.py::TestTierManager -v \\
+          pytest tests/optimization/test_sla_optimizer.py::TestTierManager -v \
             --tb=short --junit-xml=artifacts/tier-transition-audit.xml
-
       - name: Test churn reduction
         run: |-
-          python -c \"
+          python <<'PY'
           import json
-          from src.codex.optimization import SLAOptimizer,\ TierManager, Tier
+          from src.codex.optimization import SLAOptimizer, TierManager, Tier
 
           manager = TierManager(cooldown_days=0)
 
-          # Simulate\ multiple promotions/demotions
+          # Simulate multiple promotions/demotions
           for i in range(5):
-              manager.promote_tier(f"tenant-{i}",\ Tier.BRONZE)
+              manager.promote_tier(f"tenant-{i}", Tier.BRONZE)
 
           for i in range(3):
-              manager.demote_tier(f"tenant-{i}",\ Tier.GOLD)
+              manager.demote_tier(f"tenant-{i}", Tier.GOLD)
 
           churn = manager.get_churn_rate()
 
@@ -277,17 +263,16 @@ jobs:
           results = {
               "churn_rate": churn,
               "total_changes": 8,
-              "total_tenants":\ 5,
+              "total_tenants": 5,
               "churn_reduction_target": ">30%",
-              "status": "PASS" if churn\ > 0 else "PASS",
+              "status": "PASS" if churn > 0 else "PASS",
           }
 
-          with open("artifacts/tier-transition-audit.json",\ "w") as f:
+          with open("artifacts/tier-transition-audit.json", "w") as f:
               json.dump(results, f, indent=2)
 
-          print(f"✓ Tier transition\ audit: {churn:.2f} changes per tenant")
-          \"
-
+          print(f"Tier transition audit: {churn:.2f} changes per tenant")
+          PY
       - name: Upload tier audit
         if: always()
         uses: actions/upload-artifact@v5
@@ -308,48 +293,46 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install numpy scipy pandas pytest
-
-        "
+        run: |-
+          python -m pip install --upgrade pip
+          pip install numpy scipy pandas pytest
       - name: Detect cost anomalies
         run: |-
-          python -c \"
+          python <<'PY'
           import json
           import numpy as np
-          from src.codex.optimization\ import CostPredictor, ResourceAllocation, Tier
+          from src.codex.optimization import CostPredictor, ResourceAllocation, Tier
 
           predictor = CostPredictor()
 
           # Simulate predictions and actuals
-          results = {"anomalies": [], "healthy":\ []}
+          results = {"anomalies": [], "healthy": []}
 
           for i in range(10):
               allocation = ResourceAllocation(
-                \   tenant_id=f"tenant-{i}",
+                  tenant_id=f"tenant-{i}",
                   cpu_cores=4 + i,
-                  memory_gb=16\ + i * 2,
+                  memory_gb=16 + i * 2,
                   disk_gb=100 + i * 10,
                   network_mbps=100,
-              \     tier=Tier.SILVER,
+                  tier=Tier.SILVER,
               )
 
               predicted = predictor.predict_monthly_cost(allocation)
-          \    # Simulate variance
+              # Simulate variance
               variance = np.random.normal(1.0, 0.05)
-              \ actual = predicted * variance
+              actual = predicted * variance
 
-              predictor.record_actual_cost(allocation.tenant_id,\ actual, predicted)
+              predictor.record_actual_cost(allocation.tenant_id, actual, predicted)
 
-              error_percent = abs(actual - predicted) / predicted\ * 100
+              error_percent = abs(actual - predicted) / predicted * 100
 
               if error_percent > 10.0:
                   results["anomalies"].append({
-          \            "tenant_id": allocation.tenant_id,
-                      "error_percent":\ error_percent,
+                      "tenant_id": allocation.tenant_id,
+                      "error_percent": error_percent,
                       "predicted": predicted,
-                      "actual":\ actual,
+                      "actual": actual,
                   })
               else:
                   results["healthy"].append(allocation.tenant_id)
@@ -358,12 +341,11 @@ jobs:
           results["accuracy"] = accuracy
 
           with open("artifacts/cost-anomaly-report.json", "w") as f:
-              json.dump(results,\ f, indent=2)
+              json.dump(results, f, indent=2)
 
-          print(f"✓ Cost anomaly detection: {len(results[\\\"anomalies\\\"])} anomalies, {len(results[\\\"healthy\\\"])} healthy")
-          print(f"  Mean\ error: {accuracy[\\\"mean_error_percent\\\"]:.2f}%, target ±10%")
-          \"
-
+          print(f"Cost anomaly detection: {len(results['anomalies'])} anomalies, {len(results['healthy'])} healthy")
+          print(f"  Mean error: {accuracy['mean_error_percent']:.2f}%, target +/-10%")
+          PY
       - name: Upload anomaly report
         if: always()
         uses: actions/upload-artifact@v5
@@ -389,59 +371,58 @@ jobs:
           path: artifacts
       - name: Generate summary report
         run: |-
-          python -c \"
+          python <<'PY'
           import json
           import os
           from pathlib import Path
 
-          summary\ = {
+          summary = {
               "checks": {
                   "sla_compliance": False,
-                  "pareto_frontier":\ False,
+                  "pareto_frontier": False,
                   "monthly_billing": False,
                   "tier_transitions": False,
-          \        "cost_anomalies": False,
+                  "cost_anomalies": False,
               },
-              "timestamp": os.popen("date\ -u +%Y-%m-%dT%H:%M:%SZ").read().strip(),
+              "timestamp": os.popen("date -u +%Y-%m-%dT%H:%M:%SZ").read().strip(),
           }
 
           # Check for report artifacts
           artifacts_dir = Path("artifacts")
 
-          if (artifacts_dir / "sla-compliance-report"\ / "sla-compliance-results.xml").exists():
-              summary["checks"]["sla_compliance"]\ = True
+          if (artifacts_dir / "sla-compliance-report" / "sla-compliance-results.xml").exists():
+              summary["checks"]["sla_compliance"] = True
 
           if (artifacts_dir / "pareto-frontier-report" / "pareto-frontier.json").exists():
-          \    with open(artifacts_dir / "pareto-frontier-report" / "pareto-frontier.json")\ as f:
+              with open(artifacts_dir / "pareto-frontier-report" / "pareto-frontier.json") as f:
                   data = json.load(f)
-                  summary["checks"]["pareto_frontier"]\ = True
+                  summary["checks"]["pareto_frontier"] = True
                   summary["pareto_points"] = data["num_points"]
-                  summary["pareto_time_seconds"]\ = data["computation_time_seconds"]
+                  summary["pareto_time_seconds"] = data["computation_time_seconds"]
 
           if (artifacts_dir / "monthly-billing-reports").exists():
-          \    summary["checks"]["monthly_billing"] = True
+              summary["checks"]["monthly_billing"] = True
 
-          if (artifacts_dir / "tier-transition-audit"\ / "tier-transition-audit.json").exists():
-              summary["checks"]["tier_transitions"]\ = True
+          if (artifacts_dir / "tier-transition-audit" / "tier-transition-audit.json").exists():
+              summary["checks"]["tier_transitions"] = True
 
           if (artifacts_dir / "cost-anomaly-report" / "cost-anomaly-report.json").exists():
-          \    with open(artifacts_dir / "cost-anomaly-report" / "cost-anomaly-report.json")\ as f:
+              with open(artifacts_dir / "cost-anomaly-report" / "cost-anomaly-report.json") as f:
                   data = json.load(f)
-                  summary["checks"]["cost_anomalies"]\ = True
+                  summary["checks"]["cost_anomalies"] = True
                   summary["cost_accuracy"] = data["accuracy"]["mean_error_percent"]
 
           # Print summary
           all_passed = all(summary["checks"].values())
-          status =\ "✓ PASS" if all_passed else "✗ FAIL"
+          status = "PASS" if all_passed else "FAIL"
 
-          print(f"{status} - SLA Optimization\ Monitoring")
+          print(f"{status} - SLA Optimization Monitoring")
           for check, passed in summary["checks"].items():
-              print(f"\  {\\\"✓\\\" if passed else \\\"✗\\\"} {check}")
+              print(f"  {'PASS' if passed else 'FAIL'} {check}")
 
-          with open("summary.json",\ "w") as f:
+          with open("summary.json", "w") as f:
               json.dump(summary, f, indent=2)
-          \"
-
+          PY
       - name: Upload summary
         uses: actions/upload-artifact@v5
         with:
@@ -449,31 +430,29 @@ jobs:
           path: summary.json
           retention-days: 30
       - name: Comment on PR (if exists)
-        if: github.event_name == "pull_request"
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v8
         with:
           script: |-
             const fs = require("fs");
-            const summary = JSON.parse(fs.readFileSync("summary.json",\ "utf8"));
+            const summary = JSON.parse(fs.readFileSync("summary.json", "utf8"));
 
             const checks = Object.entries(summary.checks)
-            .map(([name,\ passed]) => `- ${passed ? "✓" : "✗"} ${name}`)
-            .join("\
-            ");
+              .map(([name, passed]) => `- ${passed ? "PASS" : "FAIL"} ${name}`)
+              .join("\n");
 
-            const\ comment = `## \U0001F4CA SLA Optimization Monitor\
-            \
-            ${checks}\
-            \
+            const comment = `## SLA Optimization Monitor
+
+            ${checks}
+
             **Timestamp**: ${summary.timestamp}`;
 
             github.rest.issues.createComment({
-            \  issue_number: context.issue.number,
-            owner: context.repo.owner,
-            \ repo: context.repo.repo,
-            body: comment
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
             });
-
     timeout-minutes: 30
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

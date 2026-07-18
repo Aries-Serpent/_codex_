@@ -70,9 +70,12 @@ jobs:
       if: always()
       run: |
         {
-        echo \"## \U0001F50E mypy Anti-Regression Gate\"
-        echo \"\"
-        \
+          echo "## mypy Anti-Regression Gate"
+          echo ""
+          echo '```'
+          cat /tmp/mypy_output.txt 2>/dev/null || echo "No mypy output captured."
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
     - name: Fail if regression detected
       if: steps.mypy_gate.outputs.exit_code != '0'
       run: 'echo "::error::mypy type-error count exceeds baseline. See summary for

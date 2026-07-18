@@ -252,7 +252,7 @@ jobs:
         SCRIPT_TEMP=$(mktemp)
         API_ERROR=$(mktemp)
         DECODE_ERROR=$(mktemp)
-        trap "rm -f '$ACTION_TEMP' '$SCRIPT_TEMP' '$API_ERROR' '$DECODE_ERROR'" EXIT
+        trap 'rm -f "$ACTION_TEMP" "$SCRIPT_TEMP" "$API_ERROR" "$DECODE_ERROR"' EXIT
 
         # Helper function to fetch and decode file from main branch
         # SECURITY: file_path parameter must be hardcoded (not from untrusted input)

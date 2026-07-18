@@ -337,7 +337,7 @@ jobs:
         REPO="${{ github.repository }}"
         # Validate workflow_run head_sha exists (API lookup only, no checkout)
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
-          if gh api repos/"${REPO}"/commits/"${{ github.event.workflow_run.head_sha }}" --silent 2>/dev/null; then
+          if gh api "repos/${REPO}/commits/${{ github.event.workflow_run.head_sha }}" --silent 2>/dev/null; then
             echo "✅ Workflow_run head_sha is valid on repository"
           else
             echo "⚠️ Warning: workflow_run head_sha not found on repository; continuing"
@@ -345,7 +345,7 @@ jobs:
         fi
         # Validate triage head_sha exists (API lookup only, no checkout)
         if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
-          if gh api repos/"${REPO}"/commits/"${{ needs.triage.outputs.head_sha }}" --silent 2>/dev/null; then
+          if gh api "repos/${REPO}/commits/${{ needs.triage.outputs.head_sha }}" --silent 2>/dev/null; then
             echo "✅ Triage head_sha is valid on repository"
           else
             echo "⚠️ Warning: triage head_sha not found on repository; continuing"
@@ -660,7 +660,7 @@ jobs:
       run: |
         # Validate workflow_run head_sha exists via API (no git fetch needed)
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
-          if gh api repos/"${REPO}"/commits/"${{ github.event.workflow_run.head_sha }}" --silent 2>/dev/null; then
+          if gh api "repos/${REPO}/commits/${{ github.event.workflow_run.head_sha }}" --silent 2>/dev/null; then
             echo "✅ Workflow_run head_sha is valid on repository"
           else
             echo "⚠️ Warning: workflow_run head_sha not found; continuing with main"
@@ -669,7 +669,7 @@ jobs:
 
         # Validate triage head_sha exists via API (no git fetch needed)
         if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
-          if gh api repos/"${REPO}"/commits/"${{ needs.triage.outputs.head_sha }}" --silent 2>/dev/null; then
+          if gh api "repos/${REPO}/commits/${{ needs.triage.outputs.head_sha }}" --silent 2>/dev/null; then
             echo "✅ Triage head_sha is valid on repository"
           else
             echo "⚠️ Warning: triage head_sha not found; continuing with main"

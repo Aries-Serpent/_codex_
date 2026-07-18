@@ -37,24 +37,70 @@ jobs:
       run: |
         set +e
         python3 - <<'PYEOF'
-        import sys
-        import yaml
         import subprocess
-        \
+        import sys
+
+        import yaml
+
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "origin/${{ github.base_ref }}...HEAD"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        changed = [
+            line
+            for line in result.stdout.splitlines()
+            if line.startswith(".github/workflows/") and line.endswith((".yml", ".yaml"))
+        ]
+
+        violations = []
+        for path in changed:
+            try:
+                with open(path, encoding="utf-8") as f:
+                    workflow = yaml.safe_load(f)
+            except yaml.YAMLError as exc:
+                violations.append(f"{path}: invalid YAML ({exc})")
+                continue
+
+            if not workflow:
+                continue
+
+            if "concurrency" not in workflow:
+                violations.append(f"{path}: missing top-level `concurrency` block")
+
+            jobs = workflow.get("jobs", {}) or {}
+            for job_name, job in jobs.items():
+                if isinstance(job, dict) and "timeout-minutes" not in job:
+                    violations.append(f"{path}: job `{job_name}` missing `timeout-minutes`")
+
+        if violations:
+            print("Workflow compliance violations found:")
+            for v in violations:
+                print(f"  - {v}")
+            with open("compliance_violations.txt", "w", encoding="utf-8") as f:
+                f.write("\n".join(violations))
+            sys.exit(1)
+
+        print("No workflow compliance violations found")
+        PYEOF
+        exit_code=$?
+        echo "exit_code=${exit_code}" >> "$GITHUB_OUTPUT"
       continue-on-error: true
     - name: Post PR comment on violations
-      if: 'github.event_name == ''pull_request'' && steps.check.outputs.exit_code
-        != ''0''
-
-        '
+      if: github.event_name == 'pull_request' && steps.check.outputs.exit_code != '0'
       env:
         GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
-        printf '%s\
-        ' \\
-        \"## ⚙️ Workflow Compliance Violations\" \\
-        \"\
+        {
+          echo "## Workflow Compliance Violations"
+          echo ""
+          echo '```'
+          cat compliance_violations.txt 2>/dev/null || echo "See workflow run logs for details."
+          echo '```'
+        } > compliance_comment.md
+        gh pr comment "${PR_NUMBER}" --body-file compliance_comment.md
     - name: Fail on violations
       if: steps.check.outputs.exit_code != '0'
       run: exit 1

@@ -993,11 +993,11 @@ jobs:
     steps:
       - name: Download all security-suite artifacts
         uses: actions/download-artifact@v5
+        continue-on-error: true
         with:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
-          continue-on-error: true
 
       - name: Build consolidated security summary
         if: always()
@@ -1081,11 +1081,11 @@ jobs:
 
       - name: Download all security-suite artifacts
         uses: actions/download-artifact@v5
+        continue-on-error: true
         with:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
-          continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -1248,10 +1248,10 @@ jobs:
     steps:
       - name: Download comprehensive findings artifact
         uses: actions/download-artifact@v5
+        continue-on-error: false
         with:
           name: security-suite-comprehensive-findings
           path: contract-input/
-          continue-on-error: false
 
       - name: Debug contract input file listing
         if: always()
@@ -1343,10 +1343,10 @@ jobs:
 
       - name: Download comprehensive findings
         uses: actions/download-artifact@v5
+        continue-on-error: true
         with:
           name: security-suite-comprehensive-findings
           path: .
-          continue-on-error: true
 
       - name: Cache Findings
         run: |

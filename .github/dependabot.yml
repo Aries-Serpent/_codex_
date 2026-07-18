@@ -70,3 +70,68 @@ updates:
     commit-message:
       prefix: "docker"
     open-pull-requests-limit: 3
+
+  # npm - Monitor root-level JavaScript/TypeScript dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # npm - Monitor cognitive_app JavaScript/TypeScript dependencies
+  # (consolidated here; cognitive_app/.github/dependabot.yml was not
+  # discovered by GitHub Dependabot since only the repo-root
+  # .github/dependabot.yml is read for a single, non-submodule repo)
+  - package-ecosystem: "npm"
+    directory: "/cognitive_app"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "cognitive-app"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # npm - Monitor copilot/extension JavaScript/TypeScript dependencies
+  - package-ecosystem: "npm"
+    directory: "/copilot/extension"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "copilot-extension"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # Cargo - Monitor Rust workspace dependencies
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "rust"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
