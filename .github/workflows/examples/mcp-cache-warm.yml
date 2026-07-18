@@ -143,9 +143,9 @@ jobs:
         with:
           script: |
             const caches = await github.rest.actions.getActionsCacheList({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          per_page: 100
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
             });
 
             const cutoff = Date.now() - (14 * 24 * 60 * 60 * 1000);
@@ -157,16 +157,16 @@ jobs:
               if (createdAt < cutoff) {
                 try {
                   await github.rest.actions.deleteActionsCacheById({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          cache_id: cache.id
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    cache_id: cache.id
                   });
-          console.log(`Deleted cache: ${cache.key}`);
+                  console.log(`Deleted cache: ${cache.key}`);
                   deletedCount++;
                 } catch (error) {
-          console.log(`Failed to delete cache: ${error.message}`);
+                  console.log(`Failed to delete cache: ${error.message}`);
                 }
               }
             }
 
-          console.log(`Total caches deleted: ${deletedCount}`);
+            console.log(`Total caches deleted: ${deletedCount}`);

@@ -52,7 +52,3 @@ jobs:
       - name: Mask secrets
         run: |
           echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - name: Free disk space
-        run: |
-        run: |
-        run: |

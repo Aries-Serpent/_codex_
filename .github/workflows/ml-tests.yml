@@ -26,8 +26,8 @@ jobs:
   test-ml-components:
     permissions:
       contents: read
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
