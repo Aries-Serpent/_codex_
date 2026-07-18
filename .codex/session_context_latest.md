@@ -1,42 +1,35 @@
-# Session Context — 2026-07-18T09:04:50Z
+# Session Context — 2026-07-18T09:10:39Z
 **Branch:** `copilot/custom-image-setup`  **PR:** #5336  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4871` (✅)
-- GraphQL remaining: `4998` (✅)
+- REST remaining: `4775` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5336 — fix(phase4): Week 17-18 Docker Build & cognitive_app Restoration Complete
 State: `open`  Draft: `True`  Branch: `copilot/custom-image-setup` → `main`
 
-### ❌ 12 Failing CI Check(s)
+### ❌ 1 Failing CI Check(s)
 - `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `⚡ Dispatch Auto-Approve (if auth authorized)` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `Cache Security Findings` (cancelled)
-- `Summary` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-18)
-- **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-18)
-- **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-18)
-- **PR Comment Review Gate** — `failure` on `main` (2026-07-18)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-18)
+- **.github/workflows/coverage-with-timeout.yml** — `failure` on `copilot/custom-image-setup` (2026-07-18)
+- **.github/workflows/sla-optimizer-monitor.yml** — `failure` on `copilot/custom-image-setup` (2026-07-18)
+- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/custom-image-setup` (2026-07-18)
+- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/custom-image-setup` (2026-07-18)
+- **.github/workflows/progressive-validation.yml** — `failure` on `copilot/custom-image-setup` (2026-07-18)
 
 ## 📝 Recent Commits
+- `2a42bc95` docs(phase-12): Hourly checkpoint 198 - 2026-07-18T08:55:31Z — github-actions[bot] (2026-07-18)
+- `703c7fb4` docs(phase-12): Hourly checkpoint 197 - 2026-07-18T06:13:12Z — github-actions[bot] (2026-07-18)
+- `f56bbce5` fix(ci): Update actions/setup-node from v4 to v5 for action version compliance — copilot-swe-agent[bot] (2026-07-18)
 - `c198d965` chore(phase4): Complete Docker build and cognitive_app restoration validation — copilot-swe-agent[bot] (2026-07-18)
 - `0d184e47` docs: add comprehensive cognitive app deployment validation report — copilot-swe-agent[bot] (2026-07-18)
 - `5979455e` docs: Comprehensive Cognitive Brain GitHub App Integration Audit — copilot-swe-agent[bot] (2026-07-18)
 - `6a72d223` docs(week17-18): Add Phase 4 execution summary — copilot-swe-agent[bot] (2026-07-18)
 - `f47398fc` docs(phase4): Add Docker build completion report — copilot-swe-agent[bot] (2026-07-18)
-- `9fcd6989` fix(cognitive-app): Enable live documentation fetching in GitHub Pages build — copilot-swe-agent[bot] (2026-07-18)
-- `0b097f31` docs: Add comprehensive cognitive_app deployment fix documentation — copilot-swe-agent[bot] (2026-07-18)
-- `9ffd6bb8` fix: Update Dockerfile.phase4 to use python:3.12-slim-bookworm base image — copilot-swe-agent[bot] (2026-07-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
