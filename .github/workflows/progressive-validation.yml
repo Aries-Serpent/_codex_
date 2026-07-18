@@ -20,6 +20,7 @@ permissions:
   contents: read
 jobs:
   analyze:
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
@@ -33,7 +34,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           persist-credentials: false
-          fetch-depth: 0
+        fetch-depth: 0
       - name: Analyze PR Size
         id: analyze
         run: |
@@ -88,18 +89,21 @@ jobs:
         uses: ./.github/actions/post-pr-summary
         with:
           workflow-name: PR Size Analysis
-          status: info
-          summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
-          details: |
+        status: info
+        summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
+        details: |
           | Field | Value |
           |-------|-------|
           | Size Category | `${{ steps.analyze.outputs.pr_size }}` (${{ steps.analyze.outputs.changed_files_count }} files) |
           | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }} |
 
           **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted validation · Large (100-499) → Smoke · Refactor (500+) → Import-only
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -111,8 +115,8 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install minimal dependencies
         run: 'python -m pip install --upgrade pip
 
@@ -164,6 +168,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    timeout-minutes: 20
     strategy:
       matrix:
         shard:
@@ -180,8 +185,8 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
         run: 'python -m pip install --upgrade pip
 
@@ -213,6 +218,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    timeout-minutes: 30
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -222,8 +228,8 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
         run: 'python -m pip install --upgrade pip
 
@@ -253,6 +259,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    timeout-minutes: 60
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -262,8 +269,8 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
         run: 'python -m pip install --upgrade pip
 
@@ -293,6 +300,7 @@ jobs:
     - slow-tests
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
@@ -329,9 +337,11 @@ jobs:
         uses: ./.github/actions/post-pr-summary
         with:
           workflow-name: Progressive Validation
-          status: ${{ steps.gen-summary.outputs.status }}
-          summary: ${{ steps.gen-summary.outputs.summary-line }}
-          details: ${{ steps.gen-summary.outputs.details }}
+        status: ${{ steps.gen-summary.outputs.status }}
+        summary: ${{ steps.gen-summary.outputs.summary-line }}
+        details: ${{ steps.gen-summary.outputs.details }}
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -346,13 +356,14 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           persist-credentials: false
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          fetch-depth: 1
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        fetch-depth: 1
       - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

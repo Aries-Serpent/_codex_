@@ -32,6 +32,7 @@ jobs:
         - 2
         - 3
         - 4
+    timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '30') }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
@@ -82,21 +83,22 @@ jobs:
       run: |
         # Calculate shard parameters
         SHARD_INDEX=${{ matrix.shard }}
-        TOTAL_SHARDS=4
+        TOTAL_SHARDS=${{\
     - name: Check for timeouts
       if: steps.coverage.outputs.coverage_failed == 'true'
-      run: 'echo '::warning::Coverage collection encountered issues (timeout or test
-        failure)'
+      run: 'echo "::warning::Coverage collection encountered issues (timeout or test
+        failure)"
 
-        echo 'This may indicate slow tests or hanging operations.'
+        echo "This may indicate slow tests or hanging operations."
 
-        echo 'Review the test output above for timeout messages.'
+        echo "Review the test output above for timeout messages."
 
         '
     - name: Upload coverage artifact (shard ${{ matrix.shard }})
       if: always()
       uses: actions/upload-artifact@v5
       with:
+        name: coverage-shard-${{ matrix.shard }}
         path: 'coverage_shard_${{ matrix.shard }}.xml
 
           htmlcov_shard_${{ matrix.shard }}/
@@ -105,24 +107,24 @@ jobs:
 
           '
         retention-days: 14
-        name: coverage-shard-${{ matrix.shard }}
     - name: Upload timeout logs
       if: steps.coverage.outputs.coverage_failed == 'true'
       uses: actions/upload-artifact@v5
       with:
+        name: timeout-logs-shard-${{ matrix.shard }}
         path: 'pytest_timeout.ini
 
           *.log
 
           '
         retention-days: 14
-        name: timeout-logs-shard-${{ matrix.shard }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   merge-coverage:
     needs: coverage-with-timeout
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
     permissions:
       contents: read
       actions: read
@@ -159,13 +161,13 @@ jobs:
       if: steps.merge.outputs.merge_succeeded == 'true'
       uses: actions/upload-artifact@v5
       with:
+        name: coverage-combined
         path: 'coverage_combined.xml
 
           htmlcov_combined/
 
           '
         retention-days: 30
-        name: coverage-combined
     - name: Generate coverage summary
       if: steps.merge.outputs.merge_succeeded == 'true'
       run: "echo \"## Coverage Report Summary\" >> $GITHUB_STEP_SUMMARY\necho \"\"\
@@ -219,6 +221,7 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
+    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -238,4 +241,5 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
       run: python scripts/ci/post_rescue_comment.py
