@@ -27,12 +27,10 @@ jobs:
   scan-and-post:
     # Temporarily disabled for PR #5328 to prevent cascading failures
     if: |
-      ${{
-        github.event.pull_request.number != 5328 &&
-        (github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||
-         (github.event_name == 'issue_comment' && github.event.issue.pull_request != null &&
-          github.event.comment.user.login == 'mbaetiong'))
-      }}
+      github.event.pull_request.number != 5328 &&
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||
+       (github.event_name == 'issue_comment' && github.event.issue.pull_request != null &&
+        github.event.comment.user.login == 'mbaetiong'))
     name: 🔍 Scan PR comments
     runs-on: ubuntu-latest
     outputs:

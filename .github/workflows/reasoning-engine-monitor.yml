@@ -105,10 +105,11 @@ jobs:
             return report
 
         report = asyncio.run(run_workload())
-
+ 
         # Output for next step
-        print(f\"::set-output name=brier_score::{report["brier_score"]}\")
-        print(f\"::set-output name=p99_latency::{report["latency_ms"]["p99"]}\")
+        with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
+            f.write(f"brier_score={report['brier_score']}\n")
+            f.write(f"p99_latency={report['latency_ms']['p99']}\n")
 
         EOF
 
