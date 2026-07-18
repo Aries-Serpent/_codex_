@@ -150,7 +150,7 @@ jobs:
           fi
 
       - name: Commit updated index metadata
-        if: steps.pr_guard.outputs.pr_skip != "true"
+        if: steps.pr_guard.outputs.pr_skip != 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}

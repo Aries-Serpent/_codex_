@@ -81,7 +81,7 @@ jobs:
       with:
         path: .codex/monitoring/state/
         name: monitor-state
-        continue-on-error: true
+      continue-on-error: true
     - name: Run monitoring check
       if: env.RATE_LIMIT_OK != 'false'
       id: monitor
