@@ -16,15 +16,15 @@ jobs:
   sla-compliance-check:
     name: Daily SLA Compliance
     runs-on: ubuntu-latest
-    if: github.event_name != \'schedule\' || github.event.schedule == \'0 0 * * *\'
+    if: github.event_name != 'schedule' || github.event.schedule == '0 0 * * *'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
         run: "python -m pip install --upgrade pip
 
@@ -46,15 +46,15 @@ jobs:
   pareto-frontier-update:
     name: Weekly Pareto Frontier
     runs-on: ubuntu-latest
-    if: github.event_name != \'schedule\' || github.event.schedule == \'0 2 * * 1\'
+    if: github.event_name != 'schedule' || github.event.schedule == '0 2 * * 1'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
         run: "python -m pip install --upgrade pip
 
@@ -127,21 +127,21 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-        name: pareto-frontier-report
-        path: artifacts/pareto-frontier.json
-        retention-days: 30
+          name: pareto-frontier-report
+          path: artifacts/pareto-frontier.json
+          retention-days: 30
   monthly-billing-report:
     name: Monthly Billing Report
     runs-on: ubuntu-latest
-    if: github.event_name != \'schedule\' || github.event.schedule == \'0 3 1 * *\'
+    if: github.event_name != 'schedule' || github.event.schedule == '0 3 1 * *'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
         run: "python -m pip install --upgrade pip
 
@@ -227,21 +227,21 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-        name: monthly-billing-reports
-        path: artifacts/billing_*.{csv,json}
-        retention-days: 90
+          name: monthly-billing-reports
+          path: artifacts/billing_*.{csv,json}
+          retention-days: 90
   tier-transition-audit:
     name: Tier Transition Audit
     runs-on: ubuntu-latest
-    if: github.event_name != \'schedule\' || github.event.schedule == \'0 0 * * 0\'
+    if: github.event_name != 'schedule' || github.event.schedule == '0 0 * * 0'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
         run: "python -m pip install --upgrade pip
 
@@ -289,9 +289,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-        name: tier-transition-audit
-        path: artifacts/tier-transition-audit.*
-        retention-days: 30
+          name: tier-transition-audit
+          path: artifacts/tier-transition-audit.*
+          retention-days: 30
   cost-anomaly-detection:
     name: Cost Anomaly Detection
     runs-on: ubuntu-latest
@@ -301,8 +301,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
         run: "python -m pip install --upgrade pip
 
@@ -364,9 +364,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-        name: cost-anomaly-report
-        path: artifacts/cost-anomaly-report.json
-        retention-days: 30
+          name: cost-anomaly-report
+          path: artifacts/cost-anomaly-report.json
+          retention-days: 30
     timeout-minutes: 30
   summary:
     name: Optimization Summary
@@ -382,7 +382,7 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v5
         with:
-        path: artifacts
+          path: artifacts
       - name: Generate summary report
         run: |-
           python -c \"
@@ -441,14 +441,14 @@ jobs:
       - name: Upload summary
         uses: actions/upload-artifact@v5
         with:
-        name: optimization-summary
-        path: summary.json
-        retention-days: 30
+          name: optimization-summary
+          path: summary.json
+          retention-days: 30
       - name: Comment on PR (if exists)
-        if: github.event_name == \'pull_request\'
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v8
         with:
-        script: |-
+          script: |-
           const fs = require("fs");
           const summary = JSON.parse(fs.readFileSync("summary.json",\ "utf8"));
 

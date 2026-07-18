@@ -62,83 +62,71 @@ jobs:
       - name: Dispatch unified approval hub
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
-        script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
-          const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst\
-          \ prSha = '${{ steps.ctx.outputs.pr_sha }}';\nconst reviewer = '${{ steps.ctx.outputs.reviewer\
-          \ }}';\n\ncore.info(`Dispatching auto-approve-workflows.yml for PR  #${prNumber}\
-          \ @ ${prSha.slice(0,8)}`);\n\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
-        \    owner,\n    repo,\n    workflow_id: 'auto-approve-workflows.yml',\n\
-        \    ref: 'main',\n    inputs: {\n      approval_source: 'trigger-on-approval',\n\
-        \      approval_intent: 'dispatch_validation_suite',\n      target_pr: prNumber.toString(),\n\
-        \      approval_reason: `Code review approval from @${reviewer}`,\n    \
-        \  approval_ttl_hours: '2',\n      dry_run: 'false'\n    }\n  });\n  core.info('\u2705\
-          \ auto-approve-workflows.yml dispatched');\n} catch (err) {\n  core.warning(`Hub\
-        \ dispatch failed: ${err.message}`);\n}\n"
-        continue-on-error: true
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\nconst prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst prSha = '${{ steps.ctx.outputs.pr_sha }}';\nconst reviewer = '${{ steps.ctx.outputs.reviewer }}';\n\ncore.info(`Dispatching auto-approve-workflows.yml for PR  #${prNumber} @ ${prSha.slice(0,8)}`);\n\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n    owner,\n    repo,\n    workflow_id: 'auto-approve-workflows.yml',\n    ref: 'main',\n    inputs: {\n      approval_source: 'trigger-on-approval',\n      approval_intent: 'dispatch_validation_suite',\n      target_pr: prNumber.toString(),\n      approval_reason: `Code review approval from @${reviewer}`,\n      approval_ttl_hours: '2',\n      dry_run: 'false'\n    }\n  });\n  core.info('✅ auto-approve-workflows.yml dispatched');\n} catch (err) {\n  core.warning(`Hub dispatch failed: ${err.message}`);\n}\n"
+          continue-on-error: true
       - name: Dispatch Validation Pipeline (validate.yml)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ validate.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
-        \    owner, repo,\n    workflow_id: 'validate.yml',\n    ref,\n    inputs:\
-        \ { mode: 'fast' },\n  });\n  core.info('\u2705 validate.yml dispatched');\n\
-        } catch (err) {\n  core.warning(`validate.yml dispatch failed: ${err.message}`);\n\
+          \    owner, repo,\n    workflow_id: 'validate.yml',\n    ref,\n    inputs:\
+          \ { mode: 'fast' },\n  });\n  core.info('\u2705 validate.yml dispatched');\n\
+          } catch (err) {\n  core.warning(`validate.yml dispatch failed: ${err.message}`);\n\
           }\n"
-        continue-on-error: true
+          continue-on-error: true
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ pre-merge-validation.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
-        \    owner, repo,\n    workflow_id: 'pre-merge-validation.yml',\n    ref,\n\
-        \    inputs: {},\n  });\n  core.info('\u2705 pre-merge-validation.yml dispatched');\n\
-        } catch (err) {\n  core.warning(`pre-merge-validation.yml dispatch failed:\
+          \    owner, repo,\n    workflow_id: 'pre-merge-validation.yml',\n    ref,\n\
+          \    inputs: {},\n  });\n  core.info('\u2705 pre-merge-validation.yml dispatched');\n\
+          } catch (err) {\n  core.warning(`pre-merge-validation.yml dispatch failed:\
           \ ${err.message}`);\n}\n"
-        continue-on-error: true
+          continue-on-error: true
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ codeql-alert-fetcher.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
-        \    owner, repo,\n    workflow_id: 'codeql-alert-fetcher.yml',\n    ref,\n\
-        \    inputs: {\n      state: 'open',\n      tool_name: 'CodeQL',\n     \
-        \ max_pages: '10',\n      page_sleep_ms: '1000',\n      top_n: '30',\n \
+          \    owner, repo,\n    workflow_id: 'codeql-alert-fetcher.yml',\n    ref,\n\
+          \    inputs: {\n      state: 'open',\n      tool_name: 'CodeQL',\n     \
+          \ max_pages: '10',\n      page_sleep_ms: '1000',\n      top_n: '30',\n \
           \   },\n  });\n  core.info('\u2705 codeql-alert-fetcher.yml dispatched');\n\
           } catch (err) {\n  // Non-fatal \u2014 CODEX_MASTER_KEY may be absent in\
           \ fork contexts\n  core.warning(`codeql-alert-fetcher.yml dispatch failed\
-        \ (needs CODEX_MASTER_KEY/security_events): ${err.message}`);\n}\n"
-        continue-on-error: true
+          \ (needs CODEX_MASTER_KEY/security_events): ${err.message}`);\n}\n"
+          continue-on-error: true
       - name: Post @copilot continue (resume agent session)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        script: "const owner    = context.repo.owner;\nconst repo     = context.repo.repo;\n\
+          script: "const owner    = context.repo.owner;\nconst repo     = context.repo.repo;\n\
           const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst\
           \ reviewer = '${{ steps.ctx.outputs.reviewer }}';\nconst sha      = '${{\
           \ steps.ctx.outputs.pr_sha }}';\n\nconst body = [\n  `<!-- trigger-on-approval-agent-resume\
           \ -->`,\n  `## \u26A1 Approval Dispatch \u2014 Copilot Resume`,\n  ``,\n\
           \  `PR  #${prNumber} approved by **@${reviewer}** at \\`${sha.slice(0,8)}\\\
-        `.`,\n  ``,\n  `**Dispatched workflows:**`,\n  `- \\`validate.yml\\` (fast\
+          `.`,\n  ``,\n  `**Dispatched workflows:**`,\n  `- \\`validate.yml\\` (fast\
           \ mode) \u2705`,\n  `- \\`pre-merge-validation.yml\\` \u2705`,\n  `- \\\
           `codeql-alert-fetcher.yml\\` (requires CODEX_MASTER_KEY) \u2705`,\n  `-\
           \ All \\`action_required\\` runs auto-approved via \\`approve_pending_runs.py\\\
           ` \u2705`,\n  ``,\n  `@copilot continue`,\n].join('\\n');\n\ntry {\n  await\
-        \ github.rest.issues.createComment({ owner, repo, issue_number: prNumber,\
+          \ github.rest.issues.createComment({ owner, repo, issue_number: prNumber,\
           \ body });\n  core.info('\u2705 @copilot continue comment posted');\n} catch\
-        \ (err) {\n  core.warning(`Could not post @copilot continue comment: ${err.message}`);\n\
+          \ (err) {\n  core.warning(`Could not post @copilot continue comment: ${err.message}`);\n\
           }\n"
-        continue-on-error: true
+          continue-on-error: true
       - name: Summary
         if: always()
         run: 'echo "================================================================"

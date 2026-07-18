@@ -130,7 +130,7 @@ jobs:
           \ auto-approve-workflows.yml dispatched for batch of ${pendingCount} runs`);\n\
         } catch (err) {\n  core.warning(`Hub dispatch failed: ${err.message}`);\n\
           }\n"
-      continue-on-error: true
+        continue-on-error: true
     - name: Job summary
       if: always()
       run: "cat >> \"$GITHUB_STEP_SUMMARY\" << 'EOF'\n## \u26A1 Self-Approve Pending\

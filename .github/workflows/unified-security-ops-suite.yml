@@ -152,7 +152,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Operations Summary
     if: always()
-    needs: []
     steps:
       - name: Report summary
         run: |

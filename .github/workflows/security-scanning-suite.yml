@@ -994,8 +994,7 @@ jobs:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
-
-      continue-on-error: true
+        continue-on-error: true
       - name: Build consolidated security summary
         if: always()
         shell: bash

@@ -81,7 +81,7 @@ jobs:
         id: rp001
         run: "echo \"Starting RP-001 API Null-Handling validation...\"\n\n# Pattern:\
         \ Check for unsafe API field handling\nunsafe_patterns=$(rg '\\.get\\([\"\\\
-        047][^\"'\\'']+[\"\\047][,\\)].*\\.replace\\(' \\\n  --glob=\"scripts/ci/**\"\
+        047][^\"'\'']+[\"\\047][,\\)].*\\.replace\\(' \\\n  --glob=\"scripts/ci/**\"\
         \ --glob=\"src/scripts/ci/**\" --type=python 2>/dev/null || true)\n\nif [\
         \ -z \"$unsafe_patterns\" ]; then\n  echo \"status=pass\" >> $GITHUB_OUTPUT\n\
         \  echo \"message=✅ No unsafe API null-handling patterns detected\" >> $GITHUB_OUTPUT\n\

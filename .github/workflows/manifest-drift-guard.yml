@@ -64,7 +64,7 @@ jobs:
               walk(data)
           except Exception:
               for line in raw.splitlines():
-                  m = re.search(r'(?:^|\s)(?:path|file|filepath)\s*[:=]\s*["\']?([^"\']+)["\']?', line, re.I)
+                  m = re.search(r'(?:^|\s)(?:path|file|filepath)\s*[:=]\s*["']?([^"']+)["']?', line, re.I)
                   if m:
                       paths.append(m.group(1).strip())
 

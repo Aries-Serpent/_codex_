@@ -151,7 +151,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Suite Summary
     if: always()
-    needs: []
     steps:
       - name: Report summary
         run: |

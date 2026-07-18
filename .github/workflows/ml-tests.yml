@@ -78,7 +78,7 @@ jobs:
           flags: ${{ matrix.test-suite }}
           name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
           token: ${{ secrets.CODECOV_TOKEN }}
-        continue-on-error: true
+          continue-on-error: true
 
   test-integration-slow:
     permissions:

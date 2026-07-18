@@ -868,7 +868,7 @@ jobs:
         ref: refs/heads/main
         fetch-depth: 1
         token: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true
+        continue-on-error: true
     - name: Query high-recurrence + cross-PR patterns
       id: high_rec
       env:

@@ -56,7 +56,7 @@ jobs:
     - name: Check for unsafe API field handling patterns
       id: safety-check
       run: "set +e\n\necho \"Scanning for unsafe API null-handling patterns...\"\n\
-        \nunsafe_get_replace=$(rg '\\.get\\([\"\\047][^\"'\\'']+[\"\\047][,\\)].*\\\
+        \nunsafe_get_replace=$(rg '\\.get\\([\"\\047][^\"'\'']+[\"\\047][,\\)].*\\\
         .replace\\(' \\\n  --glob='scripts/ci/**' \\\n  --glob='src/scripts/ci/**'\
         \ \\\n  --type=python 2>/dev/null || true)\n\nunsafe_response_access=$(rg\
         \ 'response\\[\"[^\"]+\"\\]\\.replace\\(' \\\n  --glob='scripts/ci/**' \\\n\
