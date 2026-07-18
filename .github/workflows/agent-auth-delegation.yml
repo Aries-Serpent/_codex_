@@ -1057,7 +1057,7 @@ jobs:
           \  core.info('\u2705 auto-approve-workflows.yml dispatched for token delegation');\n\
           } catch (err) {\n  core.warning(`Hub dispatch failed: ${err.message}`);\n\
           }\n"
-        continue-on-error: true
+      continue-on-error: true
     - name: Write provenance session token (.codex/agent_auth_session.json)
       run: "mkdir -p .codex\nEXPIRY=$(( $(date +%s) + 43200 ))\ncat > .codex/agent_auth_session.json\
         \ <<EOF\n{\n  \"issued_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\n  \"expires_at\"\

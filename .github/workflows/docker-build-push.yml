@@ -50,8 +50,6 @@ jobs:
       timeout_minutes: 45
       matrix_count: 1
       pushes_to_ghcr: true
-      contents: read
-      pull-requests: write
   approval-check:
     needs: cost-gate
     name: "Owner approval \u2014 check-only gate"
