@@ -1,0 +1,18 @@
+{
+  "focus": "security",
+  "steps": [
+    {
+      "agent": "unified-security-scanner",
+      "order": 1,
+      "prompt_template": "Run a unified security scan and summarize the actionable findings only.",
+      "purpose": "Collect dependency, secrets, and SAST findings in one pass."
+    },
+    {
+      "agent": "code-scanning-remediation-agent",
+      "order": 2,
+      "prompt_template": "Remediate the actionable findings from the unified security scan and explain what changed.",
+      "purpose": "Apply code-level remediation to valid findings."
+    }
+  ],
+  "summary": "Use the security scanner + remediation chain for dependency and GHAS issues."
+}

@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-07-18T06:38:56Z",
+  "patterns": {
+    "frequency": {},
+    "tools": {},
+    "agents": {},
+    "time_patterns": {},
+    "performance": {},
+    "trends": {},
+    "insights": []
+  },
+  "tips": [
+    {
+      "category": "engagement",
+      "title": "Low Session Frequency",
+      "description": "Your sessions are infrequent. Regular consistent sessions can help build better patterns and outcomes."
+    },
+    {
+      "category": "improvement",
+      "title": "Session Success Rate Below 50%",
+      "description": "Consider breaking down complex tasks into smaller sessions and using more comprehensive planning before execution."
+    },
+    {
+      "category": "strategy",
+      "title": "Use Specialized Agents",
+      "description": "Consider using specialized agents like unified-coverage-agent, ci-failure-resolution-agent, or autonomous-test-healer-agent for focused improvements."
+    }
+  ]
+}

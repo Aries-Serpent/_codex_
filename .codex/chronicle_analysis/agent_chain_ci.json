@@ -1,0 +1,18 @@
+{
+  "focus": "ci",
+  "steps": [
+    {
+      "agent": "ci-auto-healer-agent",
+      "order": 1,
+      "prompt_template": "Diagnose the failing CI jobs and auto-apply all safe fix patterns.",
+      "purpose": "Apply recurring CI fix patterns and produce diagnostics."
+    },
+    {
+      "agent": "autonomous-test-healer-agent",
+      "order": 2,
+      "prompt_template": "Fix the remaining failing tests after the CI auto-healer pass and report the root causes.",
+      "purpose": "Repair remaining failing tests after CI stabilization."
+    }
+  ],
+  "summary": "Use the CI healing chain before manual debugging loops."
+}
