@@ -1,10 +1,10 @@
-# Session Context — 2026-07-18T21:28:05Z
+# Session Context — 2026-07-18T21:36:53Z
 **Branch:** `copilot/phase-1-codeql-consolidation`  **PR:** #5337  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4836` (✅)
-- GraphQL remaining: `4992` (✅)
+- REST remaining: `4678` (✅)
+- GraphQL remaining: `4982` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,30 +12,30 @@
 State: `open`  Draft: `False`  Branch: `copilot/phase-1-codeql-consolidation` → `main`
 
 ### ❌ 7 Failing CI Check(s)
-- `Summary` (failure)
-- `⚡ Auto-Approve if Compliance Passed` (failure)
+- `Post rescue comment on failure` (cancelled)
+- `💰 PR Cost Check` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `💰 PR Cost Check` (cancelled)
+- `Post rescue comment on failure` (failure)
 - `Post rescue comment on nox failure` (failure)
-- `Governance Compliance` (failure)
-- `Container Security Scan (Trivy) (.config/Dockerfile)` (failure)
-- `Container Security Scan (Trivy) (docker/Dockerfile.cpu)` (failure)
-- `Container Security Scan (Trivy) (docker/Dockerfile.gpu)` (failure)
+- `🔧 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-18)
 - **PR Comment Review Gate** — `failure` on `main` (2026-07-18)
-- **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-18)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-18)
-- **Tiered Approval Gate** — `failure` on `copilot/phase-1-codeql-consolidation` (2026-07-18)
+- **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-18)
+- **PR Comment Review Gate** — `failure` on `main` (2026-07-18)
 
 ## 📝 Recent Commits
+- `808808d7` fix: Correct agents used identifiers to satisfy REQ-14 validation — copilot-swe-agent[bot] (2026-07-18)
+- `b731f301` fix: Address blocking comments and fix REQ-4/REQ-5 compliance - update accountab — copilot-swe-agent[bot] (2026-07-18)
+- `1eeb00e1` chore: Session initialization - analyze CI failures and blocking comments — copilot-swe-agent[bot] (2026-07-18)
 - `1913f412` fix: Remove unreachable exception handler and fix ruff code validation format ch — copilot-swe-agent[bot] (2026-07-18)
 - `f730b3d5` fix: Improve code review feedback - precise ruff code matching, explicit encodin — copilot-swe-agent[bot] (2026-07-18)
 - `b0e5054c` fix: Address code review feedback - correct ruff code matching and remove incons — copilot-swe-agent[bot] (2026-07-18)
 - `87517d8b` fix: Resolve actionlint violations in PR #5337 - Fix workflow compliance issues — copilot-swe-agent[bot] (2026-07-18)
 - `9d43dd9b` Lane 3: Approval gate compliance fixed by workflow-compliance-guardian (commit 4 — copilot-swe-agent[bot] (2026-07-18)
-- `dc944ea7` Lane 1: QA walkthrough check fixed by qa-walkthrough-agent (commit e1b0fe92) — copilot-swe-agent[bot] (2026-07-18)
-- `481bbc9e` fix(approval-gate): Correct WEC compliance for check-approval workflow — copilot-swe-agent[bot] (2026-07-18)
-- `e1b0fe92` fix: Add missing QA walkthrough script and results directory — copilot-swe-agent[bot] (2026-07-18)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
