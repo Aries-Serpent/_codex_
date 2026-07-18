@@ -1,0 +1,21 @@
+# Documentation Build Requirements
+# MkDocs Material theme with extensions for Codex documentation site
+# Used by: .github/workflows/pages-mkdocs.yml
+
+# Core MkDocs and theme
+mkdocs>=1.5.0
+mkdocs-material>=9.4.14
+
+# Extensions for enhanced markdown processing
+pymdown-extensions>=10.1
+python-markdown-math>=0.8
+
+# Mermaid diagram support
+mkdocs-mermaid2-plugin>=0.6.0
+
+# Code syntax highlighting
+Pygments>=2.15.1
+
+# Additional features
+mkdocs-macros-plugin>=0.7.0
+mkdocs-include-markdown-plugin>=6.0.0

@@ -1,134 +1,139 @@
-# Documentation Hub
-**Version:** v0.2.0
+# Codex Documentation Hub
 
-**Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
+**Version:** v0.2.0  
+**Last Updated:** 2026-07-18  
+**Status:** ✅ Production Documentation
 
-**Last Updated**: 2026-07-11 | **Current Version**: 0.2.1
+Welcome to the comprehensive documentation for **Aries-Serpent/_codex_** — a quantum-enhanced AI agent orchestration platform with advanced code generation capabilities.
 
 ---
 
-## Cognitive Brain (Start Here for AI Agents)
+## Getting Started
+
+Choose your entry point based on your role:
+
+### 👤 For Users
+- **[Quick Start](tutorials/quickstart.md)** — Get up and running in 5 minutes
+- **[Contributing Guide](CONTRIBUTING.md)** — Development workflow and guidelines
+- **[API Reference](api/index.md)** — Complete API documentation
+
+### 🧠 For AI Agents & Cognitive Systems
+- **[Cognitive Brain Overview](cognitive_brain/INDEX.md)** — AI agent coordination and memory systems
+- **[Cognitive App](cognitive_app.md)** — Real-time quantum-enhanced code generation
+- **[Architecture Overview](architecture.md)** — System design and components
+
+### 🔧 For Developers & Operators
+- **[Setup & Integration](guides/codex_setup.md)** — Configure your development environment
+- **[Code Style Guide](guides/code_style_guide.md)** — Coding conventions and best practices
+- **[Deployment Guide](deployment/DEPLOYMENT_GUIDE.md)** — Deploy to production
+
+---
+
+## Core Documentation Sections
+
+### 📚 Reference Materials
+- **[Architecture](./architecture/INDEX.md)** — Detailed technical architecture and component diagrams
+- **[API Reference](api/index.md)** — Complete API documentation and examples
+- **[Changelog](CHANGELOG.md)** — Release notes and version history
+- **[Roadmap](ROADMAP.md)** — Planned features and improvements
+
+### 🚀 Operations & Deployment
+- **[Monitoring & Observability](ops/monitoring.md)** — Health checks and metrics
+- **[CI/CD Workflows](ci/INDEX.md)** — Automated testing and deployment pipelines
+- **[Troubleshooting](troubleshooting/INDEX.md)** — Common issues and solutions
+- **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** — Setup and management
+
+### 🧪 Testing & Quality
+- **[Testing Framework](testing/INDEX.md)** — Test suite and coverage tracking
+- **[Code Quality](capabilities/code_quality_tooling.md)** — Quality assurance tools
+- **[Coverage Roadmap](COVERAGE_ROADMAP_TO_100_PERCENT.md)** — Testing coverage goals
+
+### 📦 Integration & Packaging
+- **[MCP Quick Start](mcp/QUICK_START.md)** — Model Context Protocol integration
+- **[Packaging Guide](mcp/PACKAGING_GUIDE.md)** — Package and distribute components
+- **[Capabilities Framework](mcp/PACKAGEABLE_CAPABILITIES.md)** — Capability transfer system
+
+### 💾 Configuration & Setup
+- **[Logging Guide](guides/LOGGING.md)** — Structured logging setup and best practices
+- **[Checkpointing](capabilities/checkpointing.md)** — Model checkpoint management with SafeTensors
+- **[Configuration Management](configuration/MIGRATION_MAPPING.md)** — Hydra-based configuration
+
+---
+
+## Cognitive Brain (AI Agents Start Here)
+
+The cognitive brain enables autonomous AI agent orchestration with persistent memory and decision-making:
 
 ### **Unified Navigation System**
-- **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
-- **[Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
-- **[Roadmap](./ROADMAP.md)** - Iteration plans, priorities, future scope
+- **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** — Complete architecture, components, flows, and dependencies
+- **[Dashboard](./system/CODEBASE_DASHBOARD.md)** — Live status, current work, blockers, and metrics
+- **[Agent Orchestration](guides/continuous_improvement.md)** — Multi-agent workflow management
 
-### **Why This Matters**
-The cognitive brain enables:
-- **Context Continuity**: AI agents maintain understanding across sessions
-- **Efficient Navigation**: Quick discovery of components, entry points, relationships
-- **Duration-Aware Planning**: Maximize work within token/time budgets
-- **Best Path Forward**: Always know the next most valuable task
-- **Autonomous Operation**: Self-directed agents without constant human guidance
-
----
-
-## Quick Links
-
-### CI Rescue & Health
-- **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Golden-path documentation: how workflow failures automatically trigger Copilot sessions. Includes Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern map. *(S244 — 2026-03-30)*
-- **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
-
-### Core Documentation
-- **[Architecture](./architecture/INDEX.md)** - Detailed technical architecture
-- **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
-- **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
-- **[API Reference](api/index.md)** - Complete API documentation
-- **[Getting Started](guides/quickstart.md)** - Quick start guide
-- **[Examples](guides/examples.md)** - Code examples
-- **[Changelog](CHANGELOG.md)** - Release history
-
-### MCP Package System (93+ KB Documentation)
-- **[Quick Start](mcp/QUICK_START.md)** - 5-minute onboarding guide
-- **[Packaging Guide](mcp/PACKAGING_GUIDE.md)** - Complete packaging workflows
-- **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
-- **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
-- **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
-- **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap
-
-### Capability Guides
-- **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
-- **[Training Loops](capabilities/train_loop.md)** - Production training patterns
-- **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
-- **[Code Quality](capabilities/code_quality_tooling.md)** - Complete quality stack
-
----
-
-## Orientation Pillars
-
-- **Reasoning roadmap** — Track milestone health and forward-looking bets in README_ROOT.md.
-- **Architecture** — Pair [`diagrams/architecture.svg`](./diagrams/architecture.svg) with the systems notes in [`guides/reasoning_overview.md`](./guides/reasoning_overview.md).
-- **Curriculum design** — Apply the phased training playbooks from [`guides/first_principles_curricula.md`](./guides/first_principles_curricula.md).
-- **Bespoke hosting expectations** — Align ops and status updates with [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the rollout checklists under [`templates/`](./templates/README.md).
-
-### Reasoning Pod Deployment
-Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the [configs/deploy/reasoning_pod.yaml](configs/deploy/reasoning_pod.yaml) for dry-run deployment guidance. These assets are designed for offline validation and do not require hosted services.
-
----
-
-## Quick Links for Reasoning Teams
-
-- **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the [`codex_cli` help](src/codex_cli/app.py) for command details.
-- **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in [`README_ROOT.md`](README_ROOT.md#training-quickstart).
-- **Evaluation ledger** — Use [`guides/reasoning_overview.md`](guides/reasoning_overview.md) to configure NDJSON metrics pipelines.
-- **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
+### **Key Capabilities**
+- **Context Continuity** — Maintain understanding across sessions
+- **Efficient Navigation** — Quick discovery of components and relationships
+- **Duration-Aware Planning** — Maximize work within token/time budgets
+- **Autonomous Operation** — Self-directed agents without constant human guidance
+- **Memory Management** — Hippocampus-cortex inspired STM/LTM system
 
 ---
 
 ## Operational Templates
 
-Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning checkpoints with consistent safeguards. Begin with the [Operational Templates index](./templates/README.md) to review prerequisites, required metadata, and cross-references before copying a template into your service.
+Reusable templates for common operations (migrations, hardening, planning):
 
-### When to Use a Template
-- You are planning a migration or hardening effort that will cross team boundaries.
-- You need an auditable checklist with rollback, communications, and verification steps.
-- You want a consistent structure for maintaining ≥85% coverage through scoped test additions.
+- **[Migration — Python File Relocation](./templates/Migration_PythonFileRelocation.md)** — Safely relocate Python files
+- **[Migration — CLI Hardening](./templates/Migration_CLIHardening.md)** — Harden CLI interfaces
+- **[Planning — Intent Validation](./templates/Planning_IntentValidation.md)** — Validate project intent
 
-### Quick Links
-- [Migration — Python File Relocation](./templates/Migration_PythonFileRelocation.md)
-- [Migration — CLI Hardening](./templates/Migration_CLIHardening.md)
-- [Planning — Intent Validation](./templates/Planning_IntentValidation.md)
-
-### Handoff Checklist
-Each template includes role guidance (developers draft maintainers execute), `[PLACEHOLDER: …]` prompts, and success criteria aligned with the coverage standard. Ensure the following before requesting review:
-
-1. All placeholders are replaced with repo-specific context and linked artifacts.
-2. Rollback and communication steps point to real runbooks or dashboards.
-3. The template is stored alongside the service codebase (usually under `docs/`) and linked from the change description or PR.
-
-See [CONTRIBUTING](../CONTRIBUTING.md#using-operational-templates) for the full drafting workflow and role expectations.
+**Before using a template:** Review [Templates Guide](./templates/README.md) for prerequisites and role guidance.
 
 ---
 
-## Phase 8.7: Universal Intelligence
+## CI Rescue & Reliability
 
-Complete meta-learning framework with 170 tests.
+### Automated Failure Recovery
+- **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Automated Copilot sessions for workflow failures
+- **[CI/CD Index](ci/INDEX.md)** — All failure analysis and fix summaries
+- **[Workflow Health](ci/ROOT_ORG_VALIDATION.md)** — Organization-level workflow validation
 
-**Components:**
-- Universal Task Interface
-- Meta-Policy Router (MAML/Reptile)
-- Abstraction Engine
-- Grounding Layer
-- Pattern Store
-- Safety Monitor
-- EXP-10 Validation
+---
 
-### Quick Example
+## Accountability & Status
 
-```python
-from github.agents.core.universal_intelligence import UniversalTaskInterface, TaskSpec
+- **[Project Status](status/GITHUB_PAGES_STATUS.md)** — Current health and metrics
+- **[Accountability Reports](accountability/INDEX.md)** — Session and phase tracking
+- **[Phase Archives](archive/INDEX.md)** — Historical documentation and completed phases
 
-spec = TaskSpec(
- environment="gridworld",
- initial_state={"x": 0, "y": 0, "goal": {"x": 5, "y": 5}},
- reward_spec={"id": "reward:v1"},
- termination={"max_steps": 100},
-)
+---
 
-uti = UniversalTaskInterface(seed=12345)
-result = uti.execute_task(spec)
-```
+## Deployment Rings & Rollout
+
+This repository uses staged rollout rings:
+
+| Ring | Status | Purpose |
+|------|--------|---------|
+| `0A_base_` / `0B_base_` | Active Dev | Unstable knobs, experimental features |
+| `0C_base_` | Integration | Multiple features landing together |
+| `0D_base_` | Release Candidate | Explainable to Engineering and Product |
+| `main` | Production | Canonical internal alpha product |
+
+---
+
+## Quick Reference
+
+| Need | Find It Here |
+|------|-------|
+| **Quick start** | [Quickstart Guide](tutorials/quickstart.md) |
+| **How to contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| **API documentation** | [API Reference](api/index.md) |
+| **System architecture** | [Architecture](architecture.md) |
+| **Deployment steps** | [Deployment Guide](deployment/DEPLOYMENT_GUIDE.md) |
+| **Troubleshoot an issue** | [Troubleshooting](troubleshooting/INDEX.md) |
+| **Review changes** | [Changelog](CHANGELOG.md) |
+| **Find an example** | [Examples](guides/examples.md) |
+| **Setup development env** | [Setup Guide](guides/codex_setup.md) |
+| **Report a bug** | [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) |
 
 ---
 
@@ -140,43 +145,22 @@ pip install -e .
 
 ---
 
-## Deployment and Operational Expectations
-
-To generate and review a deployment manifest for a bespoke reasoning agent, run a dry-run deploy:
-
-```bash
-codex deploy \
- --config configs/deploy/reasoning_pod.yaml \
- --model artifacts/runs/reasoning-starter:last \
- --dry-run
-```
-
-This renders the "reasoning pod" manifest for inspection. It does **not** create or update any live service. See [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) for what that pod is expected to look like (resources, telemetry, trace capture mode, curriculum phase, etc.).
-
-### Rollout Rings
-
-This repository uses staged rollout rings to represent maturity and review state:
-
-* `0A_base_` / `0B_base_`: active development, unstable knobs.
-* `0C_base_`: integration of multiple features landing together.
-* `0D_base_`: release candidate. Content here should be explainable to Engineering and Product.
-* `main`: canonical internal "alpha product" surface after approval.
-
----
-
 ## Conventions
 
-- Keep docs small and composable.
-- Use a single fenced `diff` block for proposed patches in prompts/guides.
-- Prefer citations to live repo files when referencing code or config.
+- Keep docs small and composable
+- Use fenced code blocks for proposed patches
+- Prefer citations to live repo files when referencing code
+- Follow "Keep a Changelog" format with **Unreleased** section
 
 ---
 
-## Related
+## Need Help?
 
-- Project audit ritual: see `AUDIT_PROMPT.md`
-- CHANGELOG practices follow "Keep a Changelog" with an **Unreleased** section at the top.
+- 🐛 **Found a bug?** → [Open an issue](https://github.com/Aries-Serpent/_codex_/issues)
+- 💡 **Have a question?** → [Check the FAQ](FAQ.md)
+- 📖 **Want to learn more?** → [Browse all documentation](#core-documentation-sections)
 
 ---
 
-Last updated: 2026-06-22
+**Last updated:** 2026-07-18  
+**Next update:** 2026-07-25
