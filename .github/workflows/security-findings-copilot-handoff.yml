@@ -35,7 +35,7 @@ jobs:
       with:
         path: ./security-findings/
         name: security-suite-comprehensive-findings
-        continue-on-error: true
+      continue-on-error: true
     - name: Load and parse findings
       id: findings
       shell: bash
