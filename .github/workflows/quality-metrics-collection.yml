@@ -1,0 +1,464 @@
+name: Quality Metrics Collection
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/quality-metrics-collection.yml'
+      - 'pyproject.toml'
+      - 'pytest.ini'
+  pull_request:
+    branches:
+      - main
+      - develop
+  schedule:
+    # Daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: quality-metrics-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  collect-metrics:
+    name: Collect Quality Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: read
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for trend analysis
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install \
+            pytest>=7.0 \
+            pytest-cov>=4.0 \
+            pytest-timeout \
+            pytest-xdist \
+            pytest-asyncio \
+            mutmut \
+            radon \
+            pydocstyle \
+            pip-audit \
+            bandit \
+            semgrep
+      
+      - name: Create metrics directory
+        run: |
+          mkdir -p .reports/metrics
+          mkdir -p .reports/logs
+      
+      - name: Collect Coverage Metrics
+        id: coverage
+        continue-on-error: true
+        run: |
+          echo "Collecting coverage metrics..."
+          python -m pytest \
+            --cov=src \
+            --cov-report=json \
+            --cov-report=term-missing \
+            --cov-report=html \
+            -v \
+            --tb=short \
+            --timeout=600 \
+            2>&1 | tee .reports/logs/coverage.log
+          
+          # Extract coverage from coverage.json
+          python scripts/metrics/extract_coverage.py \
+            coverage.json \
+            .reports/metrics/coverage_latest.json
+          
+          echo "Coverage metrics collected"
+      
+      - name: Collect Test Metrics
+        id: tests
+        continue-on-error: true
+        run: |
+          echo "Collecting test metrics..."
+          python -m pytest \
+            --collect-only \
+            --quiet \
+            --json-report \
+            --json-report-file=.reports/logs/test_collection.json
+          
+          python scripts/metrics/extract_test_metrics.py \
+            .reports/logs/test_collection.json \
+            .reports/metrics/test_count_latest.json
+          
+          echo "Test metrics collected"
+      
+      - name: Collect Test Latency Metrics
+        id: latency
+        continue-on-error: true
+        run: |
+          echo "Collecting test latency metrics..."
+          python -m pytest \
+            --durations=20 \
+            --tb=short \
+            --timeout=600 \
+            -q \
+            2>&1 | tee .reports/logs/latency.log
+          
+          python scripts/metrics/extract_latency.py \
+            .reports/logs/latency.log \
+            .reports/metrics/test_latency_latest.json
+          
+          echo "Latency metrics collected"
+      
+      - name: Analyze Code Complexity
+        id: complexity
+        continue-on-error: true
+        run: |
+          echo "Analyzing code complexity..."
+          radon cc src/ --json > .reports/logs/cyclomatic.json || true
+          radon mi src/ --json > .reports/logs/maintainability.json || true
+          
+          python scripts/metrics/extract_complexity.py \
+            .reports/logs/cyclomatic.json \
+            .reports/logs/maintainability.json \
+            .reports/metrics/code_complexity_latest.json
+          
+          echo "Complexity metrics collected"
+      
+      - name: Check Docstring Coverage
+        id: docstrings
+        continue-on-error: true
+        run: |
+          echo "Checking docstring coverage..."
+          pydocstyle src/ --match='.*\.py' --count > .reports/logs/docstring_missing.txt || true
+          
+          python scripts/metrics/extract_docstring_coverage.py \
+            src/ \
+            .reports/metrics/docstring_coverage_latest.json
+          
+          echo "Docstring coverage collected"
+      
+      - name: Security Audit
+        id: security
+        continue-on-error: true
+        run: |
+          echo "Running security audit..."
+          pip-audit --format json > .reports/logs/pip_audit.json || true
+          bandit -r src/ -f json > .reports/logs/bandit.json || true
+          
+          python scripts/metrics/extract_security.py \
+            .reports/logs/pip_audit.json \
+            .reports/logs/bandit.json \
+            .reports/metrics/security_vulnerabilities_latest.json \
+            .reports/metrics/dependency_health_latest.json
+          
+          echo "Security metrics collected"
+      
+      - name: Collect Build Time Metrics
+        id: buildtime
+        run: |
+          echo "Recording build time..."
+          # Get workflow run duration
+          python scripts/metrics/extract_build_time.py \
+            ${{ github.run_id }} \
+            ${{ github.event_name }} \
+            .reports/metrics/build_time_latest.json
+          
+          echo "Build time metrics collected"
+      
+      - name: Calculate Per-Module Coverage
+        id: module_coverage
+        continue-on-error: true
+        run: |
+          echo "Calculating per-module coverage..."
+          python scripts/metrics/extract_module_coverage.py \
+            coverage.json \
+            .codex/PHASE_5_COVERAGE_SLOS.yaml \
+            .reports/metrics/module_coverage_latest.json
+          
+          echo "Module coverage calculated"
+      
+      - name: Calculate Coverage Trend
+        id: coverage_trend
+        continue-on-error: true
+        run: |
+          echo "Calculating 7-day coverage trend..."
+          python scripts/metrics/calculate_coverage_trend.py \
+            .reports/metrics/coverage_latest.json \
+            .reports/metrics/coverage_trend_7day.json
+          
+          echo "Coverage trend calculated"
+      
+      - name: Check SLO Compliance
+        id: slo_check
+        continue-on-error: true
+        run: |
+          echo "Checking SLO compliance..."
+          python scripts/metrics/check_slo_compliance.py \
+            .codex/PHASE_5_COVERAGE_SLOS.yaml \
+            .reports/metrics/module_coverage_latest.json \
+            .reports/metrics/slo_compliance_latest.json
+          
+          echo "SLO compliance checked"
+      
+      - name: Generate Metrics Index
+        id: index
+        continue-on-error: true
+        run: |
+          echo "Generating metrics index..."
+          python scripts/metrics/generate_metrics_index.py \
+            .reports/metrics/ \
+            .reports/metrics/metrics_index.json
+          
+          echo "Metrics index generated"
+      
+      - name: Generate Quality Dashboard JSON
+        id: dashboard
+        continue-on-error: true
+        run: |
+          echo "Generating quality dashboard..."
+          python scripts/metrics/generate_dashboard.py \
+            .reports/metrics/ \
+            .reports/quality_dashboard.json
+          
+          echo "Dashboard generated"
+      
+      - name: Generate PR Comment
+        id: pr_comment
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          python scripts/metrics/generate_pr_comment.py \
+            .reports/metrics/ \
+            .codex/PHASE_5_COVERAGE_SLOS.yaml \
+            .codex/PHASE_5_ALERT_POLICY.md \
+            pr_comment.md
+          
+          echo "PR comment generated"
+      
+      - name: Post Metrics Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const commentBody = fs.readFileSync('pr_comment.md', 'utf8');
+              
+              // Check if comment already exists
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              
+              const existingComment = comments.data.find(c =>
+                c.user.type === 'Bot' && c.body.includes('Quality Metrics Report')
+              );
+              
+              if (existingComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existingComment.id,
+                  body: commentBody,
+                });
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: commentBody,
+                });
+              }
+            } catch (error) {
+              console.error('Error posting comment:', error);
+            }
+      
+      - name: Upload Metrics Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-metrics-${{ github.run_id }}
+          path: |
+            .reports/metrics/
+            .reports/logs/
+            .reports/quality_dashboard.json
+          retention-days: 90
+      
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ github.run_id }}
+          path: |
+            htmlcov/
+          retention-days: 30
+      
+      - name: Comment on Failing Metrics
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ Quality metrics collection encountered errors. Check the workflow logs for details.'
+            })
+      
+      - name: Determine Job Status
+        if: always()
+        run: |
+          echo "Metrics collection completed"
+          echo "Artifacts uploaded to: .reports/metrics/"
+          echo "Dashboard available at: .reports/quality_dashboard.json"
+
+  publish-metrics:
+    name: Publish Metrics
+    needs: collect-metrics
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download metrics artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: quality-metrics-${{ github.run_id }}
+          path: .reports/
+      
+      - name: Commit metrics to repository
+        continue-on-error: true
+        run: |
+          git config user.name "Quality Bot"
+          git config user.email "quality@codex.dev"
+          
+          # Only commit if changes exist
+          if [ -n "$(git status --porcelain .reports/)" ]; then
+            git add .reports/metrics/
+            git commit -m "chore: update quality metrics [skip ci]"
+            git push
+          fi
+      
+      - name: Create metric snapshot
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          mkdir -p .reports/metrics/snapshots/$(date +%Y-%m-%d)
+          cp .reports/metrics/*.json .reports/metrics/snapshots/$(date +%Y-%m-%d)/ || true
+          git add .reports/metrics/snapshots/
+          git commit -m "chore: snapshot quality metrics for $(date +%Y-%m-%d)" || true
+          git push || true
+
+  validate-metrics:
+    name: Validate Metrics Quality
+    needs: collect-metrics
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download metrics
+        uses: actions/download-artifact@v4
+        with:
+          name: quality-metrics-${{ github.run_id }}
+          path: .reports/
+      
+      - name: Validate metrics files
+        run: |
+          echo "Validating metrics files..."
+          
+          # Check required metrics exist
+          required_metrics=(
+            "coverage_latest.json"
+            "test_count_latest.json"
+            "test_latency_latest.json"
+            "code_complexity_latest.json"
+            "security_vulnerabilities_latest.json"
+            "docstring_coverage_latest.json"
+            "slo_compliance_latest.json"
+            "metrics_index.json"
+          )
+          
+          missing=0
+          for metric in "${required_metrics[@]}"; do
+            if [ ! -f ".reports/metrics/$metric" ]; then
+              echo "❌ Missing: $metric"
+              missing=$((missing + 1))
+            else
+              echo "✅ Found: $metric"
+            fi
+          done
+          
+          if [ $missing -gt 0 ]; then
+            echo "⚠️ Warning: $missing metrics files are missing"
+            exit 1
+          fi
+      
+      - name: Validate metrics JSON
+        run: |
+          echo "Validating JSON format..."
+          for file in .reports/metrics/*.json; do
+            if ! python -m json.tool "$file" > /dev/null; then
+              echo "❌ Invalid JSON: $file"
+              exit 1
+            fi
+          done
+          echo "✅ All metrics JSON is valid"
+
+  notify-metrics:
+    name: Notify Metrics Status
+    needs: collect-metrics
+    runs-on: ubuntu-latest
+    if: always() && github.event_name != 'pull_request'
+    
+    steps:
+      - name: Prepare status message
+        run: |
+          echo "Quality metrics collection completed"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run: ${{ github.run_id }}"
+          echo "Status: ${{ job.status }}"
+      
+      - name: Send Slack notification (on failure only)
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload: |
+            {
+              "text": "⚠️ Quality Metrics Collection Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Quality Metrics Collection Failed*\n`Workflow: ${{ github.workflow }}`\n`Run: ${{ github.run_id }}`"
+                  }
+                }
+              ]
+            }
+        continue-on-error: true
