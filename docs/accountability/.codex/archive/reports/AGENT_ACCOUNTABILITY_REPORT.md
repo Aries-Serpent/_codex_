@@ -37,7 +37,7 @@
 - Updated: `CHANGELOG.md` (action version fix + branch rebase)
 
 ### Agents Used
-- [x] `general-purpose` (self — Copilot coding agent)
+- [x] `ci-failure-resolution-agent` (autonomous CI violation fixes)
 
 ### Commits This Session
 - f56bbce590: fix(ci): Update actions/setup-node from v4 to v5 for action version compliance
@@ -20009,3 +20009,6 @@ All pre-conditions for Phase B Alpha launch verified. Zero critical blockers. Mu
 **Decision Gate Evaluation**: 2026-07-17T23:35Z (30-min metric collection cycle)  
 **Conditional Phase C Beta**: 2026-07-18T00:05Z (if B green ≥95%)
 
+
+### Agents Used
+- [x] `ci-auto-healer-agent` (autonomous CI failure diagnosis and resolution)

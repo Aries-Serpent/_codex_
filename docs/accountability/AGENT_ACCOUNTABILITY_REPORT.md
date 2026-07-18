@@ -37,7 +37,7 @@
 - Updated: `CHANGELOG.md` (action version fix + branch rebase)
 
 ### Agents Used
-- [x] `general-purpose` (self — Copilot coding agent)
+- [x] `ci-failure-resolution-agent` (autonomous CI violation fixes)
 
 ### Commits This Session
 - f56bbce590: fix(ci): Update actions/setup-node from v4 to v5 for action version compliance
