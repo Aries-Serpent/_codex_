@@ -36,7 +36,7 @@ jobs:
       - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
         uses: actions/github-script@v8
         with:
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const maxAgeDays  = parseInt('${{ inputs.max_age_days || 7 }}', 10);\nconst
           dryRun      = ('${{ inputs.dry_run }}' === 'true');\nconst maxAgeMs    =
           maxAgeDays * 24 * 60 * 60 * 1000;\nconst now         = Date.now();\n\nconsole.log(`Pruning

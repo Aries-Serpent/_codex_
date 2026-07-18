@@ -305,7 +305,6 @@ jobs:
     # 4. Permissions minimized to only what's needed (write, read-only for actions)
     # 5. Privileges never extend to executing arbitrary PR code
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: triage
     if: needs.triage.outputs.fixable == 'true'
     strategy:
@@ -634,7 +633,6 @@ jobs:
   baseline-sweep:
     name: 🔄 Universal baseline sweep
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs: triage
     if: 'always() && needs.triage.result != ''skipped'' && needs.triage.outputs.head_branch
       != ''''
@@ -811,7 +809,6 @@ jobs:
   escalate:
     name: Escalate to human
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - triage
     - baseline-sweep
@@ -855,7 +852,6 @@ jobs:
   copilot-escalation:
     name: 🤖 Copilot escalation
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - triage
     - baseline-sweep
@@ -872,7 +868,7 @@ jobs:
         ref: refs/heads/main
         fetch-depth: 1
         token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+      continue-on-error: true
     - name: Query high-recurrence + cross-PR patterns
       id: high_rec
       env:
@@ -918,10 +914,10 @@ jobs:
     - name: Upload pattern DB snapshot artifact
       uses: actions/upload-artifact@v5
       with:
-        name: pattern-db-snapshot-${{ github.run_id }}
         path: /tmp/pattern_snapshot.json
         retention-days: 90
         if-no-files-found: warn
+        name: pattern-db-snapshot-${{ github.run_id }}
     - name: Post @copilot fix prompt on failing PR
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

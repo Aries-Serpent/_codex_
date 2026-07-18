@@ -206,7 +206,6 @@ jobs:
     name: "\U0001F527 Auto-correct auto-gen leaks"
     needs: detect
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     if: 'needs.detect.outputs.base_exists == ''true'' &&
 
       (needs.detect.outputs.autogen_count != ''0'' || needs.detect.outputs.pipeline_merge_count
@@ -312,7 +311,6 @@ jobs:
     - detect
     - auto-correct
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     if: 'always() &&
 
       needs.detect.outputs.base_exists == ''true'' &&
@@ -451,7 +449,6 @@ jobs:
     - auto-correct
     - report
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     if: failure()
     permissions:
       pull-requests: write

@@ -19,16 +19,9 @@ jobs:
       timeout_minutes: 15
       matrix_count: 1
       pushes_to_ghcr: false
-    permissions:
-      contents: read
-      pull-requests: write
-    secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 30
   rebuild:
     name: Rebuild FAISS Embedding Index
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs: cost-gate
     steps:
       - name: Checkout repository
@@ -49,52 +42,47 @@ jobs:
         run: |-
           python3 - <<"PYEOF"
           import json, os, sys
-          from datetime import datetime,\ timezone
+          from datetime import datetime, timezone
           from pathlib import Path
 
-          META = Path(\".codex/embeddings/codex_index_meta.json\")
+          META = Path(".codex/embeddings/codex_index_meta.json")
           STALE_WARN_HOURS  = 25  # emit warning if older than 25 h
-          STALE_ERROR_HOURS\ = 72  # emit error if older than 72 h
+          STALE_ERROR_HOURS = 72  # emit error if older than 72 h
 
           if not META.exists():
-              print(\"::warning::codex_index_meta.json not found — full rebuild required\")
-            \  with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
-                  f.write(\"freshness_status=missing\
-          \")
+              print("::warning::codex_index_meta.json not found — full rebuild required")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("freshness_status=missing\n")
               sys.exit(0)
 
           meta = json.loads(META.read_text())
-          generated_at_str = meta.get(\"generated_at\", \"\")
+          generated_at_str = meta.get("generated_at", "")
           try:
-            # Handle both\ offset-aware and Z-suffix ISO strings
-              ts = datetime.fromisoformat(generated_at_str.replace(\"Z\", \"+00:00\"))
+              # Handle both offset-aware and Z-suffix ISO strings
+              ts = datetime.fromisoformat(generated_at_str.replace("Z", "+00:00"))
           except ValueError:
-              print(f\"::warning::Cannot parse\ generated_at={generated_at_str!r}\")
-              with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
-                  f.write(\"freshness_status=unknown\
-          \")
+              print(f"::warning::Cannot parse generated_at={generated_at_str!r}")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("freshness_status=unknown\n")
               sys.exit(0)
 
           now = datetime.now(timezone.utc)
-          age_hours = (now - ts).total_seconds()\ / 3600
+          age_hours = (now - ts).total_seconds() / 3600
 
-          status = \"fresh\"
+          status = "fresh"
           if age_hours > STALE_ERROR_HOURS:
-              print(f\"::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) — stale\ rebuild required\")
-              status = \"stale_error\"
+              print(f"::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) — stale rebuild required")
+              status = "stale_error"
           elif age_hours > STALE_WARN_HOURS:
-          \    print(f\"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h)\ — rebuilding to stay fresh\")
-              status = \"stale_warn\"
+              print(f"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h) — rebuilding to stay fresh")
+              status = "stale_warn"
           else:
-              print(f\"✅ RAG index freshness OK: {age_hours:.1f}h old (threshold {STALE_WARN_HOURS}h)\")
+              print(f"✅ RAG index freshness OK: {age_hours:.1f}h old (threshold {STALE_WARN_HOURS}h)")
 
-          with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
-              f.write(f\"freshness_status={status}\
-          \")
-              f.write(f\"age_hours={age_hours:.1f}\
-          \")
-              f.write(f\"generated_at={generated_at_str}\
-          \")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"freshness_status={status}\n")
+              f.write(f"age_hours={age_hours:.1f}\n")
+              f.write(f"generated_at={generated_at_str}\n")
           PYEOF
 
       - name: Install embedding dependencies
@@ -138,37 +126,36 @@ jobs:
       - name: Active-PR guard — skip push when any open/draft PR targets the push target
         id: pr_guard
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        REPO: ${{ github.repository }}
-        PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          REPO: ${{ github.repository }}
+          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
         run: |-
-          _TARGET=\"${PUSH_TARGET:-main}\"
-          if [ \"$_TARGET\" = \"main\" ] || [\ \"$_TARGET\" = \"0D_base_\" ]; then
-            PR_COUNT=$(gh api \"repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1\"\ \\
-              --jq "length" 2>/dev/null || echo \"0\")
-            if [ \"${PR_COUNT}\"\ -gt \"0\" ]; then
-              echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"
-              \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` — embedding\ index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"
+          _TARGET="${PUSH_TARGET:-main}"
+          if [ "$_TARGET" = "main" ] || [ "$_TARGET" = "0D_base_" ]; then
+            PR_COUNT=$(gh api "repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1" \
+              --jq "length" 2>/dev/null || echo "0")
+            if [ "${PR_COUNT}" -gt "0" ]; then
+              echo "pr_skip=true" >> "$GITHUB_OUTPUT"
+              echo "⛔ ${PR_COUNT} open/draft PR(s) targeting \`${_TARGET}\` — embedding index push deferred." >> "$GITHUB_STEP_SUMMARY"
             else
-              echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"
+              echo "pr_skip=false" >> "$GITHUB_OUTPUT"
             fi
           else
-            echo \"pr_skip=false\"\ >> \"$GITHUB_OUTPUT\"
+            echo "pr_skip=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Commit updated index metadata
-        if: steps.pr_guard.outputs.pr_skip != "true"
+        if: steps.pr_guard.outputs.pr_skip != 'true'
         env:
-        GITHUB_TOKEN: ${{ github.token }}
-        PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
         run: |-
           # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-          _TARGET=\"${PUSH_TARGET}\"
-          echo \"\U0001F500 Push target: $_TARGET (reason:\ ${{ steps.resolve-target.outputs.reason }})\"
-          cp .codex/embeddings/codex_index_meta.json\ /tmp/_index_meta_sync_
-          git fetch origin \"$_TARGET\" --depth=1
-          git checkout\ -fB _autogen_sync_ origin/\"$_TARGET\"  # S237: force-checkout (files already\ in /tmp)
+          _TARGET="${PUSH_TARGET}"
+          echo "🔄 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+          cp .codex/embeddings/codex_index_meta.json /tmp/_index_meta_sync_
+          git fetch origin "$_TARGET" --depth=1
+          git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
           cp /tmp/_index_meta_sync_ .codex/embeddings/codex_index_meta.json
           git config user.name \"github-actions[bot]\"
           git config user.email \"github-actions[bot]@users.noreply.github.com\"
@@ -181,25 +168,24 @@ jobs:
       - name: Post rebuild summary
         if: always()
         run: |-
-          echo \"## \U0001F9E0 Embedding Index Rebuild\" >> \"$GITHUB_STEP_SUMMARY\"
-          echo \"\" >> \"$GITHUB_STEP_SUMMARY\"
-          if [ -f \".codex/embeddings/codex_index_meta.json\"\ ]; then
-            python3 -c \"
+          echo "## 🧠 Embedding Index Rebuild" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f ".codex/embeddings/codex_index_meta.json" ]; then
+            python3 -c "
           import json
-          meta = json.load(open(".codex/embeddings/codex_index_meta.json"))
-          print(f"| Field | Value |")
-          print(f"|-------|-------|")
-          print(f"| Chunks\ | {meta[\\\"chunk_count\\\"]} |")
-          print(f"| Model | {meta[\\\"model\\\"]} |")
-          print(f"| Dimensions | {meta[\\\"dim\\\"]} |")
-          print(f"| Build time\ | {meta[\\\"build_time_seconds\\\"]}s |")
-          print(f"| Generated | {meta[\\\"generated_at\\\"]} |")
-          \" >> \"$GITHUB_STEP_SUMMARY\"
-          echo \"| Pre-build\ age | ${{ steps.freshness.outputs.age_hours }}h (status: ${{ steps.freshness.outputs.freshness_status\ }}) |\" >> \"$GITHUB_STEP_SUMMARY\"
+          meta = json.load(open('.codex/embeddings/codex_index_meta.json'))
+          print(f'| Field | Value |')
+          print(f'|-------|-------|')
+          print(f'| Chunks | {meta[\"chunk_count\"]} |')
+          print(f'| Model | {meta[\"model\"]} |')
+          print(f'| Dimensions | {meta[\"dim\"]} |')
+          print(f'| Build time | {meta[\"build_time_seconds\"]}s |')
+          print(f'| Generated | {meta[\"generated_at\"]} |')
+          " >> "$GITHUB_STEP_SUMMARY"
+            echo "| Pre-build age | ${{ steps.freshness.outputs.age_hours }}h (status: ${{ steps.freshness.outputs.freshness_status }}) |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo \"Index metadata not found\ — build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"
+            echo "Index metadata not found — build may have failed." >> "$GITHUB_STEP_SUMMARY"
           fi
 
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

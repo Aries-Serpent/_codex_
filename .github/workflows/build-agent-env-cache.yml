@@ -34,7 +34,6 @@ jobs:
   build-agent-env:
     name: 🔨 Build + cache agent venv
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     permissions:
       contents: read
       actions: write
@@ -67,9 +66,9 @@ jobs:
     - name: Upload health report artifact
       uses: actions/upload-artifact@v5
       with:
-        name: agent-env-health-${{ github.run_id }}
         path: /tmp/agent-env-health.json
         retention-days: 30
+        name: agent-env-health-${{ github.run_id }}
     - name: Write job summary
       run: "python - << 'PYEOF'\nimport json, os\nfrom pathlib import Path\n\ntry:\n\
         \    report = json.loads(Path(\"/tmp/agent-env-health.json\").read_text())\n\

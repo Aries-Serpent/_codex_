@@ -21,7 +21,6 @@ concurrency:
 jobs:
   machine-readable-governance:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -71,7 +70,6 @@ jobs:
       - name: Upload governance artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: machine-readable-governance-artifacts
           path: |
             docs-data/generated/candidate-inventory.json
             docs-data/generated/changed-candidates.json
@@ -83,3 +81,5 @@ jobs:
             docs-data/generated/agent-context.json
             docs-data/generated/search-index.jsonl
             docs-data/generated/unmanaged-candidates-report.json
+
+          name: machine-readable-governance-artifacts

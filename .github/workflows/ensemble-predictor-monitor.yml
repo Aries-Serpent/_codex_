@@ -8,7 +8,6 @@ permissions:
 jobs:
   accuracy-tracking:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Model Accuracy Tracking
     steps:
@@ -49,9 +48,9 @@ jobs:
     - name: Upload metrics artifact
       uses: actions/upload-artifact@v5
       with:
-        name: ensemble-metrics
         path: .codex/ensemble_metrics.json
         retention-days: 30
+        name: ensemble-metrics
   drift-detection:
     runs-on: ubuntu-latest
     name: Model Drift Detection
@@ -92,7 +91,6 @@ jobs:
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: '\u26A0\
           \uFE0F **Model Drift Detected** in ensemble predictor. Consider running\
           \ retraining workflow.'\n})\n"
-    timeout-minutes: 60
   latency-monitoring:
     runs-on: ubuntu-latest
     name: Latency SLA Monitoring
@@ -121,7 +119,6 @@ jobs:
         \   print(f\"\\n\u2713 SLA PASSED: p99 latency {p99:.1f}ms < 200ms\")\nelse:\n\
         \    print(f\"\\n\u2717 SLA FAILED: p99 latency {p99:.1f}ms > 200ms\")\n \
         \   exit(1)\nEOF\n"
-    timeout-minutes: 60
   escalation-rate-check:
     runs-on: ubuntu-latest
     name: Escalation Rate Monitoring
@@ -152,7 +149,6 @@ jobs:
         \ RATE OK: {escalation_rate:.1%} \u2264 5%\")\nelse:\n    print(f\"\\n\u26A0\
         \uFE0F HIGH ESCALATION RATE: {escalation_rate:.1%} > 5%\")\n    exit(1)\n\
         EOF\n"
-    timeout-minutes: 60
   test-coverage:
     runs-on: ubuntu-latest
     name: Test Coverage Report
@@ -176,14 +172,13 @@ jobs:
     - name: Upload coverage report
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-report
         path: htmlcov/
         retention-days: 30
+        name: coverage-report
     - name: Check coverage threshold
       run: 'python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
 
         '
-    timeout-minutes: 60
   publish-results:
     runs-on: ubuntu-latest
     name: Publish Monitoring Results

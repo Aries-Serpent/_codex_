@@ -31,7 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 60
     strategy:
       matrix:
         python-version:
@@ -316,16 +315,16 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         flags: rag-modules
-        name: rag-coverage-${{ matrix.python-version }}
         fail_ci_if_error: false
+        name: rag-coverage-${{ matrix.python-version }}
     - name: Upload HTML coverage report
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: coverage-report-${{ matrix.python-version }}
         path: htmlcov/
         retention-days: 30
         if-no-files-found: warn
+        name: coverage-report-${{ matrix.python-version }}
     - name: Check coverage threshold
       run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[COVERAGE-CHECK] ==========\
         \ Coverage Threshold Check ==========\"\necho \"[COVERAGE-CHECK] Parsing coverage.xml...\"\
@@ -420,10 +419,10 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: security-report-${{ matrix.python-version }}
         path: bandit-report.txt
         retention-days: 30
         if-no-files-found: warn
+        name: security-report-${{ matrix.python-version }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
@@ -440,7 +439,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

@@ -101,9 +101,9 @@ jobs:
       - name: Upload telemetry report
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: telemetry-report-${{ github.run_id }}
           path: telemetry_report_*.json
           retention-days: 90
+          name: telemetry-report-${{ github.run_id }}
       - name: Check for critical patterns
         id: critical
         run: |
@@ -189,19 +189,13 @@ jobs:
             if (issues.length === 0) {
               // Create new issue
               await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
                 title: `CI Health Alert: High Failure Rate Detected`,
                 body: body,
-                labels: ['ci-health', 'automation', 'priority-high']
               });
             } else {
               // Update existing issue
               await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
                 issue_number: issues[0].number,
-                body: body
               });
             }
 

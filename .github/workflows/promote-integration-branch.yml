@@ -50,7 +50,6 @@ jobs:
   promote:
     name: Create/update target branch and optional PR
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

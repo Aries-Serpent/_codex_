@@ -27,9 +27,6 @@ jobs:
       timeout_minutes: 60
       matrix_count: 3
       pushes_to_ghcr: false
-    secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 30
   identify-candidates:
     name: Identify Archival Candidates
     runs-on: ubuntu-latest
@@ -96,7 +93,6 @@ jobs:
   create-proposal:
     name: Create Archival Proposal
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs: identify-candidates
     if: ${{ needs.identify-candidates.outputs.count > 0 }}
     steps:
@@ -105,7 +101,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Create Archival Issue
-        if: ${{ github.event.inputs.dry_run != "true" }}
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -150,7 +146,7 @@ jobs:
               labels: ["archival", "needs-review"]
             });
       - name: Dry Run Summary
-        if: ${{ github.event.inputs.dry_run == "true" }}
+        if: ${{ github.event.inputs.dry_run == 'true' }}
         run: |
           echo "## Dry Run Summary"
           echo ""
@@ -164,14 +160,13 @@ jobs:
   compress-large-files:
     name: Compress Large Historical Files
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs: identify-candidates
-    if: ${{ github.event.inputs.dry_run != "true" }}
+    if: ${{ github.event.inputs.dry_run != 'true' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Find and Compress Large Files
         run: |
           echo "## Large File Compression"

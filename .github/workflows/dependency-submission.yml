@@ -21,7 +21,6 @@ jobs:
   submit-dependencies:
     name: Submit dependency snapshot
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -39,8 +38,6 @@ jobs:
       uses: advanced-security/component-detection-dependency-submission-action@31f25a8de68ae5ce2ca274bc28546a78683c15ce  # v0.1.4
       with:
         scanDirectory: .
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
     - name: Handle submission failure (infrastructure failure — allow workflow to
         pass)
       if: steps.submit_component.outcome == 'failure'
@@ -98,7 +95,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

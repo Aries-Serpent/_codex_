@@ -37,7 +37,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Verify referenced issues are resolved
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
@@ -119,8 +118,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
       with:
-        name: issue-resolution-report
         path: /tmp/issue-resolution-reports/
         retention-days: 30
+        name: issue-resolution-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

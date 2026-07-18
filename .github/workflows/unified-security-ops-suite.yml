@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Alert Notification
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check security alerts
         run: |
           echo "Checking for security alerts..."
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Copilot Commands
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Process security copilot commands
         run: |
           echo "Processing security copilot commands..."
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Findings API
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Fetch security findings
         run: |
           echo "Fetching findings from security API..."
@@ -99,7 +99,7 @@ jobs:
     name: Security Findings Copilot Handoff
     needs: [security-findings-api]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Hand off findings to Copilot
         run: |
           echo "Handing off security findings to Copilot agent..."
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Security PR Enhancement
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Enhance PR with security info
         run: |
           echo "Enhancing pull request with security metadata..."
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Scan Phase 16
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run phase 16 security scan
         run: |
           echo "Running phase 16 security scan..."
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Tools Bootstrap
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Bootstrap security tools
         run: |
           echo "Bootstrapping security scanning tools..."
@@ -152,7 +152,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Security Operations Summary
     if: always()
-    needs: []
     steps:
       - name: Report summary
         run: |

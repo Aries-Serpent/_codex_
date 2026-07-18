@@ -153,7 +153,6 @@ jobs:
     needs: detect-drift
     if: needs.detect-drift.outputs.should_retrain == 'true' && github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest-m
-    timeout-minutes: 60
 
     steps:
     - uses: actions/checkout@v5  # v6.0.3

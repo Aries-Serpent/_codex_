@@ -17,7 +17,6 @@ env:
 jobs:
   multi_tenant_health:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     name: Multi-Tenant Isolation Health
     steps:
     - uses: actions/checkout@v5
@@ -66,8 +65,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: isolation-report
         path: isolation-report.json
+        name: isolation-report
   failover_health:
     runs-on: ubuntu-latest
     name: Failover Capability Check
@@ -248,8 +247,8 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         flags: scaling-framework
-        name: scaling-framework-coverage
         fail_ci_if_error: false
+        name: scaling-framework-coverage
     - name: Check coverage threshold
       run: "python -c \"\nimport xml.etree.ElementTree as ET\nroot = ET.parse('coverage.xml').getroot()\n\
         coverage_pct = float(root.get('line-rate', 0)) * 100\n\nif coverage_pct >=\
@@ -285,8 +284,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: failover-drill-report
         path: failover-drill-*.json
+        name: failover-drill-report
     timeout-minutes: 60
   cost_report:
     runs-on: ubuntu-latest

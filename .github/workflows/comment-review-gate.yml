@@ -27,15 +27,12 @@ jobs:
   scan-and-post:
     # Temporarily disabled for PR #5328 to prevent cascading failures
     if: |
-      ${{
-        github.event.pull_request.number != 5328 &&
-        (github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||
-         (github.event_name == 'issue_comment' && github.event.issue.pull_request != null &&
-          github.event.comment.user.login == 'mbaetiong'))
-      }}
+      github.event.pull_request.number != 5328 &&
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||
+       (github.event_name == 'issue_comment' && github.event.issue.pull_request != null &&
+        github.event.comment.user.login == 'mbaetiong'))
     name: 🔍 Scan PR comments
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     outputs:
       exit_code: ${{ steps.scan.outputs.exit_code }}
       blocking_count: ${{ steps.scan.outputs.blocking_count }}
@@ -76,13 +73,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
           path: /tmp/comment_review_report.json
           retention-days: 30
           if-no-files-found: warn
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-
+          name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
   gate:
     name: 🚦 Comment review gate
     runs-on: ubuntu-latest

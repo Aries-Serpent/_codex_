@@ -79,8 +79,8 @@ jobs:
       id: download_state
       uses: actions/download-artifact@v5
       with:
-        name: monitor-state
         path: .codex/monitoring/state/
+        name: monitor-state
       continue-on-error: true
     - name: Run monitoring check
       if: env.RATE_LIMIT_OK != 'false'
@@ -119,9 +119,9 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: monitor-state
         path: .codex/monitoring/state/
         retention-days: 90
+        name: monitor-state
     - name: Generate monitoring report
       if: always()
       run: "echo \"## \U0001F4CA Monitoring Report\" >> $GITHUB_STEP_SUMMARY\necho\

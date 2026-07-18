@@ -19,7 +19,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -61,6 +60,7 @@ jobs:
       - name: Upload built wheel artifact
         uses: actions/upload-artifact@v5
         with:
-          name: codex-core-wheel-${{ runner.os }}-py3.12
           path: dist/*
           if-no-files-found: error
+
+          name: codex-core-wheel-${{ runner.os }}-py3.12

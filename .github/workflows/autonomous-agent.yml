@@ -25,7 +25,6 @@ jobs:
   owner-guard:
     name: Owner Approval Guard
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
       approved: ${{ steps.guard.outputs.approved }}
     steps:
@@ -69,7 +68,6 @@ jobs:
     if: needs.owner-guard.outputs.approved == 'true' || github.event.inputs.mode ==
       'monitor'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

@@ -55,7 +55,6 @@ jobs:
   capture-har:
     name: '🎬 Record HAR — Cognitive App walkthrough'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     permissions:
       contents: write  # to commit HAR back
@@ -158,12 +157,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: playwright-har-capture-report-${{ github.run_id }}
           path: |
             cognitive_app/playwright-report/
             cognitive_app/playwright-results.json
           retention-days: 30
 
+          name: playwright-har-capture-report-${{ github.run_id }}
       # ── Validate HAR ──────────────────────────────────────────────────────
       - name: Validate HAR file
         run: |

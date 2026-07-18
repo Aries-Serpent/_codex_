@@ -22,7 +22,6 @@ jobs:
   sync-repo-vars:
     name: "Sync repo variables \u2192 .codex/agent_context.json"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

@@ -47,7 +47,6 @@ jobs:
     name: Scan (${{ inputs.scope || 'scheduled/all-open-prs' }}, dry=${{ inputs.dry_run
       || 'false' }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
     - name: Checkout monitor script
       uses: actions/checkout@v5
@@ -85,9 +84,9 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: proactive-ci-monitor-report-${{ github.run_id }}
         path: /tmp/proactive_report.json
         retention-days: 30
+        name: proactive-ci-monitor-report-${{ github.run_id }}
     - name: Write job summary
       if: always()
       env:

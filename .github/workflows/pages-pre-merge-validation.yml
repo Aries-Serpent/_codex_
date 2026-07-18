@@ -22,7 +22,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Validate Documentation
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -158,7 +157,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-reports
         path: 'validation_report.txt
 
           table_report.txt
@@ -169,6 +167,7 @@ jobs:
 
           '
         retention-days: 30
+        name: validation-reports
     - name: Post to PR Status Dashboard
       if: always() && github.event_name == 'pull_request'
       uses: ./.github/actions/post-pr-summary
@@ -227,7 +226,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

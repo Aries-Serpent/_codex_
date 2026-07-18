@@ -120,7 +120,6 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v5
       with:
-        name: pre-merge-validation-reports-${{ github.run_id }}
         path: '/tmp/autofix_report.json
 
           /tmp/pattern_pipeline_report.json
@@ -128,6 +127,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 14
+        name: pre-merge-validation-reports-${{ github.run_id }}
     - name: Post validation summary
       if: always()
       continue-on-error: true
@@ -251,7 +251,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

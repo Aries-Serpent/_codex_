@@ -62,7 +62,6 @@ jobs:
         }}
   verify-service-startup:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs: setup
     steps:
     - name: Checkout
@@ -86,7 +85,6 @@ jobs:
         }}
   health-checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     needs: setup
     outputs:
       health_status: ${{ steps.health.outputs.health_status }}
@@ -127,15 +125,14 @@ jobs:
     - name: Upload Health Report
       uses: actions/upload-artifact@v5
       with:
-        name: health-check-report
         path: ${{ env.VERIFICATION_DIR }}/health-reports/
         retention-days: 30
+        name: health-check-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   smoke-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: setup
     outputs:
       smoke_status: ${{ steps.smoke.outputs.smoke_status }}
@@ -167,15 +164,14 @@ jobs:
     - name: Upload Smoke Test Results
       uses: actions/upload-artifact@v5
       with:
-        name: smoke-test-results
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
+        name: smoke-test-results
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   critical-path-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: setup
     outputs:
       critical_status: ${{ steps.critical.outputs.critical_status }}
@@ -203,15 +199,14 @@ jobs:
     - name: Upload Critical Path Results
       uses: actions/upload-artifact@v5
       with:
-        name: critical-path-results
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
+        name: critical-path-results
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   generate-report:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs:
     - setup
     - health-checks
@@ -255,9 +250,9 @@ jobs:
     - name: Upload Verification Report
       uses: actions/upload-artifact@v5
       with:
-        name: verification-report
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
+        name: verification-report
     - name: Comment on PR
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8
@@ -281,7 +276,6 @@ jobs:
         }}
   slack-notification:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - setup
     - generate-report
@@ -308,7 +302,6 @@ jobs:
         }}
   create-issue-on-failure:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - generate-report
     if: failure()

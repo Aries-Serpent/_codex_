@@ -47,7 +47,6 @@ jobs:
   cascade_review:
     name: Cascade PR Review
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: 'github.event_name == ''pull_request'' ||
 
       (github.event_name == ''issue_comment'' && contains(github.event.comment.body,
@@ -101,7 +100,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: cascade-review-${{ github.run_number }}
         path: '.codex/reviews/*.json
 
           .codex/reviews/*.md
@@ -109,13 +107,13 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 30
+        name: cascade-review-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   self_evolution:
     name: Self-Evolution Pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: 'github.event_name == ''schedule'' ||
 
       (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''evolution-only''
@@ -172,7 +170,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: evolution-artifacts-${{ github.run_number }}
         path: '.github/copilot-evolution/data/*.json
 
           .github/copilot-evolution/logs/*.log
@@ -182,6 +179,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 90
+        name: evolution-artifacts-${{ github.run_number }}
     - name: Commit evolution updates
       if: steps.evolve.outputs.performed == 'true'
       run: "git config --local user.email \"github-actions[bot]@users.noreply.github.com\"\
@@ -241,7 +239,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -250,5 +247,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      run: python scripts/ci/post_rescue_comment.py
       run: python scripts/ci/post_rescue_comment.py

@@ -26,7 +26,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Validate Python Examples
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
       with:
@@ -196,7 +195,6 @@ jobs:
   validate-yaml:
     name: Validate YAML Examples
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
       with:

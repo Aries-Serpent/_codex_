@@ -141,7 +141,6 @@ jobs:
   evaluate-approval:
     name: "\U0001F4CB Evaluate Approval Rules (5-tier priority)"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     if: 'github.event_name == ''workflow_dispatch'' &&
 
       github.event.inputs.approval_source != ''''
@@ -331,7 +330,6 @@ jobs:
     name: "\u26A1 Execute Approval Decision"
     needs: evaluate-approval
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     if: 'needs.evaluate-approval.outputs.should_proceed == ''true'' &&
 
       needs.evaluate-approval.outputs.approval_decision == ''APPROVE''
@@ -479,7 +477,6 @@ jobs:
     - evaluate-approval
     - execute-approval
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     if: always() && github.event.inputs.approval_source != ''
     permissions:
       contents: write
@@ -525,7 +522,6 @@ jobs:
   approve-original:
     name: "\u26A1 Approve pending workflow runs"
     runs-on: ubuntu-latest
-    timeout-minutes: 75
     env:
       GH_TRICKLE_POLITE_SLEEP: '1.0'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

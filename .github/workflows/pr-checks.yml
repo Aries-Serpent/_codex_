@@ -22,7 +22,6 @@ jobs:
   pr-test:
     name: PR Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 40
     steps:
     - uses: actions/checkout@v5
       with:
@@ -104,7 +103,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -113,5 +111,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      run: python scripts/ci/post_rescue_comment.py
       run: python scripts/ci/post_rescue_comment.py

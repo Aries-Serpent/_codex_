@@ -110,7 +110,6 @@ jobs:
     if: github.event.pull_request.number != 5328 && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'audit-only' || inputs.mode == 'full-suite')))
     name: Run Audit Gap Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
       gap_count: ${{ steps.analyze.outputs.gap_count }}
       improvement_areas: ${{ steps.analyze.outputs.improvement_areas }}
@@ -152,7 +151,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@c7d193f32eddeaaf6b7b5b3e08f025a8aa6e2f2e
       with:
-        name: audit-results-${{ github.run_number }}
         path: '.codex/audit/*.json
 
           .codex/audit/*.md
@@ -162,6 +160,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 90
+        name: audit-results-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   qa_walkthrough:
@@ -365,7 +364,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@c7d193f32eddeaaf6b7b5b3e08f025a8aa6e2f2e
       with:
-        name: qa-walkthrough-${{ github.run_number }}
         path: '.codex/qa/*.json
 
           .codex/qa/*.md
@@ -375,6 +373,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 60
+        name: qa-walkthrough-${{ github.run_number }}
     - name: Fail on critical issues
       if: 'inputs.fail_on_critical == ''true'' &&
 
@@ -393,7 +392,6 @@ jobs:
   create_improvement_pr:
     name: Create Improvement PR
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs:
     - audit_gap_analysis
     - qa_walkthrough
@@ -493,7 +491,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -512,5 +509,4 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
       run: python scripts/ci/post_rescue_comment.py

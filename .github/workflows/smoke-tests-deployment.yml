@@ -51,7 +51,6 @@ jobs:
     name: "Smoke Test: Python ${{ matrix.python-version }} - ${{ matrix.profile }} - ${{ matrix.ml-extras }}"
     needs: test-matrix
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     strategy:
       matrix:
         python-version: ${{ fromJson(needs.test-matrix.outputs.python-version) }}
@@ -307,12 +306,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
           path: |
             installed-packages-*.txt
             test-metrics-*.json
           retention-days: 7
 
+          name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
   # Summarize results
   smoke-test-summary:
     name: Smoke Test Summary
@@ -369,7 +368,6 @@ jobs:
     name: Trigger Rollback (if needed)
     needs: [smoke-test]
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: failure()
     steps:
       - name: Create rollback issue

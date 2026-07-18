@@ -110,10 +110,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: token-validation-report
         path: .codex/token_validation_report.json
         retention-days: 30
         if-no-files-found: ignore
+        name: token-validation-report
     - name: Generate status check
       id: status-check
       if: always()

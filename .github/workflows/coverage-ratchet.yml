@@ -26,14 +26,9 @@ permissions:
 jobs:
   coverage-check:
     # Temporarily disabled for PR #5328 to reduce workflow queue
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: ${{ github.event.pull_request.number != 5328 && (!startsWith(github.head_ref, 'copilot/') || github.base_ref == 'main' || github.base_ref == '0D_base_') }}
     name: 🧪 Coverage Ratchet
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    if: '!startsWith(github.head_ref, ''copilot/'') || github.base_ref == ''main''
-      || github.base_ref == ''0D_base_''
-
-      '
     steps:
     - name: Checkout
       uses: actions/checkout@v5

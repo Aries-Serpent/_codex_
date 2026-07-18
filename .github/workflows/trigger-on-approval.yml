@@ -62,9 +62,9 @@ jobs:
       - name: Dispatch unified approval hub
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
-        script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+              github.token }}
+          script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
           const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst\
           \ prSha = '${{ steps.ctx.outputs.pr_sha }}';\nconst reviewer = '${{ steps.ctx.outputs.reviewer\
           \ }}';\n\ncore.info(`Dispatching auto-approve-workflows.yml for PR  #${prNumber}\
@@ -80,9 +80,9 @@ jobs:
       - name: Dispatch Validation Pipeline (validate.yml)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+            github.token }}
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ validate.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
         \    owner, repo,\n    workflow_id: 'validate.yml',\n    ref,\n    inputs:\
@@ -93,9 +93,9 @@ jobs:
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+            github.token }}
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ pre-merge-validation.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
         \    owner, repo,\n    workflow_id: 'pre-merge-validation.yml',\n    ref,\n\
@@ -106,8 +106,8 @@ jobs:
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
           \ codeql-alert-fetcher.yml @ ${ref}`);\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
         \    owner, repo,\n    workflow_id: 'codeql-alert-fetcher.yml',\n    ref,\n\
@@ -121,9 +121,9 @@ jobs:
       - name: Post @copilot continue (resume agent session)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
-        script: "const owner    = context.repo.owner;\nconst repo     = context.repo.repo;\n\
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+            github.token }}
+          script: "const owner    = context.repo.owner;\nconst repo     = context.repo.repo;\n\
           const prNumber = parseInt('${{ steps.ctx.outputs.pr_num }}', 10);\nconst\
           \ reviewer = '${{ steps.ctx.outputs.reviewer }}';\nconst sha      = '${{\
           \ steps.ctx.outputs.pr_sha }}';\n\nconst body = [\n  `<!-- trigger-on-approval-agent-resume\

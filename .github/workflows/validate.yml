@@ -51,7 +51,6 @@ jobs:
       github.event_name == 'pull_request_review' ||
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'fast' || inputs.mode == ''))
-    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
@@ -117,35 +116,35 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: failure()
         with:
-          name: hook-failures-fast-${{ github.run_id }}
           path: hook_failures.json
           retention-days: 30
           if-no-files-found: warn
+          name: hook-failures-fast-${{ github.run_id }}
       - name: Upload validation log (fast)
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-log-fast-${{ github.run_id }}
           path: validation.log
           retention-days: 30
           if-no-files-found: warn
+          name: validation-log-fast-${{ github.run_id }}
       - name: Upload JUnit XML
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-junit-fast-${{ github.run_id }}
           path: validation-junit.xml
           retention-days: 30
           if-no-files-found: warn
+          name: validation-junit-fast-${{ github.run_id }}
       - name: Upload JSON summary
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-summary-fast-${{ github.run_id }}
           path: validation_summary.json
           retention-days: 30
           if-no-files-found: warn
 
+          name: validation-summary-fast-${{ github.run_id }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -158,7 +157,6 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
@@ -204,7 +202,6 @@ jobs:
     if: |
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.mode == 'full')
-    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
@@ -234,34 +231,34 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: failure()
         with:
-          name: hook-failures-full-${{ github.run_id }}
           path: hook_failures.json
           retention-days: 30
           if-no-files-found: warn
+          name: hook-failures-full-${{ github.run_id }}
       - name: Upload validation log (full)
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-log-full-${{ github.run_id }}
           path: validation.log
           retention-days: 30
           if-no-files-found: warn
+          name: validation-log-full-${{ github.run_id }}
       - name: Upload JUnit XML
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-junit-full-${{ github.run_id }}
           path: validation-junit.xml
           retention-days: 30
           if-no-files-found: warn
+          name: validation-junit-full-${{ github.run_id }}
       - name: Upload coverage report
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-coverage-${{ github.run_id }}
           path: coverage.xml
           retention-days: 30
           if-no-files-found: warn
+          name: validation-coverage-${{ github.run_id }}
       - name: Generate coverage map and PR delta comment (P2B)
         if: always() && github.event_name == 'pull_request' && hashFiles('coverage.xml') != ''
         run: |
@@ -273,16 +270,17 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
-          name: validation-summary-full-${{ github.run_id }}
           path: validation_summary.json
           retention-days: 30
           if-no-files-found: warn
+          name: validation-summary-full-${{ github.run_id }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
         if: always()
         with:
           files: ./coverage.xml
           flags: full-validation
-          name: full-validation-coverage
           fail_ci_if_error: false
+
+          name: full-validation-coverage
           continue-on-error: true

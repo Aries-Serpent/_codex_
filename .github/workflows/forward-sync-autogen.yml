@@ -22,7 +22,6 @@ jobs:
   forward-sync:
     name: 📤 Forward files main → staging chain tip
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout main
       uses: actions/checkout@v5

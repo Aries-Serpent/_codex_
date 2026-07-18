@@ -27,7 +27,6 @@ jobs:
   pr-body-checkpoint-guardian:
     name: "\U0001F6E1\uFE0F Restore required PR checkboxes"
     runs-on: ubuntu-latest
-    timeout-minutes: 8
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     permissions:
       pull-requests: write
@@ -157,11 +156,9 @@ jobs:
         -f approval_reason="copilot-auth-enabled"
 
         '
-    timeout-minutes: 30
   cognitive-preflight:
     name: "\U0001F9E0 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: github.event.action != 'closed'
     steps:
     - name: Checkout repository
@@ -1363,7 +1360,6 @@ jobs:
   self-approve-after-delegation:
     name: "\u26A1 Approve action_required runs (post-delegation)"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - activate-delegation
     if: 'always() &&
@@ -1421,7 +1417,6 @@ jobs:
   session-release:
     name: "\U0001F513 Release session lock"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: github.event.action == 'closed'
     steps:
     - name: Checkout repository for shared helpers
@@ -1531,7 +1526,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

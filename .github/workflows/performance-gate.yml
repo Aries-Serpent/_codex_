@@ -29,7 +29,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Latency Baseline Policy Check
     runs-on: ubuntu-latest
-    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -86,7 +85,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: perf-baseline
           path: benchmarks/perf/latency_baseline.json
           retention-days: 90
 
+
+          name: perf-baseline

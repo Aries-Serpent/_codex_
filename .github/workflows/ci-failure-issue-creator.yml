@@ -36,7 +36,6 @@ jobs:
   triage:
     name: Triage
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: 'github.event.workflow_run.head_branch == ''main''
 
       '
@@ -151,7 +150,6 @@ jobs:
     name: Open Issue
     needs: triage
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: "needs.triage.outputs.conclusion == 'failure' && (needs.triage.outputs.action\
       \ == 'new_issue' ||\n needs.triage.outputs.action == 'queue')\n"
     outputs:
@@ -215,7 +213,6 @@ jobs:
       - triage
       - create-issue
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: 'needs.triage.outputs.conclusion == ''failure'' && needs.triage.outputs.severity   ==
       ''critical'' && needs.triage.outputs.action     == ''new_issue''
 
@@ -304,7 +301,6 @@ jobs:
       - create-issue
       - create-fix-pr
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: always() && github.event.workflow_run.head_branch == 'main'
     steps:
       - name: Checkout (consolidator)
@@ -412,7 +408,6 @@ jobs:
     name: Auto-close Resolved Issues
     needs: triage
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: 'needs.triage.outputs.conclusion == ''success'' || github.event.workflow_run.conclusion
       == ''success''
 

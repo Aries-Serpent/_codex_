@@ -33,7 +33,6 @@ jobs:
   analyze-structure:
     name: Analyze Repository Structure
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
       root_files: ${{ steps.analyze.outputs.root_files }}
       orphan_files: ${{ steps.analyze.outputs.orphan_files }}

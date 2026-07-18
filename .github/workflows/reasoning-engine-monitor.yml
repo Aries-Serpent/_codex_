@@ -105,10 +105,11 @@ jobs:
             return report
 
         report = asyncio.run(run_workload())
-
+ 
         # Output for next step
-        print(f\"::set-output name=brier_score::{report["brier_score"]}\")
-        print(f\"::set-output name=p99_latency::{report["latency_ms"]["p99"]}\")
+        with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
+            f.write(f"brier_score={report['brier_score']}\n")
+            f.write(f"p99_latency={report['latency_ms']['p99']}\n")
 
         EOF
 
@@ -149,16 +150,16 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: reasoning-engine-reports
         path: ".codex/reasoning/daily_monitor_report.json\ntest_report.json\n"
+        name: reasoning-engine-reports
     - name: Publish test results
       if: always()
       uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
       with:
-        name: Reasoning Engine Tests
         path: test_report.json
         reporter: java-junit
         fail-on-error: false
+        name: Reasoning Engine Tests
     - name: Slack notification (on failure)
       if: failure()
       uses:
@@ -171,7 +172,7 @@ jobs:
           n*Repository*: ${{ github.repository }}\\n*Run*: <${{ github.server_url
           }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>\"\
           \n      }\n    }\n  ]\n}\n"
-        continue-on-error: true
+    continue-on-error: true
     timeout-minutes: 30
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

@@ -46,7 +46,6 @@ jobs:
   compliance-check:
     name: Governance & Compliance Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs: detect-merge
     outputs:
       status: ${{ steps.status.outputs.status }}
@@ -82,13 +81,13 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: governance-report
         path: '.codex/PHASE_12_2_COMPLIANCE_REPORT.md
 
           compliance-output.json
 
           '
         retention-days: 30
+        name: governance-report
     - name: Post PR comment
       if: github.event_name == 'pull_request' && always()
       uses: actions/github-script@v8

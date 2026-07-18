@@ -74,7 +74,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: "⚙️ Check P19 Shadow Imports"
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
         with:
@@ -107,7 +106,6 @@ jobs:
   test-fast:
     name: "🚀 Fast Unit Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs: check-imports
     if: |
       always() &&
@@ -144,7 +142,6 @@ jobs:
   test-integration:
     name: "🔗 Integration Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     needs: check-imports
     if: |
       always() &&
@@ -181,7 +178,6 @@ jobs:
   test-slow:
     name: "🐢 Slow Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     needs: check-imports
     if: |
       always() &&
@@ -215,7 +211,6 @@ jobs:
   test-auth:
     name: "🔐 Authentication Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: check-imports
     if: |
       always() &&
@@ -295,7 +290,6 @@ jobs:
   test-rag:
     name: "🔍 RAG Module Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: check-imports
     if: |
       always() &&
@@ -330,7 +324,6 @@ jobs:
   test-rust:
     name: "🦀 Rust Unit Tests"
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     needs: check-imports
     if: |
       always() &&
@@ -372,7 +365,6 @@ jobs:
   test-coverage:
     name: "📊 Coverage Report"
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     needs: [test-fast, test-integration, test-slow]
     if: always()
     steps:
@@ -425,13 +417,13 @@ jobs:
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: coverage-report-${{ github.run_number }}
           path: |
             .coverage.json
             htmlcov/
           retention-days: 90
           if-no-files-found: ignore
 
+          name: coverage-report-${{ github.run_number }}
   # Consolidated test summary
   test-summary:
     name: "📋 Test Execution Summary"

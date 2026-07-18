@@ -34,7 +34,6 @@ jobs:
   github-guru:
     name: GitHub Guru Agent
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: ${{ !contains(github.event.head_commit.message, '[skip-guru]') }}
     steps:
       - name: Checkout repository
@@ -104,11 +103,11 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: github-guru-metrics-${{ github.run_number }}
           path: audit_artifacts/baselines/github_guru_session_*.json
           retention-days: 30
           if-no-files-found: ignore
 
+          name: github-guru-metrics-${{ github.run_number }}
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:
     name: Post rescue comment on failure
@@ -121,7 +120,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3

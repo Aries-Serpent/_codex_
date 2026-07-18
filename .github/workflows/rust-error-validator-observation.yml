@@ -18,7 +18,6 @@ jobs:
   observe:
     name: rust-error-validator 30-day observation check
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

@@ -20,7 +20,6 @@ jobs:
   validate:
     name: Pre-release Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -49,14 +48,12 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-    timeout-minutes: 60
   release:
     name: Create GitHub Release
     needs:
     - validate
     - generate-sbom
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -73,7 +70,6 @@ jobs:
       uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
       with:
         tag_name: ${{ steps.tag.outputs.tag }}
-        name: Release ${{ steps.tag.outputs.tag }}
         body: '## Release ${{ steps.tag.outputs.tag }}
 
           ### SBOM
@@ -94,6 +90,7 @@ jobs:
         draft: false
         prerelease: ${{ contains(steps.tag.outputs.tag, 'rc') || contains(steps.tag.outputs.tag,
           'alpha') || contains(steps.tag.outputs.tag, 'beta') }}
+        name: Release ${{ steps.tag.outputs.tag }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

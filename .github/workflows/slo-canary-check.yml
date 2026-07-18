@@ -34,8 +34,8 @@ jobs:
     - name: Upload canary report
       uses: actions/upload-artifact@v5
       with:
-        name: slo-canary-${{ github.run_id }}
         path: reports/observability/slo_canary_latest.json
+        name: slo-canary-${{ github.run_id }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -75,8 +75,8 @@ jobs:
     - name: Upload MTTR report
       uses: actions/upload-artifact@v5
       with:
-        name: mttr-report-${{ github.run_id }}
         path: reports/observability/mttr_*.json
+        name: mttr-report-${{ github.run_id }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -120,8 +120,8 @@ jobs:
     - name: Upload MTTD report
       uses: actions/upload-artifact@v5
       with:
-        name: mttd-report-${{ github.run_id }}
         path: reports/observability/mttd_*.json
+        name: mttd-report-${{ github.run_id }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

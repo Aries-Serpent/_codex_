@@ -32,7 +32,6 @@ jobs:
   query-patterns:
     name: Query K8s Patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
@@ -56,9 +55,9 @@ jobs:
     - name: Upload Patterns
       uses: actions/upload-artifact@v5
       with:
-        name: k8s-patterns
         path: k8s_patterns.json
         retention-days: 30
+        name: k8s-patterns
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -66,7 +65,6 @@ jobs:
     name: Validate Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -86,9 +84,9 @@ jobs:
     - name: Upload Compliance Report
       uses: actions/upload-artifact@v5
       with:
-        name: compliance-report
         path: infrastructure_compliance_report.json
         retention-days: 30
+        name: compliance-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -96,7 +94,6 @@ jobs:
     name: Estimate Costs
     needs: query-patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -116,9 +113,9 @@ jobs:
     - name: Upload Cost Estimate
       uses: actions/upload-artifact@v5
       with:
-        name: cost-estimate
         path: cost_estimate.json
         retention-days: 30
+        name: cost-estimate
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -126,7 +123,6 @@ jobs:
     name: Generate Terraform Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -146,9 +142,9 @@ jobs:
     - name: Upload Terraform Modules
       uses: actions/upload-artifact@v5
       with:
-        name: terraform-modules
         path: infrastructure/terraform/
         retention-days: 30
+        name: terraform-modules
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -156,7 +152,6 @@ jobs:
     name: Create Terraform Plan
     needs: generate-terraform
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -168,8 +163,8 @@ jobs:
     - name: Download Terraform Modules
       uses: actions/download-artifact@v5
       with:
-        name: terraform-modules
         path: infrastructure/terraform/
+        name: terraform-modules
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd  # v3
       with:
@@ -181,9 +176,9 @@ jobs:
     - name: Upload Plan Summary
       uses: actions/upload-artifact@v5
       with:
-        name: terraform-plan
         path: terraform_plan_summary.md
         retention-days: 30
+        name: terraform-plan
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -196,7 +191,6 @@ jobs:
     - generate-terraform
     - terraform-plan
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     environment:
       name: infrastructure-approval
     steps:
@@ -255,7 +249,6 @@ jobs:
     needs:
     - approval-gate
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     if: always()
     steps:
     - name: Checkout
@@ -285,9 +278,9 @@ jobs:
     - name: Upload Completion Report
       uses: actions/upload-artifact@v5
       with:
-        name: completion-report
         path: completion_report.md
         retention-days: 30
+        name: completion-report
     - name: Workflow Summary
       run: 'echo "✅ K8s Provisioning Pipeline Complete" >> $GITHUB_STEP_SUMMARY
 

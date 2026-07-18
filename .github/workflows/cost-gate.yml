@@ -51,7 +51,7 @@ jobs:
     name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
     env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 5
     outputs:
       tier: ${{ steps.estimate.outputs.tier }}
@@ -272,7 +272,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

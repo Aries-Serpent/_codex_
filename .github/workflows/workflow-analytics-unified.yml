@@ -92,7 +92,6 @@ jobs:
   quantum-health-check:
     name: Quantum-Inspired Health Check
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: github.event_name == 'schedule' || inputs.mode == 'health-check' || inputs.mode == 'quantum-analysis'
 
     steps:
@@ -135,18 +134,17 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: workflow-health-${{ github.run_number }}
           path: |
             .codex/reports/workflow-health-*.json
             .codex/reports/quantum-analysis-*.json
           if-no-files-found: ignore
           retention-days: 30
 
+          name: workflow-health-${{ github.run_number }}
   # Weekly analytics job
   weekly-analytics:
     name: Weekly Workflow Analytics
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: github.event_name == 'schedule' && github.event.schedule == '0 0 * * 1' || inputs.mode == 'full-analytics'
 
     steps:
@@ -203,7 +201,6 @@ jobs:
       - name: Upload analytics reports
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: workflow-analytics-${{ github.run_number }}
           path: |
             .codex/reports/workflow-*.json
             .codex/reports/workflow-*.md
@@ -211,11 +208,11 @@ jobs:
           if-no-files-found: ignore
           retention-days: 60
 
+          name: workflow-analytics-${{ github.run_number }}
   # Manual analytics job
   manual-analytics:
     name: Manual Analytics
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full-analytics'
 
     steps:
@@ -273,9 +270,10 @@ jobs:
       - name: Upload manual analytics
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: manual-analytics-${{ github.run_number }}
           path: |
             .codex/reports/manual-analytics.json
             .codex/reports/analytics-report.md
           if-no-files-found: ignore
           retention-days: 90
+
+          name: manual-analytics-${{ github.run_number }}

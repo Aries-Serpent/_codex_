@@ -143,13 +143,13 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: qa-walkthrough-reports-${{ github.run_id }}
         path: |
           qa-report.json
           ruff-report.json
           bandit-report.json
         retention-days: 30
         if-no-files-found: warn
+        name: qa-walkthrough-reports-${{ github.run_id }}
     - name: Update consolidated PR dashboard
       if: github.event_name == 'pull_request' && always()
       uses: ./.github/actions/post-pr-summary
@@ -177,7 +177,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

@@ -64,10 +64,8 @@ jobs:
       - name: Upload audit log
         uses: actions/upload-artifact@v5
         with:
-          name: rag-audit-${{ github.run_id }}
           path: reports/rag/rebuild_audit_latest.json
-        env:
-          GH_TOKEN: "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
+          name: rag-audit-${{ github.run_id }}
   gate-summary:
     name: D4 Gate Summary
     needs:

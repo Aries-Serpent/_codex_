@@ -99,7 +99,6 @@ jobs:
   agent-file-size:
     name: 📏 Agent files ≤ 30,000 chars
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -171,7 +170,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

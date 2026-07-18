@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Decision Engine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Initialize cognitive decision engine
         run: |
           echo "Starting cognitive decision engine..."
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Analysis Feed
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run cognitive analysis
         run: |
           echo "Running cognitive analysis..."
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Perception
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run perception module
         run: |
           echo "Running cognitive perception..."
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Registry Validation
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Validate cognitive registry
         run: |
           echo "Validating cognitive registry..."
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Brain CI Feedback
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Process CI feedback
         run: |
           echo "Processing CI feedback for cognitive brain..."
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive K8s Provisioning
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Provision K8s resources
         run: |
           echo "Provisioning Kubernetes resources for cognitive brain..."
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Brain Bootstrap
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Bootstrap security tools
         run: |
           echo "Bootstrapping cognitive brain security tools..."
@@ -151,7 +151,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Cognitive Suite Summary
     if: always()
-    needs: []
     steps:
       - name: Report summary
         run: |

@@ -53,7 +53,6 @@ jobs:
         \ Release is authorized when tag is pushed.',\n    text: 'See workflow for\
           \ details.'\n  }\n};\n\nif ('${{ needs.validate-version.result }}' !== 'success')\
           \ {\n  checkStatus.conclusion = 'failure';\n}\n"
-    timeout-minutes: 30
   is-release-pr:
     name: Detect release PR
     outputs:
@@ -148,7 +147,6 @@ jobs:
           \ }}\\`\n\nThis will trigger the release workflow.`;\n\ngithub.rest.issues.createComment({\n\
         \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
         \ repo: context.repo.repo,\n  body: summary\n});\n"
-    timeout-minutes: 30
   validate-artifacts:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate release artifacts
@@ -163,7 +161,6 @@ jobs:
       run: "if [ -f \"pyproject.toml\" ] && grep -q \"\\[build-system\\]\" pyproject.toml;\
         \ then\n  echo \"✅ Project configured for wheel builds\"\nelse\n  echo \"\
         ❌ Build system not configured\"\n  exit 1\nfi\n"
-    timeout-minutes: 15
   validate-changelog:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate CHANGELOG.md
@@ -188,7 +185,6 @@ jobs:
         \ \"$CHANGELOG\" | grep -q \"### Added\\|### Changed\\|### Fixed\\|### Security\"\
         ; then\n  echo \"✅ CHANGELOG has standard sections\"\nelse\n  echo \"⚠️  CHANGELOG\
         \ should include: Added, Changed, Fixed, Security sections\"\nfi\n"
-    timeout-minutes: 15
   validate-manifest:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate manifest integrity
@@ -204,7 +200,6 @@ jobs:
         \ \"import json; json.load(open('.codex/RELEASE_MANIFEST_TEMPLATE.json'))\"\
         \ && \\\n  echo \"✅ Manifest template valid JSON\"\nelse\n  echo \"⚠️  Manifest\
         \ template not found (will use default)\"\nfi\n"
-    timeout-minutes: 15
   validate-p0-gate:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate P0 Gate
@@ -236,7 +231,6 @@ jobs:
         echo "  P0.2 (Manifest): ${{ steps.p0-2.outputs.pass || ''unknown'' }}"
 
         '
-    timeout-minutes: 15
   validate-p1-gate:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate P1 Gate
@@ -259,7 +253,6 @@ jobs:
         echo "  P1.3 (SBOM): ${{ steps.p1-3.outputs.pass || ''unknown'' }}"
 
         '
-    timeout-minutes: 15
   validate-p2-gate:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate P2 Gate
@@ -303,7 +296,6 @@ jobs:
         echo "  P2.2.4 (Rollback): ${{ steps.p2-4.outputs.pass }}"
 
         '
-    timeout-minutes: 15
   validate-release-notes:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate release notes
@@ -327,7 +319,6 @@ jobs:
         \ -l < CHANGELOG.md)\n  if [ $LINES -gt 20 ]; then\n    echo \"✅ CHANGELOG\
         \ has sufficient content\"\n  else\n    echo \"⚠️  CHANGELOG is quite short\
         \ (${LINES} lines)\"\n  fi\nfi\n"
-    timeout-minutes: 15
   validate-version:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate version bump
