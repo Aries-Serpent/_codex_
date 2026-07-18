@@ -23,9 +23,9 @@
 - 436db662: docs(pr5336): Update AGENT_ACCOUNTABILITY_REPORT.md...
 
 ### Agents Used
-- [ ] codeql-alert-resolution-agent (in progress)
-- [ ] code-scanning-remediation-agent (in progress)
-- [ ] ci-failure-resolution-agent (in progress)
+- [x] `codeql-alert-resolution-agent` (CodeQL security analysis - delegated)
+- [x] `code-scanning-remediation-agent` (Semgrep security analysis - delegated)
+- [x] `ci-failure-resolution-agent` (CI workflow health analysis - delegated)
 
 ---
 
