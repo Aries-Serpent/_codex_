@@ -391,4 +391,3 @@ jobs:
         \u2705 16.4 - Final Polish & 100% Coverage\"\necho \"\"\necho \"Total tests\
         \ created: 1000+\"\necho \"Security coverage: 100%\"\necho \"CodeQL status:\
         \ Validated\"\n"
-    timeout-minutes: 30
