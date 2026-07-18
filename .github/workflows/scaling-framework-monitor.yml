@@ -247,16 +247,11 @@ jobs:
         85%)')\n    exit(0)\nelse:\n    print(f'\u2717 Code coverage: {coverage_pct:.1f}%\
         \ (target: \u226585%)')\n    exit(1)\n\"\n"
     timeout-minutes: 60
-  failover_drill:
-    runs-on: ubuntu-latest
-    name: Weekly Failover Drill
-    if: github.event.schedule == '0 9 * * 0' || github.event_name == 'workflow_dispatch'
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Execute failover drill
       run: "python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
         \ HealthStatus\nimport time\n\nprint('=== Failover Drill ===')\n\nmgr = FailoverManager(check_interval=0.1)\n\
@@ -278,16 +273,11 @@ jobs:
         path: failover-drill-*.json
         name: failover-drill-report
     timeout-minutes: 60
-  cost_report:
-    runs-on: ubuntu-latest
-    name: Weekly Cost Report
-    if: github.event.schedule == '0 10 * * 1' || github.event_name == 'workflow_dispatch'
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Generate cost report
       run: 'python -c "
 

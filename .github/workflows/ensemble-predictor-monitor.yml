@@ -142,15 +142,11 @@ jobs:
         \uFE0F HIGH ESCALATION RATE: {escalation_rate:.1%} > 5%\")\n    exit(1)\n\
         EOF\n"
     timeout-minutes: 15
-  test-coverage:
-    runs-on: ubuntu-latest
-    name: Test Coverage Report
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
