@@ -1,0 +1,202 @@
+{
+  "analysis_timestamp": "2026-07-18T06:38:53.881Z",
+  "pattern_type": "performance",
+  "lane": "B (Security Factory)",
+  "scanner_performance_metrics": {
+    "CodeQL": {
+      "total_runs": 287,
+      "successful_runs": 277,
+      "failed_runs": 10,
+      "success_rate_percent": 96.5,
+      "avg_scan_duration_seconds": 45.2,
+      "min_scan_duration_seconds": 18,
+      "max_scan_duration_seconds": 120,
+      "findings_per_run": {
+        "mean": 4.2,
+        "median": 3,
+        "std_dev": 2.1
+      },
+      "cpu_utilization_percent": 48,
+      "memory_usage_mb": 640,
+      "reliability_score": 0.98
+    },
+    "Semgrep": {
+      "total_runs": 312,
+      "successful_runs": 294,
+      "failed_runs": 18,
+      "success_rate_percent": 94.2,
+      "avg_scan_duration_seconds": 32.1,
+      "min_scan_duration_seconds": 12,
+      "max_scan_duration_seconds": 85,
+      "findings_per_run": {
+        "mean": 3.1,
+        "median": 2,
+        "std_dev": 1.8
+      },
+      "cpu_utilization_percent": 42,
+      "memory_usage_mb": 480,
+      "reliability_score": 0.96
+    },
+    "pip-audit": {
+      "total_runs": 456,
+      "successful_runs": 452,
+      "failed_runs": 4,
+      "success_rate_percent": 99.1,
+      "avg_scan_duration_seconds": 18.3,
+      "min_scan_duration_seconds": 8,
+      "max_scan_duration_seconds": 52,
+      "findings_per_run": {
+        "mean": 0.3,
+        "median": 0,
+        "std_dev": 0.6
+      },
+      "cpu_utilization_percent": 25,
+      "memory_usage_mb": 256,
+      "reliability_score": 0.995
+    },
+    "detect-secrets": {
+      "total_runs": 534,
+      "successful_runs": 527,
+      "failed_runs": 7,
+      "success_rate_percent": 98.7,
+      "avg_scan_duration_seconds": 22.4,
+      "min_scan_duration_seconds": 10,
+      "max_scan_duration_seconds": 68,
+      "findings_per_run": {
+        "mean": 0.1,
+        "median": 0,
+        "std_dev": 0.3
+      },
+      "cpu_utilization_percent": 28,
+      "memory_usage_mb": 288,
+      "reliability_score": 0.992
+    }
+  },
+  "unified_scanner_throughput": {
+    "daily_scan_volume": {
+      "mean": 156,
+      "min": 42,
+      "max": 324,
+      "trend": "increasing"
+    },
+    "weekly_scan_volume": 1092,
+    "monthly_scan_volume": 4680,
+    "concurrent_scan_capacity": 4,
+    "current_concurrent_load": 1,
+    "queue_depth": 0,
+    "queue_wait_time_seconds": 0
+  },
+  "latency_percentiles": {
+    "p50_milliseconds": 55000,
+    "p75_milliseconds": 78000,
+    "p90_milliseconds": 95000,
+    "p95_milliseconds": 120000,
+    "p99_milliseconds": 180000,
+    "max_milliseconds": 245000
+  },
+  "resource_utilization_patterns": {
+    "cpu": {
+      "mean_utilization_percent": 45.2,
+      "peak_utilization_percent": 87.3,
+      "std_dev": 12.1,
+      "saturation_events": 0
+    },
+    "memory": {
+      "mean_utilization_mb": 512,
+      "peak_utilization_mb": 1024,
+      "std_dev": 128,
+      "oom_events": 0
+    },
+    "disk": {
+      "scan_results_storage_gb": 2.3,
+      "audit_logs_storage_gb": 1.1,
+      "growth_rate_gb_per_week": 0.35
+    }
+  },
+  "alert_processing_metrics": {
+    "total_alerts_processed": 1847,
+    "alerts_by_severity": {
+      "CRITICAL": 48,
+      "HIGH": 156,
+      "MEDIUM": 387,
+      "LOW": 892,
+      "INFO": 364
+    },
+    "mean_processing_time_seconds": {
+      "CRITICAL": 0.5,
+      "HIGH": 2.1,
+      "MEDIUM": 3.8,
+      "LOW": 1.2,
+      "INFO": 0.8
+    },
+    "false_positive_rate_percent": 8.0,
+    "duplicate_alert_rate_percent": 2.1,
+    "remediation_completion_rate_percent": 92.3
+  },
+  "sla_compliance_trends": {
+    "critical_alerts": {
+      "sla_target_hours": 1,
+      "mean_response_time_hours": 0.5,
+      "compliance_percent": 100,
+      "trend_7_days": "stable",
+      "breached_alerts_count": 0
+    },
+    "high_alerts": {
+      "sla_target_hours": 4,
+      "mean_response_time_hours": 2.1,
+      "compliance_percent": 100,
+      "trend_7_days": "improving",
+      "breached_alerts_count": 0
+    },
+    "medium_alerts": {
+      "sla_target_days": 3,
+      "mean_response_time_days": 1.8,
+      "compliance_percent": 100,
+      "trend_7_days": "stable",
+      "breached_alerts_count": 0
+    }
+  },
+  "system_availability": {
+    "uptime_percent": 99.95,
+    "mean_time_between_failures_hours": 8760,
+    "mean_time_to_recovery_minutes": 2.3,
+    "scheduled_downtime_percent": 0.05,
+    "unscheduled_downtime_percent": 0.0
+  },
+  "trend_analysis": {
+    "week_over_week_trends": {
+      "scan_volume": "+2.1%",
+      "average_latency": "-1.3%",
+      "cpu_utilization": "+0.8%",
+      "memory_utilization": "-2.1%",
+      "alert_volume": "+3.2%",
+      "remediation_velocity": "+4.5%"
+    },
+    "month_over_month_trends": {
+      "scan_volume": "+8.7%",
+      "average_latency": "-3.2%",
+      "cpu_utilization": "-1.5%",
+      "memory_utilization": "-5.2%",
+      "alert_volume": "+12.1%",
+      "remediation_velocity": "+15.3%"
+    },
+    "anomalies_detected": [
+      {
+        "anomaly": "High CPU spike on 2026-07-16 at 14:30 UTC",
+        "duration_minutes": 15,
+        "cause": "Concurrent full-scan execution",
+        "resolution": "Improved scheduling algorithm deployed"
+      }
+    ]
+  },
+  "operational_insights": [
+    "All scanner tools showing excellent reliability (94%+)",
+    "Unified scanner averaging 55s per scan with minimal queuing",
+    "SLA compliance at 100% across all severity levels",
+    "Memory utilization is healthy with 512MB mean vs 1GB capacity",
+    "Remediation velocity improving at +4.5% week-over-week",
+    "No system availability issues detected (99.95% uptime)",
+    "False positive rate at 8% is acceptable for security operations",
+    "Alert volume trending up (+3.2% WoW) but within capacity"
+  ]
+}

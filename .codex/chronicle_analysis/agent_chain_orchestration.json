@@ -1,0 +1,18 @@
+{
+  "focus": "orchestration",
+  "steps": [
+    {
+      "agent": "cognitive-brain-cli-agent",
+      "order": 1,
+      "prompt_template": "Plan and execute this workflow through the Codex CLI and report the checkpoints.",
+      "purpose": "Translate the high-level goal into CLI-driven execution steps."
+    },
+    {
+      "agent": "agent-orchestrator",
+      "order": 2,
+      "prompt_template": "Orchestrate the remaining specialized agents needed to complete the workflow safely.",
+      "purpose": "Coordinate any required follow-on specialist agents."
+    }
+  ],
+  "summary": "Use the cognitive/orchestrator chain for multi-step repository work."
+}

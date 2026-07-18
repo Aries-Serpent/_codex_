@@ -1,0 +1,796 @@
+{
+  "metadata": {
+    "generated_at": "2026-07-18T06:53:57.980262Z",
+    "lane": "C (Self-Healing Governance)",
+    "authority_level": "D-tier autonomous",
+    "framework_source": ".codex/CHRONICLE_IMPROVE.md",
+    "total_improvements": 14,
+    "estimated_total_effort_hours": 150,
+    "estimated_total_weeks": 8
+  },
+  "baseline_metrics": {
+    "test_coverage": 59.7,
+    "security_score": 100,
+    "ml_system_health": 94,
+    "documentation_quality": 8.0,
+    "type_hints_coverage": 15,
+    "fragile_tests": 6,
+    "complex_functions": 8,
+    "dependencies_direct": 340
+  },
+  "tier_1_high_priority": {
+    "timeline": "Weeks 1-2",
+    "estimated_effort": "40-60 hours",
+    "improvements": [
+      {
+        "id": "imp-1-1",
+        "title": "Test Coverage Expansion",
+        "priority": "CRITICAL",
+        "description": "Expand test coverage from 59.7% to 80%+ across 5 critical modules with zero-coverage gaps",
+        "current_state": {
+          "overall_coverage": "59.7%",
+          "focus_areas": {
+            "codex_plans": "0%",
+            "services": "7.4%",
+            "codex_ml": "10.5%",
+            "mcp": "16.7%",
+            "tools": "20%"
+          },
+          "test_files_needed": 315
+        },
+        "target_state": {
+          "overall_coverage": "80%+",
+          "focus_areas": {
+            "codex_plans": "60%",
+            "services": "70%",
+            "codex_ml": "80%",
+            "mcp": "80%",
+            "tools": "80%"
+          }
+        },
+        "effort_estimate": {
+          "hours": 240,
+          "weeks": 4,
+          "phase": "Phase 2"
+        },
+        "impact_level": "CRITICAL",
+        "impact_description": "Prevents regressions in 5 core modules; enables safe refactoring",
+        "responsible_agent": "unified-coverage-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/coverage-gap-1"
+        ],
+        "success_metrics": [
+          "Coverage reaches 80%+ in all 5 modules",
+          "No critical gaps in auth/security modules",
+          "CI pass rate maintained >99.5%"
+        ],
+        "dependencies": [
+          "fix-fragile-tests"
+        ],
+        "implementation_notes": "Use coverage-gapfill-agent; prioritize security-critical modules first",
+        "week_start": 1,
+        "week_end": 2
+      },
+      {
+        "id": "imp-1-2",
+        "title": "Fix Fragile Tests",
+        "priority": "CRITICAL",
+        "description": "Eliminate 6 fragile tests causing CI pipeline instability and false failures",
+        "current_state": {
+          "fragile_tests_count": 6,
+          "failure_categories": {
+            "subprocess_timing": 3,
+            "filesystem_race_conditions": 2,
+            "async_state_leaks": 1
+          },
+          "ci_failure_rate_impact": "5-10% false failures per run"
+        },
+        "target_state": {
+          "fragile_tests_count": 0,
+          "stability": "100% deterministic test execution",
+          "ci_failure_rate_impact": "0% flaky failures"
+        },
+        "effort_estimate": {
+          "hours": 8,
+          "weeks": 0.2,
+          "phase": "Phase 1"
+        },
+        "impact_level": "CRITICAL",
+        "impact_description": "Stabilize CI pipeline; reduce flaky failures by 95%; improve developer confidence",
+        "responsible_agent": "autonomous-test-healer-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/flaky-tests-tracking"
+        ],
+        "success_metrics": [
+          "All 6 fragile tests converted to deterministic",
+          "100 consecutive CI runs without flaky failures",
+          "Test execution variance <5ms for timing-dependent tests"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Use timeout fixtures, mocking for subprocess; apply barriers for race conditions",
+        "week_start": 1,
+        "week_end": 1
+      },
+      {
+        "id": "imp-1-3",
+        "title": "Reduce Code Complexity",
+        "priority": "CRITICAL",
+        "description": "Refactor 8 complex functions with cyclomatic complexity >20 to maintainable levels (<15)",
+        "current_state": {
+          "complex_functions_count": 8,
+          "complexity_details": {
+            "OODAOrchestrator": 31,
+            "trainer": 27,
+            "RAGPipeline": 24,
+            "others": "20-23"
+          },
+          "maximum_complexity": 31,
+          "impact": "Difficult to test, maintain, and extend"
+        },
+        "target_state": {
+          "complex_functions_count": 0,
+          "max_complexity_target": 15,
+          "refactored_functions": 8,
+          "techniques_applied": [
+            "extract-methods",
+            "strategy-pattern",
+            "decorator-pattern"
+          ]
+        },
+        "effort_estimate": {
+          "hours": 160,
+          "weeks": 3,
+          "phase": "Phase 3"
+        },
+        "impact_level": "CRITICAL",
+        "impact_description": "Improve maintainability by 40%; reduce bug likelihood by 20-30%; improve test coverage",
+        "responsible_agent": "code-analysis-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/complexity-reduction"
+        ],
+        "success_metrics": [
+          "All 8 functions reduced to CC <15",
+          "Each refactored function has corresponding unit tests",
+          "Code review approval with no complexity concerns"
+        ],
+        "dependencies": [
+          "test-coverage-expansion"
+        ],
+        "implementation_notes": "Use extract private methods; apply Strategy/Decorator patterns; refactor incrementally",
+        "week_start": 2,
+        "week_end": 4
+      },
+      {
+        "id": "imp-1-4",
+        "title": "Add Type Hints",
+        "priority": "IMPORTANT",
+        "description": "Increase type hint coverage from 15% to 80%+ in security-critical modules for better type safety",
+        "current_state": {
+          "type_hints_coverage": "15%",
+          "priority_modules": {
+            "codex.auth": "0%",
+            "codex.cognitive": "8%",
+            "codex.rag": "12%",
+            "codex_ml.training": "5%"
+          },
+          "tool": "mypy --strict"
+        },
+        "target_state": {
+          "type_hints_coverage": "80%+",
+          "priority_modules": {
+            "codex.auth": "95%",
+            "codex.cognitive": "80%",
+            "codex.rag": "80%",
+            "codex_ml.training": "75%"
+          }
+        },
+        "effort_estimate": {
+          "hours": 40,
+          "weeks": 1,
+          "phase": "Phase 1"
+        },
+        "impact_level": "IMPORTANT",
+        "impact_description": "Catch type errors at check time; improve IDE support; enable better refactoring",
+        "responsible_agent": "python-312-type-fixer",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/type-hints-coverage"
+        ],
+        "success_metrics": [
+          "mypy strict mode passes for all 4 priority modules",
+          "Type hints added to 90% of function signatures",
+          "Zero type-related runtime errors in priority modules"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Start with auth module; use Protocol for duck typing; enforce mypy strict mode",
+        "week_start": 1,
+        "week_end": 2
+      },
+      {
+        "id": "imp-1-5",
+        "title": "Security Hardening",
+        "priority": "IMPORTANT",
+        "description": "Implement comprehensive security hardening across OWASP Top 10 with input validation and CSRF protection",
+        "current_state": {
+          "critical_cves": 0,
+          "high_cves_monitored": 2,
+          "security_score": 100,
+          "gaps": [
+            "Input validation not enforced on all user APIs",
+            "CSRF tokens not implemented on sensitive endpoints",
+            "PII detection patterns need hardening",
+            "OWASP Top 10 coverage incomplete"
+          ]
+        },
+        "target_state": {
+          "critical_cves": 0,
+          "owasp_top_10_coverage": "100%",
+          "security_controls": [
+            "Input validation on all user APIs",
+            "CSRF tokens on sensitive endpoints",
+            "Hardened PII detection",
+            "Rate limiting implemented",
+            "SQL injection prevention verified"
+          ],
+          "security_score": 100
+        },
+        "effort_estimate": {
+          "hours": 80,
+          "weeks": 2,
+          "phase": "Phase 1"
+        },
+        "impact_level": "IMPORTANT",
+        "impact_description": "Achieve 100% OWASP Top 10 coverage; eliminate injection vulnerabilities; protect user data",
+        "responsible_agent": "unified-security-scanner",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/security-hardening"
+        ],
+        "success_metrics": [
+          "All OWASP Top 10 controls verified",
+          "Input validation coverage 100%",
+          "CSRF tokens on all state-changing endpoints",
+          "Security audit passes with zero findings"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Use standard validation libraries; implement CSRF middleware; add security gates to CI",
+        "week_start": 1,
+        "week_end": 3
+      }
+    ]
+  },
+  "tier_2_medium_priority": {
+    "timeline": "Weeks 3-4",
+    "estimated_effort": "30-50 hours",
+    "improvements": [
+      {
+        "id": "imp-2-1",
+        "title": "Architecture Refactoring",
+        "priority": "HIGH",
+        "description": "Reduce architectural coupling by centralizing plugin registry, adding DI layer, and consolidating modules",
+        "current_state": {
+          "architectural_gaps": 5,
+          "plugin_registry_state": "Distributed across modules",
+          "coupling_metrics": "High cross-module dependencies",
+          "module_consolidation_opportunity": "7 to 4 in CLI layer"
+        },
+        "target_state": {
+          "architectural_gaps": 0,
+          "plugin_registry": "Centralized",
+          "dependency_injection": "Implemented",
+          "coupling_reduction": "40% fewer interdependencies",
+          "consolidated_modules": "CLI layer 4 core modules"
+        },
+        "effort_estimate": {
+          "hours": 120,
+          "weeks": 2,
+          "phase": "Phase 3"
+        },
+        "impact_level": "HIGH",
+        "impact_description": "Improve testability; reduce module interdependencies; enable independent scaling",
+        "responsible_agent": "code-analysis-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/architecture-refactoring"
+        ],
+        "success_metrics": [
+          "Plugin registry centralized with 80% test coverage",
+          "DI layer implemented and documented",
+          "Layer contracts enforced (Presentation, Core, Infrastructure)",
+          "Module coupling metrics reduced by 40%"
+        ],
+        "dependencies": [
+          "reduce-code-complexity"
+        ],
+        "implementation_notes": "Use dependency injection library; create registry interface; enforce layer boundaries",
+        "week_start": 3,
+        "week_end": 4
+      },
+      {
+        "id": "imp-2-2",
+        "title": "Documentation Enhancement",
+        "priority": "HIGH",
+        "description": "Increase documentation quality from 8.0/10 to 9.5/10 by creating comprehensive guides and learning paths",
+        "current_state": {
+          "quality_score": 8.0,
+          "documentation_files": 6544,
+          "gaps": [
+            "FAQ for 15+ common questions (3 hours)",
+            "Deployment guide (beginner-friendly) (4 hours)",
+            "Troubleshooting guide (5 hours)",
+            "Learning paths for 3+ levels (6 hours)",
+            "Architecture decision records (4 hours)"
+          ]
+        },
+        "target_state": {
+          "quality_score": 9.5,
+          "documentation_files": 6600,
+          "additions": [
+            "FAQ with 15+ common questions",
+            "Deployment guide (beginner, advanced)",
+            "Troubleshooting guide with known issues",
+            "3-level learning paths (beginner, intermediate, advanced)",
+            "Architecture decision records for all major decisions"
+          ]
+        },
+        "effort_estimate": {
+          "hours": 40,
+          "weeks": 1,
+          "phase": "Phase 2-3"
+        },
+        "impact_level": "HIGH",
+        "impact_description": "Reduce onboarding time by 50%; improve developer experience; increase contribution readiness",
+        "responsible_agent": "unified-doc-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/documentation-gaps"
+        ],
+        "success_metrics": [
+          "FAQ covers 15+ questions with satisfactory answers",
+          "Deployment guide passes with new user test",
+          "Troubleshooting guide covers 80% of known issues",
+          "Learning paths have 3+ modules each",
+          "10+ ADRs documented for architectural decisions"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Use MkDocs; create templates for ADRs; gather FAQ from issues/discussions",
+        "week_start": 3,
+        "week_end": 4
+      },
+      {
+        "id": "imp-2-3",
+        "title": "Dependency Consolidation",
+        "priority": "MEDIUM",
+        "description": "Reduce 340+ dependencies by removing duplicates and consolidating similar libraries",
+        "current_state": {
+          "total_direct_dependencies": 340,
+          "duplicate_opportunities": 15,
+          "consolidation_targets": {
+            "logging": "3 libs to 1",
+            "validation": "2 libs to 1",
+            "outdated_dependencies": 8
+          }
+        },
+        "target_state": {
+          "total_direct_dependencies": 310,
+          "duplicates_removed": 15,
+          "consolidated_areas": {
+            "logging": "Single standardized logger",
+            "validation": "Unified validation layer",
+            "all_dependencies": "Current and patched"
+          }
+        },
+        "effort_estimate": {
+          "hours": 40,
+          "weeks": 1,
+          "phase": "Phase 2"
+        },
+        "impact_level": "MEDIUM",
+        "impact_description": "Reduce supply chain risk; improve build times; simplify maintenance",
+        "responsible_agent": "dependency-conflict-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/dependency-consolidation"
+        ],
+        "success_metrics": [
+          "Removed 15+ duplicate dependencies",
+          "Consolidated logging to single implementation",
+          "Consolidated validation to single layer",
+          "All 8 outdated dependencies updated",
+          "Build time reduced by 10%+"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Audit requirements.txt; create compatibility layer; test after each removal",
+        "week_start": 3,
+        "week_end": 4
+      },
+      {
+        "id": "imp-2-4",
+        "title": "Performance Optimization",
+        "priority": "MEDIUM",
+        "description": "Optimize RAG and ML pipelines to achieve 30-50% performance improvement through caching and gradient optimization",
+        "current_state": {
+          "rag_latency_ms": 100,
+          "inference_throughput": "10-100 req/sec",
+          "memory_efficiency": "Standard training",
+          "caching": "None for query results"
+        },
+        "target_state": {
+          "rag_latency_ms": 50,
+          "inference_throughput": "50-150 req/sec",
+          "memory_efficiency": "50% reduction with gradient checkpointing",
+          "caching": "20x speedup for repeated queries"
+        },
+        "effort_estimate": {
+          "hours": 100,
+          "weeks": 2,
+          "phase": "Phase 3"
+        },
+        "impact_level": "MEDIUM",
+        "impact_description": "Improve user experience; reduce infrastructure costs; enable faster iteration",
+        "responsible_agent": "performance-monitor-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/performance-optimization"
+        ],
+        "success_metrics": [
+          "RAG latency reduced to <50ms (50% improvement)",
+          "Inference throughput increased to 50-150 req/sec",
+          "Memory usage reduced by 50% with gradient checkpointing",
+          "Query result caching provides 20x speedup",
+          "Performance regression tests prevent future degradation"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Implement gradient checkpointing; add query result cache; benchmark before/after",
+        "week_start": 3,
+        "week_end": 4
+      },
+      {
+        "id": "imp-2-5",
+        "title": "ML Pipeline Enhancements",
+        "priority": "MEDIUM",
+        "description": "Enhance ML system health from 94/100 to 98+/100 with divergence detection and quantization support",
+        "current_state": {
+          "ml_health_score": 94,
+          "training_divergence_detection": false,
+          "model_quantization": "Not supported",
+          "mlflow_artifact_logging": "Basic",
+          "performance_regression_monitoring": false
+        },
+        "target_state": {
+          "ml_health_score": 98,
+          "training_divergence_detection": true,
+          "model_quantization": "Full support with CI gate",
+          "mlflow_artifact_logging": "Comprehensive",
+          "performance_regression_monitoring": "Real-time alerts"
+        },
+        "effort_estimate": {
+          "hours": 120,
+          "weeks": 3,
+          "phase": "Phase 2-3"
+        },
+        "impact_level": "MEDIUM",
+        "impact_description": "Prevent training failures; improve deployment safety; enable production quantization",
+        "responsible_agent": "ml-validation-suite-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/ml-pipeline-improvements"
+        ],
+        "success_metrics": [
+          "Training divergence detected automatically",
+          "Model quantization working end-to-end",
+          "MLflow logs comprehensive training metadata",
+          "Performance regression alerts in place",
+          "ML health score reaches 98+"
+        ],
+        "dependencies": [],
+        "implementation_notes": "Add loss divergence checks; implement quantization aware training; expand MLflow logging",
+        "week_start": 3,
+        "week_end": 4
+      }
+    ]
+  },
+  "tier_3_long_term": {
+    "timeline": "Weeks 5-8+",
+    "estimated_effort": "50+ hours",
+    "improvements": [
+      {
+        "id": "imp-3-1",
+        "title": "Comprehensive Test Hardening",
+        "priority": "MEDIUM",
+        "description": "Complete test coverage roadmap to 85%+ with integration and E2E tests",
+        "current_state": {
+          "coverage": "59.7%",
+          "integration_tests": "Limited",
+          "e2e_tests": "Minimal"
+        },
+        "target_state": {
+          "coverage": "85%+",
+          "integration_tests": "Complete cross-module workflows",
+          "e2e_tests": "All major user journeys"
+        },
+        "effort_estimate": {
+          "hours": 200,
+          "weeks": 4,
+          "phase": "Phase 4"
+        },
+        "impact_level": "MEDIUM",
+        "responsible_agent": "unified-coverage-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/comprehensive-test-hardening"
+        ],
+        "success_metrics": [
+          "Coverage reaches 85%+",
+          "Integration tests for 100% of cross-module workflows",
+          "E2E tests for all user journeys",
+          "Performance regression tests in place"
+        ],
+        "dependencies": [
+          "test-coverage-expansion"
+        ],
+        "week_start": 5,
+        "week_end": 8
+      },
+      {
+        "id": "imp-3-2",
+        "title": "Knowledge Base Development",
+        "priority": "MEDIUM",
+        "description": "Create comprehensive learning paths, design patterns, runbooks, and video tutorials",
+        "current_state": {
+          "learning_paths": 0,
+          "design_patterns_documented": 0,
+          "runbooks": 0,
+          "video_tutorials": 0
+        },
+        "target_state": {
+          "learning_paths": 3,
+          "design_patterns_documented": 50,
+          "runbooks": 15,
+          "video_tutorials": "8-10"
+        },
+        "effort_estimate": {
+          "hours": 150,
+          "weeks": 4,
+          "phase": "Phase 4"
+        },
+        "impact_level": "MEDIUM",
+        "responsible_agent": "unified-doc-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/knowledge-base-development"
+        ],
+        "success_metrics": [
+          "3 complete learning paths (beginner, intermediate, advanced)",
+          "50+ design patterns documented",
+          "15+ operational runbooks created",
+          "8-10 video tutorials published"
+        ],
+        "dependencies": [
+          "documentation-enhancement"
+        ],
+        "week_start": 5,
+        "week_end": 8
+      },
+      {
+        "id": "imp-3-3",
+        "title": "Long-Term Architecture",
+        "priority": "LOW",
+        "description": "Plan and implement advanced architecture: microservices, async patterns, observability stack",
+        "current_state": {
+          "microservices_decomposition": "Monolithic",
+          "async_patterns": "Partial",
+          "observability": "Basic logging"
+        },
+        "target_state": {
+          "microservices_decomposition": "Optional full decomposition",
+          "async_patterns": "Complete async/await coverage",
+          "observability": "Full logging + tracing + metrics"
+        },
+        "effort_estimate": {
+          "hours": 200,
+          "weeks": 4,
+          "phase": "Phase 4"
+        },
+        "impact_level": "LOW",
+        "responsible_agent": "code-analysis-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/long-term-architecture"
+        ],
+        "success_metrics": [
+          "Microservices decomposition plan documented",
+          "All async/await patterns implemented",
+          "Full observability stack operational"
+        ],
+        "dependencies": [
+          "architecture-refactoring"
+        ],
+        "week_start": 5,
+        "week_end": 8
+      },
+      {
+        "id": "imp-3-4",
+        "title": "Advanced Optimization",
+        "priority": "LOW",
+        "description": "Implement model distillation, hybrid search, federated learning, and edge deployment",
+        "current_state": {
+          "model_distillation": false,
+          "hybrid_search": false,
+          "federated_learning": false,
+          "edge_deployment": false
+        },
+        "target_state": {
+          "model_distillation": "Production-ready",
+          "hybrid_search": "Implemented",
+          "federated_learning": "Supported",
+          "edge_deployment": "Available"
+        },
+        "effort_estimate": {
+          "hours": 150,
+          "weeks": 3,
+          "phase": "Phase 4"
+        },
+        "impact_level": "LOW",
+        "responsible_agent": "ml-validation-suite-agent",
+        "associated_prs": [],
+        "associated_issues": [
+          "#issues/advanced-optimization"
+        ],
+        "success_metrics": [
+          "Model distillation working end-to-end",
+          "Hybrid search (dense + sparse) implemented",
+          "Federated learning basic support",
+          "Edge deployment documentation complete"
+        ],
+        "dependencies": [
+          "ml-pipeline-enhancements"
+        ],
+        "week_start": 6,
+        "week_end": 8
+      }
+    ]
+  },
+  "implementation_phases": {
+    "phase_1_quick_wins": {
+      "duration": "Days 1-3",
+      "focus": [
+        "Fix 6 fragile tests",
+        "Add type hints to auth module",
+        "Create FAQ document"
+      ],
+      "expected_outcomes": [
+        "CI stabilization",
+        "Type safety in auth",
+        "Developer experience improvement"
+      ]
+    },
+    "phase_2_coverage_push": {
+      "duration": "Days 4-10",
+      "focus": [
+        "Coverage expansion for top 5 modules",
+        "Dependency consolidation",
+        "Deployment guide"
+      ],
+      "expected_outcomes": [
+        "Coverage to 72%",
+        "Reduced dependencies",
+        "Deployment knowledge"
+      ]
+    },
+    "phase_3_architecture_performance": {
+      "duration": "Days 11-21",
+      "focus": [
+        "Refactor complex functions",
+        "Performance optimizations",
+        "Complete documentation gaps"
+      ],
+      "expected_outcomes": [
+        "Reduced complexity",
+        "30-50% performance improvement",
+        "9.5/10 docs score"
+      ]
+    },
+    "phase_4_long_term": {
+      "duration": "Days 22+",
+      "focus": [
+        "Advanced optimizations",
+        "Knowledge base",
+        "Future-proofing"
+      ],
+      "expected_outcomes": [
+        "98/100 ML health",
+        "Comprehensive knowledge base",
+        "Scalable architecture"
+      ]
+    }
+  },
+  "success_metrics_summary": {
+    "test_coverage": {
+      "current": 59.7,
+      "target": 85,
+      "unit": "%",
+      "timeline": "Week 4",
+      "owner": "unified-coverage-agent"
+    },
+    "security_cves": {
+      "current": 0,
+      "target": 0,
+      "unit": "count",
+      "timeline": "Week 2",
+      "owner": "unified-security-scanner"
+    },
+    "code_complexity": {
+      "current": 8,
+      "target": 0,
+      "unit": "functions >20 CC",
+      "timeline": "Week 3",
+      "owner": "code-analysis-agent"
+    },
+    "type_hints": {
+      "current": 15,
+      "target": 80,
+      "unit": "%",
+      "timeline": "Week 2",
+      "owner": "python-312-type-fixer"
+    },
+    "documentation_quality": {
+      "current": 8.0,
+      "target": 9.5,
+      "unit": "/10",
+      "timeline": "Week 4",
+      "owner": "unified-doc-agent"
+    },
+    "ml_health": {
+      "current": 94,
+      "target": 98,
+      "unit": "/100",
+      "timeline": "Week 4",
+      "owner": "ml-validation-suite-agent"
+    },
+    "performance_latency": {
+      "current": 100,
+      "target": 50,
+      "unit": "ms (RAG)",
+      "timeline": "Week 4",
+      "owner": "performance-monitor-agent"
+    },
+    "fragile_tests": {
+      "current": 6,
+      "target": 0,
+      "unit": "count",
+      "timeline": "Week 1",
+      "owner": "autonomous-test-healer-agent"
+    }
+  },
+  "strategic_focus": {
+    "phase_1_stability_first": {
+      "focus": "Fix flaky tests, expand coverage (Weeks 1-2)",
+      "rationale": "Unstable CI prevents effective development; coverage gaps enable regressions",
+      "improvements": [
+        "fix-fragile-tests",
+        "test-coverage-expansion"
+      ]
+    },
+    "phase_2_quality_second": {
+      "focus": "Reduce complexity, add types (Weeks 2-4)",
+      "rationale": "Quality foundation enables faster future development; type safety prevents errors",
+      "improvements": [
+        "reduce-code-complexity",
+        "add-type-hints"
+      ]
+    },
+    "phase_3_excellence_third": {
+      "focus": "Docs, performance, long-term (Weeks 5+)",
+      "rationale": "Excellent docs and performance enable production scale; long-term architecture future-proofs",
+      "improvements": [
+        "documentation-enhancement",
+        "performance-optimization",
+        "long-term-architecture"
+      ]
+    }
+  }
+}

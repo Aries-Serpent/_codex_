@@ -1,0 +1,409 @@
+---
+# PHASE 4: Custom Image Migration Template
+# Purpose: Standardized template for migrating workflows from actions/setup-* to custom container images
+# Usage: Copy this template and customize for each workflow cohort
+# Version: 1.0
+# Authority: @mbaetiong D-tier autonomous
+
+################################################################################
+# BEFORE PATTERN: Legacy setup-* approach (current state)
+################################################################################
+
+name: "Example Workflow - BEFORE (Setup Actions Pattern)"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  legacy-setup-pattern:
+    name: "Legacy Setup Actions"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Setup Python (legacy pattern)"
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: "**/requirements*.txt"
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: "Run validation"
+        run: |
+          python scripts/validate.py --strict
+          python -m pytest tests/validation/ -v
+
+      - name: "Upload reports"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-reports
+          path: reports/
+
+    # Time Cost: ~120-150s (60-90s setup + 30-60s execution)
+    # Network I/O: ~500MB (pip packages + dependencies)
+    # Cost: ~$0.015-0.020 per run
+
+
+################################################################################
+# AFTER PATTERN: Custom image approach (post-migration)
+################################################################################
+
+name: "Example Workflow - AFTER (Custom Image Pattern)"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+env:
+  CONTAINER_REGISTRY: "ghcr.io"
+  CONTAINER_IMAGE: "aries-serpent/codex-python-3.12"
+  CONTAINER_TAG: "latest-slim"
+  PHASE4_MIGRATION: "enabled"
+  FALLBACK_TO_LEGACY: "true"  # Escape hatch enabled
+
+jobs:
+  custom-image-pattern:
+    name: "Custom Image (Phase 4)"
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE }}:${{ env.CONTAINER_TAG }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      options: |
+        --cpus 2
+        --memory 8g
+        --user 0:0
+        --env CODEX_SESSION_ID=${{ github.run_id }}
+        --env CODEX_PHASE4_ENABLED=true
+
+    # Escape Hatch: Conditional Fallback to Legacy Pattern
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && !contains(github.event.inputs.use_legacy_setup, 'true'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Verify container environment"
+        run: |
+          echo "✓ Python version: $(python --version)"
+          echo "✓ pip version: $(pip --version)"
+          echo "✓ setuptools: $(pip show setuptools | grep Version)"
+          echo "✓ Container environment ready"
+          # This step verifies all pre-installed dependencies are available
+
+      - name: "Cache pip packages (within container)"
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.pythonLocation }}/lib/python*/site-packages
+          key: pip-${{ runner.os }}-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: "Install project dependencies (if not in container)"
+        run: |
+          # Only install if requirements.txt exists and differ from container baseline
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt --quiet
+          fi
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt --quiet
+          fi
+
+      - name: "Run validation"
+        run: |
+          python scripts/validate.py --strict
+          python -m pytest tests/validation/ -v
+
+      - name: "Collect metrics for Phase 4 benchmarking"
+        if: always()
+        run: |
+          python -c "
+          import os, json, time
+          metrics = {
+              'workflow': 'example-workflow',
+              'container_image': '${{ env.CONTAINER_IMAGE }}:${{ env.CONTAINER_TAG }}',
+              'phase4_enabled': True,
+              'container_init_time': os.getenv('CONTAINER_INIT_TIME_MS', 'N/A'),
+              'timestamp': int(time.time()),
+              'github_run_id': '${{ github.run_id }}',
+              'github_run_attempt': '${{ github.run_attempt }}'
+          }
+          with open('metrics.json', 'w') as f:
+              json.dump(metrics, f)
+          "
+
+      - name: "Upload reports"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-reports
+          path: reports/
+
+      - name: "Upload Phase 4 metrics"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase4-metrics
+          path: metrics.json
+
+    # Time Cost: ~45-60s (5-10s pull + 30-45s execution, NO setup overhead)
+    # Network I/O: ~50MB (container already contains dependencies)
+    # Cost: ~$0.005-0.010 per run (50% reduction)
+
+  # FALLBACK JOB: Triggered if custom image fails or not available
+  legacy-fallback:
+    name: "Legacy Setup (Fallback)"
+    runs-on: ubuntu-latest
+    if: |
+      failure() && env.FALLBACK_TO_LEGACY == 'true' ||
+      contains(github.event.inputs.use_legacy_setup, 'true')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Setup Python (fallback)"
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: "Run validation (fallback)"
+        run: |
+          python scripts/validate.py --strict
+          python -m pytest tests/validation/ -v
+
+      - name: "Notify fallback activation"
+        if: always()
+        run: |
+          echo "⚠️  Workflow executed via LEGACY FALLBACK pattern"
+          echo "🔍 Phase 4 custom image was unavailable or disabled"
+          echo "📊 This event will be logged for Phase 4 analysis"
+
+      - name: "Upload reports"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-reports-fallback
+          path: reports/
+
+
+################################################################################
+# MIGRATION GUIDANCE DOCUMENT
+################################################################################
+
+# REQUIRED CHANGES CHECKLIST:
+#
+# For each workflow being migrated:
+#
+# 1. ✅ Update container definition
+#    - Set `container.image` to custom image reference
+#    - Configure `container.credentials` for authentication
+#    - Add environment variables for Phase 4 tracking
+#
+# 2. ✅ Remove explicit setup actions
+#    - Remove `actions/setup-python@v*` steps
+#    - Remove `actions/setup-node@v*` steps  
+#    - Remove `actions/setup-go@v*` steps
+#    - Remove `actions/setup-ruby@v*` steps
+#    - Keep `actions/checkout@v*` (still needed)
+#
+# 3. ✅ Add escape hatch logic
+#    - Add `if` condition to main job (allow dispatch override)
+#    - Create fallback job that uses legacy setup-* pattern
+#    - Fallback triggered by failure() OR manual input
+#
+# 4. ✅ Update dependency installation
+#    - Verify dependencies are pre-installed in container
+#    - Keep pip install commands for project-specific deps
+#    - Use `--quiet` flag to reduce log noise
+#
+# 5. ✅ Add Phase 4 benchmarking instrumentation
+#    - Collect container initialization metrics
+#    - Log custom image used + version
+#    - Store metrics in separate artifact for dashboard
+#    - Use consistent metric naming (see "Collect metrics" step)
+#
+# 6. ✅ Environment compatibility
+#    - Verify all environment variables used in workflow exist
+#    - Test caching behavior within container
+#    - Validate relative paths work in container context
+#
+# 7. ✅ Testing before merge
+#    - Test manual workflow_dispatch with use_legacy_setup=false (custom image)
+#    - Test manual workflow_dispatch with use_legacy_setup=true (fallback)
+#    - Verify both paths produce identical artifacts
+#    - Check cost reduction in first run
+#
+# 8. ✅ Documentation
+#    - Document any environment variable changes
+#    - Add troubleshooting section for custom image issues
+#    - List Phase 4 improvements (speed, cost, reliability)
+
+
+################################################################################
+# CONDITIONAL LOGIC PATTERNS
+################################################################################
+
+# Pattern A: Disable per-workflow via label
+#
+# if: |
+#   github.event_name != 'workflow_dispatch' ||
+#   (github.event.inputs.use_legacy_setup != 'true')
+#
+# Usage: Manual dispatch with input use_legacy_setup=true to activate fallback
+
+# Pattern B: Disable globally via environment variable
+#
+# env:
+#   PHASE4_MIGRATION: ${{ vars.CODEX_PHASE4_CUSTOM_IMAGES_ENABLED || 'enabled' }}
+#
+# if: env.PHASE4_MIGRATION == 'enabled'
+#
+# Usage: Set CODEX_PHASE4_CUSTOM_IMAGES_ENABLED=disabled to disable globally
+
+# Pattern C: Disable per-branch
+#
+# if: |
+#   github.ref == 'refs/heads/main' &&
+#   env.PHASE4_MIGRATION == 'enabled'
+#
+# Usage: Custom image only on main, setup-* on other branches (safer)
+
+# Pattern D: Time-based gradual rollout
+#
+# if: |
+#   fromJson(github.event.repository.private) ||
+#   (github.run_number % 100) < 25  # 25% of runs use custom image
+#
+# Usage: Gradually increase percentage of runs using custom image
+
+
+################################################################################
+# CONTAINER IMAGE SPECIFICATIONS
+################################################################################
+
+# Image Name Format: ghcr.io/aries-serpent/codex-{LANGUAGE}-{VERSION}:{TAG}
+#
+# Examples:
+#   - ghcr.io/aries-serpent/codex-python-3.12:latest-slim
+#   - ghcr.io/aries-serpent/codex-node-22:latest-slim
+#   - ghcr.io/aries-serpent/codex-go-1.23:latest-slim
+#   - ghcr.io/aries-serpent/codex-rust-1.81:latest-slim
+#
+# Tags Available:
+#   - latest-slim  (minimal, ~200MB)
+#   - latest       (full toolchain, ~500MB)
+#   - latest-debug (debug tools included, ~700MB)
+#
+# Pre-installed in all images:
+#   - Git 2.40+
+#   - curl, wget
+#   - jq, yq
+#   - SSH tools
+#   - Standard build tools (gcc, make, etc.)
+#
+# Language-specific installs (varies by image, see docs):
+#   - Python 3.12: pip, setuptools, wheel, pytest, black, ruff, mypy
+#   - Node 22: npm, yarn, pnpm, typescript, eslint
+#   - Go 1.23: standard Go tools + common CLI tools
+#   - Rust 1.81: cargo, rustfmt, clippy
+
+
+################################################################################
+# BENCHMARKING METRICS SCHEMA
+################################################################################
+
+# Captured in metrics.json artifact:
+#
+# {
+#   "workflow": string,              # Workflow name (e.g., "validate.yml")
+#   "container_image": string,       # Full image reference with tag
+#   "phase4_enabled": boolean,       # Whether custom image was used
+#   "container_init_time": number,   # Container startup time (ms)
+#   "timestamp": number,             # Unix timestamp
+#   "github_run_id": string,         # GitHub workflow run ID
+#   "github_run_attempt": number,    # Attempt number
+#   "setup_time_delta": number,      # Difference vs. baseline (s)
+#   "total_duration": number,        # Total workflow duration (s)
+#   "container_pull_cached": boolean # Whether image was from runner cache
+# }
+
+
+################################################################################
+# COMMON GOTCHAS & SOLUTIONS
+################################################################################
+
+# Gotcha 1: Container loses working directory on actions/checkout
+# Solution: Ensure GITHUB_WORKSPACE is set correctly in container
+# Prevention: Always use `actions/checkout@v4` even in container
+
+# Gotcha 2: pip cache location changes inside container
+# Solution: Use `actions/cache@v4` with ${{ env.pythonLocation }}/lib/python*/site-packages
+# Prevention: Don't rely on ~/.cache/pip paths in container
+
+# Gotcha 3: Environment variables not passed to container
+# Solution: Explicitly pass via `container.options` or `env` section
+# Prevention: Use `env:` block at job level (propagates to container)
+
+# Gotcha 4: Container authentication fails silently
+# Solution: Set `container.credentials` for private registries
+# Prevention: Test private image pull before production deployment
+
+# Gotcha 5: Relative paths break in container
+# Solution: Use absolute paths or verify GITHUB_WORKSPACE in container
+# Prevention: Test all relative path references in canary phase
+
+# Gotcha 6: Tool versions differ between container and setup-*
+# Solution: Pin tool versions in Dockerfile; document in migration guide
+# Prevention: Run before/after comparison of version outputs
+
+
+################################################################################
+# ROLLBACK PROCEDURE (if needed)
+################################################################################
+
+# Quick Rollback (to legacy setup-*):
+#
+# 1. Set container.image to non-existent value (fails fast)
+# 2. Fallback job executes legacy setup-* pattern
+# 3. Zero downtime (parallel job structure)
+#
+# Full Rollback (revert migration):
+#
+# 1. Remove container definition from job
+# 2. Add back all actions/setup-* steps
+# 3. Remove fallback job
+# 4. Commit and push to branch
+# 5. All future runs use legacy pattern
+
+
+---
+# END OF TEMPLATE
+# Document Owner: Copilot Cloud Agent
+# Last Updated: 2026-07-18
+# Version: 1.0
