@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T19:19:37.063638+00:00",
+  "generated_at": "2026-07-18T19:20:34.790637+00:00",
   "phase": "Phase 2 Lane 3",
   "objective": "Branch-scoped concurrency and timeout enforcement",
   "standard_format": {
@@ -2220,8 +2220,8 @@
       },
       "resource_profile": {
         "unique_runners": [
-          "ubuntu-latest",
-          "ubuntu-latest-m"
+          "ubuntu-latest-m",
+          "ubuntu-latest"
         ],
         "matrix_jobs": 1
       }
@@ -3755,8 +3755,8 @@
       },
       "resource_profile": {
         "unique_runners": [
-          "ubuntu-latest",
-          "${{ (vars.COPILOT_RUNNER_PROFILE != '' && vars.COPILOT_RUNNER_PROFILE) || 'ubuntu-latest' }}"
+          "${{ (vars.COPILOT_RUNNER_PROFILE != '' && vars.COPILOT_RUNNER_PROFILE) || 'ubuntu-latest' }}",
+          "ubuntu-latest"
         ],
         "matrix_jobs": 0
       }
@@ -5837,8 +5837,8 @@
       },
       "resource_profile": {
         "unique_runners": [
-          "ubuntu-latest",
-          "ubuntu-latest-m"
+          "ubuntu-latest-m",
+          "ubuntu-latest"
         ],
         "matrix_jobs": 0
       }

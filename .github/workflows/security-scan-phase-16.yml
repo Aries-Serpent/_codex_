@@ -1,5 +1,5 @@
 name: Phase 16 - Security Scanning & Coverage Integration
-true:
+on:
   push:
     branches:
     - main
@@ -344,6 +344,7 @@ jobs:
   results:
     name: Phase 16 Results Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: always()
     needs:
     - security-scanning
