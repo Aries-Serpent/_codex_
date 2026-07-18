@@ -42,8 +42,8 @@ jobs:
         id: version
         env:
           GITHUB_REF: ${{ github.ref }}
-        INPUT_VERSION: ${{ inputs.version }}
-        COMMIT_SHA: ${{ github.sha }}
+          INPUT_VERSION: ${{ inputs.version }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           echo "Preparing release..."
           VERSION="v1.0.0"
