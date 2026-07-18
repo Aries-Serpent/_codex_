@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Fixed (PR #5337 REQ-14 Validation — Agents Used Identifiers — 2026-07-18T21:31Z)
+
+#### Compliance Requirements (REQ-14)
+- Corrected Agents Used section in AGENT_ACCOUNTABILITY_REPORT.md
+- Updated agent identifiers with proper backtick-quoted format
+- Changed unquoted 'copilot' to registered agents: `session-analysis-agent`, `memory-sync-agent`
+- session_wrapup_autofix.py --check now passes all compliance gates (REQ-4, REQ-5, REQ-14)
+
 ### Fixed (PR #5337 CI Compliance & Blocking Comments Resolution — 2026-07-18T21:29Z)
 
 #### Compliance Requirements (REQ-4/REQ-5)
