@@ -1,0 +1,321 @@
+name: CodeQL GA Security Gate
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+      - "release/**"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run mode (no blocking)"
+        type: boolean
+        default: false
+      severity_threshold:
+        description: "Minimum severity to block (critical, high, medium)"
+        type: choice
+        options:
+          - critical
+          - high
+          - medium
+        default: high
+
+concurrency:
+  group: codeql-ga-gate-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  security-events: read
+  pull-requests: write
+  checks: write
+  statuses: write
+
+env:
+  PYTHON_VERSION: "3.12"
+  CODEQL_SEVERITY_THRESHOLD: ${{ github.event.inputs.severity_threshold || 'high' }}
+
+jobs:
+  codeql-analysis:
+    name: CodeQL Scan & Gate Analysis
+    runs-on: ubuntu-latest
+    outputs:
+      critical_count: ${{ steps.analyze.outputs.critical_count }}
+      high_count: ${{ steps.analyze.outputs.high_count }}
+      medium_count: ${{ steps.analyze.outputs.medium_count }}
+      alerts_blocked: ${{ steps.gate-decision.outputs.blocked }}
+      gate_status: ${{ steps.gate-decision.outputs.status }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:python
+          upload: true
+
+      - name: Parse CodeQL Results
+        id: analyze
+        shell: bash
+        run: |
+          set +e
+          
+          # Initialize counters
+          CRITICAL=0
+          HIGH=0
+          MEDIUM=0
+          
+          # Try to find SARIF results
+          SARIF_FILES=$(find . -name "*.sarif" -type f 2>/dev/null)
+          
+          if [ -n "$SARIF_FILES" ]; then
+            # Use first SARIF file found
+            SARIF_FILE=$(echo "$SARIF_FILES" | head -1)
+            
+            echo "Processing SARIF file: $SARIF_FILE"
+            
+            # Count alerts by severity using jq
+            CRITICAL=$(jq '[.runs[].results[] | select(.level == "error" or .level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+            HIGH=$(jq '[.runs[].results[] | select(.level == "warning")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+            MEDIUM=$(jq '[.runs[].results[] | select(.level == "note")] | length' "$SARIF_FILE" 2>/dev/null || echo "0")
+          fi
+          
+          echo "critical_count=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high_count=$HIGH" >> $GITHUB_OUTPUT
+          echo "medium_count=$MEDIUM" >> $GITHUB_OUTPUT
+          
+          # Report to summary
+          echo "## CodeQL Alert Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical | $CRITICAL |" >> $GITHUB_STEP_SUMMARY
+          echo "| High | $HIGH |" >> $GITHUB_STEP_SUMMARY
+          echo "| Medium | $MEDIUM |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Gate Decision & Policy Enforcement
+        id: gate-decision
+        shell: bash
+        run: |
+          CRITICAL=${{ steps.analyze.outputs.critical_count }}
+          HIGH=${{ steps.analyze.outputs.high_count }}
+          DRY_RUN=${{ github.event.inputs.dry_run }}
+          
+          BLOCKED=false
+          STATUS="PASS"
+          REASON=""
+          
+          # Check for critical alerts (always blocking)
+          if [ "$CRITICAL" -gt 0 ]; then
+            BLOCKED=true
+            STATUS="FAIL"
+            REASON="Critical vulnerabilities detected ($CRITICAL)"
+          fi
+          
+          # Check for high alerts (blocking based on severity threshold)
+          if [ "$HIGH" -gt 0 ] && [ "${{ env.CODEQL_SEVERITY_THRESHOLD }}" != "critical" ]; then
+            BLOCKED=true
+            STATUS="FAIL"
+            REASON="High severity vulnerabilities detected ($HIGH)"
+          fi
+          
+          # Override if dry-run mode
+          if [ "$DRY_RUN" = "true" ]; then
+            BLOCKED=false
+            STATUS="DRY_RUN"
+            REASON="Dry-run mode enabled (gate not enforced)"
+          fi
+          
+          echo "blocked=$BLOCKED" >> $GITHUB_OUTPUT
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "reason=$REASON" >> $GITHUB_OUTPUT
+          
+          echo "### Gate Decision: $STATUS" >> $GITHUB_STEP_SUMMARY
+          echo "$REASON" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$BLOCKED" = "true" ] && [ "$DRY_RUN" != "true" ]; then
+            exit 1
+          fi
+
+      - name: Create PR Comment with Gate Status
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const critical = '${{ steps.analyze.outputs.critical_count }}';
+            const high = '${{ steps.analyze.outputs.high_count }}';
+            const medium = '${{ steps.analyze.outputs.medium_count }}';
+            const blocked = '${{ steps.gate-decision.outputs.blocked }}';
+            const status = '${{ steps.gate-decision.outputs.status }}';
+            
+            let comment = `## 🔐 CodeQL GA Security Gate\n\n`;
+            comment += `**Gate Status**: ${status === 'FAIL' ? '❌ BLOCKED' : status === 'PASS' ? '✅ PASSED' : '⚠️ ' + status}\n\n`;
+            comment += `### Alert Summary\n`;
+            comment += `| Severity | Count | Status |\n`;
+            comment += `|----------|-------|--------|\n`;
+            comment += `| Critical | ${critical} | ${critical > 0 ? '❌ Blocking' : '✅ Clear'} |\n`;
+            comment += `| High | ${high} | ${high > 0 ? '❌ Blocking' : '✅ Clear'} |\n`;
+            comment += `| Medium | ${medium} | ℹ️ Logged |\n\n`;
+            
+            if (blocked === 'true') {
+              comment += `### Action Required\n`;
+              comment += `This PR cannot be merged until CodeQL vulnerabilities are resolved.\n\n`;
+              comment += `**Resources**:\n`;
+              comment += `- [Deployment Report](.codex/PHASE_6_CODEQL_GA_DEPLOYMENT_REPORT.md)\n`;
+              comment += `- [Remediation Guide](.codex/PHASE_6_CODEQL_EXCLUSION_RULES.yaml)\n`;
+              comment += `- [Security Alerts](https://github.com/${{ github.repository }}/security/code-scanning)\n`;
+            } else {
+              comment += `### Status\n`;
+              comment += `✅ All CodeQL security checks passed.\n`;
+            }
+            
+            comment += `\n---\n*Gate v1.0.0 - Phase 6 Lane 1*\n`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Log Gate Decision to Audit Trail
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .codex/security/gate_audit
+          
+          AUDIT_LOG=".codex/security/gate_audit/gate_$(date +%Y%m%dT%H%M%SZ).json"
+          
+          cat > "$AUDIT_LOG" << EOF
+          {
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "event": "${{ github.event_name }}",
+            "repository": "${{ github.repository }}",
+            "branch": "${{ github.ref }}",
+            "commit": "${{ github.sha }}",
+            "pr_number": ${{ github.event.number || -1 }},
+            "actor": "${{ github.actor }}",
+            "gate_status": "${{ steps.gate-decision.outputs.status }}",
+            "blocked": ${{ steps.gate-decision.outputs.blocked }},
+            "reason": "${{ steps.gate-decision.outputs.reason }}",
+            "critical_alerts": ${{ steps.analyze.outputs.critical_count }},
+            "high_alerts": ${{ steps.analyze.outputs.high_count }},
+            "medium_alerts": ${{ steps.analyze.outputs.medium_count }},
+            "severity_threshold": "${{ env.CODEQL_SEVERITY_THRESHOLD }}",
+            "dry_run": ${{ github.event.inputs.dry_run || false }},
+            "gate_version": "1.0.0-phase-6-lane-1"
+          }
+          EOF
+          
+          echo "Audit trail recorded: $AUDIT_LOG"
+
+      - name: Upload Gate Audit Logs
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: codeql-ga-gate-audit-${{ github.run_id }}
+          path: .codex/security/gate_audit/
+          retention-days: 90
+
+  create-issue-on-alert:
+    name: Create Issue for New Alerts
+    runs-on: ubuntu-latest
+    needs: codeql-analysis
+    if: needs.codeql-analysis.outputs.alerts_blocked == 'true' && github.event_name == 'push'
+    permissions:
+      issues: write
+      security-events: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Create Security Alert Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const critical = '${{ needs.codeql-analysis.outputs.critical_count }}';
+            const high = '${{ needs.codeql-analysis.outputs.high_count }}';
+            
+            const issueTitle = `🔐 CodeQL Security Alert: ${critical} Critical + ${high} High`;
+            
+            const issueBody = `## CodeQL Security Alert
+
+**Branch**: \`${{ github.ref }}\`  
+**Commit**: \`${{ github.sha }}\`  
+**Author**: @${{ github.actor }}  
+
+### Alert Summary
+- **Critical Alerts**: ${critical}
+- **High Alerts**: ${high}
+- **Timestamp**: ${new Date().toISOString()}
+
+### Required Actions
+1. Fix or suppress all critical/high alerts
+2. Run local CodeQL scan to verify
+3. Update PR with remediation
+4. Request approval from @security-team if suppression needed
+
+### Resources
+- [Deployment Report](.codex/PHASE_6_CODEQL_GA_DEPLOYMENT_REPORT.md)
+- [Remediation Patterns](.codex/PHASE_6_CODEQL_EXCLUSION_RULES.yaml)
+- [Security Dashboard](https://github.com/${{ github.repository }}/security/code-scanning)
+
+### SLA
+- **Critical**: 1 hour resolution
+- **High**: 4 hours resolution
+
+---
+*Automated by CodeQL GA Security Gate (Phase 6 Lane 1)*`;
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['🔐 security', 'codeql', 'blocking'],
+              assignees: ['security-team']
+            });
+
+            console.log(`Created issue: ${issue.data.html_url}`);
+
+  report-summary:
+    name: Summary Report
+    runs-on: ubuntu-latest
+    needs: codeql-analysis
+    if: always()
+
+    steps:
+      - name: Generate Gate Summary
+        shell: bash
+        run: |
+          echo "## CodeQL GA Security Gate - Final Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Gate Status**: ${{ needs.codeql-analysis.outputs.gate_status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Blocked**: ${{ needs.codeql-analysis.outputs.alerts_blocked }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Alert Counts" >> $GITHUB_STEP_SUMMARY
+          echo "- Critical: ${{ needs.codeql-analysis.outputs.critical_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- High: ${{ needs.codeql-analysis.outputs.high_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Medium: ${{ needs.codeql-analysis.outputs.medium_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Phase 6 Lane 1** - CodeQL GA Deployment Ready" >> $GITHUB_STEP_SUMMARY
