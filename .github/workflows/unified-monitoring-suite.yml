@@ -45,7 +45,7 @@ true:
         - workflow-compliance
         - manifest-drift
 concurrency:
-  group: monitoring-suite-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 permissions:
   contents: read

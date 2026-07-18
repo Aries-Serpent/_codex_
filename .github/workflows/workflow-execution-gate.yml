@@ -14,7 +14,7 @@ permissions:
   pull-requests: write
   actions: read
 concurrency:
-  group: workflow-gate
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 env:
   GATE_VERSION: '1.0'

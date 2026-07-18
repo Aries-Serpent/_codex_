@@ -35,7 +35,7 @@ true:
         - k8s-provision
         - bootstrap
 concurrency:
-  group: cognitive-suite-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 permissions:
   contents: read
