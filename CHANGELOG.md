@@ -1,5 +1,19 @@
 ## [Unreleased]
 
+### Fixed (PR #5336 Pages Workflow Hardening & Review Follow-up — 2026-07-18T17:45Z)
+- **Pages Workflow Supply-Chain Hardening**: Pinned mutable GitHub Actions refs in `.github/workflows/pages-mkdocs.yml` to full 40-character commit SHAs
+  - ✅ Updated: `actions/checkout`, `actions/setup-node`, `actions/cache` (2 uses), `actions/upload-pages-artifact`, `actions/deploy-pages`
+  - ✅ Result: Addresses the unresolved Semgrep mutable-tag findings on `pages-mkdocs.yml`
+- **Workflow Timeout Compliance**: Added `timeout-minutes: 60` to the `build` job in `.github/workflows/pages-mkdocs.yml`
+  - ✅ Result: Build and deploy jobs now both declare explicit job-level timeouts
+- **Branch Alignment Verification**:
+  - ✅ `copilot/custom-image-setup` verified **behind `main` by 0**
+  - ✅ Branch remains ahead of `main` by 53 commits for PR content under review
+- **Validation**:
+  - ✅ YAML parse validation passed for `.github/workflows/pages-mkdocs.yml`
+  - ✅ `python scripts/ci/enforce_actions_versions.py --json` returned 0 violations after SHA pinning
+  - ⚠️ `pre-commit` unavailable in session environment (`pre-commit: command not found`)
+
 ### Fixed (PR #5336 Merge Conflict Resolution & Security Analysis — 2026-07-18T16:26Z)
 - **Merge Conflict Resolution**: Resolved 2 unresolved merge conflicts
   - ✅ Files: `.codex/PHASE_12_HOURLY_CHECKPOINT_LOG_2026_07_17.md`, `.codex/PHASE_12_INCIDENT_LOG_2026_07_17.md`
@@ -18329,6 +18343,5 @@ Compression ratio: ~34x faster with autonomous multi-lane execution
 - Authorized by: @mbaetiong (D-tier autonomous, Phase 13 approval 2026-07-06)
 - Decision: GO IMMEDIATE — Activate Phase B-C acceleration now
 - Next checkpoint: Phase B Alpha activation immediately upon PR merge
-
 
 
