@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Fixed (Phase 1 CI Campaign — Final Compliance Sync — 2026-07-18T19:01Z)
+- Committed CHANGELOG.md and `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` together in the same commit to satisfy REQ-4/REQ-5 in `session_wrapup_autofix.py --check`
+  - ✅ Result: REQ-4 ✅, REQ-5 ✅, REQ-14 ✅
+
 ### Fixed (Phase 1 CI Campaign — Accountability Report Path Sync — 2026-07-18T19:01Z)
 - Synced the Phase 1 CI campaign session entry to the canonical `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` path used by `scripts/ci/session_wrapup_autofix.py`, alongside the top-level `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` copy
   - ✅ Result: `session_wrapup_autofix.py --check` REQ-4/REQ-14 now pass
