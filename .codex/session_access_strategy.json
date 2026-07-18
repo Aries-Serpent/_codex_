@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-18T18:03:08.631062+00:00",
+  "generated_at": "2026-07-18T18:26:27.479585+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4224,
+  "rest_remaining": 4899,
   "graphql_available": true,
-  "graphql_remaining": 4974,
+  "graphql_remaining": 4970,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5336
-  ],
-  "branch": "copilot/custom-image-setup",
+  "open_prs": [],
+  "branch": "copilot/phase-1-codeql-consolidation",
   "recommendation": "Use REST for data fetches. "
 }
