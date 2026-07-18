@@ -33,12 +33,12 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: "Set up Python"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -200,7 +200,7 @@ jobs:
 
       - name: "Upload audit events"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: audit-events-${{ github.run_id }}
           path: ${{ env.AUDIT_LOG_DIR }}/
@@ -217,10 +217,10 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Python"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -293,7 +293,7 @@ jobs:
 
       - name: "Publish integrity verification report"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: audit-integrity-report
           path: ${{ env.AUDIT_LOG_DIR }}/audit_trail_checksums.txt
@@ -310,10 +310,10 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Python"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -446,7 +446,7 @@ jobs:
 
       - name: "Upload audit export reports"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: audit-export-reports
           path: ${{ env.AUDIT_REPORT_DIR }}/
@@ -465,10 +465,10 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Python"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -545,7 +545,7 @@ jobs:
 
       - name: "Post SLO status to PR (if applicable)"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const comment = `## 📊 Compliance SLO Status
@@ -579,7 +579,7 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -626,7 +626,7 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Generate compliance metrics"
         run: |

@@ -18784,7 +18784,7 @@ Compression ratio: ~34x faster with autonomous multi-lane execution
 |--------|-------|
 | Documents Ingested | 65 |
 | Total Embeddings | 656 |
-| Total Tokens | 85,275 |
+| Total Tokens | 85,275 | <!-- pragma: allowlist secret -->
 | Core Accuracy | 95% ✅ |
 | Runtime Accuracy | 75% |
 | Combined Accuracy | 85% ✅ |

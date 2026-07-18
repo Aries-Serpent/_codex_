@@ -30,12 +30,12 @@ jobs:
     
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Full history for git-secrets scan
 
       - name: "Set up Python"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -105,7 +105,7 @@ jobs:
 
       - name: "Upload PII detection artifacts"
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: pii-detection-report
           path: |
@@ -115,7 +115,7 @@ jobs:
 
       - name: "Publish PII detection results"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -171,7 +171,7 @@ jobs:
     
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -221,7 +221,7 @@ jobs:
 
       - name: "Publish secret detection results"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const trufflehogStatus = '${{ steps.trufflehog.outputs.status }}';
@@ -268,10 +268,10 @@ jobs:
     
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Set up Python"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -311,7 +311,7 @@ jobs:
 
       - name: "Publish encryption compliance results"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const comment = `## 🔒 Compliance Scan: Encryption & TLS
@@ -343,7 +343,7 @@ jobs:
     
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Check GDPR documentation"
         id: gdpr_docs
@@ -424,7 +424,7 @@ jobs:
 
       - name: "Publish documentation compliance results"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const comment = `## 📋 Compliance Scan: Documentation
@@ -476,7 +476,7 @@ jobs:
 
       - name: "Post gate status to PR"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const gateStatus = '${{ steps.gate.outputs.gate_status }}';
