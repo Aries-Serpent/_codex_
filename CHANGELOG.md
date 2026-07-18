@@ -12,6 +12,7 @@
 - **Validation**:
   - ✅ YAML parse validation passed for `.github/workflows/pages-mkdocs.yml`
   - ✅ `python scripts/ci/enforce_actions_versions.py --json` returned 0 violations after SHA pinning
+  - ✅ Removed stray merge conflict marker from `CHANGELOG.md`
   - ⚠️ `pre-commit` unavailable in session environment (`pre-commit: command not found`)
 
 ### Fixed (PR #5336 Merge Conflict Resolution & Security Analysis — 2026-07-18T16:26Z)
@@ -732,7 +733,6 @@ For users upgrading from v0.1.x, see docs/migration-guide-v0.2.0.md for detailed
 - Conditional deployment readiness established (2/3 gates PASS, CI health gate conditional)
 - 30-day post-deployment monitoring plan prepared
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 ## [Unreleased] — 2026-07-15 (PR #5324 continuation)
 
 ### Security
@@ -18343,5 +18343,4 @@ Compression ratio: ~34x faster with autonomous multi-lane execution
 - Authorized by: @mbaetiong (D-tier autonomous, Phase 13 approval 2026-07-06)
 - Decision: GO IMMEDIATE — Activate Phase B-C acceleration now
 - Next checkpoint: Phase B Alpha activation immediately upon PR merge
-
 

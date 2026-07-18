@@ -8,6 +8,8 @@
 - ✅ Pinned external `actions/*` refs in `.github/workflows/pages-mkdocs.yml` to full commit SHAs
 - ✅ Added `timeout-minutes: 60` to the `build` job in `pages-mkdocs.yml`
 - ✅ Validated YAML parsing and confirmed `scripts/ci/enforce_actions_versions.py --json` returns 0 violations
+- ✅ Completed diff-safety audit: branch is behind `main` by 0, ahead by 53, and contains no production source tree removals/moves
+- ✅ Removed stray merge conflict marker from `CHANGELOG.md`
 - ⚠️ Reviewed failing CI logs: current actionlint failures are rooted in other workflow files (`audit-qa-suite.yml`, `capacity-planner-monitor.yml`) not modified by this workflow hardening change
 
 ### Commits This Session
@@ -16,7 +18,7 @@
 ### Agents Used
 - [x] `workflow-compliance-guardian` (confirmed mutable-tag comments were still actionable)
 - [x] `ci-failure-resolution-agent` (identified current code-fixable CI root causes)
-- [ ] `branch-divergence-resolution-agent` (diff safety verification still running)
+- [x] `branch-divergence-resolution-agent` (verified main alignment and generated-doc heavy diff safety)
 
 ---
 
