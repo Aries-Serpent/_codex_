@@ -5205,7 +5205,7 @@ PYTEST_PLUGINS=(
 ```
 
 **pyproject.toml [project.optional-dependencies.dev]**
-```python
+```text
 "pytest>=9.0.3,<10.0.0",
 "pytest-cov>=4.1.0,<6.0.0",
 "pytest-xdist>=3.5.0,<4.0.0",
@@ -11668,7 +11668,7 @@ Remediate 66 CodeQL security alerts (36 HIGH, 30 MEDIUM) remaining after PR #507
 ### Suppression Format Verification
 
  All inline suppressions verified using correct format:
-```python
+```text
 # codeql[py/rule-id] CORRECT
 ```
 
