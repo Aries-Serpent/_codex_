@@ -336,6 +336,8 @@ jobs:
     name: Publish Metrics
     needs: collect-metrics
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -375,6 +377,8 @@ jobs:
     name: Validate Metrics Quality
     needs: collect-metrics
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: always()
     
     steps:
@@ -433,6 +437,7 @@ jobs:
     name: Notify Metrics Status
     needs: collect-metrics
     runs-on: ubuntu-latest
+    permissions: {}
     if: always() && github.event_name != 'pull_request'
     
     steps:

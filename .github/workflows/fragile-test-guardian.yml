@@ -26,6 +26,8 @@ jobs:
     name: Detect Fragile Imports
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     outputs:
       fragile_files: ${{ steps.scan.outputs.fragile_files }}
       fragile_count: ${{ steps.scan.outputs.fragile_count }}
@@ -86,6 +88,8 @@ jobs:
     name: Detect Unhandled Flaky Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
     outputs:
       unhandled_flaky: ${{ steps.detect.outputs.unhandled_count }}
       has_flaky_violations: ${{ steps.detect.outputs.has_violations }}
@@ -192,6 +196,8 @@ jobs:
     name: Check Docstring Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
     outputs:
       docstring_coverage: ${{ steps.coverage.outputs.coverage_pct }}
       missing_docstrings: ${{ steps.coverage.outputs.missing_count }}
@@ -285,6 +291,8 @@ jobs:
     name: Report Test Violations
     runs-on: ubuntu-latest
     needs: [detect-fragile-imports, detect-unhandled-flaky, check-docstring-coverage]
+    permissions:
+      pull-requests: write
     if: always() && github.event_name == 'pull_request'
     
     steps:
@@ -384,6 +392,7 @@ For details, see:
     name: Summary
     runs-on: ubuntu-latest
     needs: [detect-fragile-imports, detect-unhandled-flaky, check-docstring-coverage]
+    permissions: {}
     if: always()
     
     steps:
