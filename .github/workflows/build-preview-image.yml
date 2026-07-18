@@ -42,7 +42,6 @@ jobs:
       timeout_minutes: 30
       matrix_count: 2
       pushes_to_ghcr: true
-    timeout-minutes: 30
   lint-dockerfile:
     name: Lint Dockerfile.preview
     runs-on: ubuntu-latest

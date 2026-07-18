@@ -53,7 +53,6 @@ jobs:
       timeout_minutes: 60
       matrix_count: 3
       pushes_to_ghcr: false
-    timeout-minutes: 30
   data_validation:
     name: Data Validation (Manifest & Drift)
     runs-on: ubuntu-latest
