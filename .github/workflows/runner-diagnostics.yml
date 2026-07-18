@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   diag:
-    runs-on: ${{ fromJSON(vars.RUNS_ON || '['self-hosted','linux']') }}
+    runs-on: ${{ fromJSON(vars.RUNS_ON || '[''self-hosted'',''linux'']') }}
     timeout-minutes: 10
     steps:
       - name: CacheManager health check
@@ -57,7 +57,7 @@ jobs:
           {
             echo "## Runner diagnostics"
             echo
-            echo "- RUNS_ON: ${{ vars.RUNS_ON || '[\'self-hosted\',\'linux\']' }}"
+            echo "- RUNS_ON: ${{ vars.RUNS_ON || '[\"self-hosted\",\"linux\"]' }}"
             echo "- Docker: present"
             echo "- Buildx: checked"
             echo "- binfmt: checked (best-effort)"

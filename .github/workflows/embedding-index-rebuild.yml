@@ -42,52 +42,47 @@ jobs:
         run: |-
           python3 - <<"PYEOF"
           import json, os, sys
-          from datetime import datetime,\ timezone
+          from datetime import datetime, timezone
           from pathlib import Path
 
-          META = Path(\".codex/embeddings/codex_index_meta.json\")
+          META = Path(".codex/embeddings/codex_index_meta.json")
           STALE_WARN_HOURS  = 25  # emit warning if older than 25 h
-          STALE_ERROR_HOURS\ = 72  # emit error if older than 72 h
+          STALE_ERROR_HOURS = 72  # emit error if older than 72 h
 
           if not META.exists():
-              print(\"::warning::codex_index_meta.json not found — full rebuild required\")
-            \  with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
-                  f.write(\"freshness_status=missing\
-          \")
+              print("::warning::codex_index_meta.json not found — full rebuild required")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("freshness_status=missing\n")
               sys.exit(0)
 
           meta = json.loads(META.read_text())
-          generated_at_str = meta.get(\"generated_at\", \"\")
+          generated_at_str = meta.get("generated_at", "")
           try:
-            # Handle both\ offset-aware and Z-suffix ISO strings
-              ts = datetime.fromisoformat(generated_at_str.replace(\"Z\", \"+00:00\"))
+              # Handle both offset-aware and Z-suffix ISO strings
+              ts = datetime.fromisoformat(generated_at_str.replace("Z", "+00:00"))
           except ValueError:
-              print(f\"::warning::Cannot parse\ generated_at={generated_at_str!r}\")
-              with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
-                  f.write(\"freshness_status=unknown\
-          \")
+              print(f"::warning::Cannot parse generated_at={generated_at_str!r}")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("freshness_status=unknown\n")
               sys.exit(0)
 
           now = datetime.now(timezone.utc)
-          age_hours = (now - ts).total_seconds()\ / 3600
+          age_hours = (now - ts).total_seconds() / 3600
 
-          status = \"fresh\"
+          status = "fresh"
           if age_hours > STALE_ERROR_HOURS:
-              print(f\"::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) — stale\ rebuild required\")
-              status = \"stale_error\"
+              print(f"::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) — stale rebuild required")
+              status = "stale_error"
           elif age_hours > STALE_WARN_HOURS:
-          \    print(f\"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h)\ — rebuilding to stay fresh\")
-              status = \"stale_warn\"
+              print(f"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h) — rebuilding to stay fresh")
+              status = "stale_warn"
           else:
-              print(f\"✅ RAG index freshness OK: {age_hours:.1f}h old (threshold {STALE_WARN_HOURS}h)\")
+              print(f"✅ RAG index freshness OK: {age_hours:.1f}h old (threshold {STALE_WARN_HOURS}h)")
 
-          with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
-              f.write(f\"freshness_status={status}\
-          \")
-              f.write(f\"age_hours={age_hours:.1f}\
-          \")
-              f.write(f\"generated_at={generated_at_str}\
-          \")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"freshness_status={status}\n")
+              f.write(f"age_hours={age_hours:.1f}\n")
+              f.write(f"generated_at={generated_at_str}\n")
           PYEOF
 
       - name: Install embedding dependencies
@@ -173,25 +168,24 @@ jobs:
       - name: Post rebuild summary
         if: always()
         run: |-
-          echo \"## \U0001F9E0 Embedding Index Rebuild\" >> \"$GITHUB_STEP_SUMMARY\"
-          echo \"\" >> \"$GITHUB_STEP_SUMMARY\"
-          if [ -f \".codex/embeddings/codex_index_meta.json\"\ ]; then
-            python3 -c \"
+          echo "## 🧠 Embedding Index Rebuild" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f ".codex/embeddings/codex_index_meta.json" ]; then
+            python3 -c "
           import json
-          meta = json.load(open(".codex/embeddings/codex_index_meta.json"))
-          print(f"| Field | Value |")
-          print(f"|-------|-------|")
-          print(f"| Chunks\ | {meta[\\\"chunk_count\\\"]} |")
-          print(f"| Model | {meta[\\\"model\\\"]} |")
-          print(f"| Dimensions | {meta[\\\"dim\\\"]} |")
-          print(f"| Build time\ | {meta[\\\"build_time_seconds\\\"]}s |")
-          print(f"| Generated | {meta[\\\"generated_at\\\"]} |")
-          \" >> \"$GITHUB_STEP_SUMMARY\"
-          echo \"| Pre-build\ age | ${{ steps.freshness.outputs.age_hours }}h (status: ${{ steps.freshness.outputs.freshness_status\ }}) |\" >> \"$GITHUB_STEP_SUMMARY\"
+          meta = json.load(open('.codex/embeddings/codex_index_meta.json'))
+          print(f'| Field | Value |')
+          print(f'|-------|-------|')
+          print(f'| Chunks | {meta[\"chunk_count\"]} |')
+          print(f'| Model | {meta[\"model\"]} |')
+          print(f'| Dimensions | {meta[\"dim\"]} |')
+          print(f'| Build time | {meta[\"build_time_seconds\"]}s |')
+          print(f'| Generated | {meta[\"generated_at\"]} |')
+          " >> "$GITHUB_STEP_SUMMARY"
+            echo "| Pre-build age | ${{ steps.freshness.outputs.age_hours }}h (status: ${{ steps.freshness.outputs.freshness_status }}) |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo \"Index metadata not found\ — build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"
+            echo "Index metadata not found — build may have failed." >> "$GITHUB_STEP_SUMMARY"
           fi
 
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
