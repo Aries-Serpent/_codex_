@@ -1,6 +1,5 @@
----
 name: Autonomy Phase CI Matrix
-on:
+true:
   push:
     branches:
     - main
@@ -67,60 +66,61 @@ jobs:
           test_module: tests/autonomy/test_agent_runner.py
           description: Persistent orchestration daemon (all phases)
     steps:
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-${{ github.workflow }}-pytest-${{ hashFiles('tests/autonomy/**/*.py',
+          'pyproject.toml') }}
+        restore-keys: '${{ runner.os }}-${{ github.workflow }}-pytest-
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-${{ github.workflow }}-pytest-${{ hashFiles('tests/autonomy/**/*.py', 'pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-pytest-
-            ${{ runner.os }}-pytest-
+          ${{ runner.os }}-pytest-
 
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Setup Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-      - name: Install dependencies
-        run: "set -o pipefail\nif ! pip install -e \".[dev,test]\" --quiet 2>&1; then\n\
+          '
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Setup Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: "set -o pipefail\nif ! pip install -e \".[dev,test]\" --quiet 2>&1; then\n\
         \  echo \"Editable install failed; falling back to minimal pytest dependencies.\"\
         \n  pip install pytest pytest-mock --quiet\nfi\n"
-      - name: Run Phase ${{ matrix.phase }} smoke test (${{ matrix.script }})
-        env:
-          AGENT_KILL_SWITCH: '0'
-          AUTONOMY_DRY_RUN: '1'
-          AUTONOMY_BUDGET_SECONDS: '30'
-          AUTONOMY_MAX_ITERATIONS: '1'
-          AGENT_RUNNER_DRY_RUN: '1'
-          AGENT_RUNNER_BUDGET_SECONDS: '30'
-          AGENT_RUNNER_ITERATIONS: '1'
-          UNCERTAINTY_BUDGET_SECONDS: '10'
-        run: "echo \"Phase ${{ matrix.phase }}: ${{ matrix.description }}\"\nif [ \"\
+    - name: Run Phase ${{ matrix.phase }} smoke test (${{ matrix.script }})
+      env:
+        AGENT_KILL_SWITCH: '0'
+        AUTONOMY_DRY_RUN: '1'
+        AUTONOMY_BUDGET_SECONDS: '30'
+        AUTONOMY_MAX_ITERATIONS: '1'
+        AGENT_RUNNER_DRY_RUN: '1'
+        AGENT_RUNNER_BUDGET_SECONDS: '30'
+        AGENT_RUNNER_ITERATIONS: '1'
+        UNCERTAINTY_BUDGET_SECONDS: '10'
+      run: "echo \"Phase ${{ matrix.phase }}: ${{ matrix.description }}\"\nif [ \"\
         ${{ matrix.phase }}\" = \"3\" ]; then\n  python -c \"\nimport sys; sys.path.insert(0,\
         \ 'src')\nfrom codex.reflection import RecursionGuard, reflect\ng = RecursionGuard(max_depth=4)\n\
-          print('Phase 3 RecursionGuard: OK')\n\"\nelif [ \"${{ matrix.script }}\" !=\
+        print('Phase 3 RecursionGuard: OK')\n\"\nelif [ \"${{ matrix.script }}\" !=\
         \ \"\" ]; then\n  python scripts/${{ matrix.script }} --help 2>/dev/null ||\
         \ \\\n  python scripts/${{ matrix.script }} --dry-run --once 2>/dev/null ||\
         \ \\\n  python scripts/${{ matrix.script }} --budget-seconds 5 --once 2>/dev/null\
         \ || \\\n  echo \"Script smoke-test complete (exit may be non-zero for CI-safe\
         \ scripts)\"\nfi\n"
-      - name: Run Phase ${{ matrix.phase }} unit tests
-        if: ${{ matrix.test_module != '' }}
-        env:
-          AGENT_KILL_SWITCH: '0'
-          AUTONOMY_DRY_RUN: '1'
-          AUTONOMY_BUDGET_SECONDS: '30'
-          AUTONOMY_MAX_ITERATIONS: '1'
-          AGENT_RUNNER_DRY_RUN: '1'
-          AGENT_RUNNER_BUDGET_SECONDS: '30'
-          AGENT_RUNNER_ITERATIONS: '1'
-          UNCERTAINTY_BUDGET_SECONDS: '10'
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: 'python -m pytest ${{ matrix.test_module }} -v --tb=short --timeout=60
+    - name: Run Phase ${{ matrix.phase }} unit tests
+      if: ${{ matrix.test_module != '' }}
+      env:
+        AGENT_KILL_SWITCH: '0'
+        AUTONOMY_DRY_RUN: '1'
+        AUTONOMY_BUDGET_SECONDS: '30'
+        AUTONOMY_MAX_ITERATIONS: '1'
+        AGENT_RUNNER_DRY_RUN: '1'
+        AGENT_RUNNER_BUDGET_SECONDS: '30'
+        AGENT_RUNNER_ITERATIONS: '1'
+        UNCERTAINTY_BUDGET_SECONDS: '10'
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: 'python -m pytest ${{ matrix.test_module }} -v --tb=short --timeout=60
         -q
 
         '
@@ -132,8 +132,8 @@ jobs:
     timeout-minutes: 5
     permissions: {}
     steps:
-      - name: Check all phase jobs succeeded
-        run: "if [ \"${{ needs.autonomy-matrix.result }}\" = \"success\" ]; then\n \
+    - name: Check all phase jobs succeeded
+      run: "if [ \"${{ needs.autonomy-matrix.result }}\" = \"success\" ]; then\n \
         \ echo \"\u2705 All 7 autonomy phase tests passed.\"\nelif [ \"${{ needs.autonomy-matrix.result\
         \ }}\" = \"skipped\" ]; then\n  echo \"\u23ED\uFE0F Autonomy matrix was skipped\
         \ (no relevant files changed).\"\nelse\n  echo \"\u274C One or more autonomy\
@@ -153,19 +153,22 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: Autonomy Phase CI Matrix
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Autonomy Phase CI Matrix
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

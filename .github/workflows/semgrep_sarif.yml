@@ -1,6 +1,5 @@
----
 name: Semgrep SAST (SARIF Upload)
-on:
+true:
   push:
     branches:
     - main
@@ -8,18 +7,18 @@ on:
     - copilot/**
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request:
     branches:
     - main
     - develop
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   schedule:
   - cron: 0 3 * * *
   workflow_dispatch:
@@ -83,10 +82,11 @@ jobs:
         \ \necho \"\"\necho \"Scan completed with exit code: $SCAN_EXIT_CODE\"\n \n\
         # Check if file was actually created\nif [ -f \"semgrep.sarif\" ]; then\n\
         \  FILE_SIZE=$(stat -c %s semgrep.sarif 2>/dev/null || stat -f %z semgrep.sarif\
-        \ 2>/dev/null || echo \"unknown\")\n  echo \"✅ SARIF file successfully created\
-        \ (${FILE_SIZE} bytes)\"\nelse\n  echo \"⚠️ Warning: SARIF file was not created\
-        \ by Semgrep (exit code: $SCAN_EXIT_CODE)\"\n  echo \"This may happen if no\
-        \ violations were found or if there was a timeout\"\nfi\n \nexit 0\n"
+        \ 2>/dev/null || echo \"unknown\")\n  echo \"\u2705 SARIF file successfully\
+        \ created (${FILE_SIZE} bytes)\"\nelse\n  echo \"\u26A0\uFE0F Warning: SARIF\
+        \ file was not created by Semgrep (exit code: $SCAN_EXIT_CODE)\"\n  echo \"\
+        This may happen if no violations were found or if there was a timeout\"\n\
+        fi\n \nexit 0\n"
     - name: Generate diagnostic report
       if: always()
       id: diagnostics
@@ -101,10 +101,10 @@ jobs:
         \ \nif [ -f \"semgrep.sarif\" ]; then\n  FILE_SIZE=$(stat -c %s \"semgrep.sarif\"\
         \ 2>/dev/null || stat -f %z \"semgrep.sarif\" 2>/dev/null || echo \"unknown\"\
         )\n  CHECKSUM=$(sha256sum semgrep.sarif 2>/dev/null | cut -d' ' -f1 || md5sum\
-        \ semgrep.sarif 2>/dev/null | cut -d' ' -f1 || echo \"N/A\")\n  echo \"✅ **SARIF\
-        \ file generated successfully**\" >> $GITHUB_STEP_SUMMARY\n  echo \"- File:\
-        \ semgrep.sarif\" >> $GITHUB_STEP_SUMMARY\n  echo \"- Size: ${FILE_SIZE} bytes\"\
-        \ >> $GITHUB_STEP_SUMMARY\n  echo \"- Checksum: ${CHECKSUM}\" >> $GITHUB_STEP_SUMMARY\n\
+        \ semgrep.sarif 2>/dev/null | cut -d' ' -f1 || echo \"N/A\")\n  echo \"\u2705\
+        \ **SARIF file generated successfully**\" >> $GITHUB_STEP_SUMMARY\n  echo\
+        \ \"- File: semgrep.sarif\" >> $GITHUB_STEP_SUMMARY\n  echo \"- Size: ${FILE_SIZE}\
+        \ bytes\" >> $GITHUB_STEP_SUMMARY\n  echo \"- Checksum: ${CHECKSUM}\" >> $GITHUB_STEP_SUMMARY\n\
         \  echo \"\" >> $GITHUB_STEP_SUMMARY\n   \n  # Try to parse and show basic\
         \ stats\n  if command -v jq &> /dev/null; then\n    echo \"### SARIF Content\
         \ Analysis\" >> $GITHUB_STEP_SUMMARY\n    RESULT_COUNT=$(jq '.runs[0].results\
@@ -120,10 +120,10 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\n      echo \"  - Warnings (HIGH): ${WARNING_COUNT}\"\
         \ >> $GITHUB_STEP_SUMMARY\n      echo \"  - Notes (INFO): ${NOTE_COUNT}\"\
         \ >> $GITHUB_STEP_SUMMARY\n    fi\n    echo \"\" >> $GITHUB_STEP_SUMMARY\n\
-        \  fi\nelse\n  echo \"⚠️ **SARIF file NOT found at expected location**\" >>\
-        \ $GITHUB_STEP_SUMMARY\n  echo \"A fallback SARIF will be created in the next\
-        \ step\" >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\nfi\n\
-        \ \necho \"### File Search Results\" >> $GITHUB_STEP_SUMMARY\necho \"Searching\
+        \  fi\nelse\n  echo \"\u26A0\uFE0F **SARIF file NOT found at expected location**\"\
+        \ >> $GITHUB_STEP_SUMMARY\n  echo \"A fallback SARIF will be created in the\
+        \ next step\" >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\n \necho \"### File Search Results\" >> $GITHUB_STEP_SUMMARY\necho \"Searching\
         \ for SARIF files in current directory:\" >> $GITHUB_STEP_SUMMARY\nif find\
         \ . -maxdepth 1 -name \"*.sarif\" -type f 2>/dev/null | grep -q .; then\n\
         \  find . -maxdepth 1 -name \"*.sarif\" -type f -exec ls -lh {} \\; | sed\
@@ -136,29 +136,29 @@ jobs:
       if: always()
       continue-on-error: true
       run: "echo \"\U0001F50D Checking for semgrep.sarif file...\"\necho \"\"\n \n\
-        if [ -f \"semgrep.sarif\" ]; then\n  echo \"✅ semgrep.sarif file found\"\n\
-        \  ls -lh semgrep.sarif\n  echo \"\"\n  echo \"File validity check:\"\n  \
-        \ \n  # Check if file is empty\n  if [ ! -s \"semgrep.sarif\" ]; then\n  \
-        \  echo \"⚠️ Warning: SARIF file is empty (0 bytes)\"\n    echo \"This is\
-        \ unusual but acceptable - fallback will be created\"\n  else\n  # Check\
-        \ if valid JSON\n    if jq empty semgrep.sarif 2>/dev/null; then\n      echo\
-        \ \"✅ SARIF file is valid JSON\"\n       \n  # Show basic structure\n\
+        if [ -f \"semgrep.sarif\" ]; then\n  echo \"\u2705 semgrep.sarif file found\"\
+        \n  ls -lh semgrep.sarif\n  echo \"\"\n  echo \"File validity check:\"\n \
+        \  \n  # Check if file is empty\n  if [ ! -s \"semgrep.sarif\" ]; then\n \
+        \   echo \"\u26A0\uFE0F Warning: SARIF file is empty (0 bytes)\"\n    echo\
+        \ \"This is unusual but acceptable - fallback will be created\"\n  else\n\
+        \  # Check if valid JSON\n    if jq empty semgrep.sarif 2>/dev/null; then\n\
+        \      echo \"\u2705 SARIF file is valid JSON\"\n       \n  # Show basic structure\n\
         \      if jq '.runs | length' semgrep.sarif >/dev/null 2>&1; then\n      \
         \  RUN_COUNT=$(jq '.runs | length' semgrep.sarif)\n        RESULT_COUNT=$(jq\
         \ '.runs[0].results | length' semgrep.sarif 2>/dev/null || echo \"0\")\n \
-        \       echo \"✅ SARIF structure is valid\"\n        echo \"   - Runs: ${RUN_COUNT}\"\
-        \n        echo \"   - Results: ${RESULT_COUNT}\"\n      fi\n    else\n   \
-        \   echo \"❌ SARIF file is NOT valid JSON - fallback will be created\"\n \
-        \     echo \"JSON error:\"\n      jq empty semgrep.sarif 2>&1 | head -5\n\
-        \    fi\n  fi\nelse\n  echo \"ℹ️ semgrep.sarif not found at expected location\"\
-        \n  echo \"This is normal if Semgrep didn't find any violations\"\n  echo\
-        \ \"A fallback SARIF will be created in the next step\"\n  echo \"\"\n  echo\
-        \ \"Checking for any SARIF files in working directory...\"\n  if find . -maxdepth\
-        \ 1 -name \"*.sarif\" -type f 2>/dev/null | grep -q .; then\n    echo \"Found\
-        \ SARIF files:\"\n    find . -maxdepth 1 -name \"*.sarif\" -type f -exec ls\
-        \ -lh {} \\;\n  else\n    echo \"No SARIF files found in directory\"\n  fi\n\
-        \  echo \"\"\n  echo \"First 20 files in working directory:\"\n  ls -la |\
-        \ head -20\nfi\n"
+        \       echo \"\u2705 SARIF structure is valid\"\n        echo \"   - Runs:\
+        \ ${RUN_COUNT}\"\n        echo \"   - Results: ${RESULT_COUNT}\"\n      fi\n\
+        \    else\n      echo \"\u274C SARIF file is NOT valid JSON - fallback will\
+        \ be created\"\n      echo \"JSON error:\"\n      jq empty semgrep.sarif 2>&1\
+        \ | head -5\n    fi\n  fi\nelse\n  echo \"\u2139\uFE0F semgrep.sarif not found\
+        \ at expected location\"\n  echo \"This is normal if Semgrep didn't find any\
+        \ violations\"\n  echo \"A fallback SARIF will be created in the next step\"\
+        \n  echo \"\"\n  echo \"Checking for any SARIF files in working directory...\"\
+        \n  if find . -maxdepth 1 -name \"*.sarif\" -type f 2>/dev/null | grep -q\
+        \ .; then\n    echo \"Found SARIF files:\"\n    find . -maxdepth 1 -name \"\
+        *.sarif\" -type f -exec ls -lh {} \\;\n  else\n    echo \"No SARIF files found\
+        \ in directory\"\n  fi\n  echo \"\"\n  echo \"First 20 files in working directory:\"\
+        \n  ls -la | head -20\nfi\n"
     - name: Create fallback SARIF if missing
       if: always()
       run: "SARIF_FILE=\"semgrep.sarif\"\n \n# Check if file exists and has content\n\
@@ -168,9 +168,9 @@ jobs:
         \ creating fallback...\"\n  CREATE_FALLBACK=true\nelif ! jq empty \"$SARIF_FILE\"\
         \ 2>/dev/null; then\n  echo \"\U0001F4DD SARIF file is invalid JSON, creating\
         \ fallback...\"\n  # Backup the broken file for inspection\n  cp \"$SARIF_FILE\"\
-        \ \"${SARIF_FILE}.broken\"\n  CREATE_FALLBACK=true\nelse\n  echo \"✅ Valid\
-        \ SARIF file already exists, skipping fallback\"\n  FILE_SIZE=$(stat -c %s\
-        \ \"$SARIF_FILE\" 2>/dev/null || stat -f %z \"$SARIF_FILE\" 2>/dev/null)\n\
+        \ \"${SARIF_FILE}.broken\"\n  CREATE_FALLBACK=true\nelse\n  echo \"\u2705\
+        \ Valid SARIF file already exists, skipping fallback\"\n  FILE_SIZE=$(stat\
+        \ -c %s \"$SARIF_FILE\" 2>/dev/null || stat -f %z \"$SARIF_FILE\" 2>/dev/null)\n\
         \  RESULT_COUNT=$(jq '.runs[0].results | length' \"$SARIF_FILE\" 2>/dev/null\
         \ || echo \"0\")\n  echo \"   - Size: ${FILE_SIZE} bytes\"\n  echo \"   -\
         \ Results: ${RESULT_COUNT}\"\nfi\n \nif [ \"$CREATE_FALLBACK\" = true ]; then\n\
@@ -183,12 +183,12 @@ jobs:
         \            \"version\": \"1.45.0\",\n            \"rules\": []\n       \
         \   }\n        },\n        \"results\": [],\n        \"properties\": {\n \
         \         \"ScanTimestamp\": $timestamp,\n          \"ScanType\": \"FallbackEmpty\"\
-        \n        }\n      }]\n    }' > \"$SARIF_FILE\"\n   \n  echo \"✅ Fallback\
+        \n        }\n      }]\n    }' > \"$SARIF_FILE\"\n   \n  echo \"\u2705 Fallback\
         \ SARIF file created\"\n  echo \"   - Status: Empty results (no violations\
         \ found)\"\n   \n  # Validate the fallback\n  if jq empty \"$SARIF_FILE\"\
-        \ 2>/dev/null; then\n    echo \"   - Validation: ✅ Valid JSON\"\n    ls -lh\
-        \ \"$SARIF_FILE\"\n  else\n    echo \"   - Validation: ❌ Failed!\"\n    exit\
-        \ 1\n  fi\nfi\n"
+        \ 2>/dev/null; then\n    echo \"   - Validation: \u2705 Valid JSON\"\n   \
+        \ ls -lh \"$SARIF_FILE\"\n  else\n    echo \"   - Validation: \u274C Failed!\"\
+        \n    exit 1\n  fi\nfi\n"
     - name: Upload SARIF to GitHub Security
       uses: github/codeql-action/upload-sarif@v3
       if: always() && hashFiles('semgrep.sarif') != ''
@@ -204,22 +204,23 @@ jobs:
         \ }}\"\n \n# Initialize defaults\nCRITICAL_COUNT=0\nHIGH_COUNT=0\nINFO_COUNT=0\n\
         PARSE_STATUS=\"success\"\n \n# Extract results from SARIF if file exists and\
         \ is valid\nif [ -f \"semgrep.sarif\" ]; then\n  if jq empty semgrep.sarif\
-        \ 2>/dev/null; then\n  # Verify the SARIF has the expected structure\n \
-        \   if jq '.runs[0].results' semgrep.sarif >/dev/null 2>&1; then\n      echo\
-        \ \"ℹ️ SARIF file is valid, extracting results...\"\n       \n  # Count\
-        \ findings by severity level (with error handling)\n      CRITICAL_COUNT=$(jq\
+        \ 2>/dev/null; then\n  # Verify the SARIF has the expected structure\n   \
+        \ if jq '.runs[0].results' semgrep.sarif >/dev/null 2>&1; then\n      echo\
+        \ \"\u2139\uFE0F SARIF file is valid, extracting results...\"\n       \n \
+        \ # Count findings by severity level (with error handling)\n      CRITICAL_COUNT=$(jq\
         \ '[.runs[0].results[] | select(.level == \"error\")] | length' semgrep.sarif\
         \ 2>/dev/null || echo \"0\")\n      HIGH_COUNT=$(jq '[.runs[0].results[] |\
         \ select(.level == \"warning\")] | length' semgrep.sarif 2>/dev/null || echo\
         \ \"0\")\n      INFO_COUNT=$(jq '[.runs[0].results[] | select(.level == \"\
         note\" or .level == \"none\")] | length' semgrep.sarif 2>/dev/null || echo\
-        \ \"0\")\n    else\n      echo \"⚠️ Warning: SARIF structure is incomplete,\
-        \ using defaults\"\n      PARSE_STATUS=\"incomplete_structure\"\n    fi\n\
-        \  else\n    echo \"⚠️ Warning: SARIF file is invalid JSON, using defaults\"\
-        \n    PARSE_STATUS=\"invalid_json\"\n  fi\nelse\n  echo \"⚠️ Warning: SARIF\
-        \ file does not exist, using defaults (fallback should have created it)\"\n\
-        \  PARSE_STATUS=\"missing_file\"\nfi\n \n# Ensure counts are numeric\nCRITICAL_COUNT=${CRITICAL_COUNT:-0}\n\
-        HIGH_COUNT=${HIGH_COUNT:-0}\nINFO_COUNT=${INFO_COUNT:-0}\n \necho \"critical_findings=${CRITICAL_COUNT}\"\
+        \ \"0\")\n    else\n      echo \"\u26A0\uFE0F Warning: SARIF structure is\
+        \ incomplete, using defaults\"\n      PARSE_STATUS=\"incomplete_structure\"\
+        \n    fi\n  else\n    echo \"\u26A0\uFE0F Warning: SARIF file is invalid JSON,\
+        \ using defaults\"\n    PARSE_STATUS=\"invalid_json\"\n  fi\nelse\n  echo\
+        \ \"\u26A0\uFE0F Warning: SARIF file does not exist, using defaults (fallback\
+        \ should have created it)\"\n  PARSE_STATUS=\"missing_file\"\nfi\n \n# Ensure\
+        \ counts are numeric\nCRITICAL_COUNT=${CRITICAL_COUNT:-0}\nHIGH_COUNT=${HIGH_COUNT:-0}\n\
+        INFO_COUNT=${INFO_COUNT:-0}\n \necho \"critical_findings=${CRITICAL_COUNT}\"\
         \ >> \"$GITHUB_OUTPUT\"\necho \"high_findings=${HIGH_COUNT}\" >> \"$GITHUB_OUTPUT\"\
         \necho \"info_findings=${INFO_COUNT}\" >> \"$GITHUB_OUTPUT\"\necho \"parse_status=${PARSE_STATUS}\"\
         \ >> \"$GITHUB_OUTPUT\"\n \necho \"\"\necho \"\U0001F4CA Findings Summary:\"\
@@ -238,15 +239,15 @@ jobs:
         \ 0 ]]; then\n    echo \"::warning::Semgrep found ${CRITICAL_COUNT} CRITICAL,\
         \ ${HIGH_COUNT} HIGH, and ${INFO_COUNT} INFO findings\"\n  fi\n  SHOULD_FAIL=false\n\
         fi\n \n# Exit with appropriate status\nif [ \"$SHOULD_FAIL\" = true ]; then\n\
-        \  echo \"❌ Workflow failing: ${FAILURE_REASON}\"\n  exit 1\nelse\n  echo\
-        \ \"✅ Semgrep scan passed (blocking threshold not met)\"\n  echo \"   Parse\
-        \ status: ${PARSE_STATUS}\"\n  exit 0\nfi\n"
+        \  echo \"\u274C Workflow failing: ${FAILURE_REASON}\"\n  exit 1\nelse\n \
+        \ echo \"\u2705 Semgrep scan passed (blocking threshold not met)\"\n  echo\
+        \ \"   Parse status: ${PARSE_STATUS}\"\n  exit 0\nfi\n"
     - name: Summary
       if: always()
       run: "echo \"## Semgrep Security Scan Results\" >> $GITHUB_STEP_SUMMARY\necho\
         \ \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Status**: $([ \\\"${{ job.status\
-        \ }}\\\" == \\\"success\\\" ] && echo \\\"✅ Passed\\\" || echo \\\"⚠️ Check\
-        \ Details\\\")\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+        \ }}\\\" == \\\"success\\\" ] && echo \\\"\u2705 Passed\\\" || echo \\\"\u26A0\
+        \uFE0F Check Details\\\")\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"**CRITICAL Findings:** ${{ steps.parse.outputs.critical_findings ||\
         \ 0 }}\" >> $GITHUB_STEP_SUMMARY\necho \"**HIGH Findings:** ${{ steps.parse.outputs.high_findings\
         \ || 0 }}\" >> $GITHUB_STEP_SUMMARY\necho \"**INFO Findings:** ${{ steps.parse.outputs.info_findings\
@@ -256,12 +257,13 @@ jobs:
         \ || 'unknown' }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
         if [ -f \"semgrep.sarif\" ]; then\n  FILE_SIZE=$(stat -c %s \"semgrep.sarif\"\
         \ 2>/dev/null || stat -f %z \"semgrep.sarif\" 2>/dev/null || echo \"unknown\"\
-        )\n  echo \"✅ SARIF file was generated (${FILE_SIZE} bytes) and uploaded to\
-        \ GitHub Security\" >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
-        else\n  echo \"⚠️ SARIF file not found (fallback was not created successfully)\"\
-        \ >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\nfi\necho \"\
-        [View scan results in GitHub Security tab](https://github.com/${{ github.repository\
-        \ }}/security/code-scanning)\" >> $GITHUB_STEP_SUMMARY\n"
+        )\n  echo \"\u2705 SARIF file was generated (${FILE_SIZE} bytes) and uploaded\
+        \ to GitHub Security\" >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
+        else\n  echo \"\u26A0\uFE0F SARIF file not found (fallback was not created\
+        \ successfully)\" >> $GITHUB_STEP_SUMMARY\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\necho \"[View scan results in GitHub Security tab](https://github.com/${{\
+        \ github.repository }}/security/code-scanning)\" >> $GITHUB_STEP_SUMMARY\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

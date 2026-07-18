@@ -1,5 +1,5 @@
 name: Data Quality & Determinism Suite
-on:
+true:
   pull_request:
     types:
     - opened
@@ -53,6 +53,7 @@ jobs:
       timeout_minutes: 60
       matrix_count: 3
       pushes_to_ghcr: false
+    timeout-minutes: 30
   data_validation:
     name: Data Validation (Manifest & Drift)
     runs-on: ubuntu-latest
@@ -119,6 +120,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   determinism_check:
     name: Determinism & Audit Validation
     runs-on: ubuntu-latest
@@ -281,6 +283,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   dvc_pipeline:
     name: DVC Pipeline Reproducibility Check
     runs-on: ubuntu-latest
@@ -331,6 +334,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
@@ -402,3 +406,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

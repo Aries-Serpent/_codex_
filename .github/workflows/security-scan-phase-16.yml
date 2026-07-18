@@ -1,5 +1,5 @@
 name: Phase 16 - Security Scanning & Coverage Integration
-on:
+true:
   push:
     branches:
     - main
@@ -195,6 +195,7 @@ jobs:
         path: htmlcov/
         retention-days: 30
         name: coverage-report
+    timeout-minutes: 30
   codeql-analysis:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest
@@ -221,6 +222,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: /language:${{ matrix.language }}
+    timeout-minutes: 45
   test-phase-16:
     name: Phase 16 Comprehensive Tests
     runs-on: ubuntu-latest
@@ -295,6 +297,7 @@ jobs:
           '
         retention-days: 30
         name: phase-16-test-results
+    timeout-minutes: 30
   security-gates:
     name: Security Gates & Validation
     runs-on: ubuntu-latest
@@ -337,6 +340,7 @@ jobs:
         \ enabled\"\necho \"\u2713 Secret detection active\"\necho \"\u2713 CodeQL\
         \ analysis ready\"\necho \"\u2713 Coverage analysis integrated\"\necho \"\"\
         \necho \"All security gates passed for Phase 16\"\n"
+    timeout-minutes: 30
   results:
     name: Phase 16 Results Summary
     runs-on: ubuntu-latest

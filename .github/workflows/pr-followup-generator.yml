@@ -1,213 +1,156 @@
----
 name: Generate PR Follow-Up Prompt
-
-on:
-  # HARDENED: always update follow-up prompts.
-  # Triggers on every PR event that can change PR state — open/reopen/synchronize
-  # (new commits)/edited (title or body) — so the prompt at
-  # `.github/copilot-prompts/active/PR-<n>-followup.md` is never stale.
-  # See requirement: "always maintain the most up to date follow up prompt".
+true:
   pull_request:
-    types: [opened, reopened, synchronize, edited, ready_for_review]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - edited
+    - ready_for_review
   workflow_dispatch:
     inputs:
       pr_number:
-        description: 'PR number'
+        description: PR number
         required: true
         type: number
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   generate:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-    - uses: actions/checkout@v5  # v6.0.3
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         ref: ${{ github.event.pull_request.head.ref || github.ref }}
         fetch-depth: 0
-
     - name: CacheManager health check
       continue-on-error: true
-      run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow pr-followup-generator 2>/dev/null || echo "Cache health: check skipped"
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow pr-followup-generator
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
-        python-version: '3.12.13'
-        cache-tier: 'common'
-
+        python-version: 3.12.13
+        cache-tier: common
     - name: Install dependencies
-      run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[github]"
+      run: 'python -m pip install --upgrade pip
 
+        pip install -e ".[github]"
+
+        '
     - name: Extract PR number
       id: pr_number
-      run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "pr_number=${{ github.event.inputs.pr_number }}" >> $GITHUB_OUTPUT
-          else
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-          fi
-
+      run: "if [ \"${{ github.event_name }}\" == \"workflow_dispatch\" ]; then\n \
+        \ echo \"pr_number=${{ github.event.inputs.pr_number }}\" >> $GITHUB_OUTPUT\n\
+        else\n  echo \"pr_number=${{ github.event.pull_request.number }}\" >> $GITHUB_OUTPUT\n\
+        fi\n"
     - name: Generate follow-up prompt
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      run: |
-        PR_NUMBER="${{ steps.pr_number.outputs.pr_number }}"
-        echo "🔍 Checking if PR-${PR_NUMBER}-followup.md already has real agent/human content..."
-
-        # Guard: skip regeneration if the file already contains non-placeholder
-        # task content written by a Copilot session.  Exit code 0 = has real
-        # content (skip); exit code 2 = placeholder or missing (regenerate).
-        CHECK_EXIT=0
-        python scripts/generate_pr_followup.py \
-          "${PR_NUMBER}" \
-            --check-real-content || CHECK_EXIT=$?
-
-          if [ "${CHECK_EXIT}" -eq 0 ]; then
-            echo "✅ Existing real content detected — skipping regeneration to protect agent changes."
-            exit 0
-          fi
-
-          echo "🚀 No real content found — generating follow-up prompt for PR  #${PR_NUMBER}"
-
-          python scripts/generate_pr_followup.py \
-            "${PR_NUMBER}" \
-            --template comprehensive \
-            --json-output
-
-          echo "✅ Follow-up prompt generated successfully"
-
+      run: "PR_NUMBER=\"${{ steps.pr_number.outputs.pr_number }}\"\necho \"\U0001F50D\
+        \ Checking if PR-${PR_NUMBER}-followup.md already has real agent/human content...\"\
+        \n\n# Guard: skip regeneration if the file already contains non-placeholder\n\
+        # task content written by a Copilot session.  Exit code 0 = has real\n# content\
+        \ (skip); exit code 2 = placeholder or missing (regenerate).\nCHECK_EXIT=0\n\
+        python scripts/generate_pr_followup.py \\\n  \"${PR_NUMBER}\" \\\n    --check-real-content\
+        \ || CHECK_EXIT=$?\n\n  if [ \"${CHECK_EXIT}\" -eq 0 ]; then\n    echo \"\u2705\
+        \ Existing real content detected \u2014 skipping regeneration to protect agent\
+        \ changes.\"\n    exit 0\n  fi\n\n  echo \"\U0001F680 No real content found\
+        \ \u2014 generating follow-up prompt for PR  #${PR_NUMBER}\"\n\n  python scripts/generate_pr_followup.py\
+        \ \\\n    \"${PR_NUMBER}\" \\\n    --template comprehensive \\\n    --json-output\n\
+        \n  echo \"\u2705 Follow-up prompt generated successfully\"\n"
     - name: Commit and push prompt
       id: push_prompt
       env:
         TARGET_REF: ${{ github.head_ref || github.ref_name }}
-      run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add .github/copilot-prompts/active/
-
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: Generate follow-up prompt for PR  #${{ steps.pr_number.outputs.pr_number }} [skip ci]"
-            # Bounded retry: up to 3 pull-rebase+push attempts before failing.
-            # This handles non-fast-forward errors (e.g. another workflow pushing
-            # concurrently) without silently suppressing the error.
-            PUSHED=false
-            for attempt in 1 2 3; do
-              git pull --rebase --autostash origin "$TARGET_REF" || true
-              if git push; then
-                echo "✅ Follow-up prompt committed and pushed (attempt ${attempt})"
-                PUSHED=true
-                break
-              fi
-              echo "⚠️ Push attempt ${attempt} failed; retrying in ${attempt}s..."
-              sleep "$attempt"
-            done
-            if [ "$PUSHED" = "false" ]; then
-              echo "❌ Failed to push follow-up prompt after 3 attempts" >&2
-              exit 1
-            fi
-            echo "pushed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ℹ️ No changes to commit"
-            echo "pushed=false" >> "$GITHUB_OUTPUT"
-          fi
-
+      run: "git config --global user.name \"github-actions[bot]\"\ngit config --global\
+        \ user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\n\n\
+        git add .github/copilot-prompts/active/\n\nif ! git diff --cached --quiet;\
+        \ then\n  git commit -m \"chore: Generate follow-up prompt for PR  #${{ steps.pr_number.outputs.pr_number\
+        \ }} [skip ci]\"\n  # Bounded retry: up to 3 pull-rebase+push attempts before\
+        \ failing.\n  # This handles non-fast-forward errors (e.g. another workflow\
+        \ pushing\n  # concurrently) without silently suppressing the error.\n  PUSHED=false\n\
+        \  for attempt in 1 2 3; do\n    git pull --rebase --autostash origin \"$TARGET_REF\"\
+        \ || true\n    if git push; then\n      echo \"\u2705 Follow-up prompt committed\
+        \ and pushed (attempt ${attempt})\"\n      PUSHED=true\n      break\n    fi\n\
+        \    echo \"\u26A0\uFE0F Push attempt ${attempt} failed; retrying in ${attempt}s...\"\
+        \n    sleep \"$attempt\"\n  done\n  if [ \"$PUSHED\" = \"false\" ]; then\n\
+        \    echo \"\u274C Failed to push follow-up prompt after 3 attempts\" >&2\n\
+        \    exit 1\n  fi\n  echo \"pushed=true\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo\
+        \ \"\u2139\uFE0F No changes to commit\"\n  echo \"pushed=false\" >> \"$GITHUB_OUTPUT\"\
+        \nfi\n"
     - name: Comment on PR
-      if: github.event_name == 'pull_request' && steps.push_prompt.outputs.pushed == 'true'
-      uses: actions/github-script@v8  # v9
+      if: github.event_name == 'pull_request' && steps.push_prompt.outputs.pushed
+        == 'true'
+      uses: actions/github-script@v8
       with:
-        script: |
-            const prNumber = ${{ steps.pr_number.outputs.pr_number }};
-            const MARKER = '<!-- pr-followup-prompt-generated -->';
-            const body = `${MARKER}\n✅ Follow-up prompt has been generated for this PR.
-
-            📄 View the prompt at: \`.github/copilot-prompts/active/PR-${prNumber}-followup.md\`
-
-            You can use this prompt to continue work on this PR or track follow-up tasks.
-
-            ---
-            _[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
-
-            // Retry loop — guards against concurrent posts on fast-following
-            // trigger events (e.g. push + workflow_run firing simultaneously).
-            for (let attempt = 0; attempt <= 3; attempt++) {
-              try {
-                // Paginate through all comments to find the marker, regardless of
-                // comment count (PRs with >100 comments would miss older marker comments).
-                let existing = null;
-                let page = 1;
-                while (!existing) {
-                  const { data: batch } = await github.rest.issues.listComments({
-                    owner: context.repo.owner, repo: context.repo.repo,
-                    issue_number: prNumber, per_page: 100, page,
-                  });
-                  existing = batch.find(c => c.body && c.body.includes(MARKER)) || null;
-                  if (batch.length < 100) break;
-                  page++;
-                }
-                if (existing) {
-                  await github.rest.issues.updateComment({
-                    comment_id: existing.id, body,
-                  });
-                } else {
-                  await github.rest.issues.createComment({
-                  });
-                }
-                break; // success
-              } catch (e) {
-                if (attempt === 3) throw e;
-                await new Promise(r => setTimeout(r, (attempt + 1) * 2000));
-              }
-            }
-
-  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+        script: "const prNumber = ${{ steps.pr_number.outputs.pr_number }};\nconst\
+          \ MARKER = '<!-- pr-followup-prompt-generated -->';\nconst body = `${MARKER}\\\
+          n\u2705 Follow-up prompt has been generated for this PR.\n\n\U0001F4C4 View\
+          \ the prompt at: \\`.github/copilot-prompts/active/PR-${prNumber}-followup.md\\\
+          `\n\nYou can use this prompt to continue work on this PR or track follow-up\
+          \ tasks.\n\n---\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \n// Retry loop \u2014 guards against concurrent posts on fast-following\n\
+          // trigger events (e.g. push + workflow_run firing simultaneously).\nfor\
+          \ (let attempt = 0; attempt <= 3; attempt++) {\n  try {\n    // Paginate\
+          \ through all comments to find the marker, regardless of\n    // comment\
+          \ count (PRs with >100 comments would miss older marker comments).\n   \
+          \ let existing = null;\n    let page = 1;\n    while (!existing) {\n   \
+          \   const { data: batch } = await github.rest.issues.listComments({\n  \
+          \      owner: context.repo.owner, repo: context.repo.repo,\n        issue_number:\
+          \ prNumber, per_page: 100, page,\n      });\n      existing = batch.find(c\
+          \ => c.body && c.body.includes(MARKER)) || null;\n      if (batch.length\
+          \ < 100) break;\n      page++;\n    }\n    if (existing) {\n      await\
+          \ github.rest.issues.updateComment({\n        comment_id: existing.id, body,\n\
+          \      });\n    } else {\n      await github.rest.issues.createComment({\n\
+          \      });\n    }\n    break; // success\n  } catch (e) {\n    if (attempt\
+          \ === 3) throw e;\n    await new Promise(r => setTimeout(r, (attempt + 1)\
+          \ * 2000));\n  }\n}\n"
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: generate
-    if: |
-      failure() &&
-      github.event_name == 'pull_request' &&
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
       github.event.pull_request.head.repo.full_name == github.repository
+
+      '
     permissions:
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: "PR Follow-up Generator"
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
-
-
-
-
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: PR Follow-up Generator
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

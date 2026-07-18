@@ -1,5 +1,4 @@
----
-name: 🔖 Required Actions Version Enforcer
+name: "\U0001F516 Required Actions Version Enforcer"
 'on':
   push:
     branches:
@@ -37,13 +36,14 @@ permissions:
   issues: write
 jobs:
   enforce-versions:
-    name: 🔖 Check Action Versions
+    name: "\U0001F516 Check Action Versions"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -63,7 +63,7 @@ jobs:
       run: 'python scripts/ci/enforce_actions_versions.py --summary
 
         '
-      continue-on-error: true  # approval-gate-override
+      continue-on-error: true
     - name: Auto-fix action versions
       id: autofix
       if: "github.event_name == 'schedule' ||\ngithub.event.inputs.fix == 'true' ||\n\
@@ -77,22 +77,12 @@ jobs:
         \  echo \"changed=true\" >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Commit auto-fixed versions
       if: steps.autofix.outputs.changed == 'true'
-      run: 'git config user.name  "copilot-swe-agent[bot]"
-
-        git config user.email "198982749+Copilot@users.noreply.github.com"
-
-        git add .github/workflows/ .github/misc/
-
-        VIOLATIONS="${{ steps.autofix.outputs.violations }}"
-
-        git commit -m "fix(ci): auto-update ${VIOLATIONS} action version(s) to approved
-        pins [skip ci]"
-
-        git push
-
-        echo "✅ Committed action version fixes"
-
-        '
+      run: "git config user.name  \"copilot-swe-agent[bot]\"\ngit config user.email\
+        \ \"198982749+Copilot@users.noreply.github.com\"\ngit add .github/workflows/\
+        \ .github/misc/\nVIOLATIONS=\"${{ steps.autofix.outputs.violations }}\"\n\
+        git commit -m \"fix(ci): auto-update ${VIOLATIONS} action version(s) to approved\
+        \ pins [skip ci]\"\ngit push\necho \"\u2705 Committed action version fixes\"\
+        \n"
     - name: Post PR annotation on violations
       if: 'failure() &&
 
@@ -105,7 +95,7 @@ jobs:
           github.token }}
         script: "const { execSync } = require('child_process');\nlet violations =\
           \ [];\ntry {\n  const out = execSync(\n    'python scripts/ci/enforce_actions_versions.py\
-        \ --json',\n    { encoding: 'utf8' }\n  );\n  violations = JSON.parse(out).violations\
+          \ --json',\n    { encoding: 'utf8' }\n  );\n  violations = JSON.parse(out).violations\
           \ || [];\n} catch (_) {}\n\nif (violations.length === 0) return;\n\nconst\
           \ rows = violations.map(v =>\n  `| \\`${v.file}\\` | ${v.line} | \\`${v.action}\\\
           ` | \\`@${v.found}\\` | \\`@${v.expected}\\` |`\n).join('\\n');\n\nconst\
@@ -113,10 +103,10 @@ jobs:
           \  `**${violations.length} workflow file(s)** use non-approved action versions.`,\n\
           \  ``,\n  `| File | Line | Action | Found | Expected |`,\n  `|------|------|--------|-------|----------|`,\n\
           \  rows,\n  ``,\n  `### Quick fix`,\n  `\\`\\`\\`bash`,\n  `python scripts/ci/enforce_actions_versions.py\
-        \ --fix`,\n  `git add .github/`,\n  `git commit -m \"fix(ci): update action\
+          \ --fix`,\n  `git add .github/`,\n  `git commit -m \"fix(ci): update action\
           \ versions to approved pins\"`,\n  `\\`\\`\\``,\n].join('\\n');\n\nawait\
-        \ github.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo:\
-        \ context.repo.repo,\n  issue_number: context.issue.number,\n  body,\n});\n"
+          \ github.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  issue_number: context.issue.number,\n  body,\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

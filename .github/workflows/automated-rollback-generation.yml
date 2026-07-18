@@ -1,6 +1,5 @@
----
 name: Automated Rollback Generation
-on:
+true:
   workflow_dispatch:
     inputs:
       deployment_name:
@@ -34,40 +33,40 @@ jobs:
       actions: read
       pull-requests: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: pip
-      - name: Install dependencies
-        run: 'python -m pip install --upgrade pip
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
         pip install pyyaml
 
         '
-      - name: Generate rollback playbook
-        id: playbook_gen
-        run: "echo \"Generating rollback playbook...\"\npython ${{ env.SCRIPTS_DIR }}/generate_rollback_playbook.py\
+    - name: Generate rollback playbook
+      id: playbook_gen
+      run: "echo \"Generating rollback playbook...\"\npython ${{ env.SCRIPTS_DIR }}/generate_rollback_playbook.py\
         \ \\\n  --manifests-dir ${{ env.MANIFESTS_DIR }} \\\n  --output ${{ env.OUTPUT_DIR\
         \ }} \\\n  --verbose\n\n# Check if generation was successful\nif [ ! -f \"\
         ${{ env.OUTPUT_DIR }}/rollback-procedures.md\" ]; then\n  echo \"\u274C Playbook\
         \ generation failed\"\n  exit 1\nfi\n\necho \"playbook_generated=true\" >>\
         \ $GITHUB_OUTPUT\necho \"\u2705 Rollback playbook generated\"\n"
-      - name: Generate incident templates
-        id: templates_gen
-        run: "echo \"Generating incident communication templates...\"\npython ${{ env.SCRIPTS_DIR\
+    - name: Generate incident templates
+      id: templates_gen
+      run: "echo \"Generating incident communication templates...\"\npython ${{ env.SCRIPTS_DIR\
         \ }}/generate_incident_templates.py \\\n  --output ${{ env.OUTPUT_DIR }}/incident-templates\
         \ \\\n  --verbose\n\n# Check if generation was successful\nif [ ! -d \"${{\
         \ env.OUTPUT_DIR }}/incident-templates\" ]; then\n  echo \"\u274C Template\
         \ generation failed\"\n  exit 1\nfi\n\necho \"templates_generated=true\" >>\
         \ $GITHUB_OUTPUT\necho \"\u2705 Incident templates generated\"\n"
-      - name: Validate generated procedures
-        id: validate
-        run: "echo \"Validating generated procedures...\"\n\n# Check markdown files\
+    - name: Validate generated procedures
+      id: validate
+      run: "echo \"Validating generated procedures...\"\n\n# Check markdown files\
         \ exist\nif [ ! -f \"${{ env.OUTPUT_DIR }}/rollback-procedures.md\" ]; then\n\
         \  echo \"\u274C rollback-procedures.md not found\"\n  exit 1\nfi\n\nif [\
         \ ! -f \"${{ env.OUTPUT_DIR }}/ROLLBACK_PLAYBOOK_PROCEDURES.txt\" ]; then\n\
@@ -83,23 +82,23 @@ jobs:
         \ then\n    echo \"\u274C $template not found\"\n    exit 1\n  fi\ndone\n\n\
         echo \"validation_passed=true\" >> $GITHUB_OUTPUT\necho \"\u2705 All procedures\
         \ validated successfully\"\n"
-      - name: Create validation report
-        id: report
-        run: "cat > ${{ env.OUTPUT_DIR }}/WORKFLOW_VALIDATION_REPORT.md << 'EOF'\n#\
+    - name: Create validation report
+      id: report
+      run: "cat > ${{ env.OUTPUT_DIR }}/WORKFLOW_VALIDATION_REPORT.md << 'EOF'\n#\
         \ Automated Rollback Generation - Validation Report\n\n**Date:** $(date -u\
         \ +'%Y-%m-%dT%H:%M:%SZ')\n**Workflow Run:** ${{ github.server_url }}/${{ github.repository\
         \ }}/actions/runs/${{ github.run_id }}\n\n## Generated Artifacts\n\n### Core\
         \ Procedures\n- \u2705 `rollback-procedures.md` - Comprehensive rollback playbook\n\
-      - \u2705 `ROLLBACK_PLAYBOOK_PROCEDURES.txt` - Quick reference\n- \u2705 `ROLLBACK_VALIDATION_CHECKLIST.md`\
+        - \u2705 `ROLLBACK_PLAYBOOK_PROCEDURES.txt` - Quick reference\n- \u2705 `ROLLBACK_VALIDATION_CHECKLIST.md`\
         \ - Validation procedures\n- \u2705 `rollback-playbook-metadata.json` - Generation\
         \ metadata\n\n### Escalation & Communication\n- \u2705 `ESCALATION_PROCEDURES.md`\
         \ - Escalation procedures\n- \u2705 `ESCALATION_CONTACTS.md` - Contact information\n\
-      - \u2705 `incident-templates/` - Communication templates\n  - `INCIDENT_REPORT_TEMPLATE.md`\n\
+        - \u2705 `incident-templates/` - Communication templates\n  - `INCIDENT_REPORT_TEMPLATE.md`\n\
         \  - `STATUS_UPDATE_TEMPLATE.md`\n  - `STAKEHOLDER_NOTIFICATION.txt`\n  -\
         \ `POST_INCIDENT_REVIEW.md`\n  - `README.md`\n\n## Validation Results\n\n\
-      - \u2705 Playbook generation: PASSED\n- \u2705 Template generation: PASSED\n\
-      - \u2705 Syntax validation: PASSED\n- \u2705 File presence checks: PASSED\n\
-      - \u2705 Markdown formatting: PASSED\n\n## Next Steps\n\n1. **Review:** Check\
+        - \u2705 Playbook generation: PASSED\n- \u2705 Template generation: PASSED\n\
+        - \u2705 Syntax validation: PASSED\n- \u2705 File presence checks: PASSED\n\
+        - \u2705 Markdown formatting: PASSED\n\n## Next Steps\n\n1. **Review:** Check\
         \ all generated procedures for accuracy\n2. **Test:** Run dry-run validation\
         \ in test environment\n3. **Approve:** Get L2+ approval before production\
         \ use\n4. **Document:** Add to runbook and team documentation\n5. **Train:**\
@@ -111,20 +110,19 @@ jobs:
         \ inputs.deployment_name }}\n- **Namespace:** ${{ inputs.namespace }}\n- **Generated\
         \ By:** GitHub Actions\n- **Workflow:** ${{ github.workflow }}\nEOF\n\necho\
         \ \"report_created=true\" >> $GITHUB_OUTPUT\n"
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-pytest-
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-
-      - name: Commit generated procedures
-        id: commit
-        if: steps.validate.outputs.validation_passed == 'true'
-        run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+          '
+    - name: Commit generated procedures
+      id: commit
+      if: steps.validate.outputs.validation_passed == 'true'
+      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
         41898282+github-actions[bot]@users.noreply.github.com\"\n\n# Check if there\
         \ are changes\nif git diff --quiet; then\n  echo \"No changes to commit\"\n\
         \  echo \"changes_committed=false\" >> $GITHUB_OUTPUT\n  exit 0\nfi\n\n# Stage\
@@ -143,13 +141,13 @@ jobs:
         \ github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>\n\
         COMMIT_MSG\n\ngit commit -F /tmp/commit_msg.txt\n\necho \"changes_committed=true\"\
         \ >> $GITHUB_OUTPUT\n"
-      - name: Push changes
-        if: steps.commit.outputs.changes_committed == 'true'
-        run: 'git push origin HEAD:${{ github.ref }}
+    - name: Push changes
+      if: steps.commit.outputs.changes_committed == 'true'
+      run: 'git push origin HEAD:${{ github.ref }}
 
         '
-      - name: Create workflow summary
-        run: "cat >> $GITHUB_STEP_SUMMARY << 'EOF'\n# \u2705 Automated Rollback Generation\
+    - name: Create workflow summary
+      run: "cat >> $GITHUB_STEP_SUMMARY << 'EOF'\n# \u2705 Automated Rollback Generation\
         \ Complete\n\n## Generated Artifacts\n\n| Artifact | Location | Status |\n\
         |----------|----------|--------|\n| Rollback Playbook | `.codex/rollback-procedures.md`\
         \ | \u2705 Generated |\n| Quick Reference | `.codex/ROLLBACK_PLAYBOOK_PROCEDURES.txt`\
@@ -166,54 +164,56 @@ jobs:
         EOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   validate-dry-run:
     name: Validate Procedures (Dry-Run)
     runs-on: ubuntu-latest
     needs: generate-rollback-procedures
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: 'python -m pip install --upgrade pip
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
 
         pip install pyyaml
 
         '
-      - name: Validate procedures (dry-run)
-        run: "echo \"\u26A0\uFE0F  Dry-run validation requires cluster credentials\"\
+    - name: Validate procedures (dry-run)
+      run: "echo \"\u26A0\uFE0F  Dry-run validation requires cluster credentials\"\
         \necho \"Set up kubectl and enable this job in production\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 15
   notify-completion:
     name: Notify Completion
     runs-on: ubuntu-latest
     needs: generate-rollback-procedures
     if: always()
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - name: Prepare notification
-        run: 'cat > notification.txt << ''EOF''
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Prepare notification
+      run: 'cat > notification.txt << ''EOF''
 
         Automated Rollback Generation Workflow Complete
 
         Generated Artifacts:
 
-      - Rollback playbook with procedures
+        - Rollback playbook with procedures
 
-      - Incident communication templates
+        - Incident communication templates
 
-      - Escalation procedures
+        - Escalation procedures
 
-      - Validation checklist
+        - Validation checklist
 
         Location: .codex/
 
@@ -232,9 +232,9 @@ jobs:
         cat notification.txt
 
         '
-      - name: Post to Slack (if configured)
-        run: "echo \"\u2139\uFE0F  Slack notification would be sent here if configured\"\
+    - name: Post to Slack (if configured)
+      run: "echo \"\u2139\uFE0F  Slack notification would be sent here if configured\"\
         \necho \"Set SLACK_WEBHOOK_URL secret to enable notifications\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-
+    timeout-minutes: 30

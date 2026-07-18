@@ -1,6 +1,5 @@
----
 name: Performance Benchmarks
-on:
+true:
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

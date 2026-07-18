@@ -1,6 +1,5 @@
----
 name: Audit & QA Suite (Unified)
-on:
+true:
   schedule:
   - cron: 0 6 * * 1
   pull_request:
@@ -106,8 +105,9 @@ permissions:
   issues: write
 jobs:
   audit_gap_analysis:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
-    if: github.event.pull_request.number != 5328 && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'audit-only' || inputs.mode == 'full-suite')))
+    if: github.event.pull_request.number != 5328 && (github.event_name == 'schedule'
+      || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'audit-only'
+      || inputs.mode == 'full-suite')))
     name: Run Audit Gap Analysis
     runs-on: ubuntu-latest
     outputs:
@@ -163,6 +163,7 @@ jobs:
         name: audit-results-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 20
   qa_walkthrough:
     name: Codebase QA Walkthrough
     runs-on: ubuntu-latest
@@ -186,117 +187,69 @@ jobs:
       id: fetch_repo
       env:
         GH_TOKEN: ${{ github.token }}
-      run: |
-        # SECURITY: Determine the target ref for this job
-        # For pull_request events: use the PR head SHA (trusted)
-        # For issue_comment events: use main (trusted)
-        # For workflow_dispatch: use inputs.target_ref with validation
-        # For workflow_call: use github.sha (trusted)
-
-        TARGET_REF=""
-        if [ "${{ github.event_name }}" = "pull_request" ]; then
-          TARGET_REF="${{ github.event.pull_request.head.sha }}"
-        elif [ "${{ github.event_name }}" = "issue_comment" ]; then
-          TARGET_REF="main"
-        elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          TARGET_REF="${{ inputs.target_ref || github.sha }}"
-        elif [ "${{ github.event_name }}" = "workflow_call" ]; then
-          TARGET_REF="${{ github.sha }}"
-        else
-          TARGET_REF="${{ github.sha }}"
-        fi
-
-        # Validate that TARGET_REF doesn't contain path traversal or other injection attempts
-        # Use strict pattern: only alphanumerics, hyphens, dots, underscores (no slashes or special chars)
-        if [[ ! "$TARGET_REF" =~ ^[a-zA-Z0-9._-]+$ ]]; then
-          echo "❌ Error: Invalid target ref format: $TARGET_REF"
-          exit 1
-        fi
-
-        echo "target_ref=$TARGET_REF" >> $GITHUB_OUTPUT
-        echo "✅ Target ref validated: $TARGET_REF"
-
+      run: "# SECURITY: Determine the target ref for this job\n# For pull_request\
+        \ events: use the PR head SHA (trusted)\n# For issue_comment events: use main\
+        \ (trusted)\n# For workflow_dispatch: use inputs.target_ref with validation\n\
+        # For workflow_call: use github.sha (trusted)\n\nTARGET_REF=\"\"\nif [ \"\
+        ${{ github.event_name }}\" = \"pull_request\" ]; then\n  TARGET_REF=\"${{\
+        \ github.event.pull_request.head.sha }}\"\nelif [ \"${{ github.event_name\
+        \ }}\" = \"issue_comment\" ]; then\n  TARGET_REF=\"main\"\nelif [ \"${{ github.event_name\
+        \ }}\" = \"workflow_dispatch\" ]; then\n  TARGET_REF=\"${{ inputs.target_ref\
+        \ || github.sha }}\"\nelif [ \"${{ github.event_name }}\" = \"workflow_call\"\
+        \ ]; then\n  TARGET_REF=\"${{ github.sha }}\"\nelse\n  TARGET_REF=\"${{ github.sha\
+        \ }}\"\nfi\n\n# Validate that TARGET_REF doesn't contain path traversal or\
+        \ other injection attempts\n# Use strict pattern: only alphanumerics, hyphens,\
+        \ dots, underscores (no slashes or special chars)\nif [[ ! \"$TARGET_REF\"\
+        \ =~ ^[a-zA-Z0-9._-]+$ ]]; then\n  echo \"\u274C Error: Invalid target ref\
+        \ format: $TARGET_REF\"\n  exit 1\nfi\n\necho \"target_ref=$TARGET_REF\" >>\
+        \ $GITHUB_OUTPUT\necho \"\u2705 Target ref validated: $TARGET_REF\"\n"
     - name: Create required directory structure
       env:
         GH_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
-      run: |
-        # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
-        # This eliminates the untrusted code checkout vulnerability in workflow_run contexts
-
-        # Parse repository into owner/repo format using bash parameter expansion
-        REPO_FULL="${GITHUB_REPOSITORY}"
-        OWNER="${REPO_FULL%%/*}"
-        REPO="${REPO_FULL##*/}"
-
-        # Create directory structure we need for QA walkthrough
-        mkdir -p scripts/qa
-        mkdir -p .github/actions/setup-python-cached
-        mkdir -p .codex/qa
-        mkdir -p reports/qa
-
-        echo "✅ Created required directory structure"
-
+      run: "# SECURITY: Use GitHub API instead of git checkout to fetch repository\
+        \ structure\n# This eliminates the untrusted code checkout vulnerability in\
+        \ workflow_run contexts\n\n# Parse repository into owner/repo format using\
+        \ bash parameter expansion\nREPO_FULL=\"${GITHUB_REPOSITORY}\"\nOWNER=\"${REPO_FULL%%/*}\"\
+        \nREPO=\"${REPO_FULL##*/}\"\n\n# Create directory structure we need for QA\
+        \ walkthrough\nmkdir -p scripts/qa\nmkdir -p .github/actions/setup-python-cached\n\
+        mkdir -p .codex/qa\nmkdir -p reports/qa\n\necho \"\u2705 Created required\
+        \ directory structure\"\n"
     - name: Fetch trusted scripts via GitHub API (no git checkout)
       env:
         GH_TOKEN: ${{ github.token }}
-      run: |
-        # Use GitHub API to fetch trusted files from main instead of git operations
-        # Parse repository into owner/repo format using bash parameter expansion
-        REPO_FULL="${{ github.repository }}"
-        OWNER="${REPO_FULL%%/*}"
-        REPO="${REPO_FULL##*/}"
-
-        # Use mktemp for all temporary files to avoid conflicts on shared runners
-        ACTION_TEMP=$(mktemp)
-        SCRIPT_TEMP=$(mktemp)
-        API_ERROR=$(mktemp)
-        DECODE_ERROR=$(mktemp)
-        trap 'rm -f "$ACTION_TEMP" "$SCRIPT_TEMP" "$API_ERROR" "$DECODE_ERROR"' EXIT
-
-        # Helper function to fetch and decode file from main branch
-        # SECURITY: file_path parameter must be hardcoded (not from untrusted input)
-        fetch_file_from_main() {
-          local file_path=$1
-          local output_file=$2
-          local error_log=$3
-
-          # Validate path does not contain path traversal sequences
-          if [[ "$file_path" =~ \.\. ]]; then
-            echo "ERROR: Invalid file path (contains path traversal)" >&2
-            return 1
-          fi
-
-          if gh api repos/$OWNER/$REPO/contents/$file_path?ref=main -q '.content' 2>"$error_log" | base64 -d > "$output_file" 2>&1; then
-            return 0
-          else
-            return 1
-          fi
-        }
-
-        # Fetch action.yml from main
-        if fetch_file_from_main ".github/actions/setup-python-cached/action.yml" "$ACTION_TEMP" "$API_ERROR"; then
-          mkdir -p .github/actions/setup-python-cached/
-          mv "$ACTION_TEMP" .github/actions/setup-python-cached/action.yml
-          echo "✅ Trusted action.yml fetched via GitHub API from origin/main"
-        else
-          # Sanitize error message to avoid exposing sensitive information
-          ERROR_MSG=$(head -c 100 "$API_ERROR" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo 'unknown error')
-          echo "⚠️ Failed to fetch action.yml from origin/main ($ERROR_MSG...) — will use fallback"
-        fi
-
-        # Fetch codebase_walkthrough.py from main
-        if fetch_file_from_main "scripts/qa/codebase_walkthrough.py" "$SCRIPT_TEMP" "$DECODE_ERROR"; then
-          mkdir -p scripts/qa/
-          mv "$SCRIPT_TEMP" scripts/qa/codebase_walkthrough.py
-          echo "✅ Trusted codebase_walkthrough.py fetched via GitHub API from origin/main"
-        else
-          # Sanitize error message to avoid exposing sensitive information
-          ERROR_MSG=$(head -c 100 "$DECODE_ERROR" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo 'unknown error')
-          echo "⚠️ Failed to fetch codebase_walkthrough.py from origin/main ($ERROR_MSG...) — will use fallback"
-        fi
-
-        echo "✅ Trusted code fetch complete (API-based, no git operations)"
+      run: "# Use GitHub API to fetch trusted files from main instead of git operations\n\
+        # Parse repository into owner/repo format using bash parameter expansion\n\
+        REPO_FULL=\"${{ github.repository }}\"\nOWNER=\"${REPO_FULL%%/*}\"\nREPO=\"\
+        ${REPO_FULL##*/}\"\n\n# Use mktemp for all temporary files to avoid conflicts\
+        \ on shared runners\nACTION_TEMP=$(mktemp)\nSCRIPT_TEMP=$(mktemp)\nAPI_ERROR=$(mktemp)\n\
+        DECODE_ERROR=$(mktemp)\ntrap 'rm -f \"$ACTION_TEMP\" \"$SCRIPT_TEMP\" \"$API_ERROR\"\
+        \ \"$DECODE_ERROR\"' EXIT\n\n# Helper function to fetch and decode file from\
+        \ main branch\n# SECURITY: file_path parameter must be hardcoded (not from\
+        \ untrusted input)\nfetch_file_from_main() {\n  local file_path=$1\n  local\
+        \ output_file=$2\n  local error_log=$3\n\n  # Validate path does not contain\
+        \ path traversal sequences\n  if [[ \"$file_path\" =~ \\.\\. ]]; then\n  \
+        \  echo \"ERROR: Invalid file path (contains path traversal)\" >&2\n    return\
+        \ 1\n  fi\n\n  if gh api repos/$OWNER/$REPO/contents/$file_path?ref=main -q\
+        \ '.content' 2>\"$error_log\" | base64 -d > \"$output_file\" 2>&1; then\n\
+        \    return 0\n  else\n    return 1\n  fi\n}\n\n# Fetch action.yml from main\n\
+        if fetch_file_from_main \".github/actions/setup-python-cached/action.yml\"\
+        \ \"$ACTION_TEMP\" \"$API_ERROR\"; then\n  mkdir -p .github/actions/setup-python-cached/\n\
+        \  mv \"$ACTION_TEMP\" .github/actions/setup-python-cached/action.yml\n  echo\
+        \ \"\u2705 Trusted action.yml fetched via GitHub API from origin/main\"\n\
+        else\n  # Sanitize error message to avoid exposing sensitive information\n\
+        \  ERROR_MSG=$(head -c 100 \"$API_ERROR\" 2>/dev/null | sed 's/[^[:print:]]/./g'\
+        \ || echo 'unknown error')\n  echo \"\u26A0\uFE0F Failed to fetch action.yml\
+        \ from origin/main ($ERROR_MSG...) \u2014 will use fallback\"\nfi\n\n# Fetch\
+        \ codebase_walkthrough.py from main\nif fetch_file_from_main \"scripts/qa/codebase_walkthrough.py\"\
+        \ \"$SCRIPT_TEMP\" \"$DECODE_ERROR\"; then\n  mkdir -p scripts/qa/\n  mv \"\
+        $SCRIPT_TEMP\" scripts/qa/codebase_walkthrough.py\n  echo \"\u2705 Trusted\
+        \ codebase_walkthrough.py fetched via GitHub API from origin/main\"\nelse\n\
+        \  # Sanitize error message to avoid exposing sensitive information\n  ERROR_MSG=$(head\
+        \ -c 100 \"$DECODE_ERROR\" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo\
+        \ 'unknown error')\n  echo \"\u26A0\uFE0F Failed to fetch codebase_walkthrough.py\
+        \ from origin/main ($ERROR_MSG...) \u2014 will use fallback\"\nfi\n\necho\
+        \ \"\u2705 Trusted code fetch complete (API-based, no git operations)\"\n"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -341,8 +294,8 @@ jobs:
           github.run_id }}
       run: "CRITICAL=\"${CRITICAL_ISSUES:-0}\"\nFOUND=\"${ISSUES_FOUND:-0}\"\nWALKTHROUGH_RAN=\"\
         ${WALKTHROUGH_RAN:-true}\"\n\nif [ \"$WALKTHROUGH_RAN\" = \"false\" ]; then\n\
-        \  STATUS=\"skipped\"\n  SUMMARY=\"QA walkthrough script not found — checks\
-        \ did not run\"\n  DETAIL_BODY=\"QA walkthrough script (scripts/qa/codebase_walkthrough.py)\
+        \  STATUS=\"skipped\"\n  SUMMARY=\"QA walkthrough script not found \u2014\
+        \ checks did not run\"\n  DETAIL_BODY=\"QA walkthrough script (scripts/qa/codebase_walkthrough.py)\
         \ was not present in this checkout. No lint, security, or AST checks were\
         \ executed.\"\nelse\n  # Write details to a temp file (printf avoids YAML/bash\
         \ quoting\n  # conflicts with markdown table characters and heredoc indentation).\n\
@@ -352,8 +305,8 @@ jobs:
         \ --heal` to auto-fix lint/style issues' \\\n    > /tmp/qa_details.txt\n \
         \ if   [ \"$CRITICAL\" -gt 0 ]; then STATUS=\"failure\"; SUMMARY=\"${CRITICAL}\
         \ critical issue(s) detected\"\n  elif [ \"$FOUND\"    -gt 0 ]; then STATUS=\"\
-        warning\";  SUMMARY=\"${FOUND} issue(s) found — no critical blockers\"\n \
-        \ else                              STATUS=\"success\";  SUMMARY=\"All checks\
+        warning\";  SUMMARY=\"${FOUND} issue(s) found \u2014 no critical blockers\"\
+        \n  else                              STATUS=\"success\";  SUMMARY=\"All checks\
         \ clean (0 issues)\"\n  fi\n  DETAIL_BODY=\"$(cat /tmp/qa_details.txt)\"\n\
         fi\n# Delegate to the consolidator: race-safe upsert + dedup on conflict.\n\
         python scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${PR_NUMBER}\"\
@@ -382,11 +335,7 @@ jobs:
         '
       env:
         CRITICAL_ISSUES: ${{ steps.qa.outputs.critical_issues }}
-      run: 'echo "❌ Critical issues found: ${CRITICAL_ISSUES}"
-
-        exit 1
-
-        '
+      run: "echo \"\u274C Critical issues found: ${CRITICAL_ISSUES}\"\nexit 1\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   create_improvement_pr:
@@ -412,21 +361,14 @@ jobs:
       env:
         AUDIT_GAP_COUNT: ${{ needs.audit_gap_analysis.outputs.gap_count }}
         QA_ISSUES_FOUND: ${{ needs.qa_walkthrough.outputs.issues_found }}
-      run: 'echo "## 🔧 Automated Improvements" > improvement_pr_body.md
-
-        echo "" >> improvement_pr_body.md
-
-        echo "This PR contains automated improvements based on:" >> improvement_pr_body.md
-
-        echo "- Audit gaps: ${AUDIT_GAP_COUNT}" >> improvement_pr_body.md
-
-        echo "- QA issues: ${QA_ISSUES_FOUND}" >> improvement_pr_body.md
-
-        # Note: Actual PR creation would be done via gh CLI or GitHub API
-
-        '
+      run: "echo \"## \U0001F527 Automated Improvements\" > improvement_pr_body.md\n\
+        echo \"\" >> improvement_pr_body.md\necho \"This PR contains automated improvements\
+        \ based on:\" >> improvement_pr_body.md\necho \"- Audit gaps: ${AUDIT_GAP_COUNT}\"\
+        \ >> improvement_pr_body.md\necho \"- QA issues: ${QA_ISSUES_FOUND}\" >> improvement_pr_body.md\n\
+        # Note: Actual PR creation would be done via gh CLI or GitHub API\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
@@ -438,36 +380,18 @@ jobs:
     if: always()
     steps:
     - name: Generate comprehensive summary
-      run: 'echo "## 🔍 Audit & QA Suite Summary" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "### Job Status" >> $GITHUB_STEP_SUMMARY
-
-        echo "- Audit Gap Analysis: ${{ needs.audit_gap_analysis.result }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "- QA Walkthrough: ${{ needs.qa_walkthrough.result }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "- Improvement PR: ${{ needs.create_improvement_pr.result }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "### Results" >> $GITHUB_STEP_SUMMARY
-
-        echo "- Audit gaps found: ${{ needs.audit_gap_analysis.outputs.gap_count ||
-        ''N/A'' }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "- QA issues found: ${{ needs.qa_walkthrough.outputs.issues_found ||
-        ''N/A'' }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "- Critical issues: ${{ needs.qa_walkthrough.outputs.critical_issues
-        || ''N/A'' }}" >> $GITHUB_STEP_SUMMARY
-
-        '
+      run: "echo \"## \U0001F50D Audit & QA Suite Summary\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Mode:** ${{ inputs.mode || github.event_name\
+        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        ### Job Status\" >> $GITHUB_STEP_SUMMARY\necho \"- Audit Gap Analysis: ${{\
+        \ needs.audit_gap_analysis.result }}\" >> $GITHUB_STEP_SUMMARY\necho \"- QA\
+        \ Walkthrough: ${{ needs.qa_walkthrough.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- Improvement PR: ${{ needs.create_improvement_pr.result }}\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"### Results\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- Audit gaps found: ${{ needs.audit_gap_analysis.outputs.gap_count\
+        \ || 'N/A' }}\" >> $GITHUB_STEP_SUMMARY\necho \"- QA issues found: ${{ needs.qa_walkthrough.outputs.issues_found\
+        \ || 'N/A' }}\" >> $GITHUB_STEP_SUMMARY\necho \"- Critical issues: ${{ needs.qa_walkthrough.outputs.critical_issues\
+        \ || 'N/A' }}\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Cache health report
       if: always()
       continue-on-error: true
@@ -495,7 +419,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -510,3 +435,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

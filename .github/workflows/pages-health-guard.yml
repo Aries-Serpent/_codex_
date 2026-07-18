@@ -1,6 +1,5 @@
----
-name: 🩺 Pages Health Guard (Self-Healing)
-on:
+name: "\U0001FA7A Pages Health Guard (Self-Healing)"
+true:
   deployment_status: null
   workflow_dispatch:
     inputs:
@@ -20,28 +19,18 @@ permissions:
   actions: write
 jobs:
   health-check:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: 🔍 Check Pages health + self-heal if 404
+    name: "\U0001F50D Check Pages health + self-heal if 404"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Resolve GitHub Pages URL
       id: resolve_url
-      run: '# Standard GitHub Pages URL pattern: https://<org>.github.io/<repo>/
-
-        OWNER="${{ github.repository_owner }}"
-
-        REPO="${{ github.event.repository.name }}"
-
-        PAGES_URL="https://${OWNER,,}.github.io/${REPO}/"
-
-        echo "pages_url=${PAGES_URL}" >> "$GITHUB_OUTPUT"
-
-        echo "📍 Pages URL: ${PAGES_URL}"
-
-        '
+      run: "# Standard GitHub Pages URL pattern: https://<org>.github.io/<repo>/\n\
+        OWNER=\"${{ github.repository_owner }}\"\nREPO=\"${{ github.event.repository.name\
+        \ }}\"\nPAGES_URL=\"https://${OWNER,,}.github.io/${REPO}/\"\necho \"pages_url=${PAGES_URL}\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"\U0001F4CD Pages URL: ${PAGES_URL}\"\n"
     - name: Check deployment event context
       id: deploy_context
       if: github.event_name == 'deployment_status'
@@ -55,11 +44,11 @@ jobs:
         \n# Only check if this is the github-pages environment and it's 'success'\n\
         # (branch-mode pages-build-deployment completes as 'success' even when 404)\n\
         if [ \"${DEPLOY_ENV}\" != \"github-pages\" ]; then\n  echo \"skip_check=true\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"ℹ️  Not a github-pages deployment — skipping\
-        \ health check\"\nelif [ \"${DEPLOY_STATE}\" != \"success\" ]; then\n  echo\
-        \ \"skip_check=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"ℹ️  Deployment state\
-        \ is '${DEPLOY_STATE}' (not success) — skipping\"\nelse\n  echo \"skip_check=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\nfi\n"
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"\u2139\uFE0F  Not a github-pages deployment\
+        \ \u2014 skipping health check\"\nelif [ \"${DEPLOY_STATE}\" != \"success\"\
+        \ ]; then\n  echo \"skip_check=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u2139\
+        \uFE0F  Deployment state is '${DEPLOY_STATE}' (not success) \u2014 skipping\"\
+        \nelse\n  echo \"skip_check=false\" >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Check HTTP status of deployed site
       id: http_check
       if: steps.deploy_context.outputs.skip_check != 'true'
@@ -75,15 +64,15 @@ jobs:
         \    break\n  fi\n  [ \"${i}\" -lt \"${MAX_ATTEMPTS}\" ] && sleep ${SLEEP_SECS}\n\
         done\n\necho \"final_http_code=${FINAL_CODE}\" >> \"$GITHUB_OUTPUT\"\n\nif\
         \ [ \"${FINAL_CODE}\" = \"200\" ] && [ \"${FORCE}\" != \"true\" ]; then\n\
-        \  echo \"site_healthy=true\"  >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Site is healthy\
-        \ (HTTP 200)\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"## ✅ Pages Health: OK\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"Site at \\`${PAGES_URL}\\` returned\
-        \ **HTTP 200**.\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"site_healthy=false\"\
+        \  echo \"site_healthy=true\"  >> \"$GITHUB_OUTPUT\"\n  echo \"\u2705 Site\
+        \ is healthy (HTTP 200)\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"## \u2705\
+        \ Pages Health: OK\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"Site at \\`${PAGES_URL}\\\
+        ` returned **HTTP 200**.\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"site_healthy=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  REASON=\"HTTP ${FINAL_CODE}\"\n  [ \"${FORCE}\"\
-        \ = \"true\" ] && REASON=\"forced redeploy (manual override)\"\n  echo \"\
-        ❌ Site unhealthy: ${REASON}\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"## ❌ Pages\
-        \ Health: DEGRADED — triggering self-heal\" >> \"$GITHUB_STEP_SUMMARY\"\n\
-        \  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"| Field | Value |\" >>\
+        \ = \"true\" ] && REASON=\"forced redeploy (manual override)\"\n  echo \"\u274C\
+        \ Site unhealthy: ${REASON}\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"## \u274C\
+        \ Pages Health: DEGRADED \u2014 triggering self-heal\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"| Field | Value |\" >>\
         \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"|-------|-------|\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"| Pages URL | \\`${PAGES_URL}\\` |\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"| HTTP status | **${FINAL_CODE}** |\" >> \"$GITHUB_STEP_SUMMARY\"\
@@ -94,19 +83,19 @@ jobs:
         \n  echo \"triggered the branch-mode \\`pages-build-deployment\\` (internal\
         \ GitHub Pages service),\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"which is\
         \ **not** skipped by \\`[skip ci]\\`. This serves raw repo files without an\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\\`index.html\\` → 404. **Initiating\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\\`index.html\\` \u2192 404. **Initiating\
         \ MkDocs rebuild to restore the site.**\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     - name: Trigger MkDocs rebuild (self-heal)
       id: trigger_rebuild
       if: steps.http_check.outputs.site_healthy == 'false'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: "echo \"\U0001F504 Triggering pages-mkdocs.yml to restore the site…\"\n\
-        if gh workflow run pages-mkdocs.yml \\\n  --ref main \\\n  --field reason=\"\
+      run: "echo \"\U0001F504 Triggering pages-mkdocs.yml to restore the site\u2026\
+        \"\nif gh workflow run pages-mkdocs.yml \\\n  --ref main \\\n  --field reason=\"\
         pages-health-guard-self-heal:${{ github.event_name }}:http${{ steps.http_check.outputs.final_http_code\
         \ }}\"; then\n  echo \"rebuild_triggered=true\" >> \"$GITHUB_OUTPUT\"\nelse\n\
-        \  echo \"rebuild_triggered=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"⚠️  Failed\
-        \ to trigger pages-mkdocs.yml\"\nfi\n\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \  echo \"rebuild_triggered=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u26A0\
+        \uFE0F  Failed to trigger pages-mkdocs.yml\"\nfi\n\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"**Self-heal triggered:** \\`pages-mkdocs.yml\\` rebuild dispatched\
         \ at $(date -u +%Y-%m-%dT%H:%M:%SZ).\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\
         The MkDocs-built site will replace the raw-file deployment within ~3 minutes.\"\
@@ -122,20 +111,21 @@ jobs:
         \ 2>/dev/null || echo \"000\")\necho \"scheduled_http_code=${HTTP_CODE}\"\
         \ >> \"$GITHUB_OUTPUT\"\necho \"\U0001F4CA Scheduled check result: HTTP ${HTTP_CODE}\"\
         \n\nif [ \"${HTTP_CODE}\" = \"200\" ] && [ \"${FORCE}\" != \"true\" ]; then\n\
-        \  echo \"## ✅ Scheduled Pages Health Check: OK\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \  echo \"## \u2705 Scheduled Pages Health Check: OK\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"Site at \\`${PAGES_URL}\\` returned **HTTP 200**.\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \nelse\n  echo \"## ❌ Scheduled Pages Health Check: DEGRADED\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"Site returned HTTP **${HTTP_CODE}** — triggering rebuild.\"  >>\
-        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"rebuild_needed=true\" >> \"$GITHUB_OUTPUT\"\
-        \n  echo \"final_http_code=${HTTP_CODE}\" >> \"$GITHUB_OUTPUT\"\nfi\n"
+        \nelse\n  echo \"## \u274C Scheduled Pages Health Check: DEGRADED\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\n  echo \"Site returned HTTP **${HTTP_CODE}** \u2014\
+        \ triggering rebuild.\"  >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"rebuild_needed=true\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"final_http_code=${HTTP_CODE}\" >> \"$GITHUB_OUTPUT\"\
+        \nfi\n"
     - name: Trigger MkDocs rebuild (scheduled/manual self-heal)
       if: steps.scheduled_check.outputs.rebuild_needed == 'true'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: "if gh workflow run pages-mkdocs.yml \\\n  --ref main \\\n  --field reason=\"\
         pages-health-guard-scheduled-heal:http${{ steps.scheduled_check.outputs.scheduled_http_code\
-        \ }}\"; then\n  echo \"✅ MkDocs rebuild dispatched\"\nelse\n  echo \"⚠️  Failed\
-        \ to trigger pages-mkdocs.yml\"\nfi\n"
+        \ }}\"; then\n  echo \"\u2705 MkDocs rebuild dispatched\"\nelse\n  echo \"\
+        \u26A0\uFE0F  Failed to trigger pages-mkdocs.yml\"\nfi\n"
     - name: Write telemetry
       if: always()
       run: "# Log to AAIS telemetry for incident tracking\nmkdir -p .codex/telemetry\n\
@@ -145,7 +135,8 @@ jobs:
         \ || 'n/a' }}\\\",\\\"healthy\\\":\\\"${{ steps.http_check.outputs.site_healthy\
         \ || 'n/a' }}\\\",\\\"rebuild_triggered\\\":\\\"${{ steps.trigger_rebuild.outputs.rebuild_triggered\
         \ || 'false' }}\\\"}\" \\\n  >> .codex/telemetry/pages_health_log.jsonl 2>/dev/null\
-        \ || true\necho \"✅ Telemetry logged\"\n"
+        \ || true\necho \"\u2705 Telemetry logged\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15

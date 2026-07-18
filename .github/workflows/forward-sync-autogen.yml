@@ -1,6 +1,5 @@
----
-name: Forward-Sync Auto-Generated Files → staging chain (Safety Net)
-on:
+name: "Forward-Sync Auto-Generated Files \u2192 staging chain (Safety Net)"
+true:
   push:
     branches:
     - main
@@ -20,7 +19,7 @@ permissions:
   contents: write
 jobs:
   forward-sync:
-    name: 📤 Forward files main → staging chain tip
+    name: "\U0001F4E4 Forward files main \u2192 staging chain tip"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout main
@@ -29,52 +28,43 @@ jobs:
         persist-credentials: false
         ref: main
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
-    - name: 🚦 Skip if target is main (no staging branch active)
+    - name: "\U0001F6A6 Skip if target is main (no staging branch active)"
       id: check-target
       run: "TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\nif [ \"$TARGET\"\
         \ = \"main\" ]; then\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
-        ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
-    - name: 📥 Checkout main (trusted base)
+        \u2139\uFE0F  No staging branch active \u2014 nothing to forward\"\nelse\n\
+        \  echo \"skip=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u2705 Staging branch\
+        \ detected: $TARGET\"\nfi\n"
+    - name: "\U0001F4E5 Checkout main (trusted base)"
       if: steps.check-target.outputs.skip != 'true'
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
         ref: main
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
     - name: Fetch and validate target branch
       if: steps.check-target.outputs.skip != 'true'
-      run: |
-        BRANCH="${{ steps.resolve-target.outputs.branch }}"
-
-        # Validate branch name contains only safe characters (no .. directory traversal)
-        if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9/_-]+$ ]]; then
-          printf '❌ Error: Branch name contains unsafe characters: %s\n' "$BRANCH" >&2
-          exit 1
-        fi
-
-        # Explicitly reject .. sequences that could enable traversal
-        if [[ "$BRANCH" == *".."* ]]; then
-          printf '❌ Error: Branch name contains directory traversal sequence: %s\n' "$BRANCH" >&2
-          exit 1
-        fi
-
-        # Verify the branch exists in origin using git ls-remote
-        if ! git ls-remote --exit-code origin "$BRANCH" >/dev/null 2>&1; then
-          printf '❌ Error: Branch %s does not exist in origin\n' "$BRANCH" >&2
-          exit 1
-        fi
-
-        # Fetch the branch
-        git fetch origin "$BRANCH" --depth=1 || exit 1
-        # Checkout the branch
-        git checkout "$BRANCH" || exit 1
-    - name: 🔄 Fetch changed files from main and apply to chain tip
+      run: "BRANCH=\"${{ steps.resolve-target.outputs.branch }}\"\n\n# Validate branch\
+        \ name contains only safe characters (no .. directory traversal)\nif ! [[\
+        \ \"$BRANCH\" =~ ^[a-zA-Z0-9/_-]+$ ]]; then\n  printf '\u274C Error: Branch\
+        \ name contains unsafe characters: %s\\n' \"$BRANCH\" >&2\n  exit 1\nfi\n\n\
+        # Explicitly reject .. sequences that could enable traversal\nif [[ \"$BRANCH\"\
+        \ == *\"..\"* ]]; then\n  printf '\u274C Error: Branch name contains directory\
+        \ traversal sequence: %s\\n' \"$BRANCH\" >&2\n  exit 1\nfi\n\n# Verify the\
+        \ branch exists in origin using git ls-remote\nif ! git ls-remote --exit-code\
+        \ origin \"$BRANCH\" >/dev/null 2>&1; then\n  printf '\u274C Error: Branch\
+        \ %s does not exist in origin\\n' \"$BRANCH\" >&2\n  exit 1\nfi\n\n# Fetch\
+        \ the branch\ngit fetch origin \"$BRANCH\" --depth=1 || exit 1\n# Checkout\
+        \ the branch\ngit checkout \"$BRANCH\" || exit 1\n"
+    - name: "\U0001F504 Fetch changed files from main and apply to chain tip"
       id: sync
       if: steps.check-target.outputs.skip != 'true'
       run: "git fetch origin main --depth=1\n\nCHANGED=0\nFILES=(\n  \".codex/agent_context.json\"\
@@ -87,8 +77,8 @@ jobs:
         \ \"$f\")\"\n      cp /tmp/autogen_forward \"$f\"\n      git add \"$f\"\n\
         \      echo \"Updated: $f\"\n      CHANGED=1\n    fi\n  fi\ndone\necho \"\
         changed=$CHANGED\" >> \"$GITHUB_OUTPUT\"\n"
-    - name: 🛡️ Active-PR guard — skip push when any open/draft PR targets the chain
-        tip
+    - name: "\U0001F6E1\uFE0F Active-PR guard \u2014 skip push when any open/draft\
+        \ PR targets the chain tip"
       id: pr_guard
       if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed
         == '1'
@@ -101,45 +91,46 @@ jobs:
         \  PR_COUNT=$(gh api \"repos/${REPO}/pulls?base=${TARGET}&state=open&per_page=1\"\
         \ \\\n    --jq 'length' 2>/dev/null || echo \"0\")\n  if [ \"${PR_COUNT}\"\
         \ -gt \"0\" ]; then\n    echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"\n   \
-        \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${TARGET}\\` — forward-sync\
-        \ push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"pr_skip=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"\
-        \nfi\n"
-    - name: 💾 Commit and push forwarded files to chain tip
+        \ echo \"\u26D4 ${PR_COUNT} open/draft PR(s) targeting \\`${TARGET}\\` \u2014\
+        \ forward-sync push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo\
+        \ \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\"\
+        \ >> \"$GITHUB_OUTPUT\"\nfi\n"
+    - name: "\U0001F4BE Commit and push forwarded files to chain tip"
       if: steps.check-target.outputs.skip != 'true' && steps.sync.outputs.changed
         == '1' && steps.pr_guard.outputs.pr_skip != 'true'
       env:
         TARGET: ${{ steps.resolve-target.outputs.branch }}
       run: "git config user.name  \"github-actions[bot]\"\ngit config user.email \"\
         41898282+github-actions[bot]@users.noreply.github.com\"\ngit commit -m \"\
-        chore(autosync): forward files from main → ${TARGET} [skip ci]\n\nTriggered\
+        chore(autosync): forward files from main \u2192 ${TARGET} [skip ci]\n\nTriggered\
         \ by push ${{ github.sha }} on main.\nReason: ${{ steps.resolve-target.outputs.reason\
         \ }}\nFiles: agent_context.json, metadata.json, workflow_patterns.jsonl,\n\
         \       codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md,\n       variable_audit_latest.md,\
         \ requirements/lock.txt, requirements/base.txt\"\n\n# Rebase guard: pull any\
         \ commits that landed on the target since checkout\n# to prevent non-fast-forward\
         \ rejection on push.\ngit pull --rebase --autostash origin \"${TARGET}\" ||\
-        \ {\n  echo \"⚠️  Rebase failed — re-applying files on top of latest ${TARGET}\"\
-        \n  git rebase --abort 2>/dev/null || true\n  git fetch origin \"${TARGET}\"\
-        \ --depth=5\n  git reset --hard origin/\"${TARGET}\"\n  FILES=(\n    \".codex/agent_context.json\"\
-        \n    \".codex/cognitive_brain/metadata.json\"\n    \".codex/cognitive_brain/workflow_patterns.jsonl\"\
-        \n    \".codex/embeddings/codex_index_meta.json\"\n    \"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\
-        \n    \"docs/admin/variable_audit_latest.md\"\n    \"requirements/lock.txt\"\
-        \n    \"requirements/base.txt\"\n  )\n  for f in \"${FILES[@]}\"; do\n   \
-        \ if git show origin/main:\"$f\" > /tmp/autogen_reapply 2>/dev/null; then\n\
-        \      if ! cmp -s /tmp/autogen_reapply \"$f\" 2>/dev/null; then\n       \
-        \ mkdir -p \"$(dirname \"$f\")\"\n        cp /tmp/autogen_reapply \"$f\"\n\
-        \        git add \"$f\"\n      fi\n    fi\n  done\n  git diff --cached --quiet\
-        \ && { echo \"ℹ️  No changes remain after rebase — skipping push\"; exit 0;\
-        \ }\n  git commit -m \"chore(autosync): forward files from main → ${TARGET}\
-        \ [skip ci]\n\nTriggered by push ${{ github.sha }} on main (post-rebase retry).\"\
-        \n}\n\ngit push origin \"HEAD:${TARGET}\"\necho \"✅ Files forwarded to ${TARGET}\"\
-        \n"
+        \ {\n  echo \"\u26A0\uFE0F  Rebase failed \u2014 re-applying files on top\
+        \ of latest ${TARGET}\"\n  git rebase --abort 2>/dev/null || true\n  git fetch\
+        \ origin \"${TARGET}\" --depth=5\n  git reset --hard origin/\"${TARGET}\"\n\
+        \  FILES=(\n    \".codex/agent_context.json\"\n    \".codex/cognitive_brain/metadata.json\"\
+        \n    \".codex/cognitive_brain/workflow_patterns.jsonl\"\n    \".codex/embeddings/codex_index_meta.json\"\
+        \n    \"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\n    \"docs/admin/variable_audit_latest.md\"\
+        \n    \"requirements/lock.txt\"\n    \"requirements/base.txt\"\n  )\n  for\
+        \ f in \"${FILES[@]}\"; do\n    if git show origin/main:\"$f\" > /tmp/autogen_reapply\
+        \ 2>/dev/null; then\n      if ! cmp -s /tmp/autogen_reapply \"$f\" 2>/dev/null;\
+        \ then\n        mkdir -p \"$(dirname \"$f\")\"\n        cp /tmp/autogen_reapply\
+        \ \"$f\"\n        git add \"$f\"\n      fi\n    fi\n  done\n  git diff --cached\
+        \ --quiet && { echo \"\u2139\uFE0F  No changes remain after rebase \u2014\
+        \ skipping push\"; exit 0; }\n  git commit -m \"chore(autosync): forward files\
+        \ from main \u2192 ${TARGET} [skip ci]\n\nTriggered by push ${{ github.sha\
+        \ }} on main (post-rebase retry).\"\n}\n\ngit push origin \"HEAD:${TARGET}\"\
+        \necho \"\u2705 Files forwarded to ${TARGET}\"\n"
     - name: No-op summary
       if: steps.check-target.outputs.skip == 'true' || steps.sync.outputs.changed
         != '1'
-      run: echo "ℹ️  No file changes to forward (target=${{ steps.resolve-target.outputs.branch
-        }}, reason=${{ steps.resolve-target.outputs.reason }})"
+      run: "echo \"\u2139\uFE0F  No file changes to forward (target=${{ steps.resolve-target.outputs.branch\
+        \ }}, reason=${{ steps.resolve-target.outputs.reason }})\""
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

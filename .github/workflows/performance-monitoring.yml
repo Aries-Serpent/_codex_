@@ -1,6 +1,5 @@
----
 name: Performance Monitoring - Regression Detection
-on:
+true:
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch:
@@ -8,7 +7,7 @@ on:
       check_regressions:
         description: Check for regressions in current branch
         required: false
-        default: "false"
+        default: 'false'
   pull_request:
     types:
     - opened
@@ -23,90 +22,87 @@ jobs:
     name: Performance Monitoring & SLA Enforcement
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-          cache: pip
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -q numpy scipy pytest pytest-benchmark
-      - name: Load baseline metrics
-        run: |
-          mkdir -p .codex/perf
-          if [ -f .codex/perf/baselines.json ]; then
-            echo "Baseline metrics found"
-            python -c "
-          import json
-          with open('.codex/perf/baselines.json', 'r') as f:
-            data = json.load(f)
-          print(f'Loaded baseline from {data.get(\"metadata\", {}).get(\"execution_date\")}')"
-          fi
-      - name: Collect current metrics
-        id: collect_metrics
-        run: "python scripts/collect_performance_metrics.py \\\n  --output metrics_current.json\
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: pip
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install -q numpy scipy pytest pytest-benchmark
+
+        '
+    - name: Load baseline metrics
+      run: "mkdir -p .codex/perf\nif [ -f .codex/perf/baselines.json ]; then\n  echo\
+        \ \"Baseline metrics found\"\n  python -c \"\nimport json\nwith open('.codex/perf/baselines.json',\
+        \ 'r') as f:\n  data = json.load(f)\nprint(f'Loaded baseline from {data.get(\\\
+        \"metadata\\\", {}).get(\\\"execution_date\\\")}')\"\nfi\n"
+    - name: Collect current metrics
+      id: collect_metrics
+      run: "python scripts/collect_performance_metrics.py \\\n  --output metrics_current.json\
         \ \\\n  --include-tests \\\n  --include-workflows\n"
-        continue-on-error: true
-      - name: Detect regressions
-        id: detect_regressions
-        run: "python scripts/detect_performance_regressions.py \\\n  --baseline .codex/perf/baselines.json\
+      continue-on-error: true
+    - name: Detect regressions
+      id: detect_regressions
+      run: "python scripts/detect_performance_regressions.py \\\n  --baseline .codex/perf/baselines.json\
         \ \\\n  --current metrics_current.json \\\n  --output regression_report.json\
         \ \\\n  --format json\n"
-        continue-on-error: true
-      - name: Generate performance report
-        id: generate_report
-        run: "python scripts/generate_performance_report.py \\\n  --metrics metrics_current.json\
+      continue-on-error: true
+    - name: Generate performance report
+      id: generate_report
+      run: "python scripts/generate_performance_report.py \\\n  --metrics metrics_current.json\
         \ \\\n  --regressions regression_report.json \\\n  --output performance_report.md\
         \ \\\n  --format markdown\n"
-        continue-on-error: true
-      - name: Check SLA compliance
-        id: sla_check
-        run: "python -m codex.monitoring.sla_enforcer \\\n  --baseline .codex/perf/baselines.json\
+      continue-on-error: true
+    - name: Check SLA compliance
+      id: sla_check
+      run: "python -m codex.monitoring.sla_enforcer \\\n  --baseline .codex/perf/baselines.json\
         \ \\\n  --metrics metrics_current.json \\\n  --pr-comment > sla_check_result.md\n\
         exit_code=$?\necho \"sla_passed=$([[ $exit_code -eq 0 ]] && echo true || echo\
         \ false)\" >> $GITHUB_OUTPUT\nexit 0\n"
-        continue-on-error: true
-      - name: Comment on PR with SLA results
-        if: github.event_name == 'pull_request' && steps.sla_check.outcome == 'success'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require("fs");
-            const comment = fs.readFileSync("sla_check_result.md", "utf8");
+      continue-on-error: true
+    - name: Comment on PR with SLA results
+      if: github.event_name == 'pull_request' && steps.sla_check.outcome == 'success'
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require(\"fs\");\nconst comment = fs.readFileSync(\"sla_check_result.md\"\
+          , \"utf8\");\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
+          });\n"
+    - name: Upload metrics artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: 'metrics_current.json
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-      - name: Upload metrics artifacts
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          path: |
-            metrics_current.json
-            regression_report.json
-            performance_report.md
-            sla_check_result.md
-          retention-days: 30
-          name: performance-metrics
-      - name: Block PR on critical regression
-        if: github.event_name == 'pull_request' && steps.sla_check.outputs.sla_passed == 'false'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            core.setFailed("Performance SLA check failed - PR cannot be merged");
-      - name: Store metrics in analytics
-        if: always()
-        run: "python scripts/store_performance_analytics.py \\\n  --metrics metrics_current.json\
+          regression_report.json
+
+          performance_report.md
+
+          sla_check_result.md
+
+          '
+        retention-days: 30
+        name: performance-metrics
+    - name: Block PR on critical regression
+      if: github.event_name == 'pull_request' && steps.sla_check.outputs.sla_passed
+        == 'false'
+      uses: actions/github-script@v8
+      with:
+        script: 'core.setFailed("Performance SLA check failed - PR cannot be merged");
+
+          '
+    - name: Store metrics in analytics
+      if: always()
+      run: "python scripts/store_performance_analytics.py \\\n  --metrics metrics_current.json\
         \ \\\n  --run-id ${{ github.run_id }} \\\n  --commit ${{ github.sha }}\n"
-        continue-on-error: true
+      continue-on-error: true
+    timeout-minutes: 20
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

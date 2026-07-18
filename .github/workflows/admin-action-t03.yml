@@ -1,5 +1,5 @@
 name: "Admin Action \u2014 T-03 security_events Scope Gate"
-on:
+true:
   workflow_dispatch:
     inputs:
       force_create_issue:
@@ -60,3 +60,4 @@ jobs:
       issue_title: "[T-03] CODEX_MASTER_KEY missing security_events scope \u2014 CodeQL\
         \ API blocked"
       probe_url: https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?per_page=1
+    timeout-minutes: 15

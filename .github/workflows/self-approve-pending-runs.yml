@@ -1,6 +1,5 @@
----
 name: "\u26A1 Self-Approve Pending Workflow Runs"
-on:
+true:
   schedule:
   - cron: '*/5 * * * *'
   workflow_run:
@@ -39,8 +38,9 @@ jobs:
       \ '\u26A1 Self-Approve Pending Workflow Runs'"
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout (for approve_pending_runs.py)
       uses: actions/checkout@v5
       with:
@@ -58,15 +58,16 @@ jobs:
       id: token
       run: "if [ -n \"${{ steps.app-token.outputs.token }}\" ]; then\n  echo \"source=cognitive-brain-app\"\
         \  >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ steps.app-token.outputs.token\
-        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\"\
-        \ ]; then\n  echo \"source=CODEX_MASTER_KEY\" >> \"$GITHUB_OUTPUT\"\n  echo\
-        \ \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelif [\
-        \ -n \"${{ secrets.CODEX_BACKUP_KEY }}\" ]; then\n  echo \"source=CODEX_BACKUP_KEY\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ secrets.CODEX_BACKUP_KEY }}\"\
-        \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"source=github.token\"     >> \"$GITHUB_OUTPUT\"\
-        \n  echo \"token=${{ github.token }}\" >> \"$GITHUB_OUTPUT\"\nfi\nSRC=$(grep\
-        \ \"^source=\" \"$GITHUB_OUTPUT\" | tail -1 | cut -d= -f2)\necho \"\u2705\
-        \ Token resolved from: ${SRC}\"\n"
+        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_MASTER_KEY ||\
+        \ secrets.CODEX_BACKUP_KEY }}\" ]; then\n  echo \"source=CODEX_MASTER_KEY\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY\
+        \ }}\" >> \"$GITHUB_OUTPUT\"\nelif [ -n \"${{ secrets.CODEX_BACKUP_KEY }}\"\
+        \ ]; then\n  echo \"source=CODEX_BACKUP_KEY\" >> \"$GITHUB_OUTPUT\"\n  echo\
+        \ \"token=${{ secrets.CODEX_BACKUP_KEY }}\" >> \"$GITHUB_OUTPUT\"\nelse\n\
+        \  echo \"source=github.token\"     >> \"$GITHUB_OUTPUT\"\n  echo \"token=${{\
+        \ github.token }}\" >> \"$GITHUB_OUTPUT\"\nfi\nSRC=$(grep \"^source=\" \"\
+        $GITHUB_OUTPUT\" | tail -1 | cut -d= -f2)\necho \"\u2705 Token resolved from:\
+        \ ${SRC}\"\n"
     - name: Resolve target PR / SHA
       id: target
       env:
@@ -122,13 +123,13 @@ jobs:
           const pendingCount = parseInt('${{ steps.pending.outputs.count }}', 10)\
           \ || 0;\n\ncore.info(`Dispatching auto-approve-workflows.yml for batch approval\
           \ (${pendingCount} pending runs)`);\n\ntry {\n  await github.rest.actions.createWorkflowDispatch({\n\
-        \    owner,\n    repo,\n    workflow_id: 'auto-approve-workflows.yml',\n\
-        \    ref: 'main',\n    inputs: {\n      approval_source: 'self-approve-pending-runs',\n\
-        \      approval_intent: 'auto_approve_action_required',\n      approval_reason:\
-        \ `Batch approval sweep: ${pendingCount} pending runs detected`,\n     \
-        \ approval_ttl_hours: '0.5',\n      dry_run: 'false'\n    }\n  });\n  core.info(`\u2705\
+          \    owner,\n    repo,\n    workflow_id: 'auto-approve-workflows.yml',\n\
+          \    ref: 'main',\n    inputs: {\n      approval_source: 'self-approve-pending-runs',\n\
+          \      approval_intent: 'auto_approve_action_required',\n      approval_reason:\
+          \ `Batch approval sweep: ${pendingCount} pending runs detected`,\n     \
+          \ approval_ttl_hours: '0.5',\n      dry_run: 'false'\n    }\n  });\n  core.info(`\u2705\
           \ auto-approve-workflows.yml dispatched for batch of ${pendingCount} runs`);\n\
-        } catch (err) {\n  core.warning(`Hub dispatch failed: ${err.message}`);\n\
+          } catch (err) {\n  core.warning(`Hub dispatch failed: ${err.message}`);\n\
           }\n"
       continue-on-error: true
     - name: Job summary

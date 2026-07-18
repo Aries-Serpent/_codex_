@@ -1,6 +1,5 @@
----
 name: Batch CI Failure Triage
-on:
+true:
   workflow_dispatch:
     inputs:
       group_by:
@@ -29,7 +28,6 @@ permissions:
   actions: read
 jobs:
   batch-triage:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Batch Triage CI Failures
     runs-on: ubuntu-latest
@@ -39,8 +37,9 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout Repository
       uses: actions/checkout@v5
       with:
@@ -61,85 +60,66 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;\nconst\
-        \ lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps\n\
-        const cutoff = new Date(Date.now() - lookbackHours * 60 * 60 * 1000);\n\
-        const failuresFile = 'ci-triage-failures.json';\n\nconsole.log(`Fetching\
-        \ failed workflow runs since ${cutoff.toISOString()} (last ${lookbackHours}h)`);\n\
-        \n// Get all workflows with rate-limit guard on paginate\nlet workflows\
-        \ = [];\ntry {\n  // Check rate limit before paginating\n  const rlPre =\
-        \ await github.rest.rateLimit.get();\n  const preRemaining = rlPre.data?.resources?.core?.remaining\
-        \ ?? 999;\n  if (preRemaining < 50) {\n    core.warning(`Rate limit low\
-        \ before workflow list (${preRemaining} remaining) \u2014 aborting triage`);\n\
-        \    return;\n  }\n  workflows = await github.paginate(\n    github.rest.actions.listRepoWorkflows,\n\
-        \    { owner: context.repo.owner, repo: context.repo.repo, per_page: 100\
-        \ }\n  );\n} catch (e) {\n  core.warning(`Could not fetch workflow list:\
-        \ ${e.message}`);\n  return;\n}\nconsole.log(`Found ${workflows.length}\
-        \ workflows`);\n\nconst failures = [];\nlet activeWorkflowsScanned = 0;\n\
-        let wfIdx = 0;\n\nfor (const wf of workflows) {\n  // Skip disabled or this\
-        \ very workflow to avoid self-loops\n  if (wf.state !== 'active') continue;\n\
-        \  if (wf.name.includes('Batch CI Failure Triage')) continue;\n  activeWorkflowsScanned++;\n\
-        \n  // Circuit-break every 10 workflows \u2014 check rate limit remaining\n\
-        \  wfIdx++;\n  if (wfIdx % 10 === 0) {\n    try {\n      const rl = await\
-        \ github.rest.rateLimit.get();\n      const remaining = rl.data?.resources?.core?.remaining\
-        \ ?? 999;\n      if (remaining < 30) {\n        core.warning(`Rate limit\
-        \ low (${remaining} remaining) after ${wfIdx} workflows \u2014 stopping\
-        \ triage early`);\n        break;\n      }\n    } catch (_) { /* non-fatal\
-        \ */ }\n  }\n\n  let runs;\n  try {\n    const resp = await github.rest.actions.listWorkflowRuns({\n\
-        \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
-        \  workflow_id: wf.id,\n      status: 'failure',\n      per_page: maxRuns,\n\
-        \    });\n    runs = resp.data.workflow_runs || [];\n  } catch (e) {\n \
-        \   console.warn(`Could not fetch runs for ${wf.name}: ${e.message}`);\n\
-        \    continue;\n  }\n\n  for (const run of runs) {\n    // Only report on\
-        \ runs that are newer than the lookback window\n    const runDate = new\
-        \ Date(run.created_at);\n    if (runDate < cutoff && workflows.length >\
-        \ 20) continue;  // prune old for large repos\n\n    // Get failed jobs\
-        \ for this run\n    let failedJobs = [];\n    try {\n      const jobsResp\
-        \ = await github.rest.actions.listJobsForWorkflowRun({\n        owner: context.repo.owner,\n\
-        \        repo: context.repo.repo,\n        run_id: run.id,\n        filter:\
-        \ 'latest',\n        per_page: 30,\n      });\n      failedJobs = (jobsResp.data.jobs\
-        \ || []).filter(j => j.conclusion === 'failure');\n    } catch (e) {\n \
-        \     console.warn(`Could not fetch jobs for run ${run.id}: ${e.message}`);\n\
-        \    }\n\n    if (run.conclusion !== 'failure' && failedJobs.length ===\
-        \ 0) continue;\n\n    // Determine failing step names\n    const failingSteps\
-        \ = failedJobs.flatMap(j =>\n      (j.steps || []).filter(s => s.conclusion\
-        \ === 'failure').map(s => `${j.name} \u203A ${s.name}`)\n    );\n\n
-    // Check if this is security-scanning-suite failure
-    let hasSecurityFindings = false;
-    let securityFindingsContext = null;
-    if (wf.name === 'Security Scanning Suite') {
-      try {
-        const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          run_id: run.id,
-        });
-        const findingsArtifact = (artifacts.data.artifacts || []).find(a =>
-          a.name.includes('security-findings-comprehensive')
-        );
-        if (findingsArtifact) {
-          hasSecurityFindings = true;
-          securityFindingsContext = {
-            artifact_id: findingsArtifact.id,
-            artifact_name: findingsArtifact.name,
-          };
-        }
-      } catch (e) {
-        console.warn(`Could not check security findings: ${e.message}`);
-      }
-    }
-
-        failures.push({\n\
-          \      workflow_name: wf.name,\n      workflow_file: wf.path.replace('.github/workflows/',\
-          \ ''),\n      run_id: run.id,\n      run_url: run.html_url,\n      run_number:\
-          \ run.run_number,\n      created_at: run.created_at,\n      head_branch:\
-          \ run.head_branch,\n      head_sha: run.head_sha ? run.head_sha.substring(0,\
-          \ 8) : 'unknown',\n      pr_number: run.pull_requests && run.pull_requests.length\
-          \ > 0\n        ? run.pull_requests[0].number : null,\n      failed_jobs:\
-          \ failedJobs.map(j => j.name),\n      failing_steps: failingSteps,\n   \
-          \   logs_url: run.logs_url,
-      has_security_findings: hasSecurityFindings,
-      security_findings_context: securityFindingsContext,\n    });\n  }\n}\n\nconsole.log(`Total recent\
-          \ failures found: ${failures.length}`);\nrequire('fs').writeFileSync(failuresFile,\
+          \ lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps\n\
+          const cutoff = new Date(Date.now() - lookbackHours * 60 * 60 * 1000);\n\
+          const failuresFile = 'ci-triage-failures.json';\n\nconsole.log(`Fetching\
+          \ failed workflow runs since ${cutoff.toISOString()} (last ${lookbackHours}h)`);\n\
+          \n// Get all workflows with rate-limit guard on paginate\nlet workflows\
+          \ = [];\ntry {\n  // Check rate limit before paginating\n  const rlPre =\
+          \ await github.rest.rateLimit.get();\n  const preRemaining = rlPre.data?.resources?.core?.remaining\
+          \ ?? 999;\n  if (preRemaining < 50) {\n    core.warning(`Rate limit low\
+          \ before workflow list (${preRemaining} remaining) \u2014 aborting triage`);\n\
+          \    return;\n  }\n  workflows = await github.paginate(\n    github.rest.actions.listRepoWorkflows,\n\
+          \    { owner: context.repo.owner, repo: context.repo.repo, per_page: 100\
+          \ }\n  );\n} catch (e) {\n  core.warning(`Could not fetch workflow list:\
+          \ ${e.message}`);\n  return;\n}\nconsole.log(`Found ${workflows.length}\
+          \ workflows`);\n\nconst failures = [];\nlet activeWorkflowsScanned = 0;\n\
+          let wfIdx = 0;\n\nfor (const wf of workflows) {\n  // Skip disabled or this\
+          \ very workflow to avoid self-loops\n  if (wf.state !== 'active') continue;\n\
+          \  if (wf.name.includes('Batch CI Failure Triage')) continue;\n  activeWorkflowsScanned++;\n\
+          \n  // Circuit-break every 10 workflows \u2014 check rate limit remaining\n\
+          \  wfIdx++;\n  if (wfIdx % 10 === 0) {\n    try {\n      const rl = await\
+          \ github.rest.rateLimit.get();\n      const remaining = rl.data?.resources?.core?.remaining\
+          \ ?? 999;\n      if (remaining < 30) {\n        core.warning(`Rate limit\
+          \ low (${remaining} remaining) after ${wfIdx} workflows \u2014 stopping\
+          \ triage early`);\n        break;\n      }\n    } catch (_) { /* non-fatal\
+          \ */ }\n  }\n\n  let runs;\n  try {\n    const resp = await github.rest.actions.listWorkflowRuns({\n\
+          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+          \  workflow_id: wf.id,\n      status: 'failure',\n      per_page: maxRuns,\n\
+          \    });\n    runs = resp.data.workflow_runs || [];\n  } catch (e) {\n \
+          \   console.warn(`Could not fetch runs for ${wf.name}: ${e.message}`);\n\
+          \    continue;\n  }\n\n  for (const run of runs) {\n    // Only report on\
+          \ runs that are newer than the lookback window\n    const runDate = new\
+          \ Date(run.created_at);\n    if (runDate < cutoff && workflows.length >\
+          \ 20) continue;  // prune old for large repos\n\n    // Get failed jobs\
+          \ for this run\n    let failedJobs = [];\n    try {\n      const jobsResp\
+          \ = await github.rest.actions.listJobsForWorkflowRun({\n        owner: context.repo.owner,\n\
+          \        repo: context.repo.repo,\n        run_id: run.id,\n        filter:\
+          \ 'latest',\n        per_page: 30,\n      });\n      failedJobs = (jobsResp.data.jobs\
+          \ || []).filter(j => j.conclusion === 'failure');\n    } catch (e) {\n \
+          \     console.warn(`Could not fetch jobs for run ${run.id}: ${e.message}`);\n\
+          \    }\n\n    if (run.conclusion !== 'failure' && failedJobs.length ===\
+          \ 0) continue;\n\n    // Determine failing step names\n    const failingSteps\
+          \ = failedJobs.flatMap(j =>\n      (j.steps || []).filter(s => s.conclusion\
+          \ === 'failure').map(s => `${j.name} \u203A ${s.name}`)\n    );\n\n // Check\
+          \ if this is security-scanning-suite failure let hasSecurityFindings = false;\
+          \ let securityFindingsContext = null; if (wf.name === 'Security Scanning\
+          \ Suite') { try { const artifacts = await github.rest.actions.listWorkflowRunArtifacts({\
+          \ owner: context.repo.owner, repo: context.repo.repo, run_id: run.id, });\
+          \ const findingsArtifact = (artifacts.data.artifacts || []).find(a => a.name.includes('security-findings-comprehensive')\
+          \ ); if (findingsArtifact) { hasSecurityFindings = true; securityFindingsContext\
+          \ = { artifact_id: findingsArtifact.id, artifact_name: findingsArtifact.name,\
+          \ }; } } catch (e) { console.warn(`Could not check security findings: ${e.message}`);\
+          \ } }\nfailures.push({\n      workflow_name: wf.name,\n      workflow_file:\
+          \ wf.path.replace('.github/workflows/', ''),\n      run_id: run.id,\n  \
+          \    run_url: run.html_url,\n      run_number: run.run_number,\n      created_at:\
+          \ run.created_at,\n      head_branch: run.head_branch,\n      head_sha:\
+          \ run.head_sha ? run.head_sha.substring(0, 8) : 'unknown',\n      pr_number:\
+          \ run.pull_requests && run.pull_requests.length > 0\n        ? run.pull_requests[0].number\
+          \ : null,\n      failed_jobs: failedJobs.map(j => j.name),\n      failing_steps:\
+          \ failingSteps,\n      logs_url: run.logs_url, has_security_findings: hasSecurityFindings,\
+          \ security_findings_context: securityFindingsContext,\n    });\n  }\n}\n\
+          \nconsole.log(`Total recent failures found: ${failures.length}`);\nrequire('fs').writeFileSync(failuresFile,\
           \ JSON.stringify(failures));\ncore.setOutput('failure_count', failures.length);\n\
           core.setOutput('failures_path', failuresFile);\ncore.setOutput('active_workflows_scanned',\
           \ activeWorkflowsScanned);\n"
@@ -152,74 +132,74 @@ jobs:
           }}
       with:
         script: "const fs = require('fs');\nconst failuresPath = process.env.FAILURES_PATH\
-        \ || 'ci-triage-failures.json';\nconst failures = fs.existsSync(failuresPath)\n\
-        \  ? JSON.parse(fs.readFileSync(failuresPath, 'utf8') || '[]')\n  : [];\n\
-        const activeWorkflowsScanned = Number(process.env.ACTIVE_WORKFLOWS_SCANNED\
-        \ || 0);\nconst now = new Date().toISOString();\nconst repoUrl = context.payload.repository.html_url;\n\
-        const runUrl = `${repoUrl}/actions/runs/${context.runId}`;\n\nif (failures.length\
-        \ === 0) {\n  const body = `# \u2705 CI Failure Triage Report\\n\\n` +\n\
-        \    `**Generated:** ${now}\\n` +\n    `**Status:** No failed workflow runs\
-        \ detected in the last 25 hours.\\n\\n` +\n    `---\\n*Triage run: ${runUrl}*`;\n\
-        \  core.setOutput('report_body', body);\n  core.setOutput('has_failures',\
-        \ 'false');\n  return;\n}\n\n// Group by workflow name\nconst byWorkflow\
-        \ = {};\nfor (const f of failures) {\n  if (!byWorkflow[f.workflow_name])\
-        \ byWorkflow[f.workflow_name] = [];\n  byWorkflow[f.workflow_name].push(f);\n\
-        }\n\nlet body = `# \U0001F534 CI Failure Triage Report\\n\\n`;\nbody +=\
-        \ `**Generated:** ${now}\\n`;\nbody += `**Repository:** ${context.repo.owner}/${context.repo.repo}\\\
-        n`;\nbody += `**Total Recent Failures:** ${failures.length}\\n`;\nbody +=\
-        \ `**Affected Workflows:** ${Object.keys(byWorkflow).length}\\n\\n`;\nbody\
-        \ += `**Active Workflows Scanned:** ${activeWorkflowsScanned} (excluding\
-        \ triage workflow)\\n\\n`;\n\n// Executive summary table\nbody += `## Summary\\\
-        n\\n`;\nbody += `| Workflow | Failures | Most Recent Run | Branch | PR |\\\
-        n`;\nbody += `|----------|----------|----------------|--------|----|\\n`;\n\
-        for (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latest\
-        \ = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
-        \  const prLink = latest.pr_number\n    ? `[#${latest.pr_number}](${context.payload.repository.html_url}/pull/${latest.pr_number})`\n\
-        \    : 'N/A';\n  body += `| ${wfName} | ${runs.length} | [#${latest.run_number}](${latest.run_url})\
-        \ (${latest.created_at.split('T')[0]}) | \\`${latest.head_branch}\\` | ${prLink}\
-        \ |\\n`;\n}\n\nbody += `\\n---\\n\\n## Detailed Failure Analysis\\n\\n`;\n\
-        \nfor (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latestRun\
-        \ = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
-        \  body += `### \U0001F534 ${wfName}\\n\\n`;\n  body += `> **Most recent\
-        \ failure:** [Run  #${latestRun.run_number}](${latestRun.run_url}) on branch\
-        \ \\`${latestRun.head_branch}\\` (commit \\`${latestRun.head_sha}\\`)\\\
-        n\\n`;\n\n  if (latestRun.failed_jobs.length > 0) {\n    body += `**Failed\
-        \ Jobs:**\\n`;\n    for (const job of latestRun.failed_jobs) {\n      body\
-        \ += `- \u274C \\`${job}\\`\\n`;\n    }\n    body += `\\n`;\n  }\n\n  if\
-        \ (latestRun.failing_steps.length > 0) {\n    body += `**Failing Steps:**\\\
-        n`;\n    for (const step of latestRun.failing_steps.slice(0, 10)) {\n  \
-        \    body += `- \\`${step}\\`\\n`;\n    }\n    body += `\\n`;\n  }\n\n \
-        \ body += `**Copilot Resolution Prompt:**\\n`;\n  body += `\\`\\`\\`\\n`;\n\
-        \  body += `@copilot Fix the failing CI workflow \"${wfName}\" (run  #${latestRun.run_number}).\\\
-        n\\n`;\n  body += `**Workflow Context:**\\n`;\n  body += `- Workflow file:\
-        \ .github/workflows/${latestRun.workflow_file}\\n`;\n  body += `- Branch:\
-        \ ${latestRun.head_branch}\\n`;\n  body += `- Commit: ${latestRun.head_sha}\\\
-        n`;\n  body += `- Run URL: ${latestRun.run_url}\\n`;\n  if (latestRun.pr_number)\
-        \ {\n    body += `- Associated PR: ${context.payload.repository.html_url}/pull/${latestRun.pr_number}\\\
-        n`;\n  }\n  body += `\\n**Failure Details:**\\n`;\n  body += `- Failed jobs:\
-        \ ${latestRun.failed_jobs.join(', ') || 'see run'}\\n`;\n  if (latestRun.failing_steps.length\
-        \ > 0) {\n    body += `- Failing steps: ${latestRun.failing_steps.slice(0,\
-        \ 5).join('; ')}\\n`;\n  }\n  body += `\\n**Analysis Instructions:**\\n`;\n\
-        \  body += `1. Examine the workflow file and job logs\\n`;\n  body += `2.\
-        \ Identify root cause (dependency, environment, configuration)\\n`;\n  body\
-        \ += `3. Check if this pattern matches known CI failure patterns (see  #5041)\\\
-        n`;\n  body += `4. Apply fix and validate with local test if possible\\\
-        n`;\n  body += `5. If auto-fixable: commit with [skip ci] and reference\
-        \ this issue\\n`;\n  body += `6. If manual: create actionable remediation\
-        \ steps\\n`;\n  body += `\\n**Note:** This failure may be part of a recurring\
-        \ pattern. Check the CI Failure Triage Report (#5041) for similar issues.\\\
-        n`;\n  body += `\\`\\`\\`\\n\\n`;\n\n  if (runs.length > 1) {\n    body\
-        \ += `<details><summary>Previous failures (${runs.length - 1} more)</summary>\\\
-        n\\n`;\n    for (const run of runs.slice(1)) {\n      body += `- [Run  #${run.run_number}](${run.run_url})\
-        \ \u2014 ${run.created_at} \u2014 branch \\`${run.head_branch}\\`\\n`;\n\
-        \    }\n    body += `\\n</details>\\n\\n`;\n  }\n\n  body += `---\\n\\n`;\n\
-        }\n\nbody += `\\n*Triage run: ${runUrl} \u2014 Refresh by re-running [this\
-        \ workflow](${repoUrl}/actions/workflows/batch-ci-triage.yml)*\\n`;\n\n\
-        // Truncate if too long for GitHub API (65535 char limit)\nif (body.length\
-        \ > 60000) {\n  body = body.substring(0, 60000) + '\\n\\n... *(truncated\
-        \ \u2014 see workflow artifact for full report)*';\n}\n\ncore.setOutput('report_body',\
-        \ body);\ncore.setOutput('has_failures', failures.length > 0 ? 'true' :\
-        \ 'false');\n"
+          \ || 'ci-triage-failures.json';\nconst failures = fs.existsSync(failuresPath)\n\
+          \  ? JSON.parse(fs.readFileSync(failuresPath, 'utf8') || '[]')\n  : [];\n\
+          const activeWorkflowsScanned = Number(process.env.ACTIVE_WORKFLOWS_SCANNED\
+          \ || 0);\nconst now = new Date().toISOString();\nconst repoUrl = context.payload.repository.html_url;\n\
+          const runUrl = `${repoUrl}/actions/runs/${context.runId}`;\n\nif (failures.length\
+          \ === 0) {\n  const body = `# \u2705 CI Failure Triage Report\\n\\n` +\n\
+          \    `**Generated:** ${now}\\n` +\n    `**Status:** No failed workflow runs\
+          \ detected in the last 25 hours.\\n\\n` +\n    `---\\n*Triage run: ${runUrl}*`;\n\
+          \  core.setOutput('report_body', body);\n  core.setOutput('has_failures',\
+          \ 'false');\n  return;\n}\n\n// Group by workflow name\nconst byWorkflow\
+          \ = {};\nfor (const f of failures) {\n  if (!byWorkflow[f.workflow_name])\
+          \ byWorkflow[f.workflow_name] = [];\n  byWorkflow[f.workflow_name].push(f);\n\
+          }\n\nlet body = `# \U0001F534 CI Failure Triage Report\\n\\n`;\nbody +=\
+          \ `**Generated:** ${now}\\n`;\nbody += `**Repository:** ${context.repo.owner}/${context.repo.repo}\\\
+          n`;\nbody += `**Total Recent Failures:** ${failures.length}\\n`;\nbody +=\
+          \ `**Affected Workflows:** ${Object.keys(byWorkflow).length}\\n\\n`;\nbody\
+          \ += `**Active Workflows Scanned:** ${activeWorkflowsScanned} (excluding\
+          \ triage workflow)\\n\\n`;\n\n// Executive summary table\nbody += `## Summary\\\
+          n\\n`;\nbody += `| Workflow | Failures | Most Recent Run | Branch | PR |\\\
+          n`;\nbody += `|----------|----------|----------------|--------|----|\\n`;\n\
+          for (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latest\
+          \ = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
+          \  const prLink = latest.pr_number\n    ? `[#${latest.pr_number}](${context.payload.repository.html_url}/pull/${latest.pr_number})`\n\
+          \    : 'N/A';\n  body += `| ${wfName} | ${runs.length} | [#${latest.run_number}](${latest.run_url})\
+          \ (${latest.created_at.split('T')[0]}) | \\`${latest.head_branch}\\` | ${prLink}\
+          \ |\\n`;\n}\n\nbody += `\\n---\\n\\n## Detailed Failure Analysis\\n\\n`;\n\
+          \nfor (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latestRun\
+          \ = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
+          \  body += `### \U0001F534 ${wfName}\\n\\n`;\n  body += `> **Most recent\
+          \ failure:** [Run  #${latestRun.run_number}](${latestRun.run_url}) on branch\
+          \ \\`${latestRun.head_branch}\\` (commit \\`${latestRun.head_sha}\\`)\\\
+          n\\n`;\n\n  if (latestRun.failed_jobs.length > 0) {\n    body += `**Failed\
+          \ Jobs:**\\n`;\n    for (const job of latestRun.failed_jobs) {\n      body\
+          \ += `- \u274C \\`${job}\\`\\n`;\n    }\n    body += `\\n`;\n  }\n\n  if\
+          \ (latestRun.failing_steps.length > 0) {\n    body += `**Failing Steps:**\\\
+          n`;\n    for (const step of latestRun.failing_steps.slice(0, 10)) {\n  \
+          \    body += `- \\`${step}\\`\\n`;\n    }\n    body += `\\n`;\n  }\n\n \
+          \ body += `**Copilot Resolution Prompt:**\\n`;\n  body += `\\`\\`\\`\\n`;\n\
+          \  body += `@copilot Fix the failing CI workflow \"${wfName}\" (run  #${latestRun.run_number}).\\\
+          n\\n`;\n  body += `**Workflow Context:**\\n`;\n  body += `- Workflow file:\
+          \ .github/workflows/${latestRun.workflow_file}\\n`;\n  body += `- Branch:\
+          \ ${latestRun.head_branch}\\n`;\n  body += `- Commit: ${latestRun.head_sha}\\\
+          n`;\n  body += `- Run URL: ${latestRun.run_url}\\n`;\n  if (latestRun.pr_number)\
+          \ {\n    body += `- Associated PR: ${context.payload.repository.html_url}/pull/${latestRun.pr_number}\\\
+          n`;\n  }\n  body += `\\n**Failure Details:**\\n`;\n  body += `- Failed jobs:\
+          \ ${latestRun.failed_jobs.join(', ') || 'see run'}\\n`;\n  if (latestRun.failing_steps.length\
+          \ > 0) {\n    body += `- Failing steps: ${latestRun.failing_steps.slice(0,\
+          \ 5).join('; ')}\\n`;\n  }\n  body += `\\n**Analysis Instructions:**\\n`;\n\
+          \  body += `1. Examine the workflow file and job logs\\n`;\n  body += `2.\
+          \ Identify root cause (dependency, environment, configuration)\\n`;\n  body\
+          \ += `3. Check if this pattern matches known CI failure patterns (see  #5041)\\\
+          n`;\n  body += `4. Apply fix and validate with local test if possible\\\
+          n`;\n  body += `5. If auto-fixable: commit with [skip ci] and reference\
+          \ this issue\\n`;\n  body += `6. If manual: create actionable remediation\
+          \ steps\\n`;\n  body += `\\n**Note:** This failure may be part of a recurring\
+          \ pattern. Check the CI Failure Triage Report (#5041) for similar issues.\\\
+          n`;\n  body += `\\`\\`\\`\\n\\n`;\n\n  if (runs.length > 1) {\n    body\
+          \ += `<details><summary>Previous failures (${runs.length - 1} more)</summary>\\\
+          n\\n`;\n    for (const run of runs.slice(1)) {\n      body += `- [Run  #${run.run_number}](${run.run_url})\
+          \ \u2014 ${run.created_at} \u2014 branch \\`${run.head_branch}\\`\\n`;\n\
+          \    }\n    body += `\\n</details>\\n\\n`;\n  }\n\n  body += `---\\n\\n`;\n\
+          }\n\nbody += `\\n*Triage run: ${runUrl} \u2014 Refresh by re-running [this\
+          \ workflow](${repoUrl}/actions/workflows/batch-ci-triage.yml)*\\n`;\n\n\
+          // Truncate if too long for GitHub API (65535 char limit)\nif (body.length\
+          \ > 60000) {\n  body = body.substring(0, 60000) + '\\n\\n... *(truncated\
+          \ \u2014 see workflow artifact for full report)*';\n}\n\ncore.setOutput('report_body',\
+          \ body);\ncore.setOutput('has_failures', failures.length > 0 ? 'true' :\
+          \ 'false');\n"
     - name: Generate structured JSON report
       id: json-report
       if: always()
@@ -228,31 +208,31 @@ jobs:
         FAILURES_PATH: ${{ steps.fetch-failures.outputs.failures_path }}
       with:
         script: "const fs = require('fs');\nconst now = new Date().toISOString();\n\
-        const runUrl = `${context.payload.repository.html_url}/actions/runs/${context.runId}`;\n\
-        const failuresPath = process.env.FAILURES_PATH || 'ci-triage-failures.json';\n\
-        \n// Read failures from file\nlet failures = [];\ntry {\n  if (fs.existsSync(failuresPath))\
-        \ {\n    const fileContent = fs.readFileSync(failuresPath, 'utf8');\n  \
-        \  failures = JSON.parse(fileContent);\n  }\n} catch (e) {\n  console.warn(`Could\
-        \ not read failures from ${failuresPath}:`, e);\n}\n\n// Group by pattern/severity\n\
-        const byPattern = {};\nfor (const f of failures) {\n  const key = f.failure_pattern\
-        \ || 'unknown';\n  if (!byPattern[key]) byPattern[key] = [];\n  byPattern[key].push(f);\n\
-        }\n\nconst report = {\n  timestamp: now,\n  repository: `${context.repo.owner}/${context.repo.repo}`,\n\
-        \  total_failures: failures.length,\n  affected_workflows: new Set(failures.map(f\
-        \ => f.workflow_name)).size,\n  failures_by_pattern: byPattern,\n  triage_run_url:\
-        \ runUrl,\n  recommendations: {\n    immediate: [],\n    short_term: [],\n\
-        \    long_term: []\n  }\n};\n\n// Add recommendations based on patterns\n\
-        if (failures.length === 0) {\n  report.recommendations.immediate.push('No\
-        \ failures detected \u2014 CI health is good');\n} else if (failures.length\
-        \ > 10) {\n  report.recommendations.immediate.push('High failure rate detected\
-        \ \u2014 escalate for investigation');\n  report.recommendations.short_term.push('Run\
-        \ ci-pattern-healer workflow to auto-fix common patterns');\n}\n\n// Auto-fix\
-        \ eligible patterns\nconst autoFixable = failures.filter(f =>\n  ['secrets-pragma',\
-        \ 'pyyaml-dependency', 'unused-imports', 'coverage-threshold'].includes(f.failure_pattern)\n\
-        );\nif (autoFixable.length > 0) {\n  report.recommendations.short_term.push(`${autoFixable.length}\
-        \ failures are auto-fixable \u2014 run orchestrator`);\n}\n\n// Write JSON\
-        \ report\nrequire('fs').writeFileSync('ci-triage-report.json', JSON.stringify(report,\
-        \ null, 2));\ncore.setOutput('json_report', JSON.stringify(report));\nconsole.log('Generated\
-        \ structured JSON report with', failures.length, 'failures');\n"
+          const runUrl = `${context.payload.repository.html_url}/actions/runs/${context.runId}`;\n\
+          const failuresPath = process.env.FAILURES_PATH || 'ci-triage-failures.json';\n\
+          \n// Read failures from file\nlet failures = [];\ntry {\n  if (fs.existsSync(failuresPath))\
+          \ {\n    const fileContent = fs.readFileSync(failuresPath, 'utf8');\n  \
+          \  failures = JSON.parse(fileContent);\n  }\n} catch (e) {\n  console.warn(`Could\
+          \ not read failures from ${failuresPath}:`, e);\n}\n\n// Group by pattern/severity\n\
+          const byPattern = {};\nfor (const f of failures) {\n  const key = f.failure_pattern\
+          \ || 'unknown';\n  if (!byPattern[key]) byPattern[key] = [];\n  byPattern[key].push(f);\n\
+          }\n\nconst report = {\n  timestamp: now,\n  repository: `${context.repo.owner}/${context.repo.repo}`,\n\
+          \  total_failures: failures.length,\n  affected_workflows: new Set(failures.map(f\
+          \ => f.workflow_name)).size,\n  failures_by_pattern: byPattern,\n  triage_run_url:\
+          \ runUrl,\n  recommendations: {\n    immediate: [],\n    short_term: [],\n\
+          \    long_term: []\n  }\n};\n\n// Add recommendations based on patterns\n\
+          if (failures.length === 0) {\n  report.recommendations.immediate.push('No\
+          \ failures detected \u2014 CI health is good');\n} else if (failures.length\
+          \ > 10) {\n  report.recommendations.immediate.push('High failure rate detected\
+          \ \u2014 escalate for investigation');\n  report.recommendations.short_term.push('Run\
+          \ ci-pattern-healer workflow to auto-fix common patterns');\n}\n\n// Auto-fix\
+          \ eligible patterns\nconst autoFixable = failures.filter(f =>\n  ['secrets-pragma',\
+          \ 'pyyaml-dependency', 'unused-imports', 'coverage-threshold'].includes(f.failure_pattern)\n\
+          );\nif (autoFixable.length > 0) {\n  report.recommendations.short_term.push(`${autoFixable.length}\
+          \ failures are auto-fixable \u2014 run orchestrator`);\n}\n\n// Write JSON\
+          \ report\nrequire('fs').writeFileSync('ci-triage-report.json', JSON.stringify(report,\
+          \ null, 2));\ncore.setOutput('json_report', JSON.stringify(report));\nconsole.log('Generated\
+          \ structured JSON report with', failures.length, 'failures');\n"
     - name: Upsert triage issue
       id: upsert-issue
       uses: actions/github-script@v8
@@ -261,27 +241,27 @@ jobs:
         HAS_FAILURES: ${{ steps.build-report.outputs.has_failures }}
       with:
         script: "const body = process.env.REPORT_BODY || '*(no report generated)*';\n\
-        const hasFailures = process.env.HAS_FAILURES === 'true';\nconst TRIAGE_LABEL\
-        \ = 'ci-triage';\nconst TRIAGE_TITLE_PREFIX = '\U0001F4CA CI Failure Triage\
-        \ Report';\n\n// Search for an existing OPEN triage issue to update\nconst\
-        \ existingIssues = await github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n\
-        \  repo: context.repo.repo,\n  labels: TRIAGE_LABEL,\n  state: 'open',\n\
-        \  per_page: 10,\n});\n\nconst triageIssue = (existingIssues.data || [])\n\
-        \  .find(i => i.title.startsWith(TRIAGE_TITLE_PREFIX) && !i.pull_request);\n\
-        \nconst title = `${TRIAGE_TITLE_PREFIX} \u2014 updated ${new Date().toISOString().split('T')[0]}`;\n\
-        \nif (triageIssue) {\n  // Update the existing issue body and title so there's\
-        \ only ever one\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
-        \    repo: context.repo.repo,\n    issue_number: triageIssue.number,\n \
-        \   title: title,\n    body: body,\n    labels: hasFailures\n      ? [TRIAGE_LABEL,\
-        \ 'automated', 'batch-analysis']\n      : [TRIAGE_LABEL, 'automated'],\n\
-        \  });\n  console.log(`Updated existing triage issue  #${triageIssue.number}`);\n\
-        \  core.setOutput('issue_number', triageIssue.number);\n} else {\n  // No\
-        \ existing issue \u2014 create one\n  const issue = await github.rest.issues.create({\n\
-        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    title:\
-        \ title,\n    body: body,\n    labels: hasFailures\n      ? [TRIAGE_LABEL,\
-        \ 'automated', 'batch-analysis']\n      : [TRIAGE_LABEL, 'automated'],\n\
-        \  });\n  console.log(`Created new triage issue  #${issue.data.number}`);\n\
-        \  core.setOutput('issue_number', issue.data.number);\n}\n"
+          const hasFailures = process.env.HAS_FAILURES === 'true';\nconst TRIAGE_LABEL\
+          \ = 'ci-triage';\nconst TRIAGE_TITLE_PREFIX = '\U0001F4CA CI Failure Triage\
+          \ Report';\n\n// Search for an existing OPEN triage issue to update\nconst\
+          \ existingIssues = await github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  labels: TRIAGE_LABEL,\n  state: 'open',\n\
+          \  per_page: 10,\n});\n\nconst triageIssue = (existingIssues.data || [])\n\
+          \  .find(i => i.title.startsWith(TRIAGE_TITLE_PREFIX) && !i.pull_request);\n\
+          \nconst title = `${TRIAGE_TITLE_PREFIX} \u2014 updated ${new Date().toISOString().split('T')[0]}`;\n\
+          \nif (triageIssue) {\n  // Update the existing issue body and title so there's\
+          \ only ever one\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    issue_number: triageIssue.number,\n \
+          \   title: title,\n    body: body,\n    labels: hasFailures\n      ? [TRIAGE_LABEL,\
+          \ 'automated', 'batch-analysis']\n      : [TRIAGE_LABEL, 'automated'],\n\
+          \  });\n  console.log(`Updated existing triage issue  #${triageIssue.number}`);\n\
+          \  core.setOutput('issue_number', triageIssue.number);\n} else {\n  // No\
+          \ existing issue \u2014 create one\n  const issue = await github.rest.issues.create({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    title:\
+          \ title,\n    body: body,\n    labels: hasFailures\n      ? [TRIAGE_LABEL,\
+          \ 'automated', 'batch-analysis']\n      : [TRIAGE_LABEL, 'automated'],\n\
+          \  });\n  console.log(`Created new triage issue  #${issue.data.number}`);\n\
+          \  core.setOutput('issue_number', issue.data.number);\n}\n"
     - name: Save report artifact
       if: always()
       env:
@@ -289,18 +269,18 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: 'require(''fs'').writeFileSync(''ci-triage-report.md'', process.env.REPORT_BODY
-        || ''*(no report)*'');
+          || ''*(no report)*'');
 
-        '
+          '
     - name: Upload triage report artifact
       if: always()
       uses: actions/upload-artifact@v5
       with:
         path: 'ci-triage-report.md
 
-        ci-triage-report.json
+          ci-triage-report.json
 
-        '
+          '
         retention-days: 30
         name: ci-triage-report-${{ github.run_id }}
     - name: Generate job summary

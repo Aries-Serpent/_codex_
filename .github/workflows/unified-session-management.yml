@@ -1,5 +1,5 @@
 name: Session Management Suite
-on:
+true:
   schedule:
   - cron: '*/30 * * * *'
   workflow_dispatch:

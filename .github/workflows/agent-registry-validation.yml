@@ -1,6 +1,5 @@
----
 name: Agent Registry Validation
-on:
+true:
   pull_request:
     paths:
     - .github/agents/AGENT_REGISTRY.yaml
@@ -26,72 +25,66 @@ jobs:
     name: Validate Agent Registry + Manifest
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
-        with:
-          fetch-depth: 1
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: 3.12.13
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-      - name: Install dependencies
-        run: pip install jsonschema pyyaml --quiet
-      - name: Refresh CODEX_MANIFEST.json
-        run: '# Regenerate the manifest on every validation run so generated_at is always
-        fresh.
-
-        # This keeps C2 (manifest current <24h) satisfied in e-to-d-transition-gate.
-
-        python3 scripts/ci/generate_manifest.py
-
-        echo "✅ CODEX_MANIFEST.json refreshed"
-
-        '
-      - name: Validate AGENT_REGISTRY.yaml schema
-        id: registry_validation
-        run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport sys\nimport yaml\n\
+    - name: Checkout repository
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: pip install jsonschema pyyaml --quiet
+    - name: Refresh CODEX_MANIFEST.json
+      run: "# Regenerate the manifest on every validation run so generated_at is always\
+        \ fresh.\n# This keeps C2 (manifest current <24h) satisfied in e-to-d-transition-gate.\n\
+        python3 scripts/ci/generate_manifest.py\necho \"\u2705 CODEX_MANIFEST.json\
+        \ refreshed\"\n"
+    - name: Validate AGENT_REGISTRY.yaml schema
+      id: registry_validation
+      run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport sys\nimport yaml\n\
         \ntry:\n    import jsonschema\nexcept ImportError:\n    print(\"::warning::jsonschema\
-        \ not installed — skipping schema validation\")\n    sys.exit(0)\n\nschema_path\
-        \ = \".codex/schemas/AgentRegistrySchema.json\"\nregistry_path = \".github/agents/AGENT_REGISTRY.yaml\"\
-        \n\nif not os.path.exists(schema_path):\n    print(f\"::warning::AgentRegistrySchema.json\
-        \ not found at {schema_path}\")\n    sys.exit(0)\n\nif not os.path.exists(registry_path):\n\
-        \    print(f\"::warning::AGENT_REGISTRY.yaml not found at {registry_path}\"\
-        )\n    sys.exit(0)\n\nwith open(schema_path) as f:\n    schema = json.load(f)\n\
-        with open(registry_path) as f:\n    data = yaml.safe_load(f)\n\nerrors = []\n\
-        \n# Top-level validation\ntry:\n    jsonschema.validate(data, schema)\nexcept\
-        \ jsonschema.ValidationError as e:\n    errors.append(f\"Top-level: {e.message}\"\
-        )\n\n# Per-agent validation\nagent_schema = schema.get(\"definitions\", {}).get(\"\
-        AgentEntry\", {})\nif agent_schema:\n    for agent in data.get(\"agents\"\
-        , []):\n        try:\n            jsonschema.validate(agent, agent_schema)\n\
-        \        except jsonschema.ValidationError as e:\n            errors.append(f\"\
-        Agent '{agent.get('id', '?')}': {e.message}\")\n\n# Check total_agents count\
-        \ matches actual\ndeclared = data.get(\"total_agents\", 0)\nactual = len(data.get(\"\
-        agents\", []))\nif declared != actual:\n    errors.append(f\"total_agents={declared}\
-        \ but actual count={actual}\")\n\noutput_file = os.environ.get(\"GITHUB_OUTPUT\"\
-        , \"/dev/null\")\nif errors:\n    error_summary = \"; \".join(errors[:5])\n\
-        \    print(f\"::error::agent-registry-validation: {len(errors)} schema issues\
-        \ found: {error_summary}\")\n    with open(output_file, \"a\") as f:\n   \
-        \     f.write(\"registry_valid=false\\n\")\n        f.write(f\"error_count={len(errors)}\\\
-        n\")\n    sys.exit(1)\nelse:\n    print(f\"✅ AGENT_REGISTRY.yaml valid: {actual}\
-        \ agents, all schema-compliant\")\n    with open(output_file, \"a\") as f:\n\
-        \        f.write(\"registry_valid=true\\n\")\n        f.write(\"error_count=0\\\
-        n\")\nPYEOF\n"
-      - name: Validate capability_tags quality
-        id: tags_quality
-        run: "python3 - << 'PYEOF'\n# Enforce capability_tags quality rules on every\
-        \ PR that touches AGENT_REGISTRY.yaml.\n# Rules (Tier-1 GROUNDED — hard gate):\n\
-        #   1. Every agent must have at least one capability_tag.\n#   2. Tags must\
-        \ be snake_case (a-z, 0-9, underscore only; no hyphens, spaces, commas).\n\
-        #   3. Tags must be >= 4 characters (prevents 'ml', 'ci' abbreviations).\n\
+        \ not installed \u2014 skipping schema validation\")\n    sys.exit(0)\n\n\
+        schema_path = \".codex/schemas/AgentRegistrySchema.json\"\nregistry_path =\
+        \ \".github/agents/AGENT_REGISTRY.yaml\"\n\nif not os.path.exists(schema_path):\n\
+        \    print(f\"::warning::AgentRegistrySchema.json not found at {schema_path}\"\
+        )\n    sys.exit(0)\n\nif not os.path.exists(registry_path):\n    print(f\"\
+        ::warning::AGENT_REGISTRY.yaml not found at {registry_path}\")\n    sys.exit(0)\n\
+        \nwith open(schema_path) as f:\n    schema = json.load(f)\nwith open(registry_path)\
+        \ as f:\n    data = yaml.safe_load(f)\n\nerrors = []\n\n# Top-level validation\n\
+        try:\n    jsonschema.validate(data, schema)\nexcept jsonschema.ValidationError\
+        \ as e:\n    errors.append(f\"Top-level: {e.message}\")\n\n# Per-agent validation\n\
+        agent_schema = schema.get(\"definitions\", {}).get(\"AgentEntry\", {})\nif\
+        \ agent_schema:\n    for agent in data.get(\"agents\", []):\n        try:\n\
+        \            jsonschema.validate(agent, agent_schema)\n        except jsonschema.ValidationError\
+        \ as e:\n            errors.append(f\"Agent '{agent.get('id', '?')}': {e.message}\"\
+        )\n\n# Check total_agents count matches actual\ndeclared = data.get(\"total_agents\"\
+        , 0)\nactual = len(data.get(\"agents\", []))\nif declared != actual:\n   \
+        \ errors.append(f\"total_agents={declared} but actual count={actual}\")\n\n\
+        output_file = os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\")\nif errors:\n\
+        \    error_summary = \"; \".join(errors[:5])\n    print(f\"::error::agent-registry-validation:\
+        \ {len(errors)} schema issues found: {error_summary}\")\n    with open(output_file,\
+        \ \"a\") as f:\n        f.write(\"registry_valid=false\\n\")\n        f.write(f\"\
+        error_count={len(errors)}\\n\")\n    sys.exit(1)\nelse:\n    print(f\"\u2705\
+        \ AGENT_REGISTRY.yaml valid: {actual} agents, all schema-compliant\")\n  \
+        \  with open(output_file, \"a\") as f:\n        f.write(\"registry_valid=true\\\
+        n\")\n        f.write(\"error_count=0\\n\")\nPYEOF\n"
+    - name: Validate capability_tags quality
+      id: tags_quality
+      run: "python3 - << 'PYEOF'\n# Enforce capability_tags quality rules on every\
+        \ PR that touches AGENT_REGISTRY.yaml.\n# Rules (Tier-1 GROUNDED \u2014 hard\
+        \ gate):\n#   1. Every agent must have at least one capability_tag.\n#   2.\
+        \ Tags must be snake_case (a-z, 0-9, underscore only; no hyphens, spaces,\
+        \ commas).\n#   3. Tags must be >= 4 characters (prevents 'ml', 'ci' abbreviations).\n\
         #   4. Tags must not end with common truncation suffixes (_storag, _detectio,\
         \ etc.).\nimport os, re, sys, yaml\n\nREGISTRY = \".github/agents/AGENT_REGISTRY.yaml\"\
         \nif not os.path.exists(REGISTRY):\n    print(\"::warning::AGENT_REGISTRY.yaml\
-        \ not found — skipping capability_tags check\")\n    sys.exit(0)\n\ndata =\
-        \ yaml.safe_load(open(REGISTRY))\nagents = data.get(\"agents\", [])\n\nSNAKE_RE\
-        \ = re.compile(r'^[a-z][a-z0-9_]*$')\nTRUNCATION_SUFFIXES = (\"_storag\",\
-        \ \"_detectio\", \"_managemen\", \"_implementa\", \"_coordinati\")\n\nviolations\
+        \ not found \u2014 skipping capability_tags check\")\n    sys.exit(0)\n\n\
+        data = yaml.safe_load(open(REGISTRY))\nagents = data.get(\"agents\", [])\n\
+        \nSNAKE_RE = re.compile(r'^[a-z][a-z0-9_]*$')\nTRUNCATION_SUFFIXES = (\"_storag\"\
+        , \"_detectio\", \"_managemen\", \"_implementa\", \"_coordinati\")\n\nviolations\
         \ = []\nfor a in agents:\n    name = a.get(\"name\", a.get(\"id\", \"?\"))\n\
         \    tags = a.get(\"capability_tags\", [])\n    if not tags:\n        violations.append(f\"\
         {name}: missing capability_tags\")\n        continue\n    if isinstance(tags,\
@@ -104,28 +97,28 @@ jobs:
         \ngf = os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\")\nif violations:\n\
         \    for v in violations:\n        print(f\"::error::{v}\")\n    with open(gf,\
         \ \"a\") as f:\n        f.write(\"tags_valid=false\\n\")\n        f.write(f\"\
-        tag_violations={len(violations)}\\n\")\n    print(f\"\\n❌ capability_tags\
+        tag_violations={len(violations)}\\n\")\n    print(f\"\\n\u274C capability_tags\
         \ quality: {len(violations)} violation(s)\")\n    sys.exit(1)\nelse:\n   \
-        \ print(f\"✅ capability_tags quality: all {len(agents)} agents have valid\
+        \ print(f\"\u2705 capability_tags quality: all {len(agents)} agents have valid\
         \ tags\")\n    with open(gf, \"a\") as f:\n        f.write(\"tags_valid=true\\\
         n\")\n        f.write(\"tag_violations=0\\n\")\nPYEOF\n"
-      - name: Validate CODEX_MANIFEST.json integrity
-        id: manifest_validation
-        run: "python3 - << 'PYEOF'\nimport hashlib\nimport json\nimport os\nimport sys\n\
+    - name: Validate CODEX_MANIFEST.json integrity
+      id: manifest_validation
+      run: "python3 - << 'PYEOF'\nimport hashlib\nimport json\nimport os\nimport sys\n\
         \ntry:\n    import jsonschema\nexcept ImportError:\n    jsonschema = None\n\
         \nmanifest_path = \"CODEX_MANIFEST.json\"\nschema_path = \".codex/schemas/CodexManifestSchema.json\"\
         \n\nif not os.path.exists(manifest_path):\n    print(\"::error::CODEX_MANIFEST.json\
-        \ not found — run scripts/ci/generate_manifest.py\")\n    with open(os.environ.get(\"\
+        \ not found \u2014 run scripts/ci/generate_manifest.py\")\n    with open(os.environ.get(\"\
         GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"manifest_valid=absent\\\
         n\")\n    sys.exit(1)\n\ndata = json.loads(open(manifest_path).read())\n\n\
         # Verify integrity hash\nstored = data.pop(\"integrity_sha256\", None)\nif\
         \ not stored:\n    print(\"::error::CODEX_MANIFEST.json missing integrity_sha256\
-        \ field — regenerate with generate_manifest.py\")\n    with open(os.environ.get(\"\
+        \ field \u2014 regenerate with generate_manifest.py\")\n    with open(os.environ.get(\"\
         GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"manifest_valid=false\\\
         n\")\n    sys.exit(1)\n\ncontent = json.dumps(data, sort_keys=True, separators=(\"\
         ,\", \":\"))\ncomputed = hashlib.sha256(content.encode()).hexdigest()\n\n\
         if computed != stored:\n    print(f\"::error::CODEX_MANIFEST.json integrity\
-        \ FAILED — regenerate with generate_manifest.py\")\n    with open(os.environ.get(\"\
+        \ FAILED \u2014 regenerate with generate_manifest.py\")\n    with open(os.environ.get(\"\
         GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n        f.write(\"manifest_valid=false\\\
         n\")\n    sys.exit(1)\n\n# Validate against schema if available\nif jsonschema\
         \ is not None and os.path.exists(schema_path):\n    try:\n        data[\"\
@@ -133,55 +126,57 @@ jobs:
         \ = json.load(open(schema_path))\n        jsonschema.validate(data, manifest_schema)\n\
         \    except jsonschema.ValidationError as e:\n        print(f\"::error::CODEX_MANIFEST.json\
         \ schema validation failed: {e.message}\")\n        sys.exit(1)\n\nprint(f\"\
-        ✅ CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)\")\nwith open(os.environ.get(\"\
-        GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n    f.write(\"manifest_valid=true\\\
-        n\")\nPYEOF\n"
-      - name: Post validation summary
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8
-        env:
-          REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
-          MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
-          ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
-        with:
-          github-token: ${{ github.token }}
-          script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
+        \u2705 CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)\")\nwith\
+        \ open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n  \
+        \  f.write(\"manifest_valid=true\\n\")\nPYEOF\n"
+    - name: Post validation summary
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      env:
+        REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
+        MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
+        ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
+      with:
+        github-token: ${{ github.token }}
+        script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
           \ = process.env.MANIFEST_VALID;\nconst errorCount = process.env.ERROR_COUNT\
           \ || '0';\n\n// Only post a comment if there are issues to report\nif (registryValid\
           \ === 'true' && manifestValid === 'true') {\n  core.info('Registry and manifest\
-          \ validation passed — no comment needed');\n  return;\n}\n\nlet body = '##\
-          \ \U0001F50D Agent Registry Validation\\n\\n';\n\nif (registryValid !==\
-          \ 'true') {\n  body += `⚠️ **AGENT_REGISTRY.yaml**: ${errorCount} schema\
-          \ issue(s) found\\n`;\n  body += '  Run: `python3 -c \"import yaml,json,jsonschema;\
-          \ ...\"`\\n\\n';\n}\n\nif (manifestValid === 'absent') {\n  body += '⚠️\
-          \ **CODEX_MANIFEST.json**: Not found — regenerate:\\n';\n  body += '  ```bash\\\
-          n  python scripts/ci/generate_manifest.py\\n  ```\\n\\n';\n} else if (manifestValid\
-          \ !== 'true') {\n  body += '⚠️ **CODEX_MANIFEST.json**: Integrity check\
-          \ failed — regenerate:\\n';\n  body += '  ```bash\\n  python scripts/ci/generate_manifest.py\\\
-          n  ```\\n\\n';\n}\n\nbody += `_[agent-registry-validation.yml] | Tier-1\
-          \ GROUNDED gate — blocks merge on schema violations_`;\nbody += `\\n\\n---\\\
-          n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \ validation passed \u2014 no comment needed');\n  return;\n}\n\nlet body\
+          \ = '## \U0001F50D Agent Registry Validation\\n\\n';\n\nif (registryValid\
+          \ !== 'true') {\n  body += `\u26A0\uFE0F **AGENT_REGISTRY.yaml**: ${errorCount}\
+          \ schema issue(s) found\\n`;\n  body += '  Run: `python3 -c \"import yaml,json,jsonschema;\
+          \ ...\"`\\n\\n';\n}\n\nif (manifestValid === 'absent') {\n  body += '\u26A0\
+          \uFE0F **CODEX_MANIFEST.json**: Not found \u2014 regenerate:\\n';\n  body\
+          \ += '  ```bash\\n  python scripts/ci/generate_manifest.py\\n  ```\\n\\\
+          n';\n} else if (manifestValid !== 'true') {\n  body += '\u26A0\uFE0F **CODEX_MANIFEST.json**:\
+          \ Integrity check failed \u2014 regenerate:\\n';\n  body += '  ```bash\\\
+          n  python scripts/ci/generate_manifest.py\\n  ```\\n\\n';\n}\n\nbody +=\
+          \ `_[agent-registry-validation.yml] | Tier-1 GROUNDED gate \u2014 blocks\
+          \ merge on schema violations_`;\nbody += `\\n\\n---\\n_[\U0001F517 Workflow\
+          \ run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
           \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
           \ body,\n});\n"
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-pytest-
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-
-      - name: Trigger embedding index refresh
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
-        ✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh\" \\\n\
-        \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
-        \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
+          '
+    - name: Trigger embedding index refresh
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD
+        != 'false'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
+        \u2705 Triggered embedding-index-rebuild.yml \u2014 FAISS index will refresh\"\
+        \ \\\n  || echo \"::warning::Failed to trigger embedding index rebuild \u2014\
+        \ run manually: gh workflow run embedding-index-rebuild.yml --ref main\"\n"
+    timeout-minutes: 15
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -197,19 +192,23 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          fetch-depth: 1
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: Agent Registry Validation
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Agent Registry Validation
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

@@ -1,6 +1,5 @@
----
 name: "\U0001F9F9 Codebase Health Sweep"
-on:
+true:
   schedule:
   - cron: 15 2 * * *
   workflow_dispatch:
@@ -33,22 +32,25 @@ permissions:
   actions: read
 jobs:
   sweep-main:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
-    if: ${{ github.event.pull_request.number != 5328 && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')) }}
+    if: ${{ github.event.pull_request.number != 5328 && (github.event_name == 'schedule'
+      || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run'
+      && github.event.workflow_run.conclusion == 'success')) }}
     name: "\U0001F9F9 Sweep main"
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout main
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         ref: refs/heads/main
         fetch-depth: 10
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
     - name: "Rate gate \u2014 skip if swept within 6 hours"
       id: rate
       run: "# Check the last [skip ci] sweep commit on this branch\nLAST_SWEEP=$(git\
@@ -168,7 +170,8 @@ jobs:
     - name: Check if 0D_base_ exists
       id: branch_check
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
       run: "if gh api \"repos/${{ github.repository }}/branches/0D_base_\" --silent\
         \ 2>/dev/null; then\n  echo \"exists=true\" >> \"$GITHUB_OUTPUT\"\nelse\n\
         \  echo \"exists=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u23ED\uFE0F 0D_base_\
@@ -180,7 +183,8 @@ jobs:
         persist-credentials: false
         ref: refs/heads/0D_base_
         fetch-depth: 10
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
     - name: Set up Python
       if: steps.branch_check.outputs.exists == 'true'
       uses: ./.github/actions/setup-python-cached
@@ -253,7 +257,8 @@ jobs:
         persist-credentials: false
         ref: refs/heads/main
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -287,33 +292,35 @@ jobs:
         MANUAL: ${{ steps.manual_check.outputs.manual_review }}
         AUTO: ${{ steps.manual_check.outputs.auto_fixable }}
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          secrets.GITHUB_TOKEN }}
         script: "const MARKER = '<!-- codebase-health-sweep-tracking -->';\nconst\
           \ date = new Date().toISOString().split('T')[0];\nconst body = `${MARKER}\n\
           ## \U0001F9F9 Codebase Health Sweep \u2014 Manual Issues Requiring Attention\n\
-        \n**Date:** ${date}\n**Workflow:** [codebase-health-sweep.yml](${{ github.server_url\
+          \n**Date:** ${date}\n**Workflow:** [codebase-health-sweep.yml](${{ github.server_url\
           \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\nAuto-fixable\
           \ patterns are applied automatically by the nightly sweep.\nThe following\
-        \ issues require **manual review** by the Copilot coding agent:\n\n| Metric\
+          \ issues require **manual review** by the Copilot coding agent:\n\n| Metric\
           \ | Count |\n|--------|-------|\n| Total issues found | ${process.env.TOTAL}\
           \ |\n| Auto-fixable (swept) | ${process.env.AUTO} |\n| Manual review needed\
-        \ | ${process.env.MANUAL} |\n\n### To resolve:\n\\`\\`\\`bash\n# Check what\
+          \ | ${process.env.MANUAL} |\n\n### To resolve:\n\\`\\`\\`bash\n# Check what\
           \ needs manual review\npython scripts/ci/auto_fix_common_issues.py --check-only\
           \ --json-output /tmp/report.json\njq '.issues[] | select(.auto_fix_available\
           \ == false)' /tmp/report.json\n\n# Run the Copilot agent for codebase-wide\
           \ healing\n# @copilot Please run auto_fix_common_issues.py --check-only\
           \ and fix ALL manual-review issues\n\\`\\`\\`\n\n_Auto-generated by \\`codebase-health-sweep.yml\\\
-        `. Updates on each nightly run._`;\n\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  state: 'open',\n\
-        \  labels: ['ci-health', 'automation'],\n  per_page: 50,\n});\nconst existing\
+          `. Updates on each nightly run._`;\n\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  state: 'open',\n\
+          \  labels: ['ci-health', 'automation'],\n  per_page: 50,\n});\nconst existing\
           \ = issues.find(i => i.body && i.body.includes(MARKER));\nif (existing)\
-        \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
-        \    repo: context.repo.repo,\n    issue_number: existing.number,\n    body,\n\
+          \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    issue_number: existing.number,\n    body,\n\
           \  });\n  core.info(`Updated tracking issue  #${existing.number}`);\n} else\
-        \ {\n  await github.rest.issues.create({\n    owner: context.repo.owner,\n\
-        \    repo: context.repo.repo,\n    title: `\U0001F9F9 Codebase Health: ${process.env.MANUAL}\
-        \ manual-review issues (${date})`,\n    body,\n    labels: ['ci-health',\
+          \ {\n  await github.rest.issues.create({\n    owner: context.repo.owner,\n\
+          \    repo: context.repo.repo,\n    title: `\U0001F9F9 Codebase Health: ${process.env.MANUAL}\
+          \ manual-review issues (${date})`,\n    body,\n    labels: ['ci-health',\
           \ 'automation', 'priority-high'],\n  });\n  core.info('Created new tracking\
           \ issue');\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

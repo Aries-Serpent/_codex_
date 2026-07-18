@@ -1,6 +1,5 @@
----
 name: CODEX Manifest Auto-Refresh
-on:
+true:
   pull_request:
     types:
     - opened
@@ -27,7 +26,8 @@ jobs:
         persist-credentials: false
         ref: ${{ github.head_ref || 'main' }}
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
     - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
         \ main)"
       id: resolve-target
@@ -109,18 +109,28 @@ jobs:
         \ MkDocs Pages build explicitly after the [skip ci] commit.\n  # [skip ci]\
         \ prevents GitHub Actions workflows (including pages-mkdocs.yml) from\n  \
         \  # running on the auto-refresh push, but the branch-mode pages-build-deployment\n\
-        \  # (internal GitHub Pages service) is NOT skipped and would serve raw\
-        \ files \u2192 404.\n  # This explicit workflow_dispatch call bypasses [skip\
-        \ ci] and ensures the MkDocs\n  # site is always rebuilt after a manifest\
-        \ refresh to main.\n    if [ \"${TARGET_REF}\" = \"main\" ]; then\n      echo\
-        \ \"\U0001F504 Triggering pages-mkdocs.yml rebuild to prevent branch-mode\
-        \ 404\u2026\"\n      gh workflow run pages-mkdocs.yml \\\n        --ref main\
-        \ \\\n        --field reason=\"post-manifest-refresh-pages-heal\" 2>/dev/null\
-        \ \\\n        && echo \"\u2705 pages-mkdocs.yml rebuild triggered\" \\\n \
-        \       || echo \"\u26A0\uFE0F  Could not trigger pages-mkdocs.yml (non-fatal;\
-        \ pages-health-guard.yml will self-heal)\"\n\n  # Auto-approve pending runs (manifest sync gate)\n      echo \"⚡ Triggering auto-approve-workflows.yml (manifest sync gate)...\"\n      gh workflow run auto-approve-workflows.yml \\\n        --ref \"${TARGET_REF}\" \\\n        -f approval_source=workflow-execution-gate \\\n        -f approval_intent=auto_approve_action_required \\\n        -f target_pr=\"${{ github.event.pull_request.number }}\" \\\n        -f approval_reason=\"codex-manifest-refresh-passed\" 2>/dev/null \\\n        && echo \"✅ auto-approve-workflows.yml triggered (manifest sync)\" \\\n        || echo \"⚠️  Could not trigger auto-approve-workflows.yml (non-fatal)\"\n    fi\n  fi\nfi\n"
+        \  # (internal GitHub Pages service) is NOT skipped and would serve raw files\
+        \ \u2192 404.\n  # This explicit workflow_dispatch call bypasses [skip ci]\
+        \ and ensures the MkDocs\n  # site is always rebuilt after a manifest refresh\
+        \ to main.\n    if [ \"${TARGET_REF}\" = \"main\" ]; then\n      echo \"\U0001F504\
+        \ Triggering pages-mkdocs.yml rebuild to prevent branch-mode 404\u2026\"\n\
+        \      gh workflow run pages-mkdocs.yml \\\n        --ref main \\\n      \
+        \  --field reason=\"post-manifest-refresh-pages-heal\" 2>/dev/null \\\n  \
+        \      && echo \"\u2705 pages-mkdocs.yml rebuild triggered\" \\\n        ||\
+        \ echo \"\u26A0\uFE0F  Could not trigger pages-mkdocs.yml (non-fatal; pages-health-guard.yml\
+        \ will self-heal)\"\n\n  # Auto-approve pending runs (manifest sync gate)\n\
+        \      echo \"\u26A1 Triggering auto-approve-workflows.yml (manifest sync\
+        \ gate)...\"\n      gh workflow run auto-approve-workflows.yml \\\n      \
+        \  --ref \"${TARGET_REF}\" \\\n        -f approval_source=workflow-execution-gate\
+        \ \\\n        -f approval_intent=auto_approve_action_required \\\n       \
+        \ -f target_pr=\"${{ github.event.pull_request.number }}\" \\\n        -f\
+        \ approval_reason=\"codex-manifest-refresh-passed\" 2>/dev/null \\\n     \
+        \   && echo \"\u2705 auto-approve-workflows.yml triggered (manifest sync)\"\
+        \ \\\n        || echo \"\u26A0\uFE0F  Could not trigger auto-approve-workflows.yml\
+        \ (non-fatal)\"\n    fi\n  fi\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -140,7 +150,8 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -155,3 +166,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

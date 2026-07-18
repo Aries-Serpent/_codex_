@@ -125,6 +125,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   auto-approve-on-compliance:
     name: "\u26A1 Auto-Approve if Compliance Passed"
     needs: compliance-check

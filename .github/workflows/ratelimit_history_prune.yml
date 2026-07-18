@@ -1,6 +1,5 @@
----
 name: Rate-Limit History Prune
-on:
+true:
   workflow_dispatch: null
   schedule:
   - cron: 0 5 1 * *

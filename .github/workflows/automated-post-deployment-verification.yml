@@ -1,6 +1,5 @@
----
 name: Automated Post-Deployment Verification
-on:
+true:
   workflow_dispatch:
     inputs:
       environment:
@@ -39,8 +38,9 @@ jobs:
       checklist_file: ${{ steps.setup.outputs.checklist_file }}
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Validate Inputs
       id: setup
       env:
@@ -56,7 +56,7 @@ jobs:
         \n    ;;\n  production)\n    CHECKLIST=\".codex/verification-checklists/VERIFICATION_CHECKLIST_PRODUCTION.md\"\
         \n    ;;\nesac\n\necho \"environment=$ENVIRONMENT\" >> $GITHUB_OUTPUT\necho\
         \ \"service_url=$SERVICE_URL\" >> $GITHUB_OUTPUT\necho \"checklist_file=$CHECKLIST\"\
-        \ >> $GITHUB_OUTPUT\necho \"✓ Inputs validated successfully\"\n"
+        \ >> $GITHUB_OUTPUT\necho \"\u2713 Inputs validated successfully\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -75,14 +75,16 @@ jobs:
       run: "SERVICE_URL=\"${{ needs.setup.outputs.service_url }}\"\nMAX_RETRIES=5\n\
         RETRY_DELAY=10\n\necho \"Checking service accessibility at $SERVICE_URL...\"\
         \n\nfor i in $(seq 1 $MAX_RETRIES); do\n  if curl -s -o /dev/null -w \"%{http_code}\"\
-        \ \"$SERVICE_URL\" | grep -q \"200\\|301\\|302\"; then\n    echo \"✓ Service\
-        \ is accessible\"\n    echo \"accessible=true\" >> $GITHUB_OUTPUT\n    exit\
-        \ 0\n  fi\n  echo \"Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_DELAY}s...\"\
-        \n  sleep $RETRY_DELAY\ndone\n\necho \"✗ Service is not accessible after $MAX_RETRIES\
-        \ attempts\"\necho \"accessible=false\" >> $GITHUB_OUTPUT\nexit 1\n"
+        \ \"$SERVICE_URL\" | grep -q \"200\\|301\\|302\"; then\n    echo \"\u2713\
+        \ Service is accessible\"\n    echo \"accessible=true\" >> $GITHUB_OUTPUT\n\
+        \    exit 0\n  fi\n  echo \"Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_DELAY}s...\"\
+        \n  sleep $RETRY_DELAY\ndone\n\necho \"\u2717 Service is not accessible after\
+        \ $MAX_RETRIES attempts\"\necho \"accessible=false\" >> $GITHUB_OUTPUT\nexit\
+        \ 1\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   health-checks:
     runs-on: ubuntu-latest
     needs: setup
@@ -97,7 +99,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Run Health Checks
       id: health
       env:
@@ -110,18 +112,18 @@ jobs:
         \n# Parse health results\nif [ -f \"$OUTPUT_DIR/health_latest.json\" ]; then\n\
         \  OVERALL=$(python3 -c \"import json; d=json.load(open('$OUTPUT_DIR/health_latest.json'));\
         \ print(d.get('overall_status', 'unknown'))\")\n  echo \"health_status=$OVERALL\"\
-        \ >> $GITHUB_OUTPUT\n  echo \"✓ Health checks completed: $OVERALL\"\nelse\n\
-        \  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"⚠ Health check\
-        \ results not available\"\nfi\n"
+        \ >> $GITHUB_OUTPUT\n  echo \"\u2713 Health checks completed: $OVERALL\"\n\
+        else\n  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"\u26A0\
+        \ Health check results not available\"\nfi\n"
     - name: Cache test results (Layer 3)
-      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
       if: always()
       with:
         path: .pytest_cache/
         key: ${{ runner.os }}-pytest-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-pytest-
+        restore-keys: '${{ runner.os }}-pytest-
 
+          '
     - name: Upload Health Report
       uses: actions/upload-artifact@v5
       with:
@@ -131,6 +133,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   smoke-tests:
     runs-on: ubuntu-latest
     needs: setup
@@ -145,7 +148,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Run Smoke Tests
       id: smoke
       continue-on-error: true
@@ -159,7 +162,7 @@ jobs:
         \ || echo \"Pytest not available, using direct invocation\"\n\n# Always generate\
         \ a basic report\necho \"{\\\"status\\\": \\\"passed\\\", \\\"tests_count\\\
         \": 15, \\\"passed\\\": 15, \\\"failed\\\": 0}\" > ${{ env.VERIFICATION_DIR\
-        \ }}/smoke_summary.json\necho \"✓ Smoke tests completed\"\necho \"smoke_status=passed\"\
+        \ }}/smoke_summary.json\necho \"\u2713 Smoke tests completed\"\necho \"smoke_status=passed\"\
         \ >> $GITHUB_OUTPUT\n"
     - name: Upload Smoke Test Results
       uses: actions/upload-artifact@v5
@@ -170,6 +173,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   critical-path-tests:
     runs-on: ubuntu-latest
     needs: setup
@@ -184,7 +188,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Run Critical Path Tests
       id: critical
       continue-on-error: true
@@ -194,7 +198,7 @@ jobs:
         \ -m pytest tests/e2e/critical_path_tests.py \\\n  -v --tb=short 2>/dev/null\
         \ || echo \"Pytest not available\"\n\n# Generate report\necho \"{\\\"status\\\
         \": \\\"passed\\\", \\\"paths_tested\\\": 6, \\\"all_passed\\\": true}\" >\
-        \ ${{ env.VERIFICATION_DIR }}/critical_paths_report.json\necho \"✓ Critical\
+        \ ${{ env.VERIFICATION_DIR }}/critical_paths_report.json\necho \"\u2713 Critical\
         \ path tests completed\"\necho \"critical_status=passed\" >> $GITHUB_OUTPUT\n"
     - name: Upload Critical Path Results
       uses: actions/upload-artifact@v5
@@ -205,6 +209,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   generate-report:
     runs-on: ubuntu-latest
     needs:
@@ -231,8 +236,8 @@ jobs:
         \ Verification Report\n\n**Generated:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')\n\
         **Environment:** ${{ needs.setup.outputs.environment }}\n**Service URL:**\
         \ ${{ needs.setup.outputs.service_url }}\n\n## Summary\n\n| Check | Status\
-        \ |\n|-------|--------|\n| Service Accessibility | ✅ |\n| Health Checks |\
-        \ ${{ needs.health-checks.outputs.health_status }} |\n| Smoke Tests | ${{\
+        \ |\n|-------|--------|\n| Service Accessibility | \u2705 |\n| Health Checks\
+        \ | ${{ needs.health-checks.outputs.health_status }} |\n| Smoke Tests | ${{\
         \ needs.smoke-tests.outputs.smoke_status }} |\n| Critical Paths | ${{ needs.critical-path-tests.outputs.critical_status\
         \ }} |\n\n## Environment-Specific Checklist\n\n- Verification checklist: ${{\
         \ needs.setup.outputs.checklist_file }}\n\n## Recommendations\n\nEOF\n\n#\
@@ -245,8 +250,8 @@ jobs:
         \  production)\n    echo \"- All checks must pass before production deployment\"\
         \ >> \"$REPORT_FILE\"\n    echo \"- Security review required before merge\"\
         \ >> \"$REPORT_FILE\"\n    echo \"- On-call team must be briefed\" >> \"$REPORT_FILE\"\
-        \n    ;;\nesac\n\necho \"✓ Report generated: $REPORT_FILE\"\necho \"report_file=$REPORT_FILE\"\
-        \ >> $GITHUB_OUTPUT\n"
+        \n    ;;\nesac\n\necho \"\u2713 Report generated: $REPORT_FILE\"\necho \"\
+        report_file=$REPORT_FILE\" >> $GITHUB_OUTPUT\n"
     - name: Upload Verification Report
       uses: actions/upload-artifact@v5
       with:
@@ -259,8 +264,8 @@ jobs:
       with:
         script: "const fs = require('fs');\nconst reportFile = '${{ steps.report.outputs.report_file\
           \ }}';\n\nif (fs.existsSync(reportFile)) {\n  const report = fs.readFileSync(reportFile,\
-        \ 'utf8');\n  github.rest.issues.createComment({\n    issue_number: context.issue.number,\n\
-        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    body:\
+          \ 'utf8');\n  github.rest.issues.createComment({\n    issue_number: context.issue.number,\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    body:\
           \ report\n  });\n}\n"
     - name: Determine Go/No-Go Decision
       id: decision
@@ -268,12 +273,13 @@ jobs:
         \ }}\" != \"healthy\" ]]; then\n  DECISION=\"NO-GO\"\nfi\n\nif [[ \"${{ needs.smoke-tests.outputs.smoke_status\
         \ }}\" != \"passed\" ]]; then\n  DECISION=\"NO-GO\"\nfi\n\nif [[ \"${{ needs.critical-path-tests.outputs.critical_status\
         \ }}\" != \"passed\" ]]; then\n  DECISION=\"NO-GO\"\nfi\n\necho \"decision=$DECISION\"\
-        \ >> $GITHUB_OUTPUT\n\nif [[ \"$DECISION\" == \"GO\" ]]; then\n  echo \"✅\
-        \ DECISION: GO - All verifications passed\"\nelse\n  echo \"❌ DECISION: NO-GO\
-        \ - Review failures above\"\nfi\n"
+        \ >> $GITHUB_OUTPUT\n\nif [[ \"$DECISION\" == \"GO\" ]]; then\n  echo \"\u2705\
+        \ DECISION: GO - All verifications passed\"\nelse\n  echo \"\u274C DECISION:\
+        \ NO-GO - Review failures above\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   slack-notification:
     runs-on: ubuntu-latest
     needs:
@@ -282,24 +288,25 @@ jobs:
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
     - name: Send Slack Notification
-      uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2  # v1.24.0
+      uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
       with:
         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
         payload: "{\n  \"text\": \"Post-Deployment Verification Results\",\n  \"blocks\"\
-        : [\n    {\n      \"type\": \"header\",\n      \"text\": {\n        \"type\"\
-        : \"plain_text\",\n        \"text\": \"Deployment Verification - ${{ needs.setup.outputs.environment\
-        \ }}\"\n      }\n    },\n    {\n      \"type\": \"section\",\n      \"fields\"\
-        : [\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"\
-        *Environment:*\\n${{ needs.setup.outputs.environment }}\"\n        },\n\
-        \        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"*URL:*\\\
+          : [\n    {\n      \"type\": \"header\",\n      \"text\": {\n        \"type\"\
+          : \"plain_text\",\n        \"text\": \"Deployment Verification - ${{ needs.setup.outputs.environment\
+          \ }}\"\n      }\n    },\n    {\n      \"type\": \"section\",\n      \"fields\"\
+          : [\n        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"\
+          *Environment:*\\n${{ needs.setup.outputs.environment }}\"\n        },\n\
+          \        {\n          \"type\": \"mrkdwn\",\n          \"text\": \"*URL:*\\\
           n${{ needs.setup.outputs.service_url }}\"\n        }\n      ]\n    },\n\
-        \    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\"\
-        : \"mrkdwn\",\n        \"text\": \"*Artifacts:*\\nCheck Actions tab for\
+          \    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\"\
+          : \"mrkdwn\",\n        \"text\": \"*Artifacts:*\\nCheck Actions tab for\
           \ detailed reports\"\n      }\n    }\n  ]\n}\n"
         if: always()
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   create-issue-on-failure:
     runs-on: ubuntu-latest
     needs:
@@ -310,11 +317,12 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
-        \ context.repo.repo,\n  title: 'Deployment Verification Failed - ${{ github.event.inputs.environment\
-        \ }}',\n  body: 'Post-deployment verification failed. Check workflow run\
-        \ for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{\
-        \ github.run_id }}',\n  labels: ['deployment', 'verification-failed']\n\
+          \ context.repo.repo,\n  title: 'Deployment Verification Failed - ${{ github.event.inputs.environment\
+          \ }}',\n  body: 'Post-deployment verification failed. Check workflow run\
+          \ for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{\
+          \ github.run_id }}',\n  labels: ['deployment', 'verification-failed']\n\
           });\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

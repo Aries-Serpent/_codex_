@@ -1,6 +1,5 @@
----
-name: 💰 PR Cost Check
-on:
+name: "\U0001F4B0 PR Cost Check"
+true:
   pull_request:
     branches:
     - main
@@ -18,15 +17,15 @@ permissions:
   statuses: write
 jobs:
   cost-check:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: 💰 PR Cost Check
+    name: "\U0001F4B0 PR Cost Check"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -44,9 +43,11 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_BODY: ${{ github.event.pull_request.body }}
-      run: |
-        set -euo pipefail
+      run: 'set -euo pipefail
+
         # Run the cost estimator in summary mode (all gated\
+
+        '
     - name: Post cost summary comment
       if: always()
       uses: actions/github-script@v8
@@ -55,23 +56,23 @@ jobs:
         script: "const summary  = process.env.COST_SUMMARY  || '';\nconst status \
           \  = process.env.COST_STATUS   || 'green';\nconst redCount = parseInt(process.env.COST_RED_COUNT\
           \ || '0');\n\nconst MARKER = '<!-- cost-check-bot -->';\nconst body = `${MARKER}\\\
-        n${summary}\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
-          \n// Retry loop — handles transient races when two cost-check jobs\n// run\
-          \ in parallel and both attempt to create the comment.\nfor (let attempt\
+          n${summary}\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+          \n// Retry loop \u2014 handles transient races when two cost-check jobs\n\
+          // run in parallel and both attempt to create the comment.\nfor (let attempt\
           \ = 0; attempt <= 3; attempt++) {\n  try {\n    // Paginate through all\
           \ comments to find the marker, regardless of\n    // comment count (PRs\
           \ with >100 comments would miss older marker comments).\n    let existing\
-        \ = null;\n    let page = 1;\n    while (!existing) {\n      const { data:\
-        \ batch } = await github.rest.issues.listComments({\n        owner: context.repo.owner,\n\
-        \        repo: context.repo.repo,\n        issue_number: context.issue.number,\n\
-        \        per_page: 100,\n        page,\n      });\n      existing = batch.find(c\
+          \ = null;\n    let page = 1;\n    while (!existing) {\n      const { data:\
+          \ batch } = await github.rest.issues.listComments({\n        owner: context.repo.owner,\n\
+          \        repo: context.repo.repo,\n        issue_number: context.issue.number,\n\
+          \        per_page: 100,\n        page,\n      });\n      existing = batch.find(c\
           \ => c.body && c.body.includes(MARKER)) || null;\n      if (batch.length\
           \ < 100) break;\n      page++;\n    }\n\n    if (existing) {\n      await\
-        \ github.rest.issues.updateComment({\n        owner: context.repo.owner,\n\
-        \        repo: context.repo.repo,\n        comment_id: existing.id,\n  \
+          \ github.rest.issues.updateComment({\n        owner: context.repo.owner,\n\
+          \        repo: context.repo.repo,\n        comment_id: existing.id,\n  \
           \      body,\n      });\n    } else {\n      await github.rest.issues.createComment({\n\
-        \        owner: context.repo.owner,\n        repo: context.repo.repo,\n\
-        \        issue_number: context.issue.number,\n        body,\n      });\n\
+          \        owner: context.repo.owner,\n        repo: context.repo.repo,\n\
+          \        issue_number: context.issue.number,\n        body,\n      });\n\
           \    }\n    break; // success\n  } catch (e) {\n    if (attempt === 3) throw\
           \ e;\n    await new Promise(r => setTimeout(r, (attempt + 1) * 2000));\n\
           \  }\n}\n"
@@ -86,32 +87,26 @@ jobs:
           \   norm.includes('- [x] \\u{1F4B0} Cost Proposal Approved') ||\n    norm.includes('-\
           \ [X] \\u{1F4B0} Cost Proposal Approved') ||\n    norm.includes('[x] Cost\
           \ Proposal Approved') ||\n    norm.includes('[X] Cost Proposal Approved')\n\
-        \  );\n}\nconst { data: comments } = await github.rest.issues.listComments({\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+          \  );\n}\nconst { data: comments } = await github.rest.issues.listComments({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
           \ context.issue.number,\n});\nconst found = comments.find(c => hasApproval(c.body));\n\
-          if (found) {\n  console.log(`✅ Approval found in PR comment  #${found.id}`);\n\
+          if (found) {\n  console.log(`\u2705 Approval found in PR comment  #${found.id}`);\n\
           \  core.setOutput('approved_in_comment', 'true');\n} else {\n  core.setOutput('approved_in_comment',\
           \ 'false');\n}\n"
     - name: Enforce approval gate
       if: steps.estimate.outputs.status == 'blocked' && steps.comment_approval.outputs.approved_in_comment
         != 'true'
-      run: 'echo "❌ RED-tier workflows detected but ''💰 Cost Proposal Approved'' checkbox
-        is not ticked."
-
-        echo "Tick the checkbox in the PR description or add a PR comment to unblock
-        this check."
-
-        exit 1
-
-        '
+      run: "echo \"\u274C RED-tier workflows detected but '\U0001F4B0 Cost Proposal\
+        \ Approved' checkbox is not ticked.\"\necho \"Tick the checkbox in the PR\
+        \ description or add a PR comment to unblock this check.\"\nexit 1\n"
     - name: Cost check passed
       if: steps.estimate.outputs.status != 'blocked' || steps.comment_approval.outputs.approved_in_comment
         == 'true'
       run: "STATUS=\"${{ steps.estimate.outputs.status }}\"\nif [ \"$STATUS\" = \"\
-        approved\" ]; then\n  echo \"✅ RED-tier jobs approved by stakeholder.\"\n\
-        elif [ \"${{ steps.comment_approval.outputs.approved_in_comment }}\" = \"\
-        true\" ]; then\n  echo \"✅ RED-tier jobs approved via PR comment.\"\nelse\n\
-        \  echo \"✅ No RED-tier jobs — auto-approved.\"\nfi\n"
+        approved\" ]; then\n  echo \"\u2705 RED-tier jobs approved by stakeholder.\"\
+        \nelif [ \"${{ steps.comment_approval.outputs.approved_in_comment }}\" = \"\
+        true\" ]; then\n  echo \"\u2705 RED-tier jobs approved via PR comment.\"\n\
+        else\n  echo \"\u2705 No RED-tier jobs \u2014 auto-approved.\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -134,7 +129,9 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

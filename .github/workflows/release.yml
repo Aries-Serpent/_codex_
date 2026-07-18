@@ -1,5 +1,5 @@
 name: Release
-on:
+true:
   workflow_dispatch:
     inputs:
       tag:
@@ -41,6 +41,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 15
   generate-sbom:
     name: Generate SBOM
     needs: validate
@@ -48,6 +49,7 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   release:
     name: Create GitHub Release
     needs:
@@ -94,3 +96,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 60

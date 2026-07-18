@@ -1,6 +1,5 @@
----
-name: 📈 OTel Coherence Snapshot
-on:
+name: "\U0001F4C8 OTel Coherence Snapshot"
+true:
   schedule:
   - cron: 0 8 * * 1
   workflow_dispatch:
@@ -81,22 +80,23 @@ jobs:
         \ %H:%M UTC\")\n\ncolor = \"\U0001F7E2\" if score >= 99.7 else (\"\U0001F7E1\
         \" if score >= 80 else \"\U0001F534\")\nc_color = \"\U0001F7E2\" if coherence\
         \ >= 0.9 else (\"\U0001F7E1\" if coherence >= 0.7 else \"\U0001F534\")\n\n\
-        lines = [\n    f\"## \U0001F4C8 OTel Coherence Snapshot — {ts}\",\n    \"\"\
-        ,\n    f\"| Metric | Value | Status |\",\n    f\"|--------|-------|--------|\"\
-        ,\n    f\"| AAIS Composite | **{score:.1f} / 100** ({grade}) | {color} {'≥\
-        \ 99.7 ✅' if score >= 99.7 else '< 99.7 ⚠️'} |\",\n    f\"| Coherence Score\
-        \ | **{coherence:.3f}** | {c_color} {'≥ 0.9 ✅' if coherence >= 0.9 else '<\
-        \ 0.9 ⚠️'} |\",\n    \"\",\n    \"<details>\",\n    \"<summary>\U0001F4CA\
-        \ Sub-dimension breakdown</summary>\",\n    \"\",\n    \"| Sub-dimension |\
-        \ Score | Policy |\",\n    \"|---------------|------:|--------|\",\n]\nfor\
-        \ pillar in data.get(\"pillars\", []):\n    for sd in pillar.get(\"sub_dimensions\"\
-        , []):\n        ok = \"✅\" if sd[\"score\"] >= 80.0 else \"❌\"\n        lines.append(f\"\
-        | {sd['name']} | {sd['score']:.1f} | {ok} |\")\nlines += [\"\", \"</details>\"\
-        , \"\"]\n\nif score < 99.7:\n    lines += [\n        \"> ⚠️ **AAIS regression\
-        \ detected** — score fell below 99.7 threshold.\",\n        \"> Review the\
-        \ sub-dimension breakdown above and apply targeted fixes.\",\n        \"\"\
-        ,\n    ]\n\nmd = \"\\n\".join(lines)\nwith open(\"/tmp/snapshot.md\", \"w\"\
-        ) as f:\n    f.write(md)\nprint(md)\nEOF\n"
+        lines = [\n    f\"## \U0001F4C8 OTel Coherence Snapshot \u2014 {ts}\",\n \
+        \   \"\",\n    f\"| Metric | Value | Status |\",\n    f\"|--------|-------|--------|\"\
+        ,\n    f\"| AAIS Composite | **{score:.1f} / 100** ({grade}) | {color} {'\u2265\
+        \ 99.7 \u2705' if score >= 99.7 else '< 99.7 \u26A0\uFE0F'} |\",\n    f\"\
+        | Coherence Score | **{coherence:.3f}** | {c_color} {'\u2265 0.9 \u2705' if\
+        \ coherence >= 0.9 else '< 0.9 \u26A0\uFE0F'} |\",\n    \"\",\n    \"<details>\"\
+        ,\n    \"<summary>\U0001F4CA Sub-dimension breakdown</summary>\",\n    \"\"\
+        ,\n    \"| Sub-dimension | Score | Policy |\",\n    \"|---------------|------:|--------|\"\
+        ,\n]\nfor pillar in data.get(\"pillars\", []):\n    for sd in pillar.get(\"\
+        sub_dimensions\", []):\n        ok = \"\u2705\" if sd[\"score\"] >= 80.0 else\
+        \ \"\u274C\"\n        lines.append(f\"| {sd['name']} | {sd['score']:.1f} |\
+        \ {ok} |\")\nlines += [\"\", \"</details>\", \"\"]\n\nif score < 99.7:\n \
+        \   lines += [\n        \"> \u26A0\uFE0F **AAIS regression detected** \u2014\
+        \ score fell below 99.7 threshold.\",\n        \"> Review the sub-dimension\
+        \ breakdown above and apply targeted fixes.\",\n        \"\",\n    ]\n\nmd\
+        \ = \"\\n\".join(lines)\nwith open(\"/tmp/snapshot.md\", \"w\") as f:\n  \
+        \  f.write(md)\nprint(md)\nEOF\n"
     - name: Write to step summary
       run: cat /tmp/snapshot.md >> "$GITHUB_STEP_SUMMARY"
     - name: Post to PR dashboard (if PR number provided)
@@ -115,21 +115,22 @@ jobs:
         try:\n    with urllib.request.urlopen(req, timeout=10) as r:\n        prs\
         \ = json.loads(r.read())\n        print(prs[0][\"number\"] if prs else \"\"\
         )\nexcept Exception:\n    print(\"\")\nEOF\n  )\nfi\n\nif [ -z \"${PR_NUMBER}\"\
-        \ ]; then\n  echo \"No open PR found — skipping dashboard post (results written\
-        \ to step summary)\"\n  exit 0\nfi\n\nDETAILS=$(cat /tmp/snapshot.md)\npython\
-        \ scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${PR_NUMBER}\"\
+        \ ]; then\n  echo \"No open PR found \u2014 skipping dashboard post (results\
+        \ written to step summary)\"\n  exit 0\nfi\n\nDETAILS=$(cat /tmp/snapshot.md)\n\
+        python scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${PR_NUMBER}\"\
         \ \\\n  --workflow   \"OTel Coherence Snapshot\" \\\n  --status     \"$(awk\
         \ -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 >= 80.0) ? \"success\"\
         \ : \"warning\"}')\" \\\n  --summary    \"AAIS ${{ steps.aais.outputs.score\
-        \ }}/100 (${{ steps.aais.outputs.grade }}) · Coherence ${{ steps.coherence.outputs.coherence\
+        \ }}/100 (${{ steps.aais.outputs.grade }}) \xB7 Coherence ${{ steps.coherence.outputs.coherence\
         \ }}\" \\\n  --details    \"${DETAILS}\" \\\n  --run-url    \"${{ github.server_url\
         \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"\n"
-    - name: Enforce AAIS ≥ MIN_PASSING_SCORE threshold
+    - name: "Enforce AAIS \u2265 MIN_PASSING_SCORE threshold"
       run: "SCORE=\"${{ steps.aais.outputs.score }}\"\npython - <<EOF\nimport sys\n\
         sys.path.insert(0, \"scripts/ci\")\nfrom aais_v4_scorer import MIN_PASSING_SCORE\
         \ as threshold\nscore = float(\"${SCORE}\")\nif score < threshold:\n    print(f\"\
-        ❌ AAIS regression: {score:.1f} < {threshold} — weekly enforcement FAILED\"\
-        )\n    sys.exit(1)\nelse:\n    print(f\"✅ AAIS {score:.1f}/100 ≥ {threshold}\
-        \ — weekly enforcement PASSED\")\nEOF\n"
+        \u274C AAIS regression: {score:.1f} < {threshold} \u2014 weekly enforcement\
+        \ FAILED\")\n    sys.exit(1)\nelse:\n    print(f\"\u2705 AAIS {score:.1f}/100\
+        \ \u2265 {threshold} \u2014 weekly enforcement PASSED\")\nEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

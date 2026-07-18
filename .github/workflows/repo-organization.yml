@@ -1,6 +1,5 @@
----
 name: Repository Organization & Cleanup
-on:
+true:
   workflow_dispatch:
     inputs:
       action:
@@ -74,3 +73,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

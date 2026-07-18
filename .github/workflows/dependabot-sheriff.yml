@@ -1,6 +1,5 @@
----
 name: DependaBot Sheriff (Automated Consolidation)
-on:
+true:
   workflow_dispatch:
     inputs:
       base_branch:
@@ -40,15 +39,17 @@ jobs:
       issues: read
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: CacheManager health check
@@ -122,17 +123,17 @@ jobs:
           \ return;\n}\n\nconst latestLog = logFiles.sort().reverse()[0];\nconst logPath\
           \ = `.codex/logs/${latestLog}`;\n\n// Read last 50 lines of log\nconst logContent\
           \ = fs.readFileSync(logPath, 'utf8').split('\\n').slice(-50).join('\\n');\n\
-        \n// Create issue comment\nawait github.rest.issues.create({\n  owner: context.repo.owner,\n\
-        \  repo: context.repo.repo,\n  title: '\U0001F6A8 DependaBot Sheriff Failed',\n\
-        \  body: `## DependaBot Sheriff Consolidation Failed\n\n  **Workflow Run:**\
+          \n// Create issue comment\nawait github.rest.issues.create({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  title: '\U0001F6A8 DependaBot Sheriff Failed',\n\
+          \  body: `## DependaBot Sheriff Consolidation Failed\n\n  **Workflow Run:**\
           \ ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\
-        \  **Triggered by:** @${context.actor}\n  **Date:** ${new Date().toISOString()}\n\
+          \  **Triggered by:** @${context.actor}\n  **Date:** ${new Date().toISOString()}\n\
           \n  ### Error Log (last 50 lines)\n\n  \\`\\`\\`\n  ${logContent}\n  \\\
           `\\`\\`\n\n  ### Next Steps\n\n  1. Review the full log in the workflow\
           \ artifacts\n  2. Check for merge conflicts or failed CI checks\n  3. Run\
-        \ the script manually if needed: \\`./scripts/dependabot_sheriff.sh\\`\n\
-        \  4. See troubleshooting guide: \\`.codex/docs/DEPENDABOT_SHERIFF_GUIDE.md\\\
-        `\n  `,\n  labels: ['dependabot', 'automation', 'bug']\n});\n"
+          \ the script manually if needed: \\`./scripts/dependabot_sheriff.sh\\`\n\
+          \  4. See troubleshooting guide: \\`.codex/docs/DEPENDABOT_SHERIFF_GUIDE.md\\\
+          `\n  `,\n  labels: ['dependabot', 'automation', 'bug']\n});\n"
     - name: Post summary
       if: success()
       uses: actions/github-script@v8
@@ -148,4 +149,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

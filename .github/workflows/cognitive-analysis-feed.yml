@@ -1,6 +1,5 @@
----
 name: Cognitive Analysis & Learning (Unified)
-on:
+true:
   schedule:
   - cron: 0 2 * * *
   workflow_run:
@@ -69,7 +68,8 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: CacheManager health check
@@ -99,23 +99,25 @@ jobs:
       if: steps.evaluate.outputs.complete == 'true'
       run: "git config --local user.email \"github-actions[bot]@users.noreply.github.com\"\
         \ngit config --local user.name \"github-actions[bot]\"\n\nif [[ -n $(git status\
-        \ --porcelain cognitive/) ]]; then\n  # Walk the staging chain: sub-PR → 0D_base_\
-        \ → main  (resolved above)\n  _TARGET=\"${{ steps.resolve-target.outputs.branch\
+        \ --porcelain cognitive/) ]]; then\n  # Walk the staging chain: sub-PR \u2192\
+        \ 0D_base_ \u2192 main  (resolved above)\n  _TARGET=\"${{ steps.resolve-target.outputs.branch\
         \ }}\"\n  echo \"\U0001F500 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason\
         \ }})\"\n  \n  # SECURITY: Validate target branch exists via API (no git fetch/checkout)\n\
         \  if gh api repos/${{ github.repository }}/branches/\"${_TARGET}\" --silent\
-        \ 2>/dev/null; then\n    echo \"✅ Target branch validated via API: $_TARGET\"\
-        \n  else\n    echo \"⚠️ Warning: Target branch not found via API; continuing\
-        \ with git push\"\n  fi\n  \n  # Stage the updated files directly (no git\
-        \ checkout needed)\n  git add cognitive/\n  \n  git commit -m \"\U0001F9E0\
+        \ 2>/dev/null; then\n    echo \"\u2705 Target branch validated via API: $_TARGET\"\
+        \n  else\n    echo \"\u26A0\uFE0F Warning: Target branch not found via API;\
+        \ continuing with git push\"\n  fi\n  \n  # Stage the updated files directly\
+        \ (no git checkout needed)\n  git add cognitive/\n  \n  git commit -m \"\U0001F9E0\
         \ Update cognitive learning outcomes [automated]\n  \n  - Analysis period:\
         \ ${{ inputs.evaluation_mode || 'full' }}\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase --autostash\
-        \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
-        \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Learning updates pushed\
-        \ to $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive learning\"\nfi\n"
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase\
+        \ --autostash --autostash origin \"$_TARGET\" || git pull --ff-only origin\
+        \ \"$_TARGET\"\n  git push origin HEAD:\"$_TARGET\"\n  echo \"\u2705 Learning\
+        \ updates pushed to $_TARGET\"\nelse\n  echo \"\u2139\uFE0F  No changes to\
+        \ cognitive learning\"\nfi\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
     - name: Upload evaluation results
       if: always()
       uses: actions/upload-artifact@v5
@@ -129,7 +131,9 @@ jobs:
         retention-days: 30
         name: aftermath-evaluation-${{ github.run_number }}
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    timeout-minutes: 30
   feed_patterns:
     name: Extract & Feed Patterns
     runs-on: ubuntu-latest
@@ -149,7 +153,8 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
+    - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\
+        \ main)"
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: Set up Python
@@ -176,26 +181,28 @@ jobs:
       run: "git config --local user.email \"github-actions[bot]@users.noreply.github.com\"\
         \ngit config --local user.name \"github-actions[bot]\"\n\nif [[ -n $(git status\
         \ --porcelain .codex/cognitive_brain/workflow_patterns.jsonl .codex/cognitive_brain/metadata.json)\
-        \ ]]; then\n  # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved\
-        \ above)\n  # Route both workflow_patterns.jsonl and metadata.json so that\n\
-        \  # forward-sync-autogen.yml acts only as a safety-net (not primary path).\n\
-        \  _TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\n  echo \"\U0001F500\
-        \ Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})\"\
-        \n  \n  # SECURITY: Validate target branch exists via API (no git fetch)\n\
+        \ ]]; then\n  # Walk the staging chain: sub-PR \u2192 0D_base_ \u2192 main\
+        \  (resolved above)\n  # Route both workflow_patterns.jsonl and metadata.json\
+        \ so that\n  # forward-sync-autogen.yml acts only as a safety-net (not primary\
+        \ path).\n  _TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\n  echo\
+        \ \"\U0001F500 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason\
+        \ }})\"\n  \n  # SECURITY: Validate target branch exists via API (no git fetch)\n\
         \  if gh api repos/${{ github.repository }}/branches/\"${_TARGET}\" --silent\
-        \ 2>/dev/null; then\n    echo \"✅ Target branch validated via API: $_TARGET\"\
-        \n  else\n    echo \"⚠️ Warning: Target branch not found via API; continuing\
-        \ with git push\"\n  fi\n  \n  # Stage the updated files directly (no git\
-        \ checkout needed)\n  git add .codex/cognitive_brain/workflow_patterns.jsonl\
+        \ 2>/dev/null; then\n    echo \"\u2705 Target branch validated via API: $_TARGET\"\
+        \n  else\n    echo \"\u26A0\uFE0F Warning: Target branch not found via API;\
+        \ continuing with git push\"\n  fi\n  \n  # Stage the updated files directly\
+        \ (no git checkout needed)\n  git add .codex/cognitive_brain/workflow_patterns.jsonl\
         \           .codex/cognitive_brain/metadata.json\n  \n  git commit -m \"\U0001F9E0\
         \ Update cognitive brain patterns [automated]\n  \n  - Analysis period: ${{\
         \ inputs.days_back || '30' }} days\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase --autostash\
-        \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
-        \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Cognitive brain updated\
-        \ on $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive brain\"\nfi\n"
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase\
+        \ --autostash --autostash origin \"$_TARGET\" || git pull --ff-only origin\
+        \ \"$_TARGET\"\n  git push origin HEAD:\"$_TARGET\"\n  echo \"\u2705 Cognitive\
+        \ brain updated on $_TARGET\"\nelse\n  echo \"\u2139\uFE0F  No changes to\
+        \ cognitive brain\"\nfi\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
     - name: Upload pattern artifacts
       uses: actions/upload-artifact@v5
       with:
@@ -208,7 +215,9 @@ jobs:
         retention-days: 60
         name: cognitive-patterns-${{ github.run_number }}
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    timeout-minutes: 30
   generate_summary:
     name: Generate Analysis Summary
     runs-on: ubuntu-latest
@@ -256,4 +265,6 @@ jobs:
         \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"$CB_PATTERNS\" >> $GITHUB_STEP_SUMMARY\n\
         fi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    timeout-minutes: 30

@@ -1,60 +1,43 @@
----
 name: Copilot Agent Variables Bootstrap
-
-on:
+true:
   workflow_dispatch:
     inputs:
       environment:
         description: Environment to bootstrap (dev|staging|prod)
         required: true
         default: dev
-
   schedule:
-    # Bootstrap CCA variables weekly
-    - cron: "0 0 * * 0"
-
+  - cron: 0 0 * * 0
 permissions:
   contents: read
   actions: read
-
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
-
 jobs:
   bootstrap:
     name: Bootstrap CCA Variables
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 1
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: pip
-
-      - name: Validate CCA variable configuration
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Verify that all required CCA variables are configured
-          python scripts/ci/validate_copilot_setup_steps.py \
-            --json-output /tmp/bootstrap_validation.json \
-            --repo-root .
-
-      - name: Report bootstrap status
-        if: always()
-        run: |
-          echo "CCA Variables Bootstrap Check"
-          echo "=============================="
-          
-          if [ -f /tmp/bootstrap_validation.json ]; then
-            cat /tmp/bootstrap_validation.json | python -m json.tool 2>/dev/null || true
-          else
-            echo "No validation output found"
-          fi
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+    - name: Validate CCA variable configuration
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "# Verify that all required CCA variables are configured\npython scripts/ci/validate_copilot_setup_steps.py\
+        \ \\\n  --json-output /tmp/bootstrap_validation.json \\\n  --repo-root .\n"
+    - name: Report bootstrap status
+      if: always()
+      run: "echo \"CCA Variables Bootstrap Check\"\necho \"==============================\"\
+        \n\nif [ -f /tmp/bootstrap_validation.json ]; then\n  cat /tmp/bootstrap_validation.json\
+        \ | python -m json.tool 2>/dev/null || true\nelse\n  echo \"No validation\
+        \ output found\"\nfi\n"
+    timeout-minutes: 30

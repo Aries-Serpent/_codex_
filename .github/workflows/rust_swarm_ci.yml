@@ -1,6 +1,5 @@
----
 name: Rust-Python Hybrid Swarm CI/CD
-on:
+true:
   push:
     branches:
     - main
@@ -8,7 +7,7 @@ on:
     - copilot/**
     paths-ignore:
     - docs/**
-    - "**.md"
+    - '**.md'
     - .codex/notes/**
     - .codex/sessions/**
     - .github/copilot-prompts/**
@@ -17,21 +16,21 @@ on:
     - main
     paths-ignore:
     - docs/**
-    - "**.md"
+    - '**.md'
     - .codex/notes/**
     - .codex/sessions/**
     - .github/copilot-prompts/**
 env:
   CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: "1"
-  RUST_TEST_THREADS: "1"
+  RUST_BACKTRACE: '1'
+  RUST_TEST_THREADS: '1'
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 permissions: {}
 jobs:
   cost-gate:
-    name: 💰 Cost Gate
+    name: "\U0001F4B0 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Rust Swarm CI
@@ -39,6 +38,7 @@ jobs:
       timeout_minutes: 60
       matrix_count: 3
       pushes_to_ghcr: false
+    timeout-minutes: 30
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
@@ -47,6 +47,7 @@ jobs:
     timeout-minutes: 60
     needs: cost-gate
     steps:
-      - name: Mask secrets
-        run: |
-          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+    - name: Mask secrets
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '

@@ -1,6 +1,5 @@
----
 name: Test Pyramid Health Report
-on:
+true:
   workflow_dispatch: null
   schedule:
   - cron: 0 3 1 */3 *
@@ -38,7 +37,7 @@ jobs:
         \ = r.get(\"unit_tests\", 0)\nintegration = r.get(\"integration_tests\", 0)\n\
         e2e = r.get(\"e2e_tests\", 0)\nratio = unit / max(integration + e2e, 1)\n\
         print(f\"Unit: {unit}  Integration: {integration}  E2E: {e2e}  Ratio: {ratio:.1f}x\"\
-        )\nif ratio >= 4.0:\n    print(\"::notice::✅ D7 exit criteria  #3: healthy\
+        )\nif ratio >= 4.0:\n    print(\"::notice::\u2705 D7 exit criteria  #3: healthy\
         \ pyramid ratio >= 4x\")\nelse:\n    print(f\"::warning::D7 pyramid ratio\
         \ {ratio:.1f}x below 4x target\")\nPYEOF\n"
     env:

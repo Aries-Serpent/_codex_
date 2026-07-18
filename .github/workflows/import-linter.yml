@@ -1,6 +1,5 @@
----
 name: Import Linter
-on:
+true:
   pull_request:
     branches:
     - main
@@ -24,23 +23,24 @@ permissions:
   pull-requests: write
 jobs:
   lint-imports:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: 🔗 Import Layer Boundary Check
+    name: "\U0001F517 Import Layer Boundary Check"
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-          cache: pip
-      - name: Install import-linter
-        run: 'pip install import-linter --quiet
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install import-linter
+      run: 'pip install import-linter --quiet
 
         '
-      - name: Run import-linter
-        run: lint-imports
-        env:
-          GH_TOKEN: "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
+    - name: Run import-linter
+      run: lint-imports
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+    timeout-minutes: 15

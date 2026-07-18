@@ -1,6 +1,5 @@
----
 name: Validate API Null-Handling
-on:
+true:
   pull_request:
     paths:
     - src/scripts/ci/**
@@ -41,8 +40,9 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -99,11 +99,11 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const violations = ${{ steps.safety-check.outputs.violation-count\
-        \ }};\nconst comment = `## API Null-Handling Validation Report\n\nStatus:\
+          \ }};\nconst comment = `## API Null-Handling Validation Report\n\nStatus:\
           \ Warnings Found (Non-blocking for PRs)\n\nFound ${violations} potential\
-        \ unsafe API null-handling pattern(s).\n\nUse auto-fix: python scripts/ci/validate_api_null_handling.py\
-        \ --fix`;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
+          \ unsafe API null-handling pattern(s).\n\nUse auto-fix: python scripts/ci/validate_api_null_handling.py\
+          \ --fix`;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
           });\n"
     - name: Fail workflow on strict mode violations
       if: steps.outcome.outputs.mode == 'strict' && steps.safety-check.outputs.found-violations
@@ -144,4 +144,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

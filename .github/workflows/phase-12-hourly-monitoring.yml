@@ -1,5 +1,5 @@
 name: Phase 12 Post-Release Monitoring - Hourly Checkpoint
-on:
+true:
   schedule:
   - cron: 5 * * * *
   workflow_dispatch: null
@@ -66,6 +66,7 @@ jobs:
           \ || 1,\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body:\
           \ `## \U0001F4CA Phase 12 Checkpoint Update\\n\\n${lastCheckpoint}\\n\\\
           n*Last updated: ${new Date().toISOString()}*`\n});\n"
+    timeout-minutes: 15
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

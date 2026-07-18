@@ -1,5 +1,5 @@
 name: Post-Merge Management Suite
-on:
+true:
   push:
     branches:
     - main

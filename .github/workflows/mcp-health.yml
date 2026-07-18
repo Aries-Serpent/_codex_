@@ -1,6 +1,5 @@
----
 name: MCP Health & Metrics Gate
-on:
+true:
   pull_request:
     branches:
     - main
@@ -18,7 +17,7 @@ on:
         required: false
         default: '500'
       error-rate-threshold:
-        description: Max MCP error rate as decimal 0–1 (default 0.05)
+        description: "Max MCP error rate as decimal 0\u20131 (default 0.05)"
         required: false
         default: '0.05'
 env:
@@ -33,9 +32,8 @@ permissions:
   pull-requests: write
 jobs:
   mcp-metrics-gate:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: 📊 MCP Metrics Threshold Gate
+    name: "\U0001F4CA MCP Metrics Threshold Gate"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -50,108 +48,56 @@ jobs:
         install-editable: 'true'
         verify: 'false'
     - name: Verify MCP metrics module importable
-      run: |
-        python - << 'PYEOF'
-        import sys
-        sys.path.insert(0, "src")
-        try:
-          from mcp.core.metrics import MetricsCollector
-          print("✅ MCP metrics module imported successfully")
-          exit(0)
-        except ImportError as e:
-          print(f"❌ Failed to import MCP metrics: {e}")
-          exit(1)
-        PYEOF
+      run: "python - << 'PYEOF'\nimport sys\nsys.path.insert(0, \"src\")\ntry:\n \
+        \ from mcp.core.metrics import MetricsCollector\n  print(\"\u2705 MCP metrics\
+        \ module imported successfully\")\n  exit(0)\nexcept ImportError as e:\n \
+        \ print(f\"\u274C Failed to import MCP metrics: {e}\")\n  exit(1)\nPYEOF\n"
     - name: Seed synthetic metrics and validate thresholds (IMP-015)
       env:
         LATENCY_THRESHOLD: ${{ env.MCP_LATENCY_THRESHOLD_MS }}
         ERROR_RATE_THRESHOLD: ${{ env.MCP_ERROR_RATE_THRESHOLD }}
-      run: |
-        python - << 'PYEOF'
-        import sys, os, json
-        sys.path.insert(0, "src")
-        from mcp.core.metrics import MetricsCollector
-        
-        # Initialize metrics collector
-        mc = MetricsCollector()
-        
-        # Validate thresholds
-        latency_threshold = float(os.environ.get("LATENCY_THRESHOLD", "500"))
-        error_rate_threshold = float(os.environ.get("ERROR_RATE_THRESHOLD", "0.05"))
-        
-        # Seed synthetic metrics
-        mc.record_latency(350, target="mcp-primary")
-        mc.record_latency(420, target="mcp-secondary")
-        mc.record_error(False, target="mcp-primary")
-        
-        # Get metrics and validate
-        metrics = mc.get_metrics()
-        avg_latency = metrics.get("avg_latency", 0)
-        error_rate = metrics.get("error_rate", 0)
-        
-        if avg_latency <= latency_threshold and error_rate <= error_rate_threshold:
-          print(f"✅ Metrics within thresholds: latency={avg_latency}ms, error_rate={error_rate}")
-          exit(0)
-        else:
-          print(f"❌ Metrics exceed thresholds: latency={avg_latency}ms (max={latency_threshold}ms), error_rate={error_rate} (max={error_rate_threshold})")
-          exit(1)
-        PYEOF
+      run: "python - << 'PYEOF'\nimport sys, os, json\nsys.path.insert(0, \"src\"\
+        )\nfrom mcp.core.metrics import MetricsCollector\n\n# Initialize metrics collector\n\
+        mc = MetricsCollector()\n\n# Validate thresholds\nlatency_threshold = float(os.environ.get(\"\
+        LATENCY_THRESHOLD\", \"500\"))\nerror_rate_threshold = float(os.environ.get(\"\
+        ERROR_RATE_THRESHOLD\", \"0.05\"))\n\n# Seed synthetic metrics\nmc.record_latency(350,\
+        \ target=\"mcp-primary\")\nmc.record_latency(420, target=\"mcp-secondary\"\
+        )\nmc.record_error(False, target=\"mcp-primary\")\n\n# Get metrics and validate\n\
+        metrics = mc.get_metrics()\navg_latency = metrics.get(\"avg_latency\", 0)\n\
+        error_rate = metrics.get(\"error_rate\", 0)\n\nif avg_latency <= latency_threshold\
+        \ and error_rate <= error_rate_threshold:\n  print(f\"\u2705 Metrics within\
+        \ thresholds: latency={avg_latency}ms, error_rate={error_rate}\")\n  exit(0)\n\
+        else:\n  print(f\"\u274C Metrics exceed thresholds: latency={avg_latency}ms\
+        \ (max={latency_threshold}ms), error_rate={error_rate} (max={error_rate_threshold})\"\
+        )\n  exit(1)\nPYEOF\n"
     - name: Validate multi-target MCP config (IMP-014)
-      run: |
-        python - << 'PYEOF'
-        import json, sys
-        from pathlib import Path
-        
-        config_path = Path(".copilot-space/mcp.example.json")
-        if not config_path.exists():
-          print(f"⚠️  Config file not found: {config_path}")
-          exit(0)
-        
-        try:
-          with open(config_path) as f:
-            config = json.load(f)
-          
-          # Validate multi-target config structure
-          if "targets" in config and isinstance(config["targets"], list):
-            if len(config["targets"]) > 1:
-              print(f"✅ Multi-target MCP config valid: {len(config['targets'])} targets found")
-              exit(0)
-            else:
-              print("⚠️  Single target MCP config (expected multi-target)")
-              exit(0)
-          else:
-            print("✅ MCP config structure validated")
-            exit(0)
-        except Exception as e:
-          print(f"❌ Failed to validate MCP config: {e}")
-          exit(1)
-        PYEOF
+      run: "python - << 'PYEOF'\nimport json, sys\nfrom pathlib import Path\n\nconfig_path\
+        \ = Path(\".copilot-space/mcp.example.json\")\nif not config_path.exists():\n\
+        \  print(f\"\u26A0\uFE0F  Config file not found: {config_path}\")\n  exit(0)\n\
+        \ntry:\n  with open(config_path) as f:\n    config = json.load(f)\n  \n  #\
+        \ Validate multi-target config structure\n  if \"targets\" in config and isinstance(config[\"\
+        targets\"], list):\n    if len(config[\"targets\"]) > 1:\n      print(f\"\u2705\
+        \ Multi-target MCP config valid: {len(config['targets'])} targets found\"\
+        )\n      exit(0)\n    else:\n      print(\"\u26A0\uFE0F  Single target MCP\
+        \ config (expected multi-target)\")\n      exit(0)\n  else:\n    print(\"\u2705\
+        \ MCP config structure validated\")\n    exit(0)\nexcept Exception as e:\n\
+        \  print(f\"\u274C Failed to validate MCP config: {e}\")\n  exit(1)\nPYEOF\n"
     - name: Post gate summary
       if: always()
-      run: 'echo "## 📊 MCP Health & Metrics Gate" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Check | Status |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Module import | ✅ |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Latency threshold (≤${MCP_LATENCY_THRESHOLD_MS}ms avg) | ✅ |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Error rate threshold (≤${MCP_ERROR_RATE_THRESHOLD}) | ✅ |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Multi-target config | ✅ |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "_IMP-014 + IMP-015 | mcp-health.yml_" >> "$GITHUB_STEP_SUMMARY"
-
-        '
+      run: "echo \"## \U0001F4CA MCP Health & Metrics Gate\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Check | Status |\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"|-------|--------|\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| Module import | \u2705 |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\
+        | Latency threshold (\u2264${MCP_LATENCY_THRESHOLD_MS}ms avg) | \u2705 |\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Error rate threshold (\u2264${MCP_ERROR_RATE_THRESHOLD})\
+        \ | \u2705 |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Multi-target config |\
+        \ \u2705 |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"_IMP-014 + IMP-015 | mcp-health.yml_\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -171,16 +117,20 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         RUN_ID: ${{ github.run_id }}
         WORKFLOW_NAME: MCP Health & Metrics Gate
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

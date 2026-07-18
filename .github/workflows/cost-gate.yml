@@ -1,6 +1,5 @@
----
 name: "\U0001F4B0 Cost Gate"
-on:
+true:
   workflow_call:
     inputs:
       workflow_name:
@@ -46,12 +45,11 @@ permissions:
   pull-requests: write
 jobs:
   estimate:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
     env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 5
     outputs:
       tier: ${{ steps.estimate.outputs.tier }}
@@ -60,8 +58,9 @@ jobs:
       proposal_md: ${{ steps.proposal.outputs.proposal_md }}
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -69,7 +68,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
-        cache: 'pip'
+        cache: pip
     - name: Estimate cost
       id: estimate
       run: "GHCR_FLAG=\"\"\nif [ \"${{ inputs.pushes_to_ghcr }}\" = \"true\" ]; then\n\
@@ -291,3 +290,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

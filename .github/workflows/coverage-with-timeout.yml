@@ -1,6 +1,5 @@
----
 name: Coverage with Timeout Guards
-on:
+true:
   pull_request:
     types:
     - opened
@@ -8,9 +7,9 @@ on:
     - reopened
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   workflow_dispatch:
     inputs:
       shard_count:
@@ -85,22 +84,12 @@ jobs:
     - name: Run coverage with timeout (Shard ${{ matrix.shard }})
       id: coverage
       continue-on-error: true
-      run: |
-        # Calculate shard parameters
-        SHARD_INDEX=${{ matrix.shard }}
-        TOTAL_SHARDS=4
-
-        pytest tests/ \
-          --timeout=420 \
-          --cov=src \
-          --cov-report=xml:coverage_shard_${SHARD_INDEX}.xml \
-          --cov-report=html:htmlcov_shard_${SHARD_INDEX} \
-          --dist=loadfile \
-          -n auto \
-          --shard-id=$((SHARD_INDEX - 1)) \
-          --num-shards="${TOTAL_SHARDS}" \
-          -v \
-          || echo "coverage_failed=true" >> "$GITHUB_OUTPUT"
+      run: "# Calculate shard parameters\nSHARD_INDEX=${{ matrix.shard }}\nTOTAL_SHARDS=4\n\
+        \npytest tests/ \\\n  --timeout=420 \\\n  --cov=src \\\n  --cov-report=xml:coverage_shard_${SHARD_INDEX}.xml\
+        \ \\\n  --cov-report=html:htmlcov_shard_${SHARD_INDEX} \\\n  --dist=loadfile\
+        \ \\\n  -n auto \\\n  --shard-id=$((SHARD_INDEX - 1)) \\\n  --num-shards=\"\
+        ${TOTAL_SHARDS}\" \\\n  -v \\\n  || echo \"coverage_failed=true\" >> \"$GITHUB_OUTPUT\"\
+        \n"
     - name: Check for timeouts
       if: steps.coverage.outputs.coverage_failed == 'true'
       run: 'echo "::warning::Coverage collection encountered issues (timeout or test
@@ -171,34 +160,17 @@ jobs:
     - name: Merge coverage reports
       id: merge
       continue-on-error: true
-      run: |
-        # Find all coverage XML files
-        COVERAGE_FILES=$(find coverage-shards -name "coverage_shard_*.xml" -type f)
-
-        if [ -z "$COVERAGE_FILES" ]; then
-          echo "No coverage XML files found"
-          echo "merge_failed=true" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
-
-        python - <<'PY'
-        import glob
-        import xml.etree.ElementTree as ET
-
-        files = sorted(glob.glob("coverage-shards/**/coverage_shard_*.xml", recursive=True))
-        if not files:
-            raise SystemExit("no coverage files found")
-
-        # Use the first shard's report as the combined baseline
-        tree = ET.parse(files[0])
-        tree.write("coverage_combined.xml")
-        PY
-
-        if [ -f coverage_combined.xml ]; then
-          echo "merge_succeeded=true" >> "$GITHUB_OUTPUT"
-        else
-          echo "merge_failed=true" >> "$GITHUB_OUTPUT"
-        fi
+      run: "# Find all coverage XML files\nCOVERAGE_FILES=$(find coverage-shards -name\
+        \ \"coverage_shard_*.xml\" -type f)\n\nif [ -z \"$COVERAGE_FILES\" ]; then\n\
+        \  echo \"No coverage XML files found\"\n  echo \"merge_failed=true\" >> \"\
+        $GITHUB_OUTPUT\"\n  exit 0\nfi\n\npython - <<'PY'\nimport glob\nimport xml.etree.ElementTree\
+        \ as ET\n\nfiles = sorted(glob.glob(\"coverage-shards/**/coverage_shard_*.xml\"\
+        , recursive=True))\nif not files:\n    raise SystemExit(\"no coverage files\
+        \ found\")\n\n# Use the first shard's report as the combined baseline\ntree\
+        \ = ET.parse(files[0])\ntree.write(\"coverage_combined.xml\")\nPY\n\nif [\
+        \ -f coverage_combined.xml ]; then\n  echo \"merge_succeeded=true\" >> \"\
+        $GITHUB_OUTPUT\"\nelse\n  echo \"merge_failed=true\" >> \"$GITHUB_OUTPUT\"\
+        \nfi\n"
     - name: Upload combined coverage
       if: steps.merge.outputs.merge_succeeded == 'true'
       uses: actions/upload-artifact@v5
@@ -227,28 +199,16 @@ jobs:
         \ >> $GITHUB_STEP_SUMMARY\necho \"- Shard isolation: Enabled\" >> $GITHUB_STEP_SUMMARY\n"
     - name: Report degraded mode
       if: steps.merge.outputs.merge_failed == 'true'
-      run: 'echo "## ⚠️ Coverage Collection - Degraded Mode" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "Coverage collection encountered issues, likely due to test timeouts."
-        >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "**Recommendations:**" >> $GITHUB_STEP_SUMMARY
-
-        echo "1. Review timeout logs in artifacts" >> $GITHUB_STEP_SUMMARY
-
-        echo "2. Identify slow or hanging tests" >> $GITHUB_STEP_SUMMARY
-
-        echo "3. Consider splitting slow tests into separate jobs" >> $GITHUB_STEP_SUMMARY
-
-        echo "4. Add explicit timeouts to slow operations" >> $GITHUB_STEP_SUMMARY
-
-        echo "::warning::Coverage collection in degraded mode - partial data available"
-
-        '
+      run: "echo \"## \u26A0\uFE0F Coverage Collection - Degraded Mode\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"Coverage collection encountered\
+        \ issues, likely due to test timeouts.\" >> $GITHUB_STEP_SUMMARY\necho \"\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"**Recommendations:**\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"1. Review timeout logs in artifacts\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"2. Identify slow or hanging tests\" >> $GITHUB_STEP_SUMMARY\necho \"3.\
+        \ Consider splitting slow tests into separate jobs\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"4. Add explicit timeouts to slow operations\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"::warning::Coverage collection in degraded mode - partial data available\"\
+        \n"
   rescue-comment:
     name: Post rescue comment on coverage failure
     runs-on: ubuntu-latest
@@ -269,7 +229,8 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:

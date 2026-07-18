@@ -1,21 +1,21 @@
 name: "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)"
-on:
+true:
   push:
     branches:
     - main
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request:
     branches:
     - main
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   workflow_dispatch:
     inputs:
       approval_duration:
@@ -60,6 +60,7 @@ jobs:
       timeout_minutes: 45
       matrix_count: 1
       pushes_to_ghcr: true
+    timeout-minutes: 30
   approval-check:
     needs: cost-gate
     name: "Owner approval \u2014 check-only gate"
@@ -307,3 +308,4 @@ jobs:
       run: python scripts/ci/post_rescue_comment.py
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30

@@ -1,5 +1,5 @@
 name: Security Scanning Suite
-on:
+true:
   schedule:
   - cron: 0 3 * * *
   - cron: 0 15 * * 0
@@ -22,9 +22,9 @@ on:
     - develop
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   pull_request:
     types:
     - opened
@@ -32,9 +32,9 @@ on:
     - reopened
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
 jobs:
   codeql-fetch:
     if: github.event.inputs.operation == 'codeql-fetch' || github.event.inputs.operation

@@ -1,4 +1,3 @@
----
 name: Unified Governance Check
 'on':
   pull_request:
@@ -26,8 +25,9 @@ jobs:
       checks: write
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -37,7 +37,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
-        cache: 'pip'
+        cache: pip
     - name: Install dependencies
       run: 'python -m pip install --quiet --upgrade pip
 
@@ -63,13 +63,13 @@ jobs:
         \  # Create summary\n    summary = f\"## Compliance Report\\n\\n\"\n    summary\
         \ += f\"**Status:** {status}\\n\"\n    summary += f\"**Score:** {score:.1f}/100\\\
         n\\n\"\n\n    summary += \"### Validators\\n\"\n    for validator in report.get('validators',\
-        \ []):\n        icon = \"✅\" if validator['status'] == \"pass\" else (\"⚠️\"\
-        \ if validator['status'] == \"warn\" else \"❌\")\n        summary += f\"-\
-        \ {icon} **{validator['requirement_id']}:** {validator['reason']}\\n\"\n\n\
-        \    if report.get('next_steps'):\n        summary += \"\\n### Next Steps\\\
-        n\"\n        for step in report['next_steps']:\n            summary += f\"\
-        - {step}\\n\"\n\n    with open(os.environ[\"GITHUB_STEP_SUMMARY\"], \"a\"\
-        , encoding=\"utf-8\") as f:\n        f.write(summary)\n\nexcept Exception\
+        \ []):\n        icon = \"\u2705\" if validator['status'] == \"pass\" else\
+        \ (\"\u26A0\uFE0F\" if validator['status'] == \"warn\" else \"\u274C\")\n\
+        \        summary += f\"- {icon} **{validator['requirement_id']}:** {validator['reason']}\\\
+        n\"\n\n    if report.get('next_steps'):\n        summary += \"\\n### Next\
+        \ Steps\\n\"\n        for step in report['next_steps']:\n            summary\
+        \ += f\"- {step}\\n\"\n\n    with open(os.environ[\"GITHUB_STEP_SUMMARY\"\
+        ], \"a\", encoding=\"utf-8\") as f:\n        f.write(summary)\n\nexcept Exception\
         \ as e:\n    print(\n        f\"Error parsing compliance report from .codex/compliance/report.json:\
         \ {e}\",\n        file=sys.stderr,\n    )\n    sys.exit(1)\n"
       shell: python
@@ -80,46 +80,47 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/compliance/report.json',\
-        \ 'utf8'));\n} catch (e) {\n  console.error('Failed to parse report:', e);\n\
+          \ 'utf8'));\n} catch (e) {\n  console.error('Failed to parse report:', e);\n\
           \  return;\n}\n\nconst status = report.status || 'UNKNOWN';\nconst score\
           \ = report.overall_score || 0;\nconst rationale = report.decision_rationale\
           \ || '';\n\nlet comment = `## \U0001F4CB Governance Compliance Check\\n\\\
-        n`;\ncomment += `**Status:** ${status === 'APPROVE' ? '✅' : status === 'WARN'\
-        \ ? '⚠️' : '❌'} ${status}\\n`;\ncomment += `**Score:** ${score.toFixed(1)}/100\\\
-        n`;\ncomment += `**Rationale:** ${rationale}\\n\\n`;\n\ncomment += `###\
-          \ Requirement Status\\n`;\nfor (const validator of report.validators ||\
-        \ []) {\n  const icon = validator.status === 'pass' ? '✅' : validator.status\
-        \ === 'warn' ? '⚠️' : '❌';\n  comment += `- ${icon} **${validator.requirement_id}**:\
-          \ ${validator.reason}\\n`;\n  if (validator.remediation && validator.remediation.length\
-        \ > 0) {\n    comment += `  - *Remediation:* ${validator.remediation.slice(0,\
-          \ 2).join(', ')}\\n`;\n  }\n}\n\nif (report.next_steps && report.next_steps.length\
+          n`;\ncomment += `**Status:** ${status === 'APPROVE' ? '\u2705' : status\
+          \ === 'WARN' ? '\u26A0\uFE0F' : '\u274C'} ${status}\\n`;\ncomment += `**Score:**\
+          \ ${score.toFixed(1)}/100\\n`;\ncomment += `**Rationale:** ${rationale}\\\
+          n\\n`;\n\ncomment += `### Requirement Status\\n`;\nfor (const validator\
+          \ of report.validators || []) {\n  const icon = validator.status === 'pass'\
+          \ ? '\u2705' : validator.status === 'warn' ? '\u26A0\uFE0F' : '\u274C';\n\
+          \  comment += `- ${icon} **${validator.requirement_id}**: ${validator.reason}\\\
+          n`;\n  if (validator.remediation && validator.remediation.length > 0) {\n\
+          \    comment += `  - *Remediation:* ${validator.remediation.slice(0, 2).join(',\
+          \ ')}\\n`;\n  }\n}\n\nif (report.next_steps && report.next_steps.length\
           \ > 0) {\n  comment += `\\n### Recommended Next Steps\\n`;\n  report.next_steps.forEach((step,\
           \ i) => {\n    comment += `${i + 1}. ${step}\\n`;\n  });\n}\n\n// Try to\
-        \ find existing comment\ntry {\n  const { data: comments } = await github.rest.issues.listComments({\n\
-        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+          \ find existing comment\ntry {\n  const { data: comments } = await github.rest.issues.listComments({\n\
+          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
           \ context.issue.number,\n  });\n\n  const existingComment = comments.find(c\
           \ =>\n    c.user.type === 'Bot' && c.body.includes('Governance Compliance\
           \ Check')\n  );\n\n  if (existingComment) {\n    await github.rest.issues.updateComment({\n\
-        \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
-        \  comment_id: existingComment.id,\n      body: comment,\n    });\n  } else\
-        \ {\n    await github.rest.issues.createComment({\n      owner: context.repo.owner,\n\
-        \      repo: context.repo.repo,\n      issue_number: context.issue.number,\n\
-        \      body: comment,\n    });\n  }\n} catch (error) {\n  core.warning(`Could\
-        \ not post governance comment: ${error.message}`);\n}\n"
+          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+          \  comment_id: existingComment.id,\n      body: comment,\n    });\n  } else\
+          \ {\n    await github.rest.issues.createComment({\n      owner: context.repo.owner,\n\
+          \      repo: context.repo.repo,\n      issue_number: context.issue.number,\n\
+          \      body: comment,\n    });\n  }\n} catch (error) {\n  core.warning(`Could\
+          \ not post governance comment: ${error.message}`);\n}\n"
     - name: Set PR status
       if: always()
       uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/compliance/report.json',\
-        \ 'utf8'));\n} catch (e) {\n  console.log('Warning: Could not parse compliance\
+          \ 'utf8'));\n} catch (e) {\n  console.log('Warning: Could not parse compliance\
           \ report');\n  return;\n}\n\nconst status = report.status || 'UNKNOWN';\n\
           \n// Set check run status\nconst state = status === 'BLOCK' ? 'failure'\
-        \ : status === 'WARN' ? 'neutral' : 'success';\n\nawait github.rest.checks.create({\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  name: 'Governance\
-        \ Compliance',\n  head_sha: context.payload.pull_request.head.sha,\n  status:\
-        \ 'completed',\n  conclusion: state === 'failure' ? 'failure' : state ===\
-        \ 'neutral' ? 'neutral' : 'success',\n  output: {\n    title: `Governance\
-        \ Compliance: ${status}`,\n    summary: `Score: ${report.overall_score}/100\\\
+          \ : status === 'WARN' ? 'neutral' : 'success';\n\nawait github.rest.checks.create({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  name: 'Governance\
+          \ Compliance',\n  head_sha: context.payload.pull_request.head.sha,\n  status:\
+          \ 'completed',\n  conclusion: state === 'failure' ? 'failure' : state ===\
+          \ 'neutral' ? 'neutral' : 'success',\n  output: {\n    title: `Governance\
+          \ Compliance: ${status}`,\n    summary: `Score: ${report.overall_score}/100\\\
           n\\n${report.decision_rationale}`,\n  },\n});\n\n// Block merge if BLOCK\
           \ status\nif (status === 'BLOCK') {\n  core.setFailed('Governance compliance\
           \ check failed - merge blocked');\n}\n"

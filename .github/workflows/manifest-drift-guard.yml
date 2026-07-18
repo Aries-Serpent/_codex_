@@ -1,86 +1,44 @@
----
 name: manifest-drift-guard
-
-on:
+true:
   pull_request:
-    branches: [main]
+    branches:
+    - main
   push:
-    branches: [main]
-
+    branches:
+    - main
 permissions:
   contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   validate-manifest-drift:
     runs-on: ubuntu-latest
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
-
-      - name: Verify CODEX_MANIFEST references resolve
-        run: |
-          set -euo pipefail
-
-          if [ ! -f CODEX_MANIFEST ]; then
-            echo "::warning::CODEX_MANIFEST not present at repo root; skipping strict path validation."
-            exit 0
-          fi
-
-          echo "Validating CODEX_MANIFEST path references..."
-          python - <<'PY'
-          import json
-          import os
-          import re
-          import sys
-          from pathlib import Path
-
-          manifest = Path("CODEX_MANIFEST")
-          raw = manifest.read_text(encoding="utf-8")
-
-          # Supports either JSON manifest or simple line-based "path: ..."
-          paths = []
-
-          try:
-              data = json.loads(raw)
-
-              def walk(v):
-                  if isinstance(v, dict):
-                      for k, vv in v.items():
-                          if k.lower() in {"path", "file", "filepath"} and isinstance(vv, str):
-                              paths.append(vv)
-                          walk(vv)
-                  elif isinstance(v, list):
-                      for i in v:
-                          walk(i)
-
-              walk(data)
-          except Exception:
-              for line in raw.splitlines():
-                  m = re.search(r'(?:^|\s)(?:path|file|filepath)\s*[:=]\s*["']?([^"']+)["']?', line, re.I)
-                  if m:
-                      paths.append(m.group(1).strip())
-
-          missing = []
-          for p in sorted(set(paths)):
-              # Ignore obvious URLs
-              if p.startswith("http://") or p.startswith("https://"):
-                  continue
-              if not os.path.exists(p):
-                  missing.append(p)
-
-          if missing:
-              print("Missing manifest-referenced paths:")
-              for p in missing:
-                  print(f" - {p}")
-              sys.exit(1)
-
-          print(f"Manifest validation passed. Checked {len(set(paths))} referenced path(s).")
-          PY
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Verify CODEX_MANIFEST references resolve
+      run: "set -euo pipefail\n\nif [ ! -f CODEX_MANIFEST ]; then\n  echo \"::warning::CODEX_MANIFEST\
+        \ not present at repo root; skipping strict path validation.\"\n  exit 0\n\
+        fi\n\necho \"Validating CODEX_MANIFEST path references...\"\npython - <<'PY'\n\
+        import json\nimport os\nimport re\nimport sys\nfrom pathlib import Path\n\n\
+        manifest = Path(\"CODEX_MANIFEST\")\nraw = manifest.read_text(encoding=\"\
+        utf-8\")\n\n# Supports either JSON manifest or simple line-based \"path: ...\"\
+        \npaths = []\n\ntry:\n    data = json.loads(raw)\n\n    def walk(v):\n   \
+        \     if isinstance(v, dict):\n            for k, vv in v.items():\n     \
+        \           if k.lower() in {\"path\", \"file\", \"filepath\"} and isinstance(vv,\
+        \ str):\n                    paths.append(vv)\n                walk(vv)\n\
+        \        elif isinstance(v, list):\n            for i in v:\n            \
+        \    walk(i)\n\n    walk(data)\nexcept Exception:\n    for line in raw.splitlines():\n\
+        \        m = re.search(r'(?:^|\\s)(?:path|file|filepath)\\s*[:=]\\s*[\"']?([^\"\
+        ']+)[\"']?', line, re.I)\n        if m:\n            paths.append(m.group(1).strip())\n\
+        \nmissing = []\nfor p in sorted(set(paths)):\n    # Ignore obvious URLs\n\
+        \    if p.startswith(\"http://\") or p.startswith(\"https://\"):\n       \
+        \ continue\n    if not os.path.exists(p):\n        missing.append(p)\n\nif\
+        \ missing:\n    print(\"Missing manifest-referenced paths:\")\n    for p in\
+        \ missing:\n        print(f\" - {p}\")\n    sys.exit(1)\n\nprint(f\"Manifest\
+        \ validation passed. Checked {len(set(paths))} referenced path(s).\")\nPY\n"
+    timeout-minutes: 15

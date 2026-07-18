@@ -1,6 +1,5 @@
----
-name: 👻 Ghost Object Actioner
-on:
+name: "\U0001F47B Ghost Object Actioner"
+true:
   workflow_dispatch:
     inputs:
       target_kind:
@@ -191,15 +190,15 @@ jobs:
         n\\n\")\n\n    if numbers:\n        f.write(\"### Numbered Targets\\n\")\n\
         \        f.write(\"| id | action | ok | detail |\\n\")\n        f.write(\"\
         |---:|---|:---:|---|\\n\")\n        for item in issue_results + pr_results:\n\
-        \            f.write(f\"| {item.get('id')} | {item.get('action')} | {'✅' if\
-        \ item.get('ok') else '❌'} | {str(item.get('detail', '')).replace('|', '\\\
-        \\|')} |\\n\")\n        f.write(\"\\n\")\n\n    if branch_results:\n     \
-        \   f.write(\"### Named Branch Targets\\n\")\n        f.write(\"| name | action\
-        \ | ok | protected | detail |\\n\")\n        f.write(\"|---|---|:---:|:---:|---|\\\
+        \            f.write(f\"| {item.get('id')} | {item.get('action')} | {'\u2705\
+        ' if item.get('ok') else '\u274C'} | {str(item.get('detail', '')).replace('|',\
+        \ '\\\\|')} |\\n\")\n        f.write(\"\\n\")\n\n    if branch_results:\n\
+        \        f.write(\"### Named Branch Targets\\n\")\n        f.write(\"| name\
+        \ | action | ok | protected | detail |\\n\")\n        f.write(\"|---|---|:---:|:---:|---|\\\
         n\")\n        for item in branch_results:\n            protected = \"-\" if\
         \ item.get(\"protected\") is None else (\"true\" if item.get(\"protected\"\
         ) else \"false\")\n            f.write(f\"| {item.get('name')} | {item.get('action')}\
-        \ | {'✅' if item.get('ok') else '❌'} | {protected} | {str(item.get('detail',\
+        \ | {'\u2705' if item.get('ok') else '\u274C'} | {protected} | {str(item.get('detail',\
         \ '')).replace('|', '\\\\|')} |\\n\")\n        f.write(\"\\n\")\n\n    f.write(\"\
         ### Discovery Snapshot\\n\")\n    f.write(\"```json\\n\")\n    f.write(json.dumps(discovery,\
         \ indent=2))\n    f.write(\"\\n```\\n\")\n\nhas_failure = any(not r.get(\"\

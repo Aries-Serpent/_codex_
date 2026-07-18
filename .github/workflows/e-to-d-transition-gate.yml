@@ -1,6 +1,5 @@
----
-name: E→D Transition Readiness Gate
-on:
+name: "E\u2192D Transition Readiness Gate"
+true:
   pull_request: null
   workflow_dispatch: null
 concurrency:
@@ -12,9 +11,8 @@ permissions:
   actions: write
 jobs:
   transition-readiness:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
-    name: 🔄 E→D Transition Readiness Check
+    name: "\U0001F504 E\u2192D Transition Readiness Check"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -23,8 +21,9 @@ jobs:
       c2_pass: ${{ steps.check.outputs.c2_pass }}
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -36,76 +35,76 @@ jobs:
       with:
         github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst conditions = [];\n\n// C1: AGENT_REGISTRY.yaml\
-        \ present and covers all active agents\n// Hardened: structural parse +\
+          \ present and covers all active agents\n// Hardened: structural parse +\
           \ active_agents count consistency check\nconst registryPath = '.github/agents/AGENT_REGISTRY.yaml';\n\
-        let c1Pass = false;\nif (!fs.existsSync(registryPath)) {\n  core.warning('C1:\
+          let c1Pass = false;\nif (!fs.existsSync(registryPath)) {\n  core.warning('C1:\
           \ AGENT_REGISTRY.yaml not found at .github/agents/AGENT_REGISTRY.yaml');\n\
           } else {\n  try {\n    const regContent = fs.readFileSync(registryPath,\
-        \ 'utf8');\n    // Must have top-level 'agents:' list and 'active_agents:'\
-        \ count\n    const hasAgentsList = /^agents:/m.test(regContent);\n    const\
-        \ activeMatch = regContent.match(/^active_agents:\\s*(\\d+)/m);\n    if\
-        \ (!hasAgentsList || !activeMatch) {\n      core.warning('C1: AGENT_REGISTRY.yaml\
-        \ missing required keys: agents or active_agents');\n    } else {\n    \
+          \ 'utf8');\n    // Must have top-level 'agents:' list and 'active_agents:'\
+          \ count\n    const hasAgentsList = /^agents:/m.test(regContent);\n    const\
+          \ activeMatch = regContent.match(/^active_agents:\\s*(\\d+)/m);\n    if\
+          \ (!hasAgentsList || !activeMatch) {\n      core.warning('C1: AGENT_REGISTRY.yaml\
+          \ missing required keys: agents or active_agents');\n    } else {\n    \
           \  const declaredActive = parseInt(activeMatch[1], 10);\n      // Count\
-        \ actual entries with status: active\n      const actualActive = (regContent.match(/^\
-        \  status: active\\s*$/gm) || []).length;\n      if (actualActive === 0)\
-        \ {\n        core.warning('C1: No agents with status=active found in AGENT_REGISTRY.yaml');\n\
+          \ actual entries with status: active\n      const actualActive = (regContent.match(/^\
+          \  status: active\\s*$/gm) || []).length;\n      if (actualActive === 0)\
+          \ {\n        core.warning('C1: No agents with status=active found in AGENT_REGISTRY.yaml');\n\
           \      } else {\n        const drift = Math.abs(declaredActive - actualActive);\n\
-        \        if (drift > 10) {\n          // Hard-fail: registry header count\
-        \ is significantly stale\n          core.warning(\n            `C1: active_agents\
-        \ count drift too large — declared: ${declaredActive}, actual: ${actualActive}\
-        \ (drift: ${drift}). ` +\n            'Regenerate AGENT_REGISTRY.yaml to\
+          \        if (drift > 10) {\n          // Hard-fail: registry header count\
+          \ is significantly stale\n          core.warning(\n            `C1: active_agents\
+          \ count drift too large \u2014 declared: ${declaredActive}, actual: ${actualActive}\
+          \ (drift: ${drift}). ` +\n            'Regenerate AGENT_REGISTRY.yaml to\
           \ fix.'\n          );\n        } else {\n          if (drift > 0) {\n  \
-        \          core.warning(\n              `C1: minor active_agents drift (declared:\
-        \ ${declaredActive}, actual: ${actualActive}) — ` +\n              'acceptable\
-          \ but consider regenerating registry.'\n            );\n          }\n  \
-          \        c1Pass = true;\n        }\n      }\n    }\n  } catch (e) {\n  \
-        \  core.warning(`C1: AGENT_REGISTRY.yaml validation error: ${e.message}`);\n\
-        \  }\n}\nconditions.push({\n  id: 'C1',\n  label: 'AGENT_REGISTRY.yaml present\
-        \ with full coverage',\n  pass: c1Pass\n});\n\n// C2: CODEX_MANIFEST.json\
+          \          core.warning(\n              `C1: minor active_agents drift (declared:\
+          \ ${declaredActive}, actual: ${actualActive}) \u2014 ` +\n             \
+          \ 'acceptable but consider regenerating registry.'\n            );\n   \
+          \       }\n          c1Pass = true;\n        }\n      }\n    }\n  } catch\
+          \ (e) {\n    core.warning(`C1: AGENT_REGISTRY.yaml validation error: ${e.message}`);\n\
+          \  }\n}\nconditions.push({\n  id: 'C1',\n  label: 'AGENT_REGISTRY.yaml present\
+          \ with full coverage',\n  pass: c1Pass\n});\n\n// C2: CODEX_MANIFEST.json\
           \ valid and current (<24h)\nlet manifestOk = false;\nif (fs.existsSync('CODEX_MANIFEST.json'))\
           \ {\n  try {\n    const m = JSON.parse(fs.readFileSync('CODEX_MANIFEST.json',\
           \ 'utf8'));\n    const ageMs = Date.now() - new Date(m.generated_at).getTime();\n\
           \    const has24hWindow = ageMs < 24 * 60 * 60 * 1000;\n    const hasIntegrity\
           \ = typeof m.integrity_sha256 === 'string' && m.integrity_sha256.length\
           \ === 64;\n    manifestOk = has24hWindow && hasIntegrity;\n  } catch (e)\
-        \ {\n    core.warning(`CODEX_MANIFEST.json parse error: ${e.message}`);\n\
-        \  }\n}\nconditions.push({\n  id: 'C2',\n  label: 'CODEX_MANIFEST.json valid\
-        \ + current (<24h)',\n  pass: manifestOk\n});\n\n// C3: Tier-3 (SOFT) policy\
-          \ count <= 2\n// C5 shares the same document — load once, fail both explicitly\
-          \ if missing\nconst gvsPath = '.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md';\n\
-        const gvsExists = fs.existsSync(gvsPath);\nif (!gvsExists) {\n  core.warning(`C3/C5:\
-          \ ${gvsPath} not found — cannot verify SOFT or GROUNDED counts`);\n}\nconst\
-        \ gvsDoc = gvsExists ? fs.readFileSync(gvsPath, 'utf8') : null;\n\n// C3:\
-          \ SOFT count — hard-fail when doc is missing (missing doc ≠ zero SOFT policies)\n\
-          const softCount = gvsDoc ? (gvsDoc.match(/\\u274C \\*\\*SOFT\\*\\*/g) ||\
-        \ []).length : null;\nconditions.push({\n  id: 'C3',\n  label: softCount\
-        \ !== null\n    ? `Tier-3 count \\u22642 (current: ${softCount})`\n    :\
-        \ 'Tier-3 count \\u22642 (GVS doc MISSING)',\n  pass: softCount !== null\
-        \ && softCount <= 2\n});\n\n// C4: agent-handoff-gate.yml deployed (Phase\
-          \ 2 complete)\nconst handoffGate = fs.existsSync('.github/workflows/agent-handoff-gate.yml');\n\
-        conditions.push({\n  id: 'C4',\n  label: 'agent-handoff-gate.yml deployed\
-        \ (Phase 2 complete)',\n  pass: handoffGate\n});\n\n// C5: GROUNDED Tier-1\
-          \ gate count >= 8 — hard-fail when doc is missing\nconst tier1Count = gvsDoc\
-        \ ? (gvsDoc.match(/\\u2705 \\*\\*GROUNDED\\*\\*/g) || []).length : null;\n\
-        conditions.push({\n  id: 'C5',\n  label: tier1Count !== null\n    ? `Tier-1\
-        \ gates \\u22658 (current: ${tier1Count})`\n    : 'Tier-1 gates \\u22658\
-        \ (GVS doc MISSING)',\n  pass: tier1Count !== null && tier1Count >= 8\n\
-          });\n\nconst score = conditions.filter(c => c.pass).length;\nconst capable\
-          \ = score === 5;\n\n// Write job summary\nlet summary = `## \\U0001F504\
-        \ E\\u2192D Transition Readiness: ${score}/5\\n\\n`;\nsummary += `| ID |\
+          \ {\n    core.warning(`CODEX_MANIFEST.json parse error: ${e.message}`);\n\
+          \  }\n}\nconditions.push({\n  id: 'C2',\n  label: 'CODEX_MANIFEST.json valid\
+          \ + current (<24h)',\n  pass: manifestOk\n});\n\n// C3: Tier-3 (SOFT) policy\
+          \ count <= 2\n// C5 shares the same document \u2014 load once, fail both\
+          \ explicitly if missing\nconst gvsPath = '.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md';\n\
+          const gvsExists = fs.existsSync(gvsPath);\nif (!gvsExists) {\n  core.warning(`C3/C5:\
+          \ ${gvsPath} not found \u2014 cannot verify SOFT or GROUNDED counts`);\n\
+          }\nconst gvsDoc = gvsExists ? fs.readFileSync(gvsPath, 'utf8') : null;\n\
+          \n// C3: SOFT count \u2014 hard-fail when doc is missing (missing doc \u2260\
+          \ zero SOFT policies)\nconst softCount = gvsDoc ? (gvsDoc.match(/\\u274C\
+          \ \\*\\*SOFT\\*\\*/g) || []).length : null;\nconditions.push({\n  id: 'C3',\n\
+          \  label: softCount !== null\n    ? `Tier-3 count \\u22642 (current: ${softCount})`\n\
+          \    : 'Tier-3 count \\u22642 (GVS doc MISSING)',\n  pass: softCount !==\
+          \ null && softCount <= 2\n});\n\n// C4: agent-handoff-gate.yml deployed\
+          \ (Phase 2 complete)\nconst handoffGate = fs.existsSync('.github/workflows/agent-handoff-gate.yml');\n\
+          conditions.push({\n  id: 'C4',\n  label: 'agent-handoff-gate.yml deployed\
+          \ (Phase 2 complete)',\n  pass: handoffGate\n});\n\n// C5: GROUNDED Tier-1\
+          \ gate count >= 8 \u2014 hard-fail when doc is missing\nconst tier1Count\
+          \ = gvsDoc ? (gvsDoc.match(/\\u2705 \\*\\*GROUNDED\\*\\*/g) || []).length\
+          \ : null;\nconditions.push({\n  id: 'C5',\n  label: tier1Count !== null\n\
+          \    ? `Tier-1 gates \\u22658 (current: ${tier1Count})`\n    : 'Tier-1 gates\
+          \ \\u22658 (GVS doc MISSING)',\n  pass: tier1Count !== null && tier1Count\
+          \ >= 8\n});\n\nconst score = conditions.filter(c => c.pass).length;\nconst\
+          \ capable = score === 5;\n\n// Write job summary\nlet summary = `## \\U0001F504\
+          \ E\\u2192D Transition Readiness: ${score}/5\\n\\n`;\nsummary += `| ID |\
           \ Condition | Status |\\n|----|-----------|---------|\\n`;\nfor (const c\
           \ of conditions) {\n  summary += `| ${c.id} | ${c.label} | ${c.pass ? '\\\
-        u2705' : '\\u274C'} |\\n`;\n}\nsummary += `\\n**Operating Model:** ${capable\
-        \ ? '\\U0001F7E2 D_CAPABLE unlocked' : '\\U0001F7E1 E (continue building)'}\\\
-        n`;\nsummary += `\\n_Tier-1 GROUNDED gate: score < 5 blocks PR._\\n`;\n\
+          u2705' : '\\u274C'} |\\n`;\n}\nsummary += `\\n**Operating Model:** ${capable\
+          \ ? '\\U0001F7E2 D_CAPABLE unlocked' : '\\U0001F7E1 E (continue building)'}\\\
+          n`;\nsummary += `\\n_Tier-1 GROUNDED gate: score < 5 blocks PR._\\n`;\n\
           await core.summary.addRaw(summary).write();\n\ncore.setOutput('score', score.toString());\n\
           core.setOutput('capable', capable.toString());\n// Export per-condition\
           \ pass flags so downstream jobs can gate precisely\nconst c2Condition =\
           \ conditions.find(c => c.id === 'C2');\ncore.setOutput('c2_pass', (c2Condition\
-        \ && c2Condition.pass).toString());\n\n// Tier-1 GROUNDED gate: block PR\
+          \ && c2Condition.pass).toString());\n\n// Tier-1 GROUNDED gate: block PR\
           \ when score < 5/5\nif (!capable) {\n  core.setFailed(`E\\u2192D transition\
-        \ not ready: ${score}/5 conditions met`);\n}\n"
+          \ not ready: ${score}/5 conditions met`);\n}\n"
     - name: Emit demotion annotations for non-compliant agents
       if: always()
       run: "python3 - <<'PY'\nimport yaml, sys, os\nregistry_path = \".github/agents/AGENT_REGISTRY.yaml\"\
@@ -114,38 +113,32 @@ jobs:
         ::warning::Could not parse AGENT_REGISTRY.yaml for demotion check: {e}\")\n\
         \    sys.exit(0)\nagents = data.get(\"agents\", []) if isinstance(data, dict)\
         \ else []\ndemotions = []\nfor a in agents:\n    tier = a.get(\"enforcement_tier\"\
-        , \"SOFT\")\n    model = a.get(\"autonomy_model\", \"E\")\n  # D_CAPABLE\
-        \ agents that lack structured handoff are demotion candidates\n    if model\
-        \ == \"D_CAPABLE\" and a.get(\"handoff_protocol\") != \"structured\":\n  \
-        \      demotions.append(f\"{a.get('id','?')}: D_CAPABLE without structured\
-        \ handoff\")\n  # GROUNDED agents without accepts_handoff_from are incomplete\n\
-        \    if tier == \"GROUNDED\" and not a.get(\"accepts_handoff_from\"):\n  \
-        \      demotions.append(f\"{a.get('id','?')}: GROUNDED but no accepts_handoff_from\"\
-        )\nif demotions:\n    print(f\"::warning::Demotion candidates ({len(demotions)}):\"\
-        )\n    for d in demotions:\n        print(f\"::warning::  - {d}\")\nelse:\n\
-        \    print(\"No demotion candidates found.\")\nPY\n"
+        , \"SOFT\")\n    model = a.get(\"autonomy_model\", \"E\")\n  # D_CAPABLE agents\
+        \ that lack structured handoff are demotion candidates\n    if model == \"\
+        D_CAPABLE\" and a.get(\"handoff_protocol\") != \"structured\":\n        demotions.append(f\"\
+        {a.get('id','?')}: D_CAPABLE without structured handoff\")\n  # GROUNDED agents\
+        \ without accepts_handoff_from are incomplete\n    if tier == \"GROUNDED\"\
+        \ and not a.get(\"accepts_handoff_from\"):\n        demotions.append(f\"{a.get('id','?')}:\
+        \ GROUNDED but no accepts_handoff_from\")\nif demotions:\n    print(f\"::warning::Demotion\
+        \ candidates ({len(demotions)}):\")\n    for d in demotions:\n        print(f\"\
+        ::warning::  - {d}\")\nelse:\n    print(\"No demotion candidates found.\"\
+        )\nPY\n"
     - name: Post readiness to PR Status Dashboard
       if: github.event_name == 'pull_request'
       uses: ./.github/actions/post-pr-summary
       with:
-        workflow-name: E→D Transition Readiness
+        workflow-name: "E\u2192D Transition Readiness"
         status: ${{ steps.check.outputs.capable == 'true' && 'success' || 'info' }}
-        summary: Score ${{ steps.check.outputs.score }}/5 · ${{ steps.check.outputs.capable
-          == 'true' && 'D_CAPABLE unlocked 🟢' || 'E model (conditions not yet met)
-          🟡' }}
-        details: '**Score:** ${{ steps.check.outputs.score }}/5 | **D_CAPABLE:** ${{
-          steps.check.outputs.capable }}
-
-          Tier-1 GROUNDED gate — run `e-to-d-transition-gate.yml` for full condition
-          breakdown.
-
-          _Phase 4 FSM | [e-to-d-transition-gate.yml]_
-
-          '
+        summary: "Score ${{ steps.check.outputs.score }}/5 \xB7 ${{ steps.check.outputs.capable\
+          \ == 'true' && 'D_CAPABLE unlocked \U0001F7E2' || 'E model (conditions not\
+          \ yet met) \U0001F7E1' }}"
+        details: "**Score:** ${{ steps.check.outputs.score }}/5 | **D_CAPABLE:** ${{\
+          \ steps.check.outputs.capable }}\nTier-1 GROUNDED gate \u2014 run `e-to-d-transition-gate.yml`\
+          \ for full condition breakdown.\n_Phase 4 FSM | [e-to-d-transition-gate.yml]_\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   heal-stale-manifest:
-    name: '🔧 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)'
+    name: "\U0001F527 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)"
     runs-on: ubuntu-latest
     needs:
     - transition-readiness
@@ -176,7 +169,7 @@ jobs:
         \ '+00:00'))\n    age_h = (datetime.now(timezone.utc) - ts).total_seconds()\
         \ / 3600\n    stale = age_h > 23.5\nexcept Exception:\n    stale = True\n\
         age_str = f'{age_h:.1f}h' if age_h is not None else 'unknown'\nprint(f'Manifest\
-        \ age: {age_str} — {\"STALE\" if stale else \"FRESH\"}')\nwith open(os.environ['GITHUB_OUTPUT'],\
+        \ age: {age_str} \u2014 {\"STALE\" if stale else \"FRESH\"}')\nwith open(os.environ['GITHUB_OUTPUT'],\
         \ 'a') as f:\n    f.write(f'stale={\"true\" if stale else \"false\"}\\n')\n\
         PY\n"
     - name: Regenerate CODEX_MANIFEST.json
@@ -190,29 +183,31 @@ jobs:
         github-actions[bot]@users.noreply.github.com\"\n# SCP-RESCUE-5: sync .secrets.baseline\
         \ before staging so the\n# CODEX_MANIFEST hashed_secret is always consistent\
         \ with the new manifest.\npython3 scripts/ci/sync_tracked_files.py --fix --manifest-only\
-        \ || \\\n  echo \"⚠️  sync_tracked_files non-zero (non-blocking)\"\ngit add\
-        \ CODEX_MANIFEST.json .secrets.baseline\nif git diff --cached --quiet; then\n\
-        \  echo \"Manifest already up-to-date\"\nelse\n  git commit -m \"chore(manifest):\
-        \ auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci]\"\n  git pull --rebase --autostash origin \"${HEAD_REF}\" 2>/dev/null || true\n  git push origin\
-        \ \"HEAD:${HEAD_REF}\"\n  echo \"✅ CODEX_MANIFEST.json refreshed — C2 will\
-        \ pass on re-run\"\nfi\n"
+        \ || \\\n  echo \"\u26A0\uFE0F  sync_tracked_files non-zero (non-blocking)\"\
+        \ngit add CODEX_MANIFEST.json .secrets.baseline\nif git diff --cached --quiet;\
+        \ then\n  echo \"Manifest already up-to-date\"\nelse\n  git commit -m \"chore(manifest):\
+        \ auto-heal C2 \u2014 refresh CODEX_MANIFEST.json [skip ci]\"\n  git pull\
+        \ --rebase --autostash origin \"${HEAD_REF}\" 2>/dev/null || true\n  git push\
+        \ origin \"HEAD:${HEAD_REF}\"\n  echo \"\u2705 CODEX_MANIFEST.json refreshed\
+        \ \u2014 C2 will pass on re-run\"\nfi\n"
     - name: Post healing notice to PR
       if: steps.c2-check.outputs.stale == 'true'
       uses: actions/github-script@v8
       with:
         github-token: ${{ github.token }}
         script: "const pr = context.payload.pull_request.number;\nawait github.rest.issues.createComment({\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
-        \ pr,\n  body: [\n    '\U0001F527 **C2 Self-Heal Triggered**: `CODEX_MANIFEST.json`\
-          \ was stale (>24h) causing the E→D gate to fail.',\n    '',\n    'The manifest\
-          \ has been automatically regenerated and pushed. The E→D gate will re-run\
-          \ and should pass C2 on the next push or manual re-run.',\n    '',\n   \
-        \ '> **Next step:** Re-run the `E→D Transition Readiness Gate` check from\
-          \ the Actions tab, or push a new commit to trigger it automatically.',\n\
-        \  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+          \ pr,\n  body: [\n    '\U0001F527 **C2 Self-Heal Triggered**: `CODEX_MANIFEST.json`\
+          \ was stale (>24h) causing the E\u2192D gate to fail.',\n    '',\n    'The\
+          \ manifest has been automatically regenerated and pushed. The E\u2192D gate\
+          \ will re-run and should pass C2 on the next push or manual re-run.',\n\
+          \    '',\n    '> **Next step:** Re-run the `E\u2192D Transition Readiness\
+          \ Gate` check from the Actions tab, or push a new commit to trigger it automatically.',\n\
+          \  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \  ].join('\\n'),\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -234,7 +229,8 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -249,3 +245,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

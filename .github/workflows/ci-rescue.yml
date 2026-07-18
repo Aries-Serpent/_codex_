@@ -1,6 +1,5 @@
----
-name: CI Rescue — Auto-Fix & @copilot RCA
-on:
+name: "CI Rescue \u2014 Auto-Fix & @copilot RCA"
+true:
   workflow_run:
     workflows:
     - Auto-Fix Common CI Issues
@@ -24,7 +23,7 @@ on:
         required: true
         type: string
       pr_number:
-        description: PR number (optional — auto-detected if omitted)
+        description: "PR number (optional \u2014 auto-detected if omitted)"
         required: false
         type: string
       dry_run:
@@ -39,83 +38,103 @@ permissions:
   contents: read
 jobs:
   rescue:
-    name: Rescue — analyse and post RCA
+    name: "Rescue \u2014 analyse and post RCA"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: "github.event_name == 'workflow_dispatch' ||\n(\n  github.event.workflow_run.conclusion \ == 'failure' &&\n  github.event.workflow_run.head_repository.full_name == \ github.repository\n)\n"
+    if: "github.event_name == 'workflow_dispatch' ||\n(\n  github.event.workflow_run.conclusion\
+      \  == 'failure' &&\n  github.event.workflow_run.head_repository.full_name ==\
+      \  github.repository\n)\n"
     permissions:
       pull-requests: write
       issues: write
       actions: read
     steps:
-      - name: Log rescue trigger context
-        env:
-          GH_EVENT_NAME: ${{ github.event_name }}
-          GH_WF_RUN_NAME: ${{ github.event.workflow_run.name }}
-          GH_WF_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          GH_HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-          GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
-          GH_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs unconditionally)' }}
-        run: |
-          echo "=== CI Rescue Trigger ==="
-          echo "Event:          ${GH_EVENT_NAME}"
-          echo "Workflow run:   ${GH_WF_RUN_NAME} (${GH_WF_RUN_CONCLUSION})"
-          echo "Head SHA:       ${GH_HEAD_SHA}"
-          echo "Head branch:    ${GH_HEAD_BRANCH}"
-          echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${GH_AUTH_ENABLED}"
+    - name: Log rescue trigger context
+      env:
+        GH_EVENT_NAME: ${{ github.event_name }}
+        GH_WF_RUN_NAME: ${{ github.event.workflow_run.name }}
+        GH_WF_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        GH_HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
+          }}
+        GH_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs
+          unconditionally)' }}
+      run: 'echo "=== CI Rescue Trigger ==="
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
+        echo "Event:          ${GH_EVENT_NAME}"
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          cache: pip
-          python-version: 3.12.13
-      - name: Load Copilot test environment
-        id: env_setup
-        run: |
-          python -m pip install --quiet --upgrade pip
-          python -m pip install --quiet
-      - name: Fetch rescue engine
-        env:
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-        run: |
-          mkdir -p scripts/ci
-          REFS="${HEAD_SHA} HEAD"
-          FETCHED=false
-          for REF in $REFS; do
-            if curl -sS -L -f \
-              "https://raw.githubusercontent.com/${{ github.repository }}/${REF}/scripts/ci/ci_rescue.py" \
-              -o scripts/ci/ci_rescue.py 2>/dev/null; then
-              echo "Fetched ci_rescue.py from ref ${REF}"
-              FETCHED=true
-              break
-            fi
-          done
-          if [ "${FETCHED}" != "true" ]; then
-            echo "::error::Unable to fetch rescue engine script from any ref"
-            exit 1
-          fi
-      - name: Lookup CI Failure Triage Report issue URL
-        id: triage-url
-        run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created \ by batch-ci-triage.yml\n# and expose its URL so the rescue engine can link \ to it in RCA comments.\n# Response is stored to a temp file so the JSON \ parser receives clean input.\ncurl -sS \\\n  -H \"Authorization: Bearer \ ${GITHUB_TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\n \  \"https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1\" \ \\\n  -o /tmp/triage_issues.json 2>/dev/null || echo \"[]\" > /tmp/triage_issues.json\n TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'\nimport \ json, sys\ntry:\n    with open(sys.argv[1]) as fh:\n        issues = json.load(fh)\n \    print(issues[0]['html_url'] if isinstance(issues, list) and issues else \ '', end='')\nexcept Exception:\n    print('', end='')\nPYEOF\n)\nif [ -n \ \"${TRIAGE_URL}\" ]; then\n  echo \"✅ Found CI Failure Triage Report: ${TRIAGE_URL}\" \n  echo \"url=${TRIAGE_URL}\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"⚠️  No \ open ci-triage issue found — triage URL will be omitted from RCA\"\n  echo \ \"url=\" >> \"$GITHUB_OUTPUT\"\nfi\n"
-      - name: Run CI rescue engine
-        id: rescue
-        run: |
-          RUN_ID=\"${{ github.event.workflow_run.id || inputs.run_id }}\"
-          COMMIT_SHA=\"
-      - name: Print rescue summary
-        if: always()
-        run: |
-          echo \"=== CI Rescue Summary ===\"
-          cat /tmp/rescue_output.txt 2>/dev/null
+        echo "Workflow run:   ${GH_WF_RUN_NAME} (${GH_WF_RUN_CONCLUSION})"
+
+        echo "Head SHA:       ${GH_HEAD_SHA}"
+
+        echo "Head branch:    ${GH_HEAD_BRANCH}"
+
+        echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${GH_AUTH_ENABLED}"
+
+        '
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-pytest-
+
+          '
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Load Copilot test environment
+      id: env_setup
+      run: 'python -m pip install --quiet --upgrade pip
+
+        python -m pip install --quiet
+
+        '
+    - name: Fetch rescue engine
+      env:
+        HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+      run: "mkdir -p scripts/ci\nREFS=\"${HEAD_SHA} HEAD\"\nFETCHED=false\nfor REF\
+        \ in $REFS; do\n  if curl -sS -L -f \\\n    \"https://raw.githubusercontent.com/${{\
+        \ github.repository }}/${REF}/scripts/ci/ci_rescue.py\" \\\n    -o scripts/ci/ci_rescue.py\
+        \ 2>/dev/null; then\n    echo \"Fetched ci_rescue.py from ref ${REF}\"\n \
+        \   FETCHED=true\n    break\n  fi\ndone\nif [ \"${FETCHED}\" != \"true\" ];\
+        \ then\n  echo \"::error::Unable to fetch rescue engine script from any ref\"\
+        \n  exit 1\nfi\n"
+    - name: Lookup CI Failure Triage Report issue URL
+      id: triage-url
+      run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created\
+        \  by batch-ci-triage.yml\n# and expose its URL so the rescue engine can link\
+        \  to it in RCA comments.\n# Response is stored to a temp file so the JSON\
+        \  parser receives clean input.\ncurl -sS \\\n  -H \"Authorization: Bearer\
+        \  ${GITHUB_TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\n\
+        \   \"https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1\"\
+        \  \\\n  -o /tmp/triage_issues.json 2>/dev/null || echo \"[]\" > /tmp/triage_issues.json\n\
+        \ TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'\n\
+        import  json, sys\ntry:\n    with open(sys.argv[1]) as fh:\n        issues\
+        \ = json.load(fh)\n     print(issues[0]['html_url'] if isinstance(issues,\
+        \ list) and issues else  '', end='')\nexcept Exception:\n    print('', end='')\n\
+        PYEOF\n)\nif [ -n  \"${TRIAGE_URL}\" ]; then\n  echo \"\u2705 Found CI Failure\
+        \ Triage Report: ${TRIAGE_URL}\" \n  echo \"url=${TRIAGE_URL}\" >> \"$GITHUB_OUTPUT\"\
+        \nelse\n  echo \"\u26A0\uFE0F  No  open ci-triage issue found \u2014 triage\
+        \ URL will be omitted from RCA\"\n  echo  \"url=\" >> \"$GITHUB_OUTPUT\"\n\
+        fi\n"
+    - name: Run CI rescue engine
+      id: rescue
+      run: 'RUN_ID=\"${{ github.event.workflow_run.id || inputs.run_id }}\"
+
+        COMMIT_SHA=\"
+
+        '
+    - name: Print rescue summary
+      if: always()
+      run: 'echo \"=== CI Rescue Summary ===\"
+
+        cat /tmp/rescue_output.txt 2>/dev/null
+
+        '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

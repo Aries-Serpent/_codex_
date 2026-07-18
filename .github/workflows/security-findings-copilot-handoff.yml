@@ -1,6 +1,5 @@
----
-name: 🔐 Security Findings Copilot Handoff
-on:
+name: "\U0001F510 Security Findings Copilot Handoff"
+true:
   workflow_run:
     workflows:
     - Security Scanning Suite
@@ -18,13 +17,13 @@ jobs:
     name: Create Security Findings Issue
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: 'github.event.workflow_run.head_branch == ''main'' ||
-      github.event.workflow_run.head_branch == ''develop'' ||
-      contains(github.event.workflow_run.head_branch, ''copilot'')'
+    if: github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch
+      == 'develop' || contains(github.event.workflow_run.head_branch, 'copilot')
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -39,161 +38,77 @@ jobs:
     - name: Load and parse findings
       id: findings
       shell: bash
-      run: |
-        set -euo pipefail
-
-        if [ ! -f ./security-findings/.codex/security-findings-comprehensive.json ]; then
-            echo "No comprehensive findings available - skipping issue creation"
-            echo "issue_title=No Security Findings Available" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Parse findings
-          python3 << 'PYTHON_EOF' >> "$GITHUB_OUTPUT"
-          import json
-
-          with open("./security-findings/.codex/security-findings-comprehensive.json") as f:
-            data = json.load(f)
-
-          summary = data.get("summary", {})
-          print(f"CRITICAL={summary.get('critical_count', 0)}")
-          print(f"HIGH={summary.get('high_count', 0)}")
-          print(f"TOTAL={summary.get('total_findings', 0)}")
-          print(f"AGENTS={len(summary.get('recommended_agent_handoffs', []))}")
-        PYTHON_EOF
-
+      run: "set -euo pipefail\n\nif [ ! -f ./security-findings/.codex/security-findings-comprehensive.json\
+        \ ]; then\n    echo \"No comprehensive findings available - skipping issue\
+        \ creation\"\n    echo \"issue_title=No Security Findings Available\" >> \"\
+        $GITHUB_OUTPUT\"\n    exit 0\n  fi\n\n  # Parse findings\n  python3 << 'PYTHON_EOF'\
+        \ >> \"$GITHUB_OUTPUT\"\n  import json\n\n  with open(\"./security-findings/.codex/security-findings-comprehensive.json\"\
+        ) as f:\n    data = json.load(f)\n\n  summary = data.get(\"summary\", {})\n\
+        \  print(f\"CRITICAL={summary.get('critical_count', 0)}\")\n  print(f\"HIGH={summary.get('high_count',\
+        \ 0)}\")\n  print(f\"TOTAL={summary.get('total_findings', 0)}\")\n  print(f\"\
+        AGENTS={len(summary.get('recommended_agent_handoffs', []))}\")\nPYTHON_EOF\n"
     - name: Create findings issue
       if: steps.findings.outputs.TOTAL != ''
       uses: actions/github-script@v8
       with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
-            const fs = require('fs');
-            const findings = JSON.parse(fs.readFileSync('./security-findings/.codex/security-findings-comprehensive.json', 'utf8'));
-
-            const summary = findings.summary;
-            const metadata = findings.scan_metadata;
-
-            // Build issue title
-            let title = `🔐 [Auto] Security Findings`;
-            if (summary.critical_count > 0) {
-              title += ` — ${summary.critical_count} CRITICAL`;
-            }
-            if (summary.high_count > 0) {
-              title += `, ${summary.high_count} HIGH`;
-            }
-
-            // Build issue body
-            let body = `## Security Findings Report\n\n`;
-            body += `**Commit:** [\`${metadata.commit.substring(0, 12)}\`](${findings.scan_metadata.run_url})\n`;
-            body += `**Run:** [#${metadata.run_id}](${metadata.run_url})\n\n`;
-
-            // Summary section
-            body += `## Summary\n\n`;
-            body += `| Severity | Count |\n`;
-            body += `|----------|-------|\n`;
-            body += `| 🔴 CRITICAL | ${summary.critical_count} |\n`;
-            body += `| 🟠 HIGH | ${summary.high_count} |\n`;
-            body += `| 🟡 MEDIUM | ${summary.medium_count} |\n`;
-            body += `| 🟢 LOW | ${summary.low_count} |\n`;
-            body += `| **TOTAL** | **${summary.total_findings}** |\n\n`;
-
-            // Agent assignments
-            body += `## Recommended Agent Handoffs\n\n`;
-            for (const handoff of summary.recommended_agent_handoffs) {
-              body += `- [\`${handoff.agent}\`](.github/agents/${handoff.agent}.md): ${handoff.findings_count} findings\n`;
-            }
-
-            body += `\n## Findings by Tool\n\n`;
-            for (const [tool, findings_list] of Object.entries(findings.findings_by_tool)) {
-              if (Array.isArray(findings_list) && findings_list.length > 0) {
-                body += `- **${tool}**: ${findings_list.length} findings\n`;
-              }
-            }
-
-            body += `\n## Next Steps\n\n`;
-            body += `1. Review findings in [comprehensive report](${metadata.run_url}#artifacts)\n`;
-            body += `2. Assign to appropriate agent or create PR\n`;
-            body += `3. Track remediation in this issue\n\n`;
-
-            body += `---\n\n`;
-            body += `_Automatically generated by Security Findings Copilot Handoff workflow_\n`;
-
-            // Create labels
-            const labels = ['security-findings', 'copilot-actionable', 'automated'];
-            if (summary.critical_count > 0) {
-              labels.push('security-risk');
-              labels.push('priority-critical');
-            }
-            if (summary.high_count > 0) {
-              labels.push('priority-high');
-            }
-
-            // Create the issue
-            const issue = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: labels,
-            });
-
-            console.log(`✅ Created issue  #${issue.data.number}`);
-            core.setOutput('issue_number', issue.data.number);
-            core.setOutput('issue_url', issue.data.html_url);
-
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+        script: "const fs = require('fs');\nconst findings = JSON.parse(fs.readFileSync('./security-findings/.codex/security-findings-comprehensive.json',\
+          \ 'utf8'));\n\nconst summary = findings.summary;\nconst metadata = findings.scan_metadata;\n\
+          \n// Build issue title\nlet title = `\U0001F510 [Auto] Security Findings`;\n\
+          if (summary.critical_count > 0) {\n  title += ` \u2014 ${summary.critical_count}\
+          \ CRITICAL`;\n}\nif (summary.high_count > 0) {\n  title += `, ${summary.high_count}\
+          \ HIGH`;\n}\n\n// Build issue body\nlet body = `## Security Findings Report\\\
+          n\\n`;\nbody += `**Commit:** [\\`${metadata.commit.substring(0, 12)}\\`](${findings.scan_metadata.run_url})\\\
+          n`;\nbody += `**Run:** [#${metadata.run_id}](${metadata.run_url})\\n\\n`;\n\
+          \n// Summary section\nbody += `## Summary\\n\\n`;\nbody += `| Severity |\
+          \ Count |\\n`;\nbody += `|----------|-------|\\n`;\nbody += `| \U0001F534\
+          \ CRITICAL | ${summary.critical_count} |\\n`;\nbody += `| \U0001F7E0 HIGH\
+          \ | ${summary.high_count} |\\n`;\nbody += `| \U0001F7E1 MEDIUM | ${summary.medium_count}\
+          \ |\\n`;\nbody += `| \U0001F7E2 LOW | ${summary.low_count} |\\n`;\nbody\
+          \ += `| **TOTAL** | **${summary.total_findings}** |\\n\\n`;\n\n// Agent\
+          \ assignments\nbody += `## Recommended Agent Handoffs\\n\\n`;\nfor (const\
+          \ handoff of summary.recommended_agent_handoffs) {\n  body += `- [\\`${handoff.agent}\\\
+          `](.github/agents/${handoff.agent}.md): ${handoff.findings_count} findings\\\
+          n`;\n}\n\nbody += `\\n## Findings by Tool\\n\\n`;\nfor (const [tool, findings_list]\
+          \ of Object.entries(findings.findings_by_tool)) {\n  if (Array.isArray(findings_list)\
+          \ && findings_list.length > 0) {\n    body += `- **${tool}**: ${findings_list.length}\
+          \ findings\\n`;\n  }\n}\n\nbody += `\\n## Next Steps\\n\\n`;\nbody += `1.\
+          \ Review findings in [comprehensive report](${metadata.run_url}#artifacts)\\\
+          n`;\nbody += `2. Assign to appropriate agent or create PR\\n`;\nbody +=\
+          \ `3. Track remediation in this issue\\n\\n`;\n\nbody += `---\\n\\n`;\n\
+          body += `_Automatically generated by Security Findings Copilot Handoff workflow_\\\
+          n`;\n\n// Create labels\nconst labels = ['security-findings', 'copilot-actionable',\
+          \ 'automated'];\nif (summary.critical_count > 0) {\n  labels.push('security-risk');\n\
+          \  labels.push('priority-critical');\n}\nif (summary.high_count > 0) {\n\
+          \  labels.push('priority-high');\n}\n\n// Create the issue\nconst issue\
+          \ = await github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  title: title,\n  body: body,\n  labels: labels,\n\
+          });\n\nconsole.log(`\u2705 Created issue  #${issue.data.number}`);\ncore.setOutput('issue_number',\
+          \ issue.data.number);\ncore.setOutput('issue_url', issue.data.html_url);\n"
     - name: Comment on PR if available
       if: github.event.workflow_run.event == 'pull_request'
       uses: actions/github-script@v8
       with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
-            const fs = require('fs');
-            const findings = JSON.parse(fs.readFileSync('./security-findings/.codex/security-findings-comprehensive.json', 'utf8'));
-
-            const summary = findings.summary;
-
-            // Find PR from workflow run
-            const runs = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: '${{ github.event.workflow_run.workflow_id }}',
-              run_number: '${{ github.event.workflow_run.run_number }}',
-            });
-
-            if (runs.data.workflow_runs.length === 0) {
-              console.log('No workflow run found');
-              return;
-            }
-
-            const run = runs.data.workflow_runs[0];
-            const pull_requests = run.pull_requests || [];
-
-            if (pull_requests.length === 0) {
-              console.log('No PRs associated with this run');
-              return;
-            }
-
-            const pr_number = pull_requests[0].number;
-
-            // Build comment
-            let comment = `## 🔐 Security Findings Summary\n\n`;
-            comment += `| Finding Type | Count |\n`;
-            comment += `|---|---|\n`;
-            comment += `| Critical | ${summary.critical_count} |\n`;
-            comment += `| High | ${summary.high_count} |\n`;
-            comment += `| Medium | ${summary.medium_count} |\n`;
-            comment += `| Low | ${summary.low_count} |\n\n`;
-
-            comment += `[View comprehensive report](${findings.scan_metadata.run_url}#artifacts)\n`;
-
-            // Post comment
-            try {
-              await github.rest.issues.createComment({
-                issue_number: pr_number,
-                body: comment,
-              });
-              console.log(`✅ Posted comment to PR  #${pr_number}`);
-            } catch (e) {
-              console.log(`Warning: Could not post comment to PR: ${e.message}`);
-            }
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+        script: "const fs = require('fs');\nconst findings = JSON.parse(fs.readFileSync('./security-findings/.codex/security-findings-comprehensive.json',\
+          \ 'utf8'));\n\nconst summary = findings.summary;\n\n// Find PR from workflow\
+          \ run\nconst runs = await github.rest.actions.listWorkflowRuns({\n  owner:\
+          \ context.repo.owner,\n  repo: context.repo.repo,\n  workflow_id: '${{ github.event.workflow_run.workflow_id\
+          \ }}',\n  run_number: '${{ github.event.workflow_run.run_number }}',\n});\n\
+          \nif (runs.data.workflow_runs.length === 0) {\n  console.log('No workflow\
+          \ run found');\n  return;\n}\n\nconst run = runs.data.workflow_runs[0];\n\
+          const pull_requests = run.pull_requests || [];\n\nif (pull_requests.length\
+          \ === 0) {\n  console.log('No PRs associated with this run');\n  return;\n\
+          }\n\nconst pr_number = pull_requests[0].number;\n\n// Build comment\nlet\
+          \ comment = `## \U0001F510 Security Findings Summary\\n\\n`;\ncomment +=\
+          \ `| Finding Type | Count |\\n`;\ncomment += `|---|---|\\n`;\ncomment +=\
+          \ `| Critical | ${summary.critical_count} |\\n`;\ncomment += `| High | ${summary.high_count}\
+          \ |\\n`;\ncomment += `| Medium | ${summary.medium_count} |\\n`;\ncomment\
+          \ += `| Low | ${summary.low_count} |\\n\\n`;\n\ncomment += `[View comprehensive\
+          \ report](${findings.scan_metadata.run_url}#artifacts)\\n`;\n\n// Post comment\n\
+          try {\n  await github.rest.issues.createComment({\n    issue_number: pr_number,\n\
+          \    body: comment,\n  });\n  console.log(`\u2705 Posted comment to PR \
+          \ #${pr_number}`);\n} catch (e) {\n  console.log(`Warning: Could not post\
+          \ comment to PR: ${e.message}`);\n}\n"

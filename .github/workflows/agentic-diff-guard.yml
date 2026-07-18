@@ -1,39 +1,38 @@
----
 name: agentic-diff-guard
-
-on:
+true:
   pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
-
+    branches:
+    - main
+    types:
+    - opened
+    - synchronize
+    - reopened
 permissions:
   contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   deterministic-diff-guard:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: pip
+    - name: Run deterministic diff guard
+      env:
+        GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+      run: 'set -euo pipefail
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-          cache: 'pip'
+        python .github/scripts/agentic_diff_guard.py
 
-      - name: Run deterministic diff guard
-        env:
-          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-          python .github/scripts/agentic_diff_guard.py
+        '
+    timeout-minutes: 30

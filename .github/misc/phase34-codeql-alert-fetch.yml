@@ -117,7 +117,7 @@ jobs:
           fi
 
       - name: Upload Alert Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v5
         with:
           name: codeql-alert-inventory
           path: |

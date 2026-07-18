@@ -1,6 +1,5 @@
----
 name: Test Variables API
-on:
+true:
   workflow_dispatch:
     inputs:
       run_org_tests:
@@ -30,7 +29,8 @@ jobs:
     - name: Identify available token and scopes
       id: check
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       run: "# Determine best available token\nif [ -n \"$CODEX_MASTER_KEY\" ]; then\n\
         \  TOKEN=\"$CODEX_MASTER_KEY\"\n  SOURCE=\"CODEX_MASTER_KEY\"\nelif [ -n \"\
@@ -62,88 +62,82 @@ jobs:
       ORG: ${{ github.repository_owner }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
-      - name: Checkout scripts
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          sparse-checkout: scripts/ci/test_variables_api.py
-          sparse-checkout-cone-mode: false
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          cache: pip
-          python-version: 3.12.13
-      - name: Run repo variable tests
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          ORG: ${{ github.repository_owner }}
-          DRY_RUN: ${{ inputs.dry_run }}
-        run: |
-          echo "Token source: ${{ needs.validate-token.outputs.token_source }}"
-          echo "Has repo scope: ${{ needs.validate-token.outputs.has_repo_scope }}"
-          echo ""
-
-          if [ "$DRY_RUN" = "true" ]; then
-            echo "DRY RUN — skipping variable CRUD tests"
-            python scripts/ci/test_variables_api.py 2>&1 | head -30
-            exit 0
-          fi
-
-          python scripts/ci/test_variables_api.py
-      - name: Post result to PR Status Dashboard
-        if: always() && github.event.pull_request.number != ''
-        uses: ./.github/actions/post-pr-summary
-        with:
-          workflow-name: "Test Variables API — Repo Scope"
-          status: ${{ job.status }}
-          summary: Repo variable CRUD test (CREATE/GET/UPDATE/DELETE)
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    - name: Checkout scripts
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        sparse-checkout: scripts/ci/test_variables_api.py
+        sparse-checkout-cone-mode: false
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Run repo variable tests
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        ORG: ${{ github.repository_owner }}
+        DRY_RUN: ${{ inputs.dry_run }}
+      run: "echo \"Token source: ${{ needs.validate-token.outputs.token_source }}\"\
+        \necho \"Has repo scope: ${{ needs.validate-token.outputs.has_repo_scope }}\"\
+        \necho \"\"\n\nif [ \"$DRY_RUN\" = \"true\" ]; then\n  echo \"DRY RUN \u2014\
+        \ skipping variable CRUD tests\"\n  python scripts/ci/test_variables_api.py\
+        \ 2>&1 | head -30\n  exit 0\nfi\n\npython scripts/ci/test_variables_api.py\n"
+    - name: Post result to PR Status Dashboard
+      if: always() && github.event.pull_request.number != ''
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: "Test Variables API \u2014 Repo Scope"
+        status: ${{ job.status }}
+        summary: Repo variable CRUD test (CREATE/GET/UPDATE/DELETE)
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+    timeout-minutes: 30
   test-org-variables:
     name: Test Org Variables (CREATE/GET/UPDATE/DELETE)
     needs: validate-token
     if: inputs.run_org_tests == true
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout scripts
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          sparse-checkout: scripts/ci/test_variables_api.py
-          sparse-checkout-cone-mode: false
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          cache: pip
-          python-version: 3.12.13
-      - name: Run org variable tests
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          REPO: ${{ github.repository }}
-          ORG: ${{ github.repository_owner }}
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          echo "Token source: ${{ needs.validate-token.outputs.token_source }}"
-          echo "Has admin:org scope: ${{ needs.validate-token.outputs.has_admin_org }}"
-          echo ""
-
-          if [ "${{ needs.validate-token.outputs.has_admin_org }}" = "false" ]; then
-            echo "::warning::Skipping org tests — token lacks admin:org scope"
-            echo "Required: classic PAT with admin:org OR fine-grained PAT with 'Variables: write' org permission"
-            exit 0
-          fi
-
-          python scripts/ci/test_variables_api.py
-      - name: Post result to PR Status Dashboard
-        if: always() && github.event.pull_request.number != ''
-        uses: ./.github/actions/post-pr-summary
-        with:
-          workflow-name: "Test Variables API — Org Scope"
-          status: ${{ job.status }}
-          summary: Org variable CRUD test (CREATE/GET/UPDATE/DELETE)
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    - name: Checkout scripts
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        sparse-checkout: scripts/ci/test_variables_api.py
+        sparse-checkout-cone-mode: false
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Run org variable tests
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        REPO: ${{ github.repository }}
+        ORG: ${{ github.repository_owner }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "echo \"Token source: ${{ needs.validate-token.outputs.token_source }}\"\
+        \necho \"Has admin:org scope: ${{ needs.validate-token.outputs.has_admin_org\
+        \ }}\"\necho \"\"\n\nif [ \"${{ needs.validate-token.outputs.has_admin_org\
+        \ }}\" = \"false\" ]; then\n  echo \"::warning::Skipping org tests \u2014\
+        \ token lacks admin:org scope\"\n  echo \"Required: classic PAT with admin:org\
+        \ OR fine-grained PAT with 'Variables: write' org permission\"\n  exit 0\n\
+        fi\n\npython scripts/ci/test_variables_api.py\n"
+    - name: Post result to PR Status Dashboard
+      if: always() && github.event.pull_request.number != ''
+      uses: ./.github/actions/post-pr-summary
+      with:
+        workflow-name: "Test Variables API \u2014 Org Scope"
+        status: ${{ job.status }}
+        summary: Org variable CRUD test (CREATE/GET/UPDATE/DELETE)
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
+    timeout-minutes: 30
   summary:
     name: Test Summary
     needs:

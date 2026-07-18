@@ -1,5 +1,5 @@
 name: Correlation Engine Monitoring - Phase 4E Planset 011
-on:
+true:
   schedule:
   - cron: 0 0 * * *
   workflow_dispatch: null
@@ -98,14 +98,15 @@ jobs:
       env:
         GATE_OUTCOME: ${{ steps.gate_check.outcome }}
       run: "echo \"## Phase 4E Planset 011 - Correlation Engine Monitor\"\necho \"\
-        \"\necho \"**Status**: $(if [ \"$GATE_OUTCOME\" = 'success' ]; then echo '\u2705 PASSED'; else\
-        \ echo '\u274C FAILED'; fi)\"\necho \"\"\necho \"### Monitored Metrics\"\n\
-        echo \"- Temporal Correlation Accuracy: >85% \u2705\"\necho \"- Spatial Correlation\
-        \ Accuracy: >85% \u2705\"\necho \"- Root Cause ID Success Rate: >80% \u2705\
-        \"\necho \"- Alert Reduction (Cascading): 60%+ \u2705\"\necho \"- False Positive\
-        \ Rate: <5% \u2705\"\necho \"- Causal Graph: 100+ nodes, 300+ edges \u2705\
-        \"\necho \"\"\necho \"[Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)\"\
+        \"\necho \"**Status**: $(if [ \"$GATE_OUTCOME\" = 'success' ]; then echo '\u2705\
+        \ PASSED'; else echo '\u274C FAILED'; fi)\"\necho \"\"\necho \"### Monitored\
+        \ Metrics\"\necho \"- Temporal Correlation Accuracy: >85% \u2705\"\necho \"\
+        - Spatial Correlation Accuracy: >85% \u2705\"\necho \"- Root Cause ID Success\
+        \ Rate: >80% \u2705\"\necho \"- Alert Reduction (Cascading): 60%+ \u2705\"\
+        \necho \"- False Positive Rate: <5% \u2705\"\necho \"- Causal Graph: 100+\
+        \ nodes, 300+ edges \u2705\"\necho \"\"\necho \"[Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)\"\
         \n"
+    timeout-minutes: 20
   validate-correlation-pipeline:
     runs-on: ubuntu-latest
     name: Validate Full Correlation Pipeline
@@ -156,6 +157,7 @@ jobs:
         -v
 
         '
+    timeout-minutes: 15
   generate-correlation-report:
     runs-on: ubuntu-latest
     name: Generate Correlation Engine Report

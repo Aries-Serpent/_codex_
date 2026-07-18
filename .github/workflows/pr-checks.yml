@@ -1,6 +1,5 @@
----
 name: PR Checks (Isolated Cache)
-on:
+true:
   pull_request:
     types:
     - opened
@@ -57,14 +56,8 @@ jobs:
 
         '
     - name: Run tests with parallelization
-      run: |
-        python -m pytest tests/ \
-          -n auto \
-          --timeout=300 \
-          --tb=short \
-          -x \
-          --dist=loadscope \
-          -v
+      run: "python -m pytest tests/ \\\n  -n auto \\\n  --timeout=300 \\\n  --tb=short\
+        \ \\\n  -x \\\n  --dist=loadscope \\\n  -v\n"
     - name: Cache health report
       if: always()
       continue-on-error: true
@@ -89,6 +82,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -108,7 +102,9 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

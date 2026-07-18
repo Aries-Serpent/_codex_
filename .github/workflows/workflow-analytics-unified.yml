@@ -1,279 +1,233 @@
----
 name: Workflow Analytics & Health (Unified)
-
-on:
-  # Scheduled analytics — hourly health check + weekly deep analysis.
-  # GROUNDED: Removed workflow_run: ["*"] trigger that caused exponential cascade.
-  # Each workflow completion was triggering this + cognitive_brain_ci_feedback,
-  # whose completions triggered each other → 200+ queued runs.
-  # Hourly schedule (same cadence as batch-ci-triage.yml) is sufficient.
+true:
   schedule:
-    - cron: '0 0 * * 1'  # Weekly on Monday at 00:00 UTC (deep analytics)
-    - cron: '0 * * * *'  # Hourly health checks (was */30 — reduced to match batch-ci-triage)
-
-  # Manual trigger with all options
+  - cron: 0 0 * * 1
+  - cron: 0 * * * *
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Analysis mode'
+        description: Analysis mode
         required: true
-        default: 'health-check'
+        default: health-check
         type: choice
         options:
-          - 'health-check'
-          - 'full-analytics'
-          - 'quantum-analysis'
-
+        - health-check
+        - full-analytics
+        - quantum-analysis
       analysis_period:
-        description: 'Number of recent workflow runs to analyze'
+        description: Number of recent workflow runs to analyze
         required: false
         default: '50'
         type: choice
         options:
-          - '20'
-          - '50'
-          - '100'
-          - '200'
-
+        - '20'
+        - '50'
+        - '100'
+        - '200'
       workflow_filter:
-        description: 'Filter by specific workflow name (leave empty for all)'
+        description: Filter by specific workflow name (leave empty for all)
         required: false
         type: string
-
       status_filter:
-        description: 'Filter by workflow status'
+        description: Filter by workflow status
         required: false
-        default: 'all'
+        default: all
         type: choice
         options:
-          - 'all'
-          - 'failure'
-          - 'success'
-          - 'action_required'
-          - 'cancelled'
-
+        - all
+        - failure
+        - success
+        - action_required
+        - cancelled
       create_report:
-        description: 'Generate detailed markdown report'
+        description: Generate detailed markdown report
         required: false
         default: true
         type: boolean
-
       create_issue:
-        description: 'Create GitHub issue with findings if patterns detected'
+        description: Create GitHub issue with findings if patterns detected
         required: false
         default: false
         type: boolean
-
       full_analysis:
-        description: 'Run full quantum analysis'
+        description: Run full quantum analysis
         type: boolean
         default: false
-
       commit_sha:
-        description: 'Commit SHA to analyze (defaults to current commit)'
+        description: Commit SHA to analyze (defaults to current commit)
         required: false
         type: string
         default: ''
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   issues: write
   actions: read
-
-# GROUNDED: Concurrency control prevents duplicate queued runs.
-# Only one health check or analytics job runs at a time.
-
 jobs:
-  # Health check job (runs frequently)
   quantum-health-check:
     name: Quantum-Inspired Health Check
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || inputs.mode == 'health-check' || inputs.mode == 'quantum-analysis'
-
+    if: github.event_name == 'schedule' || inputs.mode == 'health-check' || inputs.mode
+      == 'quantum-analysis'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-            persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: CacheManager health check
+      continue-on-error: true
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow workflow-analytics-unified
+        2>/dev/null || echo "Cache health: check skipped"
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow workflow-analytics-unified 2>/dev/null || echo "Cache health: check skipped"
-      - name: Set up Python 3.12
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        '
+    - name: Set up Python 3.12
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'pip install --upgrade pip
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install requests pyyaml numpy scipy
+        pip install requests pyyaml numpy scipy
 
-      - name: Run quantum health analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          if [ -f "scripts/quantum_workflow_health.py" ]; then
-            python scripts/quantum_workflow_health.py \
-              --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \
-              ${{ inputs.full_analysis && '--full-analysis' || '' }}
-          else
-            echo "Quantum health script not found, running basic health check"
-            # Fallback health check
-            echo "Health check passed"
-          fi
+        '
+    - name: Run quantum health analysis
+      env:
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "if [ -f \"scripts/quantum_workflow_health.py\" ]; then\n  python scripts/quantum_workflow_health.py\
+        \ \\\n    --commit-sha \"${{ github.event.workflow_run.head_sha || inputs.commit_sha\
+        \ || github.sha }}\" \\\n    ${{ inputs.full_analysis && '--full-analysis'\
+        \ || '' }}\nelse\n  echo \"Quantum health script not found, running basic\
+        \ health check\"\n  # Fallback health check\n  echo \"Health check passed\"\
+        \nfi\n"
+    - name: Upload health report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: '.codex/reports/workflow-health-*.json
 
-      - name: Upload health report
-        if: always()
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          path: |
-            .codex/reports/workflow-health-*.json
-            .codex/reports/quantum-analysis-*.json
-          if-no-files-found: ignore
-          retention-days: 30
+          .codex/reports/quantum-analysis-*.json
 
-          name: workflow-health-${{ github.run_number }}
-  # Weekly analytics job
+          '
+        if-no-files-found: ignore
+        retention-days: 30
+        name: workflow-health-${{ github.run_number }}
+    timeout-minutes: 15
   weekly-analytics:
     name: Weekly Workflow Analytics
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' && github.event.schedule == '0 0 * * 1' || inputs.mode == 'full-analytics'
-
+    if: github.event_name == 'schedule' && github.event.schedule == '0 0 * * 1' ||
+      inputs.mode == 'full-analytics'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install requests pyyaml
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install requests pyyaml
+        '
+    - name: Run Weekly Analytics
+      id: analytics
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "if [ -f \".github/scripts/workflow_analytics_runner.py\" ]; then\n  python\
+        \ .github/scripts/workflow_analytics_runner.py \\\n    --analysis-period ${{\
+        \ inputs.analysis_period || '100' }} \\\n    --status-filter ${{ inputs.status_filter\
+        \ || 'all' }} \\\n    --output-dir \".codex/reports\" \\\n    --create-report\
+        \ ${{ inputs.create_report || 'true' }}\nelse\n  echo \"Analytics script not\
+        \ found, running basic analysis\"\n  mkdir -p .codex/reports\n  # Basic workflow\
+        \ analysis using gh CLI\n  gh run list --limit ${{ inputs.analysis_period\
+        \ || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json\n\
+        \  echo \"Analytics complete\"\nfi\n"
+    - name: Create issue if patterns detected
+      if: inputs.create_issue == true
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "# Create issue with findings\nif [ -f \".codex/reports/findings.md\" ];\
+        \ then\n  gh issue create \\\n    --title \"Workflow Analytics: Patterns Detected\"\
+        \ \\\n    --body-file .codex/reports/findings.md \\\n    --label \"automated,analytics\"\
+        \nfi\n"
+    - name: Upload analytics reports
+      uses: actions/upload-artifact@v5
+      with:
+        path: '.codex/reports/workflow-*.json
 
-      - name: Run Weekly Analytics
-        id: analytics
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          if [ -f ".github/scripts/workflow_analytics_runner.py" ]; then
-            python .github/scripts/workflow_analytics_runner.py \
-              --analysis-period ${{ inputs.analysis_period || '100' }} \
-              --status-filter ${{ inputs.status_filter || 'all' }} \
-              --output-dir ".codex/reports" \
-              --create-report ${{ inputs.create_report || 'true' }}
-          else
-            echo "Analytics script not found, running basic analysis"
-            mkdir -p .codex/reports
-            # Basic workflow analysis using gh CLI
-            gh run list --limit ${{ inputs.analysis_period || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json
-            echo "Analytics complete"
-          fi
+          .codex/reports/workflow-*.md
 
-      - name: Create issue if patterns detected
-        if: inputs.create_issue == true
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          # Create issue with findings
-          if [ -f ".codex/reports/findings.md" ]; then
-            gh issue create \
-              --title "Workflow Analytics: Patterns Detected" \
-              --body-file .codex/reports/findings.md \
-              --label "automated,analytics"
-          fi
+          .codex/reports/findings.md
 
-      - name: Upload analytics reports
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          path: |
-            .codex/reports/workflow-*.json
-            .codex/reports/workflow-*.md
-            .codex/reports/findings.md
-          if-no-files-found: ignore
-          retention-days: 60
-
-          name: workflow-analytics-${{ github.run_number }}
-  # Manual analytics job
+          '
+        if-no-files-found: ignore
+        retention-days: 60
+        name: workflow-analytics-${{ github.run_number }}
+    timeout-minutes: 30
   manual-analytics:
     name: Manual Analytics
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full-analytics'
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        python-version: 3.12.13
+        cache-tier: common
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    - name: Install dependencies
+      run: 'pip install --upgrade pip
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: common
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        pip install requests pyyaml pandas matplotlib
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install requests pyyaml pandas matplotlib
+        '
+    - name: Run Manual Analytics
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      run: "mkdir -p .codex/reports\n\n# Gather workflow data\ngh run list --limit\
+        \ ${{ inputs.analysis_period }} \\\n  ${{ inputs.workflow_filter && format('--workflow\
+        \ {0}', inputs.workflow_filter) || '' }} \\\n  ${{ inputs.status_filter !=\
+        \ 'all' && format('--status {0}', inputs.status_filter) || '' }} \\\n  --json\
+        \ name,conclusion,startedAt,durationMs,workflowName > .codex/reports/manual-analytics.json\n\
+        \n# Generate report\nif [ \"${{ inputs.create_report }}\" == \"true\" ]; then\n\
+        \  echo \"# Workflow Analytics Report\" > .codex/reports/analytics-report.md\n\
+        \  echo \"\" >> .codex/reports/analytics-report.md\n  echo \"Generated: $(date\
+        \ -u +%Y-%m-%dT%H:%M:%SZ)\" >> .codex/reports/analytics-report.md\n  echo\
+        \ \"Period: Last ${{ inputs.analysis_period }} runs\" >> .codex/reports/analytics-report.md\n\
+        \  echo \"\" >> .codex/reports/analytics-report.md\n\n  # Calculate basic\
+        \ metrics\n  total=$(jq 'length' .codex/reports/manual-analytics.json)\n \
+        \ success=$(jq '[.[] | select(.conclusion == \"success\")] | length' .codex/reports/manual-analytics.json)\n\
+        \  failure=$(jq '[.[] | select(.conclusion == \"failure\")] | length' .codex/reports/manual-analytics.json)\n\
+        \  success_rate=$(echo \"scale=2; $success * 100 / $total\" | bc)\n\n  echo\
+        \ \"## Summary\" >> .codex/reports/analytics-report.md\n  echo \"- Total runs:\
+        \ $total\" >> .codex/reports/analytics-report.md\n  echo \"- Success: $success\"\
+        \ >> .codex/reports/analytics-report.md\n  echo \"- Failure: $failure\" >>\
+        \ .codex/reports/analytics-report.md\n  echo \"- Success rate: ${success_rate}%\"\
+        \ >> .codex/reports/analytics-report.md\nfi\n"
+    - name: Upload manual analytics
+      uses: actions/upload-artifact@v5
+      with:
+        path: '.codex/reports/manual-analytics.json
 
-      - name: Run Manual Analytics
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          mkdir -p .codex/reports
+          .codex/reports/analytics-report.md
 
-          # Gather workflow data
-          gh run list --limit ${{ inputs.analysis_period }} \
-            ${{ inputs.workflow_filter && format('--workflow {0}', inputs.workflow_filter) || '' }} \
-            ${{ inputs.status_filter != 'all' && format('--status {0}', inputs.status_filter) || '' }} \
-            --json name,conclusion,startedAt,durationMs,workflowName > .codex/reports/manual-analytics.json
-
-          # Generate report
-          if [ "${{ inputs.create_report }}" == "true" ]; then
-            echo "# Workflow Analytics Report" > .codex/reports/analytics-report.md
-            echo "" >> .codex/reports/analytics-report.md
-            echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> .codex/reports/analytics-report.md
-            echo "Period: Last ${{ inputs.analysis_period }} runs" >> .codex/reports/analytics-report.md
-            echo "" >> .codex/reports/analytics-report.md
-
-            # Calculate basic metrics
-            total=$(jq 'length' .codex/reports/manual-analytics.json)
-            success=$(jq '[.[] | select(.conclusion == "success")] | length' .codex/reports/manual-analytics.json)
-            failure=$(jq '[.[] | select(.conclusion == "failure")] | length' .codex/reports/manual-analytics.json)
-            success_rate=$(echo "scale=2; $success * 100 / $total" | bc)
-
-            echo "## Summary" >> .codex/reports/analytics-report.md
-            echo "- Total runs: $total" >> .codex/reports/analytics-report.md
-            echo "- Success: $success" >> .codex/reports/analytics-report.md
-            echo "- Failure: $failure" >> .codex/reports/analytics-report.md
-            echo "- Success rate: ${success_rate}%" >> .codex/reports/analytics-report.md
-          fi
-
-      - name: Upload manual analytics
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          path: |
-            .codex/reports/manual-analytics.json
-            .codex/reports/analytics-report.md
-          if-no-files-found: ignore
-          retention-days: 90
-
-          name: manual-analytics-${{ github.run_number }}
+          '
+        if-no-files-found: ignore
+        retention-days: 90
+        name: manual-analytics-${{ github.run_number }}
+    timeout-minutes: 30

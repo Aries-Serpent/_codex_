@@ -1,6 +1,5 @@
----
 name: rust-error-validator Observation (D_CAPABLE)
-on:
+true:
   schedule:
   - cron: 0 8 * * 1
   workflow_dispatch:
@@ -29,14 +28,19 @@ jobs:
       env:
         OVERRIDE_DATE: ${{ inputs.override_date || '' }}
       run: "python3 - << 'PYEOF'\nimport datetime\nimport os\nimport re\nimport sys\n\
-        import yaml\n\n# ── Configuration ────────────────────────────────────────────────\n\
-        AGENT_ID            = \"rust-error-validator\"\nOBSERVATION_START   = datetime.date(2026,\
-        \ 3, 4)  # D_CAPABLE promotion date\nOBSERVATION_DAYS    = 30\nREGISTRY_PATH\
-        \       = \".github/agents/AGENT_REGISTRY.yaml\"\nBASELINE_ADR        = \"\
-        docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\"\nHISTORICAL_EVIDENCE\
-        \ = \".codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md\"\n\n# ── Today's date\
-        \ (allow override for testing) ─────────────────────\noverride = os.environ.get(\"\
-        OVERRIDE_DATE\", \"\").strip()\nif override:\n    today = datetime.date.fromisoformat(override)\n\
+        import yaml\n\n# \u2500\u2500 Configuration \u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\nAGENT_ID            = \"rust-error-validator\"\n\
+        OBSERVATION_START   = datetime.date(2026, 3, 4)  # D_CAPABLE promotion date\n\
+        OBSERVATION_DAYS    = 30\nREGISTRY_PATH       = \".github/agents/AGENT_REGISTRY.yaml\"\
+        \nBASELINE_ADR        = \"docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\"\
+        \nHISTORICAL_EVIDENCE = \".codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md\"\n\
+        \n# \u2500\u2500 Today's date (allow override for testing) \u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\noverride = os.environ.get(\"OVERRIDE_DATE\"\
+        , \"\").strip()\nif override:\n    today = datetime.date.fromisoformat(override)\n\
         else:\n    today = datetime.date.today()\n\nobservation_end = OBSERVATION_START\
         \ + datetime.timedelta(days=OBSERVATION_DAYS)\nelapsed = (today - OBSERVATION_START).days\n\
         remaining = max(0, (observation_end - today).days)\nwindow_closed = today\
@@ -44,47 +48,58 @@ jobs:
         Observation start:  {OBSERVATION_START}\")\nprint(f\"Observation end:    {observation_end}\"\
         )\nprint(f\"Today:              {today}\")\nprint(f\"Elapsed:            {elapsed}\
         \ / {OBSERVATION_DAYS} days\")\nprint(f\"Remaining:          {remaining} days\"\
-        )\nprint(f\"Window closed:      {window_closed}\")\nprint()\n\n# ── Read AGENT_REGISTRY.yaml\
-        \ ──────────────────────────────────────\nregistry_violations = None\nregistry_maturity\
-        \ = None\nregistry_autonomy = None\nregistry_obs_started = None\ntry:\n  \
-        \  with open(REGISTRY_PATH) as f:\n        registry = yaml.safe_load(f)\n\
-        \    agents = registry if isinstance(registry, list) else registry.get(\"\
-        agents\", [])\n    for agent in agents:\n        if isinstance(agent, dict)\
-        \ and agent.get(\"id\") == AGENT_ID:\n            registry_violations = agent.get(\"\
-        violations_30d\")\n            registry_maturity   = agent.get(\"maturity\"\
-        )\n            registry_autonomy   = agent.get(\"autonomy_model\")\n     \
-        \       registry_obs_started = agent.get(\"observation_started\")\n      \
-        \      break\nexcept Exception as e:\n    print(f\"::warning::Could not parse\
-        \ {REGISTRY_PATH}: {e}\")\n\nprint(f\"Registry violations_30d:    {registry_violations!r}\"\
-        )\nprint(f\"Registry maturity:          {registry_maturity!r}\")\nprint(f\"\
-        Registry autonomy_model:    {registry_autonomy!r}\")\nprint(f\"Registry observation_started:\
-        \ {registry_obs_started!r}\")\nprint()\n\n# ── Read historical evidence (baseline)\
-        \ ───────────────────────────\n# Explicitly leverage existing historical observation\
-        \ data per task requirements.\nhist_evidence = \"not found\"\nfor path in\
-        \ [BASELINE_ADR, HISTORICAL_EVIDENCE]:\n    try:\n        with open(path)\
-        \ as f:\n            text = f.read()\n        if \"rust-error-validator\"\
-        \ in text:\n  # Extract pass rate summary if present\n         \
-        \   m = re.search(r\"(24/24|100%|violations_30d.*?0)\", text)\n          \
-        \  hist_evidence = m.group(0) if m else \"present (no summary extracted)\"\
-        \n            print(f\"Historical evidence ({path}): {hist_evidence}\")\n\
-        \            break\n    except FileNotFoundError:\n        pass\n\n# ── Verdict\
-        \ ───────────────────────────────────────────────────────\nviolations_ok =\
-        \ registry_violations is not None and int(registry_violations) == 0\nmaturity_ok\
-        \   = registry_maturity == \"production\"\nautonomy_ok   = registry_autonomy\
-        \ == \"D_CAPABLE\"\nobs_match     = str(registry_obs_started) == str(OBSERVATION_START)\n\
-        \nprint()\nprint(\"=\" * 60)\nif window_closed:\n    verdict = \"CLOSED —\
-        \ observation window complete\"\nelif violations_ok:\n    verdict = f\"CLEAN\
-        \ — day {elapsed}/{OBSERVATION_DAYS} ({remaining} days remaining)\"\nelse:\n\
-        \    verdict = f\"VIOLATION — violations_30d={registry_violations!r}\"\nprint(f\"\
-        Verdict: {verdict}\")\nprint(\"=\" * 60)\n\n# ── Write GitHub outputs ──────────────────────────────────────────\n\
-        gho = os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\")\nwith open(gho, \"\
-        a\") as f:\n    f.write(f\"elapsed={elapsed}\\n\")\n    f.write(f\"remaining={remaining}\\\
-        n\")\n    f.write(f\"violations={registry_violations or 0}\\n\")\n    f.write(f\"\
-        window_closed={str(window_closed).lower()}\\n\")\n    f.write(f\"verdict={verdict}\\\
-        n\")\n\n# Fail if violations found during open window\nif not window_closed\
-        \ and not violations_ok and registry_violations is not None:\n    print(f\"\
-        ::error::rust-error-validator violations_30d={registry_violations} — demotion\
-        \ review required\")\n    sys.exit(1)\nPYEOF\n"
+        )\nprint(f\"Window closed:      {window_closed}\")\nprint()\n\n# \u2500\u2500\
+        \ Read AGENT_REGISTRY.yaml \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\nregistry_violations = None\nregistry_maturity =\
+        \ None\nregistry_autonomy = None\nregistry_obs_started = None\ntry:\n    with\
+        \ open(REGISTRY_PATH) as f:\n        registry = yaml.safe_load(f)\n    agents\
+        \ = registry if isinstance(registry, list) else registry.get(\"agents\", [])\n\
+        \    for agent in agents:\n        if isinstance(agent, dict) and agent.get(\"\
+        id\") == AGENT_ID:\n            registry_violations = agent.get(\"violations_30d\"\
+        )\n            registry_maturity   = agent.get(\"maturity\")\n           \
+        \ registry_autonomy   = agent.get(\"autonomy_model\")\n            registry_obs_started\
+        \ = agent.get(\"observation_started\")\n            break\nexcept Exception\
+        \ as e:\n    print(f\"::warning::Could not parse {REGISTRY_PATH}: {e}\")\n\
+        \nprint(f\"Registry violations_30d:    {registry_violations!r}\")\nprint(f\"\
+        Registry maturity:          {registry_maturity!r}\")\nprint(f\"Registry autonomy_model:\
+        \    {registry_autonomy!r}\")\nprint(f\"Registry observation_started: {registry_obs_started!r}\"\
+        )\nprint()\n\n# \u2500\u2500 Read historical evidence (baseline) \u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\
+        # Explicitly leverage existing historical observation data per task requirements.\n\
+        hist_evidence = \"not found\"\nfor path in [BASELINE_ADR, HISTORICAL_EVIDENCE]:\n\
+        \    try:\n        with open(path) as f:\n            text = f.read()\n  \
+        \      if \"rust-error-validator\" in text:\n  # Extract pass rate summary\
+        \ if present\n            m = re.search(r\"(24/24|100%|violations_30d.*?0)\"\
+        , text)\n            hist_evidence = m.group(0) if m else \"present (no summary\
+        \ extracted)\"\n            print(f\"Historical evidence ({path}): {hist_evidence}\"\
+        )\n            break\n    except FileNotFoundError:\n        pass\n\n# \u2500\
+        \u2500 Verdict \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\nviolations_ok = registry_violations\
+        \ is not None and int(registry_violations) == 0\nmaturity_ok   = registry_maturity\
+        \ == \"production\"\nautonomy_ok   = registry_autonomy == \"D_CAPABLE\"\n\
+        obs_match     = str(registry_obs_started) == str(OBSERVATION_START)\n\nprint()\n\
+        print(\"=\" * 60)\nif window_closed:\n    verdict = \"CLOSED \u2014 observation\
+        \ window complete\"\nelif violations_ok:\n    verdict = f\"CLEAN \u2014 day\
+        \ {elapsed}/{OBSERVATION_DAYS} ({remaining} days remaining)\"\nelse:\n   \
+        \ verdict = f\"VIOLATION \u2014 violations_30d={registry_violations!r}\"\n\
+        print(f\"Verdict: {verdict}\")\nprint(\"=\" * 60)\n\n# \u2500\u2500 Write\
+        \ GitHub outputs \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\u2500\u2500\u2500\u2500\ngho = os.environ.get(\"GITHUB_OUTPUT\"\
+        , \"/dev/null\")\nwith open(gho, \"a\") as f:\n    f.write(f\"elapsed={elapsed}\\\
+        n\")\n    f.write(f\"remaining={remaining}\\n\")\n    f.write(f\"violations={registry_violations\
+        \ or 0}\\n\")\n    f.write(f\"window_closed={str(window_closed).lower()}\\\
+        n\")\n    f.write(f\"verdict={verdict}\\n\")\n\n# Fail if violations found\
+        \ during open window\nif not window_closed and not violations_ok and registry_violations\
+        \ is not None:\n    print(f\"::error::rust-error-validator violations_30d={registry_violations}\
+        \ \u2014 demotion review required\")\n    sys.exit(1)\nPYEOF\n"
     - name: Write job summary
       if: always()
       env:
@@ -93,69 +108,37 @@ jobs:
         VIOLATIONS: ${{ steps.check.outputs.violations }}
         WINDOW_CLOSED: ${{ steps.check.outputs.window_closed }}
         VERDICT: ${{ steps.check.outputs.verdict }}
-      run: 'echo "## 🔍 rust-error-validator — D_CAPABLE Observation" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "|-------|-------|" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Observation start | 2026-03-04 (PR  #3495) |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Observation end   | 2026-04-03 (day 30) |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Elapsed days      | ${ELAPSED:-?} / 30 |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Remaining days    | ${REMAINING:-?} |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| violations_30d    | ${VIOLATIONS:-0} |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Window closed     | ${WINDOW_CLOSED:-false} |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| **Verdict**       | **${VERDICT:-see logs}** |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "### Historical Evidence Baseline" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "The 30-day observation leverages existing historical data confirmed
-        at promotion time:" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| Source | Evidence |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "|--------|---------|" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| \`docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\`
-        | 8/8 criteria met; 24/24 tests passing (100%); violations_30d: 0 |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| \`.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md\` line 100 | 24/24
-        tests ✅ 100% pass rate, status Complete |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| \`.codex/qa_walkthrough/capability_registry.json\` | No violation
-        flags |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "| All CI status docs in \`docs/cognitive_brain/status/\` | Zero enforcement
-        violations |" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "**D_CAPABLE Criteria Confirmed:** GROUNDED tier · structured handoff
-        · production maturity · violations_30d=0 · rank 20 ≤ 20" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-
-        echo "**ADR:** \`docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\`"
-        >> "$GITHUB_STEP_SUMMARY"
-
-        echo "**Scheduled by:** copilot-swe-agent[bot] (PR  #3496, 2026-03-05)" >>
-        "$GITHUB_STEP_SUMMARY"
-
-        '
+      run: "echo \"## \U0001F50D rust-error-validator \u2014 D_CAPABLE Observation\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"| Field | Value |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"|-------|-------|\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Observation start | 2026-03-04 (PR\
+        \  #3495) |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Observation end   | 2026-04-03\
+        \ (day 30) |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Elapsed days      | ${ELAPSED:-?}\
+        \ / 30 |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Remaining days    | ${REMAINING:-?}\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| violations_30d    | ${VIOLATIONS:-0}\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Window closed     | ${WINDOW_CLOSED:-false}\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| **Verdict**       | **${VERDICT:-see\
+        \ logs}** |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"### Historical Evidence Baseline\" >> \"$GITHUB_STEP_SUMMARY\"\n\
+        echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"The 30-day observation leverages\
+        \ existing historical data confirmed at promotion time:\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Source | Evidence |\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\necho \"|--------|---------|\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"| \\`docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\\\
+        ` | 8/8 criteria met; 24/24 tests passing (100%); violations_30d: 0 |\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\necho \"| \\`.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md\\\
+        ` line 100 | 24/24 tests \u2705 100% pass rate, status Complete |\" >> \"\
+        $GITHUB_STEP_SUMMARY\"\necho \"| \\`.codex/qa_walkthrough/capability_registry.json\\\
+        ` | No violation flags |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| All CI status\
+        \ docs in \\`docs/cognitive_brain/status/\\` | Zero enforcement violations\
+        \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\
+        echo \"**D_CAPABLE Criteria Confirmed:** GROUNDED tier \xB7 structured handoff\
+        \ \xB7 production maturity \xB7 violations_30d=0 \xB7 rank 20 \u2264 20\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"**ADR:** \\`docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md\\\
+        `\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"**Scheduled by:** copilot-swe-agent[bot]\
+        \ (PR  #3496, 2026-03-05)\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

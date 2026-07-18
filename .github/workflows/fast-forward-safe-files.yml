@@ -1,6 +1,5 @@
----
-name: ⚡ Fast-Forward Safe Files to Main
-on:
+name: "\u26A1 Fast-Forward Safe Files to Main"
+true:
   workflow_dispatch:
     inputs:
       pr_number:
@@ -33,7 +32,7 @@ on:
         default: ''
         required: false
       dry_run:
-        description: Dry run — show what WOULD be promoted, make NO changes
+        description: "Dry run \u2014 show what WOULD be promoted, make NO changes"
         type: boolean
         default: true
         required: false
@@ -51,7 +50,7 @@ permissions:
   actions: read
 jobs:
   preflight:
-    name: '🔍 Preflight — classify PR  #${{ inputs.pr_number }} files'
+    name: "\U0001F50D Preflight \u2014 classify PR  #${{ inputs.pr_number }} files"
     runs-on: ubuntu-latest
     outputs:
       allowed_count: ${{ steps.classify.outputs.allowed_count }}
@@ -72,7 +71,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
-        cache: 'pip'
+        cache: pip
     - name: Install PyYAML
       run: pip install pyyaml --quiet
     - name: Classify files (dry run)
@@ -99,25 +98,26 @@ jobs:
     - name: Write preflight summary
       run: "python3 - <<'PYEOF'\nimport json, os\ndata = json.load(open('/tmp/ff_plan.json'))\n\
         promote  = data.get('would_promote', [])\nexclude  = data.get('would_exclude',\
-        \ [])\ndeny     = data.get('would_deny', [])\nlines = [\n    \"## ⚡ Fast-Forward\
-        \ Preflight\\n\",\n    f\"**PR:**  #{data.get('pr_number', '?')}  \"\n    f\"\
-        **Source:** `{data.get('pr_branch','?')}@{data.get('source_sha','?')[:8]}`\
+        \ [])\ndeny     = data.get('would_deny', [])\nlines = [\n    \"## \u26A1 Fast-Forward\
+        \ Preflight\\n\",\n    f\"**PR:**  #{data.get('pr_number', '?')}  \"\n   \
+        \ f\"**Source:** `{data.get('pr_branch','?')}@{data.get('source_sha','?')[:8]}`\
         \  \"\n    f\"**Target:** `{data.get('target_branch','?')}`\\n\",\n    \"\
-        ---\",\n    f\"### ✅ Would promote ({len(promote)} files)\",\n]\nlines +=\
-        \ [f\"- `{f}`\" for f in promote] or [\"_none_\"]\nlines += [f\"\\n### ⏭️\
-        \ Excluded — not in allowlist ({len(exclude)} files)\"]\nlines += [f\"- `{f}`\"\
-        \ for f in exclude] or [\"_none_\"]\nlines += [f\"\\n### \U0001F6AB Denied\
-        \ — blocked by denylist ({len(deny)} files)\"]\nlines += [f\"- `{f}`\" for\
-        \ f in deny] or [\"_none_\"]\nif deny:\n    lines += [\"\\n> ⚠️ **Denied files\
-        \ will NOT be promoted.** Edit `.codex/fast_forward_allowlist.yaml` to change\
-        \ this.\"]\nwith open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:\n    f.write('\\\
-        n'.join(lines) + '\\n')\nPYEOF\n"
+        ---\",\n    f\"### \u2705 Would promote ({len(promote)} files)\",\n]\nlines\
+        \ += [f\"- `{f}`\" for f in promote] or [\"_none_\"]\nlines += [f\"\\n###\
+        \ \u23ED\uFE0F Excluded \u2014 not in allowlist ({len(exclude)} files)\"]\n\
+        lines += [f\"- `{f}`\" for f in exclude] or [\"_none_\"]\nlines += [f\"\\\
+        n### \U0001F6AB Denied \u2014 blocked by denylist ({len(deny)} files)\"]\n\
+        lines += [f\"- `{f}`\" for f in deny] or [\"_none_\"]\nif deny:\n    lines\
+        \ += [\"\\n> \u26A0\uFE0F **Denied files will NOT be promoted.** Edit `.codex/fast_forward_allowlist.yaml`\
+        \ to change this.\"]\nwith open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as\
+        \ f:\n    f.write('\\n'.join(lines) + '\\n')\nPYEOF\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   promote:
-    name: ⚡ Promote (${{ inputs.merge_mode || 'create-pr' }}, dry=${{ inputs.dry_run
-      }})
+    name: "\u26A1 Promote (${{ inputs.merge_mode || 'create-pr' }}, dry=${{ inputs.dry_run\
+      \ }})"
     needs: preflight
     runs-on: ubuntu-latest
     if: needs.preflight.outputs.allowed_count != '0'
@@ -136,7 +136,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
-        cache: 'pip'
+        cache: pip
     - name: Install PyYAML
       run: pip install pyyaml --quiet
     - name: Execute promotion
@@ -167,11 +167,11 @@ jobs:
       run: "[ -f /tmp/ff_result.json ] || { echo \"No result file.\" >> \"$GITHUB_STEP_SUMMARY\"\
         ; exit 0; }\npython3 - <<'PYEOF'\nimport json, os\ndata = json.load(open('/tmp/ff_result.json'))\n\
         status = data.get('status', 'unknown')\nicons = {\n    'dry-run': '\U0001F515\
-        \ DRY RUN',\n    'pr-created': '✅ PR Created',\n    'direct-pushed': '\U0001F680\
-        \ Direct-Pushed',\n    'nothing-to-promote': '⏭️ Nothing to Promote',\n}\n\
-        label = icons.get(status, f'❓ {status}')\nlines = [f\"## ⚡ Fast-Forward Result\
-        \ — {label}\\n\"]\nif status == 'pr-created':\n    lines += [\n        f\"\
-        **Fast-Forward PR:** [#{data['fast_forward_pr']}]({data['fast_forward_pr_url']})\"\
+        \ DRY RUN',\n    'pr-created': '\u2705 PR Created',\n    'direct-pushed':\
+        \ '\U0001F680 Direct-Pushed',\n    'nothing-to-promote': '\u23ED\uFE0F Nothing\
+        \ to Promote',\n}\nlabel = icons.get(status, f'\u2753 {status}')\nlines =\
+        \ [f\"## \u26A1 Fast-Forward Result \u2014 {label}\\n\"]\nif status == 'pr-created':\n\
+        \    lines += [\n        f\"**Fast-Forward PR:** [#{data['fast_forward_pr']}]({data['fast_forward_pr_url']})\"\
         ,\n        f\"**Staging branch:** `{data['staging_branch']}`\",\n        \"\
         \",\n    ]\nelif status == 'direct-pushed':\n    lines += [\n        f\"**Pushed\
         \ to:** `{data['target_branch']}`\",\n        f\"**New SHA:** `{data.get('new_sha','?')[:8]}`\"\
@@ -182,3 +182,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

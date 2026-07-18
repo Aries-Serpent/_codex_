@@ -83,7 +83,7 @@ jobs:
           fetch-depth: 0  # Full history for better analysis
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
@@ -327,7 +327,7 @@ jobs:
           echo "✅ Validation passed"
 
       - name: Upload flattened repository artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v5
         with:
           name: flattened-repo-${{ github.run_number }}
           path: |

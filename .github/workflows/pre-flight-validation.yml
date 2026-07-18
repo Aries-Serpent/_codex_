@@ -1,6 +1,5 @@
----
 name: Pre-Flight CI Validation
-on:
+true:
   pull_request:
     paths:
     - .github/workflows/**
@@ -30,8 +29,9 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout code
       uses: actions/checkout@v5
       with:
@@ -53,36 +53,33 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const MARKER = '<!-- pre-flight-validation-result -->';\nconst body\
-          \ = `${MARKER}\\n## ⚠️ Pre-Flight CI Validation Failed\n\nCommon issues\
-        \ were detected that are likely to cause CI failures.\n\n### What to do:\n\
-        \n1. **Run locally**:\n   \\`\\`\\`bash\n   python scripts/ci/pre_flight_check.py\n\
-        \   \\`\\`\\`\n\n2. **Auto-fix (where possible)**:\n   \\`\\`\\`bash\n \
+          \ = `${MARKER}\\n## \u26A0\uFE0F Pre-Flight CI Validation Failed\n\nCommon\
+          \ issues were detected that are likely to cause CI failures.\n\n### What\
+          \ to do:\n\n1. **Run locally**:\n   \\`\\`\\`bash\n   python scripts/ci/pre_flight_check.py\n\
+          \   \\`\\`\\`\n\n2. **Auto-fix (where possible)**:\n   \\`\\`\\`bash\n \
           \  python scripts/ci/pre_flight_check.py --fix\n   \\`\\`\\`\n\n3. **Review\
-        \ changes** and commit fixes\n\n### Common Issues:\n\n- ❌ Pytest workflows\
-          \ using explicit \\`-p\\` flags (causes double registration)\n- ❌ Missing\
-          \ plugin version pinning in workflows\n- ❌ DummyOptimizer mocks missing\
-          \ \\`param_groups\\` attribute\n- ❌ Module-level \\`pytest.importorskip()\\\
-        ` in conftest.py\n\n**Correct approach**: Pin plugin versions, NO \\`-p\\\
-        ` flags needed (see .codex/PR_3248_ROOT_CAUSE_ANALYSIS.md)\n\n### Reference:\n\
+          \ changes** and commit fixes\n\n### Common Issues:\n\n- \u274C Pytest workflows\
+          \ using explicit \\`-p\\` flags (causes double registration)\n- \u274C Missing\
+          \ plugin version pinning in workflows\n- \u274C DummyOptimizer mocks missing\
+          \ \\`param_groups\\` attribute\n- \u274C Module-level \\`pytest.importorskip()\\\
+          ` in conftest.py\n\n**Correct approach**: Pin plugin versions, NO \\`-p\\\
+          ` flags needed (see .codex/PR_3248_ROOT_CAUSE_ANALYSIS.md)\n\n### Reference:\n\
           \n- \U0001F4CB [CI Failure Tracking Log](.codex/CI_FAILURE_TRACKING_LOG.md)\n\
           - \U0001F4CB [Detailed logs](${{ github.server_url }}/${{ github.repository\
           \ }}/actions/runs/${{ github.run_id }})\n\n---\n_[\U0001F517 Workflow run](${{\
           \ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id\
-        \ }})_\n`;\n\nconst { data: comments } = await github.rest.issues.listComments({\n\
-        \  owner: context.repo.owner, repo: context.repo.repo,\n  issue_number:\
-        \ context.issue.number, per_page: 100,\n});\nconst existing = comments.find(c\
+          \ }})_\n`;\n\nconst { data: comments } = await github.rest.issues.listComments({\n\
+          \  owner: context.repo.owner, repo: context.repo.repo,\n  issue_number:\
+          \ context.issue.number, per_page: 100,\n});\nconst existing = comments.find(c\
           \ => c.body && c.body.includes(MARKER));\nif (existing) {\n  await github.rest.issues.updateComment({\n\
-        \    owner: context.repo.owner, repo: context.repo.repo,\n    comment_id:\
+          \    owner: context.repo.owner, repo: context.repo.repo,\n    comment_id:\
           \ existing.id, body,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
-        \    issue_number: context.issue.number,\n    owner: context.repo.owner,\
-        \ repo: context.repo.repo, body,\n  });\n}\n"
+          \    issue_number: context.issue.number,\n    owner: context.repo.owner,\
+          \ repo: context.repo.repo, body,\n  });\n}\n"
     - name: Fail if checks didn't pass
       if: steps.pre_flight.outcome == 'failure'
-      run: 'echo "❌ Pre-flight checks failed. See output above for details."
-
-        exit 1
-
-        '
+      run: "echo \"\u274C Pre-flight checks failed. See output above for details.\"\
+        \nexit 1\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -105,7 +102,8 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -120,3 +118,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

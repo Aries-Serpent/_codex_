@@ -1,6 +1,5 @@
----
 name: Pre-Release Validation
-on:
+true:
   pull_request:
     branches:
     - main
@@ -12,9 +11,9 @@ on:
     - reopened
     paths-ignore:
     - '**.md'
-    - 'docs/**'
-    - '.codex/**'
-    - 'LICENSE'
+    - docs/**
+    - .codex/**
+    - LICENSE
   workflow_dispatch:
     inputs:
       version:
@@ -45,19 +44,20 @@ jobs:
       run: "if [[ \"${{ needs.validate-version.result }}\" == \"success\" ]] && \\\
         \n   [[ \"${{ needs.validate-changelog.result }}\" == \"success\" ]] && \\\
         \n   [[ \"${{ needs.validate-p2-gate.result }}\" == \"success\" ]]; then\n\
-        \  echo \"✅ RELEASE GATE PASSED\"\n  echo \"Release is ready to proceed when\
-        \ tag is pushed\"\n  exit 0\nelse\n  echo \"❌ RELEASE GATE FAILED\"\n  echo\
-        \ \"Please fix issues before creating release\"\n  exit 1\nfi\n"
+        \  echo \"\u2705 RELEASE GATE PASSED\"\n  echo \"Release is ready to proceed\
+        \ when tag is pushed\"\n  exit 0\nelse\n  echo \"\u274C RELEASE GATE FAILED\"\
+        \n  echo \"Please fix issues before creating release\"\n  exit 1\nfi\n"
     - if: always()
       name: Set check status
       uses: actions/github-script@v8
       with:
         script: "const checkStatus = {\n  name: 'Pre-Release Validation',\n  head_sha:\
-        \ context.sha,\n  status: 'completed',\n  conclusion: 'success',\n  output:\
-        \ {\n    title: 'Pre-Release Validation',\n    summary: 'All gates passed.\
-        \ Release is authorized when tag is pushed.',\n    text: 'See workflow for\
+          \ context.sha,\n  status: 'completed',\n  conclusion: 'success',\n  output:\
+          \ {\n    title: 'Pre-Release Validation',\n    summary: 'All gates passed.\
+          \ Release is authorized when tag is pushed.',\n    text: 'See workflow for\
           \ details.'\n  }\n};\n\nif ('${{ needs.validate-version.result }}' !== 'success')\
           \ {\n  checkStatus.conclusion = 'failure';\n}\n"
+    timeout-minutes: 30
   is-release-pr:
     name: Detect release PR
     outputs:
@@ -98,60 +98,33 @@ jobs:
     steps:
     - id: summary
       name: Build results summary
-      run: 'echo "## ✅ Pre-Release Validation Results
-
-        ### Version Check
-
-        - Version: ${{ needs.validate-version.outputs.version }}
-
-        - Status: ${{ needs.validate-version.result }}
-
-        ### Checklist
-
-        - [ ] CHANGELOG.md updated: ${{ needs.validate-changelog.result }}
-
-        - [ ] Release notes present: ${{ needs.validate-release-notes.result }}
-
-        - [ ] P0 Gate validated: ${{ needs.validate-p0-gate.result }}
-
-        - [ ] P1 Gate validated: ${{ needs.validate-p1-gate.result }}
-
-        - [ ] P2 Gate validated: ${{ needs.validate-p2-gate.result }}
-
-        - [ ] Manifest integrity: ${{ needs.validate-manifest.result }}
-
-        - [ ] Artifacts ready: ${{ needs.validate-artifacts.result }}
-
-        ### Next Steps
-
-        Once all checks pass:
-
-        1. Get code review approval
-
-        2. Merge to main
-
-        3. Git tag: \`git tag -a v${{ needs.validate-version.outputs.version }} -m
-        ''Release v${{ needs.validate-version.outputs.version }}''\`
-
-        4. Push tag: \`git push origin v${{ needs.validate-version.outputs.version
-        }}\`
-
-        5. This triggers release-to-pypi.yml workflow" >> $GITHUB_OUTPUT
-
-        '
+      run: "echo \"## \u2705 Pre-Release Validation Results\n### Version Check\n-\
+        \ Version: ${{ needs.validate-version.outputs.version }}\n- Status: ${{ needs.validate-version.result\
+        \ }}\n### Checklist\n- [ ] CHANGELOG.md updated: ${{ needs.validate-changelog.result\
+        \ }}\n- [ ] Release notes present: ${{ needs.validate-release-notes.result\
+        \ }}\n- [ ] P0 Gate validated: ${{ needs.validate-p0-gate.result }}\n- [ ]\
+        \ P1 Gate validated: ${{ needs.validate-p1-gate.result }}\n- [ ] P2 Gate validated:\
+        \ ${{ needs.validate-p2-gate.result }}\n- [ ] Manifest integrity: ${{ needs.validate-manifest.result\
+        \ }}\n- [ ] Artifacts ready: ${{ needs.validate-artifacts.result }}\n### Next\
+        \ Steps\nOnce all checks pass:\n1. Get code review approval\n2. Merge to main\n\
+        3. Git tag: \\`git tag -a v${{ needs.validate-version.outputs.version }} -m\
+        \ 'Release v${{ needs.validate-version.outputs.version }}'\\`\n4. Push tag:\
+        \ \\`git push origin v${{ needs.validate-version.outputs.version }}\\`\n5.\
+        \ This triggers release-to-pypi.yml workflow\" >> $GITHUB_OUTPUT\n"
     - if: github.event_name == 'pull_request'
       name: Comment on PR
       uses: actions/github-script@v8
       with:
-        script: "const summary = `## ✅ Pre-Release Validation Complete\n\n**Version**:\
+        script: "const summary = `## \u2705 Pre-Release Validation Complete\n\n**Version**:\
           \ v${{ needs.validate-version.outputs.version }}\n\n### Status\n- Version\
-        \ bump: ✅\n- CHANGELOG: ✅\n- P0 Gate: ✅\n- P1 Gate: ✅\n- P2 Gate: ✅\n\n\
-        ### Ready for Release\nWhen ready to release:\n1. Merge this PR to main\n\
-        2. Create tag: \\`git tag -a v${{ needs.validate-version.outputs.version\
-        \ }}\\`\n3. Push tag: \\`git push origin v${{ needs.validate-version.outputs.version\
+          \ bump: \u2705\n- CHANGELOG: \u2705\n- P0 Gate: \u2705\n- P1 Gate: \u2705\
+          \n- P2 Gate: \u2705\n\n### Ready for Release\nWhen ready to release:\n1.\
+          \ Merge this PR to main\n2. Create tag: \\`git tag -a v${{ needs.validate-version.outputs.version\
+          \ }}\\`\n3. Push tag: \\`git push origin v${{ needs.validate-version.outputs.version\
           \ }}\\`\n\nThis will trigger the release workflow.`;\n\ngithub.rest.issues.createComment({\n\
-        \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
-        \ repo: context.repo.repo,\n  body: summary\n});\n"
+          \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
+          \ repo: context.repo.repo,\n  body: summary\n});\n"
+    timeout-minutes: 30
   validate-artifacts:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate release artifacts
@@ -164,8 +137,9 @@ jobs:
         persist-credentials: false
     - name: Check for wheel build script
       run: "if [ -f \"pyproject.toml\" ] && grep -q \"\\[build-system\\]\" pyproject.toml;\
-        \ then\n  echo \"✅ Project configured for wheel builds\"\nelse\n  echo \"\
-        ❌ Build system not configured\"\n  exit 1\nfi\n"
+        \ then\n  echo \"\u2705 Project configured for wheel builds\"\nelse\n  echo\
+        \ \"\u274C Build system not configured\"\n  exit 1\nfi\n"
+    timeout-minutes: 15
   validate-changelog:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate CHANGELOG.md
@@ -181,15 +155,17 @@ jobs:
     - name: Check CHANGELOG updated
       run: "VERSION=\"${{ needs.validate-version.outputs.version }}\"\n\n# Check for\
         \ version section in CHANGELOG\nif grep -q \"## \\[${VERSION}\\]\" CHANGELOG.md\
-        \ || \\\n   grep -q \"## ${VERSION}\" CHANGELOG.md; then\n  echo \"✅ CHANGELOG.md\
-        \ updated for v${VERSION}\"\nelse\n  echo \"❌ CHANGELOG.md missing entry for\
-        \ v${VERSION}\"\n  echo \"   Add a section like:  ## [${VERSION}] - $(date\
-        \ +%Y-%m-%d)\"\n  exit 1\nfi\n"
+        \ || \\\n   grep -q \"## ${VERSION}\" CHANGELOG.md; then\n  echo \"\u2705\
+        \ CHANGELOG.md updated for v${VERSION}\"\nelse\n  echo \"\u274C CHANGELOG.md\
+        \ missing entry for v${VERSION}\"\n  echo \"   Add a section like:  ## [${VERSION}]\
+        \ - $(date +%Y-%m-%d)\"\n  exit 1\nfi\n"
     - name: Validate CHANGELOG format
       run: "# Check for standard sections\nCHANGELOG=$(cat CHANGELOG.md)\n\nif echo\
         \ \"$CHANGELOG\" | grep -q \"### Added\\|### Changed\\|### Fixed\\|### Security\"\
-        ; then\n  echo \"✅ CHANGELOG has standard sections\"\nelse\n  echo \"⚠️  CHANGELOG\
-        \ should include: Added, Changed, Fixed, Security sections\"\nfi\n"
+        ; then\n  echo \"\u2705 CHANGELOG has standard sections\"\nelse\n  echo \"\
+        \u26A0\uFE0F  CHANGELOG should include: Added, Changed, Fixed, Security sections\"\
+        \nfi\n"
+    timeout-minutes: 15
   validate-manifest:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate manifest integrity
@@ -203,8 +179,9 @@ jobs:
     - name: Check manifest template
       run: "if [ -f \".codex/RELEASE_MANIFEST_TEMPLATE.json\" ]; then\n  python -c\
         \ \"import json; json.load(open('.codex/RELEASE_MANIFEST_TEMPLATE.json'))\"\
-        \ && \\\n  echo \"✅ Manifest template valid JSON\"\nelse\n  echo \"⚠️  Manifest\
-        \ template not found (will use default)\"\nfi\n"
+        \ && \\\n  echo \"\u2705 Manifest template valid JSON\"\nelse\n  echo \"\u26A0\
+        \uFE0F  Manifest template not found (will use default)\"\nfi\n"
+    timeout-minutes: 15
   validate-p0-gate:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate P0 Gate
@@ -217,16 +194,16 @@ jobs:
         persist-credentials: false
     - id: p0-1
       name: 'P0.1: Profile alignment'
-      run: "if [ -f \".codex/PROFILE_DRIFT_AUDIT.json\" ]; then\n  echo \"✅ P0.1.1:\
+      run: "if [ -f \".codex/PROFILE_DRIFT_AUDIT.json\" ]; then\n  echo \"\u2705 P0.1.1:\
         \ Profile drift audit found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\nelse\n\
-        \  echo \"⚠️  P0.1.1: Profile drift audit missing\"\n  echo \"pass=false\"\
+        \  echo \"\u26A0\uFE0F  P0.1.1: Profile drift audit missing\"\n  echo \"pass=false\"\
         \ >> $GITHUB_OUTPUT\nfi\n"
     - id: p0-2
       name: 'P0.2: Manifest structure'
-      run: "if [ -f \".codex/PROFILE_DEPENDENCY_MANIFEST.md\" ]; then\n  echo \"✅\
+      run: "if [ -f \".codex/PROFILE_DEPENDENCY_MANIFEST.md\" ]; then\n  echo \"\u2705\
         \ P0.1.3: Profile manifest found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\n\
-        else\n  echo \"⚠️  P0.1.3: Profile manifest missing\"\n  echo \"pass=false\"\
-        \ >> $GITHUB_OUTPUT\nfi\n"
+        else\n  echo \"\u26A0\uFE0F  P0.1.3: Profile manifest missing\"\n  echo \"\
+        pass=false\" >> $GITHUB_OUTPUT\nfi\n"
     - name: P0 Summary
       run: 'echo "P0 Gate Status:"
 
@@ -236,6 +213,7 @@ jobs:
         echo "  P0.2 (Manifest): ${{ steps.p0-2.outputs.pass || ''unknown'' }}"
 
         '
+    timeout-minutes: 15
   validate-p1-gate:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate P1 Gate
@@ -249,15 +227,16 @@ jobs:
     - id: p1-3
       name: 'P1.3: SBOM present'
       run: "if [ -f \"sbom.json\" ] || [ -f \".codex/sbom.json\" ]; then\n  echo \"\
-        ✅ P1.3: SBOM found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\nelse\n  echo\
-        \ \"⚠️  P1.3: SBOM not found (will be generated at release)\"\n  echo \"pass=false\"\
-        \ >> $GITHUB_OUTPUT\nfi\n"
+        \u2705 P1.3: SBOM found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\nelse\n\
+        \  echo \"\u26A0\uFE0F  P1.3: SBOM not found (will be generated at release)\"\
+        \n  echo \"pass=false\" >> $GITHUB_OUTPUT\nfi\n"
     - name: P1 Summary
       run: 'echo "P1 Gate Status:"
 
         echo "  P1.3 (SBOM): ${{ steps.p1-3.outputs.pass || ''unknown'' }}"
 
         '
+    timeout-minutes: 15
   validate-p2-gate:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate P2 Gate
@@ -270,25 +249,25 @@ jobs:
         persist-credentials: false
     - id: p2-1
       name: 'P2.2.1: Release workflow'
-      run: "if [ -f \".github/workflows/release-to-pypi.yml\" ]; then\n  echo \"✅\
+      run: "if [ -f \".github/workflows/release-to-pypi.yml\" ]; then\n  echo \"\u2705\
         \ P2.2.1: Release workflow found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\n\
-        else\n  echo \"❌ P2.2.1: Release workflow missing\"\n  exit 1\nfi\n"
+        else\n  echo \"\u274C P2.2.1: Release workflow missing\"\n  exit 1\nfi\n"
     - id: p2-2
       name: 'P2.2.2: Smoke tests'
       run: "if [ -f \".github/workflows/smoke-tests-deployment.yml\" ]; then\n  echo\
-        \ \"✅ P2.2.2: Smoke tests workflow found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\n\
-        else\n  echo \"❌ P2.2.2: Smoke tests workflow missing\"\n  exit 1\nfi\n"
+        \ \"\u2705 P2.2.2: Smoke tests workflow found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\n\
+        else\n  echo \"\u274C P2.2.2: Smoke tests workflow missing\"\n  exit 1\nfi\n"
     - id: p2-3
       name: 'P2.2.3: Deployment guide'
-      run: "if [ -f \"docs/deployment/DEPLOYMENT_GUIDE.md\" ]; then\n  echo \"✅ P2.2.3:\
-        \ Deployment guide found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\nelse\n\
-        \  echo \"❌ P2.2.3: Deployment guide missing\"\n  exit 1\nfi\n"
+      run: "if [ -f \"docs/deployment/DEPLOYMENT_GUIDE.md\" ]; then\n  echo \"\u2705\
+        \ P2.2.3: Deployment guide found\"\n  echo \"pass=true\" >> $GITHUB_OUTPUT\n\
+        else\n  echo \"\u274C P2.2.3: Deployment guide missing\"\n  exit 1\nfi\n"
     - id: p2-4
       name: 'P2.2.4: Rollback procedures'
       run: "if [ -f \"scripts/deploy/rollback_release.py\" ] && \\\n   [ -f \"docs/deployment/ROLLBACK_CHECKLIST.md\"\
-        \ ]; then\n  echo \"✅ P2.2.4: Rollback procedures found\"\n  echo \"pass=true\"\
-        \ >> $GITHUB_OUTPUT\nelse\n  echo \"❌ P2.2.4: Rollback procedures missing\"\
-        \n  exit 1\nfi\n"
+        \ ]; then\n  echo \"\u2705 P2.2.4: Rollback procedures found\"\n  echo \"\
+        pass=true\" >> $GITHUB_OUTPUT\nelse\n  echo \"\u274C P2.2.4: Rollback procedures\
+        \ missing\"\n  exit 1\nfi\n"
     - name: P2 Summary
       run: 'echo "P2 Gate Status:"
 
@@ -301,6 +280,7 @@ jobs:
         echo "  P2.2.4 (Rollback): ${{ steps.p2-4.outputs.pass }}"
 
         '
+    timeout-minutes: 15
   validate-release-notes:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate release notes
@@ -316,14 +296,16 @@ jobs:
     - name: Check for release notes
       run: "VERSION=\"${{ needs.validate-version.outputs.version }}\"\n\n# Look for\
         \ release notes file\nif [ -f \"RELEASE_NOTES.md\" ] || \\\n   [ -f \".codex/RELEASE_NOTES_v${VERSION}.md\"\
-        \ ] || \\\n   [ -f \"docs/releases/v${VERSION}.md\" ]; then\n  echo \"✅ Release\
-        \ notes found\"\nelse\n  echo \"⚠️  No dedicated release notes found\"\n \
-        \ echo \"   Consider creating: docs/releases/v${VERSION}.md\"\nfi\n"
+        \ ] || \\\n   [ -f \"docs/releases/v${VERSION}.md\" ]; then\n  echo \"\u2705\
+        \ Release notes found\"\nelse\n  echo \"\u26A0\uFE0F  No dedicated release\
+        \ notes found\"\n  echo \"   Consider creating: docs/releases/v${VERSION}.md\"\
+        \nfi\n"
     - name: Validate release notes content
       run: "# Check CHANGELOG for content\nif [ -s CHANGELOG.md ]; then\n  LINES=$(wc\
-        \ -l < CHANGELOG.md)\n  if [ $LINES -gt 20 ]; then\n    echo \"✅ CHANGELOG\
-        \ has sufficient content\"\n  else\n    echo \"⚠️  CHANGELOG is quite short\
-        \ (${LINES} lines)\"\n  fi\nfi\n"
+        \ -l < CHANGELOG.md)\n  if [ $LINES -gt 20 ]; then\n    echo \"\u2705 CHANGELOG\
+        \ has sufficient content\"\n  else\n    echo \"\u26A0\uFE0F  CHANGELOG is\
+        \ quite short (${LINES} lines)\"\n  fi\nfi\n"
+    timeout-minutes: 60
   validate-version:
     if: needs.is-release-pr.outputs.is-release == 'true'
     name: Validate version bump
@@ -339,13 +321,9 @@ jobs:
         fetch-depth: 0
     - id: version
       name: Check version in pyproject.toml
-      run: 'CURRENT_VERSION=$(grep ''^version = '' pyproject.toml | cut -d''"'' -f2)
-
-        echo "version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
-
-        echo "📦 Current version: ${CURRENT_VERSION}"
-
-        '
+      run: "CURRENT_VERSION=$(grep '^version = ' pyproject.toml | cut -d'\"' -f2)\n\
+        echo \"version=${CURRENT_VERSION}\" >> $GITHUB_OUTPUT\necho \"\U0001F4E6 Current\
+        \ version: ${CURRENT_VERSION}\"\n"
     - name: Verify version is higher than last release
       run: "CURRENT_VERSION=\"${{ steps.version.outputs.version }}\"\n\n# Get last\
         \ tag\nLAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo \"v0.0.0\"\
@@ -353,7 +331,6 @@ jobs:
         \necho \"Current version: ${CURRENT_VERSION}\"\n\n# Compare versions (simple\
         \ numeric comparison)\nif [[ \"${CURRENT_VERSION}\" > \"${LAST_VERSION}\"\
         \ ]] || [[ \"${CURRENT_VERSION}\" == \"${LAST_VERSION}\" ]]; then\n  echo\
-        \ \"✅ Version is valid\"\nelse\n  echo \"❌ Version must be higher than last\
-        \ release\"\n  exit 1\nfi\n"
+        \ \"\u2705 Version is valid\"\nelse\n  echo \"\u274C Version must be higher\
+        \ than last release\"\n  exit 1\nfi\n"
     timeout-minutes: 15
-

@@ -1,204 +1,132 @@
-# Copilot Agent with MCP Context (Example Template)
-#
-# This workflow demonstrates how to run a Copilot Agent task
-# with full MCP service context for enhanced code generation.
-#
-# Features:
-# - MCP service container for context delivery
-# - Token authentication with encryption
-# - Playwright browser automation
-# - Smart context filtering
-#
-# NOTE: This is an EXAMPLE template. Copy to .github/workflows/ and customize as needed.
-
 name: Copilot with MCP Context
-
-on:
+true:
   workflow_dispatch:
     inputs:
       task:
-        description: 'Copilot task to execute'
+        description: Copilot task to execute
         required: true
         type: string
       mcp_enabled:
-        description: 'Enable MCP context'
+        description: Enable MCP context
         required: false
         default: true
         type: boolean
-
 env:
   MCP_ENDPOINT: http://localhost:8080
   PYTHON_VERSION: '3.12'
-
 jobs:
   copilot-with-mcp:
     name: Execute Copilot Task
     runs-on: ubuntu-latest
-
-    # MCP service container (optional - only if mcp_enabled)
     services:
       mcp:
         image: ghcr.io/${{ github.repository }}/mcp:latest
         ports:
-          - 8080:8080
+        - 8080:8080
         env:
           CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
           CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+            }}
           MCP_CACHE_DIR: /tmp/mcp-cache
           PLAYWRIGHT_BROWSERS_PATH: /opt/playwright
-        options: >-
-          --health-cmd "curl -f http://localhost:8080/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+        options: --health-cmd "curl -f http://localhost:8080/health || exit 1" --health-interval
+          10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5  # v5
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Install dependencies
+      run: 'pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6  # v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+        pip install -r requirements.txt
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r scripts/security/requirements.txt
+        pip install -r scripts/security/requirements.txt
 
-      - name: Wait for MCP service
-        if: github.event.inputs.mcp_enabled == 'true'
-        run: |
-          echo "⏳ Waiting for MCP service to be healthy..."
-          timeout 60 bash -c '
-            until curl -f http://localhost:8080/health; do
-              echo "  Waiting...";
-              sleep 2;
-            done
+        '
+    - name: Wait for MCP service
+      if: github.event.inputs.mcp_enabled == 'true'
+      run: "echo \"\u23F3 Waiting for MCP service to be healthy...\"\ntimeout 60 bash\
+        \ -c '\n  until curl -f http://localhost:8080/health; do\n    echo \"  Waiting...\"\
+        ;\n    sleep 2;\n  done\n'\necho \"\u2705 MCP service is healthy\"\n"
+    - name: Test MCP authentication
+      if: github.event.inputs.mcp_enabled == 'true'
+      env:
+        CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
+        CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+      run: "python3 << 'EOF'\nimport os\nimport sys\n\n# Test token decryption\ntry:\n\
+        \    from scripts.security.copilot_token_decoder import copilot_get_github_token_safe\n\
+        \    token = copilot_get_github_token_safe()\n\n    if token:\n        print(\"\
+        \u2705 Token decryption successful\")\n    else:\n        print(\"\u26A0\uFE0F\
+        \  Token not available, using fallback\")\nexcept Exception as e:\n    print(f\"\
+        \u274C Token decryption failed: {e}\")\n    sys.exit(1)\nEOF\n"
+    - name: Request MCP manifest
+      if: github.event.inputs.mcp_enabled == 'true'
+      env:
+        CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
+        CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+      run: "python3 << 'EOF'\nimport requests\nimport json\nimport os\nfrom scripts.security.copilot_token_decoder\
+        \ import copilot_get_github_token_safe\n\n# Get authentication token\ntoken\
+        \ = copilot_get_github_token_safe()\nif not token:\n    print(\"\u26A0\uFE0F\
+        \  No token available, skipping MCP request\")\n    exit(0)\n\n# Request manifest\
+        \ from MCP\nmcp_url = os.getenv('MCP_ENDPOINT', 'http://localhost:8080')\n\
+        headers = {'Authorization': f'Bearer {token}'}\n\ntry:\n    response = requests.get(\n\
+        \        f'{mcp_url}/manifest',\n        headers=headers,\n        timeout=10\n\
+        \    )\n\n    if response.status_code == 200:\n        manifest = response.json()\n\
+        \        print(f\"\u2705 Received MCP manifest\")\n        print(f\"   Cache\
+        \ keys: {len(manifest.get('dependencies', {}))}\")\n\n        # Save for later\
+        \ steps\n        with open('mcp_manifest.json', 'w') as f:\n            json.dump(manifest,\
+        \ f, indent=2)\n    else:\n        print(f\"\u26A0\uFE0F  MCP request failed:\
+        \ {response.status_code}\")\nexcept Exception as e:\n    print(f\"\u274C MCP\
+        \ request error: {e}\")\nEOF\n"
+    - name: Execute Copilot task
+      env:
+        COPILOT_TASK: ${{ github.event.inputs.task }}
+        MCP_ENABLED: ${{ github.event.inputs.mcp_enabled }}
+        CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
+        CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
+      run: "echo \"\U0001F916 Executing Copilot task: $COPILOT_TASK\"\necho \"\"\n\
+        \n# Load MCP context if available\nif [ -f mcp_manifest.json ] && [ \"$MCP_ENABLED\"\
+        \ == \"true\" ]; then\n  echo \"\U0001F4CB Loading MCP context...\"\n  CONTEXT=$(cat\
+        \ mcp_manifest.json)\n  echo \"   Context size: ${#CONTEXT} bytes\"\nfi\n\n\
+        # Example: Run your Copilot task script here\n# python3 copilot_task_runner.py\
+        \ --task \"$COPILOT_TASK\" --context-file mcp_manifest.json\n\necho \"\"\n\
+        echo \"\u2705 Task execution complete\"\n"
+    - name: Generate summary
+      if: always()
+      env:
+        COPILOT_TASK: ${{ github.event.inputs.task }}
+        MCP_ENABLED: ${{ github.event.inputs.mcp_enabled }}
+      run: "echo \"# Copilot Task Summary\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"**Task**: $COPILOT_TASK\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \necho \"**MCP Enabled**: $MCP_ENABLED\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\nif [ -f mcp_manifest.json ]; then\n\
+        \  DEPS=$(jq -r '.dependencies | length' mcp_manifest.json 2>/dev/null ||\
+        \ echo \"0\")\n  echo \"**MCP Context**:\" >> \"$GITHUB_STEP_SUMMARY\"\n \
+        \ echo \"- Dependencies loaded: $DEPS\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
+    - name: Upload artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: copilot-task-results
+        path: 'mcp_manifest.json
+
+          *.log
+
           '
-          echo "✅ MCP service is healthy"
-
-      - name: Test MCP authentication
-        if: github.event.inputs.mcp_enabled == 'true'
-        env:
-          CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
-          CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          python3 << 'EOF'
-          import os
-          import sys
-
-          # Test token decryption
-          try:
-              from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
-              token = copilot_get_github_token_safe()
-
-              if token:
-                  print("✅ Token decryption successful")
-              else:
-                  print("⚠️  Token not available, using fallback")
-          except Exception as e:
-              print(f"❌ Token decryption failed: {e}")
-              sys.exit(1)
-          EOF
-
-      - name: Request MCP manifest
-        if: github.event.inputs.mcp_enabled == 'true'
-        env:
-          CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
-          CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          python3 << 'EOF'
-          import requests
-          import json
-          import os
-          from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
-
-          # Get authentication token
-          token = copilot_get_github_token_safe()
-          if not token:
-              print("⚠️  No token available, skipping MCP request")
-              exit(0)
-
-          # Request manifest from MCP
-          mcp_url = os.getenv('MCP_ENDPOINT', 'http://localhost:8080')
-          headers = {'Authorization': f'Bearer {token}'}
-
-          try:
-              response = requests.get(
-                  f'{mcp_url}/manifest',
-                  headers=headers,
-                  timeout=10
-              )
-
-              if response.status_code == 200:
-                  manifest = response.json()
-                  print(f"✅ Received MCP manifest")
-                  print(f"   Cache keys: {len(manifest.get('dependencies', {}))}")
-
-                  # Save for later steps
-                  with open('mcp_manifest.json', 'w') as f:
-                      json.dump(manifest, f, indent=2)
-              else:
-                  print(f"⚠️  MCP request failed: {response.status_code}")
-          except Exception as e:
-              print(f"❌ MCP request error: {e}")
-          EOF
-
-      - name: Execute Copilot task
-        env:
-          COPILOT_TASK: ${{ github.event.inputs.task }}
-          MCP_ENABLED: ${{ github.event.inputs.mcp_enabled }}
-          CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
-          CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
-          echo "🤖 Executing Copilot task: $COPILOT_TASK"
-          echo ""
-
-          # Load MCP context if available
-          if [ -f mcp_manifest.json ] && [ "$MCP_ENABLED" == "true" ]; then
-            echo "📋 Loading MCP context..."
-            CONTEXT=$(cat mcp_manifest.json)
-            echo "   Context size: ${#CONTEXT} bytes"
-          fi
-
-          # Example: Run your Copilot task script here
-          # python3 copilot_task_runner.py --task "$COPILOT_TASK" --context-file mcp_manifest.json
-
-          echo ""
-          echo "✅ Task execution complete"
-
-      - name: Generate summary
-        if: always()
-        env:
-          COPILOT_TASK: ${{ github.event.inputs.task }}
-          MCP_ENABLED: ${{ github.event.inputs.mcp_enabled }}
-        run: |
-          echo "# Copilot Task Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Task**: $COPILOT_TASK" >> "$GITHUB_STEP_SUMMARY"
-          echo "**MCP Enabled**: $MCP_ENABLED" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-
-          if [ -f mcp_manifest.json ]; then
-            DEPS=$(jq -r '.dependencies | length' mcp_manifest.json 2>/dev/null || echo "0")
-            echo "**MCP Context**:" >> "$GITHUB_STEP_SUMMARY"
-            echo "- Dependencies loaded: $DEPS" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v5  # v5
-        with:
-          name: copilot-task-results
-          path: |
-            mcp_manifest.json
-            *.log
-          if-no-files-found: ignore
-          retention-days: 7
+        if-no-files-found: ignore
+        retention-days: 7
+    timeout-minutes: 30
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

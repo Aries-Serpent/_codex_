@@ -1,6 +1,5 @@
----
 name: Security PR Enhancement
-on:
+true:
   pull_request_target:
     types:
     - opened
@@ -17,12 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-        persist-credentials: false  # Security: Issue #5299 - Prevent credential exposure in pull_request_target
+        persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -47,8 +47,9 @@ jobs:
         cat pr-findings.md >> $GITHUB_STEP_SUMMARY\n"
     - id: read-findings
       name: Read findings content
-      run: "if [ -f \"pr-findings.md\" ]; then\n  echo \"✅ Findings file exists\"\n\
-        else\n  echo \"ℹ️  Findings file will be created during generation\"\nfi\n"
+      run: "if [ -f \"pr-findings.md\" ]; then\n  echo \"\u2705 Findings file exists\"\
+        \nelse\n  echo \"\u2139\uFE0F  Findings file will be created during generation\"\
+        \nfi\n"
     - name: Update PR body with findings section
       uses: actions/github-script@v8
       with:
@@ -72,12 +73,12 @@ jobs:
           \ Findings\\n\\n' + findingsContent;\n  }\n} else {\n  // If no WEC, just\
           \ append findings\n  updatedBody = newBody + '\\n\\n## \U0001F510 Security\
           \ Findings\\n\\n' + findingsContent;\n}\n\n// Update PR body\ntry {\n  await\
-        \ github.rest.pulls.update({\n    owner: context.repo.owner,\n    repo:\
-        \ context.repo.repo,\n    pull_number: pr.number,\n    body: updatedBody\n\
-          \  });\n  console.log('✅ PR body updated with security findings (WEC-aware)');\n\
-        } catch (error) {\n  console.error('❌ Failed to update PR body:', error.message);\n\
-          \  if (error.status === 422) {\n    console.log('⚠️  PR body update rejected\
-          \ (likely due to size limits)');\n  }\n}\n"
+          \ github.rest.pulls.update({\n    owner: context.repo.owner,\n    repo:\
+          \ context.repo.repo,\n    pull_number: pr.number,\n    body: updatedBody\n\
+          \  });\n  console.log('\u2705 PR body updated with security findings (WEC-aware)');\n\
+          } catch (error) {\n  console.error('\u274C Failed to update PR body:', error.message);\n\
+          \  if (error.status === 422) {\n    console.log('\u26A0\uFE0F  PR body update\
+          \ rejected (likely due to size limits)');\n  }\n}\n"
     - if: always()
       name: Add PR comment with summary
       uses: actions/github-script@v8
@@ -88,15 +89,16 @@ jobs:
           \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
           \nif (findingsContent && findingsContent.trim()) {\n  const lines = [\n\
           \    '## \U0001F510 Security Findings Detected',\n    '',\n    'This PR\
-        \ has the following security findings from automated scans:',\n    '',\n\
-        \    findingsContent,\n    '',\n    '**Note**: This is an automated scan\
+          \ has the following security findings from automated scans:',\n    '',\n\
+          \    findingsContent,\n    '',\n    '**Note**: This is an automated scan\
           \ for informational purposes. Please review carefully and address any critical\
           \ or high-severity findings before merging.'\n  ];\n  const comment = lines.join('\\\
-        n');\n\n  try {\n    await github.rest.issues.createComment({\n      owner:\
-        \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
-        \ context.issue.number,\n      body: comment\n    });\n    console.log('✅\
-          \ Security findings comment added to PR');\n  } catch (error) {\n    console.log('⚠️\
-        \  Could not add comment:', error.message);\n  }\n}\n"
+          n');\n\n  try {\n    await github.rest.issues.createComment({\n      owner:\
+          \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
+          \ context.issue.number,\n      body: comment\n    });\n    console.log('\u2705\
+          \ Security findings comment added to PR');\n  } catch (error) {\n    console.log('\u26A0\
+          \uFE0F  Could not add comment:', error.message);\n  }\n}\n"
+    timeout-minutes: 30
   validate-findings-json:
     name: Validate Findings JSON
     runs-on: ubuntu-latest
@@ -104,7 +106,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-        persist-credentials: false  # Security: Issue #5299 - Prevent credential exposure in pull_request_target
+        persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -115,12 +117,13 @@ jobs:
         if findings_file.exists():\n  try:\n    with open(findings_file) as f:\n \
         \     data = json.load(f)\n\n    # Basic structure validation\n    if isinstance(data,\
         \ dict):\n      if \"findings\" in data and \"metadata\" in data:\n      \
-        \  print(\"✅ Findings JSON structure is valid\")\n        print(f\"   - Total\
-        \ findings: {len(data.get('findings', []))}\")\n        if \"metadata\" in\
-        \ data and \"timestamp\" in data[\"metadata\"]:\n          print(f\"   - Last\
-        \ updated: {data['metadata']['timestamp']}\")\n      else:\n        print(\"\
-        ⚠️  Expected 'findings' and 'metadata' keys in JSON\")\n    else:\n      print(\"\
-        ⚠️  Findings file should contain a JSON object\")\n  except json.JSONDecodeError\
-        \ as e:\n    print(f\"❌ Invalid JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\
-        ℹ️  No findings file found (will be created if needed)\")\nEOF\n"
+        \  print(\"\u2705 Findings JSON structure is valid\")\n        print(f\" \
+        \  - Total findings: {len(data.get('findings', []))}\")\n        if \"metadata\"\
+        \ in data and \"timestamp\" in data[\"metadata\"]:\n          print(f\"  \
+        \ - Last updated: {data['metadata']['timestamp']}\")\n      else:\n      \
+        \  print(\"\u26A0\uFE0F  Expected 'findings' and 'metadata' keys in JSON\"\
+        )\n    else:\n      print(\"\u26A0\uFE0F  Findings file should contain a JSON\
+        \ object\")\n  except json.JSONDecodeError as e:\n    print(f\"\u274C Invalid\
+        \ JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\u2139\uFE0F  No findings\
+        \ file found (will be created if needed)\")\nEOF\n"
     timeout-minutes: 15

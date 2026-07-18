@@ -1,6 +1,5 @@
----
 name: RAG Freshness Scheduler
-on:
+true:
   schedule:
   - cron: 0 */6 * * *
   workflow_dispatch: null
@@ -12,13 +11,14 @@ permissions:
   actions: write
 jobs:
   check-freshness:
-    name: 🔍 RAG Index Freshness Check
+    name: "\U0001F50D RAG Index Freshness Check"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -35,36 +35,37 @@ jobs:
         \ timezone\nfrom pathlib import Path\n\nMETA = Path(\".codex/embeddings/codex_index_meta.json\"\
         )\nSTALE_WARN_HOURS    = 25\nSTALE_TRIGGER_HOURS = 72  # dispatch rebuild\
         \ when older than this\n\noutput = os.environ[\"GITHUB_OUTPUT\"]\n\nif not\
-        \ META.exists():\n    print(\"::warning::codex_index_meta.json not found —\
+        \ META.exists():\n    print(\"::warning::codex_index_meta.json not found \u2014\
         \ scheduling rebuild\")\n    with open(output, \"a\") as f:\n        f.write(\"\
         needs_rebuild=true\\n\")\n        f.write(\"age_hours=unknown\\n\")\n    \
         \    f.write(\"status=missing\\n\")\n    sys.exit(0)\n\nmeta = json.loads(META.read_text())\n\
         raw = meta.get(\"generated_at\", \"\")\ntry:\n    raw_clean = raw.replace(\"\
         Z\", \"+00:00\")\n    ts = datetime.fromisoformat(raw_clean)\nexcept ValueError:\n\
-        \    print(f\"::warning::Cannot parse generated_at='{raw}' — scheduling rebuild\"\
-        )\n    with open(output, \"a\") as f:\n        f.write(\"needs_rebuild=true\\\
+        \    print(f\"::warning::Cannot parse generated_at='{raw}' \u2014 scheduling\
+        \ rebuild\")\n    with open(output, \"a\") as f:\n        f.write(\"needs_rebuild=true\\\
         n\")\n        f.write(\"age_hours=unknown\\n\")\n        f.write(\"status=parse_error\\\
         n\")\n    sys.exit(0)\n\nage_hours = (datetime.now(timezone.utc) - ts).total_seconds()\
         \ / 3600\n\nif age_hours > STALE_TRIGGER_HOURS:\n    status = \"stale\"\n\
         \    needs_rebuild = \"true\"\n    print(f\"::error::RAG index is {age_hours:.1f}h\
-        \ old (>{STALE_TRIGGER_HOURS}h threshold) — triggering rebuild\")\nelif age_hours\
-        \ > STALE_WARN_HOURS:\n    status = \"warn\"\n    needs_rebuild = \"false\"\
-        \n    print(f\"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h)\
-        \ — nightly rebuild will refresh it\")\nelse:\n    status = \"fresh\"\n  \
-        \  needs_rebuild = \"false\"\n    print(f\"RAG index is {age_hours:.1f}h old\
-        \ — fresh (threshold {STALE_WARN_HOURS}h)\")\n\nwith open(output, \"a\") as\
-        \ f:\n    f.write(f\"needs_rebuild={needs_rebuild}\\n\")\n    f.write(f\"\
+        \ old (>{STALE_TRIGGER_HOURS}h threshold) \u2014 triggering rebuild\")\nelif\
+        \ age_hours > STALE_WARN_HOURS:\n    status = \"warn\"\n    needs_rebuild\
+        \ = \"false\"\n    print(f\"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h)\
+        \ \u2014 nightly rebuild will refresh it\")\nelse:\n    status = \"fresh\"\
+        \n    needs_rebuild = \"false\"\n    print(f\"RAG index is {age_hours:.1f}h\
+        \ old \u2014 fresh (threshold {STALE_WARN_HOURS}h)\")\n\nwith open(output,\
+        \ \"a\") as f:\n    f.write(f\"needs_rebuild={needs_rebuild}\\n\")\n    f.write(f\"\
         age_hours={age_hours:.1f}\\n\")\n    f.write(f\"status={status}\\n\")\n  \
         \  f.write(f\"generated_at={raw}\\n\")\nPYEOF\n"
     - name: Dispatch embedding-index-rebuild (if stale)
       if: steps.age.outputs.needs_rebuild == 'true'
       uses: actions/github-script@v8
       with:
-        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
         script: "await github.rest.actions.createWorkflowDispatch({\n  owner: context.repo.owner,\n\
-        \  repo: context.repo.repo,\n  workflow_id: 'embedding-index-rebuild.yml',\n\
-        \  ref: context.ref,\n});\ncore.notice('Dispatched embedding-index-rebuild.yml\
-          \ — index was stale');\n"
+          \  repo: context.repo.repo,\n  workflow_id: 'embedding-index-rebuild.yml',\n\
+          \  ref: context.ref,\n});\ncore.notice('Dispatched embedding-index-rebuild.yml\
+          \ \u2014 index was stale');\n"
     - name: Post freshness summary
       if: always()
       run: "{\n  echo \"## \U0001F50D RAG Index Freshness Scheduler\"\n  echo \"\"\
@@ -73,11 +74,11 @@ jobs:
         \ }} |\"\n  echo \"| Last built | ${{ steps.age.outputs.generated_at }} |\"\
         \n  echo \"| Rebuild triggered | ${{ steps.age.outputs.needs_rebuild }} |\"\
         \n  echo \"\"\n  if [ \"${{ steps.age.outputs.needs_rebuild }}\" = \"true\"\
-        \ ]; then\n    echo \"\U0001F6A8 **Rebuild dispatched** — index exceeded 72h\
-        \ staleness threshold.\"\n  elif [ \"${{ steps.age.outputs.status }}\" = \"\
-        warn\" ]; then\n    echo \"⚠️ Index approaching stale threshold — nightly\
-        \ run will refresh it.\"\n  else\n    echo \"✅ Index is fresh — no action\
-        \ needed.\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+        \ ]; then\n    echo \"\U0001F6A8 **Rebuild dispatched** \u2014 index exceeded\
+        \ 72h staleness threshold.\"\n  elif [ \"${{ steps.age.outputs.status }}\"\
+        \ = \"warn\" ]; then\n    echo \"\u26A0\uFE0F Index approaching stale threshold\
+        \ \u2014 nightly run will refresh it.\"\n  else\n    echo \"\u2705 Index is\
+        \ fresh \u2014 no action needed.\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

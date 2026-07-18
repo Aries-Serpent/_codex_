@@ -1,35 +1,29 @@
----
 name: Smoke Tests - Deployment Verification
-
-on:
+true:
   workflow_run:
-    workflows: [Release to PyPI]
-    types: [completed]
+    workflows:
+    - Release to PyPI
+    types:
+    - completed
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to test (e.g., 0.1.0)"
+        description: Version to test (e.g., 0.1.0)
         required: false
         type: string
-
 permissions:
   contents: read
   packages: read
   issues: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
-
 env:
-  PYTHON_VERSIONS: "[\"3.12\", \"3.13\"]"
-  PROFILES: "[\"core\", \"runtime\", \"full\"]"
-  ML_EXTRAS: "[\"with-ml\", \"without-ml\"]"
-
+  PYTHON_VERSIONS: '["3.12", "3.13"]'
+  PROFILES: '["core", "runtime", "full"]'
+  ML_EXTRAS: '["with-ml", "without-ml"]'
 jobs:
-  # Test matrix setup
   test-matrix:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Define test matrix
     runs-on: ubuntu-latest
@@ -39,16 +33,18 @@ jobs:
       profile: ${{ steps.matrix.outputs.profile }}
       ml-extras: ${{ steps.matrix.outputs.ml-extras }}
     steps:
-      - name: Define test combinations
-        id: matrix
-        run: |
-          echo "python-version=${{ env.PYTHON_VERSIONS }}" >> $GITHUB_OUTPUT
-          echo "profile=${{ env.PROFILES }}" >> $GITHUB_OUTPUT
-          echo "ml-extras=${{ env.ML_EXTRAS }}" >> $GITHUB_OUTPUT
+    - name: Define test combinations
+      id: matrix
+      run: 'echo "python-version=${{ env.PYTHON_VERSIONS }}" >> $GITHUB_OUTPUT
 
-  # Install and test each profile combination
+        echo "profile=${{ env.PROFILES }}" >> $GITHUB_OUTPUT
+
+        echo "ml-extras=${{ env.ML_EXTRAS }}" >> $GITHUB_OUTPUT
+
+        '
   smoke-test:
-    name: "Smoke Test: Python ${{ matrix.python-version }} - ${{ matrix.profile }} - ${{ matrix.ml-extras }}"
+    name: 'Smoke Test: Python ${{ matrix.python-version }} - ${{ matrix.profile }}
+      - ${{ matrix.ml-extras }}'
     needs: test-matrix
     runs-on: ubuntu-latest
     strategy:
@@ -58,261 +54,137 @@ jobs:
         ml-extras: ${{ fromJson(needs.test-matrix.outputs.ml-extras) }}
       fail-fast: false
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+    - name: Create fresh virtual environment
+      run: 'python -m venv test-venv
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
+        source test-venv/bin/activate
 
-      - name: Create fresh virtual environment
-        run: |
-          python -m venv test-venv
-          source test-venv/bin/activate
-          python -m pip install --upgrade pip setuptools wheel
+        python -m pip install --upgrade pip setuptools wheel
 
-      - name: Determine version to test
-        id: version
-        env:
-          INPUT_VERSION: ${{ inputs.version }}
-        run: |
-          if [ -n "$INPUT_VERSION" ]; then
-            VERSION="$INPUT_VERSION"
-          else
-            # Get latest version from PyPI
-            VERSION=$(python -c "import json; import urllib.request; data = urllib.request.urlopen('https://pypi.org/pypi/codex-ml/json').read(); info = json.loads(data); print(info['info']['version'])")
-          fi
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "Testing version: ${VERSION}"
+        '
+    - name: Determine version to test
+      id: version
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+      run: "if [ -n \"$INPUT_VERSION\" ]; then\n  VERSION=\"$INPUT_VERSION\"\nelse\n\
+        \  # Get latest version from PyPI\n  VERSION=$(python -c \"import json; import\
+        \ urllib.request; data = urllib.request.urlopen('https://pypi.org/pypi/codex-ml/json').read();\
+        \ info = json.loads(data); print(info['info']['version'])\")\nfi\necho \"\
+        version=${VERSION}\" >> $GITHUB_OUTPUT\necho \"Testing version: ${VERSION}\"\
+        \n"
+    - name: Install package from PyPI with profile
+      id: install
+      run: "set -e\nsource test-venv/bin/activate\n\nVERSION=\"${{ steps.version.outputs.version\
+        \ }}\"\nPROFILE=\"${{ matrix.profile }}\"\n\necho \"\U0001F4E6 Installing\
+        \ codex-ml[${PROFILE}]==${VERSION}...\"\n\nif [ \"${{ matrix.ml-extras }}\"\
+        \ == \"with-ml\" ]; then\n  pip install \"codex-ml[${PROFILE}]==${VERSION}\"\
+        \nelse\n  # Install without ML dependencies (use constraints)\n  pip install\
+        \ \\\n    --no-deps \\\n    \"codex-ml[${PROFILE}]==${VERSION}\" \\\n    2>&1\
+        \ || echo \"Note: Some dependencies may fail to install without ML extras\"\
+        \nfi\n\necho \"\u2705 Installation completed\"\n"
+    - name: Verify package is importable
+      id: import-test
+      run: "set -e\nsource test-venv/bin/activate\n\necho \"\U0001F50D Verifying package\
+        \ imports...\"\npython << 'PYTHON_TEST'\nimport sys\n\n# Test 10 core APIs\n\
+        apis = [\n    'cognitive_brain',\n    'cognitive_brain.ooda',\n    'cognitive_brain.memory',\n\
+        \    'cognitive_brain.config',\n    'cognitive_brain.cli',\n    'cognitive_brain.utils',\n\
+        ]\n\nprint(\"Importing core APIs:\")\nfor api in apis:\n    try:\n       \
+        \ __import__(api)\n        print(f\"  \u2705 {api}\")\n    except ImportError\
+        \ as e:\n        print(f\"  \u26A0\uFE0F  {api}: {str(e)}\")\n        # Don't\
+        \ fail on optional imports\n\nprint(\"\\n\u2705 Core APIs imported successfully\"\
+        )\nPYTHON_TEST\n"
+    - name: Run basic OODA loop test
+      id: ooda-test
+      run: "source test-venv/bin/activate\n\necho \"\U0001F504 Running OODA loop test...\"\
+        \npython << 'PYTHON_TEST'\nimport sys\nimport json\n\ntry:\n    from cognitive_brain.ooda\
+        \ import OODALoop\n\n    # Initialize OODA loop\n    ooda = OODALoop()\n\n\
+        \    # Execute basic OODA cycle\n    observation = {\"test\": \"data\"}\n\
+        \    result = ooda.observe(observation)\n\n    print(\"\u2705 OODA loop test\
+        \ passed\")\n    print(f\"  Observation result: {result is not None}\")\n\n\
+        except Exception as e:\n    print(f\"\u26A0\uFE0F  OODA loop test failed:\
+        \ {str(e)}\")\n    # This is non-blocking for now\nPYTHON_TEST\n"
+    - name: Verify network policy (core profile only)
+      id: network-test
+      if: matrix.profile == 'core'
+      run: "source test-venv/bin/activate\n\necho \"\U0001F310 Verifying network policy\
+        \ for core profile...\"\npython << 'PYTHON_TEST'\nimport sys\nimport os\n\n\
+        # Check for network-related environment flags\nnetwork_disabled = os.environ.get('DISABLE_NETWORK_CALLS',\
+        \ '').lower() == 'true'\n\nif network_disabled:\n    print(\"\u2705 Network\
+        \ calls disabled for core profile\")\nelse:\n    print(\"\u26A0\uFE0F  Network\
+        \ policy check: not enforced at import time\")\n\n# Try to detect network\
+        \ calls using import inspection\ntry:\n    from cognitive_brain.core import\
+        \ AllowNetworkCalls\n    print(f\"  AllowNetworkCalls context available: True\"\
+        )\nexcept ImportError:\n    print(f\"  AllowNetworkCalls context available:\
+        \ False\")\nPYTHON_TEST\n"
+    - name: Check for blocking network calls
+      id: network-blocking
+      if: matrix.profile == 'core'
+      run: "source test-venv/bin/activate\n\necho \"\U0001F512 Checking for blocking\
+        \ network calls...\"\npython << 'PYTHON_TEST'\nimport sys\nimport socket\n\
+        from unittest import mock\n\n# Block network calls and see if import still\
+        \ works\noriginal_socket = socket.socket\n\ndef blocking_socket(*args, **kwargs):\n\
+        \    raise RuntimeError(\"Network call attempted during import!\")\n\nblocked_calls\
+        \ = []\n\ntry:\n    with mock.patch('socket.socket', side_effect=blocking_socket):\n\
+        \        # Try to import core APIs\n        try:\n            from cognitive_brain.ooda\
+        \ import OODALoop\n            print(\"\u2705 Core APIs load without network\
+        \ calls\")\n        except RuntimeError as e:\n            blocked_calls.append(str(e))\n\
+        \            print(f\"\u26A0\uFE0F  Network call detected: {e}\")\n\nexcept\
+        \ Exception as e:\n    print(f\"\u26A0\uFE0F  Network test inconclusive: {str(e)}\"\
+        )\nPYTHON_TEST\n"
+    - name: Test profile-specific features
+      id: profile-features
+      run: "source test-venv/bin/activate\n\nPROFILE=\"${{ matrix.profile }}\"\necho\
+        \ \"\U0001F9EA Testing profile-specific features for ${PROFILE}...\"\n\ncase\
+        \ \"${PROFILE}\" in\n  core)\n    python << 'PYTHON_TEST'\nprint(\"\u2705\
+        \ Core profile: Testing minimal OODA loop...\")\n# Core profile should have\
+        \ only essential APIs\nPYTHON_TEST\n    ;;\n  runtime)\n    python << 'PYTHON_TEST'\n\
+        print(\"\u2705 Runtime profile: Testing ML inference capabilities...\")\n\
+        # Runtime profile should have torch, transformers, etc.\ntry:\n    import\
+        \ torch\n    print(\"  \u2705 torch available\")\nexcept ImportError:\n  \
+        \  print(\"  \u26A0\uFE0F  torch not available (expected with --no-deps)\"\
+        )\nPYTHON_TEST\n    ;;\n  full)\n    python << 'PYTHON_TEST'\nprint(\"\u2705\
+        \ Full profile: Testing development environment...\")\n# Full profile should\
+        \ have pytest, mypy, etc.\ntry:\n    import pytest\n    print(\"  \u2705 pytest\
+        \ available\")\nexcept ImportError:\n    print(\"  \u26A0\uFE0F  pytest not\
+        \ available\")\nPYTHON_TEST\n    ;;\nesac\n"
+    - name: Measure installation metrics
+      id: metrics
+      run: "source test-venv/bin/activate\n\necho \"\U0001F4CA Recording installation\
+        \ metrics...\"\n\n# Get pip freeze output\npip freeze > installed-packages-${{\
+        \ matrix.python-version }}-${{ matrix.profile }}.txt\n\n# Count packages\n\
+        PACKAGE_COUNT=$(wc -l < installed-packages-${{ matrix.python-version }}-${{\
+        \ matrix.profile }}.txt)\necho \"Installed packages: ${PACKAGE_COUNT}\"\n\n\
+        # Get virtual environment size\nENV_SIZE=$(du -sh test-venv | cut -f1)\necho\
+        \ \"Virtual environment size: ${ENV_SIZE}\"\n\n# Record timing\n{\n  echo\
+        \ \"{\"\n  echo \"  \\\"python_version\\\": \\\"${{ matrix.python-version\
+        \ }}\\\",\"\n  echo \"  \\\"profile\\\": \\\"${{ matrix.profile }}\\\",\"\n\
+        \  echo \"  \\\"ml_extras\\\": \\\"${{ matrix.ml-extras }}\\\",\"\n  echo\
+        \ \"  \\\"package_count\\\": ${PACKAGE_COUNT},\"\n  echo \"  \\\"env_size\\\
+        \": \\\"${ENV_SIZE}\\\",\"\n  echo \"  \\\"timestamp\\\": \\\"$(date -Iseconds)\\\
+        \"\"\n  echo \"}\"\n} > test-metrics-${{ matrix.python-version }}-${{ matrix.profile\
+        \ }}.json\n"
+    - name: Upload installation artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        path: 'installed-packages-*.txt
 
-      - name: Install package from PyPI with profile
-        id: install
-        run: |
-          set -e
-          source test-venv/bin/activate
+          test-metrics-*.json
 
-          VERSION="${{ steps.version.outputs.version }}"
-          PROFILE="${{ matrix.profile }}"
-
-          echo "📦 Installing codex-ml[${PROFILE}]==${VERSION}..."
-
-          if [ "${{ matrix.ml-extras }}" == "with-ml" ]; then
-            pip install "codex-ml[${PROFILE}]==${VERSION}"
-          else
-            # Install without ML dependencies (use constraints)
-            pip install \
-              --no-deps \
-              "codex-ml[${PROFILE}]==${VERSION}" \
-              2>&1 || echo "Note: Some dependencies may fail to install without ML extras"
-          fi
-
-          echo "✅ Installation completed"
-
-      - name: Verify package is importable
-        id: import-test
-        run: |
-          set -e
-          source test-venv/bin/activate
-
-          echo "🔍 Verifying package imports..."
-          python << 'PYTHON_TEST'
-          import sys
-
-          # Test 10 core APIs
-          apis = [
-              'cognitive_brain',
-              'cognitive_brain.ooda',
-              'cognitive_brain.memory',
-              'cognitive_brain.config',
-              'cognitive_brain.cli',
-              'cognitive_brain.utils',
-          ]
-
-          print("Importing core APIs:")
-          for api in apis:
-              try:
-                  __import__(api)
-                  print(f"  ✅ {api}")
-              except ImportError as e:
-                  print(f"  ⚠️  {api}: {str(e)}")
-                  # Don't fail on optional imports
-
-          print("\n✅ Core APIs imported successfully")
-          PYTHON_TEST
-
-      - name: Run basic OODA loop test
-        id: ooda-test
-        run: |
-          source test-venv/bin/activate
-
-          echo "🔄 Running OODA loop test..."
-          python << 'PYTHON_TEST'
-          import sys
-          import json
-
-          try:
-              from cognitive_brain.ooda import OODALoop
-
-              # Initialize OODA loop
-              ooda = OODALoop()
-
-              # Execute basic OODA cycle
-              observation = {"test": "data"}
-              result = ooda.observe(observation)
-
-              print("✅ OODA loop test passed")
-              print(f"  Observation result: {result is not None}")
-
-          except Exception as e:
-              print(f"⚠️  OODA loop test failed: {str(e)}")
-              # This is non-blocking for now
-          PYTHON_TEST
-
-      - name: Verify network policy (core profile only)
-        id: network-test
-        if: matrix.profile == 'core'
-        run: |
-          source test-venv/bin/activate
-
-          echo "🌐 Verifying network policy for core profile..."
-          python << 'PYTHON_TEST'
-          import sys
-          import os
-
-          # Check for network-related environment flags
-          network_disabled = os.environ.get('DISABLE_NETWORK_CALLS', '').lower() == 'true'
-
-          if network_disabled:
-              print("✅ Network calls disabled for core profile")
-          else:
-              print("⚠️  Network policy check: not enforced at import time")
-
-          # Try to detect network calls using import inspection
-          try:
-              from cognitive_brain.core import AllowNetworkCalls
-              print(f"  AllowNetworkCalls context available: True")
-          except ImportError:
-              print(f"  AllowNetworkCalls context available: False")
-          PYTHON_TEST
-
-      - name: Check for blocking network calls
-        id: network-blocking
-        if: matrix.profile == 'core'
-        run: |
-          source test-venv/bin/activate
-
-          echo "🔒 Checking for blocking network calls..."
-          python << 'PYTHON_TEST'
-          import sys
-          import socket
-          from unittest import mock
-
-          # Block network calls and see if import still works
-          original_socket = socket.socket
-
-          def blocking_socket(*args, **kwargs):
-              raise RuntimeError("Network call attempted during import!")
-
-          blocked_calls = []
-
-          try:
-              with mock.patch('socket.socket', side_effect=blocking_socket):
-                  # Try to import core APIs
-                  try:
-                      from cognitive_brain.ooda import OODALoop
-                      print("✅ Core APIs load without network calls")
-                  except RuntimeError as e:
-                      blocked_calls.append(str(e))
-                      print(f"⚠️  Network call detected: {e}")
-
-          except Exception as e:
-              print(f"⚠️  Network test inconclusive: {str(e)}")
-          PYTHON_TEST
-
-      - name: Test profile-specific features
-        id: profile-features
-        run: |
-          source test-venv/bin/activate
-
-          PROFILE="${{ matrix.profile }}"
-          echo "🧪 Testing profile-specific features for ${PROFILE}..."
-
-          case "${PROFILE}" in
-            core)
-              python << 'PYTHON_TEST'
-          print("✅ Core profile: Testing minimal OODA loop...")
-          # Core profile should have only essential APIs
-          PYTHON_TEST
-              ;;
-            runtime)
-              python << 'PYTHON_TEST'
-          print("✅ Runtime profile: Testing ML inference capabilities...")
-          # Runtime profile should have torch, transformers, etc.
-          try:
-              import torch
-              print("  ✅ torch available")
-          except ImportError:
-              print("  ⚠️  torch not available (expected with --no-deps)")
-          PYTHON_TEST
-              ;;
-            full)
-              python << 'PYTHON_TEST'
-          print("✅ Full profile: Testing development environment...")
-          # Full profile should have pytest, mypy, etc.
-          try:
-              import pytest
-              print("  ✅ pytest available")
-          except ImportError:
-              print("  ⚠️  pytest not available")
-          PYTHON_TEST
-              ;;
-          esac
-
-      - name: Measure installation metrics
-        id: metrics
-        run: |
-          source test-venv/bin/activate
-
-          echo "📊 Recording installation metrics..."
-
-          # Get pip freeze output
-          pip freeze > installed-packages-${{ matrix.python-version }}-${{ matrix.profile }}.txt
-
-          # Count packages
-          PACKAGE_COUNT=$(wc -l < installed-packages-${{ matrix.python-version }}-${{ matrix.profile }}.txt)
-          echo "Installed packages: ${PACKAGE_COUNT}"
-
-          # Get virtual environment size
-          ENV_SIZE=$(du -sh test-venv | cut -f1)
-          echo "Virtual environment size: ${ENV_SIZE}"
-
-          # Record timing
-          {
-            echo "{"
-            echo "  \"python_version\": \"${{ matrix.python-version }}\","
-            echo "  \"profile\": \"${{ matrix.profile }}\","
-            echo "  \"ml_extras\": \"${{ matrix.ml-extras }}\","
-            echo "  \"package_count\": ${PACKAGE_COUNT},"
-            echo "  \"env_size\": \"${ENV_SIZE}\","
-            echo "  \"timestamp\": \"$(date -Iseconds)\""
-            echo "}"
-          } > test-metrics-${{ matrix.python-version }}-${{ matrix.profile }}.json
-
-      - name: Upload installation artifacts
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          path: |
-            installed-packages-*.txt
-            test-metrics-*.json
-          retention-days: 7
-
-          name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
-  # Summarize results
+          '
+        retention-days: 7
+        name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{
+          matrix.ml-extras }}
+    timeout-minutes: 30
   smoke-test-summary:
     name: Smoke Test Summary
     needs: smoke-test
@@ -320,85 +192,43 @@ jobs:
     timeout-minutes: 10
     if: always()
     steps:
-      - name: Check smoke test results
-        run: |
-          FAILED_TESTS="${{ needs.smoke-test.result }}"
-
-          if [[ "$FAILED_TESTS" == *"failure"* ]]; then
-            echo "❌ Some smoke tests failed"
-            exit 1
-          else
-            echo "✅ All smoke tests passed"
-          fi
-
-      - name: Generate summary report
-        if: always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const summary = `
-            ## 🧪 Smoke Test Results
-
-            ### Test Configuration
-            - **Python Versions**: 3.12, 3.13
-            - **Profiles**: core, runtime, full
-            - **ML Extras**: with/without
-            - **Total Combinations**: 3 × 2 × 2 = 12 test runs
-
-            ### Status
-            - **All combinations tested**: ✅
-            - **Core APIs importable**: ✅
-            - **OODA loop functional**: ✅
-            - **Network policy (core)**: ✅
-            - **Profile-specific features**: ✅
-
-            ### Next Steps
-            - Release published to PyPI
-            - Monitoring production performance
-            - Tracking download statistics
-
-            **Generated at**: ${new Date().toISOString()}
-            `;
-
-            core.notice(summary);
-
-  # Trigger rollback if tests fail
+    - name: Check smoke test results
+      run: "FAILED_TESTS=\"${{ needs.smoke-test.result }}\"\n\nif [[ \"$FAILED_TESTS\"\
+        \ == *\"failure\"* ]]; then\n  echo \"\u274C Some smoke tests failed\"\n \
+        \ exit 1\nelse\n  echo \"\u2705 All smoke tests passed\"\nfi\n"
+    - name: Generate summary report
+      if: always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst summary = `\n## \U0001F9EA Smoke\
+          \ Test Results\n\n### Test Configuration\n- **Python Versions**: 3.12, 3.13\n\
+          - **Profiles**: core, runtime, full\n- **ML Extras**: with/without\n- **Total\
+          \ Combinations**: 3 \xD7 2 \xD7 2 = 12 test runs\n\n### Status\n- **All\
+          \ combinations tested**: \u2705\n- **Core APIs importable**: \u2705\n- **OODA\
+          \ loop functional**: \u2705\n- **Network policy (core)**: \u2705\n- **Profile-specific\
+          \ features**: \u2705\n\n### Next Steps\n- Release published to PyPI\n- Monitoring\
+          \ production performance\n- Tracking download statistics\n\n**Generated\
+          \ at**: ${new Date().toISOString()}\n`;\n\ncore.notice(summary);\n"
   trigger-rollback:
     name: Trigger Rollback (if needed)
-    needs: [smoke-test]
+    needs:
+    - smoke-test
     runs-on: ubuntu-latest
     if: failure()
     steps:
-      - name: Create rollback issue
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const issue = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 Release Rollback Required - Smoke Tests Failed',
-              body: `
-              ## Critical Alert: Smoke Tests Failed
-
-              **Deployment**: ${context.workflow}
-              **Commit**: ${context.sha}
-              **Timestamp**: ${new Date().toISOString()}
-
-              ### Action Required
-              Please run the rollback procedure immediately:
-
-              \`\`\`bash
-              python scripts/deploy/rollback_release.py --version ${context.ref}
-              \`\`\`
-
-              See [Rollback Checklist](docs/deployment/ROLLBACK_CHECKLIST.md) for detailed steps.
-
-              ### Investigation
-              Review smoke test logs in [GitHub Actions](${context.server_url}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-              `,
-              labels: ['critical', 'deployment', 'rollback'],
-              assignees: ['@mbaetiong']  # Configure as needed
-            });
-
-            console.log(`Created rollback issue  #${issue.data.number}`);
+    - name: Create rollback issue
+      uses: actions/github-script@v8
+      with:
+        script: "const issue = await github.rest.issues.create({\n  owner: context.repo.owner,\n\
+          \  repo: context.repo.repo,\n  title: '\U0001F6A8 Release Rollback Required\
+          \ - Smoke Tests Failed',\n  body: `\n  ## Critical Alert: Smoke Tests Failed\n\
+          \n  **Deployment**: ${context.workflow}\n  **Commit**: ${context.sha}\n\
+          \  **Timestamp**: ${new Date().toISOString()}\n\n  ### Action Required\n\
+          \  Please run the rollback procedure immediately:\n\n  \\`\\`\\`bash\n \
+          \ python scripts/deploy/rollback_release.py --version ${context.ref}\n \
+          \ \\`\\`\\`\n\n  See [Rollback Checklist](docs/deployment/ROLLBACK_CHECKLIST.md)\
+          \ for detailed steps.\n\n  ### Investigation\n  Review smoke test logs in\
+          \ [GitHub Actions](${context.server_url}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+          \  `,\n  labels: ['critical', 'deployment', 'rollback'],\n  assignees: ['@mbaetiong']\
+          \  # Configure as needed\n});\n\nconsole.log(`Created rollback issue  #${issue.data.number}`);\n"
+    timeout-minutes: 30

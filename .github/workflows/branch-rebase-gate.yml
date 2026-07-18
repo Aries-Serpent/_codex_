@@ -1,6 +1,5 @@
----
-name: 🔀 Branch Rebase Gate
-on:
+name: "\U0001F500 Branch Rebase Gate"
+true:
   pull_request:
     types:
     - opened
@@ -16,9 +15,9 @@ permissions:
   issues: write
 jobs:
   rebase-check:
-    # Temporarily disabled for PR #5328 to reduce workflow queue
-    if: ${{ github.event.pull_request.number != 5328 && github.actor != 'dependabot[bot]' }}
-    name: '🔀 REQ-10: Branch Rebase Check'
+    if: ${{ github.event.pull_request.number != 5328 && github.actor != 'dependabot[bot]'
+      }}
+    name: "\U0001F500 REQ-10: Branch Rebase Check"
     runs-on: ubuntu-latest
     outputs:
       rebase_required: ${{ steps.check.outputs.rebase_required }}
@@ -27,34 +26,38 @@ jobs:
       base_branch: ${{ steps.check.outputs.base_branch }}
       head_branch: ${{ steps.check.outputs.head_branch }}
     steps:
-      - name: 📥 Checkout (sparse — script only)
-        uses: actions/checkout@v5
-        with:
-          sparse-checkout: |
-            scripts/__init__.py
-            scripts/ci/__init__.py
-            scripts/ci/branch_rebase_check.py
-            scripts/ci/_token_resolver.py
-          sparse-checkout-cone-mode: false
-      - name: 🗂️ Pre-create pip cache dir
-        run: mkdir -p ~/.cache/pip
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12.13
-      - name: 🔍 Check rebase status
-        id: check
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
+    - name: "\U0001F4E5 Checkout (sparse \u2014 script only)"
+      uses: actions/checkout@v5
+      with:
+        sparse-checkout: 'scripts/__init__.py
+
+          scripts/ci/__init__.py
+
+          scripts/ci/branch_rebase_check.py
+
+          scripts/ci/_token_resolver.py
+
+          '
+        sparse-checkout-cone-mode: false
+    - name: "\U0001F5C2\uFE0F Pre-create pip cache dir"
+      run: mkdir -p ~/.cache/pip
+    - name: "\U0001F40D Set up Python"
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+    - name: "\U0001F50D Check rebase status"
+      id: check
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
         \ }}\" \\\n  --pr  \"${{ github.event.pull_request.number }}\" \\\n  --post-comment\
         \ \\\n  --auto-merge-skip-ci \\\n  --upsert-dashboard \\\n  --github-output\
-        \ \\\n  --github-summary\n# Script exits 0 always in non-hard-fail mode —\
-        \ status is in outputs\necho \"✅ Rebase check complete\"\n"
-      - name: 🔴 Annotate when rebase required
-        if: steps.check.outputs.rebase_required == 'true'
-        run: 'BEHIND="${{ steps.check.outputs.behind_by }}"
+        \ \\\n  --github-summary\n# Script exits 0 always in non-hard-fail mode \u2014\
+        \ status is in outputs\necho \"\u2705 Rebase check complete\"\n"
+    - name: "\U0001F534 Annotate when rebase required"
+      if: steps.check.outputs.rebase_required == 'true'
+      run: 'BEHIND="${{ steps.check.outputs.behind_by }}"
 
         BASE="${{ steps.check.outputs.base_branch }}"
 
@@ -64,30 +67,25 @@ jobs:
         commit(s) behind ''${BASE}''. Rebase before starting agent work."
 
         '
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: '${{ runner.os }}-pytest-
 
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-
-      - name: ✅ Confirm branch is up-to-date
-        if: steps.check.outputs.rebase_required == 'false'
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        run: 'STATUS="${{ steps.check.outputs.rebase_status }}"
-
-        BASE="${{ steps.check.outputs.base_branch }}"
-
-        HEAD="${{ steps.check.outputs.head_branch }}"
-
-        echo "✅ REQ-10 PASS: Branch ''${HEAD}'' is ${STATUS} relative to ''${BASE}''
-        — no rebase needed."
-
-        '
+          '
+    - name: "\u2705 Confirm branch is up-to-date"
+      if: steps.check.outputs.rebase_required == 'false'
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+      run: "STATUS=\"${{ steps.check.outputs.rebase_status }}\"\nBASE=\"${{ steps.check.outputs.base_branch\
+        \ }}\"\nHEAD=\"${{ steps.check.outputs.head_branch }}\"\necho \"\u2705 REQ-10\
+        \ PASS: Branch '${HEAD}' is ${STATUS} relative to '${BASE}' \u2014 no rebase\
+        \ needed.\"\n"
+    timeout-minutes: 15
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -103,19 +101,23 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          fetch-depth: 1
-      - name: Post or update rescue comment
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          RUN_ID: ${{ github.run_id }}
-          WORKFLOW_NAME: Branch Rebase Gate
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Branch Rebase Gate
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.head_ref }}
+      run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30

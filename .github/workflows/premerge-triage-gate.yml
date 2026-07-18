@@ -1,42 +1,36 @@
----
 name: premerge-triage-gate
-
-on:
+true:
   pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
-
+    branches:
+    - main
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - labeled
+    - unlabeled
+    - ready_for_review
 permissions:
   contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   triage-gate:
     runs-on: ubuntu-latest
-
-    # Temporarily disabled for PR #5328 to reduce workflow queue
     if: ${{ github.event.pull_request.number != 5328 }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Enforce no unresolved triage markers
-        run: |
-          set -euo pipefail
-
-          BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-
-          git diff --unified=0 "$BASE_SHA" "$HEAD_SHA" > /tmp/pr.diff
-
-          if grep -E '^\+[^+].*(UNABLE_TO_CLASSIFY|AUTO-FIX AVAILABLE:\s*false|Confidence:\s*0%)' /tmp/pr.diff >/dev/null; then
-            echo "::error::PR contains unresolved triage indicators (0% confidence / unclassified failure)."
-            exit 1
-          fi
-
-          echo "No unresolved triage markers detected."
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Enforce no unresolved triage markers
+      run: "set -euo pipefail\n\nBASE_SHA=\"${{ github.event.pull_request.base.sha\
+        \ }}\"\nHEAD_SHA=\"${{ github.event.pull_request.head.sha }}\"\n\ngit diff\
+        \ --unified=0 \"$BASE_SHA\" \"$HEAD_SHA\" > /tmp/pr.diff\n\nif grep -E '^\\\
+        +[^+].*(UNABLE_TO_CLASSIFY|AUTO-FIX AVAILABLE:\\s*false|Confidence:\\s*0%)'\
+        \ /tmp/pr.diff >/dev/null; then\n  echo \"::error::PR contains unresolved\
+        \ triage indicators (0% confidence / unclassified failure).\"\n  exit 1\n\
+        fi\n\necho \"No unresolved triage markers detected.\"\n"
+    timeout-minutes: 30

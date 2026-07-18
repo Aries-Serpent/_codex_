@@ -1,6 +1,5 @@
----
 name: Bootstrap Security Tools from Variables
-on:
+true:
   workflow_dispatch:
     inputs:
       deploy_location:
@@ -39,3 +38,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30

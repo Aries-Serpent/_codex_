@@ -1,6 +1,5 @@
----
 name: API Documentation
-on:
+true:
   push:
     branches:
     - main
@@ -37,3 +36,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 45

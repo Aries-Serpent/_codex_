@@ -1,6 +1,5 @@
----
 name: Cache Health Monitor
-on:
+true:
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -9,7 +8,6 @@ permissions: {}
 jobs:
   noop:
     runs-on: ubuntu-latest
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     steps:
     - run: "echo \"disabled \u2014 stub only\""

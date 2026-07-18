@@ -1,6 +1,5 @@
----
 name: Token Expiry Monitor
-on:
+true:
   schedule:
   - cron: 0 9 * * *
   workflow_dispatch:
@@ -17,7 +16,6 @@ permissions:
   issues: write
 jobs:
   check-token-expiry:
-    # Temporarily disabled for PR #5328 to prevent cascading failures
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Check PAT Expiry Dates
     runs-on: ubuntu-latest
@@ -29,13 +27,13 @@ jobs:
         MASTER_KEY_EXPIRY: ${{ vars.CODEX_MASTER_KEY_EXPIRY_DATE }}
         BACKUP_KEY_EXPIRY: ${{ vars.CODEX_BACKUP_KEY_EXPIRY_DATE }}
         DRY_RUN: ${{ inputs.dry_run || 'false' }}
-      run: "python3 - << 'PYEOF'\nimport datetime, os, sys\n\nWARN_DAYS  = 14  #\
-        \ warn this many days before expiry\nURGENT_DAYS = 7  # fail/create issue\
-        \ if within this many days\n\ntoday = datetime.date.today()\ndry_run = os.environ.get(\"\
+      run: "python3 - << 'PYEOF'\nimport datetime, os, sys\n\nWARN_DAYS  = 14  # warn\
+        \ this many days before expiry\nURGENT_DAYS = 7  # fail/create issue if within\
+        \ this many days\n\ntoday = datetime.date.today()\ndry_run = os.environ.get(\"\
         DRY_RUN\", \"false\").lower() == \"true\"\n\ntokens = {\n    \"CODEX_MASTER_KEY\"\
         : os.environ.get(\"MASTER_KEY_EXPIRY\", \"\"),\n    \"CODEX_BACKUP_KEY\":\
-        \ os.environ.get(\"BACKUP_KEY_EXPIRY\", \"\"),\n}\n\nissues = []  # list\
-        \ of (name, expiry_date, days_left)\nwarnings = []  # list of (name, expiry_date,\
+        \ os.environ.get(\"BACKUP_KEY_EXPIRY\", \"\"),\n}\n\nissues = []  # list of\
+        \ (name, expiry_date, days_left)\nwarnings = []  # list of (name, expiry_date,\
         \ days_left)\n\nfor name, expiry_str in tokens.items():\n    if not expiry_str\
         \ or expiry_str in (\"\", \"never\", \"unknown\"):\n        print(f\"\u26A0\
         \uFE0F  {name}: EXPIRY DATE NOT SET \u2014 add {name.replace('MASTER','MASTER_KEY').replace('BACKUP','BACKUP_KEY')}_EXPIRY_DATE\

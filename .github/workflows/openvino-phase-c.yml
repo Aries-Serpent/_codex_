@@ -1,6 +1,5 @@
----
-name: OpenVINO Phase C — Intel Arc iGPU Smoke Tests
-on:
+name: "OpenVINO Phase C \u2014 Intel Arc iGPU Smoke Tests"
+true:
   workflow_dispatch: null
   push:
     branches:
@@ -20,7 +19,7 @@ permissions:
   contents: read
 jobs:
   openvino-cpu-guard:
-    name: OpenVINO smoke (CPU-only runner — Phase B)
+    name: "OpenVINO smoke (CPU-only runner \u2014 Phase B)"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -32,14 +31,17 @@ jobs:
         python-version: 3.12.13
         extras: dev
     - name: Run Phase B smoke tests (no GPU required)
-      run: |
-        python -m pytest tests/smoke/test_openvino_backend_smoke.py \
+      run: 'python -m pytest tests/smoke/test_openvino_backend_smoke.py \
+
         -v --tb=short
+
+        '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   openvino-arc-gpu:
-    name: OpenVINO smoke (Intel Arc iGPU — Phase C)
+    name: "OpenVINO smoke (Intel Arc iGPU \u2014 Phase C)"
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -66,6 +68,7 @@ jobs:
         \ is_available, DEVICES\n    print(f'OpenVINO devices: {DEVICES}')\n    print(f'GPU\
         \ available: {is_available(\\\"GPU\\\")}')\nexcept Exception as e:\n    print(f'OpenVINO\
         \ unavailable: {e}')\n\"\n"
+    timeout-minutes: 30
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -85,7 +88,8 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
@@ -100,3 +104,4 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+    timeout-minutes: 30
