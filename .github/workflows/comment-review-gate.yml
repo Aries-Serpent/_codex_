@@ -21,8 +21,7 @@ permissions:
   issues: write
 jobs:
   scan-and-post:
-    if: "github.event.pull_request.number != 5328 &&\n(github.event_name == 'pull_request'\
-      \ || github.event_name == 'pull_request_review' ||\n (github.event_name == 'issue_comment'\
+    if: "(github.event_name == 'pull_request' || github.event_name == 'pull_request_review' ||\n (github.event_name == 'issue_comment'\
       \ && github.event.issue.pull_request != null &&\n  github.event.comment.user.login\
       \ == 'mbaetiong'))\n"
     name: "\U0001F50D Scan PR comments"

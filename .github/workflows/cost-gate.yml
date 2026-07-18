@@ -45,7 +45,7 @@ permissions:
   pull-requests: write
 jobs:
   estimate:
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: ${{ github.event_name == 'workflow_call' }}
     name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
     env:

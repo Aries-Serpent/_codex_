@@ -1,10 +1,12 @@
 name: Workflow Execution Gate
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       pr_number:
         description: PR number to execute gate for
-        required: true
+        required: false
         type: number
       verbose_mode:
         type: boolean
@@ -23,7 +25,7 @@ jobs:
     name: Workflow Execution Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

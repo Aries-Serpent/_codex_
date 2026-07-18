@@ -14,7 +14,7 @@ permissions:
   checks: write
 jobs:
   deferral-language-check:
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: ${{ github.event_name == 'pull_request' }}
     name: "\U0001F6A8 Deferral Language Policy Check"
     runs-on: ubuntu-latest
     permissions:
