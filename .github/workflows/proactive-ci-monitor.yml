@@ -47,7 +47,6 @@ jobs:
     name: Scan (${{ inputs.scope || 'scheduled/all-open-prs' }}, dry=${{ inputs.dry_run
       || 'false' }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
     - name: Checkout monitor script
       uses: actions/checkout@v5

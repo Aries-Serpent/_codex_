@@ -97,7 +97,6 @@ jobs:
         \ context.issue.number,\n      body: comment\n    });\n    console.log('✅\
           \ Security findings comment added to PR');\n  } catch (error) {\n    console.log('⚠️\
         \  Could not add comment:', error.message);\n  }\n}\n"
-    timeout-minutes: 20
   validate-findings-json:
     name: Validate Findings JSON
     runs-on: ubuntu-latest

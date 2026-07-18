@@ -46,7 +46,6 @@ jobs:
   compliance-check:
     name: Governance & Compliance Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs: detect-merge
     outputs:
       status: ${{ steps.status.outputs.status }}

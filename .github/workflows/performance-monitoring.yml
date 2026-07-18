@@ -22,7 +22,6 @@ jobs:
   performance-monitor:
     name: Performance Monitoring & SLA Enforcement
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -73,7 +72,7 @@ jobs:
         \ false)\" >> $GITHUB_OUTPUT\nexit 0\n"
         continue-on-error: true
       - name: Comment on PR with SLA results
-        if: github.event_name == "pull_request" && steps.sla_check.outcome == "success"
+        if: github.event_name == "pull_request" && steps.sla_check.outcome == \'success\'
         uses: actions/github-script@v8
         with:
           script: |
@@ -98,7 +97,7 @@ jobs:
             sla_check_result.md
           retention-days: 30
       - name: Block PR on critical regression
-        if: github.event_name == "pull_request" && steps.sla_check.outputs.sla_passed == "false"
+        if: github.event_name == "pull_request" && steps.sla_check.outputs.sla_passed == \'false\'
         uses: actions/github-script@v8
         with:
           script: |

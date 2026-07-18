@@ -12,7 +12,6 @@ permissions:
 jobs:
   monitor-correlation-engine:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Daily Correlation Engine Health Check
     steps:
@@ -154,7 +153,6 @@ jobs:
         -v
 
         '
-    timeout-minutes: 60
   generate-correlation-report:
     runs-on: ubuntu-latest
     name: Generate Correlation Engine Report

@@ -32,7 +32,6 @@ jobs:
   query-patterns:
     name: Query K8s Patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
@@ -66,7 +65,6 @@ jobs:
     name: Validate Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -96,7 +94,6 @@ jobs:
     name: Estimate Costs
     needs: query-patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -126,7 +123,6 @@ jobs:
     name: Generate Terraform Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -156,7 +152,6 @@ jobs:
     name: Create Terraform Plan
     needs: generate-terraform
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -196,7 +191,6 @@ jobs:
     - generate-terraform
     - terraform-plan
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     environment:
       name: infrastructure-approval
     steps:
@@ -255,7 +249,6 @@ jobs:
     needs:
     - approval-gate
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     if: always()
     steps:
     - name: Checkout

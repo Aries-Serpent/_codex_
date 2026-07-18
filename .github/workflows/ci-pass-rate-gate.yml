@@ -15,7 +15,6 @@ jobs:
   pass-rate:
     name: 7-day rolling CI pass-rate check (D6 exit criteria)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5

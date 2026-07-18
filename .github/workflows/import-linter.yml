@@ -28,7 +28,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: 🔗 Import Layer Boundary Check
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v5

@@ -189,19 +189,13 @@ jobs:
             if (issues.length === 0) {
               // Create new issue
               await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
                 title: `CI Health Alert: High Failure Rate Detected`,
                 body: body,
-                labels: ['ci-health', 'automation', 'priority-high']
               });
             } else {
               // Update existing issue
               await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
                 issue_number: issues[0].number,
-                body: body
               });
             }
 

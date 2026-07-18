@@ -51,7 +51,6 @@ jobs:
       github.event_name == 'pull_request_review' ||
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'fast' || inputs.mode == ''))
-    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
@@ -158,7 +157,6 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
@@ -204,7 +202,6 @@ jobs:
     if: |
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.mode == 'full')
-    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5

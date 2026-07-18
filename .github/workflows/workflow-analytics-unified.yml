@@ -92,7 +92,6 @@ jobs:
   quantum-health-check:
     name: Quantum-Inspired Health Check
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: github.event_name == 'schedule' || inputs.mode == 'health-check' || inputs.mode == 'quantum-analysis'
 
     steps:
@@ -146,7 +145,6 @@ jobs:
   weekly-analytics:
     name: Weekly Workflow Analytics
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: github.event_name == 'schedule' && github.event.schedule == '0 0 * * 1' || inputs.mode == 'full-analytics'
 
     steps:
@@ -215,7 +213,6 @@ jobs:
   manual-analytics:
     name: Manual Analytics
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full-analytics'
 
     steps:

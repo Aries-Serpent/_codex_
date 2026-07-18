@@ -34,7 +34,6 @@ jobs:
   github-guru:
     name: GitHub Guru Agent
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: ${{ !contains(github.event.head_commit.message, '[skip-guru]') }}
     steps:
       - name: Checkout repository
@@ -121,7 +120,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3

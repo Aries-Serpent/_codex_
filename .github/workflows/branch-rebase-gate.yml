@@ -17,11 +17,9 @@ permissions:
 jobs:
   rebase-check:
     # Temporarily disabled for PR #5328 to reduce workflow queue
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: ${{ github.event.pull_request.number != 5328 && github.actor != 'dependabot[bot]' }}
     name: '🔀 REQ-10: Branch Rebase Check'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: github.actor != 'dependabot[bot]'
     outputs:
       rebase_required: ${{ steps.check.outputs.rebase_required }}
       rebase_status: ${{ steps.check.outputs.rebase_status }}
@@ -104,7 +102,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5

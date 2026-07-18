@@ -53,7 +53,6 @@ jobs:
   aftermath_evaluator:
     name: Evaluate Outcomes and Learn
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     if: '(github.event_name == ''workflow_run'' && github.event.workflow_run.name
       == ''Cognitive Action Executor'') ||
 
@@ -134,7 +133,6 @@ jobs:
   feed_patterns:
     name: Extract & Feed Patterns
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: 'github.event_name == ''schedule'' ||
 
       (github.event_name == ''workflow_run'' && github.event.workflow_run.name ==
@@ -214,7 +212,6 @@ jobs:
   generate_summary:
     name: Generate Analysis Summary
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
     - aftermath_evaluator
     - feed_patterns

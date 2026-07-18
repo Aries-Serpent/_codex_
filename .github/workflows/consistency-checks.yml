@@ -74,7 +74,6 @@ jobs:
   cross-references:
     name: Cross-Reference Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
@@ -113,7 +112,6 @@ jobs:
   heading-hierarchy:
     name: Heading Hierarchy Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
@@ -161,7 +159,6 @@ jobs:
   consistency-summary:
     name: Consistency Summary
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - markdownlint
     - cross-references

@@ -39,7 +39,6 @@ jobs:
     permissions: {}
     name: Pre-Release Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: '(github.event_name == ''workflow_dispatch'' && (inputs.mode == ''pre-release-only''
       || inputs.mode == ''full-deployment''))
 
@@ -91,7 +90,6 @@ jobs:
     permissions: {}
     name: "Build Cognitive App (artifact only \u2014 no Pages deploy)"
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     if: 'github.event_name == ''push'' ||
 
       (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''cognitive-app-only''
@@ -127,7 +125,6 @@ jobs:
     permissions: {}
     name: Build Pre-Release Package
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs:
     - pre_release_validate
     if: 'needs.pre_release_validate.result == ''success'' &&
@@ -161,7 +158,6 @@ jobs:
     permissions: {}
     name: Publish Pre-Release
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs:
     - pre_release_build
     if: needs.pre_release_build.result == 'success'

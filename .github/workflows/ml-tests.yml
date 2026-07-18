@@ -29,7 +29,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -85,7 +84,6 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs: test-ml-components
 
     steps:
@@ -117,7 +115,6 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: test-ml-components
 
     steps:

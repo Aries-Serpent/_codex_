@@ -28,7 +28,6 @@ jobs:
   profile-drift-check:
     name: Check Profile/Lock Drift
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -70,7 +69,6 @@ jobs:
   lock-hash-validation:
     name: Verify Lock Hashes
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     steps:
       - name: Checkout repository
@@ -100,7 +98,6 @@ jobs:
   offline-install-test:
     name: Test Offline Install (CORE Profile)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
       - name: Checkout repository

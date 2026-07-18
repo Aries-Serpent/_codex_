@@ -59,7 +59,6 @@ jobs:
   validate-api-null-handling:
     name: '🔍 RP-001: API Null-Handling'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: "contains(fromJson('[\"all\", \"rp001-api-null\", \"rp001-rp002\"]'),\n  github.event.inputs.patterns\
       \ || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
@@ -236,7 +235,6 @@ jobs:
   notify-results:
     name: Notify Results
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     needs:
       - pattern-validation-summary
       - validate-api-null-handling

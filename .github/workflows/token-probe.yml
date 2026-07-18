@@ -151,7 +151,6 @@ jobs:
     - probe-master-key
     - probe-backup-key
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     if: always()
     steps:
     - name: Post consolidated result to PR

@@ -147,7 +147,6 @@ jobs:
   heal-stale-manifest:
     name: '🔧 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - transition-readiness
     if: failure() && needs.transition-readiness.outputs.readiness_score == '4' &&
@@ -230,7 +229,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

@@ -16,11 +16,12 @@
 name: Cognitive Brain CI Feedback
 
 on:
-  # DISABLED: workflow_run triggers on ANY workflow completion, causing infinite cascade
-  # Re-enable when cascade mitigation is in place (via explicit workflow list or event filter)
-  # workflow_run:
-  #   workflows: ["*"]
-  #   types: [completed]
+  workflow_dispatch:
+    inputs:
+      feedback_type:
+        description: Type of feedback to generate
+        required: false
+        default: 'summary'
 
 # GROUNDED: Concurrency control prevents exponential cascade.
 # This workflow fires on every workflow completion. Without concurrency control,

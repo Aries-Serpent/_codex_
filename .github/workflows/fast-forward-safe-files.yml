@@ -53,7 +53,6 @@ jobs:
   preflight:
     name: '🔍 Preflight — classify PR  #${{ inputs.pr_number }} files'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     outputs:
       allowed_count: ${{ steps.classify.outputs.allowed_count }}
       denied_count: ${{ steps.classify.outputs.denied_count }}
@@ -121,7 +120,6 @@ jobs:
       }})
     needs: preflight
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     if: needs.preflight.outputs.allowed_count != '0'
     steps:
     - name: Checkout (scripts + allowlist only)

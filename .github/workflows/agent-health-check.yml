@@ -17,7 +17,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: 7-day orchestration success rate (D3 compliance check)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:

@@ -39,7 +39,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: Validate Registry Configuration
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
       validation_confidence: ${{ steps.validate.outputs.confidence }}
       validation_valid: ${{ steps.validate.outputs.valid }}
@@ -92,7 +91,6 @@ jobs:
   test_registry_connectivity:
     name: Test Registry Connectivity
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: validate_registry_configuration
     if: ${{ needs.validate_registry_configuration.outputs.validation_valid == 'True'
       }}
@@ -131,7 +129,6 @@ jobs:
   approval_gate:
     name: Approval Gate for Credential Injection
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     needs:
     - validate_registry_configuration
     - test_registry_connectivity
@@ -177,7 +174,6 @@ jobs:
   store_repository_variables:
     name: Store Registry Metadata in Repository Variables
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs:
     - validate_registry_configuration
     - test_registry_connectivity
@@ -218,7 +214,6 @@ jobs:
   webhook_notification:
     name: Trigger Webhook to Cognitive Brain
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     needs:
     - validate_registry_configuration
     - test_registry_connectivity
@@ -251,7 +246,6 @@ jobs:
   workflow_summary:
     name: Workflow Summary
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - validate_registry_configuration
     - test_registry_connectivity

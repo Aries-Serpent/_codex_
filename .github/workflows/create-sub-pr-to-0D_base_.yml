@@ -30,7 +30,6 @@ jobs:
   create-sub-pr:
     name: "Create PR: ${{ inputs.session_branch }} \u2192 0D_base_"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

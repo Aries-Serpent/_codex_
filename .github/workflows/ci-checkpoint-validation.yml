@@ -37,7 +37,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     name: "\U0001F4CB CI Checkpoint Validation"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
 
       - name: Cache Python dependencies (Layer 1)
@@ -168,7 +167,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5

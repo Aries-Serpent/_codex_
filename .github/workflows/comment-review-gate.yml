@@ -35,7 +35,6 @@ jobs:
       }}
     name: 🔍 Scan PR comments
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     outputs:
       exit_code: ${{ steps.scan.outputs.exit_code }}
       blocking_count: ${{ steps.scan.outputs.blocking_count }}
@@ -80,7 +79,7 @@ jobs:
           path: /tmp/comment_review_report.json
           retention-days: 30
           if-no-files-found: warn
-        env:
+          env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
   gate:

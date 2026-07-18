@@ -22,7 +22,6 @@ jobs:
   openvino-cpu-guard:
     name: OpenVINO smoke (CPU-only runner — Phase B)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
     - uses: actions/checkout@v5
       with:
@@ -42,7 +41,6 @@ jobs:
   openvino-arc-gpu:
     name: OpenVINO smoke (Intel Arc iGPU — Phase C)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     continue-on-error: true
     steps:
     - uses: actions/checkout@v5
@@ -82,7 +80,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

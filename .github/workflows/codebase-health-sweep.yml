@@ -34,13 +34,10 @@ permissions:
 jobs:
   sweep-main:
     # Temporarily disabled for PR #5328 to prevent cascading failures
-    if: ${{ github.event.pull_request.number != 5328 }}
+    if: ${{ github.event.pull_request.number != 5328 && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')) }}
     name: "\U0001F9F9 Sweep main"
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: "github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'\
-      \ || (github.event_name == 'workflow_run' &&\n github.event.workflow_run.conclusion\
-      \ == 'success')\n"
     steps:
     - name: Mask secrets
       run: |
@@ -246,7 +243,6 @@ jobs:
   report-manual-issues:
     name: "\U0001F4CB Report manual-only issues"
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     needs:
     - sweep-main
     - sweep-staging

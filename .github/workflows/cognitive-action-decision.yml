@@ -46,7 +46,6 @@ jobs:
   decision_engine:
     name: Execute Decision Engine
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: 'github.event_name == ''schedule'' ||
 
       (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''decision-only''
@@ -107,7 +106,6 @@ jobs:
   action_executor:
     name: Execute Allocated Actions
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs:
     - decision_engine
     if: "always() &&\n(needs.decision_engine.result == 'success' || needs.decision_engine.result\

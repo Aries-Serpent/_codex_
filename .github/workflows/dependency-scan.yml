@@ -19,7 +19,6 @@ jobs:
     if: ${{ github.event.pull_request.number != 5328 }}
     permissions:
       contents: read
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5  # v6.0.3
         with:

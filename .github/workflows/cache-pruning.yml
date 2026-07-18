@@ -36,13 +36,24 @@ jobs:
       - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
         uses: actions/github-script@v8
         with:
-        script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
-          const maxAgeDays  = parseInt('${{ inputs.max_age_days || 7 }}', 10);\nconst
-          dryRun      = ('${{ inputs.dry_run }}' === 'true');\nconst maxAgeMs    =
-          maxAgeDays * 24 * 60 * 60 * 1000;\nconst now         = Date.now();\n\nconsole.log(`Pruning
-          caches last accessed > ${maxAgeDays} days ago`);\nconsole.log(`Dry run:
-          ${dryRun}`);\n\nlet page       = 1;\nlet totalBytes = 0;\nlet deleted  \
-          \  = 0;\nlet kept       = 0;\nconst toDelete = [];\n\n// Collect all caches
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const maxAgeDays = parseInt('${{ inputs.max_age_days || 7 }}', 10);
+            const dryRun = ('${{ inputs.dry_run }}' === 'true');
+            const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000;
+            const now = Date.now();
+            
+            console.log(`Pruning caches last accessed > ${maxAgeDays} days ago`);
+            console.log(`Dry run: ${dryRun}`);
+            
+            let page = 1;
+            let totalBytes = 0;
+            let deleted = 0;
+            let kept = 0;
+            const toDelete = [];
+            
+            // Collect all caches
           (paginate with rate-limit guard)\nwhile (true) {\n  // Circuit-break if
           REST rate limit is low\n  try {\n    const rl = await github.rest.rateLimit.get();\n\
           \    const remaining = rl.data?.resources?.core?.remaining ?? 999;\n   \

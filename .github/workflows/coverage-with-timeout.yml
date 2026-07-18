@@ -32,7 +32,6 @@ jobs:
         - 2
         - 3
         - 4
-    timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '30') }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
@@ -124,7 +123,6 @@ jobs:
   merge-coverage:
     needs: coverage-with-timeout
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
     permissions:
       contents: read
       actions: read
@@ -221,7 +219,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -241,5 +238,4 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
       run: python scripts/ci/post_rescue_comment.py

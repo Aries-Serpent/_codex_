@@ -25,7 +25,6 @@ jobs:
   cleanup:
     name: Delete stale branches & close PRs
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
 
       - name: Cache Python dependencies (Layer 1)

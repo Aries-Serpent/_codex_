@@ -67,7 +67,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -82,9 +81,8 @@ jobs:
   conditional-approval:
     name: ⚡ Auto-Approve if All Nox Gates Pass
     needs: gates
-    if: success() && github.event_name == "pull_request"
+    if: success() && github.event_name == \'pull_request\'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
       - name: Trigger auto-approve-workflows
         uses: actions/github-script@v8

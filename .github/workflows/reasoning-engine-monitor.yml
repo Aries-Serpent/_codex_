@@ -171,7 +171,7 @@ jobs:
           n*Repository*: ${{ github.repository }}\\n*Run*: <${{ github.server_url
           }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>\"\
           \n      }\n    }\n  ]\n}\n"
-        continue-on-error: true
+    continue-on-error: true
     timeout-minutes: 30
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

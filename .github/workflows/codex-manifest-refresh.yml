@@ -19,7 +19,6 @@ jobs:
   refresh-manifest:
     name: "\U0001F504 Refresh CODEX_MANIFEST.json"
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
     steps:
     - name: Checkout PR branch (or main on schedule)
@@ -136,7 +135,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

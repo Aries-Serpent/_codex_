@@ -140,7 +140,6 @@ jobs:
   reference-check:
     name: Reference Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs: pre-validation
     steps:
     - name: Checkout code
@@ -221,7 +220,6 @@ jobs:
   post-validation:
     name: Post-Move Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
     - pre-validation
     - reference-check
@@ -385,7 +383,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5

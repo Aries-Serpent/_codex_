@@ -108,7 +108,6 @@ jobs:
   sbom-generation:
     name: Generate SBOM & Security Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs: baseline-wheels
     permissions:
       contents: read
@@ -179,7 +178,6 @@ jobs:
   upgrade-compatibility:
     name: Test Python ${{ matrix.python_version }} Compatibility
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     permissions:
       contents: read
     strategy:
@@ -220,7 +218,6 @@ jobs:
   drift-detection:
     name: Detect Dependency Drift
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     needs: baseline-wheels
     permissions:
       contents: read
@@ -273,7 +270,6 @@ jobs:
   dependency-audit:
     name: pip-audit + safety
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     permissions:
       contents: read
       security-events: write

@@ -194,11 +194,8 @@ jobs:
             }
 
             await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
               title: `🔐 Variable Blockers: ${absent} required variable(s) absent`,
               body: `## Variable Audit Blocker\n\nThe auto-sync workflow detected **${absent} required variables** that are absent.\n\nSee [§13 of GITHUB_VARIABLES_MASTER_GUIDE.md](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing) for the full list and CLI commands to fix.\n\n**Auto-detected:** ${new Date().toISOString()}\n**Workflow:** ${context.workflow}`,
-              labels: ['variable-blocker', 'ops', 'priority: high'],
             });
       - name: Fail gate — absent required variables (workflow_dispatch)
         if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch' && inputs.dry_run != true

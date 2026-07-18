@@ -36,7 +36,6 @@ jobs:
   sync-env-vars:
     name: Sync Environment Variables
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     permissions:
       contents: read
       id-token: write

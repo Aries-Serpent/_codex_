@@ -163,13 +163,10 @@ jobs:
                 }
                 if (existing) {
                   await github.rest.issues.updateComment({
-                    owner: context.repo.owner, repo: context.repo.repo,
                     comment_id: existing.id, body,
                   });
                 } else {
                   await github.rest.issues.createComment({
-                    owner: context.repo.owner, repo: context.repo.repo,
-                    issue_number: prNumber, body,
                   });
                 }
                 break; // success
@@ -191,7 +188,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3

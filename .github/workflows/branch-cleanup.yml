@@ -51,7 +51,6 @@ jobs:
   cleanup:
     name: 🌿 Branch Cleanup
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     steps:
     - name: 📥 Checkout (sparse — script only)

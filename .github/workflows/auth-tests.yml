@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 60
     strategy:
       matrix:
         python-version:
@@ -229,7 +228,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 60
     needs: test-authentication
     steps:
       - name: Checkout code
@@ -333,7 +331,6 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
-    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
