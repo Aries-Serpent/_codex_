@@ -31,7 +31,7 @@ jobs:
         python scripts/ci/enforce_actions_versions.py
         echo "check_status=success" >> $GITHUB_OUTPUT
     - name: Comment on PR with results
-      if: github.event_name == \'pull_request\' && failure()
+      if: github.event_name == 'pull_request' && failure()
       uses: actions/github-script@v8
       with:
         script: |

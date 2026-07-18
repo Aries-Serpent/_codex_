@@ -156,15 +156,6 @@ jobs:
         path: .codex/
       continue-on-error: true
     - name: Generate summary
-      run: "echo \"## \U0001F527 CI Pattern Healing Report\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/ci-patterns-detected.json\
-        \ ]; then\n  echo \"### Detection Results\" >> $GITHUB_STEP_SUMMARY\njq -r\
-        \ '.issues[] | \"- Pattern \\(.pattern): \\(.message) \"' \\\n  .codex/ci-patterns-detected.json\
-        \ >> $GITHUB_STEP_SUMMARY || true\nfi\n\nif [ -f .codex/ci-patterns-fixed.json\
-        \ ]; then\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"### Fixes Applied\"\
-        \ >> $GITHUB_STEP_SUMMARY\n  jq -r \".fixes_applied\" .codex/ci-patterns-fixed.json\
-        \ | \\\n  xargs -I {} echo \"- {} fixes applied\" \\\n  >> $GITHUB_STEP_SUMMARY\
-        \ || true\nfi\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      run: "echo \"## 🔧 CI Pattern Healing Report\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/ci-patterns-detected.json ]; then\n  echo \"### Detection Results\" >> $GITHUB_STEP_SUMMARY\njq -r '.issues[] | \"- Pattern \\(.pattern): \\(.message) \"' \\\n  .codex/ci-patterns-detected.json >> $GITHUB_STEP_SUMMARY || true\nfi\n\nif [ -f .codex/ci-patterns-fixed.json ]; then\n  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"### Fixes Applied\" >> $GITHUB_STEP_SUMMARY\n  jq -r \".fixes_applied\" .codex/ci-patterns-fixed.json | \\\n  xargs -I {} echo \"- {} fixes applied\" >> $GITHUB_STEP_SUMMARY || true\nfi\n"
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
