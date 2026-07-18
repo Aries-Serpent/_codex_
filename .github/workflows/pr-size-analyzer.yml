@@ -1,5 +1,5 @@
 name: PR Size Analyzer
-true:
+on:
   pull_request:
     types:
     - opened

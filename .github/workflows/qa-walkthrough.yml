@@ -1,5 +1,5 @@
 name: QA Walkthrough Agent
-true:
+on:
   pull_request:
     types:
     - opened

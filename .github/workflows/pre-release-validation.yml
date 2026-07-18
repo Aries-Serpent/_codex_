@@ -1,5 +1,5 @@
 name: Pre-Release Validation
-true:
+on:
   pull_request:
     branches:
     - main

@@ -1,5 +1,5 @@
 name: Pages Pre-Merge Validation
-true:
+on:
   pull_request:
     branches:
     - main

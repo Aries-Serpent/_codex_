@@ -1,5 +1,5 @@
 name: "Runner diagnostics \u2014 self-hosted readiness"
-true:
+on:
   workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

@@ -1,5 +1,5 @@
 name: Workflow Compliance Gate
-true:
+on:
   pull_request:
     branches:
     - main

@@ -1,5 +1,5 @@
 name: Cognitive Brain CI Feedback
-true:
+on:
   workflow_run:
     workflows:
     - '*'

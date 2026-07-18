@@ -1,5 +1,5 @@
 name: Repository Organization & Cleanup
-true:
+on:
   workflow_dispatch:
     inputs:
       action:

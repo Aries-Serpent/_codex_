@@ -1,5 +1,5 @@
 name: "\U0001F527 CI Pattern Healer \u2014 Automated Failure Detection & Healing"
-true:
+on:
   workflow_run:
     workflows:
     - Secrets Baseline Enforcer

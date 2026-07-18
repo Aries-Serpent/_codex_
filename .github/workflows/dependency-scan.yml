@@ -1,5 +1,5 @@
 name: Dependency Scan (template)
-true:
+on:
   schedule:
   - cron: 0 3 * * *
   workflow_dispatch: null

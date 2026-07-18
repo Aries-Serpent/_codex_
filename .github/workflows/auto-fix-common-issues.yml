@@ -1,5 +1,5 @@
 name: Auto-Fix Common CI Issues
-true:
+on:
   workflow_dispatch:
     inputs:
       check_only:

@@ -1,5 +1,5 @@
 name: Automated Compliance Check
-true:
+on:
   pull_request:
     types:
     - opened

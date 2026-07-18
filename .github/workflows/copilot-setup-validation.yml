@@ -1,5 +1,5 @@
 name: Copilot Setup Steps Validation
-true:
+on:
   pull_request:
     types:
     - opened

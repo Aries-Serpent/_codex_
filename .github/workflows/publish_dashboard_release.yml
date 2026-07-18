@@ -1,5 +1,5 @@
 name: Publish Status Dashboard Release
-true:
+on:
   workflow_dispatch: null
   schedule:
   - cron: 15 10 * * 1

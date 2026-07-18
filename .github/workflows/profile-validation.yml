@@ -1,5 +1,5 @@
 name: Profile Validation
-true:
+on:
   pull_request:
     paths:
     - pyproject.toml

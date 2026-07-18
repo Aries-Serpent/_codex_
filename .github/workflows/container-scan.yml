@@ -1,5 +1,5 @@
 name: Container Security Scan
-true:
+on:
   push:
     paths:
     - .config/Dockerfile*

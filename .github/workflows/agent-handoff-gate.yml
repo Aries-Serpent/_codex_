@@ -1,5 +1,5 @@
 name: Agent Handoff Gate
-true:
+on:
   issue_comment:
     types:
     - created

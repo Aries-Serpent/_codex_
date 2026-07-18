@@ -1,5 +1,5 @@
 name: Validation Pipeline
-true:
+on:
   pull_request:
     branches:
     - main

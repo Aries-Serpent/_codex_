@@ -1,5 +1,5 @@
 name: rust-error-validator Observation (D_CAPABLE)
-true:
+on:
   schedule:
   - cron: 0 8 * * 1
   workflow_dispatch:

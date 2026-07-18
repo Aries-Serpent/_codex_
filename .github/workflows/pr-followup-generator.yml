@@ -1,5 +1,5 @@
 name: Generate PR Follow-Up Prompt
-true:
+on:
   pull_request:
     types:
     - opened

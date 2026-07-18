@@ -1,5 +1,5 @@
 name: Parallel Quality Checks (Optimized)
-true:
+on:
   pull_request:
     branches:
     - main

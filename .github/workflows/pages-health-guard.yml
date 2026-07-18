@@ -1,5 +1,5 @@
 name: "\U0001FA7A Pages Health Guard (Self-Healing)"
-true:
+on:
   deployment_status: null
   workflow_dispatch:
     inputs:

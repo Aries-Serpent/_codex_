@@ -1,5 +1,5 @@
 name: HTML Visual (Screenshots)
-true:
+on:
   pull_request:
     branches:
     - 0D_base_

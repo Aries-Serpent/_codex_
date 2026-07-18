@@ -1,5 +1,5 @@
 name: Build Agent Environment Cache
-true:
+on:
   push:
     branches:
     - main

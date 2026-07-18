@@ -1,5 +1,5 @@
 name: "\U0001F6BF Flush Queued Workflow Runs"
-true:
+on:
   workflow_dispatch:
     inputs:
       status_filter:

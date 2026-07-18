@@ -1,5 +1,5 @@
 name: DependaBot Sheriff (Automated Consolidation)
-true:
+on:
   workflow_dispatch:
     inputs:
       base_branch:

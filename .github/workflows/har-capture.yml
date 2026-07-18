@@ -1,5 +1,5 @@
 name: HAR Cache Capture
-true:
+on:
   push:
     branches:
     - main

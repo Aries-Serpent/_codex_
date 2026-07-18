@@ -1,5 +1,5 @@
 name: "\u26A1 Auto-Approve Pending Workflow Runs"
-true:
+on:
   push:
     branches:
     - copilot/**

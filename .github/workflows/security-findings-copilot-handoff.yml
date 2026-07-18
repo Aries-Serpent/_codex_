@@ -1,5 +1,5 @@
 name: "\U0001F510 Security Findings Copilot Handoff"
-true:
+on:
   workflow_run:
     workflows:
     - Security Scanning Suite

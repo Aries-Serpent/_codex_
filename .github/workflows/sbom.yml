@@ -1,5 +1,5 @@
 name: Generate SBOM
-true:
+on:
   workflow_call:
     secrets:
       GH_TOKEN:

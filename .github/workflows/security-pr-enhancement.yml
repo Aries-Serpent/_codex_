@@ -1,5 +1,5 @@
 name: Security PR Enhancement
-true:
+on:
   pull_request_target:
     types:
     - opened

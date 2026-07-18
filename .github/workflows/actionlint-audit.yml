@@ -1,5 +1,5 @@
 name: Workflow Compliance Audit (actionlint)
-true:
+on:
   pull_request:
     paths:
     - .github/workflows/**

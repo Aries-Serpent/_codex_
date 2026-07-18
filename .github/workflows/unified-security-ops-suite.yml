@@ -1,5 +1,5 @@
 name: unified-security-ops-suite
-true:
+on:
   schedule:
   - cron: 0 3 * * *
   - cron: 0 3 * * 0

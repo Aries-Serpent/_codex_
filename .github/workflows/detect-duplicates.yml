@@ -1,5 +1,5 @@
 name: Duplicate Detection on PR
-true:
+on:
   pull_request:
     branches:
     - main

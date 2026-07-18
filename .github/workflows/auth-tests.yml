@@ -1,5 +1,5 @@
 name: Authentication Tests
-true:
+on:
   push:
     branches:
     - main

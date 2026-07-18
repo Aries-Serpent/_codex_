@@ -1,5 +1,5 @@
 name: Pre-Merge Validation
-true:
+on:
   pull_request:
     types:
     - opened

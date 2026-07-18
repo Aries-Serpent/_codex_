@@ -1,5 +1,5 @@
 name: "\U0001F9F9 Cleanup Stale PR Comments"
-true:
+on:
   workflow_dispatch:
     inputs:
       pr_number:

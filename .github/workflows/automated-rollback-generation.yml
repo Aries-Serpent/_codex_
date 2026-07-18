@@ -1,5 +1,5 @@
 name: Automated Rollback Generation
-true:
+on:
   workflow_dispatch:
     inputs:
       deployment_name:

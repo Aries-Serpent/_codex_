@@ -1,5 +1,5 @@
 name: Nightly CodeQL Alert Triage
-true:
+on:
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch:

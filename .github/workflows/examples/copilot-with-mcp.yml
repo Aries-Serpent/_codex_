@@ -1,5 +1,5 @@
 name: Copilot with MCP Context
-true:
+on:
   workflow_dispatch:
     inputs:
       task:

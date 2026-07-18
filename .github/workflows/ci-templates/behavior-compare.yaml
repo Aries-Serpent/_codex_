@@ -1,5 +1,5 @@
 name: Behavior Compare
-true:
+on:
   workflow_call:
     inputs:
       snapshot_id:

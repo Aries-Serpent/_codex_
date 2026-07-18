@@ -1,5 +1,5 @@
 name: Automated Monitoring Setup
-true:
+on:
   workflow_dispatch:
     inputs:
       monitoring_stack:

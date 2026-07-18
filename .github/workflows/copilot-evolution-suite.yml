@@ -1,5 +1,5 @@
 name: Copilot Evolution & Review (Unified)
-true:
+on:
   schedule:
   - cron: 0 */4 * * *
   pull_request:
