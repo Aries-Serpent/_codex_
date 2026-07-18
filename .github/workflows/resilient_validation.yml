@@ -70,8 +70,8 @@ jobs:
       fail-fast: false
       matrix:
         test-group: "${{\n  (github.base_ref == 'main' && github.head_ref == '0D_base_')\n\
-          \  && fromJSON('[\"quick\",\"documentation\",\"skills\",\"integration\"\
-          ,\"slow\"]')\n  || fromJSON('[\"quick\",\"documentation\",\"skills\"]')\n\
+          \  && fromJSON('[\'quick\',\'documentation\',\'skills\',\'integration\'\
+          ,\'slow\']')\n  || fromJSON('[\'quick\',\'documentation\',\'skills\']')\n\
           }}"
     steps:
     - uses: actions/checkout@v5

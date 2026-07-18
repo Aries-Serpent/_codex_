@@ -85,12 +85,12 @@ jobs:
         TOTAL_SHARDS=${{\
     - name: Check for timeouts
       if: steps.coverage.outputs.coverage_failed == 'true'
-      run: 'echo "::warning::Coverage collection encountered issues (timeout or test
-        failure)"
+      run: 'echo '::warning::Coverage collection encountered issues (timeout or test
+        failure)'
 
-        echo "This may indicate slow tests or hanging operations."
+        echo 'This may indicate slow tests or hanging operations.'
 
-        echo "Review the test output above for timeout messages."
+        echo 'Review the test output above for timeout messages.'
 
         '
     - name: Upload coverage artifact (shard ${{ matrix.shard }})
