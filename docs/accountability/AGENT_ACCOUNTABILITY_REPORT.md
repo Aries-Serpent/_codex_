@@ -119,7 +119,7 @@
 - Governance: ✅ COMPLIANT (REQ-4/REQ-5 updated, WEC maintained)
 
 ### Phase Timeline Checkpoint
-```
+```text
 2026-07-17T22:31:54Z  │ Phase A Execution START ✅
 2026-07-17T22:48:54Z  │ Phase A Execution COMPLETE ✅
                       │ Decision: PROCEED TO PHASE B ✅
