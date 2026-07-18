@@ -120,7 +120,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: aftermath-evaluation-${{ github.run_number }}
         path: 'cognitive/evaluations/*.json
 
           cognitive/learning/*.json
@@ -128,6 +127,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 30
+        name: aftermath-evaluation-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   feed_patterns:
@@ -199,7 +199,6 @@ jobs:
     - name: Upload pattern artifacts
       uses: actions/upload-artifact@v5
       with:
-        name: cognitive-patterns-${{ github.run_number }}
         path: '.codex/cognitive_brain/patterns/*.json
 
           .codex/cognitive_brain/analysis/*.json
@@ -207,6 +206,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 60
+        name: cognitive-patterns-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   generate_summary:

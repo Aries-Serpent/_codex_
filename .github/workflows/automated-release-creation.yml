@@ -219,7 +219,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: release-${{ github.event.inputs.version }}-artifacts
           path: '.codex/release-notes.md
 
           .codex/sbom-*.json
@@ -236,6 +235,7 @@ jobs:
 
           '
           retention-days: 90
+          name: release-${{ github.event.inputs.version }}-artifacts
       - name: Print workflow summary
         run: "echo \"## ✅ Release Creation Workflow Complete\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Version**: ${{ github.event.inputs.version\

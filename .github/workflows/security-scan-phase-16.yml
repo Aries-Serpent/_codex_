@@ -129,7 +129,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: security-reports
         path: 'bandit-report.json
 
           semgrep-report.json
@@ -144,6 +143,7 @@ jobs:
 
           '
         retention-days: 30
+        name: security-reports
   coverage-analysis:
     name: Coverage Gap Analysis (Phase 16.4)
     runs-on: ubuntu-latest
@@ -186,15 +186,15 @@ jobs:
       with:
         files: ./coverage.xml
         flags: security-tests
-        name: phase-16-security-coverage
         fail_ci_if_error: false
+        name: phase-16-security-coverage
     - name: Upload coverage report
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-report
         path: htmlcov/
         retention-days: 30
+        name: coverage-report
   codeql-analysis:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest
@@ -286,7 +286,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: phase-16-test-results
         path: 'phase-16-3-results.txt
 
           phase-16-3-dep-results.txt
@@ -295,6 +294,7 @@ jobs:
 
           '
         retention-days: 30
+        name: phase-16-test-results
   security-gates:
     name: Security Gates & Validation
     runs-on: ubuntu-latest
@@ -377,8 +377,8 @@ jobs:
     - name: Upload Summary
       uses: actions/upload-artifact@v5
       with:
-        name: phase-16-complete
         path: PHASE_16_RESULTS.md
+        name: phase-16-complete
     - name: Status
       run: "echo \"## \U0001F3AF Phase 16 Execution Complete\"\necho \"\"\necho \"\
         Sub-phases:\"\necho \"\u2705 16.3 - Continuous Security Scanning\"\necho \"\

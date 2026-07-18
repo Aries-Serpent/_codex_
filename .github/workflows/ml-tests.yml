@@ -76,10 +76,10 @@ jobs:
         with:
           file: ./coverage.xml
           flags: ${{ matrix.test-suite }}
-          name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          continue-on-error: true
 
+          name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
+          continue-on-error: true
   test-integration-slow:
     permissions:
       contents: read
@@ -148,5 +148,6 @@ jobs:
         uses: actions/upload-artifact@v5
         if: always()
         with:
-          name: coverage-report
           path: htmlcov/
+
+          name: coverage-report

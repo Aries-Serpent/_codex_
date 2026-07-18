@@ -260,9 +260,9 @@ jobs:
     - name: Upload setup report
       uses: actions/upload-artifact@v5
       with:
-        name: monitoring-setup-report
         path: setup-report.md
         retention-days: 30
+        name: monitoring-setup-report
     - name: Collect deployment logs
       if: always()
       run: 'echo "📋 Collecting deployment logs..."
@@ -292,9 +292,9 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: monitoring-deployment-logs
         path: logs/
         retention-days: 30
+        name: monitoring-deployment-logs
     - name: Post deployment status
       if: always()
       uses: actions/github-script@v8

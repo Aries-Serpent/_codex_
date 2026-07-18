@@ -102,16 +102,16 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: dependabot-sheriff-logs
         path: .codex/logs/dependabot_sheriff_*.log
         retention-days: 30
+        name: dependabot-sheriff-logs
     - name: Upload summary
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: dependabot-sheriff-summary
         path: .codex/logs/dependabot_sheriff_summary_*.md
         retention-days: 30
+        name: dependabot-sheriff-summary
     - name: Comment on failure
       if: failure()
       uses: actions/github-script@v8

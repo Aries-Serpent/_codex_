@@ -151,7 +151,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@c7d193f32eddeaaf6b7b5b3e08f025a8aa6e2f2e
       with:
-        name: audit-results-${{ github.run_number }}
         path: '.codex/audit/*.json
 
           .codex/audit/*.md
@@ -161,6 +160,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 90
+        name: audit-results-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   qa_walkthrough:
@@ -364,7 +364,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@c7d193f32eddeaaf6b7b5b3e08f025a8aa6e2f2e
       with:
-        name: qa-walkthrough-${{ github.run_number }}
         path: '.codex/qa/*.json
 
           .codex/qa/*.md
@@ -374,6 +373,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 60
+        name: qa-walkthrough-${{ github.run_number }}
     - name: Fail on critical issues
       if: 'inputs.fail_on_critical == ''true'' &&
 

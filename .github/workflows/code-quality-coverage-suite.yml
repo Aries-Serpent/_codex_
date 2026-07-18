@@ -149,7 +149,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-artifacts-${{ github.run_number }}
         path: '.coverage.json
 
           coverage_modules.json
@@ -159,6 +158,7 @@ jobs:
           '
         if-no-files-found: warn
         retention-days: 90
+        name: coverage-artifacts-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   # ✅ OPT-001: Parallel Quality Analysis Jobs (Phase 18 Optimization)
@@ -206,10 +206,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: code-quality-ruff-${{ github.run_number }}
         path: 'ruff-output.txt'
         if-no-files-found: ignore
         retention-days: 30
+        name: code-quality-ruff-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
@@ -257,10 +257,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: code-quality-mypy-${{ github.run_number }}
         path: 'mypy-output.txt'
         if-no-files-found: ignore
         retention-days: 30
+        name: code-quality-mypy-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
@@ -332,12 +332,12 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: code-quality-bandit-${{ github.run_number }}
         path: |
           bandit-report.json
           bandit-output.txt
         if-no-files-found: ignore
         retention-days: 30
+        name: code-quality-bandit-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
@@ -384,10 +384,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: code-quality-radon-${{ github.run_number }}
         path: 'radon-output.txt'
         if-no-files-found: ignore
         retention-days: 30
+        name: code-quality-radon-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   unified_summary:

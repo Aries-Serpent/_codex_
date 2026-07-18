@@ -146,7 +146,6 @@ jobs:
       if: matrix.test-group == 'quick' && always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-baseline
         path: 'coverage.json
 
           coverage.xml
@@ -154,11 +153,11 @@ jobs:
           '
         retention-days: 30
         if-no-files-found: ignore
+        name: coverage-baseline
     - name: Upload results
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-results-${{ matrix.test-group }}
         path: 'test-results/
 
           .coverage
@@ -167,6 +166,7 @@ jobs:
 
           '
         retention-days: 7
+        name: validation-results-${{ matrix.test-group }}
     - name: Post rescue comment on validation failure
       if: failure() && github.event_name == 'pull_request'
       env:
@@ -251,7 +251,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
         path: '.test_durations
 
           test-results/
@@ -259,6 +258,7 @@ jobs:
           '
         retention-days: 3
         if-no-files-found: ignore
+        name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
     - name: Post rescue comment on shard failure
       if: failure() && github.event_name == 'pull_request'
       env:

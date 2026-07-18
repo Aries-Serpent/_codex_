@@ -99,9 +99,9 @@ jobs:
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
       uses: actions/upload-artifact@v5
       with:
-        name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
         path: ./wheelhouse
         retention-days: 30
+        name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -159,13 +159,13 @@ jobs:
     - name: Upload SBOM artifacts
       uses: actions/upload-artifact@v5
       with:
-        name: sbom-${{ matrix.variant }}
         path: 'sbom-${{ matrix.variant }}.*.json
 
           grype-${{ matrix.variant }}.sarif
 
           '
         retention-days: 90
+        name: sbom-${{ matrix.variant }}
     - name: Upload Grype SARIF to GitHub Security
       if: always()
       uses: github/codeql-action/upload-sarif@v3
@@ -229,8 +229,8 @@ jobs:
     - name: Download current baseline (amd64)
       uses: actions/download-artifact@v5
       with:
-        name: baseline-wheelhouse-linux-amd64
         path: ./current-baseline
+        name: baseline-wheelhouse-linux-amd64
     - name: Download previous baseline (if exists)
       continue-on-error: true
       run: '# Try to download from previous run
@@ -321,7 +321,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: dependency-audit-${{ github.run_id }}
         path: 'workbench/security/ci_pip_audit.json
 
           workbench/security/ci_pip_audit_cyclonedx.json
@@ -330,6 +329,7 @@ jobs:
 
           '
         retention-days: 30
+        name: dependency-audit-${{ github.run_id }}
     - name: Generate audit summary
       if: always()
       run: 'echo "## pip-audit Results" >> $GITHUB_STEP_SUMMARY

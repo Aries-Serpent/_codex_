@@ -914,10 +914,10 @@ jobs:
     - name: Upload pattern DB snapshot artifact
       uses: actions/upload-artifact@v5
       with:
-        name: pattern-db-snapshot-${{ github.run_id }}
         path: /tmp/pattern_snapshot.json
         retention-days: 90
         if-no-files-found: warn
+        name: pattern-db-snapshot-${{ github.run_id }}
     - name: Post @copilot fix prompt on failing PR
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

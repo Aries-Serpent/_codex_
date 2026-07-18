@@ -185,7 +185,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: scheduled-validation-${{ steps.config.outputs.timestamp }}
         path: 'validation_report.txt
 
           build_report.txt
@@ -194,6 +193,7 @@ jobs:
 
           '
         retention-days: 90
+        name: scheduled-validation-${{ steps.config.outputs.timestamp }}
     - name: Update status dashboard
       if: always()
       run: "# Update the status dashboard with latest results\nDASHBOARD=\"docs/status/GITHUB_PAGES_STATUS.md\"\

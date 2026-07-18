@@ -280,7 +280,6 @@ jobs:
             await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: 'COGNITIVE_BRAIN_SESSION_NUMBER',
               value: '109',
             });
 
@@ -301,7 +300,6 @@ jobs:
               const resp = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS'
               });
               currentActors = resp.data.value || currentActors;
             } catch (e) {
@@ -319,11 +317,13 @@ jobs:
             await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS',
               value: updatedActors
             });
             core.info(`✅ Session number updated to 109. COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);
 
+              name: 'COGNITIVE_BRAIN_SESSION_NUMBER',
+                name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS'
+              name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS',
       - name: "§3 Verify secrets (existence check only)"
         env:
           HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}

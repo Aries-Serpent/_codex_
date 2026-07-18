@@ -63,8 +63,6 @@ jobs:
         dockerfile: .config/Dockerfile.preview
         failure-threshold: error
         ignore: DL3008,DL3013
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   build:
     name: Build preview image (${{ matrix.target }})
     runs-on: ubuntu-latest-m

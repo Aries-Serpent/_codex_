@@ -65,10 +65,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: d-capable-promotion-report
         path: .codex/promotion_report.json
         retention-days: 30
         if-no-files-found: ignore
+        name: d-capable-promotion-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

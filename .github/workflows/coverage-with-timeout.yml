@@ -97,7 +97,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-shard-${{ matrix.shard }}
         path: 'coverage_shard_${{ matrix.shard }}.xml
 
           htmlcov_shard_${{ matrix.shard }}/
@@ -106,17 +105,18 @@ jobs:
 
           '
         retention-days: 14
+        name: coverage-shard-${{ matrix.shard }}
     - name: Upload timeout logs
       if: steps.coverage.outputs.coverage_failed == 'true'
       uses: actions/upload-artifact@v5
       with:
-        name: timeout-logs-shard-${{ matrix.shard }}
         path: 'pytest_timeout.ini
 
           *.log
 
           '
         retention-days: 14
+        name: timeout-logs-shard-${{ matrix.shard }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -159,13 +159,13 @@ jobs:
       if: steps.merge.outputs.merge_succeeded == 'true'
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-combined
         path: 'coverage_combined.xml
 
           htmlcov_combined/
 
           '
         retention-days: 30
+        name: coverage-combined
     - name: Generate coverage summary
       if: steps.merge.outputs.merge_succeeded == 'true'
       run: "echo \"## Coverage Report Summary\" >> $GITHUB_STEP_SUMMARY\necho \"\"\

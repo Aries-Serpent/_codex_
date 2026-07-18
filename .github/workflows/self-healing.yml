@@ -248,7 +248,6 @@ jobs:
       - name: Upload lane contract artifact
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-lane-contract
           path: |
             .codex/contracts/lane-manifest.json
             .codex/contracts/input-lock.json
@@ -256,6 +255,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+          name: self-healing-lane-contract
   self-healing-detect:
     name: Detect & Classify Failures
     runs-on: ubuntu-latest
@@ -377,12 +377,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-detect-contract
           path: |
             .codex/contracts/output-contract-self-healing-detect.json
           if-no-files-found: warn
           retention-days: 30
 
+          name: self-healing-detect-contract
   self-healing-analyze:
     name: Analyze & Plan Remediation
     runs-on: ubuntu-latest
@@ -464,13 +464,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-analyze-contract
           path: |
             security/self-healing-plan.json
             .codex/contracts/output-contract-self-healing-analyze.json
           if-no-files-found: warn
           retention-days: 30
 
+          name: self-healing-analyze-contract
   self-healing-act:
     name: Apply Remediation Actions
     runs-on: ubuntu-latest
@@ -609,7 +609,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-act-contract
           path: |
             security/self-healing-report.json
             security/artifact-provenance.json
@@ -618,6 +617,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+          name: self-healing-act-contract
   validate-self-healing-artifact-contract:
     name: Validate Contract Compliance
     runs-on: ubuntu-latest

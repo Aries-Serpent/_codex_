@@ -296,13 +296,13 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: ci-triage-report-${{ github.run_id }}
         path: 'ci-triage-report.md
 
         ci-triage-report.json
 
         '
         retention-days: 30
+        name: ci-triage-report-${{ github.run_id }}
     - name: Generate job summary
       if: always()
       run: "FAILURES=\"${{ steps.fetch-failures.outputs.failure_count }}\"\necho \"\

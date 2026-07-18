@@ -40,8 +40,8 @@ jobs:
         name: Upload Bandit results (JSON)
         uses: actions/upload-artifact@v5
         with:
-          name: bandit-report
           path: bandit-report.json
+          name: bandit-report
     timeout-minutes: 30
   codeql:
     name: CodeQL Security Analysis

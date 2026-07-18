@@ -775,10 +775,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: copilot-agent-environment-report
         path: ${{ steps.gen_report.outputs.REPORT_PATH }}
         retention-days: 14
         if-no-files-found: warn
+        name: copilot-agent-environment-report
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest

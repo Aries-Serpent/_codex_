@@ -93,13 +93,13 @@ jobs:
       if: steps.decide.outputs.has_decisions == 'true'
       uses: actions/upload-artifact@v5
       with:
-        name: cognitive-decisions-${{ github.run_number }}
         path: 'cognitive/decisions/*.json
 
           cognitive/analysis/*.json
 
           '
         retention-days: 30
+        name: cognitive-decisions-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -129,8 +129,8 @@ jobs:
       if: needs.decision_engine.outputs.has_decisions == 'true'
       uses: actions/download-artifact@v5
       with:
-        name: cognitive-decisions-${{ github.run_number }}
         path: cognitive/decisions/
+        name: cognitive-decisions-${{ github.run_number }}
     - name: Install action executor dependencies
       run: 'pip install pyyaml
 
@@ -148,7 +148,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: cognitive-execution-${{ github.run_number }}
         path: 'cognitive/execution/*.json
 
           cognitive/logs/*.log
@@ -156,6 +155,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 30
+        name: cognitive-execution-${{ github.run_number }}
     - name: Generate summary
       if: always()
       run: 'echo "## 🧠 Cognitive Action & Decision Summary" >> $GITHUB_STEP_SUMMARY

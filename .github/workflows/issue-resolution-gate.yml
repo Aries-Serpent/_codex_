@@ -118,8 +118,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
       with:
-        name: issue-resolution-report
         path: /tmp/issue-resolution-reports/
         retention-days: 30
+        name: issue-resolution-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

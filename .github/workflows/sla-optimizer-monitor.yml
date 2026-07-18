@@ -40,9 +40,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: sla-compliance-report
           path: artifacts/sla-compliance-results.xml
           retention-days: 30
+          name: sla-compliance-report
   pareto-frontier-update:
     name: Weekly Pareto Frontier
     runs-on: ubuntu-latest
@@ -127,9 +127,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: pareto-frontier-report
           path: artifacts/pareto-frontier.json
           retention-days: 30
+          name: pareto-frontier-report
   monthly-billing-report:
     name: Monthly Billing Report
     runs-on: ubuntu-latest
@@ -227,9 +227,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: monthly-billing-reports
           path: artifacts/billing_*.{csv,json}
           retention-days: 90
+          name: monthly-billing-reports
   tier-transition-audit:
     name: Tier Transition Audit
     runs-on: ubuntu-latest
@@ -289,9 +289,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: tier-transition-audit
           path: artifacts/tier-transition-audit.*
           retention-days: 30
+          name: tier-transition-audit
   cost-anomaly-detection:
     name: Cost Anomaly Detection
     runs-on: ubuntu-latest
@@ -364,9 +364,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: cost-anomaly-report
           path: artifacts/cost-anomaly-report.json
           retention-days: 30
+          name: cost-anomaly-report
     timeout-minutes: 30
   summary:
     name: Optimization Summary
@@ -441,9 +441,9 @@ jobs:
       - name: Upload summary
         uses: actions/upload-artifact@v5
         with:
-          name: optimization-summary
           path: summary.json
           retention-days: 30
+          name: optimization-summary
       - name: Comment on PR (if exists)
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v8

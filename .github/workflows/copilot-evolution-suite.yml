@@ -100,7 +100,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: cascade-review-${{ github.run_number }}
         path: '.codex/reviews/*.json
 
           .codex/reviews/*.md
@@ -108,6 +107,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 30
+        name: cascade-review-${{ github.run_number }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -170,7 +170,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: evolution-artifacts-${{ github.run_number }}
         path: '.github/copilot-evolution/data/*.json
 
           .github/copilot-evolution/logs/*.log
@@ -180,6 +179,7 @@ jobs:
           '
         if-no-files-found: ignore
         retention-days: 90
+        name: evolution-artifacts-${{ github.run_number }}
     - name: Commit evolution updates
       if: steps.evolve.outputs.performed == 'true'
       run: "git config --local user.email \"github-actions[bot]@users.noreply.github.com\"\

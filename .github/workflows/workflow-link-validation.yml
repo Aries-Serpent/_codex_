@@ -108,7 +108,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: link-validation-report
         path: '${{ github.workspace }}/link-validation-report.json
 
           ${{ github.workspace }}/.github/workflows/*.md
@@ -120,6 +119,7 @@ jobs:
           '
         if-no-files-found: warn
         retention-days: 14
+        name: link-validation-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

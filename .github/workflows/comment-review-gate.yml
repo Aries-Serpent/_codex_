@@ -75,13 +75,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
           path: /tmp/comment_review_report.json
           retention-days: 30
           if-no-files-found: warn
-          env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-
+          name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
   gate:
     name: 🚦 Comment review gate
     runs-on: ubuntu-latest

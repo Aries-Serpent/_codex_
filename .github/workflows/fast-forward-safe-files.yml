@@ -159,9 +159,9 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: fast-forward-result-pr${{ inputs.pr_number }}-${{ github.run_id }}
         path: /tmp/ff_result.json
         retention-days: 30
+        name: fast-forward-result-pr${{ inputs.pr_number }}-${{ github.run_id }}
     - name: Write result summary
       if: always()
       run: "[ -f /tmp/ff_result.json ] || { echo \"No result file.\" >> \"$GITHUB_STEP_SUMMARY\"\

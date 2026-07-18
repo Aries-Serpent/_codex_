@@ -125,9 +125,9 @@ jobs:
     - name: Upload Health Report
       uses: actions/upload-artifact@v5
       with:
-        name: health-check-report
         path: ${{ env.VERIFICATION_DIR }}/health-reports/
         retention-days: 30
+        name: health-check-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -164,9 +164,9 @@ jobs:
     - name: Upload Smoke Test Results
       uses: actions/upload-artifact@v5
       with:
-        name: smoke-test-results
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
+        name: smoke-test-results
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -199,9 +199,9 @@ jobs:
     - name: Upload Critical Path Results
       uses: actions/upload-artifact@v5
       with:
-        name: critical-path-results
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
+        name: critical-path-results
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -250,9 +250,9 @@ jobs:
     - name: Upload Verification Report
       uses: actions/upload-artifact@v5
       with:
-        name: verification-report
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
+        name: verification-report
     - name: Comment on PR
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8

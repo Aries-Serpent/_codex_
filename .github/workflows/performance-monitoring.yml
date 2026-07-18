@@ -89,13 +89,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: performance-metrics
           path: |
             metrics_current.json
             regression_report.json
             performance_report.md
             sla_check_result.md
           retention-days: 30
+          name: performance-metrics
       - name: Block PR on critical regression
         if: github.event_name == "pull_request" && steps.sla_check.outputs.sla_passed == 'false'
         uses: actions/github-script@v8

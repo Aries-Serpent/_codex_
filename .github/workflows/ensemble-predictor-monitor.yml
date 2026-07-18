@@ -48,9 +48,9 @@ jobs:
     - name: Upload metrics artifact
       uses: actions/upload-artifact@v5
       with:
-        name: ensemble-metrics
         path: .codex/ensemble_metrics.json
         retention-days: 30
+        name: ensemble-metrics
   drift-detection:
     runs-on: ubuntu-latest
     name: Model Drift Detection
@@ -172,9 +172,9 @@ jobs:
     - name: Upload coverage report
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-report
         path: htmlcov/
         retention-days: 30
+        name: coverage-report
     - name: Check coverage threshold
       run: 'python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
 

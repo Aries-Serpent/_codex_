@@ -97,8 +97,6 @@ jobs:
           | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }} |
 
           **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted validation · Large (100-499) → Smoke · Refactor (500+) → Import-only
-          env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest
@@ -334,8 +332,6 @@ jobs:
           status: ${{ steps.gen-summary.outputs.status }}
           summary: ${{ steps.gen-summary.outputs.summary-line }}
           details: ${{ steps.gen-summary.outputs.details }}
-          env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest

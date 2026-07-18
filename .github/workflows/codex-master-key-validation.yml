@@ -57,11 +57,11 @@ jobs:
         uses: actions/upload-artifact@v5
         if: always()
         with:
-          name: codex-master-key-scopes
           path: scope_report.json
           retention-days: 30
           if-no-files-found: warn
 
+          name: codex-master-key-scopes
       - name: Check validation status
         if: always()
         run: |

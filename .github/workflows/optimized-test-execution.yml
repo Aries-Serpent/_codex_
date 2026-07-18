@@ -417,13 +417,13 @@ jobs:
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: coverage-report-${{ github.run_number }}
           path: |
             .coverage.json
             htmlcov/
           retention-days: 90
           if-no-files-found: ignore
 
+          name: coverage-report-${{ github.run_number }}
   # Consolidated test summary
   test-summary:
     name: "📋 Test Execution Summary"

@@ -157,7 +157,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-reports
         path: 'validation_report.txt
 
           table_report.txt
@@ -168,6 +167,7 @@ jobs:
 
           '
         retention-days: 30
+        name: validation-reports
     - name: Post to PR Status Dashboard
       if: always() && github.event_name == 'pull_request'
       uses: ./.github/actions/post-pr-summary

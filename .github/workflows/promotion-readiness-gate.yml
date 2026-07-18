@@ -48,10 +48,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: promotion-readiness-report
         path: .codex/promotion-readiness-report.json
         retention-days: 30
         if-no-files-found: warn
+        name: promotion-readiness-report
     - name: Fail if gate blocked
       if: steps.gate.conclusion == 'failure' || steps.gate.outputs.exit_code != '0'
       run: 'echo "❌ Promotion readiness gate failed — see step summary for details."

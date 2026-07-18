@@ -118,9 +118,9 @@ jobs:
     - name: Upload cognitive_app build artifact
       uses: actions/upload-artifact@v5
       with:
-        name: cognitive-app-dist-${{ github.sha }}
         path: cognitive_app/dist
         retention-days: 14
+        name: cognitive-app-dist-${{ github.sha }}
   pre_release_build:
     permissions: {}
     name: Build Pre-Release Package
@@ -151,9 +151,9 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v5
       with:
-        name: pre-release-build-${{ inputs.version || github.sha }}
         path: dist/
         retention-days: 90
+        name: pre-release-build-${{ inputs.version || github.sha }}
   pre_release_publish:
     permissions: {}
     name: Publish Pre-Release
@@ -169,8 +169,8 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v5
       with:
-        name: pre-release-build-${{ inputs.version || github.sha }}
         path: dist/
+        name: pre-release-build-${{ inputs.version || github.sha }}
     - name: Create GitHub Release
       if: inputs.version != ''
       env:

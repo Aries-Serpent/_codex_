@@ -38,8 +38,6 @@ jobs:
       uses: advanced-security/component-detection-dependency-submission-action@31f25a8de68ae5ce2ca274bc28546a78683c15ce  # v0.1.4
       with:
         scanDirectory: .
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
     - name: Handle submission failure (infrastructure failure — allow workflow to
         pass)
       if: steps.submit_component.outcome == 'failure'

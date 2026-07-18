@@ -131,10 +131,10 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-baseline
         path: .codex/validation/baseline.txt
         retention-days: 14
         if-no-files-found: warn
+        name: validation-baseline
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   reference-check:
@@ -212,9 +212,9 @@ jobs:
     - name: Upload reference report
       uses: actions/upload-artifact@v5
       with:
-        name: reference-validation-report
         path: .codex/reports/reference_validation.md
         retention-days: 30
+        name: reference-validation-report
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   post-validation:
@@ -238,8 +238,8 @@ jobs:
       uses: actions/download-artifact@v5
       continue-on-error: true
       with:
-        name: validation-baseline
         path: .codex/validation/
+        name: validation-baseline
     - name: Compare with baseline
       run: "echo \"Comparing current state with baseline...\"\n\nif [ -f \".codex/validation/baseline.txt\"\
         \ ]; then\n  echo \"✅ Baseline found:\"\n  cat .codex/validation/baseline.txt\n\
@@ -305,9 +305,9 @@ jobs:
     - name: Upload final report
       uses: actions/upload-artifact@v5
       with:
-        name: root-org-validation-report
         path: .codex/reports/root_org_validation_${{ github.run_number }}.md
         retention-days: 90
+        name: root-org-validation-report
     - name: Comment on PR (if applicable)
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8

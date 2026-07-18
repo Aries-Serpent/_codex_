@@ -87,13 +87,13 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: sbom-${{ github.run_id }}
         path: |
           sbom-cyclonedx.json
           pip-licenses.json
           sbom-licenses.csv
         if-no-files-found: warn
         retention-days: 90
+        name: sbom-${{ github.run_id }}
     - name: Cache health report
       if: always()
       continue-on-error: true

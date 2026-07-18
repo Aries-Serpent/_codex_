@@ -197,7 +197,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-results
         path: 'core_validation.json
 
           integration_tests.json
@@ -206,6 +205,7 @@ jobs:
 
           '
         retention-days: 30
+        name: validation-results
     - name: Set Final Status
       if: always()
       run: "if [ \"${{ steps.aggregate.outputs.validation_status }}\" = \"failed\"\
