@@ -1,5 +1,5 @@
 name: Admin Action Notifier (Reusable)
-true:
+on:
   workflow_call:
     inputs:
       gap_id:

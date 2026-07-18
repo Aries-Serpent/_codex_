@@ -1,5 +1,5 @@
 name: "\U0001F47B Ghost Object Actioner"
-true:
+on:
   workflow_dispatch:
     inputs:
       target_kind:
