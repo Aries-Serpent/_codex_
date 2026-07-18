@@ -39,7 +39,7 @@ jobs:
       with:
         scanDirectory: .
         env:
-        GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
     - name: Handle submission failure (infrastructure failure — allow workflow to
         pass)
       if: steps.submit_component.outcome == 'failure'

@@ -12,12 +12,6 @@ on:
         description: OWNER_APPROVED_DURATION (e.g., "24h")
         required: false
         default: ''
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: false
-permissions:
-  contents: read
-  packages: write
       approval_until:
         description: OWNER_APPROVED_UNTIL (ISO8601 Z, e.g., "2025-10-21T00:00:00Z")
         required: false
@@ -31,6 +25,12 @@ permissions:
         description: Run approval check only (skip build and push)
         required: false
         default: false
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+  packages: write
 env:
   OWNER_APPROVED_DURATION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.approval_duration
     != '' && github.event.inputs.approval_duration || vars.OWNER_APPROVED_DURATION

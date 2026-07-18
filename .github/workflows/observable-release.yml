@@ -305,7 +305,7 @@ jobs:
             .codex/sbom/cognitive_brain-0.1.0-full.xml
             dist/SHA256SUMS
           env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
 
       # ─────────────────────────────────────────────────────────────
       # Phase 8: Summary & Reporting

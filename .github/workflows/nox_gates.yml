@@ -81,7 +81,7 @@ jobs:
   conditional-approval:
     name: ⚡ Auto-Approve if All Nox Gates Pass
     needs: gates
-    if: success() && github.event_name == \'pull_request\'
+    if: success() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger auto-approve-workflows
