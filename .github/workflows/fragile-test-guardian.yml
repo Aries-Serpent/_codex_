@@ -359,13 +359,13 @@ jobs:
               repo: context.repo.repo,
               body: `## 🧪 Fragile Test Guardian Report
 
-${violations}
+            ${violations}
 
-**Phase 5 Lane 2 Enforcement** (Advisory in Phase 5, Blocking in Phase 6)
+            **Phase 5 Lane 2 Enforcement** (Advisory in Phase 5, Blocking in Phase 6)
 
-For details, see:
-- [Audit Report](.codex/PHASE_5_FLAKY_TEST_AUDIT_REPORT.md)
-- [Remediation Guide](.codex/PHASE_5_FLAKY_TEST_REMEDIATION.json)`
+            For details, see:
+            - [Audit Report](.codex/PHASE_5_FLAKY_TEST_AUDIT_REPORT.md)
+            - [Remediation Guide](.codex/PHASE_5_FLAKY_TEST_REMEDIATION.json)`
             });
 
       - name: Set status
