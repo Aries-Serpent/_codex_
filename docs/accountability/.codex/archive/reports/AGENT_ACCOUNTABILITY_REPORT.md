@@ -7,7 +7,8 @@
 - ✅ Confirmed `session_wrapup_autofix.py --check` passes REQ-4, REQ-5, REQ-14 once both accountability-report paths and CHANGELOG.md are committed together
 
 ### Agents Used (This Session)
-- [ ] No additional custom agents invoked (compliance verification only)
+- [x] `workflow-ci-fixer` — actionlint remediation (re-verified in this compliance-sync pass, see prior session entry)
+- [x] `workflow-compliance-guardian` — skip-condition audit + deployment (re-verified in this compliance-sync pass, see prior session entry)
 
 ### Compliance Status
 - ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, canonical path)
