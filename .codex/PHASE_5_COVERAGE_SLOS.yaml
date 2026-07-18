@@ -1,0 +1,371 @@
+# Phase 5 Per-Module Coverage SLOs
+# Document Version: 1.0.0
+# Created: 2026-07-18
+# Status: Active (Advisory in Phase 5, Blocking in Phase 6)
+
+slo_framework:
+  version: "1.0.0"
+  phase: 5
+  enforcement_mode: "advisory"  # advisory in Phase 5, blocking in Phase 6
+  baseline_date: "2026-07-02"
+  baseline_coverage: 34.0
+  overall_target_phase6: 70.0
+  review_schedule: "weekly"
+  escalation_threshold_percent: 5.0  # Alert if any module drops >5%
+
+module_categories:
+  critical:
+    description: "Security-critical, data-critical, or API-core modules"
+    target_coverage: 80.0
+    enforcement: "strict"
+    examples: "auth, authz, crypto, db (persistence), API routes"
+  
+  core:
+    description: "Business logic, algorithms, and central processing"
+    target_coverage: 70.0
+    enforcement: "standard"
+    examples: "training, inference, RAG retrieval, decision engines"
+  
+  utility:
+    description: "Helper functions, utilities, formatters, adapters"
+    target_coverage: 50.0
+    enforcement: "advisory"
+    examples: "logging, caching, formatting, adapters, CLI helpers"
+
+modules:
+  # CRITICAL MODULES (80% target)
+  
+  aries_serpent_core/auth:
+    category: critical
+    target: 80.0
+    rationale: "Authentication is security-critical. High coverage required."
+    current_baseline: 45.0
+    path: "src/aries_serpent_core/auth/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "authenticate_user"
+      - "validate_token"
+      - "refresh_session"
+  
+  aries_serpent_core/authz:
+    category: critical
+    target: 80.0
+    rationale: "Authorization logic is security-critical."
+    current_baseline: 42.0
+    path: "src/aries_serpent_core/authz/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "has_permission"
+      - "check_resource_access"
+      - "enforce_rbac"
+  
+  aries_serpent_core/db:
+    category: critical
+    target: 80.0
+    rationale: "Data persistence layer is critical for data integrity."
+    current_baseline: 38.0
+    path: "src/aries_serpent_core/db/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "query"
+      - "transaction"
+      - "migrate"
+  
+  aries_serpent_core/api:
+    category: critical
+    target: 80.0
+    rationale: "Public API contracts require high coverage."
+    current_baseline: 52.0
+    path: "src/aries_serpent_core/api/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "handler"
+      - "request_validator"
+      - "response_formatter"
+  
+  codex_ml/training:
+    category: critical
+    target: 80.0
+    rationale: "Training pipeline correctness is critical for model quality."
+    current_baseline: 48.0
+    path: "src/codex_ml/training/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "train_epoch"
+      - "validate_step"
+      - "compute_loss"
+  
+  aries_serpent_core/rag:
+    category: critical
+    target: 80.0
+    rationale: "RAG retrieval is core to system functionality."
+    current_baseline: 35.0
+    path: "src/aries_serpent_core/rag/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "retrieve_documents"
+      - "rank_results"
+      - "embed_query"
+  
+  aries_serpent_core/crypto:
+    category: critical
+    target: 85.0  # Extra-high for cryptography
+    rationale: "Cryptographic functions require exhaustive testing."
+    current_baseline: 62.0
+    path: "src/aries_serpent_core/crypto/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "encrypt"
+      - "decrypt"
+      - "sign"
+      - "verify"
+  
+  # CORE MODULES (70% target)
+  
+  aries_serpent_core/cognitive:
+    category: core
+    target: 70.0
+    rationale: "Core cognitive brain logic needs solid test coverage."
+    current_baseline: 28.0
+    path: "src/aries_serpent_core/cognitive/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "reason"
+      - "plan"
+      - "execute"
+  
+  codex_ml/inference:
+    category: core
+    target: 70.0
+    rationale: "Model inference is core to system output."
+    current_baseline: 40.0
+    path: "src/codex_ml/inference/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "forward"
+      - "generate"
+      - "decode"
+  
+  aries_serpent_core/governance:
+    category: core
+    target: 70.0
+    rationale: "Governance policies drive operational decisions."
+    current_baseline: 22.0
+    path: "src/aries_serpent_core/governance/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "evaluate_policy"
+      - "check_compliance"
+      - "audit_decision"
+  
+  aries_serpent_core/autonomy:
+    category: core
+    target: 70.0
+    rationale: "Autonomous agent decision-making requires robust testing."
+    current_baseline: 31.0
+    path: "src/aries_serpent_core/autonomy/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "make_decision"
+      - "execute_action"
+      - "assess_impact"
+  
+  aries_serpent_core/metrics:
+    category: core
+    target: 70.0
+    rationale: "Metrics collection must be reliable for monitoring."
+    current_baseline: 44.0
+    path: "src/aries_serpent_core/metrics/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "collect"
+      - "aggregate"
+      - "report"
+  
+  aries_serpent_core/observability:
+    category: core
+    target: 70.0
+    rationale: "Observability infrastructure is critical for troubleshooting."
+    current_baseline: 35.0
+    path: "src/aries_serpent_core/observability/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "trace"
+      - "log"
+      - "monitor"
+  
+  codex_ml/callbacks:
+    category: core
+    target: 70.0
+    rationale: "Training callbacks drive model behavior and logging."
+    current_baseline: 51.0
+    path: "src/codex_ml/callbacks/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "on_epoch_end"
+      - "on_step_end"
+      - "on_train_end"
+  
+  aries_serpent_core/quality:
+    category: core
+    target: 70.0
+    rationale: "Quality assurance module must practice what it preaches."
+    current_baseline: 33.0
+    path: "src/aries_serpent_core/quality/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "validate_output"
+      - "check_metrics"
+      - "assess_quality"
+  
+  # UTILITY MODULES (50% target)
+  
+  aries_serpent_core/cache:
+    category: utility
+    target: 50.0
+    rationale: "Caching is an optimization layer; coverage is nice-to-have."
+    current_baseline: 28.0
+    path: "src/aries_serpent_core/cache/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "get"
+      - "set"
+      - "invalidate"
+  
+  aries_serpent_core/logging:
+    category: utility
+    target: 50.0
+    rationale: "Logging is infrastructure; lower coverage acceptable."
+    current_baseline: 22.0
+    path: "src/aries_serpent_core/logging/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "configure"
+      - "format_message"
+  
+  aries_serpent_core/cli:
+    category: utility
+    target: 50.0
+    rationale: "CLI coverage is secondary to library functionality."
+    current_baseline: 19.0
+    path: "src/aries_serpent_core/cli/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "parse_args"
+      - "execute_command"
+  
+  codex/utils:
+    category: utility
+    target: 50.0
+    rationale: "Utility functions have lower priority for coverage."
+    current_baseline: 40.0
+    path: "src/codex/utils/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "format_string"
+      - "parse_input"
+  
+  aries_serpent_core/monitoring:
+    category: utility
+    target: 50.0
+    rationale: "Monitoring is secondary to core functionality."
+    current_baseline: 29.0
+    path: "src/aries_serpent_core/monitoring/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "emit_metric"
+      - "check_health"
+
+  # Additional core modules for diversity of test portfolio
+  
+  aries_serpent_core/agents:
+    category: core
+    target: 70.0
+    rationale: "Agent orchestration is core to system execution."
+    current_baseline: 36.0
+    path: "src/aries_serpent_core/agents/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "orchestrate"
+      - "delegate"
+      - "monitor_agent"
+
+  aries_serpent_core/config:
+    category: utility
+    target: 50.0
+    rationale: "Configuration management has lower test priority."
+    current_baseline: 42.0
+    path: "src/aries_serpent_core/config/**/*.py"
+    status: "below_target"
+    critical_functions:
+      - "load_config"
+      - "validate_config"
+
+enforcement_policy:
+  phase_5:
+    mode: "advisory"
+    action: "warn_on_miss"
+    comment_on_pr: true
+    block_merge: false
+    alert_channel: "ci-notifications"
+  
+  phase_6:
+    mode: "blocking"
+    action: "fail_on_miss"
+    comment_on_pr: true
+    block_merge: true
+    alert_channel: "ci-alerts"
+
+escalation_process:
+  step_1_detection:
+    trigger: "Module coverage drops below SLO by >5%"
+    action: "Automatic PR comment with warning"
+    timeout_hours: 24
+  
+  step_2_investigation:
+    trigger: "Coverage miss persists 24 hours"
+    action: "Tag @codex-team/quality for investigation"
+    timeout_hours: 72
+  
+  step_3_remediation:
+    trigger: "No progress after 72 hours"
+    action: "Escalate to @mbaetiong, hold PR merge"
+    timeout_hours: 168
+
+monitoring_and_reporting:
+  dashboard_update_frequency: "per_ci_run"
+  report_generation: "daily"
+  weekly_summary_recipients:
+    - "mbaetiong@github.com"
+    - "team@codex.dev"
+  alert_recipients: "ci-notifications@codex.dev"
+
+trends_and_targets:
+  phase_5_milestone_1:
+    date: "2026-07-31"
+    overall_target: 40.0
+    critical_modules_target: 50.0
+  
+  phase_5_milestone_2:
+    date: "2026-08-31"
+    overall_target: 50.0
+    critical_modules_target: 60.0
+  
+  phase_5_completion:
+    date: "2026-09-30"
+    overall_target: 60.0
+    critical_modules_target: 75.0
+  
+  phase_6_gate:
+    date: "2026-10-31"
+    overall_target: 70.0
+    critical_modules_target: 80.0
+    blocking_enforcement: true
+
+# Audit trail
+audit:
+  created_by: "Phase 5 Lane 3"
+  created_at: "2026-07-18T22:51:00Z"
+  last_reviewed: "2026-07-18T22:51:00Z"
+  approval_status: "draft"
+  next_review: "2026-07-25"

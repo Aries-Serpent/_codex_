@@ -226,6 +226,9 @@
   "tests/data/test_cache_roundtrip.py": [
     "transformers"
   ],
+  "tests/data/test_dataset_loaders_extended.py": [
+    "numpy"
+  ],
   "tests/data/test_datasets_module.py": [
     "data.datasets"
   ],
@@ -236,6 +239,9 @@
     "torch.utils.data.distributed",
     "torch.utils.data"
   ],
+  "tests/ensemble/test_ensemble_predictor.py": [
+    "numpy"
+  ],
   "tests/eval/test_eval_runner_smoke.py": [
     "typer.testing"
   ],
@@ -244,6 +250,12 @@
   ],
   "tests/evaluation/test_evaluate_epoch.py": [
     "torch"
+  ],
+  "tests/forecasting/test_capacity_planner.py": [
+    "numpy"
+  ],
+  "tests/forecasting/test_planset_012_gates.py": [
+    "numpy"
   ],
   "tests/full/test_training_pipeline.py": [
     "torch",
@@ -255,6 +267,9 @@
   ],
   "tests/fuzz/test_fuzz_configs.py": [
     "hypothesis",
+    "hypothesis"
+  ],
+  "tests/fuzz/test_fuzz_tokenizer.py": [
     "hypothesis"
   ],
   "tests/integration/test_cross_capability.py": [
@@ -304,6 +319,9 @@
   "tests/monitoring/test_codex_logging_bootstrap.py": [
     "mlflow"
   ],
+  "tests/monitoring/test_performance_monitor.py": [
+    "numpy"
+  ],
   "tests/orchestration/test_determinism_baseline.py": [
     "numpy",
     "torch"
@@ -320,12 +338,6 @@
   "tests/production/test_performance_benchmarks.py": [
     "numpy"
   ],
-  "tests/property/test_property_ab_testing.py": [
-    "hypothesis"
-  ],
-  "tests/property/test_property_drift.py": [
-    "hypothesis"
-  ],
   "tests/property/test_property_resilience.py": [
     "hypothesis",
     "hypothesis"
@@ -338,6 +350,9 @@
   ],
   "tests/rag/test_device_placement.py": [
     "torch"
+  ],
+  "tests/rag/test_rag_functionality_comprehensive.py": [
+    "numpy"
   ],
   "tests/repro/test_seed_consistency.py": [
     "torch"
@@ -355,7 +370,6 @@
     "transformers",
     "transformers",
     "transformers",
-    "transformers",
     "torch",
     "transformers",
     "torch",
@@ -368,7 +382,6 @@
     "transformers",
     "torch",
     "transformers",
-    "torch",
     "transformers",
     "torch",
     "transformers",
@@ -378,7 +391,8 @@
     "transformers",
     "torch",
     "transformers",
-    "torch"
+    "torch",
+    "transformers"
   ],
   "tests/runtime/test_ml_dependencies.py": [
     "torch",
@@ -391,13 +405,13 @@
     "transformers",
     "transformers",
     "transformers",
-    "transformers",
-    "transformers",
-    "transformers",
     "torch",
     "numpy",
     "torch",
     "numpy",
+    "numpy"
+  ],
+  "tests/security/test_fixes_validation.py": [
     "numpy"
   ],
   "tests/serving/test_model_loader.py": [
@@ -497,6 +511,9 @@
   "tests/test_engine_hf_trainer_lora.py": [
     "torch"
   ],
+  "tests/test_ensemble_gate_criteria.py": [
+    "numpy"
+  ],
   "tests/test_interpretability_attention_scorer.py": [
     "numpy"
   ],
@@ -563,18 +580,7 @@
     "numpy",
     "torch"
   ],
-  "tests/unit/test_modeling_coverage_gap.py": [
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
-    "torch",
+  "tests/unit/test_checkpoint_core_resume.py": [
     "torch"
   ],
   "tests/unit/test_rag_embeddings_basic.py": [
