@@ -17,7 +17,7 @@
 - ✅ Merge readiness dimension "auto_fix (0 auto-fixable)" resolved
 
 ### Agents Used (This Session)
-- None (direct fix by Copilot Coding Agent)
+- [x] `ci-testing-agent` — YAML syntax validation and CI failure diagnostics
 
 ### Compliance Status
 - ✅ REQ-5: CHANGELOG.md updated (this session's entry)
