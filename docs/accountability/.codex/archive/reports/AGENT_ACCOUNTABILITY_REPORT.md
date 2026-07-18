@@ -18,7 +18,8 @@
 - ⏳ REQ-14: Agents Used entry to be added after work completes
 
 ### Agents Used (This Session)
-- [x] copilot — Direct compliance file updates + comment resolution
+- [x] `session-analysis-agent` — Session analysis & compliance verification
+- [x] `memory-sync-agent` — Accountability report update & compliance documentation
 
 ---
 
