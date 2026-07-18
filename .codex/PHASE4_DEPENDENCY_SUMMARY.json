@@ -1,0 +1,122 @@
+{
+  "total_workflows": 219,
+  "total_dependencies": 2312,
+  "unique_dependencies": 176,
+  "categories": [
+    "language",
+    "action",
+    "tools",
+    "pip",
+    "npm",
+    "apt"
+  ],
+  "language_versions": {
+    "python": [
+      "${{ env.PYTHON_VERSION }}",
+      "${{ fromJson(needs.test-matrix.outputs.python-version) }}",
+      "${{ matrix.python-version }}",
+      "${{ steps.matrix.outputs.python-version }}",
+      "3.11",
+      "3.12",
+      "3.12.13",
+      "6",
+      "[",
+      "used"
+    ],
+    "node": [
+      "${{ env.NODE_VERSION }}",
+      "22",
+      "5",
+      "used"
+    ],
+    "go": [],
+    "rust": []
+  },
+  "top_actions": [
+    {
+      "action": "actions/checkout",
+      "count": 477
+    },
+    {
+      "action": "actions/setup-python",
+      "count": 163
+    },
+    {
+      "action": "actions/upload-artifact",
+      "count": 158
+    },
+    {
+      "action": "actions/github-script",
+      "count": 122
+    },
+    {
+      "action": "./.github/actions/setup-python-cached",
+      "count": 94
+    },
+    {
+      "action": "actions/cache",
+      "count": 48
+    },
+    {
+      "action": "actions/download-artifact",
+      "count": 27
+    },
+    {
+      "action": "./.github/actions/resolve-push-target",
+      "count": 13
+    },
+    {
+      "action": "./.github/actions/post-pr-summary",
+      "count": 10
+    },
+    {
+      "action": "codecov/codecov-action",
+      "count": 6
+    }
+  ],
+  "top_tools": [
+    {
+      "tool": "python",
+      "count": 180
+    },
+    {
+      "tool": "git",
+      "count": 60
+    },
+    {
+      "tool": "bash",
+      "count": 35
+    },
+    {
+      "tool": "jq",
+      "count": 34
+    },
+    {
+      "tool": "curl",
+      "count": 18
+    },
+    {
+      "tool": "npm",
+      "count": 10
+    },
+    {
+      "tool": "docker",
+      "count": 9
+    },
+    {
+      "tool": "node",
+      "count": 5
+    },
+    {
+      "tool": "make",
+      "count": 1
+    }
+  ],
+  "critical_tools": [
+    {
+      "tool": "python",
+      "count": 180,
+      "percentage": 82.2
+    }
+  ]
+}
