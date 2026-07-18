@@ -198,21 +198,11 @@ jobs:
         \")\nfor category, cost in report['cost_breakdown'].items():\n    print(f\\\
         \"  - {category}: \\${cost:.2f}\\\")\n\"\n"
     timeout-minutes: 60
-  sla_compliance:
-    runs-on: ubuntu-latest
-    name: SLA Compliance Check
-    needs:
-    - multi_tenant_health
-    - failover_health
-    - load_balancer_health
-    - auto_scaling_health
-    if: always()
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Check multi-region uptime
       run: "echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
         \ \"eu-west-1\")\nfor region in \"${regions[@]}\"; do\n  echo \"Checking $region...\"\
