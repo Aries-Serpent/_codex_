@@ -53,15 +53,11 @@ jobs:
         retention-days: 30
         name: ensemble-metrics
     timeout-minutes: 30
-  drift-detection:
-    runs-on: ubuntu-latest
-    name: Model Drift Detection
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
@@ -94,15 +90,11 @@ jobs:
           \uFE0F **Model Drift Detected** in ensemble predictor. Consider running\
           \ retraining workflow.'\n})\n"
     timeout-minutes: 30
-  latency-monitoring:
-    runs-on: ubuntu-latest
-    name: Latency SLA Monitoring
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
@@ -123,15 +115,11 @@ jobs:
         \    print(f\"\\n\u2717 SLA FAILED: p99 latency {p99:.1f}ms > 200ms\")\n \
         \   exit(1)\nEOF\n"
     timeout-minutes: 20
-  escalation-rate-check:
-    runs-on: ubuntu-latest
-    name: Escalation Rate Monitoring
-    steps:
-    - uses: actions/checkout@v5
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+        cache: pip
     - name: Install dependencies
       run: 'python -m pip install --no-cache-dir -r requirements.txt
 
