@@ -125,9 +125,11 @@ jobs:
       env:
         VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
         VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
+        VITE_DOCS_FETCH_LIVE: 'true'
       run: |
         echo "📦 Building cognitive_app dashboard..."
         echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
+        echo "   Docs fetch: VITE_DOCS_FETCH_LIVE=${VITE_DOCS_LIVE:-enabled}"
         
         npm ci
         npm run build
