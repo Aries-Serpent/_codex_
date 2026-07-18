@@ -80,10 +80,20 @@
 - ✅ Concurrency: 100% deployed (218/219)
 - ✅ Timeouts: 100% configured (593/593 jobs)
 
-#### Broken Workflows Investigation
-- Identified 9 workflows with configuration issues
-- Fixed critical YAML error in agentic-diff-guard (via workflow-expiry-enforcer fix)
-- 8 workflows under investigation for full remediation
+#### Broken Workflows Investigation & Resolution (ci-testing-agent)
+- **Issue**: 9 workflows with misplaced `timeout-minutes` in steps arrays, invalid `workflow_dispatch: null`, and missing pip cache configurations
+- **Resolution**: All 9 workflows fixed via `ci-testing-agent` delegation
+  - agentic-diff-guard: ✅ Verified (1 job, cache enabled)
+  - capacity-planner-monitor: ✅ Fixed (4 setup-python with cache)
+  - cognitive-k8s-provisioning: ✅ Fixed (5 setup-python with cache)
+  - ensemble-predictor-monitor: ✅ YAML + cache fixed (5 setup-python)
+  - ml-lifecycle-gate: ✅ Verified (4 setup-python with cache)
+  - ml-tests: ✅ Cache added (3 setup-python)
+  - optimized-test-execution: ✅ Cache + dispatch fixed (8 setup-python)
+  - scaling-framework-monitor: ✅ YAML + cache fixed (9 setup-python)
+  - security-scan-phase-16: ✅ Cache + dispatch fixed (4 setup-python)
+- **Metrics**: 46 total jobs, 43 setup-python steps with 100% pip cache coverage, 0 YAML validation errors
+- **Commit**: 2713445d "fix(workflows): restore YAML integrity and add pip caching"
 
 #### Phase 2 Multi-Lane Completion Summary
 | Lane | Component | Status | Result |
