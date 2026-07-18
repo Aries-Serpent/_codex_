@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Fixed (Phase 1 CI Campaign — Accountability Report Path Sync — 2026-07-18T19:01Z)
+- Synced the Phase 1 CI campaign session entry to the canonical `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` path used by `scripts/ci/session_wrapup_autofix.py`, alongside the top-level `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` copy
+  - ✅ Result: `session_wrapup_autofix.py --check` REQ-4/REQ-14 now pass
+
 ### Fixed (Phase 1 CI Campaign — CodeQL/Dependabot/Skip-Condition Consolidation — 2026-07-18T18:56Z)
 - **Actionlint Remediation (Lane 2)**: Fixed all 134 actionlint violations (98 shellcheck, 26 syntax-check, 6 expression, 4 action) across 18 workflow files, reconstructing corrupted/truncated `run:` blocks and fixing quoting/heredoc issues in `sla-optimizer-monitor.yml`, `capacity-planner-monitor.yml`, `progressive-validation.yml`, `embedding-index-rebuild.yml`, `coverage-with-timeout.yml`, `workflow-compliance-gate.yml`, `security-scanning-suite.yml`, `security-findings-copilot-handoff.yml`, `model-drift-retrain.yml`, `iterative-self-healing-ci.yml`, `ci-rescue.yml`, `audit-qa-suite.yml`, `mypy-baseline.yml`, `d-capable-promotion-gate.yml`, `correlation-engine-monitor.yml`, `workflow-expiry-enforcer.yml`, `openvino-phase-c.yml`, `adaptive-agent-delegation.yml`
   - ✅ Result: `actionlint` now reports 0 violations across all active workflows (verified twice)
