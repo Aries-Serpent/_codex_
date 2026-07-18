@@ -1,0 +1,13 @@
+{
+  "total_issues": 0,
+  "critical_issues": 0,
+  "warnings": 0,
+  "statistics": {
+    "total_python_files": 1491,
+    "syntax_errors": 0,
+    "test_files": 2886
+  },
+  "issues": [],
+  "critical_details": [],
+  "warnings_sample": []
+}
