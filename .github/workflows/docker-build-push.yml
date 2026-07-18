@@ -50,12 +50,8 @@ jobs:
       timeout_minutes: 45
       matrix_count: 1
       pushes_to_ghcr: true
-      permissions:
       contents: read
       pull-requests: write
-      secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      timeout-minutes: 60
   approval-check:
     needs: cost-gate
     name: "Owner approval \u2014 check-only gate"
