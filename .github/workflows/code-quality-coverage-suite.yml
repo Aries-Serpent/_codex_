@@ -8,9 +8,19 @@ on:
     - 0D_base_
     - copilot/integrate-codex-status-template
     - master
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   push:
     branches:
     - main
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   workflow_dispatch:
     inputs:
       mode:

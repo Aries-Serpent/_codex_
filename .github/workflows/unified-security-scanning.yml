@@ -20,11 +20,21 @@ on:
     branches:
     - main
     - develop
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   pull_request:
     types:
     - opened
     - synchronize
     - reopened
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
 jobs:
   codeql-fetch:
     if: github.event.inputs.operation == 'codeql-fetch' || github.event.inputs.operation

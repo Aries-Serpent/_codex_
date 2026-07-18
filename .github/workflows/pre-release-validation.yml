@@ -10,6 +10,11 @@ on:
     - opened
     - synchronize
     - reopened
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   workflow_dispatch:
     inputs:
       version:

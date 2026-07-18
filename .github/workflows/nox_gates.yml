@@ -6,11 +6,21 @@ on:
     - 0D_base_
     - main
     - master
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   pull_request:
     branches:
     - 0D_base_
     - main
     - master
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

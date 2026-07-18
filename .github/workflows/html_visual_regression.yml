@@ -7,6 +7,11 @@ on:
     - copilot/integrate-codex-status-template
     - main
     - master
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

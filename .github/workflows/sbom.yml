@@ -13,10 +13,20 @@ on:
     - main
     - develop
     - work
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   pull_request:
     branches:
     - 0D_base_
     - main
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   release:
     types:
     - published

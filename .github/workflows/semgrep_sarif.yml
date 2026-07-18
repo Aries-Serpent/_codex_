@@ -6,10 +6,20 @@ on:
     - main
     - develop
     - copilot/**
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   pull_request:
     branches:
     - main
     - develop
+    paths-ignore:
+    - '**.md'
+    - 'docs/**'
+    - '.codex/**'
+    - 'LICENSE'
   schedule:
   - cron: 0 3 * * *
   workflow_dispatch:
