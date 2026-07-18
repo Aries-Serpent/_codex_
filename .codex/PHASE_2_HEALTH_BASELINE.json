@@ -1,0 +1,58 @@
+{
+  "phase": "Phase 2 Lane 3",
+  "created_at": "2026-07-18T19:16:50.758+00:00",
+  "health_metrics": {
+    "workflow_count": 230,
+    "categories": {
+      "deployment": 12,
+      "documentation": 6,
+      "monitoring": 20,
+      "quality": 7,
+      "security": 27,
+      "testing": 12,
+      "utility": 111,
+      "validation": 35
+    },
+    "compliance": {
+      "concurrency": 100.0,
+      "timeout_coverage": 99.6,
+      "overall": 99.6
+    }
+  },
+  "latency_baseline": {
+    "measurement_unit": "minutes",
+    "baseline_by_category": {
+      "utility": 10,
+      "quality": 15,
+      "validation": 20,
+      "testing": 30,
+      "security": 45,
+      "build": 60
+    },
+    "notes": "Baseline latencies based on timeout configurations"
+  },
+  "cancellation_baseline": {
+    "expected_reduction": "15-20%",
+    "branch_duplicate_prevention": true,
+    "deployment_safety": "cancel_in_progress=false for 7/12 deployments"
+  },
+  "resource_utilization": {
+    "runner_distribution": {
+      "ubuntu-latest": 0.7,
+      "windows-latest": 0.15,
+      "macos": 0.1,
+      "custom": 0.05
+    },
+    "average_jobs_per_workflow": 3.2,
+    "matrix_enabled_workflows": 0.386,
+    "parallel_capacity": "No constraints detected"
+  },
+  "deployment_snapshot": {
+    "status": "COMPLETE",
+    "timestamp": "2026-07-18T19:16:50.758+00:00",
+    "workflows_scanned": 230,
+    "concurrency_injections": 222,
+    "timeout_additions": 153,
+    "manual_fixes": 7
+  }
+}
