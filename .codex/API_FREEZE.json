@@ -1,0 +1,20 @@
+{
+  "frozen": true,
+  "frozen_date": "2026-07-19T13:33:40.557833Z",
+  "freeze_reason": "Phase 10 production release - API stability required",
+  "compliance_assessment_api": {
+    "method": "POST /assess-compliance",
+    "params": [
+      "audit_result"
+    ],
+    "return_type": "ComplianceAssessment",
+    "stability": "FROZEN"
+  },
+  "threshold_query_api": {
+    "method": "GET /thresholds/{level}",
+    "return_type": "ComplianceThreshold",
+    "stability": "FROZEN"
+  },
+  "breaking_change_policy": "Any breaking changes require Phase 11 planning",
+  "version": "1.0.0-prod"
+}

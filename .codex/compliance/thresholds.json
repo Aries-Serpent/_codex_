@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "effective_date": "2026-07-19T13:27:00Z",
+  "thresholds": {
+    "critical": {
+      "min_compliance_score": 0.99,
+      "description": "PROD deployment - highest confidence required",
+      "use_cases": [
+        "production_release",
+        "critical_infrastructure"
+      ],
+      "breach_action": "BLOCK_MERGE"
+    },
+    "high": {
+      "min_compliance_score": 0.95,
+      "description": "Staging - high confidence for pre-production",
+      "use_cases": [
+        "staging",
+        "qa_environment"
+      ],
+      "breach_action": "REQUIRE_APPROVAL"
+    },
+    "medium": {
+      "min_compliance_score": 0.85,
+      "description": "Beta testing - moderate confidence",
+      "use_cases": [
+        "beta",
+        "internal_testing"
+      ],
+      "breach_action": "WARN"
+    }
+  },
+  "default_gate": "high",
+  "ci_gate_enabled": true,
+  "ci_gate_block_threshold": 0.95
+}
