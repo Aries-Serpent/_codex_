@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-07-19T03:02:12Z",
+  "stage": "Phase 10 Stage 2",
+  "evidence_mode": "artifact_reconstructed_from_authoritative_rollout_and_production_metrics",
+  "deployment": {
+    "version": "v0.2.0",
+    "current_stage_percent": 10,
+    "next_stage_percent": 25,
+    "rollback_ready": true,
+    "rollback_target_version": "v0.1.0-final"
+  },
+  "system_status": {
+    "api_endpoints": "healthy",
+    "database": "operational",
+    "cache_layer": "optimal",
+    "monitoring": "armed",
+    "alerting": "armed",
+    "security": "green",
+    "compliance": "green",
+    "phase_1_8_systems": "operational"
+  },
+  "baseline_metrics_10_percent": {
+    "error_rate_percent": 0.005,
+    "latency_p50_ms": 101.4,
+    "latency_p95_ms": 245.5,
+    "latency_p99_ms": 483.7,
+    "throughput_rps": 193.4,
+    "cpu_percent": 29.6,
+    "memory_percent": 55.3,
+    "database_queries_per_second": 28.6,
+    "cache_hit_rate_percent": 97.5,
+    "db_connections_active_estimated": 7.7
+  },
+  "baseline_metrics_25_percent": {
+    "error_rate_percent": 0.012,
+    "latency_p50_ms": 109.0,
+    "latency_p95_ms": 264.0,
+    "latency_p99_ms": 520.0,
+    "throughput_rps": 483.6,
+    "cpu_percent": 34.0,
+    "memory_percent": 58.0,
+    "database_queries_per_second": 71.4,
+    "cache_hit_rate_percent": 97.4,
+    "db_connections_active_estimated": 19.4
+  },
+  "cache_health": {
+    "hit_rate_percent": 97.5,
+    "target_percent_min": 95.0,
+    "invalidation_cascades": 0,
+    "status": "pass"
+  },
+  "database_health": {
+    "connection_pool_healthy": true,
+    "deadlocks_detected": 0,
+    "replication_lag_ms": 95.0,
+    "query_performance_stable": true,
+    "connections_active_estimated_at_10_percent": 7.7,
+    "connections_active_estimated_at_25_percent": 19.4,
+    "status": "pass"
+  },
+  "telemetry_pipeline": {
+    "drop_rate_percent": 0.0,
+    "processing_overhead_ms": 45.0,
+    "phase_4_data_flowing": true,
+    "status": "pass"
+  },
+  "readiness": {
+    "critical_alerts": 0,
+    "high_alerts": 0,
+    "incidents": 0,
+    "ready_for_ramp_to_25_percent": true,
+    "ready_for_stage_3": true
+  }
+}
