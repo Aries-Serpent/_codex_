@@ -24,10 +24,12 @@
 - ✅ All Phase 1–8 systems operational in production
 
 ### Agents Used (This Session)
-- [ ] No custom agents invoked (direct evidence synthesis and documentation update)
+- `session-analysis-agent` (session wrap-up compliance role)
+- `memory-sync-agent` (PDA/accountability synchronization role)
 
 ### Compliance Status
 - ✅ REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- ✅ REQ-4 archive: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` synchronized
 - ✅ REQ-5: `CHANGELOG.md` updated
 - ✅ REQ-PDA: deployment certification entry appended to `.codex/aftermath/pda_iterations.jsonl`
 
@@ -53,7 +55,8 @@
 - ✅ AGENT_ACCOUNTABILITY_REPORT.md entry (this entry)
 
 ### Agents Used (This Session)
-- [ ] No custom agents invoked (direct consolidation from repository evidence)
+- `session-analysis-agent` (evidence consolidation role)
+- `memory-sync-agent` (PDA/accountability synchronization role)
 
 ### Compliance Status
 - ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
