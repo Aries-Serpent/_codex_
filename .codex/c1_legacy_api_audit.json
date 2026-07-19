@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-07-19T13:28:06.622+00:00",
+  "file": "src/codex_ml/training/legacy_api.py",
+  "file_size_lines": 1700,
+  "summary": {
+    "total_functions": 2,
+    "total_classes": 4,
+    "exported_functions": 2,
+    "exported_classes": 4
+  },
+  "exported_functions": [
+    {
+      "name": "run_functional_training",
+      "signature": "run_functional_training(config)",
+      "line": 796,
+      "docstring": "Run the Codex functional training loop with optional resume support."
+    },
+    {
+      "name": "build_dataloader",
+      "signature": "build_dataloader(dataset, cfg)",
+      "line": 1533,
+      "docstring": "Create a reproducible ``DataLoader`` when PyTorch is present.\n\nSupports both the current ``(dataset, cfg)`` form and the legacy\n``(data_path=..., batch_size=..., shuffle=...)`` keyword form for\nbackward compatibility with older test suites.\n\nReturns ``iter(dataset)`` when torch is unavailable which keeps unit tests\nand minimal CPU environments operational albeit without shuffling."
+    }
+  ],
+  "exported_classes": [
+    {
+      "name": "SafetySettings",
+      "line": 112,
+      "docstring": "",
+      "fields": [
+        "enabled",
+        "policy_path",
+        "bypass",
+        "moderation"
+      ],
+      "methods": []
+    },
+    {
+      "name": "OptimizerSettings",
+      "line": 120,
+      "docstring": "",
+      "fields": [
+        "name",
+        "weight_decay",
+        "betas",
+        "eps"
+      ],
+      "methods": []
+    },
+    {
+      "name": "SchedulerSettings",
+      "line": 128,
+      "docstring": "",
+      "fields": [
+        "name",
+        "warmup_steps",
+        "num_cycles"
+      ],
+      "methods": []
+    },
+    {
+      "name": "TrainingRunConfig",
+      "line": 135,
+      "docstring": "",
+      "fields": [
+        "seed",
+        "deterministic",
+        "model",
+        "learning_rate",
+        "batch_size",
+        "max_epochs",
+        "scheduler",
+        "warmup_steps",
+        "gradient_accumulation",
+        "eval_every_epochs",
+        "tensorboard",
+        "mlflow_enable",
+        "mlflow_tracking_uri",
+        "amp_enable",
+        "amp_dtype",
+        "grad_clip_norm",
+        "lora_enable",
+        "lora_r",
+        "lora_alpha",
+        "lora_dropout",
+        "output_dir",
+        "checkpoint_dir",
+        "checkpoint_every_n_steps",
+        "resume_from",
+        "metrics_out",
+        "log_dir",
+        "log_formats",
+        "log_system_metrics",
+        "system_metrics_interval",
+        "system_metrics_path",
+        "optimizer",
+        "dataset",
+        "safety",
+        "num_workers",
+        "pin_memory",
+        "padding",
+        "truncation",
+        "max_length",
+        "keep_last_n"
+      ],
+      "methods": []
+    }
+  ],
+  "helper_functions": [],
+  "helper_classes": []
+}

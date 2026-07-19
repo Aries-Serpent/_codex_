@@ -1,0 +1,80 @@
+{
+  "timestamp": "2026-07-19T13:28:06.622+00:00",
+  "summary": {
+    "total_legacy_exports": 6,
+    "migrated": 3,
+    "partial": 1,
+    "deprecated": 2,
+    "coverage_percentage": 75.0
+  },
+  "mappings": [
+    {
+      "legacy_name": "run_functional_training",
+      "legacy_line": 796,
+      "unified_name": "run_unified_training",
+      "unified_line": null,
+      "status": "MIGRATED",
+      "compatibility": "HIGH",
+      "notes": "Core training function - unified version is backward compatible wrapper"
+    },
+    {
+      "legacy_name": "build_dataloader",
+      "legacy_line": 1533,
+      "unified_name": "Not directly mapped",
+      "unified_line": null,
+      "status": "PARTIAL",
+      "compatibility": "MEDIUM",
+      "notes": "Functionality integrated into unified backend strategies"
+    },
+    {
+      "legacy_name": "TrainingRunConfig",
+      "legacy_line": 135,
+      "unified_name": "UnifiedTrainingConfig",
+      "unified_line": 147,
+      "status": "MIGRATED",
+      "compatibility": "HIGH",
+      "notes": "Config class updated with new fields, legacy fields supported"
+    },
+    {
+      "legacy_name": "SafetySettings",
+      "legacy_line": 112,
+      "unified_name": "Not mapped",
+      "unified_line": null,
+      "status": "DEPRECATED",
+      "compatibility": "MEDIUM",
+      "notes": "Safety integrated into unified config, still supported"
+    },
+    {
+      "legacy_name": "OptimizerSettings",
+      "legacy_line": 120,
+      "unified_name": "Not mapped",
+      "unified_line": null,
+      "status": "DEPRECATED",
+      "compatibility": "MEDIUM",
+      "notes": "Optimizer config simplified in unified API"
+    },
+    {
+      "legacy_name": "SchedulerSettings",
+      "legacy_line": 128,
+      "unified_name": "Not mapped",
+      "unified_line": null,
+      "status": "DEPRECATED",
+      "compatibility": "MEDIUM",
+      "notes": "Scheduler config integrated into unified config"
+    }
+  ],
+  "coverage_analysis": {
+    "fully_migrated": [
+      "run_functional_training \u2192 run_unified_training",
+      "TrainingRunConfig \u2192 UnifiedTrainingConfig"
+    ],
+    "partially_migrated": [
+      "build_dataloader \u2192 Integrated into strategy backends"
+    ],
+    "not_migrated": [
+      "SafetySettings",
+      "OptimizerSettings",
+      "SchedulerSettings"
+    ]
+  }
+}

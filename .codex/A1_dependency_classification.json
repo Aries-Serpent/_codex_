@@ -1,0 +1,45 @@
+{
+  "stdlib": [
+    "__future__",
+    "argparse",
+    "math",
+    "random",
+    "sqlite3"
+  ],
+  "third_party": [
+    "numpy"
+  ],
+  "internal_or_unknown": [
+    "base",
+    "cognitive_brain.active_learning.hook",
+    "cognitive_brain.analytics.fuzzy",
+    "cognitive_brain.experiments.complex_scenarios",
+    "cognitive_brain.integrations.compliance_integration",
+    "cognitive_brain.integrations.entangled_assessor",
+    "cognitive_brain.integrations.memory_integration",
+    "cognitive_brain.learning.outcome_analyzer",
+    "cognitive_brain.learning.rl_algorithms",
+    "cognitive_brain.learning.strategy_optimizer",
+    "cognitive_brain.models.learning_outcome",
+    "cognitive_brain.models.quantum_metrics",
+    "cognitive_brain.quantum",
+    "cognitive_brain.quantum.ab_testing",
+    "cognitive_brain.quantum.adaptive_scoring",
+    "cognitive_brain.quantum.base",
+    "cognitive_brain.quantum.coherence_monitor",
+    "cognitive_brain.quantum.config",
+    "cognitive_brain.quantum.entanglement",
+    "cognitive_brain.quantum.ghz_states",
+    "cognitive_brain.quantum.memory",
+    "cognitive_brain.quantum.multi_agent_coordinator",
+    "cognitive_brain.quantum.superposition",
+    "cognitive_brain.quantum.topology_manager",
+    "cognitive_brain.quantum.uncertainty",
+    "cognitive_brain.utils.pattern_validators",
+    "coherence_monitor",
+    "config",
+    "hmac",
+    "prometheus_client",
+    "src.cognitive_brain.utils.pattern_validators"
+  ]
+}
