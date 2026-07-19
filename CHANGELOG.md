@@ -1,5 +1,35 @@
 ## [Unreleased]
 
+### Security: CodeQL Alert Remediation for PR #5337 (2026-07-19T03:50Z)
+
+#### Decision: ✅ **ALL 5 ALERTS RESOLVED** — CTEP Mode: ON (Zero-CVE Policy)
+
+**CodeQL Security Alert Resolutions**:
+- **High Priority (2 alerts resolved)**:
+  - Alert #21662: Cache Poisoning via code injection in audit-logging.yml — FIXED by replacing unsafe `toJson()` variable assignment with safe environment variable approach
+  - Alert #21648: Inefficient regular expression (ReDoS risk) in phase5_flaky_test_audit.py — FIXED by replacing nested quantifier pattern with simplified regex
+
+- **Medium Priority (3 alerts resolved)**:
+  - Alert #21663: Code injection in audit-logging.yml — FIXED (same remediation as #21662)
+  - Alert #21661: Unpinned action dtolnay/rust-toolchain in dependency-security-gate.yml — FIXED by pinning to commit SHA `1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb`
+  - Alert #21647: Unpinned action slackapi/slack-github-action in quality-metrics-collection.yml — FIXED by pinning to commit SHA `91efab103c0de0a537f72a35f6b8cda0ee76bf0a`
+
+**Changes**:
+- `.github/workflows/audit-logging.yml`: Safe JSON deserialization via environment variables prevents code injection attacks
+- `.codex/scripts/phase5_flaky_test_audit.py`: Simplified regex pattern eliminates ReDoS vulnerability
+- `.github/workflows/dependency-security-gate.yml`: Pinned rust-toolchain to immutable commit SHA
+- `.github/workflows/quality-metrics-collection.yml`: Pinned slack-github-action to immutable commit SHA
+
+**Validation**:
+- ✅ All YAML workflow syntax validated
+- ✅ Action version enforcement verified (zero violations)
+- ✅ No new dependencies introduced
+- ✅ Supply chain security improved via commit SHA pinning
+
+**Impact**: Phase 7-10 Zero-CVE Policy (CTEP Mode: ON) gate satisfied for PR #5337. Production readiness restored.
+
+---
+
 ### Phase 10 Stage 2: Traffic Ramp Stage 1 (2026-07-19T03:02Z)
 
 #### Decision: ✅ **GO FOR STAGE 3** — 10% → 25% Ramp Evidence Package Complete
