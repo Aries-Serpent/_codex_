@@ -33,7 +33,11 @@ def test_build_index_from_files_falls_back_to_tfidf(monkeypatch: pytest.MonkeyPa
             "Python makes data pipelines reliable. Python supports semantic search tests.",
             encoding="utf-8",
         )
-        monkeypatch.setattr(indexer_module, "embed_chunks", lambda *_args, **_kwargs: (_ for _ in ()).throw(ImportError("offline")))  # noqa: E501
+        monkeypatch.setattr(
+            indexer_module,
+            "embed_chunks",
+            lambda *_args, **_kwargs: (_ for _ in ()).throw(ImportError("offline")),
+        )  # noqa: E501
 
         index_path = build_index_from_files(
             files=[source],
@@ -70,7 +74,11 @@ def test_retriever_uses_tfidf_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(indexer_module, "embed_chunks", lambda *_args, **_kwargs: (_ for _ in ()).throw(ImportError("offline")))  # noqa: E501
+        monkeypatch.setattr(
+            indexer_module,
+            "embed_chunks",
+            lambda *_args, **_kwargs: (_ for _ in ()).throw(ImportError("offline")),
+        )  # noqa: E501
         monkeypatch.setattr(retriever_module, "SentenceTransformer", None)
 
         build_index_from_files(

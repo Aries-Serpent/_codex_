@@ -116,9 +116,7 @@ class Retriever:
             if chunk.get("text", "").strip()
         ]
         if not chunk_texts:
-            raise ImportError(
-                "TF-IDF fallback requires chunk text metadata to fit query encoder"
-            )
+            raise ImportError("TF-IDF fallback requires chunk text metadata to fit query encoder")
 
         dimension = int(
             self.index_metadata.get("dimension")

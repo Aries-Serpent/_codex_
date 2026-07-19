@@ -365,7 +365,7 @@ class MetaTensorGuardRail:
                         error = OOMException(
                             f"GPU memory usage: {report_details['gpu_memory_percent']:.1f}%"
                         )
-                except Exception:
+                except (AttributeError, OSError, RuntimeError, TypeError, ValueError):
                     pass  # Non-critical
 
         except ImportError:

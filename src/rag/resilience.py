@@ -23,6 +23,7 @@ from enum import Enum
 from typing import Any, Callable, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
+_JITTER_RNG = random.SystemRandom()
 
 T = TypeVar("T")
 
@@ -98,7 +99,10 @@ class RetryStrategy:
             return FailureType.TIMEOUT
 
         # Resource exhaustion
-        if any(phrase in error_msg for phrase in ["out of memory", "memory", "exhausted", "connection pool"]):
+        if any(
+            phrase in error_msg
+            for phrase in ["out of memory", "memory", "exhausted", "connection pool"]
+        ):
             return FailureType.RESOURCE_EXHAUSTED
 
         # Rate limiting
@@ -163,13 +167,13 @@ class RetryStrategy:
         """
         # Exponential backoff: initial_backoff * multiplier^attempt
         backoff = min(
-            self.config.initial_backoff * (self.config.backoff_multiplier ** attempt),
+            self.config.initial_backoff * (self.config.backoff_multiplier**attempt),
             self.config.max_backoff,
         )
 
         # Add jitter to avoid thundering herd
         if self.config.enable_jitter:
-            jitter = random.uniform(
+            jitter = _JITTER_RNG.uniform(
                 -backoff * self.config.jitter_factor,
                 backoff * self.config.jitter_factor,
             )
@@ -210,9 +214,7 @@ class RetryStrategy:
             try:
                 result = func(*args, **kwargs)
                 metrics.successful_attempt = attempt + 1
-                logger.debug(
-                    f"{operation_name} succeeded on attempt {attempt + 1}"
-                )
+                logger.debug(f"{operation_name} succeeded on attempt {attempt + 1}")
                 return result, metrics
 
             except Exception as e:
@@ -222,8 +224,7 @@ class RetryStrategy:
                 # Determine if we should retry
                 if not self.should_retry(e, attempt):
                     logger.error(
-                        f"{operation_name} failed permanently on attempt "
-                        f"{attempt + 1}: {e}"
+                        f"{operation_name} failed permanently on attempt " f"{attempt + 1}: {e}"
                     )
                     raise
 
@@ -244,9 +245,7 @@ class RetryStrategy:
                 time.sleep(backoff)
 
         # All retries exhausted
-        logger.error(
-            f"{operation_name} failed after {self.config.max_retries} retries"
-        )
+        logger.error(f"{operation_name} failed after {self.config.max_retries} retries")
         raise last_error or RuntimeError(f"{operation_name} failed after retries")
 
 
