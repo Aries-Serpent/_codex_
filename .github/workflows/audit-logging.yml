@@ -71,8 +71,11 @@ jobs:
           # PR merge event data (safely loaded from environment variable)
           try:
               pr = json.loads(os.environ['PR_JSON'])
-          except (json.JSONDecodeError, ValueError, KeyError) as e:
-              print(f"Error decoding PR data: {e}", file=sys.stderr)
+          except KeyError:
+              print("Error: PR_JSON environment variable not set", file=sys.stderr)
+              sys.exit(1)
+          except json.JSONDecodeError as e:
+              print(f"Error decoding PR JSON data: {e}", file=sys.stderr)
               sys.exit(1)
           
           event = {

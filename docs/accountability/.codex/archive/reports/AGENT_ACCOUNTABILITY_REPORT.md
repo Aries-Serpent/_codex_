@@ -7,7 +7,7 @@
   - Replaced unsafe `toJson()` direct variable assignment with safe environment variable approach
   - Added `json.loads()` parsing for PR data deserialization
   - Prevents arbitrary Python code injection via malicious PR titles/descriptions
-  - Resolves CodeQL alerts #21662 (HIGH: Cache Poisoning), #21663 (MEDIUM: Code Injection)
+  - Resolves CodeQL alerts #21662 (HIGH: Code Injection / Cache Poisoning via injection), #21663 (MEDIUM: Code Injection)
 
 - **Phase 2: ReDoS Regex Efficiency Fix (phase5_flaky_test_audit.py)**
   - Replaced nested quantifier pattern `r"^test_\w+(_\w+)*$"` with simplified `r"^test_[\w_]+$"`

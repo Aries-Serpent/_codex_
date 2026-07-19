@@ -114,7 +114,7 @@ class PhaseFlakytestAuditor:
         # Check 2: Naming convention (test_*() pattern)
         # Flexible pattern: should describe what is being tested
         # Simplified regex to avoid ReDoS (exponential backtracking): use + instead of nested quantifier
-        if not re.match(r"^test_[\w_]+$", test_name):
+        if not re.match(r"^test_\w+$", test_name):
             self.issues.append(TestIssue(
                 file=filepath,
                 test_name=test_name,
