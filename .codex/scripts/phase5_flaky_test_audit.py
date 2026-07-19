@@ -111,9 +111,10 @@ class PhaseFlakytestAuditor:
                 remediation=f'Add docstring: def {test_name}():\n    """Test purpose: ..."""'
             ))
         
-        # Check 2: Naming convention (test_*_on_*() pattern)
+        # Check 2: Naming convention (test_*() pattern)
         # Flexible pattern: should describe what is being tested
-        if not re.match(r"^test_\w+(_\w+)*$", test_name):
+        # Simplified regex to avoid ReDoS (exponential backtracking): use + instead of nested quantifier
+        if not re.match(r"^test_[\w_]+$", test_name):
             self.issues.append(TestIssue(
                 file=filepath,
                 test_name=test_name,

@@ -71,7 +71,7 @@ jobs:
 
       - name: "Setup Rust"
         if: matrix.ecosystem == 'rust'
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb  # stable (pinned for supply chain security)
 
       - name: "Scan Python dependencies with pip-audit"
         if: matrix.ecosystem == 'python'

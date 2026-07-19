@@ -65,10 +65,15 @@ jobs:
           python3 << 'EOF'
           import json
           import sys
+          import os
           from datetime import datetime, timezone
           
-          # PR merge event data
-          pr = ${{ toJson(github.event.pull_request) }}
+          # PR merge event data (safely loaded from environment variable)
+          try:
+              pr = json.loads(os.environ['PR_JSON'])
+          except (json.JSONDecodeError, ValueError, KeyError) as e:
+              print(f"Error decoding PR data: {e}", file=sys.stderr)
+              sys.exit(1)
           
           event = {
               "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -108,6 +113,8 @@ jobs:
           
           print(f"✅ PR merge event logged: PR #{pr['number']}")
           EOF
+        env:
+          PR_JSON: ${{ toJson(github.event.pull_request) }}
 
       - name: "Collect dependency update events"
         id: collect_dependency_events
