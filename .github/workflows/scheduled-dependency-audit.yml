@@ -149,7 +149,7 @@ jobs:
         \ }}.spdx.json \\\n  -o cyclonedx-json=sbom-${{ matrix.variant }}.cyclonedx.json\
         \ \\\n  -o syft-json=sbom-${{ matrix.variant }}.syft.json\n"
     - name: Install Grype
-      uses: anchore/scan-action/download-grype@d3918591baefec470de17dc4a147b4a3bb47d5e7
+      uses: anchore/scan-action/download-grype@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
     - name: Scan with Grype
       env:
         MATRIX_VARIANT: ${{ matrix.variant }}
