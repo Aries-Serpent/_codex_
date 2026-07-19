@@ -19,15 +19,15 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: github/codeql-action/init@v2
+      - uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
-      - uses: github/codeql-action/autobuild@v2
+      - uses: github/codeql-action/autobuild@v3
 
-      - uses: github/codeql-action/analyze@v2
+      - uses: github/codeql-action/analyze@v3
         with:
           category: /language:${{ matrix.language }}
 
@@ -35,9 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Bandit Security Scan
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Semgrep Custom Rules
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: Install Semgrep
         run: pip install semgrep
@@ -78,7 +78,7 @@ jobs:
     name: Generate Compliance Report
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: Create compliance dashboard
         run: |
