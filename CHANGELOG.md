@@ -13,6 +13,7 @@
 **Validation**:
 - ✅ Generated artifact files now match `origin/main`
 - ✅ Latest commit includes REQ-4/REQ-5 documentation updates
+- ✅ Follow-up REQ-14 metadata compliance recorded in the accountability reports
 - ✅ PR scope reduced to branch sync and compliance documentation only
 
 **Impact**: Removes accidental generated artifacts from PR #5363, reduces secret-scan noise, and brings the branch back to a reviewable state.

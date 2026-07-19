@@ -25,6 +25,7 @@
 ### Compliance Status
 - ✅ REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
 - ✅ REQ-5: `CHANGELOG.md` updated in latest commit
+- ✅ REQ-14: valid registered agent identifiers recorded for wrap-up compliance
 - ✅ Branch sync: latest `main` checkpoint merged before final validation
 - ✅ PR scope: generated runtime artifact churn removed from diff
 
