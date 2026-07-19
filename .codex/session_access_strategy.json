@@ -1,18 +1,19 @@
 {
-  "generated_at": "2026-07-19T10:30:10.829983+00:00",
+  "generated_at": "2026-07-19T11:11:46.291982+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4984,
   "graphql_available": true,
-  "graphql_remaining": 4999,
+  "graphql_remaining": 4995,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
+    5363,
     5362,
     5361,
     5360,
@@ -21,8 +22,7 @@
     5357,
     5356,
     5355,
-    5354,
-    5353
+    5354
   ],
   "branch": "copilot/consolidate-dependabot-prs",
   "recommendation": "Use REST for data fetches. "
