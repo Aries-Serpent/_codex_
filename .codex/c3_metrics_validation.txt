@@ -1,0 +1,35 @@
+METRICS UNIFIED API VALIDATION REPORT
+================================================================================
+
+Timestamp: 2026-07-19 13:38:54
+
+✓ compute_bleu: PASS
+  score: 0.002364354022877369
+
+✓ compute_rouge_l: PASS
+  score: 0.6666666666666667
+
+✓ compute_perplexity: PASS
+  perplexity: 6.736941000750825
+
+✓ compute_token_accuracy: PASS
+  accuracy: 1.0
+
+✓ compute_accuracy: PASS
+  accuracy: 0.75
+
+✓ compute_f1_micro: PASS
+  f1: 0.8571428571428571
+
+✓ compute_f1_macro: PASS
+  f1: 0.9
+
+✓ compute_f1_weighted: PASS
+  f1: 0.8500000000000001
+
+✓ compute_classification_metrics: PASS
+  keys: ['accuracy', 'f1_micro', 'f1_macro']
+
+✓ batch_metrics_from_outputs: PASS
+  keys: ['loss', 'perplexity']
+

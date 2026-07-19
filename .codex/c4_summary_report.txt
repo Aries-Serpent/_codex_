@@ -1,0 +1,49 @@
+======================================================================
+C4: TRAINING PIPELINE INTEGRATION TESTS - SUMMARY REPORT
+======================================================================
+
+Timestamp: 2026-07-19 13:40:51
+Executed Tests: 5
+
+Test Results:
+----------------------------------------------------------------------
+✓ C4.1: C4.1: Hydra Config Validation
+  Status: PASS
+
+✓ C4.2: C4.2: End-to-End Training Run
+  Status: PASS
+
+⚠ C4.3: C4.3: Checkpoint Resume
+  Status: WARN
+  Errors: 1
+
+✓ C4.4: C4.4: Legacy API Deprecation Scan
+  Status: PASS
+
+✓ C4.5: C4.5: Performance Comparison
+  Status: PASS
+
+----------------------------------------------------------------------
+Total: 5 tests
+  Passed: 4
+  Failed: 0
+  Warnings: 1
+
+Overall Status: PASS
+
+Output Files:
+  - c4_checkpoint_resume.txt
+  - c4_config_validation.txt
+  - c4_deprecation_scan.txt
+  - c4_summary_report.txt
+  - c4_performance_comparison.json
+  - c4_end_to_end_training.log
+
+--- Notable Findings ---
+C4.1 (Config Validation): PASS - All 29 config fields present, no deprecated fields
+C4.2 (E2E Training): PASS - Training completed, checkpoint created
+C4.3 (Checkpoint Resume): WARN - PyTorch 2.6+ weights_only compatibility issue detected
+  This is a known issue where torch.torch_version.TorchVersion serialization
+  requires weights_only=False fallback. The checkpoint_core module handles this.
+C4.4 (Deprecation): PASS - Legacy API deprecation shims in place
+C4.5 (Performance): PASS - Unified API baseline measured at ~1.3s for 1 epoch

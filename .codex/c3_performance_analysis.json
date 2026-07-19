@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-07-19 13:39:03",
+  "metrics": {
+    "compute_bleu": {
+      "small": {
+        "num_samples": 100,
+        "elapsed_ms": 1.2010020000161603,
+        "overhead_pct": 1.2010020000161603
+      },
+      "medium": {
+        "num_samples": 10000,
+        "elapsed_ms": 80.24102500007757,
+        "overhead_pct": 80.24102500007757
+      },
+      "large": {
+        "num_samples": 100000,
+        "elapsed_ms": 968.6829970000872,
+        "overhead_pct": 100.0
+      }
+    },
+    "compute_rouge_l": {
+      "small": {
+        "num_samples": 100,
+        "elapsed_ms": 0.2992260000382885,
+        "overhead_pct": 0.2992260000382885
+      },
+      "medium": {
+        "num_samples": 10000,
+        "elapsed_ms": 22.325120999994397,
+        "overhead_pct": 22.325120999994397
+      },
+      "large": {
+        "num_samples": 100000,
+        "elapsed_ms": 225.52865700004077,
+        "overhead_pct": 100.0
+      }
+    },
+    "compute_perplexity": {
+      "small": {
+        "num_samples": 100,
+        "elapsed_ms": 0.2861820000816806,
+        "overhead_pct": 0.2861820000816806
+      },
+      "medium": {
+        "num_samples": 10000,
+        "elapsed_ms": 8.334442999966996,
+        "overhead_pct": 8.334442999966996
+      },
+      "large": {
+        "num_samples": 100000,
+        "elapsed_ms": 85.88526599999113,
+        "overhead_pct": 85.88526599999113
+      }
+    },
+    "compute_accuracy": {
+      "small": {
+        "num_samples": 100,
+        "elapsed_ms": 0.018844999999600986,
+        "overhead_pct": 0.018844999999600986
+      },
+      "medium": {
+        "num_samples": 10000,
+        "elapsed_ms": 0.45395400002234965,
+        "overhead_pct": 0.45395400002234965
+      },
+      "large": {
+        "num_samples": 100000,
+        "elapsed_ms": 6.772088999923653,
+        "overhead_pct": 6.772088999923653
+      }
+    },
+    "compute_f1": {
+      "small": {
+        "num_samples": 100,
+        "elapsed_ms": 0.02987599998505175,
+        "overhead_pct": 0.02987599998505175
+      },
+      "medium": {
+        "num_samples": 10000,
+        "elapsed_ms": 2.0265269999981683,
+        "overhead_pct": 2.0265269999981683
+      },
+      "large": {
+        "num_samples": 100000,
+        "elapsed_ms": 15.310030999899027,
+        "overhead_pct": 15.310030999899027
+      }
+    }
+  },
+  "overhead_analysis": {
+    "all_under_5pct": false,
+    "threshold_pct": 5.0
+  }
+}

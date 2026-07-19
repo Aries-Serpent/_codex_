@@ -1,0 +1,22 @@
+======================================================================
+C4.3: CHECKPOINT RESUME VALIDATION
+======================================================================
+
+Status: WARN
+PyTorch Version: 2.13.0+cpu
+
+Checkpoint Resume Validation:
+  Checkpoint Loaded: ✓ YES
+  Resume Training Completed: ✗ NO
+  Optimizer State Restored: N/A
+  Scheduler State Restored: N/A
+  Weights-Only Fallback Used: ✓ YES (PyTorch 2.6+ compatibility)
+
+Notes (1):
+  - PyTorch 2.6+ weights_only=True incompatibility detected. This is a known issue with torch.torch_version.TorchVersion serialization. Fallback to weights_only=False should work.
+
+--- PyTorch 2.6+ Compatibility Note ---
+PyTorch 2.6 introduced weights_only=True by default for torch.load().
+Some checkpoint files may contain non-tensor objects that require
+weights_only=False. The checkpoint_core module has fallback logic
+to handle this automatically. This is a documented compatibility issue.

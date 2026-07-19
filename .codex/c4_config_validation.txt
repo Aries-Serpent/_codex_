@@ -1,0 +1,40 @@
+======================================================================
+C4.1: HYDRA CONFIG VALIDATION REPORT
+======================================================================
+
+Status: PASS
+
+Fields Found:
+  - model_name: str
+  - epochs: int
+  - batch_size: int
+  - grad_accum: int
+  - learning_rate: float
+  - seed: int | None
+  - device: str | None
+  - output_dir: str
+  - checkpoint_dir: str | None
+  - config_version: str
+  - dataset_version: str | None
+  - deterministic: bool
+  - auto_capture_env: bool
+  - backend: str | None
+  - mlflow_enable: bool
+  - mlflow_tracking: bool
+  - wandb_enable: bool
+  - enable_eval_callback: bool
+  - enable_logging_callback: bool
+  - grad_clip_norm: float | None
+  - dtype: str
+  - resume_from: str | None
+  - extra: dict[str, Any]
+  - keep_last: int
+  - best_k: int
+  - best_metric: str
+  - continual: Any
+  - continual_phases: list[Any] | None
+  - callbacks: list[Any] | None
+
+Deprecated Fields: None detected ✓
+
+Validation Errors: None ✓
