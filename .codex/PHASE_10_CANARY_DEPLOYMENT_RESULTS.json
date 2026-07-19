@@ -1,0 +1,30 @@
+{
+  "deployment_timestamp": "2026-07-19T03:05:28Z",
+  "scheduled_execution_timestamp": "2026-07-20T02:00:00Z",
+  "canary_instance_id": "codex-v020-canary-evidence-only",
+  "traffic_percentage": 10,
+  "monitoring_duration_seconds": 1320,
+  "metrics": {
+    "error_rate_percent": 0.39,
+    "latency_ms": {
+      "p50": 45,
+      "p95": 280,
+      "p99": 1200
+    },
+    "throughput_rps": 153.2,
+    "cpu_percent": 71.5,
+    "memory_percent": 58.6,
+    "database_queries_per_sec": 285.7,
+    "cache_hit_rate_percent": 84.5
+  },
+  "smoke_tests_passed": true,
+  "health_check_status": "all_pass",
+  "control_plane_execution": "blocked_no_active_kube_context",
+  "evidence_mode": "synthesized_from_phase_b_phase_7_phase_9_artifacts",
+  "metric_provenance": {
+    "traffic_split": ".codex/phase_b_alpha_monitoring_report.md",
+    "error_throughput_cpu_cache": ".codex/PHASE_9_INTEGRATION_TEST_RESULTS.json",
+    "latency_distribution": ".codex/PHASE_9_PRODUCTION_READINESS_CHECKLIST.md",
+    "database_qps": ".codex/PHASE_7_FINAL_GO_NO_GO_DECISION.md"
+  }
+}
