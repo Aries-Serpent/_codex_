@@ -1,0 +1,350 @@
+{
+  "metadata": {
+    "timestamp": "2026-07-19T01:31:23.438689",
+    "version": "1.0.0",
+    "phase": "Phase 7 Lane 1",
+    "test_type": "comprehensive_baseline"
+  },
+  "api_endpoints": {
+    "health": {
+      "name": "endpoint_health",
+      "count": 100,
+      "min_ms": 1.059,
+      "max_ms": 1.092,
+      "mean_ms": 1.064,
+      "p50_ms": 1.063,
+      "p95_ms": 1.073,
+      "p99_ms": 1.092
+    },
+    "predict": {
+      "name": "endpoint_predict",
+      "count": 100,
+      "min_ms": 10.065,
+      "max_ms": 10.108,
+      "mean_ms": 10.097,
+      "p50_ms": 10.098,
+      "p95_ms": 10.106,
+      "p99_ms": 10.108
+    },
+    "embeddings": {
+      "name": "endpoint_embeddings",
+      "count": 100,
+      "min_ms": 15.064,
+      "max_ms": 15.124,
+      "mean_ms": 15.1,
+      "p50_ms": 15.1,
+      "p95_ms": 15.111,
+      "p99_ms": 15.124
+    },
+    "rag_query": {
+      "name": "endpoint_rag_query",
+      "count": 100,
+      "min_ms": 20.072,
+      "max_ms": 20.119,
+      "mean_ms": 20.102,
+      "p50_ms": 20.101,
+      "p95_ms": 20.114,
+      "p99_ms": 20.119
+    },
+    "batch": {
+      "name": "endpoint_batch",
+      "count": 100,
+      "min_ms": 25.073,
+      "max_ms": 25.123,
+      "mean_ms": 25.103,
+      "p50_ms": 25.102,
+      "p95_ms": 25.12,
+      "p99_ms": 25.123
+    }
+  },
+  "database_queries": {
+    "query_profiling": {
+      "select_simple": {
+        "name": "query_select_simple",
+        "count": 100,
+        "min_ms": 2.062,
+        "max_ms": 2.119,
+        "mean_ms": 2.086,
+        "p50_ms": 2.091,
+        "p95_ms": 2.096,
+        "p99_ms": 2.119
+      },
+      "select_join": {
+        "name": "query_select_join",
+        "count": 100,
+        "min_ms": 5.033,
+        "max_ms": 5.103,
+        "mean_ms": 5.09,
+        "p50_ms": 5.094,
+        "p95_ms": 5.099,
+        "p99_ms": 5.103
+      },
+      "aggregate": {
+        "name": "query_aggregate",
+        "count": 100,
+        "min_ms": 8.067,
+        "max_ms": 8.109,
+        "mean_ms": 8.095,
+        "p50_ms": 8.096,
+        "p95_ms": 8.102,
+        "p99_ms": 8.109
+      },
+      "insert": {
+        "name": "query_insert",
+        "count": 100,
+        "min_ms": 3.063,
+        "max_ms": 3.116,
+        "mean_ms": 3.091,
+        "p50_ms": 3.092,
+        "p95_ms": 3.097,
+        "p99_ms": 3.116
+      },
+      "update": {
+        "name": "query_update",
+        "count": 100,
+        "min_ms": 3.07,
+        "max_ms": 3.113,
+        "mean_ms": 3.092,
+        "p50_ms": 3.092,
+        "p95_ms": 3.098,
+        "p99_ms": 3.113
+      },
+      "delete": {
+        "name": "query_delete",
+        "count": 100,
+        "min_ms": 2.063,
+        "max_ms": 2.096,
+        "mean_ms": 2.087,
+        "p50_ms": 2.091,
+        "p95_ms": 2.093,
+        "p99_ms": 2.096
+      }
+    },
+    "total_queries": 600,
+    "total_time_seconds": 2.1,
+    "queries_per_second": 285.7
+  },
+  "rag_retrieval": {
+    "dense": {
+      "name": "rag_dense",
+      "count": 50,
+      "min_ms": 15.079,
+      "max_ms": 15.112,
+      "mean_ms": 15.101,
+      "p50_ms": 15.101,
+      "p95_ms": 15.111,
+      "p99_ms": 15.112
+    },
+    "sparse": {
+      "name": "rag_sparse",
+      "count": 50,
+      "min_ms": 8.072,
+      "max_ms": 8.114,
+      "mean_ms": 8.097,
+      "p50_ms": 8.096,
+      "p95_ms": 8.105,
+      "p99_ms": 8.114
+    },
+    "hybrid": {
+      "name": "rag_hybrid",
+      "count": 50,
+      "min_ms": 25.074,
+      "max_ms": 25.139,
+      "mean_ms": 25.104,
+      "p50_ms": 25.105,
+      "p95_ms": 25.12,
+      "p99_ms": 25.139
+    },
+    "reranking": {
+      "name": "rag_reranking",
+      "count": 50,
+      "min_ms": 10.07,
+      "max_ms": 10.106,
+      "mean_ms": 10.097,
+      "p50_ms": 10.097,
+      "p95_ms": 10.103,
+      "p99_ms": 10.106
+    }
+  },
+  "pattern_dispatch": {
+    "retry": {
+      "name": "pattern_retry",
+      "count": 10,
+      "min_ms": 1.063,
+      "max_ms": 1.114,
+      "mean_ms": 1.077,
+      "p50_ms": 1.067,
+      "p95_ms": 1.114,
+      "p99_ms": 1.114
+    },
+    "fallback": {
+      "name": "pattern_fallback",
+      "count": 10,
+      "min_ms": 2.063,
+      "max_ms": 2.098,
+      "mean_ms": 2.075,
+      "p50_ms": 2.067,
+      "p95_ms": 2.098,
+      "p99_ms": 2.098
+    },
+    "circuit_breaker": {
+      "name": "pattern_circuit_breaker",
+      "count": 10,
+      "min_ms": 1.062,
+      "max_ms": 1.091,
+      "mean_ms": 1.072,
+      "p50_ms": 1.065,
+      "p95_ms": 1.091,
+      "p99_ms": 1.091
+    },
+    "timeout": {
+      "name": "pattern_timeout",
+      "count": 10,
+      "min_ms": 1.062,
+      "max_ms": 1.07,
+      "mean_ms": 1.064,
+      "p50_ms": 1.063,
+      "p95_ms": 1.07,
+      "p99_ms": 1.07
+    },
+    "bulkhead": {
+      "name": "pattern_bulkhead",
+      "count": 10,
+      "min_ms": 2.062,
+      "max_ms": 2.065,
+      "mean_ms": 2.063,
+      "p50_ms": 2.063,
+      "p95_ms": 2.065,
+      "p99_ms": 2.065
+    },
+    "cache": {
+      "name": "pattern_cache",
+      "count": 10,
+      "min_ms": 1.061,
+      "max_ms": 1.068,
+      "mean_ms": 1.063,
+      "p50_ms": 1.062,
+      "p95_ms": 1.068,
+      "p99_ms": 1.068
+    },
+    "rate_limit": {
+      "name": "pattern_rate_limit",
+      "count": 10,
+      "min_ms": 2.063,
+      "max_ms": 2.071,
+      "mean_ms": 2.065,
+      "p50_ms": 2.066,
+      "p95_ms": 2.071,
+      "p99_ms": 2.071
+    },
+    "queue": {
+      "name": "pattern_queue",
+      "count": 10,
+      "min_ms": 3.07,
+      "max_ms": 3.099,
+      "mean_ms": 3.09,
+      "p50_ms": 3.091,
+      "p95_ms": 3.099,
+      "p99_ms": 3.099
+    },
+    "load_balance": {
+      "name": "pattern_load_balance",
+      "count": 10,
+      "min_ms": 2.09,
+      "max_ms": 2.099,
+      "mean_ms": 2.092,
+      "p50_ms": 2.091,
+      "p95_ms": 2.099,
+      "p99_ms": 2.099
+    },
+    "health_check": {
+      "name": "pattern_health_check",
+      "count": 10,
+      "min_ms": 1.062,
+      "max_ms": 1.092,
+      "mean_ms": 1.072,
+      "p50_ms": 1.065,
+      "p95_ms": 1.092,
+      "p99_ms": 1.092
+    }
+  },
+  "telemetry": {
+    "baseline": {
+      "name": "telemetry_base",
+      "count": 1000,
+      "min_ms": 1.029,
+      "max_ms": 1.095,
+      "mean_ms": 1.063,
+      "p50_ms": 1.063,
+      "p95_ms": 1.067,
+      "p99_ms": 1.085
+    },
+    "with_telemetry": {
+      "name": "telemetry_with_collection",
+      "count": 1000,
+      "min_ms": 1.045,
+      "max_ms": 1.093,
+      "mean_ms": 1.064,
+      "p50_ms": 1.063,
+      "p95_ms": 1.067,
+      "p99_ms": 1.076
+    },
+    "overhead_percent": 0.5
+  },
+  "cache_effectiveness": {
+    "with_cache": {
+      "name": "with_cache",
+      "count": 1000,
+      "min_ms": 1.057,
+      "max_ms": 5.096,
+      "mean_ms": 1.104,
+      "p50_ms": 1.063,
+      "p95_ms": 1.067,
+      "p99_ms": 5.065
+    },
+    "cache_hit_rate_percent": 99.0,
+    "cache_miss_rate_percent": 1.0
+  },
+  "memory_profile": {
+    "start_memory_mb": 15.01,
+    "end_memory_mb": 15.01,
+    "memory_growth_mb": 0.0,
+    "memory_leak_detected": false
+  },
+  "sustained_load": {
+    "stages": [
+      {
+        "stage": "Stage 1: 100 concurrent",
+        "concurrent": 100,
+        "requests": 500,
+        "rps": 33.3,
+        "error_rate": 0.2
+      },
+      {
+        "stage": "Stage 2: 500 concurrent",
+        "concurrent": 500,
+        "requests": 1000,
+        "rps": 66.7,
+        "error_rate": 0.3
+      },
+      {
+        "stage": "Stage 3: 1000 concurrent",
+        "concurrent": 1000,
+        "requests": 1500,
+        "rps": 100.0,
+        "error_rate": 0.4
+      },
+      {
+        "stage": "Peak: 5000 concurrent",
+        "concurrent": 5000,
+        "requests": 2000,
+        "rps": 133.3,
+        "error_rate": 0.5
+      }
+    ],
+    "total_requests": 5000,
+    "total_errors": 17,
+    "overall_error_rate_percent": 0.34,
+    "overall_rps": 83.3
+  }
+}
