@@ -1,10 +1,10 @@
-# Session Context — 2026-07-19T23:40:42Z
+# Session Context — 2026-07-19T23:51:30Z
 **Branch:** `copilot/multi-lane-custom-agents-plan-campaign`  **PR:** #5365  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4738` (✅)
-- GraphQL remaining: `4983` (✅)
+- REST remaining: `4644` (✅)
+- GraphQL remaining: `4981` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/multi-lane-custom-agents-plan-campaign` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Scaling Framework Monitor** — `failure` on `main` (2026-07-19)
 - **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-19)
 - **PR Comment Review Gate** — `failure` on `main` (2026-07-19)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-19)
 - **Audit & QA Suite (Unified)** — `failure` on `main` (2026-07-19)
-- **PR Comment Review Gate** — `failure` on `main` (2026-07-19)
 
 ## 📝 Recent Commits
+- `5e30b9eb` docs: Session 12 final updates - accountability agents documented, CHANGELOG v0. — copilot-swe-agent[bot] (2026-07-19)
+- `697cd4f5` Session 12 final closure: campaign validated, archived, and authorized - v0.2.0  — copilot-swe-agent[bot] (2026-07-19)
+- `19bafaef` Session 12: Execute final campaign closure - validate deliverables, verify compl — copilot-swe-agent[bot] (2026-07-19)
 - `46fde1af` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-19)
 - `7ca656c8` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-19)
 - `bb23f980` Apply remaining changes — copilot-swe-agent[bot] (2026-07-19)
 - `0940c228` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-07-19)
 - `3755ffdf` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-07-19)
-- `c4154331` Apply remaining changes — copilot-swe-agent[bot] (2026-07-19)
-- `757a2a36` fix(ci): replace invalid SHA action reference with v5 for upload-artifact — copilot-swe-agent[bot] (2026-07-19)
-- `7681cc1e` fix(ci): replace invalid SHA action reference with v5 for upload-artifact — copilot-swe-agent[bot] (2026-07-19)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
