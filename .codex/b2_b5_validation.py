@@ -5,6 +5,7 @@ import importlib
 import json
 import shutil
 import statistics
+import sys
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -21,6 +22,10 @@ from aries_serpent_core.rag.indexer import (
 from aries_serpent_core.rag.retriever import CachedRetriever, Retriever
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
 WORK_ROOT = REPO_ROOT / ".codex" / "lane2_b2_b5_workspace"
 CORPUS_DIR = WORK_ROOT / "corpus"
 INDEX_DIR = WORK_ROOT / "indices"
@@ -256,9 +261,9 @@ def _check_imports() -> dict[str, object]:
         "aries_serpent_core.rag.retriever",
         "aries_serpent_core.brain.ooda_orchestrator",
         "aries_serpent_core.zendesk.rag.bridge",
-        "codex.cognitive_brain",
-        "codex.cognitive_brain.reasoning_engine",
-        "codex.cognitive_brain.integration_adapters",
+        "src.codex.cognitive_brain",
+        "src.codex.cognitive_brain.reasoning_engine",
+        "src.codex.cognitive_brain.integration_adapters",
     ]
     results: dict[str, dict[str, object]] = {}
     for module_name in modules:
@@ -280,7 +285,7 @@ def _detect_cross_package_cycles() -> list[list[str]]:
     package_roots = {
         "aries_serpent_core.rag": REPO_ROOT / "src" / "aries_serpent_core" / "rag",
         "aries_serpent_core.brain": REPO_ROOT / "src" / "aries_serpent_core" / "brain",
-        "codex.cognitive_brain": REPO_ROOT / "src" / "codex" / "cognitive_brain",
+        "src.codex.cognitive_brain": REPO_ROOT / "src" / "codex" / "cognitive_brain",
     }
     graph: dict[str, set[str]] = {}
 
@@ -345,8 +350,8 @@ def _ooda_integration_validation(query_metrics: dict[str, object]) -> dict[str, 
         for phase in ("Observe:", "Orient:", "Decide:", "Act:")
     }
 
-    from codex.cognitive_brain.integration_adapters import PlansetIntegrationAdapter
-    from codex.cognitive_brain.reasoning_engine import (
+    from src.codex.cognitive_brain.integration_adapters import PlansetIntegrationAdapter
+    from src.codex.cognitive_brain.reasoning_engine import (
         CandidateDecision,
         ConfidenceLevel,
         Decision,
@@ -388,33 +393,43 @@ def _ooda_integration_validation(query_metrics: dict[str, object]) -> dict[str, 
 
 
 def _multi_index_validation(files: list[Path]) -> dict[str, object]:
-    result = manage_tenant_indices(
-        tenant_id="lane2-managed",
-        operation="create",
-        index_names=["managed-a", "managed-b"],
-        files=files[:4],
-        index_dir=str(INDEX_DIR),
-        chunk_size=120,
-        overlap=0,
-    )
-    listing = manage_tenant_indices(
-        tenant_id="lane2-managed",
-        operation="list",
-        index_names=[],
-        index_dir=str(INDEX_DIR),
-    )
-    cleanup = manage_tenant_indices(
-        tenant_id="lane2-managed",
-        operation="delete",
-        index_names=["managed-a", "managed-b"],
-        index_dir=str(INDEX_DIR),
-    )
-    return {
-        "create_success": result.success,
-        "list_success": listing.success,
-        "list_count": len(listing.details.get("indices", [])) if listing.details else 0,
-        "delete_success": cleanup.success,
-    }
+    from aries_serpent_core.rag import indexer as indexer_module
+
+    original_embed_chunks = indexer_module.embed_chunks
+    try:
+        def _raise_import_error(*_args, **_kwargs):
+            raise ImportError("forced offline validation")
+
+        indexer_module.embed_chunks = _raise_import_error
+        result = manage_tenant_indices(
+            tenant_id="lane2-managed",
+            operation="create",
+            index_names=["managed-a", "managed-b"],
+            files=files[:4],
+            index_dir=str(INDEX_DIR),
+            chunk_size=120,
+            overlap=0,
+        )
+        listing = manage_tenant_indices(
+            tenant_id="lane2-managed",
+            operation="list",
+            index_names=[],
+            index_dir=str(INDEX_DIR),
+        )
+        cleanup = manage_tenant_indices(
+            tenant_id="lane2-managed",
+            operation="delete",
+            index_names=["managed-a", "managed-b"],
+            index_dir=str(INDEX_DIR),
+        )
+        return {
+            "create_success": result.success,
+            "list_success": listing.success,
+            "list_count": len(listing.details.get("indices", [])) if listing.details else 0,
+            "delete_success": cleanup.success,
+        }
+    finally:
+        indexer_module.embed_chunks = original_embed_chunks
 
 
 def main() -> None:
@@ -449,13 +464,20 @@ def main() -> None:
     multi_index = _multi_index_validation(files)
 
     rag_indexer = RAGIndexer(index_dir=str(INDEX_DIR))
-    cached_retriever = CachedRetriever(
-        index_dir=str(INDEX_DIR),
-        index_name="lane2-validation",
-        tenant_id="lane2",
-        cache_ttl=1,
-        cache_maxsize=8,
-    )
+    from aries_serpent_core.rag import retriever as retriever_module
+
+    original_sentence_transformer = retriever_module.SentenceTransformer
+    retriever_module.SentenceTransformer = None
+    try:
+        cached_retriever = CachedRetriever(
+            index_dir=str(INDEX_DIR),
+            index_name="lane2-validation",
+            tenant_id="lane2",
+            cache_ttl=1,
+            cache_maxsize=8,
+        )
+    finally:
+        retriever_module.SentenceTransformer = original_sentence_transformer
     cached_retriever.query_with_cache("python decorators", top_k=3)
     cached_retriever.query_with_cache("python decorators", top_k=3)
 
