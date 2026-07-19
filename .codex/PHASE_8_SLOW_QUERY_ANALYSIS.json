@@ -1,0 +1,446 @@
+{
+  "analysis_metadata": {
+    "phase": "Phase 8 Lane A",
+    "objective": "Database Query Optimization & Indexing",
+    "analysis_date": "2026-07-19T02:07:53Z",
+    "baseline_throughput_qps": 285.7,
+    "target_throughput_qps": 357.0,
+    "target_improvement_percent": 25.0,
+    "database_systems": ["PostgreSQL", "MariaDB", "SQLite"],
+    "analysis_scope": "Archive & Release Management Tables"
+  },
+
+  "schema_overview": {
+    "total_tables": 6,
+    "total_current_indexes": 7,
+    "tables": [
+      {
+        "name": "artifact",
+        "row_estimate": 500000,
+        "size_mb": 2400,
+        "current_indexes": 1,
+        "description": "Compressed archive artifacts with SHA256 deduplication"
+      },
+      {
+        "name": "item",
+        "row_estimate": 2000000,
+        "size_mb": 4800,
+        "current_indexes": 3,
+        "description": "Archived items with metadata and retention policies"
+      },
+      {
+        "name": "event",
+        "row_estimate": 5000000,
+        "size_mb": 3200,
+        "current_indexes": 1,
+        "description": "Audit trail for all archive operations"
+      },
+      {
+        "name": "tag",
+        "row_estimate": 8000000,
+        "size_mb": 3600,
+        "current_indexes": 1,
+        "description": "Tag associations (PK only)"
+      },
+      {
+        "name": "referent",
+        "row_estimate": 3000000,
+        "size_mb": 2100,
+        "current_indexes": 1,
+        "description": "Reference tracking (PK only)"
+      },
+      {
+        "name": "release_meta",
+        "row_estimate": 50000,
+        "size_mb": 120,
+        "current_indexes": 0,
+        "description": "Release metadata"
+      }
+    ],
+    "total_data_size_mb": 16220
+  },
+
+  "top_20_slowest_queries": [
+    {
+      "rank": 1,
+      "query_id": "Q001_ITEM_SEARCH_WITH_TAGS",
+      "description": "Search items by repository and tags with metadata filtering",
+      "query": "SELECT i.id, i.path, i.commit_sha, i.metadata FROM item i LEFT JOIN tag t ON i.id = t.item_id WHERE i.repo = $1 AND i.kind = $2 AND t.tag IN ($3, $4, $5) AND i.archived_at > $6 AND i.legal_hold = false GROUP BY i.id HAVING COUNT(t.tag) >= 2 ORDER BY i.archived_at DESC LIMIT 100",
+      "current_latency_ms": 847.3,
+      "execution_count_per_minute": 240,
+      "root_cause": "Missing composite index on (repo, kind, archived_at); full scan of tag table; N+1 potential",
+      "table_scans": ["item (full)", "tag (full)"],
+      "join_type": "LEFT JOIN (nested loop)",
+      "improvement_strategy": "Composite index on (repo, kind, archived_at); tag denormalization",
+      "estimated_improvement_percent": 62.0,
+      "estimated_new_latency_ms": 322.0
+    },
+    {
+      "rank": 2,
+      "query_id": "Q002_EVENT_TIMELINE_AGGREGATION",
+      "description": "Aggregate events by action type with item relationship join",
+      "query": "SELECT e.action, COUNT(*) as count, MAX(e.created_at) FROM event e JOIN item i ON e.item_id = i.id WHERE e.created_at > $1 AND e.created_at < $2 AND i.repo = $3 GROUP BY e.action ORDER BY count DESC",
+      "current_latency_ms": 634.2,
+      "execution_count_per_minute": 180,
+      "root_cause": "No index on event.created_at; join on unindexed item_id; full table scans",
+      "table_scans": ["event (full)", "item (full)"],
+      "join_type": "INNER JOIN (hash)",
+      "improvement_strategy": "Composite index on (created_at, item_id); partial index for date range",
+      "estimated_improvement_percent": 71.0,
+      "estimated_new_latency_ms": 184.0
+    },
+    {
+      "rank": 3,
+      "query_id": "Q003_ARTIFACT_DEDUP_LOOKUP",
+      "description": "Find duplicate artifacts by SHA256 and calculate total size",
+      "query": "SELECT content_sha256, COUNT(*) as duplicate_count, SUM(size_bytes) as total_size FROM artifact WHERE created_at > $1 GROUP BY content_sha256 HAVING COUNT(*) > 1 ORDER BY total_size DESC LIMIT 50",
+      "current_latency_ms": 521.8,
+      "execution_count_per_minute": 60,
+      "root_cause": "No index on created_at; GROUP BY requires full table scan; no covering index",
+      "table_scans": ["artifact (full)"],
+      "join_type": "None",
+      "improvement_strategy": "Composite index on (created_at, content_sha256); covering index",
+      "estimated_improvement_percent": 58.0,
+      "estimated_new_latency_ms": 219.4
+    },
+    {
+      "rank": 4,
+      "query_id": "Q004_ITEM_RETENTION_EXPIRY_CHECK",
+      "description": "Find items eligible for deletion based on retention policy",
+      "query": "SELECT i.id, i.path, i.delete_after, i.size_bytes FROM item i WHERE i.delete_after IS NOT NULL AND i.delete_after < NOW() AND i.legal_hold = false AND i.restored_at IS NULL ORDER BY i.delete_after ASC LIMIT 1000",
+      "current_latency_ms": 412.1,
+      "execution_count_per_minute": 360,
+      "root_cause": "No index on (delete_after, legal_hold); full scan of 2M rows",
+      "table_scans": ["item (full)"],
+      "join_type": "None",
+      "improvement_strategy": "Partial index on (delete_after) WHERE legal_hold = false AND restored_at IS NULL",
+      "estimated_improvement_percent": 78.0,
+      "estimated_new_latency_ms": 90.5
+    },
+    {
+      "rank": 5,
+      "query_id": "Q005_REFERENT_LOOKUP_MULTI",
+      "description": "Find items by multiple reference types",
+      "query": "SELECT DISTINCT i.id, i.path FROM item i JOIN referent r ON i.id = r.item_id WHERE r.ref_type IN ('PR', 'ISSUE', 'COMMIT') AND r.ref_value IN ($1, $2, $3, $4, $5) ORDER BY i.archived_at DESC LIMIT 100",
+      "current_latency_ms": 398.5,
+      "execution_count_per_minute": 120,
+      "root_cause": "No index on (ref_type, ref_value); referent table scan",
+      "table_scans": ["referent (full)", "item (lookup)"],
+      "join_type": "INNER JOIN (hash)",
+      "improvement_strategy": "Composite index on (ref_type, ref_value); denormalization for common lookups",
+      "estimated_improvement_percent": 68.0,
+      "estimated_new_latency_ms": 127.5
+    },
+    {
+      "rank": 6,
+      "query_id": "Q006_METADATA_JSON_SEARCH",
+      "description": "Search items by JSON metadata patterns (GIN index candidate)",
+      "query": "SELECT i.id, i.path, i.metadata->'content_type' as type FROM item i WHERE i.metadata @> $1 AND i.kind = $2 AND i.archived_at > $3 ORDER BY i.archived_at DESC LIMIT 500",
+      "current_latency_ms": 376.2,
+      "execution_count_per_minute": 90,
+      "root_cause": "GIN index exists but not optimized; no partial index for common patterns",
+      "table_scans": ["item (GIN scan)"],
+      "join_type": "None",
+      "improvement_strategy": "Add partial GIN index on metadata for active items; add (kind, archived_at) composite",
+      "estimated_improvement_percent": 55.0,
+      "estimated_new_latency_ms": 169.3
+    },
+    {
+      "rank": 7,
+      "query_id": "Q007_ITEM_SIZE_AGGREGATION",
+      "description": "Calculate storage usage by repository and kind",
+      "query": "SELECT i.repo, i.kind, COUNT(*) as item_count, SUM(a.size_bytes) as total_size, AVG(a.size_bytes) as avg_size FROM item i JOIN artifact a ON i.artifact_id = a.id WHERE i.archived_at > $1 GROUP BY i.repo, i.kind ORDER BY total_size DESC",
+      "current_latency_ms": 354.3,
+      "execution_count_per_minute": 45,
+      "root_cause": "No composite index on (repo, kind); join on artifact_id (PK lookup only); GROUP BY on unindexed columns",
+      "table_scans": ["item (full)", "artifact (full)"],
+      "join_type": "INNER JOIN (hash)",
+      "improvement_strategy": "Materialized view or pre-aggregated table; composite index on (repo, kind, archived_at)",
+      "estimated_improvement_percent": 72.0,
+      "estimated_new_latency_ms": 99.2
+    },
+    {
+      "rank": 8,
+      "query_id": "Q008_RELEASE_COMPONENT_TREE",
+      "description": "Build release component tree with archive lookups",
+      "query": "SELECT rc.id, rc.dest_path, i.path, i.commit_sha FROM release_component rc LEFT JOIN item i ON rc.item_id = i.id WHERE rc.release_id = $1 ORDER BY rc.dest_path ASC",
+      "current_latency_ms": 287.5,
+      "execution_count_per_minute": 300,
+      "root_cause": "No index on release_component.release_id; N+1 potential on item lookups",
+      "table_scans": ["release_component (full)", "item (N+1)"],
+      "join_type": "LEFT JOIN (nested loop)",
+      "improvement_strategy": "Index on release_component(release_id); batch load items; denormalization",
+      "estimated_improvement_percent": 66.0,
+      "estimated_new_latency_ms": 97.8
+    },
+    {
+      "rank": 9,
+      "query_id": "Q009_EVENT_ACTION_FILTER",
+      "description": "Get recent events filtered by action, with item context",
+      "query": "SELECT e.id, e.action, e.actor, e.created_at, i.path, i.repo FROM event e JOIN item i ON e.item_id = i.id WHERE e.action = $1 AND e.created_at > $2 ORDER BY e.created_at DESC LIMIT 500",
+      "current_latency_ms": 267.3,
+      "execution_count_per_minute": 420,
+      "root_cause": "No index on (action, created_at); item lookup for each event",
+      "table_scans": ["event (full)", "item (lookup)"],
+      "join_type": "INNER JOIN (nested loop)",
+      "improvement_strategy": "Composite index on (action, created_at); denormalize item path/repo into event",
+      "estimated_improvement_percent": 74.0,
+      "estimated_new_latency_ms": 69.5
+    },
+    {
+      "rank": 10,
+      "query_id": "Q010_TAG_CARDINALITY_ANALYSIS",
+      "description": "Find most common tags and their cardinality",
+      "query": "SELECT t.tag, COUNT(t.item_id) as cardinality, COUNT(DISTINCT i.repo) as repo_count FROM tag t JOIN item i ON t.item_id = i.id GROUP BY t.tag ORDER BY cardinality DESC LIMIT 100",
+      "current_latency_ms": 245.6,
+      "execution_count_per_minute": 30,
+      "root_cause": "No indexes on tag columns; full join scan; GROUP BY on tag string",
+      "table_scans": ["tag (full)", "item (full)"],
+      "join_type": "INNER JOIN (hash)",
+      "improvement_strategy": "Materialized view; composite index on (tag, item_id)",
+      "estimated_improvement_percent": 60.0,
+      "estimated_new_latency_ms": 98.2
+    },
+    {
+      "rank": 11,
+      "query_id": "Q011_ITEM_RECOVERY_AUDIT",
+      "description": "Audit items restored from archive with history",
+      "query": "SELECT i.id, i.path, i.restored_at, COUNT(e.id) as event_count FROM item i LEFT JOIN event e ON i.id = e.item_id WHERE i.restored_at IS NOT NULL AND i.restored_at > $1 GROUP BY i.id ORDER BY i.restored_at DESC LIMIT 200",
+      "current_latency_ms": 198.7,
+      "execution_count_per_minute": 150,
+      "root_cause": "No index on (restored_at); LEFT JOIN on event creates cartesian product risk",
+      "table_scans": ["item (full)", "event (full)"],
+      "join_type": "LEFT JOIN (hash)",
+      "improvement_strategy": "Partial index on restored_at; pre-aggregate event counts",
+      "estimated_improvement_percent": 65.0,
+      "estimated_new_latency_ms": 69.5
+    },
+    {
+      "rank": 12,
+      "query_id": "Q012_COMPRESSION_EFFICIENCY",
+      "description": "Calculate compression efficiency by MIME type",
+      "query": "SELECT a.mime_type, a.compression, COUNT(*) as count, SUM(a.size_bytes) as original_size, SUM(octet_length(a.blob_bytes)) as compressed_size FROM artifact a WHERE a.blob_bytes IS NOT NULL GROUP BY a.mime_type, a.compression ORDER BY (1.0 - SUM(octet_length(a.blob_bytes))::float / SUM(a.size_bytes)) DESC",
+      "current_latency_ms": 156.4,
+      "execution_count_per_minute": 20,
+      "root_cause": "Full table scan; no indexes on mime_type/compression; blob_bytes scan expensive",
+      "table_scans": ["artifact (full with blob)"],
+      "join_type": "None",
+      "improvement_strategy": "Materialized view; separate table for compression stats; exclude blob from scan",
+      "estimated_improvement_percent": 71.0,
+      "estimated_new_latency_ms": 45.4
+    },
+    {
+      "rank": 13,
+      "query_id": "Q013_RELEASE_DELTA_ANALYSIS",
+      "description": "Compare components between two releases",
+      "query": "SELECT rc1.dest_path FROM release_component rc1 WHERE rc1.release_id = $1 EXCEPT SELECT rc2.dest_path FROM release_component rc2 WHERE rc2.release_id = $2 ORDER BY dest_path",
+      "current_latency_ms": 134.2,
+      "execution_count_per_minute": 80,
+      "root_cause": "No index on release_id; EXCEPT requires full scans; no optimization",
+      "table_scans": ["release_component (full x2)"],
+      "join_type": "EXCEPT (set operation)",
+      "improvement_strategy": "Index on release_id; use CTE for better optimization; consider ETL approach",
+      "estimated_improvement_percent": 55.0,
+      "estimated_new_latency_ms": 60.4
+    },
+    {
+      "rank": 14,
+      "query_id": "Q014_ITEM_CORRUPTION_CHECK",
+      "description": "Find items where artifact is missing (referential integrity check)",
+      "query": "SELECT i.id, i.path, i.artifact_id FROM item i WHERE NOT EXISTS (SELECT 1 FROM artifact a WHERE a.id = i.artifact_id) LIMIT 100",
+      "current_latency_ms": 123.5,
+      "execution_count_per_minute": 180,
+      "root_cause": "NOT EXISTS with subquery; artifact_id scan inefficient for anti-join",
+      "table_scans": ["item (full)", "artifact (lookup)"],
+      "join_type": "Anti-join (subquery)",
+      "improvement_strategy": "Add CHECK constraint; use LEFT JOIN with IS NULL instead of NOT EXISTS",
+      "estimated_improvement_percent": 48.0,
+      "estimated_new_latency_ms": 64.2
+    },
+    {
+      "rank": 15,
+      "query_id": "Q015_METADATA_SCHEMA_EVOLUTION",
+      "description": "Detect items with outdated metadata schema versions",
+      "query": "SELECT i.id, i.metadata->'schema_version' as version, COUNT(*) as count FROM item i WHERE i.metadata->'schema_version' IS NOT NULL AND i.metadata->>'schema_version' < '2.0' GROUP BY i.metadata->>'schema_version' ORDER BY version ASC",
+      "current_latency_ms": 98.3,
+      "execution_count_per_minute": 60,
+      "root_cause": "GIN index scan with casting; GROUP BY on JSON string comparison",
+      "table_scans": ["item (GIN)"],
+      "join_type": "None",
+      "improvement_strategy": "Add generated column for schema_version; regular index on generated column",
+      "estimated_improvement_percent": 52.0,
+      "estimated_new_latency_ms": 47.2
+    },
+    {
+      "rank": 16,
+      "query_id": "Q016_EVENT_BULK_EXPORT",
+      "description": "Export all events for a date range in batches",
+      "query": "SELECT e.id, e.item_id, e.action, e.actor, e.context, e.created_at FROM event e WHERE e.created_at >= $1 AND e.created_at < $2 ORDER BY e.created_at, e.id LIMIT 10000",
+      "current_latency_ms": 87.6,
+      "execution_count_per_minute": 240,
+      "root_cause": "No index on created_at; large LIMIT needs full scan; context JSONB expensive",
+      "table_scans": ["event (full)"],
+      "join_type": "None",
+      "improvement_strategy": "Composite index on (created_at, id); covering index excluding context",
+      "estimated_improvement_percent": 61.0,
+      "estimated_new_latency_ms": 34.2
+    },
+    {
+      "rank": 17,
+      "query_id": "Q017_REFERENT_GRAPH_TRAVERSAL",
+      "description": "Build transitive closure of references",
+      "query": "WITH RECURSIVE ref_graph AS (SELECT item_id, ref_value FROM referent WHERE ref_type = 'PARENT' UNION ALL SELECT r.item_id, r.ref_value FROM referent r JOIN ref_graph g ON r.ref_value = g.item_id) SELECT DISTINCT item_id FROM ref_graph",
+      "current_latency_ms": 76.4,
+      "execution_count_per_minute": 40,
+      "root_cause": "Recursive CTE without proper indexing; potentially expensive transitive closure",
+      "table_scans": ["referent (multiple)"],
+      "join_type": "Recursive join",
+      "improvement_strategy": "Index on (ref_type, ref_value); consider materialized transitive closure table",
+      "estimated_improvement_percent": 59.0,
+      "estimated_new_latency_ms": 31.4
+    },
+    {
+      "rank": 18,
+      "query_id": "Q018_ARTIFACT_ORPHAN_DETECTION",
+      "description": "Find artifacts not referenced by any item",
+      "query": "SELECT a.id, a.size_bytes FROM artifact a WHERE NOT EXISTS (SELECT 1 FROM item i WHERE i.artifact_id = a.id) ORDER BY a.created_at DESC LIMIT 1000",
+      "current_latency_ms": 67.8,
+      "execution_count_per_minute": 120,
+      "root_cause": "Artifact scan with anti-join; no partial index for optimization",
+      "table_scans": ["artifact (full)", "item (lookup)"],
+      "join_type": "Anti-join",
+      "improvement_strategy": "Partial index on artifact for created_at; maintain artifact_ref_count",
+      "estimated_improvement_percent": 57.0,
+      "estimated_new_latency_ms": 29.1
+    },
+    {
+      "rank": 19,
+      "query_id": "Q019_TAG_AUTOCOMPLETE",
+      "description": "Autocomplete suggestions for tag search",
+      "query": "SELECT DISTINCT t.tag FROM tag t WHERE t.tag LIKE $1 ORDER BY t.tag LIMIT 50",
+      "current_latency_ms": 54.3,
+      "execution_count_per_minute": 600,
+      "root_cause": "LIKE pattern matching without trigram index; DISTINCT on 8M rows",
+      "table_scans": ["tag (full)"],
+      "join_type": "None",
+      "improvement_strategy": "Add trigram index (pg_trgm); denormalize into separate tag vocabulary table; cache",
+      "estimated_improvement_percent": 84.0,
+      "estimated_new_latency_ms": 8.7
+    },
+    {
+      "rank": 20,
+      "query_id": "Q020_RELEASE_LINEAGE",
+      "description": "Find all releases for a given release family",
+      "query": "SELECT rm.id, rm.version, rm.created_at FROM release_meta rm WHERE rm.release_id LIKE $1 ORDER BY rm.created_at DESC",
+      "current_latency_ms": 43.2,
+      "execution_count_per_minute": 90,
+      "root_cause": "No index on release_id; LIKE pattern matching; small dataset but repeated query",
+      "table_scans": ["release_meta (full)"],
+      "join_type": "None",
+      "improvement_strategy": "Index on release_id; consider splitting into release_family and version tables",
+      "estimated_improvement_percent": 66.0,
+      "estimated_new_latency_ms": 14.7
+    }
+  ],
+
+  "summary_statistics": {
+    "total_queries_analyzed": 20,
+    "current_total_latency_ms": 6389.9,
+    "current_avg_query_latency_ms": 319.5,
+    "current_aggregate_execution_per_hour": 132120,
+    "top_10_total_latency_ms": 4582.8,
+    "top_10_potential_improvement": 65.8,
+    "top_10_estimated_new_latency_ms": 1550.0,
+    "top_20_total_latency_ms": 6389.9,
+    "top_20_potential_improvement": 63.5,
+    "top_20_estimated_new_latency_ms": 2343.9
+  },
+
+  "query_pattern_categories": {
+    "full_table_scans": {
+      "count": 16,
+      "example_queries": ["Q001", "Q002", "Q003"],
+      "primary_cause": "Missing indexes on filter columns",
+      "mitigation": "Create composite indexes on (filter_column, sort_column)"
+    },
+    "n_plus_one_lookups": {
+      "count": 5,
+      "example_queries": ["Q001", "Q008", "Q009"],
+      "primary_cause": "LEFT/INNER JOINs with nested loops",
+      "mitigation": "Denormalization or batch loading; hash joins via proper indexing"
+    },
+    "json_metadata_scans": {
+      "count": 3,
+      "example_queries": ["Q006", "Q015", "Q012"],
+      "primary_cause": "GIN index suboptimal; no partial indexes for common patterns",
+      "mitigation": "Generated columns; regular indexes on extracted fields"
+    },
+    "aggregation_without_index": {
+      "count": 4,
+      "example_queries": ["Q003", "Q007", "Q010"],
+      "primary_cause": "GROUP BY on unindexed columns; no materialized views",
+      "mitigation": "Materialized views; pre-aggregated tables; covering indexes"
+    },
+    "large_resultset_handling": {
+      "count": 3,
+      "example_queries": ["Q001", "Q016", "Q018"],
+      "primary_cause": "Large LIMIT without proper pagination support",
+      "mitigation": "Index on sort column; cursor-based pagination; connection pooling"
+    },
+    "recursive_expensive_operations": {
+      "count": 2,
+      "example_queries": ["Q017", "Q012"],
+      "primary_cause": "Recursive CTEs or expensive set operations without index support",
+      "mitigation": "Materialized closure tables; iterative instead of recursive"
+    },
+    "string_pattern_matching": {
+      "count": 2,
+      "example_queries": ["Q019", "Q020"],
+      "primary_cause": "LIKE/ILIKE without trigram indexes",
+      "mitigation": "Trigram indexes (pg_trgm); separate vocabulary tables; caching"
+    }
+  },
+
+  "caching_opportunities": {
+    "cache_read_heavy_queries": [
+      {
+        "query_id": "Q019",
+        "description": "Tag autocomplete",
+        "cache_ttl_seconds": 86400,
+        "expected_hit_rate": 0.95,
+        "reason": "Tags change infrequently; high read volume"
+      },
+      {
+        "query_id": "Q020",
+        "description": "Release lineage",
+        "cache_ttl_seconds": 3600,
+        "expected_hit_rate": 0.90,
+        "reason": "Release metadata changes infrequently"
+      },
+      {
+        "query_id": "Q010",
+        "description": "Tag cardinality",
+        "cache_ttl_seconds": 3600,
+        "expected_hit_rate": 0.85,
+        "reason": "Reporting query; historical data"
+      }
+    ]
+  },
+
+  "denormalization_candidates": [
+    {
+      "current_pattern": "item LEFT JOIN tag; item JOIN event",
+      "issue": "N+1 lookups; cartesian products",
+      "denormalization_option": "Store tag_count, recent_tags in item table",
+      "cost_benefit": "5% write overhead for 70% read improvement",
+      "estimated_space_overhead_mb": 45
+    },
+    {
+      "current_pattern": "event JOIN item for path/repo",
+      "issue": "Lookup on every event query",
+      "denormalization_option": "Denormalize item.path, item.repo into event table",
+      "cost_benefit": "8% write overhead for 65% read improvement",
+      "estimated_space_overhead_mb": 320
+    }
+  ]
+}

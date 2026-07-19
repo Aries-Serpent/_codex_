@@ -1,0 +1,464 @@
+# Phase 8 Optimized Cache Configuration
+# Generated: 2026-07-19
+# Objective: Reduce memory by ≥10%, maintain ≥95% hit rate
+
+cache:
+  # Global cache settings
+  version: "2.0"
+  phase: 8
+  optimization_date: "2026-07-19"
+  
+  # Global statistics logging
+  statistics:
+    enabled: true
+    interval_seconds: 60
+    log_file: ".codex/cache_stats.log"
+    metrics:
+      - hit_rate
+      - miss_rate
+      - eviction_count
+      - memory_usage
+      - latency_p50
+      - latency_p99
+
+# Layer 1: Per-Workflow Cache (Request-Scoped)
+layers:
+  l1_workflow:
+    name: "L1: Per-Workflow Cache"
+    backend: "in_process"
+    
+    # TTL Configuration: Optimization from 5-10m to 5-8m
+    ttl:
+      min_seconds: 300      # 5 minutes (unchanged)
+      max_seconds: 480      # 8 minutes (was 10, reduced to prevent stale entries)
+      adaptive: true        # Extend TTL on access
+    
+    # Memory Configuration
+    memory:
+      max_entries: 10000
+      max_size_mb: 128      # Slightly reduced from 145 for tighter control
+      eviction_policy: "lru"
+    
+    # Warming Configuration
+    warming:
+      enabled: true
+      initial_keys: 100     # Pre-load top 100 workflow patterns
+      async: false          # Load synchronously to ensure data ready
+      sources:
+        - "phase_7_hot_keys"
+        - "workflow_patterns"
+    
+    # Compression (not needed for L1 due to small size)
+    compression:
+      enabled: false
+    
+    # Serialization
+    serialization:
+      format: "python_pickle"  # Native Python objects, fastest
+      
+    # Monitoring
+    monitoring:
+      track_hit_rate: true
+      track_latency: true
+      alert_on_eviction_rate: 10  # Warn if eviction > 10%
+
+  # Layer 2: Session Cache (Cross-Request, Redis-Backed)
+  l2_session:
+    name: "L2: Session Cache (Redis-Backed)"
+    backend: "redis"
+    
+    # Redis Configuration
+    redis:
+      host: "${CODEX_REDIS_HOST:localhost}"
+      port: 6379
+      db: 0
+      password: "${CODEX_REDIS_PASSWORD}"
+      
+      # Connection Pool Optimization
+      connection_pool:
+        max_connections: 50
+        socket_keepalive: true
+        socket_keepalive_interval_seconds: 30
+        socket_connect_timeout_seconds: 5
+        socket_read_timeout_seconds: 3
+        retry_on_timeout: true
+        retry_attempts: 3
+    
+    # TTL Configuration: Optimization from 60m to 30m
+    ttl:
+      seconds: 1800         # 30 minutes (was 3600)
+      adaptive: true        # Extend on access for active sessions
+      adaptive_multiplier: 1.5  # Extend by 50% on hit
+    
+    # Memory Configuration
+    memory:
+      max_entries: 50000    # Slightly increased for broader session coverage
+      max_size_mb: 462      # Reduced from 512 through serialization optimization
+      eviction_policy: "lru_weighted"  # Weight by hit-rate
+    
+    # Local Fallback Cache
+    local_fallback:
+      enabled: true
+      max_entries: 5000
+      max_size_mb: 50
+      
+    # Warming Configuration
+    warming:
+      enabled: true
+      initial_sessions: 50  # Pre-load top 50 sessions
+      async: true          # Load in background to not block startup
+      sources:
+        - "phase_7_active_sessions"
+        - "frequent_users"
+    
+    # Compression
+    compression:
+      enabled: false        # Redis handles compression
+    
+    # Serialization: Optimization from JSON to Msgpack
+    serialization:
+      format: "msgpack"     # Binary format, 10-15% smaller, 15-20% faster
+      fallback_format: "json"  # Fallback for compatibility
+      compression_on_serialize: true
+      
+    # Cache Invalidation
+    invalidation:
+      enabled: true
+      triggers:
+        - "user_logout"     # Evict session on logout
+        - "password_change" # Evict on auth change
+        - "permission_grant"  # Evict on permission update
+    
+    # Monitoring
+    monitoring:
+      track_hit_rate: true
+      track_latency: true
+      track_redis_availability: true
+      alert_on_eviction_rate: 10
+      redis_health_check_interval_seconds: 60
+
+  # Layer 3: Knowledge Cache (Dependency-Based, Long-Lived)
+  l3_knowledge:
+    name: "L3: Knowledge Cache"
+    backend: "in_process_compressed"
+    
+    # TTL Configuration: Adaptive TTL strategy
+    ttl:
+      default_seconds: 43200      # 12 hours (was 86400 = 24 hours)
+      # Adaptive TTL: reduce for low-hit entries
+      adaptive: true
+      adaptive_thresholds:
+        - hits: 1
+          ttl_seconds: 300        # 5 minutes for 1-hit entries
+        - hits: 5
+          ttl_seconds: 3600       # 1 hour for 5-hit entries
+        - hits: 10
+          ttl_seconds: 14400      # 4 hours for 10-hit entries
+        - hits: 50
+          ttl_seconds: 86400      # 24 hours for frequently-hit entries
+    
+    # Memory Configuration
+    memory:
+      max_entries: 200000         # Slightly increased to handle variety
+      max_size_mb: 914            # Reduced from 1024 (target -110 MB)
+      eviction_policy: "lru_weighted"  # Weight by hit-rate, not just recency
+      
+      # Weighted eviction considers:
+      # - Access frequency (hits count)
+      # - Access recency (last accessed time)
+      # - Entry size (larger entries weighted for eviction)
+      # - Adaptive TTL (lower TTL entries more likely to evict)
+      weighted_factors:
+        hit_rate_weight: 0.5      # Most important
+        recency_weight: 0.3       # Fairly important
+        size_weight: 0.15         # Less important
+        ttl_weight: 0.05          # Minimal
+    
+    # Warming Configuration
+    warming:
+      enabled: true
+      initial_entries: 500        # Pre-load top 500 dependency queries
+      async: true
+      background_interval_seconds: 300  # Periodic refresh of hot entries
+      sources:
+        - "phase_7_hot_queries"
+        - "frequent_dependencies"
+        - "critical_artifacts"
+    
+    # Compression: CRITICAL OPTIMIZATION
+    compression:
+      enabled: true
+      algorithm: "gzip"           # Standard gzip
+      level: 6                    # 1-9, 6 is good balance speed/ratio
+      min_size_bytes: 1024        # Only compress if > 1KB
+      
+      # Expected compression ratios:
+      # - Structured data (queries, metadata): 30-40% of original
+      # - Serialized objects: 40-50% of original
+      # - Overall expected: 30-40% reduction of L3 size
+      
+      # Compression stats logging
+      track_compression_ratio: true
+      compression_overhead_ms_alert: 5
+    
+    # Serialization: Optimization from JSON to Msgpack
+    serialization:
+      format: "msgpack"           # Binary format before compression
+      compression_before_serialize: true  # Compress → serialize → store
+      fallback_format: "json"     # Fallback for legacy compatibility
+    
+    # Cache Invalidation
+    invalidation:
+      enabled: true
+      mutation_hooks: true
+      triggers:
+        - "dependency_update"
+        - "artifact_created"
+        - "artifact_updated"
+        - "schema_changed"
+        - "configuration_updated"
+    
+    # Monitoring
+    monitoring:
+      track_hit_rate: true
+      track_latency: true
+      track_compression_ratio: true
+      track_memory_usage: true
+      alert_on_eviction_rate: 15  # Warn if eviction > 15%
+      alert_on_high_latency_ms: 25
+      detailed_stats_interval_seconds: 300
+
+  # Layer 4: Model Cache (Persistent Artifacts)
+  l4_model:
+    name: "L4: Model Cache"
+    backend: "filesystem"
+    
+    # Filesystem Configuration
+    filesystem:
+      cache_dir: ".cache/codex_l4"
+      max_size_gb: 40             # Limit to prevent disk bloat
+      models_subdir: "models"
+      artifacts_subdir: "artifacts"
+    
+    # TTL Configuration: Permanent, no expiration
+    ttl:
+      permanent: true
+      manual_refresh: true
+      keep_versions: 2            # Keep 2 old versions for rollback
+    
+    # Memory Configuration (for manifest/metadata)
+    memory:
+      max_entries: 100
+      max_manifest_cache_mb: 10   # Small, just for metadata
+    
+    # Warming: Not applicable (persistent storage)
+    warming:
+      enabled: false
+    
+    # Compression: Out of Phase 8 scope but noted
+    compression:
+      enabled: false              # Phase 9 optimization
+      # Future: quantization + gzip for model weights
+    
+    # Serialization: Binary format
+    serialization:
+      format: "binary"
+    
+    # Monitoring
+    monitoring:
+      track_hit_rate: true
+      track_disk_usage: true
+      alert_on_disk_full: 95      # Warn if > 95% full
+
+# Global Cache Coordination
+coordination:
+  # Cross-layer invalidation
+  cross_layer_invalidation:
+    enabled: true
+    cascade_on_l4_refresh: true
+    cascade_on_l3_update: true
+  
+  # Health checks
+  health_checks:
+    enabled: true
+    interval_seconds: 60
+    checks:
+      - redis_connectivity  # L2 backend
+      - memory_usage        # All layers
+      - disk_usage          # L4 backend
+      - cache_consistency   # Key distribution validation
+
+# Performance Targets
+performance_targets:
+  hit_rate:
+    l1_target: 0.94          # Was 0.92
+    l2_target: 0.92          # Was 0.87
+    l3_target: 0.96          # Was 0.76 (major improvement)
+    l4_target: 0.80          # Was 0.68
+    weighted_average: 0.95   # Overall target
+  
+  latency:
+    l1_p99_ms: 5
+    l2_p99_ms: 15
+    l3_p99_ms: 25            # Includes compression overhead
+    l4_p99_ms: 50
+    
+  memory:
+    total_memory_mb: 1519    # Target from 1681 (-162 MB, -9.6%)
+    l1_memory_mb: 140        # From 145
+    l2_memory_mb: 462        # From 512
+    l3_memory_mb: 914        # From 1024
+    target_reduction_percent: 10  # ≥10%
+  
+  resilience:
+    cache_unavailable_latency_penalty_ms: 100
+    graceful_degradation: true
+
+# Monitoring & Alerting
+monitoring:
+  # Metrics export
+  metrics_export:
+    enabled: true
+    format: "prometheus"
+    interval_seconds: 60
+    export_file: ".codex/cache_metrics.prom"
+  
+  # Detailed logging
+  logging:
+    level: "INFO"
+    file: ".codex/cache.log"
+    rotation:
+      max_bytes: 10485760     # 10 MB
+      backup_count: 5
+  
+  # Alerts
+  alerts:
+    - metric: "hit_rate"
+      condition: "< 0.90"
+      severity: "WARNING"
+    - metric: "memory_usage"
+      condition: "> 1600"
+      severity: "WARNING"
+    - metric: "l3_eviction_rate"
+      condition: "> 20"
+      severity: "CRITICAL"
+    - metric: "redis_unavailable"
+      condition: "true"
+      severity: "CRITICAL"
+
+# Load Test Configuration (Phase 8 Validation)
+load_test:
+  enabled: true
+  concurrent_connections: 500
+  duration_seconds: 300
+  ramp_up_seconds: 30
+  
+  # Expected results with optimization
+  expected:
+    hit_rate: 0.95
+    p99_latency_ms: 30
+    memory_stable: true
+    no_errors: true
+
+# Validation Checkpoints
+validation:
+  - checkpoint: "pre_optimization"
+    baseline_hit_rate: 0.7811
+    baseline_memory_mb: 1681
+  
+  - checkpoint: "post_optimization_l1"
+    expected_memory_mb: 1676
+    expected_hit_rate: 0.7830
+  
+  - checkpoint: "post_optimization_l2"
+    expected_memory_mb: 1626
+    expected_hit_rate: 0.7900
+  
+  - checkpoint: "post_optimization_l3"
+    expected_memory_mb: 1516
+    expected_hit_rate: 0.9200
+  
+  - checkpoint: "final_with_warming"
+    expected_memory_mb: 1519
+    expected_hit_rate: 0.9500
+    tolerance_percent: 1
+
+# Rollback Plan
+rollback:
+  enabled: true
+  backup_original: true
+  checkpoint_file: ".codex/cache_config_baseline.yaml"
+  
+  # If hit_rate drops below 90% or memory exceeds 1600MB,
+  # automatically rollback to previous configuration
+  auto_rollback:
+    hit_rate_threshold: 0.90
+    memory_threshold_mb: 1600
+    latency_threshold_ms: 50
+
+# Migration Timeline
+migration:
+  phase: "Phase 8"
+  start_date: "2026-07-19"
+  estimated_duration_hours: 12
+  steps:
+    - step: 1
+      task: "Deploy L1 TTL optimization"
+      duration_minutes: 5
+      rollback_able: true
+    
+    - step: 2
+      task: "Deploy L2 TTL + Msgpack serialization"
+      duration_minutes: 30
+      rollback_able: true
+      requires_redis_restart: false
+    
+    - step: 3
+      task: "Deploy L3 compression + adaptive TTL"
+      duration_minutes: 60
+      rollback_able: true
+      validation: "cache_hit_rate >= 0.90"
+    
+    - step: 4
+      task: "Enable cache warming across all layers"
+      duration_minutes: 15
+      rollback_able: true
+    
+    - step: 5
+      task: "Run sustained load test (500 concurrent)"
+      duration_minutes: 300
+      rollback_able: false
+    
+    - step: 6
+      task: "Validate success criteria"
+      duration_minutes: 30
+      rollback_able: false
+
+# Success Criteria Validation
+success_criteria:
+  - metric: "memory_reduction"
+    current_value: 1681
+    target_value: 1513
+    target_percent: 10
+    validation_required: true
+  
+  - metric: "hit_rate"
+    current_value: 0.7811
+    target_value: 0.95
+    target_percent: 21.8
+    validation_required: true
+  
+  - metric: "graceful_degradation"
+    cache_unavailable_latency_ms: 100
+    validation_required: true
+  
+  - metric: "load_test_500_concurrent"
+    duration_seconds: 300
+    error_rate_max: 0.01
+    validation_required: true
+  
+  - metric: "all_deliverables"
+    audit_report: true
+    optimization_config: true
+    results_json: true
+    validation_required: true
