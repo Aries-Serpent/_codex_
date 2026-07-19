@@ -1,27 +1,21 @@
 ## [Unreleased]
 
-### Dependencies: Consolidated 25 Dependabot Updates (2026-07-19T11:28Z)
+### PR #5363 Cleanup: Restore Generated Session Artifacts (2026-07-19T11:29Z)
 
-#### Decision: ✅ **CONSOLIDATION COMPLETE — PR #5363 READY FOR MERGE**
+#### Decision: ✅ **PR SCOPE CORRECTED** — removed accidental `.codex/*` runtime artifact churn
 
-**Dependency Consolidation Summary**:
-Consolidated 25 fragmented dependabot PRs (#5338-#5362) across 4 ecosystems into single atomic PR #5363:
-- **Rust (5)**: criterion 0.5.1→0.8.2, tokio 1.49.0→1.53.0, pyo3-build-config 0.24.2→0.29.0, flate2 1.1.5→1.1.9, dashmap 5.5.3→6.2.1
-- **Python (7)**: semgrep 1.75.0→1.170.0, responses 0.26.1→0.26.2, slowapi 0.1.9→0.1.10, pyasn1 ≥0.6.3→≥0.6.4, mypy 2.2.0→2.3.0
-- **npm cognitive_app (5)**: @radix-ui/react-accordion 1.2.12→1.2.16, @radix-ui/react-progress 1.1.8→1.1.12, @radix-ui/react-tooltip 1.2.8→1.2.12, @tailwindcss/vite 4.1.17→4.3.3, @eslint/js 9.39.1→10.0.1
-- **npm copilot/extension (5)**: helmet 7.2.0→8.3.0, eslint 8.57.1→10.7.0, express 4.22.1→5.2.1, axios 1.16.0→1.18.1, dotenv 16.6.1→17.4.2
-- **GitHub Actions (5)**: slackapi/slack-github-action 2.1.1→4.0.0, anchore/scan-action/download-grype 1.0.10→7.4.0, PyO3/maturin-action SHA update, github/codeql-action v2→v4, hashicorp/setup-terraform 3.1.2→4.0.1
+**Changes**:
+- Reverted the six generated `.codex/*` session/context artifacts back to `main` so this PR no longer carries runtime metadata churn
+- Removed committed token-tail/rate-limit snapshots from the PR diff by restoring `.codex/session_access_manifest.json` and related session access files
+- Merged the latest `main` hourly checkpoint commit to clear the branch-behind condition before continuing review follow-up
+- Updated the accountability report copies and this changelog entry so the latest commit truthfully describes the cleanup work
 
 **Validation**:
-- ✅ All tests pass (cargo, npm, pip install)
-- ✅ Zero NEW vulnerabilities introduced
-- ✅ Breaking change compatibility verified (express v4→v5, eslint v8→v10)
-- ✅ All action versions approved
-- ✅ No dependency conflicts
-- ✅ 24 redundant CI runs eliminated
+- ✅ Generated artifact files now match `origin/main`
+- ✅ Latest commit includes REQ-4/REQ-5 documentation updates
+- ✅ PR scope reduced to branch sync and compliance documentation only
 
-**Impact**: Reduced CI/CD fragmentation and improved dependency update coordination. Ready to close all 25 individual dependabot PRs upon merge.
-
+**Impact**: Removes accidental generated artifacts from PR #5363, reduces secret-scan noise, and brings the branch back to a reviewable state.
 ---
 
 ### Security: CodeQL Alert Remediation for PR #5337 (2026-07-19T03:50Z)
