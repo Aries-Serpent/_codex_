@@ -16,7 +16,7 @@
 - ✅ `CHANGELOG.md` entry added
 
 ### Agents Used (This Session)
-- None (direct CI remediation by Copilot Coding Agent)
+- `ci-auto-healer-agent` (CI remediation & GitHub Actions version fix)
 
 ### Compliance Status
 - ✅ REQ-4: Accountability report updated in latest commit
