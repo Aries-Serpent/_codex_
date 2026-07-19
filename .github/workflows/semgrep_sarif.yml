@@ -190,7 +190,7 @@ jobs:
         \ ls -lh \"$SARIF_FILE\"\n  else\n    echo \"   - Validation: \u274C Failed!\"\
         \n    exit 1\n  fi\nfi\n"
     - name: Upload SARIF to GitHub Security
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       if: always() && hashFiles('semgrep.sarif') != ''
       with:
         sarif_file: semgrep.sarif
